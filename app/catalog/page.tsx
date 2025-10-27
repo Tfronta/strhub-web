@@ -1477,36 +1477,43 @@ export default function CatalogPage() {
         {/* Data Integration Footer */}
         <div className="mt-12 p-6 bg-muted/30 rounded-lg">
           <h3 className="text-lg font-semibold mb-2">{t("catalog.dataIntegration")}</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            {t("catalog.dataIntegrationDescription")}
-            <br />
-            <span className="text-sm mt-2 inline-block">
-              Sources:{" "}
-              <Link
-                href="https://strbase.nist.gov/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                NIST STRBase
-              </Link>
-              {" · "}
-              <Link
-                href="https://popstr.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                pop.STR
-              </Link>
-            </span>
-          </p>
-          <Button variant="outline" asChild>
-            <Link href="https://strbase.nist.gov/" target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="h-4 w-4 mr-2" />
-              {t("catalog.visitNistStrbase")}
+          <p className="text-sm text-muted-foreground mb-2">{t("catalog.dataIntegrationDescription")}</p>
+          <p className="text-sm text-muted-foreground mb-3">{t("catalog.dataIntegrationDescription2")}</p>
+          <p className="text-sm text-muted-foreground mb-3">
+            <span className="font-medium">{t("catalog.dataIntegrationSources")}</span>{" "}
+            <Link
+              href="https://strbase.nist.gov/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              NIST STRBase
             </Link>
-          </Button>
+            {" · "}
+            <Link
+              href="https://strbase.nist.gov/popstr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              pop.STR
+            </Link>
+          </p>
+          <p className="text-xs text-muted-foreground mb-4 italic">{t("catalog.dataIntegrationDisclaimer")}</p>
+          <div className="flex gap-3">
+            <Button variant="outline" asChild>
+              <Link href="https://strbase.nist.gov/" target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="h-4 w-4 mr-2" />
+                {t("catalog.visitNistStrbase")}
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="https://strbase.nist.gov/popstr" target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="h-4 w-4 mr-2" />
+                {t("catalog.visitPopStr")}
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

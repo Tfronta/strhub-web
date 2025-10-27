@@ -1,0 +1,74 @@
+{
+  "dxs7423": {
+    "populations": {
+      "BRA": {
+        "label": "Brazil (Espírito Santo)",
+        "url": "https://www.fsigenetics.com/article/S1872-4973(23)00149-7/fulltext",
+        "alleles": {}
+      },
+      "IBER": {
+        "label": "Iberian Peninsula (Spain)",
+        "url": "https://www.fsigenetics.com/article/S1872-4973(15)30030-2/fulltext",
+        "alleles": {}
+      },
+      "NOR": {
+        "label": "Norway",
+        "url": "https://www.sciencedirect.com/science/article/pii/S1872497322000862",
+        "alleles": {}
+      },
+      "BOS_HER": {
+        "label": "Bosnia & Herzegovina",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/40253804/",
+        "alleles": {}
+      }
+    }
+  },
+  "dxs10074": {
+    "populations": {
+      "BRA": {
+        "label": "Brazil (Espírito Santo)",
+        "url": "https://www.fsigenetics.com/article/S1872-4973(23)00149-7/fulltext",
+        "alleles": {}
+      },
+      "IBER": {
+        "label": "Iberian Peninsula (Spain)",
+        "url": "https://www.fsigenetics.com/article/S1872-4973(15)30030-2/fulltext",
+        "alleles": {}
+      },
+      "NOR": {
+        "label": "Norway",
+        "url": "https://www.sciencedirect.com/science/article/pii/S1872497322000862",
+        "alleles": {}
+      },
+      "BOS_HER": {
+        "label": "Bosnia & Herzegovina",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/40253804/",
+        "alleles": {}
+      }
+    }
+  },
+  "dxs10103": {
+    "populations": {
+      "BRA": {
+        "label": "Brazil (Espírito Santo)",
+        "url": "https://www.fsigenetics.com/article/S1872-4973(23)00149-7/fulltext",
+        "alleles": {}
+      },
+      "IBER": {
+        "label": "Iberian Peninsula (Spain)",
+        "url": "https://www.fsigenetics.com/article/S1872-4973(15)30030-2/fulltext",
+        "alleles": {}
+      },
+      "NOR": {
+        "label": "Norway",
+        "url": "https://www.sciencedirect.com/science/article/pii/S1872497322000862",
+        "alleles": {}
+      },
+      "BOS_HER": {
+        "label": "Bosnia & Herzegovina",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/40253804/",
+        "alleles": {}
+      }
+    }
+  }
+}

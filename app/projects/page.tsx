@@ -1,27 +1,32 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Database, Globe2, Users } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageToggle } from "@/components/language-toggle"
-import { useLanguage } from "@/contexts/language-context"
-import Link from "next/link"
+import { useState, useEffect } from "react";
+import { Database, Globe2, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
+import { useLanguage } from "@/contexts/language-context";
+import Link from "next/link";
 
 interface Project {
-  id: string
-  title: string
-  content: string
-  category: "Blog" | "Projects" | "Educational"
-  date: string
-  published: boolean
+  id: string;
+  title: string;
+  content: string;
+  category: "Blog" | "Projects" | "Educational";
+  date: string;
+  published: boolean;
 }
 
 export default function ProjectsPage() {
-  const { t } = useLanguage()
-  const [adminProjects, setAdminProjects] = useState<Project[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const { t } = useLanguage();
+  const [adminProjects, setAdminProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const staticProjects = [
     {
@@ -33,37 +38,43 @@ export default function ProjectsPage() {
     },
     {
       title: "HGDP (Human Genome Diversity Project)",
-      description: "Muestras de más de 50 poblaciones diversas. Clave para estudios de estructura poblacional.",
+      description:
+        "Muestras de más de 50 poblaciones diversas. Clave para estudios de estructura poblacional.",
       url: "https://www.internationalgenome.org/data-portal/data-collection/hgdp",
       icon: Globe2,
     },
     {
       title: "The STR Sequencing Project (NIST)",
-      description: "Colección de secuencias de STRs utilizada como referencia para validación y comparación forense.",
+      description:
+        "Colección de secuencias de STRs utilizada como referencia para validación y comparación forense.",
       url: "https://strbase.nist.gov/strseq.htm",
       icon: Database,
     },
     {
       title: "gnomAD (Genome Aggregation Database)",
-      description: "Base global con millones de variantes genómicas, útil para comparar STRs con SNPs/indels.",
+      description:
+        "Base global con millones de variantes genómicas, útil para comparar STRs con SNPs/indels.",
       url: "https://gnomad.broadinstitute.org/",
       icon: Database,
     },
     {
       title: "Simons Genome Diversity Project (SGDP)",
-      description: "Incluye >300 genomas completos de poblaciones poco representadas.",
+      description:
+        "Incluye >300 genomas completos de poblaciones poco representadas.",
       url: "https://www.simonsfoundation.org/simons-genome-diversity-project/",
       icon: Globe2,
     },
     {
       title: "All of Us (NIH, USA)",
-      description: "Proyecto masivo de datos multi-ómicos y clínicos de un millón de personas en EE.UU.",
+      description:
+        "Proyecto masivo de datos multi-ómicos y clínicos de un millón de personas en EE.UU.",
       url: "https://allofus.nih.gov/",
       icon: Users,
     },
     {
       title: "Human Pangenome Project",
-      description: "Nueva referencia genómica con múltiples haplotipos, reemplaza limitaciones de GRCh38.",
+      description:
+        "Nueva referencia genómica con múltiples haplotipos, reemplaza limitaciones de GRCh38.",
       url: "https://humanpangenome.org/",
       icon: Database,
     },
@@ -79,25 +90,25 @@ export default function ProjectsPage() {
       url: "https://strbase.nist.gov/",
       icon: Database,
     },
-  ]
+  ];
 
   useEffect(() => {
-    loadAdminProjects()
-  }, [])
+    loadAdminProjects();
+  }, []);
 
   const loadAdminProjects = async () => {
     try {
-      const response = await fetch("/api/content?category=Projects")
+      const response = await fetch("/api/content?category=Projects");
       if (response.ok) {
-        const data = await response.json()
-        setAdminProjects(data.entries || [])
+        const data = await response.json();
+        setAdminProjects(data.entries || []);
       }
     } catch (error) {
-      console.error("Failed to load admin projects:", error)
+      console.error("Failed to load admin projects:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const getExcerpt = (content: string, maxLength = 120) => {
     const plainText = content
@@ -110,11 +121,11 @@ export default function ProjectsPage() {
       .replace(/^\* /gm, "") // Remove list markers
       .replace(/^\d+\. /gm, "") // Remove numbered list markers
       .replace(/^> /gm, "") // Remove blockquote markers
-      .trim()
+      .trim();
 
-    if (plainText.length <= maxLength) return plainText
-    return plainText.substring(0, maxLength).trim() + "..."
-  }
+    if (plainText.length <= maxLength) return plainText;
+    return plainText.substring(0, maxLength).trim() + "...";
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -133,25 +144,46 @@ export default function ProjectsPage() {
           </div>
 
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/basics" className="text-base font-medium hover:text-primary transition-colors">
+            <Link
+              href="/basics"
+              className="text-base font-medium hover:text-primary transition-colors"
+            >
               {t("nav.basics")}
             </Link>
-            <Link href="/catalog" className="text-base font-medium hover:text-primary transition-colors">
+            <Link
+              href="/catalog"
+              className="text-base font-medium hover:text-primary transition-colors"
+            >
               {t("nav.catalog")}
             </Link>
-            <Link href="/blog" className="text-base font-medium hover:text-primary transition-colors">
+            <Link
+              href="/blog"
+              className="text-base font-medium hover:text-primary transition-colors"
+            >
               {t("nav.blog")}
             </Link>
-            <Link href="/tools" className="text-base font-medium hover:text-primary transition-colors">
+            <Link
+              href="/tools"
+              className="text-base font-medium hover:text-primary transition-colors"
+            >
               {t("nav.tools")}
             </Link>
-            <Link href="/mix-profiles" className="text-base font-medium hover:text-primary transition-colors">
+            <Link
+              href="/mix-profiles"
+              className="text-base font-medium hover:text-primary transition-colors"
+            >
               {t("nav.mixProfiles")}
             </Link>
-            <Link href="/projects" className="text-base font-medium hover:text-primary transition-colors">
+            <Link
+              href="/projects"
+              className="text-base font-medium hover:text-primary transition-colors"
+            >
               {t("nav.projects")}
             </Link>
-            <Link href="/about" className="text-base font-medium hover:text-primary transition-colors">
+            <Link
+              href="/about"
+              className="text-base font-medium hover:text-primary transition-colors"
+            >
               {t("nav.about")}
             </Link>
           </nav>
@@ -167,10 +199,12 @@ export default function ProjectsPage() {
       <section className="relative py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10" />
         <div className="container mx-auto text-center relative z-10">
-          <h2 className="text-5xl font-bold mb-6 text-balance">{t("projects.title")}</h2>
+          <h2 className="text-5xl font-bold mb-6 text-balance">
+            {t("projects.title")}
+          </h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-pretty">
-            Explore major international genomic projects that are advancing our understanding of human genetic diversity
-            and STR analysis.
+            Explore major international genomic projects that are advancing our
+            understanding of human genetic diversity and STR analysis.
           </p>
         </div>
       </section>
@@ -178,7 +212,9 @@ export default function ProjectsPage() {
       {adminProjects.length > 0 && (
         <section className="py-16 px-4 bg-muted/30">
           <div className="container mx-auto">
-            <h3 className="text-3xl font-bold mb-8 text-center">Featured Research Projects</h3>
+            <h3 className="text-3xl font-bold mb-8 text-center">
+              Featured Research Projects
+            </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {adminProjects.map((project) => (
                 <Card
@@ -190,8 +226,12 @@ export default function ProjectsPage() {
                       <Database className="h-6 w-6 text-primary-foreground" />
                     </div>
                     <CardTitle>{project.title}</CardTitle>
-                    <CardDescription className="mb-4">{getExcerpt(project.content)}</CardDescription>
-                    <div className="text-sm text-muted-foreground">{new Date(project.date).toLocaleDateString()}</div>
+                    <CardDescription className="mb-4">
+                      {getExcerpt(project.content)}
+                    </CardDescription>
+                    <div className="text-sm text-muted-foreground">
+                      {new Date(project.date).toLocaleDateString()}
+                    </div>
                   </CardHeader>
                 </Card>
               ))}
@@ -203,10 +243,12 @@ export default function ProjectsPage() {
       {/* International Projects Section */}
       <section className="py-16 px-4">
         <div className="container mx-auto">
-          <h3 className="text-3xl font-bold mb-8 text-center">International Genomic Projects</h3>
+          <h3 className="text-3xl font-bold mb-8 text-center">
+            International Genomic Projects
+          </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {staticProjects.map((project, index) => {
-              const IconComponent = project.icon
+              const IconComponent = project.icon;
               const gradients = [
                 "from-primary to-accent",
                 "from-secondary to-primary",
@@ -214,8 +256,8 @@ export default function ProjectsPage() {
                 "from-primary to-secondary",
                 "from-accent to-primary",
                 "from-secondary to-accent",
-              ]
-              const gradient = gradients[index % gradients.length]
+              ];
+              const gradient = gradients[index % gradients.length];
 
               return (
                 <Card
@@ -229,15 +271,21 @@ export default function ProjectsPage() {
                       <IconComponent className="h-6 w-6 text-primary-foreground" />
                     </div>
                     <CardTitle>{project.title}</CardTitle>
-                    <CardDescription className="mb-4">{project.description}</CardDescription>
+                    <CardDescription className="mb-4">
+                      {project.description}
+                    </CardDescription>
                     <Button asChild className="w-full">
-                      <a href={project.url} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={project.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         Visitar Proyecto
                       </a>
                     </Button>
                   </CardHeader>
                 </Card>
-              )
+              );
             })}
           </div>
         </div>
@@ -247,11 +295,14 @@ export default function ProjectsPage() {
       <footer className="border-t py-8 px-4 bg-card/50">
         <div className="container mx-auto text-center">
           <p className="text-muted-foreground mb-2">
-            © 2024 STRhub. Advancing genetic research through collaborative science.
+            © 2024 STRhub. Advancing genetic research through collaborative
+            science.
           </p>
-          <p className="text-sm text-muted-foreground">Built for the global research community</p>
+          <p className="text-sm text-muted-foreground">
+            Built for the global research community
+          </p>
         </div>
       </footer>
     </div>
-  )
+  );
 }

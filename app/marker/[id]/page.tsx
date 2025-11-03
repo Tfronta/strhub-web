@@ -13,11 +13,13 @@ import Link from "next/link"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { markerData } from "./markerData"
 import { useLanguage } from "@/contexts/language-context"
+import { markerFrequencies } from "./markerFrequencies"
 
 export default function MarkerPage({ params }: { params: { id: string } }) {
   const { t } = useLanguage()
   const [selectedPopulation, setSelectedPopulation] = useState<string>("AFR")
   const [xstrFrequencies, setXstrFrequencies] = useState<any>(null)
+  const [selectedTechnology, setSelectedTechnology] = useState<string>("NGS")
 
   const markerId = params.id.toLowerCase()
   const marker = markerData[markerId as keyof typeof markerData]
@@ -52,19 +54,17 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
             </div>
           </div>
         </header>
-
-        <main className="container mx-auto px-4 py-8">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">{t("common.notFound")}</h1>
-            <p className="text-muted-foreground mb-4">The marker "{params.id}" was not found in our database.</p>
-            <Link href="/catalog" className="text-primary hover:underline">
-              {t("nav.catalog")}
-            </Link>
-          </div>
-        </main>
       </div>
     )
   }
+
+  const markerFreqData = markerFrequencies[markerId as keyof typeof markerFrequencies]
+  const availableTechnologies = markerFreqData?.technology ? [markerFreqData.technology] : []
+
+  const currentTechInfo =
+    markerFreqData?.technology === selectedTechnology
+      ? { technology: markerFreqData.technology, kit: markerFreqData.kit }
+      : null
 
   const isXSTR = marker.type === "X-STR" || marker.chromosome === "X"
 
@@ -279,33 +279,49 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
           </TabsContent>
 
           <TabsContent value="frequencies" className="space-y-6">
-            {marker.type === "Y-STR" || marker.chromosome === "Y" ? (
-              <Card>
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <Info className="h-5 w-5" />
-                    {t("marker.ystrFrequenciesTitle")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-5">
-                  <div className="space-y-4 text-base leading-relaxed">
-                    <p className="text-foreground">{t("marker.ystrFrequenciesDescription")}</p>
-                    <p className="text-foreground">{t("marker.ystrYhrdInfo")}</p>
-                    <p className="text-foreground">{t("marker.ystrExploreData")}</p>
-                    <div className="flex items-center gap-2 py-2">
-                      <Button variant="outline" size="default" asChild>
-                        <a
-                          href={marker.yhrdUrl || "https://yhrd.org/pages/resources/national_databases"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  {t("marker.alleleFreqDistribution")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between gap-3 flex-wrap border-b pb-3 mb-4">
+                    <div className="flex gap-2">
+                      {["AFR", "AMR", "EAS", "SAS", "EUR", "MES"].map((pop) => (
+                        <Button
+                          key={pop}
+                          variant={selectedPopulation === pop ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedPopulation(pop)}
+                          className="rounded-md"
                         >
-                          <ExternalLink className="h-4 w-4" />
-                          {t("marker.ystrVisitYhrd")}
-                        </a>
-                      </Button>
+                          {pop}
+                        </Button>
+                      ))}
                     </div>
-                    <p className="text-sm text-muted-foreground italic pt-2">{t("marker.ystrDisclaimer")}</p>
+
+                    {availableTechnologies.length > 0 && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">Technology:</span>
+                        <div className="flex gap-2">
+                          {["NGS", "CE"].map((tech) => (
+                            <Button
+                              key={tech}
+                              variant={selectedTechnology === tech ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setSelectedTechnology(tech)}
+                              disabled={!availableTechnologies.includes(tech)}
+                              className="rounded-md"
+                            >
+                              {tech}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -352,96 +368,143 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       )}
                     </div>
 
-                    {chartData.length > 0 ? (
-                      <>
-                        <div className="h-80">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={chartData}>
-                              <CartesianGrid strokeDasharray="3 3" />
-                              <XAxis dataKey="allele" />
-                              <YAxis />
-                              <Tooltip
-                                formatter={(value: any, name: string) => [
-                                  value,
-                                  name === "frequency" ? t("common.frequency") : t("common.count"),
-                                ]}
-                              />
-                              <Bar dataKey="frequency" fill="#6b7280" />
-                            </BarChart>
-                          </ResponsiveContainer>
+                  {chartData.length > 0 ? (
+                    <>
+                      <div className="h-80">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={chartData}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="allele" />
+                            <YAxis />
+                            <Tooltip
+                              formatter={(value: any, name: string) => [
+                                value,
+                                name === "frequency" ? t("common.frequency") : t("common.count"),
+                              ]}
+                            />
+                            <Bar dataKey="frequency" fill="#6b7280" />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+
+                      {selectedPopulation === "AFR" && (
+                        <p className="w-full text-sm text-muted-foreground text-left mt-3 py-2">
+                          The African population dataset from pop.STR is composed of the following population groups: C.
+                          African Republic – Biaka Pygmies, D. R. of Congo – Mbuti Pygmies, Kenya – Bantu N.E., Namibia
+                          – San, Nigeria – Yoruba, Senegal – Mandenka, Somalia, and South Africa – Bantu.
+                        </p>
+                      )}
+                      {selectedPopulation === "AMR" && (
+                        <p className="w-full text-sm text-muted-foreground text-left mt-3 py-2">
+                          The American population dataset from pop.STR is composed of the following population groups: Brazil – Karitiana,
+                          Brazil – Surui, Colombia – Colombian, Dominican Republic, Mexico – Maya, Mexico – Pima.
+                        </p>
+                      )}
+
+                      {selectedPopulation === "SAS" && (
+                        <p className="w-full text-sm text-muted-foreground text-left mt-3 py-2">
+                          The Central-South Asian population dataset from pop.STR is composed of the following population groups: China – Uygur,
+                          Pakistan – Balochi, Pakistan – Brahui, Pakistan – Burusho, Pakistan – Hazara, Pakistan – Kalash, Pakistan – Makrani,
+                          Pakistan – Pathan, Pakistan – Sindhi.
+                        </p>
+                      )}
+
+                      {selectedPopulation === "MES" && (
+                        <p className="w-full text-sm text-muted-foreground text-left mt-3 py-2">
+                          The Middle East population dataset from pop.STR is composed of the following population groups: Algeria (Mzab) – Mozabite,
+                          Israel (Carmel) – Druze, Israel (Central) – Palestinian, Israel (Negev) – Bedouin.
+                        </p>
+                      )}
+
+                      {selectedPopulation === "EUR" && (
+                        <p className="w-full text-sm text-muted-foreground text-left mt-3 py-2">
+                          The European population dataset from pop.STR is composed of the following population groups: France – Basque, France – French,
+                          Italy (Bergamo) – North Italian, Italy – Sardinian, Italy – Tuscan, N.W. Spain, Orkney Islands – Orcadian, Russia – Russian,
+                          Russia Caucasus – Adygei, Sweden, U.S. Europeans.
+                        </p>
+                      )}
+
+                      {selectedPopulation === "EAS" && (
+                        <p className="w-full text-sm text-muted-foreground text-left mt-3 py-2">
+                          The East Asian population dataset from pop.STR is composed of the following population groups: Cambodia – Cambodian,
+                          China – Dai, China – Daur, China – Han, China – Hezhen, China – Lahu, China – Miaozu, China – Mongola, China – Naxi,
+                          China – Oroqen, China – She, China – Tu, China – Tujia, China – Xibo, China – Yizu, Japan – Japanese, Siberia – Yakut.
+                        </p>
+                      )}
+
+                      <p className="text-sm text-muted-foreground">
+                        Data source:{" "}
+                        <a
+                          href="http://spsmart.cesga.es/search.php?dataSet=strs_local&mapPopulation"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          pop.STR
+                        </a>{" "}
+                        - Illumina ForenSeq kit
+                      </p>
+
+                      <div className="mt-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-lg font-semibold">{t("marker.freqDescription")}</h3>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const csvContent = [
+                                [t("common.allele"), t("common.frequency")],
+                                ...chartData.map((item) => [item.allele, item.frequency.toString()]),
+                              ]
+                                .map((row) => row.join(","))
+                                .join("\n")
+
+                              const blob = new Blob([csvContent], { type: "text/csv" })
+                              const url = window.URL.createObjectURL(blob)
+                              const a = document.createElement("a")
+                              a.href = url
+                              a.download = `${marker.name}_${selectedPopulation}_frequencies.csv`
+                              document.body.appendChild(a)
+                              a.click()
+                              document.body.removeChild(a)
+                              window.URL.revokeObjectURL(url)
+                            }}
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            Download CSV
+                          </Button>
                         </div>
 
-                        {isXSTR && citationUrl && citationText && (
-                          <div className="pt-2 pb-2 text-sm text-muted-foreground">
-                            {t("marker.source")}:{" "}
-                            <a
-                              href={citationUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary hover:underline inline-flex items-center gap-1"
-                            >
-                              {citationText}
-                              <ExternalLink className="h-3 w-3" />
-                            </a>
-                          </div>
-                        )}
+                        <div className="border rounded-lg overflow-hidden">
+                          <div className="max-h-64 overflow-y-auto">
+                            <table className="w-full">
+                              <thead className="bg-muted/50 sticky top-0">
+                                <tr>
+                                  <th className="text-left p-3 font-medium">{t("common.allele")}</th>
+                                  <th className="text-left p-3 font-medium">{t("common.frequency")}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {chartData
+                                  .filter((item) => item.frequency > 0)
+                                  .sort((a, b) => {
+                                    const alleleA = Number.parseFloat(a.allele)
+                                    const alleleB = Number.parseFloat(b.allele)
 
-                        <div className="mt-6 space-y-4">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-semibold">{t("marker.freqDescription")}</h3>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                const csvContent = [
-                                  [t("common.allele"), t("common.frequency")],
-                                  ...chartData.map((item) => [item.allele, item.frequency.toString()]),
-                                ]
-                                  .map((row) => row.join(","))
-                                  .join("\n")
+                                    if (!isNaN(alleleA) && !isNaN(alleleB)) {
+                                      return alleleA - alleleB
+                                    }
 
-                                const blob = new Blob([csvContent], { type: "text/csv" })
-                                const url = window.URL.createObjectURL(blob)
-                                const a = document.createElement("a")
-                                a.href = url
-                                a.download = `${marker.name}_${selectedPopulation}_frequencies.csv`
-                                document.body.appendChild(a)
-                                a.click()
-                                document.body.removeChild(a)
-                                window.URL.revokeObjectURL(url)
-                              }}
-                            >
-                              <Download className="h-4 w-4 mr-2" />
-                              Download CSV
-                            </Button>
-                          </div>
-
-                          <div className="border rounded-lg overflow-hidden">
-                            <div className="max-h-64 overflow-y-auto">
-                              <table className="w-full">
-                                <thead className="bg-muted/50 sticky top-0">
-                                  <tr>
-                                    <th className="text-left px-4 py-3 font-semibold text-sm">{t("common.allele")}</th>
-                                    <th className="text-left px-4 py-3 font-semibold text-sm">
-                                      {t("common.frequency")}
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {chartData
-                                    .filter((item) => item.frequency > 0)
-                                    .map((item, index) => (
-                                      <tr
-                                        key={item.allele}
-                                        className={index % 2 === 0 ? "bg-background" : "bg-muted/20"}
-                                      >
-                                        <td className="px-4 py-3 font-mono text-sm">{item.allele}</td>
-                                        <td className="px-4 py-3 text-sm">{item.frequency.toFixed(4)}</td>
-                                      </tr>
-                                    ))}
-                                </tbody>
-                              </table>
-                            </div>
+                                    return a.allele.localeCompare(b.allele, undefined, { numeric: true })
+                                  })
+                                  .map((item, index) => (
+                                    <tr key={item.allele} className={index % 2 === 0 ? "bg-background" : "bg-muted/20"}>
+                                      <td className="p-3 font-mono">{item.allele}</td>
+                                      <td className="p-3">{item.frequency.toFixed(4)}</td>
+                                    </tr>
+                                  ))}
+                              </tbody>
+                            </table>
                           </div>
                         </div>
                       </>
@@ -556,12 +619,10 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                 {marker.toolsCompatibility && Object.keys(marker.toolsCompatibility).length > 0 ? (
                   <div className="space-y-4">
                     {Object.entries(marker.toolsCompatibility).map(([toolKey, tool]) => (
-                      <div key={toolKey} className="border rounded-lg p-5 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-semibold text-base">{tool.name}</h3>
-                          <Badge variant="outline" className="text-sm">
-                            {t("marker.supported")}
-                          </Badge>
+                      <div key={toolKey} className="border rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-semibold">{tool?.name}</h3>
+                          <Badge variant="outline">{t("marker.supported")}</Badge>
                         </div>
                         <p className="text-sm text-muted-foreground leading-relaxed">{tool.description}</p>
                         <div className="flex gap-2 pt-1">

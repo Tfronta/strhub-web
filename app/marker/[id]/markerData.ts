@@ -10,7 +10,8 @@ const pf = (markerId: string): Record<Pop, AlleleEntry[]> => ({
   EAS: markerFrequencies[markerId]?.EAS ?? [],
   SAS: markerFrequencies[markerId]?.SAS ?? [],
   EUR: markerFrequencies[markerId]?.EUR ?? [],
-})
+  MES: markerFrequencies[markerId]?.MES ?? [],
+});
 
 export const markerData = {
   "csf1po": {

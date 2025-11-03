@@ -1,24 +1,60 @@
-import { BookOpen, FileText, Dna, Search, ArrowRight } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { BookOpen, FileText, Dna, Search, ArrowRight } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { headers } from "next/headers";
 
 function getIconForPost(keywords: string[]): typeof FileText {
-  const keywordString = keywords.join(" ").toLowerCase()
+  const keywordString = keywords.join(" ").toLowerCase();
 
-  if (keywordString.includes("dna") || keywordString.includes("pcr") || keywordString.includes("str")) {
-    return Dna
+  if (
+    keywordString.includes("dna") ||
+    keywordString.includes("pcr") ||
+    keywordString.includes("str")
+  ) {
+    return Dna;
   }
-  if (keywordString.includes("search") || keywordString.includes("terminology")) {
-    return Search
+  if (
+    keywordString.includes("search") ||
+    keywordString.includes("terminology")
+  ) {
+    return Search;
   }
-  return FileText
+  return FileText;
 }
 
 export default async function BasicsPage() {
-  const res = await fetch('/api/back-to-basics', { next: { revalidate: 60 } });
-  const { items: posts } = await res.json();
+  const headersList = headers();
+  const protocol = headersList.get("x-forwarded-proto") ?? "http";
+  const host = headersList.get("host");
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (host ? `${protocol}://${host}` : "http://localhost:3000");
+
+  const res = await fetch(new URL("/api/back-to-basics", baseUrl), {
+    next: { revalidate: 60 },
+  });
+
+  type BackToBasicsPost = {
+    sys: { id: string };
+    fields: {
+      title: string;
+      summary: string;
+      postReadMinutes: number;
+      keywords: string[];
+      slug?: string;
+    };
+  };
+
+  const data = (await res.json()) as { items: BackToBasicsPost[] };
+  const { items: posts } = data;
 
   return (
     <div className="min-h-screen bg-background">
@@ -33,7 +69,10 @@ export default async function BasicsPage() {
               Back to Basics
             </h1>
           </Link>
-          <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link
+            href="/"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             ← Back to STRhub
           </Link>
         </div>
@@ -42,10 +81,13 @@ export default async function BasicsPage() {
       {/* Hero Section */}
       <section className="py-16 px-4">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">Understanding the Fundamentals</h2>
+          <h2 className="text-4xl font-bold mb-6">
+            Understanding the Fundamentals
+          </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
-            Master the essential concepts in bioinformatics and forensic genetics. From file formats to flanking
-            regions, build a solid foundation for STR analysis.
+            Master the essential concepts in bioinformatics and forensic
+            genetics. From file formats to flanking regions, build a solid
+            foundation for STR analysis.
           </p>
         </div>
       </section>
@@ -54,9 +96,9 @@ export default async function BasicsPage() {
       <section className="py-16 px-4">
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-8">
-            {posts.map((post) => {
-              const IconComponent = getIconForPost(post.fields.keywords)
-              const slug = post.fields.slug || post.sys.id
+            {posts.map((post: BackToBasicsPost) => {
+              const IconComponent = getIconForPost(post.fields.keywords);
+              const slug = post.fields.slug || post.sys.id;
 
               return (
                 <Card
@@ -67,7 +109,9 @@ export default async function BasicsPage() {
                     <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
                       <IconComponent className="h-6 w-6 text-primary-foreground" />
                     </div>
-                    <CardTitle className="text-2xl">{post.fields.title}</CardTitle>
+                    <CardTitle className="text-2xl">
+                      {post.fields.title}
+                    </CardTitle>
                     <CardDescription>{post.fields.summary}</CardDescription>
                     <div className="flex items-center gap-2 mt-2">
                       <Badge variant="secondary" className="text-xs">
@@ -77,13 +121,21 @@ export default async function BasicsPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <p className="text-sm font-medium text-muted-foreground">Topics covered:</p>
+                      <p className="text-sm font-medium text-muted-foreground">
+                        Topics covered:
+                      </p>
                       <div className="flex flex-wrap gap-2">
-                        {post.fields.keywords.map((keyword, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {keyword}
-                          </Badge>
-                        ))}
+                        {post.fields.keywords.map(
+                          (keyword: string, index: number) => (
+                            <Badge
+                              key={index}
+                              variant="outline"
+                              className="text-xs"
+                            >
+                              {keyword}
+                            </Badge>
+                          )
+                        )}
                       </div>
                     </div>
                     <Link href={`/basics/${slug}`}>
@@ -94,11 +146,11 @@ export default async function BasicsPage() {
                     </Link>
                   </CardContent>
                 </Card>
-              )
+              );
             })}
           </div>
         </div>
       </section>
     </div>
-  )
+  );
 }

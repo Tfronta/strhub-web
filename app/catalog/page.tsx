@@ -1478,7 +1478,6 @@ export default function CatalogPage() {
         <div className="mt-12 p-6 bg-muted/30 rounded-lg">
           <h3 className="text-lg font-semibold mb-2">{t("catalog.dataIntegration")}</h3>
           <p className="text-sm text-muted-foreground mb-2">{t("catalog.dataIntegrationDescription")}</p>
-          <p className="text-sm text-muted-foreground mb-3">{t("catalog.dataIntegrationDescription2")}</p>
           <p className="text-sm text-muted-foreground mb-3">
             <span className="font-medium">{t("catalog.dataIntegrationSources")}</span>{" "}
             <Link

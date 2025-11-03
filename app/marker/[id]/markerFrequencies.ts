@@ -2105,7 +2105,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "46.2", frequency: 0.000, count: 0 },
     ],
   },
-  penta_d: {
+  pentad: {
     kit: "Illumina ForenSeq",
     technology: "NGS",
     AFR: [
@@ -2182,7 +2182,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "17", frequency: 0.003, count: 0 },
     ],
   },
-  penta_e: {
+  pentae: {
     kit: "Illumina ForenSeq",
     technology: "NGS",
     AFR: [

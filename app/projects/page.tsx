@@ -31,62 +31,55 @@ export default function ProjectsPage() {
   const staticProjects = [
     {
       title: "1000 Genomes Project",
-      description:
-        "Proyecto pionero que mapeó la variación genética global. Datos actuales incluyen genomas de alta cobertura (30x).",
+      descriptionKey: "projects.static.genomes1000.description",
       url: "https://www.internationalgenome.org/",
       icon: Database,
     },
     {
       title: "HGDP (Human Genome Diversity Project)",
-      description:
-        "Muestras de más de 50 poblaciones diversas. Clave para estudios de estructura poblacional.",
+      descriptionKey: "projects.static.hgdp.description",
       url: "https://www.internationalgenome.org/data-portal/data-collection/hgdp",
       icon: Globe2,
     },
     {
       title: "The STR Sequencing Project (NIST)",
-      description:
-        "Colección de secuencias de STRs utilizada como referencia para validación y comparación forense.",
+      descriptionKey: "projects.static.strSequencingProject.description",
       url: "https://strbase.nist.gov/strseq.htm",
       icon: Database,
     },
     {
       title: "gnomAD (Genome Aggregation Database)",
-      description:
-        "Base global con millones de variantes genómicas, útil para comparar STRs con SNPs/indels.",
+      descriptionKey: "projects.static.gnomad.description",
       url: "https://gnomad.broadinstitute.org/",
       icon: Database,
     },
     {
       title: "Simons Genome Diversity Project (SGDP)",
-      description:
-        "Incluye >300 genomas completos de poblaciones poco representadas.",
+      descriptionKey: "projects.static.sgdp.description",
       url: "https://www.simonsfoundation.org/simons-genome-diversity-project/",
       icon: Globe2,
     },
     {
       title: "All of Us (NIH, USA)",
-      description:
-        "Proyecto masivo de datos multi-ómicos y clínicos de un millón de personas en EE.UU.",
+      descriptionKey: "projects.static.allOfUs.description",
       url: "https://allofus.nih.gov/",
       icon: Users,
     },
     {
       title: "Human Pangenome Project",
-      description:
-        "Nueva referencia genómica con múltiples haplotipos, reemplaza limitaciones de GRCh38.",
+      descriptionKey: "projects.static.humanPangenome.description",
       url: "https://humanpangenome.org/",
       icon: Database,
     },
     {
       title: "STRidER (STRs for Identity ENFSI Reference Database)",
-      description: "Base validada y estandarizada de alelos STR forenses.",
+      descriptionKey: "projects.static.strider.description",
       url: "https://strider.online/",
       icon: Database,
     },
     {
       title: "STRBase (NIST)",
-      description: "Recurso clásico sobre loci STR, mantenido por NIST.",
+      descriptionKey: "projects.static.strbase.description",
       url: "https://strbase.nist.gov/",
       icon: Database,
     },
@@ -203,8 +196,7 @@ export default function ProjectsPage() {
             {t("projects.title")}
           </h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-pretty">
-            Explore major international genomic projects that are advancing our
-            understanding of human genetic diversity and STR analysis.
+            {t("projects.heroDescription")}
           </p>
         </div>
       </section>
@@ -272,7 +264,7 @@ export default function ProjectsPage() {
                     </div>
                     <CardTitle>{project.title}</CardTitle>
                     <CardDescription className="mb-4">
-                      {project.description}
+                      {t(project.descriptionKey as string)}
                     </CardDescription>
                     <Button asChild className="w-full">
                       <a
@@ -280,7 +272,7 @@ export default function ProjectsPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Visitar Proyecto
+                        {t("projects.visitProject")}
                       </a>
                     </Button>
                   </CardHeader>

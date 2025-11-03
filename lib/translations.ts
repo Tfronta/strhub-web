@@ -381,6 +381,38 @@ export const translations = {
     },
     projects: {
       title: "International Projects",
+      heroDescription:
+        "Explore major international genomic projects that are advancing our understanding of human genetic diversity and STR analysis.",
+      visitProject: "Visit Project",
+      static: {
+        genomes1000: {
+          description:
+            "Pioneering project mapping global genetic variation. Current data includes high-coverage (30x) genomes.",
+        },
+        hgdp: {
+          description:
+            "Samples from over 50 diverse populations. Key resource for population structure studies.",
+        },
+        strSequencingProject: {
+          description:
+            "Collection of STR sequences used as a reference for forensic validation and comparison.",
+        },
+        gnomad: {
+          description:
+            "Global database with millions of genomic variants; useful for comparing STRs with SNPs and indels.",
+        },
+        sgdp: { description: ">300 whole genomes from underrepresented populations." },
+        allOfUs: {
+          description:
+            "Large-scale multi-omic and clinical dataset from one million participants in the U.S.",
+        },
+        humanPangenome: {
+          description:
+            "New genomic reference with multiple haplotypes, addressing limitations of GRCh38.",
+        },
+        strider: { description: "Validated, standardized database of forensic STR alleles." },
+        strbase: { description: "Classic resource on STR loci maintained by NIST." },
+      },
     },
     // Mix Profiles
     mixProfiles: {
@@ -793,6 +825,38 @@ export const translations = {
     },
     projects: {
       title: "Projetos Internacionais",
+      heroDescription:
+        "Explore grandes projetos genômicos internacionais que avançam nossa compreensão da diversidade genética humana e da análise de STR.",
+      visitProject: "Visitar Projeto",
+      static: {
+        genomes1000: {
+          description:
+            "Projeto pioneiro mapeando a variação genética global. Dados atuais incluem genomas de alta cobertura (30x).",
+        },
+        hgdp: {
+          description:
+            "Amostras de mais de 50 populações diversas. Recurso-chave para estudos de estrutura populacional.",
+        },
+        strSequencingProject: {
+          description:
+            "Coleção de sequências STR usada como referência para validação e comparação forense.",
+        },
+        gnomad: {
+          description:
+            "Base global com milhões de variantes genômicas; útil para comparar STRs com SNPs e indels.",
+        },
+        sgdp: { description: ">300 genomas completos de populações sub-representadas." },
+        allOfUs: {
+          description:
+            "Conjunto de dados multi-ômicos e clínicos em grande escala de um milhão de participantes nos EUA.",
+        },
+        humanPangenome: {
+          description:
+            "Nova referência genômica com múltiplos haplótipos, abordando limitações do GRCh38.",
+        },
+        strider: { description: "Base validada e padronizada de alelos STR forenses." },
+        strbase: { description: "Recurso clássico sobre loci STR mantido pelo NIST." },
+      },
     },
     // Mix Profiles
     mixProfiles: {
@@ -1206,56 +1270,38 @@ export const translations = {
     },
     projects: {
       title: "Proyectos Internacionales",
-      subtitle: "Iniciativas Genómicas Globales",
-      description:
-        "Explore proyectos genómicos internacionales de gran escala que avanzan la investigación STR y la comprensión de la diversidad genética humana",
-      searchPlaceholder: "Buscar proyectos...",
-      filterByRegion: "Filtrar por Región",
-      allRegions: "Todas las Regiones",
-      regions: {
-        global: "Global",
-        americas: "Américas",
-        europe: "Europa",
-        asia: "Asia",
-        africa: "África",
-        oceania: "Oceanía",
+      heroDescription:
+        "Explore proyectos genómicos internacionales que avanzan nuestra comprensión de la diversidad genética humana y el análisis STR.",
+      visitProject: "Visitar Proyecto",
+      static: {
+        genomes1000: {
+          description:
+            "Proyecto pionero que mapeó la variación genética global. Datos actuales incluyen genomas de alta cobertura (30x).",
+        },
+        hgdp: {
+          description:
+            "Muestras de más de 50 poblaciones diversas. Clave para estudios de estructura poblacional.",
+        },
+        strSequencingProject: {
+          description:
+            "Colección de secuencias de STRs utilizada como referencia para validación y comparación forense.",
+        },
+        gnomad: {
+          description:
+            "Base global con millones de variantes genómicas; útil para comparar STRs con SNPs e indels.",
+        },
+        sgdp: { description: ">300 genomas completos de poblaciones poco representadas." },
+        allOfUs: {
+          description:
+            "Proyecto masivo de datos multi-ómicos y clínicos de un millón de personas en EE.UU.",
+        },
+        humanPangenome: {
+          description:
+            "Nueva referencia genómica con múltiples haplotipos, que aborda las limitaciones de GRCh38.",
+        },
+        strider: { description: "Base validada y estandarizada de alelos STR forenses." },
+        strbase: { description: "Recurso clásico sobre loci STR, mantenido por NIST." },
       },
-      sortBy: "Ordenar por",
-      sortOptions: {
-        name: "Nombre",
-        year: "Año",
-        region: "Región",
-      },
-      projectsFound: "proyectos encontrados",
-      showing: "Mostrando",
-      of: "de",
-      viewDetails: "Ver Detalles",
-      status: "Estado",
-      statusTypes: {
-        active: "Activo",
-        completed: "Completado",
-        ongoing: "En Curso",
-      },
-      participants: "Participantes",
-      countries: "países",
-      samples: "muestras",
-      publications: "publicaciones",
-      website: "Sitio Web",
-      documentation: "Documentación",
-      dataAccess: "Acceso a Datos",
-      backToProjects: "Volver a Proyectos",
-      projectOverview: "Resumen del Proyecto",
-      objectives: "Objetivos",
-      keyFindings: "Hallazgos Clave",
-      datasets: "Conjuntos de Datos",
-      collaborators: "Colaboradores",
-      timeline: "Línea de Tiempo",
-      relatedPublications: "Publicaciones Relacionadas",
-      dataAvailability: "Disponibilidad de Datos",
-      accessInstructions: "Instrucciones de Acceso",
-      citation: "Cómo Citar",
-      contact: "Contacto",
-      lastUpdated: "Última Actualización",
     },
     // Mix Profiles
     mixProfiles: {

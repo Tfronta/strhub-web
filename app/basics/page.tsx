@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { headers } from "next/headers";
+import { useLanguage } from "@/contexts/language-context";
 
 function getIconForPost(keywords: string[]): typeof FileText {
   const keywordString = keywords.join(" ").toLowerCase();
@@ -66,7 +67,8 @@ export default async function BasicsPage() {
               <BookOpen className="h-5 w-5 text-primary-foreground" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Back to Basics
+              {/* Title translated on client to reflect user selection */}
+              <ClientBasicsTitle />
             </h1>
           </Link>
           <Link
@@ -81,14 +83,7 @@ export default async function BasicsPage() {
       {/* Hero Section */}
       <section className="py-16 px-4">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">
-            Understanding the Fundamentals
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
-            Master the essential concepts in bioinformatics and forensic
-            genetics. From file formats to flanking regions, build a solid
-            foundation for STR analysis.
-          </p>
+          <ClientBasicsHero />
         </div>
       </section>
 
@@ -115,15 +110,13 @@ export default async function BasicsPage() {
                     <CardDescription>{post.fields.summary}</CardDescription>
                     <div className="flex items-center gap-2 mt-2">
                       <Badge variant="secondary" className="text-xs">
-                        {post.fields.postReadMinutes} min read
+                        {post.fields.postReadMinutes} <ClientReadTime />
                       </Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <p className="text-sm font-medium text-muted-foreground">
-                        Topics covered:
-                      </p>
+                      <ClientTopicsCovered />
                       <div className="flex flex-wrap gap-2">
                         {post.fields.keywords.map(
                           (keyword: string, index: number) => (
@@ -140,7 +133,7 @@ export default async function BasicsPage() {
                     </div>
                     <Link href={`/basics/${slug}`}>
                       <Button className="w-full mt-4">
-                        Read Article
+                        <ClientReadArticle />
                         <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
                     </Link>
@@ -153,4 +146,46 @@ export default async function BasicsPage() {
       </section>
     </div>
   );
+}
+
+// Client-only translated bits to reflect current language selection
+function ClientBasicsTitle() {
+  "use client";
+  const { t } = useLanguage();
+  return <>{t("basics.title")}</>;
+}
+
+function ClientBasicsHero() {
+  "use client";
+  const { t } = useLanguage();
+  return (
+    <>
+      <h2 className="text-4xl font-bold mb-6">{t("basics.subtitle")}</h2>
+      <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
+        {t("basics.description")}
+      </p>
+    </>
+  );
+}
+
+function ClientReadTime() {
+  "use client";
+  const { t } = useLanguage();
+  return <>{t("basics.readTime")}</>;
+}
+
+function ClientTopicsCovered() {
+  "use client";
+  const { t } = useLanguage();
+  return (
+    <p className="text-sm font-medium text-muted-foreground">
+      {t("basics.topicsCovered")}
+    </p>
+  );
+}
+
+function ClientReadArticle() {
+  "use client";
+  const { t } = useLanguage();
+  return <>{t("basics.readArticle")}</>;
 }

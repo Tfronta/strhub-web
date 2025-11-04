@@ -10,7 +10,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { headers } from "next/headers";
-import { useLanguage } from "@/contexts/language-context";
+import {
+  ClientBasicsTitle,
+  ClientBasicsHero,
+  ClientReadTime,
+  ClientTopicsCovered,
+  ClientReadArticle,
+} from "./client-components";
 
 function getIconForPost(keywords: string[]): typeof FileText {
   const keywordString = keywords.join(" ").toLowerCase();
@@ -146,46 +152,4 @@ export default async function BasicsPage() {
       </section>
     </div>
   );
-}
-
-// Client-only translated bits to reflect current language selection
-function ClientBasicsTitle() {
-  "use client";
-  const { t } = useLanguage();
-  return <>{t("basics.title")}</>;
-}
-
-function ClientBasicsHero() {
-  "use client";
-  const { t } = useLanguage();
-  return (
-    <>
-      <h2 className="text-4xl font-bold mb-6">{t("basics.subtitle")}</h2>
-      <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
-        {t("basics.description")}
-      </p>
-    </>
-  );
-}
-
-function ClientReadTime() {
-  "use client";
-  const { t } = useLanguage();
-  return <>{t("basics.readTime")}</>;
-}
-
-function ClientTopicsCovered() {
-  "use client";
-  const { t } = useLanguage();
-  return (
-    <p className="text-sm font-medium text-muted-foreground">
-      {t("basics.topicsCovered")}
-    </p>
-  );
-}
-
-function ClientReadArticle() {
-  "use client";
-  const { t } = useLanguage();
-  return <>{t("basics.readArticle")}</>;
 }

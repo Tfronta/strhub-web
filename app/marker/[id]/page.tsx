@@ -23,6 +23,13 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Link from "next/link";
 import {
   BarChart,
@@ -42,6 +49,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   const [selectedPopulation, setSelectedPopulation] = useState<string>("AFR");
   const [xstrFrequencies, setXstrFrequencies] = useState<any>(null);
   const [selectedTechnology, setSelectedTechnology] = useState<string>("NGS");
+  const [selectedDataset, setSelectedDataset] = useState<string>("");
 
   const markerId = params.id.toLowerCase();
   const marker = markerData[markerId as keyof typeof markerData];
@@ -59,6 +67,11 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
         );
     }
   }, [markerId, marker]);
+
+  // Reset selected dataset when technology or population changes
+  useEffect(() => {
+    setSelectedDataset("");
+  }, [selectedTechnology, selectedPopulation]);
 
   if (!marker) {
     return (
@@ -189,16 +202,16 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
             <TabsTrigger value="tools">{t("marker.tabs.tools")}</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+          <TabsContent value="overview" className="space-y-4">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
               <Card>
-                <CardHeader className="pb-4">
+                <CardHeader className="pb-2">
                   <CardTitle className="flex items-center gap-2 text-xl">
                     <Info className="h-5 w-5" />
                     {t("marker.basicInfo")}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-5">
+                <CardContent className="px-5 pb-5 pt-2 space-y-5">
                   <div className="grid grid-cols-2 gap-x-6 gap-y-5">
                     <div className="space-y-1.5">
                       <Label className="text-sm font-medium text-muted-foreground">
@@ -259,18 +272,28 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         {marker.alleles}
                       </p>
                     </div>
+                    {marker.nistReference?.referenceAllele && (
+                      <div className="space-y-1.5">
+                        <Label className="text-sm font-medium text-muted-foreground">
+                          {t("marker.referenceAllele")}
+                        </Label>
+                        <p className="text-base font-semibold">
+                          {marker.nistReference.referenceAllele}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
 
               <Card>
-                <CardHeader className="pb-4">
+                <CardHeader className="pb-2">
                   <CardTitle className="flex items-center gap-2 text-xl">
                     <Database className="h-5 w-5" />
                     {t("marker.genomicCoords")}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-5">
+                <CardContent className="px-5 pb-5 pt-2 space-y-5">
                   {marker.coordinates ? (
                     <div className="space-y-5">
                       <div className="space-y-3">
@@ -333,52 +356,6 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                 </CardContent>
               </Card>
             </div>
-
-            {marker.nistReference && (
-              <Card>
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-xl">
-                    {t("marker.nistReference")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-5">
-                  <div className="grid grid-cols-2 gap-x-6 gap-y-5">
-                    <div className="space-y-1.5">
-                      <Label className="text-sm font-medium text-muted-foreground">
-                        {t("marker.referenceAllele")}
-                      </Label>
-                      <p className="text-base font-semibold">
-                        {marker.nistReference.referenceAllele}
-                      </p>
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-sm font-medium text-muted-foreground">
-                        {t("marker.lastUpdated")}
-                      </Label>
-                      <p className="text-base font-semibold">
-                        {marker.nistReference.lastUpdated}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-muted-foreground">
-                      {t("marker.commonAlleles")}
-                    </Label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {marker.nistReference.commonAlleles.map((allele) => (
-                        <Badge
-                          key={allele}
-                          variant="outline"
-                          className="text-sm px-2.5 py-1"
-                        >
-                          {allele}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </TabsContent>
 
           <TabsContent value="frequencies" className="space-y-6">
@@ -392,21 +369,80 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between gap-3 flex-wrap border-b pb-3 mb-4">
-                    <div className="flex gap-2">
-                      {["AFR", "AMR", "EAS", "SAS", "EUR", "MES"].map((pop) => (
-                        <Button
-                          key={pop}
-                          variant={
-                            selectedPopulation === pop ? "default" : "outline"
+                    {selectedTechnology !== "CE" && (
+                      <div className="flex gap-2">
+                        {["AFR", "AMR", "EAS", "SAS", "EUR", "MES"].map(
+                          (pop) => (
+                            <Button
+                              key={pop}
+                              variant={
+                                selectedPopulation === pop
+                                  ? "default"
+                                  : "outline"
+                              }
+                              size="sm"
+                              onClick={() => setSelectedPopulation(pop)}
+                              className="rounded-md"
+                            >
+                              {pop}
+                            </Button>
+                          )
+                        )}
+                      </div>
+                    )}
+                    {selectedTechnology === "CE" && (
+                      <div className="flex items-center gap-2">
+                        <Label className="text-xs text-muted-foreground whitespace-nowrap">
+                          Dataset:
+                        </Label>
+                        <Select
+                          value={selectedDataset}
+                          onValueChange={setSelectedDataset}
+                          disabled={
+                            !marker?.ceStudiesByPop?.[
+                              selectedPopulation as keyof typeof marker.ceStudiesByPop
+                            ] ||
+                            (
+                              marker.ceStudiesByPop[
+                                selectedPopulation as keyof typeof marker.ceStudiesByPop
+                              ] as any[]
+                            )?.length === 0
                           }
-                          size="sm"
-                          onClick={() => setSelectedPopulation(pop)}
-                          className="rounded-md"
                         >
-                          {pop}
-                        </Button>
-                      ))}
-                    </div>
+                          <SelectTrigger className="w-[200px]">
+                            <SelectValue placeholder="No CE datasets available yet" />
+                          </SelectTrigger>
+                          {marker?.ceStudiesByPop?.[
+                            selectedPopulation as keyof typeof marker.ceStudiesByPop
+                          ] &&
+                            (
+                              marker.ceStudiesByPop[
+                                selectedPopulation as keyof typeof marker.ceStudiesByPop
+                              ] as any[]
+                            )?.length > 0 && (
+                              <SelectContent>
+                                {(
+                                  marker.ceStudiesByPop[
+                                    selectedPopulation as keyof typeof marker.ceStudiesByPop
+                                  ] as any[]
+                                ).map((study: any, index: number) => {
+                                  const country =
+                                    study.country ||
+                                    study.location ||
+                                    "Unknown";
+                                  const n = study.n || study.sampleSize || 0;
+                                  const value = `dataset_${index}`;
+                                  return (
+                                    <SelectItem key={value} value={value}>
+                                      {country}, n={n}
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectContent>
+                            )}
+                        </Select>
+                      </div>
+                    )}
 
                     {availableTechnologies.length > 0 && (
                       <div className="flex items-center gap-2">
@@ -424,7 +460,6 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               }
                               size="sm"
                               onClick={() => setSelectedTechnology(tech)}
-                              disabled={!availableTechnologies.includes(tech)}
                               className="rounded-md"
                             >
                               {tech}
@@ -435,7 +470,8 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     )}
                   </div>
                 </div>
-                {chartData.length > 0 ? (
+                {availableTechnologies.includes(selectedTechnology) &&
+                chartData.length > 0 ? (
                   <>
                     <div className="h-80">
                       <ResponsiveContainer width="100%" height="100%">

@@ -13,6 +13,17 @@ type Props = {
   interpretationThreshold?: number;
 };
 
+// Format large numbers for display (e.g., 999997 -> 999K, 1000000 -> 1M)
+function formatLargeNumber(value: number): string {
+  if (value >= 1000000) {
+    return `${(value / 1000000).toFixed(1)}M`;
+  }
+  if (value >= 1000) {
+    return `${(value / 1000).toFixed(0)}K`;
+  }
+  return value.toFixed(0);
+}
+
 export default function CEChart({
   data,
   analyticalThreshold = 75,
@@ -53,6 +64,8 @@ export default function CEChart({
           <YAxis
             domain={[0, maxY + marginY]}
             tickCount={6}
+            tickFormatter={formatLargeNumber}
+            width={50}
             label={{ value: 'RFU', angle: -90, position: 'insideLeft' }}
           />
           <Tooltip

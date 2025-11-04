@@ -31,11 +31,11 @@ export type SimParams = {
 };
 
 export type NGSRow = {
-  allele: number;              // tamaño (p.ej. 12)
+  allele: string | number;     // tamaño (p.ej. 12) o label con isoalelos (p.ej. "12 iso1")
   coverage: number;            // lecturas (suma A+B)
-  stutterPct?: number;
-  repeatSequence?: string;
-  fullSequence?: string;       // columna de secuencia completa
+  stutterPct?: number | '—';
+  repeatSequence?: string | '—';
+  fullSequence?: string | '—'; // columna de secuencia completa
   isIsoallele?: boolean;
 };
 

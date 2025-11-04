@@ -347,12 +347,29 @@ export const translations = {
       subtitle: "Advancing STR Research & Education",
       mission: "Our Mission",
       missionText:
-        "STRhub is dedicated to advancing Short Tandem Repeat research and education by providing comprehensive resources, tools, and databases for the forensic genetics and population studies communities.",
+        "STRhub is dedicated to advancing forensic and population genetics through open access, collaboration, and education. We provide reliable tools, curated datasets, and learning resources to make STR analysis accessible to researchers, students, and laboratories worldwide. Our goal is to encourage a global community where knowledge, technology and collaboration come together to strengthen science everywhere.",
       team: "Our Team",
       teamText:
         "We are a multidisciplinary team of researchers, bioinformaticians, and forensic scientists committed to making STR analysis more accessible and standardized.",
+      teamText2:
+        "The project is led by Dr. Tamara Frontanilla, researcher in forensic genetics and bioinformatics, with extensive experience in population genetics, sequencing technologies, and education.",
+      whyThisMatters: "Why This Matters",
+      whyThisMattersText:
+        "Because genetics is more than data. Behind each data there are people, history, and diversity. Each STR tells a small part of who we are. By opening access to information and connecting researchers from different places, we make science more inclusive, fair and real. Together, we can go further and make knowledge something that truly belongs to everyone.",
       contact: "Contact Us",
       contactText: "Have questions or suggestions? We'd love to hear from you.",
+      contactDescription:
+        "Send us a message and we'll get back to you soon. For technical issues or feature requests, connect with us on GitHub. We encourage contributions from the global community.",
+      formName: "Name",
+      formNamePlaceholder: "Your name",
+      formEmail: "Email",
+      formEmailPlaceholder: "your.email@example.com",
+      formSubject: "Subject",
+      formSubjectPlaceholder: "What would you like to discuss?",
+      formMessage: "Message",
+      formMessagePlaceholder:
+        "Tell us about your research, questions, or collaboration ideas...",
+      formSend: "Send Message",
       email: "Email",
       github: "GitHub",
       twitter: "Twitter",
@@ -791,12 +808,29 @@ export const translations = {
       subtitle: "Avanzando Investigación y Educación en STR",
       mission: "Nuestra Misión",
       missionText:
-        "STRhub se dedica al avance de la investigación y educación en Repeticiones Cortas en Tándem proporcionando recursos integrales, herramientas y bases de datos para las comunidades de genética forense y estudios poblacionales.",
+        "STRhub se dedica al avance de la genética forense y poblacional a través del acceso abierto, la colaboración y la educación. Proporcionamos herramientas confiables, conjuntos de datos curados y recursos de aprendizaje para hacer que el análisis STR sea accesible para investigadores, estudiantes y laboratorios de todo el mundo. Nuestro objetivo es fomentar una comunidad global donde el conocimiento, la tecnología y la colaboración se unan para fortalecer la ciencia en todas partes.",
       team: "Nuestro Equipo",
       teamText:
         "Somos un equipo multidisciplinario de investigadores, bioinformáticos y científicos forenses comprometidos con hacer el análisis STR más accesible y estandarizado.",
+      teamText2:
+        "El proyecto está dirigido por la Dra. Tamara Frontanilla, investigadora en genética forense y bioinformática, con amplia experiencia en genética poblacional, tecnologías de secuenciación y educación.",
+      whyThisMatters: "Por qué es importante",
+      whyThisMattersText:
+        "Porque la genética es más que datos. Por detrás de cada dato hay personas, historia y diversidad. Cada STR cuenta una parte de quiénes somos. Al abrir el acceso a la información y conectar investigadores de distintos lugares, hacemos la ciencia más inclusiva, justa y real. Juntos podemos ir más lejos y hacer que el conocimiento sea de todos.",
       contact: "Contáctanos",
       contactText: "¿Tienes preguntas o sugerencias? Nos encantaría escucharte.",
+      contactDescription:
+        "Envíanos un mensaje y te responderemos pronto. Para problemas técnicos o solicitudes de funciones, contáctanos en GitHub. Fomentamos las contribuciones de la comunidad global.",
+      formName: "Nombre",
+      formNamePlaceholder: "Tu nombre",
+      formEmail: "Correo electrónico",
+      formEmailPlaceholder: "tu.correo@ejemplo.com",
+      formSubject: "Asunto",
+      formSubjectPlaceholder: "¿De qué te gustaría hablar?",
+      formMessage: "Mensaje",
+      formMessagePlaceholder:
+        "Cuéntanos sobre tu investigación, preguntas o ideas de colaboración...",
+      formSend: "Enviar mensaje",
       email: "Email",
       github: "GitHub",
       twitter: "Twitter",
@@ -1236,12 +1270,29 @@ export const translations = {
       subtitle: "Avanzando Investigación y Educación en STR",
       mission: "Nuestra Misión",
       missionText:
-        "STRhub se dedica al avance de la investigación y educación en Repeticiones Cortas en Tándem proporcionando recursos integrales, herramientas y bases de datos para las comunidades de genética forense y estudios poblacionales.",
+        "STRhub se dedica al avance de la genética forense y poblacional a través del acceso abierto, la colaboración y la educación. Proporcionamos herramientas confiables, conjuntos de datos curados y recursos de aprendizaje para hacer que el análisis STR sea accesible para investigadores, estudiantes y laboratorios de todo el mundo. Nuestro objetivo es fomentar una comunidad global donde el conocimiento, la tecnología y la colaboración se unan para fortalecer la ciencia en todas partes.",
       team: "Nuestro Equipo",
       teamText:
         "Somos un equipo multidisciplinario de investigadores, bioinformáticos y científicos forenses comprometidos con hacer el análisis STR más accesible y estandarizado.",
+      teamText2:
+        "El proyecto está dirigido por la Dra. Tamara Frontanilla, investigadora en genética forense y bioinformática, con amplia experiencia en genética poblacional, tecnologías de secuenciación y educación.",
+      whyThisMatters: "Por qué es importante",
+      whyThisMattersText:
+        "Porque la genética es más que datos. Por detrás de cada dato hay personas, historia y diversidad. Cada STR cuenta una parte de quiénes somos. Al abrir el acceso a la información y conectar investigadores de distintos lugares, hacemos la ciencia más inclusiva, justa y real. Juntos podemos ir más lejos y hacer que el conocimiento sea de todos.",
       contact: "Contáctanos",
       contactText: "¿Tienes preguntas o sugerencias? Nos encantaría escucharte.",
+      contactDescription:
+        "Envíanos un mensaje y te responderemos pronto. Para problemas técnicos o solicitudes de funciones, contáctanos en GitHub. Fomentamos las contribuciones de la comunidad global.",
+      formName: "Nombre",
+      formNamePlaceholder: "Tu nombre",
+      formEmail: "Correo electrónico",
+      formEmailPlaceholder: "tu.correo@ejemplo.com",
+      formSubject: "Asunto",
+      formSubjectPlaceholder: "¿De qué te gustaría hablar?",
+      formMessage: "Mensaje",
+      formMessagePlaceholder:
+        "Cuéntanos sobre tu investigación, preguntas o ideas de colaboración...",
+      formSend: "Enviar mensaje",
       email: "Email",
       github: "GitHub",
       twitter: "Twitter",

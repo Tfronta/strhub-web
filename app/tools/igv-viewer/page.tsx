@@ -24,7 +24,7 @@ import Link from "next/link";
 
 export default function IgvViewerPage() {
   const [selectedMarker, setSelectedMarker] = useState("");
-  const [selectedBuild, setSelectedBuild] = useState("hg38");
+  const selectedBuild = "hg38";
   const [selectedSample, setSelectedSample] = useState<string>("HG00097");
   const [igvLoaded, setIgvLoaded] = useState(false);
   const igvContainerRef = useRef<HTMLDivElement | null>(null);
@@ -184,7 +184,12 @@ export default function IgvViewerPage() {
             format: "bam",
             url: sample.bam,
             indexURL: sample.bai,
-            visibilityWindow: 50000,
+            height: 720,
+            displayMode: "EXPANDED",
+            showAllBases: true,
+            samplingDepth: 0,
+            samplingWindowSize: 0,
+            visibilityWindow: 100000,
           },
         ],
       };
@@ -202,7 +207,7 @@ export default function IgvViewerPage() {
     const marker = markers.find((m) => m.id === selectedMarker);
     if (!marker) return;
     const [start, end] = marker.position.split("-");
-    const url = `https://genome.ucsc.edu/cgi-bin/hgTracks?db=${selectedBuild}&position=chr${marker.chromosome}:${start}-${end}`;
+    const url = `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&position=chr${marker.chromosome}:${start}-${end}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
@@ -246,7 +251,7 @@ export default function IgvViewerPage() {
           {/* Controls bar */}
           <Card className="mb-6">
             <CardContent className="p-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
                 {/* Marker */}
                 <div className="space-y-1">
                   <Label>STR Marker</Label>
@@ -287,23 +292,6 @@ export default function IgvViewerPage() {
                   </Select>
                 </div>
 
-                {/* Build */}
-                <div className="space-y-1">
-                  <Label>Genome Build</Label>
-                  <Select
-                    value={selectedBuild}
-                    onValueChange={setSelectedBuild}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="hg38">hg38 (GRCh38)</SelectItem>
-                      <SelectItem value="hg19">hg19 (GRCh37)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 {/* Actions */}
                 <div className="flex md:block gap-2">
                   <Button onClick={launchIGV} className="w-full">
@@ -337,11 +325,44 @@ export default function IgvViewerPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="border rounded-xl overflow-hidden">
+              <div className="border rounded-xl overflow-visible">
                 <div
                   ref={igvContainerRef}
-                  className="w-full h-[600px] md:h-[700px]"
+                  className="w-full h-[820px] md:h-[920px]"
                 />
+              </div>
+              <div className="px-6 py-3 text-xs md:text-sm text-muted-foreground border-t bg-muted/30">
+                <p className="font-semibold text-foreground mb-1">
+                  Data Integration
+                </p>
+                <p>
+                  This viewer integrates the open-source <strong>IGV.js</strong>{" "}
+                  library for interactive genomic visualization (
+                  <a
+                    href="https://github.com/igvteam/igv.js"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-primary"
+                  >
+                    github.com/igvteam/igv.js
+                  </a>
+                  ) and sample alignment data from the{" "}
+                  <strong>1000 Genomes Project</strong>(
+                  <a
+                    href="https://www.internationalgenome.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-primary"
+                  >
+                    internationalgenome.org
+                  </a>
+                  ). Demo BAM/BAI files are open data resources, used here for
+                  educational and research purposes.
+                </p>
+                <p className="mt-1 text-[11px] text-muted-foreground">
+                  <code>catalog.dataIntegrationSources</code> IGV.js · 1000
+                  Genomes Project (open data)
+                </p>
               </div>
               <div className="px-4 py-2 text-xs text-muted-foreground">
                 IGV status:{" "}

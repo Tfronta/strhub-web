@@ -76,11 +76,21 @@ export default function NGSChart({
           <tbody>
             {rows
               .slice()
-              .sort((a, b) =>
-                a.allele === b.allele
-                  ? (a.fullSequence ?? '').localeCompare(b.fullSequence ?? '')
-                  : a.allele - b.allele,
-              )
+              .sort((a, b) => {
+                const aStr = String(a.allele);
+                const bStr = String(b.allele);
+                if (aStr === bStr) {
+                  return (a.fullSequence ?? '').localeCompare(b.fullSequence ?? '');
+                }
+                // Try numeric comparison first
+                const aNum = Number(aStr.replace(/[^\d.]/g, ''));
+                const bNum = Number(bStr.replace(/[^\d.]/g, ''));
+                if (!Number.isNaN(aNum) && !Number.isNaN(bNum)) {
+                  return aNum - bNum;
+                }
+                // Fallback to string comparison
+                return aStr.localeCompare(bStr);
+              })
               .map((r, i) => (
                 <tr key={`${r.allele}-${i}`} className="odd:bg-background even:bg-muted/10">
                   <td className="px-3 py-2 text-center">

@@ -1,104 +1,150 @@
 // app/sections/mix-profiles/MixProfilesDemo.tsx
-'use client';
+"use client";
 
-import { useMemo, useState, useEffect } from 'react';
-import CEChart from './charts/CEChart';
-import NGSChart from './charts/NGSChart';
-import { simulateMixture, type Simulation, type CatalogMarker } from './utils/simulate';
-import { DEFAULT_AT, DEFAULT_IT, demoCatalog } from './data';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CATALOG } from '@/app/catalog/data';
+import { useEffect, useMemo, useState } from "react";
+import {
+  DEFAULT_AT,
+  DEFAULT_IT,
+  demoCatalog,
+  SAMPLES_GENOTYPES,
+  simulateCEFromSamples,
+  cePeaksToNGSRowsWithSeq,
+  type LocusId,
+  type DemoSampleId,
+  type Peak,
+} from "./data";
 
-type Props = {
-  markerId?: string; // opcional; si viene vacío, usamos el primero disponible
-  sampleA?: string;
-  sampleB?: string;
-};
+import CEChart from "./charts/CEChart";
+import NGSChart from "./charts/NGSChart";
 
-const SAMPLE_OPTIONS = ['Sample_A', 'Sample_B', 'Sample_C', 'Sample_D'];
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export default function MixProfilesDemo({
-  markerId,
-  sampleA = 'Sample_A',
-  sampleB = 'Sample_B',
-}: Props) {
-  // Modo: catálogo real (CATALOG) o demo (demoCatalog)
-  const [useDemo, setUseDemo] = useState(false);
-  // Forzar nueva simulación (nueva selección aleatoria de alelos)
-  const [nonce, setNonce] = useState(0);
+// Helpers de UI
+const SAMPLE_OPTIONS = Object.keys(SAMPLES_GENOTYPES) as DemoSampleId[];
 
-  // Lista de marcadores disponible según modo
-  const markerKeys = useMemo<string[]>(
-    () => Object.keys(useDemo ? (demoCatalog as any) : (CATALOG as any)),
-    [useDemo]
+function parseNum(x: string | number): number {
+  if (typeof x === "number") return x;
+  const m = String(x).match(/\d+(\.\d+)?/);
+  return m ? Number(m[0]) : NaN;
+}
+
+// (opcional) adaptación simple a puntos discretos
+function toCESeries(peaks: Peak[]) {
+  return peaks.map((p) => ({
+    allele: parseNum(String(p.allele)),
+    label: String(p.allele),
+    rfu: p.rfu,
+    kind: p.kind,
+  }));
+}
+
+// ✅ Convierte picos discretos en una traza tipo “electroferograma” (suma de gaussianas)
+function makeCETrace(peaks: Peak[]) {
+  if (!peaks.length) return [];
+  const nums = peaks
+    .map((p) => parseNum(String(p.allele)))
+    .filter((n) => !Number.isNaN(n));
+  const minA = Math.min(...nums) - 1;
+  const maxA = Math.max(...nums) + 1;
+
+  const step = 0.02; // resolución del eje x
+  const sigma = 0.06; // ancho de pico (~0.06 alelos)
+
+  const out: { allele: number; rfu: number }[] = [];
+  for (let x = minA; x <= maxA; x = +(x + step).toFixed(5)) {
+    let y = 0;
+    for (const p of peaks) {
+      const mu = parseNum(String(p.allele));
+      if (Number.isNaN(mu)) continue;
+      const A = p.rfu; // altura del pico
+      const g = Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
+      y += A * g;
+    }
+    out.push({ allele: x, rfu: y });
+  }
+  return out;
+}
+
+export default function MixProfilesDemo() {
+  // --------- opciones disponibles desde el catálogo real (CODIS Core) ----------
+  const markerKeys = useMemo(() => Object.keys(demoCatalog) as LocusId[], []);
+
+  // --------- estados base (con guardas por si el catálogo está vacío) ----------
+  const [selectedMarker, setSelectedMarker] = useState<LocusId>(
+    () => markerKeys[0] ?? ("CSF1PO" as LocusId)
   );
+  const [sampleA, setSampleA] = useState<DemoSampleId>(
+    () => SAMPLE_OPTIONS[0] ?? ("Sample_A" as DemoSampleId)
+  );
+  const [sampleB, setSampleB] = useState<DemoSampleId>(
+    () => SAMPLE_OPTIONS[1] ?? ("Sample_B" as DemoSampleId)
+  );
+  const [ratioA, setRatioA] = useState<number>(0.5); // 50/50 inicial
 
-  // Marcador seleccionado (si markerId está y existe, úsalo; si no, el primero)
-  const [selectedMarker, setSelectedMarker] = useState<string>(() => {
-    const keys = Object.keys(CATALOG as any);
-    const candidate = markerId && keys.includes(markerId) ? markerId : keys[0];
-    return candidate;
-  });
-
-  // Si cambiamos de modo y el marcador actual no existe ahí, ajustar al primero
+  // Si cambia la lista de marcadores (carga de catálogo), normalizamos selección
   useEffect(() => {
     if (!markerKeys.length) return;
-    if (!markerKeys.includes(selectedMarker)) {
-      setSelectedMarker(markerKeys[0]);
-    }
-  }, [useDemo, markerKeys, selectedMarker]);
+    if (!markerKeys.includes(selectedMarker)) setSelectedMarker(markerKeys[0]);
+  }, [markerKeys, selectedMarker]);
 
-  const [selA, setSelA] = useState<string>(sampleA);
-  const [selB, setSelB] = useState<string>(sampleB);
-  const [ratioA, setRatioA] = useState(0.25); // 25/75 inicial
-  const ratioB = 1 - ratioA;
-
-  // Construir el catálogo en el formato que espera simulateMixture
-  const normalizedCatalog: Record<string, CatalogMarker> = useMemo(() => {
-    if (useDemo) {
-      // demoCatalog ya viene como { id, name, type, alleles }
-      return Object.fromEntries(
-        Object.entries(demoCatalog).map(([k, v]: any) => [
-          k,
-          { id: v.id ?? k, name: v.name ?? k, type: v.type, alleles: v.alleles },
-        ])
-      );
-    }
-    // CATALOG (real) viene como { name, type, alleleObjects }
-    return Object.fromEntries(
-      Object.entries(CATALOG as any).map(([k, v]: any) => [
-        k,
-        {
-          id: k,
-          name: v.name ?? k,
-          type: v.type,
-          alleles: Array.isArray(v.alleleObjects) ? v.alleleObjects : (v.alleles ?? []),
-        },
-      ])
-    );
-  }, [useDemo]);
-
-  // Correr la simulación (se actualiza con ratio, samples, marcador, modo y nonce)
-  const simulation: Simulation = useMemo(() => {
-    return simulateMixture({
-      markerId: selectedMarker,
+  // --------- simulación CE + NGS derivado ---------
+  const ce = useMemo(() => {
+    return simulateCEFromSamples({
+      locusId: selectedMarker,
+      sampleAId: sampleA,
+      sampleBId: sampleB,
       ratioA,
-      sampleA: selA,
-      sampleB: selB,
-      catalog: normalizedCatalog,
-      baseCoverage: 450,
-      baseRFU: 360,
+      totalRFU: 400,
+      showStutter: true,
     });
-  }, [selectedMarker, ratioA, selA, selB, normalizedCatalog, nonce]);
+  }, [selectedMarker, sampleA, sampleB, ratioA]);
+
+  // ✅ usar la traza “con picos”
+  const ceSeries = useMemo(() => makeCETrace(ce.peaks), [ce.peaks]);
+
+  const ngsRows = useMemo(
+    () => cePeaksToNGSRowsWithSeq(selectedMarker, ce.peaks),
+    [selectedMarker, ce.peaks]
+  );
+
+  // Barras para NGSChart (numéricas) + etiqueta original para el tooltip
+  const ngsBars = useMemo(() => {
+    // Group by numeric allele value to aggregate coverage for isoalleles
+    const grouped = new Map<number, { allele: number; coverage: number }>();
+
+    for (const r of ngsRows) {
+      const alleleNum = parseNum(r.allele);
+      if (!Number.isNaN(alleleNum) && alleleNum > 0) {
+        const existing = grouped.get(alleleNum);
+        if (existing) {
+          existing.coverage += r.coverage;
+        } else {
+          grouped.set(alleleNum, { allele: alleleNum, coverage: r.coverage });
+        }
+      }
+    }
+
+    return Array.from(grouped.values()).sort((a, b) => a.allele - b.allele);
+  }, [ngsRows]);
 
   return (
     <div className="space-y-6">
       {/* Controles */}
       <div className="rounded-xl border p-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {/* Locus */}
           <div>
             <label className="text-sm font-medium">Locus</label>
-            <Select value={selectedMarker} onValueChange={setSelectedMarker}>
+            <Select
+              value={selectedMarker}
+              onValueChange={(v) => setSelectedMarker(v as LocusId)}
+            >
               <SelectTrigger className="mt-2">
                 <SelectValue placeholder="Select marker" />
               </SelectTrigger>
@@ -112,9 +158,13 @@ export default function MixProfilesDemo({
             </Select>
           </div>
 
+          {/* Sample A */}
           <div>
             <label className="text-sm font-medium">Sample A</label>
-            <Select value={selA} onValueChange={setSelA}>
+            <Select
+              value={sampleA}
+              onValueChange={(v) => setSampleA(v as DemoSampleId)}
+            >
               <SelectTrigger className="mt-2">
                 <SelectValue placeholder="Sample A" />
               </SelectTrigger>
@@ -128,9 +178,13 @@ export default function MixProfilesDemo({
             </Select>
           </div>
 
+          {/* Sample B */}
           <div>
             <label className="text-sm font-medium">Sample B</label>
-            <Select value={selB} onValueChange={setSelB}>
+            <Select
+              value={sampleB}
+              onValueChange={(v) => setSampleB(v as DemoSampleId)}
+            >
               <SelectTrigger className="mt-2">
                 <SelectValue placeholder="Sample B" />
               </SelectTrigger>
@@ -145,6 +199,7 @@ export default function MixProfilesDemo({
           </div>
         </div>
 
+        {/* Slider de proporción */}
         <div className="mt-4">
           <label className="text-sm font-medium">Ratio A</label>
           <input
@@ -157,39 +212,20 @@ export default function MixProfilesDemo({
             className="w-full"
             aria-label="Ratio A"
           />
-          <div className="mt-1 text-sm text-muted-foreground">
-            A {Math.round(ratioA * 100)}% / B {Math.round(ratioB * 100)}%
-          </div>
-
-          {/* Botones: Re-simulate & Back to demo (sin dependencia de <Button/>) */}
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <button
-              onClick={() => setNonce((n) => n + 1)}
-              className="px-3 py-1 rounded-md bg-[var(--chart-2)] text-white disabled:opacity-60"
-              title="Pick a different subset of alleles"
-            >
-              Re-simulate
-            </button>
-            <button
-              onClick={() => setUseDemo(true)}
-              className="px-3 py-1 rounded-md border border-border bg-background hover:bg-muted"
-              title="Use demo catalog"
-            >
-              Back to demo
-            </button>
-            {useDemo && (
-              <span className="text-xs text-muted-foreground">Using demo data</span>
-            )}
-          </div>
+        </div>
+        <div className="mt-1 text-sm text-muted-foreground">
+          A {Math.round(ratioA * 100)}% / B {Math.round((1 - ratioA) * 100)}%
         </div>
       </div>
 
       {/* CE */}
       <div className="rounded-xl border p-4">
         <h3 className="text-base font-semibold">CE Analysis (RFU)</h3>
-        <p className="text-sm text-muted-foreground">Capillary Electrophoresis Analysis</p>
+        <p className="text-sm text-muted-foreground">
+          Capillary Electrophoresis Analysis
+        </p>
         <CEChart
-          data={simulation.ceSeries}
+          data={ceSeries}
           analyticalThreshold={DEFAULT_AT}
           interpretationThreshold={DEFAULT_IT}
         />
@@ -198,10 +234,12 @@ export default function MixProfilesDemo({
       {/* NGS */}
       <div className="rounded-xl border p-4">
         <h3 className="text-base font-semibold">NGS Analysis (Reads)</h3>
-        <p className="text-sm text-muted-foreground">Next-Generation Sequencing Analysis</p>
+        <p className="text-sm text-muted-foreground">
+          Next-Generation Sequencing Analysis
+        </p>
         <NGSChart
-          bars={simulation.ngsBars}
-          rows={simulation.ngsTable}
+          bars={ngsBars}
+          rows={ngsRows}
           analyticalThreshold={DEFAULT_AT}
           interpretationThreshold={DEFAULT_IT}
         />

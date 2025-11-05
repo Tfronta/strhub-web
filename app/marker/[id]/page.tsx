@@ -174,89 +174,112 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-10">
-          <div className="flex items-center gap-3 mb-3">
-            <h1 className="text-4xl font-bold">{marker.name}</h1>
-            <Badge variant="secondary" className="text-sm px-3 py-1">
+      <main className="container mx-auto px-4 py-6">
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-2">
+            <h1 className="text-2xl font-semibold text-foreground">
+              {marker.name}
+            </h1>
+            <Badge
+              variant="secondary"
+              className="text-xs font-normal px-2 py-0.5 bg-muted text-muted-foreground border-0"
+            >
               {marker.category}
             </Badge>
           </div>
-          <p className="text-xl text-foreground mb-2">{marker.fullName}</p>
-          <p className="text-base text-muted-foreground leading-relaxed">
+          <p className="text-base font-normal text-foreground mb-2">
+            {marker.fullName}
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {marker.description}
           </p>
         </div>
 
-        <Tabs defaultValue="overview" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 h-9 bg-muted/50 p-1 rounded-md border-0">
+            <TabsTrigger
+              value="overview"
+              className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
+            >
               {t("marker.tabs.overview")}
             </TabsTrigger>
-            <TabsTrigger value="frequencies">
+            <TabsTrigger
+              value="frequencies"
+              className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
+            >
               {t("marker.tabs.frequencies")}
             </TabsTrigger>
-            <TabsTrigger value="variants">
+            <TabsTrigger
+              value="variants"
+              className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
+            >
               {t("marker.variantAlleles")}
             </TabsTrigger>
-            <TabsTrigger value="tools">{t("marker.tabs.tools")}</TabsTrigger>
+            <TabsTrigger
+              value="tools"
+              className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
+            >
+              {t("marker.tabs.tools")}
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <Info className="h-5 w-5" />
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-4">
+              <Card className="border rounded-md shadow-none bg-card">
+                <CardHeader className="pb-3 px-4">
+                  <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                    <Info className="h-4 w-4 text-muted-foreground" />
                     {t("marker.basicInfo")}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="px-5 pb-5 pt-2 space-y-5">
-                  <div className="grid grid-cols-2 gap-x-6 gap-y-5">
-                    <div className="space-y-1.5">
-                      <Label className="text-sm font-medium text-muted-foreground">
+                <CardContent className="px-4 space-y-4">
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+                    <div className="space-y-1">
+                      <Label className="text-xs font-normal text-muted-foreground">
                         {t("marker.chromosome")}
                       </Label>
-                      <p className="text-base font-semibold">
+                      <p className="text-sm font-normal text-foreground">
                         {marker.chromosome}
                       </p>
                     </div>
                     {marker.cytogeneticLocation && (
-                      <div className="space-y-1.5">
-                        <Label className="text-sm font-medium text-muted-foreground">
+                      <div className="space-y-1">
+                        <Label className="text-xs font-normal text-muted-foreground">
                           Cytogenetic Location
                         </Label>
-                        <p className="text-base font-semibold">
+                        <p className="text-sm font-normal text-foreground">
                           {marker.cytogeneticLocation}
                         </p>
                       </div>
                     )}
-                    <div className="space-y-1.5">
-                      <Label className="text-sm font-medium text-muted-foreground">
+                    <div className="space-y-1">
+                      <Label className="text-xs font-normal text-muted-foreground">
                         {t("marker.motif")}
                       </Label>
-                      <p className="text-base font-semibold font-mono">
+                      <p className="text-sm font-normal font-mono text-foreground">
                         [{marker.motif}]n
                       </p>
                     </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-sm font-medium text-muted-foreground">
+                    <div className="space-y-1">
+                      <Label className="text-xs font-normal text-muted-foreground">
                         {t("marker.type")}
                       </Label>
-                      <p className="text-base font-semibold">{marker.type}</p>
+                      <p className="text-sm font-normal text-foreground">
+                        {marker.type}
+                      </p>
                     </div>
                     {marker.alternativeMotifs &&
                       marker.alternativeMotifs.length > 0 && (
-                        <div className="col-span-2 space-y-1.5">
-                          <Label className="text-sm font-medium text-muted-foreground">
+                        <div className="col-span-2 space-y-1">
+                          <Label className="text-xs font-normal text-muted-foreground">
                             Alternative Motifs
                           </Label>
-                          <div className="flex flex-wrap gap-2 mt-2">
+                          <div className="flex flex-wrap gap-1 mt-1">
                             {marker.alternativeMotifs.map((motif, index) => (
                               <Badge
                                 key={index}
                                 variant="outline"
-                                className="font-mono text-sm px-2.5 py-1"
+                                className="font-mono text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
                               >
                                 [{motif}]n
                               </Badge>
@@ -264,20 +287,20 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           </div>
                         </div>
                       )}
-                    <div className="space-y-1.5">
-                      <Label className="text-sm font-medium text-muted-foreground">
+                    <div className="space-y-1">
+                      <Label className="text-xs font-normal text-muted-foreground">
                         {t("marker.alleleRange")}
                       </Label>
-                      <p className="text-base font-semibold">
+                      <p className="text-sm font-normal text-foreground">
                         {marker.alleles}
                       </p>
                     </div>
                     {marker.nistReference?.referenceAllele && (
-                      <div className="space-y-1.5">
-                        <Label className="text-sm font-medium text-muted-foreground">
+                      <div className="space-y-1">
+                        <Label className="text-xs font-normal text-muted-foreground">
                           {t("marker.referenceAllele")}
                         </Label>
-                        <p className="text-base font-semibold">
+                        <p className="text-sm font-normal text-foreground">
                           {marker.nistReference.referenceAllele}
                         </p>
                       </div>
@@ -286,34 +309,34 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <Database className="h-5 w-5" />
+              <Card className="border rounded-md shadow-none bg-card">
+                <CardHeader className="pb-3 px-4">
+                  <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                    <Database className="h-4 w-4 text-muted-foreground" />
                     {t("marker.genomicCoords")}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="px-5 pb-5 pt-2 space-y-5">
+                <CardContent className="px-4 space-y-4">
                   {marker.coordinates ? (
-                    <div className="space-y-5">
+                    <div className="space-y-4">
                       <div className="space-y-3">
-                        <h4 className="text-sm font-semibold text-foreground">
+                        <h4 className="text-xs font-semibold text-foreground">
                           GRCh38/hg38
                         </h4>
                         <div className="space-y-3">
-                          <div className="space-y-1.5">
-                            <Label className="text-sm font-medium text-muted-foreground">
+                          <div className="space-y-1">
+                            <Label className="text-xs font-normal text-muted-foreground">
                               {t("marker.position")}
                             </Label>
-                            <p className="text-base font-semibold font-mono break-all">
+                            <p className="text-sm font-normal font-mono text-foreground break-all">
                               {marker.position}
                             </p>
                           </div>
-                          <div className="space-y-1.5">
-                            <Label className="text-sm font-medium text-muted-foreground">
+                          <div className="space-y-1">
+                            <Label className="text-xs font-normal text-muted-foreground">
                               {t("marker.strand")}
                             </Label>
-                            <p className="text-base font-semibold">
+                            <p className="text-sm font-normal text-foreground">
                               {marker.coordinates.strand}
                             </p>
                           </div>
@@ -321,26 +344,26 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </div>
 
                       {marker.coordinates["grch37"]?.start && (
-                        <div className="pt-4 border-t space-y-3">
-                          <h4 className="text-sm font-semibold text-foreground">
+                        <div className="pt-3 border-t border-border space-y-3">
+                          <h4 className="text-xs font-semibold text-foreground">
                             GRCh37/hg19
                           </h4>
                           <div className="space-y-3">
-                            <div className="space-y-1.5">
-                              <Label className="text-sm font-medium text-muted-foreground">
+                            <div className="space-y-1">
+                              <Label className="text-xs font-normal text-muted-foreground">
                                 {t("marker.position")}
                               </Label>
-                              <p className="text-base font-semibold font-mono break-all">
+                              <p className="text-sm font-normal font-mono text-foreground break-all">
                                 {marker.coordinates.grch37.start.toLocaleString()}
                                 -
                                 {marker.coordinates.grch37.end.toLocaleString()}
                               </p>
                             </div>
-                            <div className="space-y-1.5">
-                              <Label className="text-sm font-medium text-muted-foreground">
+                            <div className="space-y-1">
+                              <Label className="text-xs font-normal text-muted-foreground">
                                 {t("marker.strand")}
                               </Label>
-                              <p className="text-base font-semibold">
+                              <p className="text-sm font-normal text-foreground">
                                 {marker.coordinates.strand}
                               </p>
                             </div>
@@ -349,7 +372,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       )}
                     </div>
                   ) : (
-                    <p className="text-muted-foreground">
+                    <p className="text-sm text-muted-foreground">
                       {t("common.notFound")}
                     </p>
                   )}
@@ -358,17 +381,17 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
             </div>
           </TabsContent>
 
-          <TabsContent value="frequencies" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
+          <TabsContent value="frequencies" className="space-y-4">
+            <Card className="border rounded-md shadow-none bg-card">
+              <CardHeader className="pb-3 px-4">
+                <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <BarChart3 className="h-4 w-4 text-muted-foreground" />
                   {t("marker.alleleFreqDistribution")}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-4">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between gap-3 flex-wrap border-b pb-3 mb-4">
+                  <div className="flex items-center justify-between gap-2 flex-wrap border-b border-border pb-3">
                     {selectedTechnology !== "CE" && (
                       <div className="flex gap-2">
                         {["AFR", "AMR", "EAS", "SAS", "EUR", "MES"].map(
@@ -382,7 +405,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               }
                               size="sm"
                               onClick={() => setSelectedPopulation(pop)}
-                              className="rounded-md"
+                              className="h-7 text-xs font-normal rounded-sm px-2"
                             >
                               {pop}
                             </Button>
@@ -409,7 +432,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                             )?.length === 0
                           }
                         >
-                          <SelectTrigger className="w-[200px]">
+                          <SelectTrigger className="h-7 w-[200px] text-xs">
                             <SelectValue placeholder="No CE datasets available yet" />
                           </SelectTrigger>
                           {marker?.ceStudiesByPop?.[
@@ -446,7 +469,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
                     {availableTechnologies.length > 0 && (
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs font-normal text-muted-foreground">
                           Technology:
                         </span>
                         <div className="flex gap-2">
@@ -460,7 +483,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               }
                               size="sm"
                               onClick={() => setSelectedTechnology(tech)}
-                              className="rounded-md"
+                              className="h-7 text-xs font-normal rounded-sm px-2"
                             >
                               {tech}
                             </Button>
@@ -477,8 +500,11 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={chartData}>
                           <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="allele" />
-                          <YAxis />
+                          <XAxis dataKey="allele" tick={{ fontSize: 12 }} />
+                          <YAxis
+                            tick={{ fontSize: 12 }}
+                            tickFormatter={(value) => Number(value).toFixed(3)}
+                          />
                           <Tooltip
                             formatter={(value: any, name: string) => [
                               value,
@@ -486,6 +512,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 ? t("common.frequency")
                                 : t("common.count"),
                             ]}
+                            contentStyle={{ fontSize: 12 }}
                           />
                           <Bar dataKey="frequency" fill="#6b7280" />
                         </BarChart>
@@ -493,7 +520,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     </div>
 
                     {selectedPopulation === "AFR" && (
-                      <p className="w-full text-sm text-muted-foreground text-left mt-3 py-2">
+                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
                         The African population dataset from pop.STR is composed
                         of the following population groups: C. African Republic
                         – Biaka Pygmies, D. R. of Congo – Mbuti Pygmies, Kenya –
@@ -502,7 +529,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </p>
                     )}
                     {selectedPopulation === "AMR" && (
-                      <p className="w-full text-sm text-muted-foreground text-left mt-3 py-2">
+                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
                         The American population dataset from pop.STR is composed
                         of the following population groups: Brazil – Karitiana,
                         Brazil – Surui, Colombia – Colombian, Dominican
@@ -511,7 +538,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     )}
 
                     {selectedPopulation === "SAS" && (
-                      <p className="w-full text-sm text-muted-foreground text-left mt-3 py-2">
+                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
                         The Central-South Asian population dataset from pop.STR
                         is composed of the following population groups: China –
                         Uygur, Pakistan – Balochi, Pakistan – Brahui, Pakistan –
@@ -521,7 +548,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     )}
 
                     {selectedPopulation === "MES" && (
-                      <p className="w-full text-sm text-muted-foreground text-left mt-3 py-2">
+                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
                         The Middle East population dataset from pop.STR is
                         composed of the following population groups: Algeria
                         (Mzab) – Mozabite, Israel (Carmel) – Druze, Israel
@@ -530,7 +557,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     )}
 
                     {selectedPopulation === "EUR" && (
-                      <p className="w-full text-sm text-muted-foreground text-left mt-3 py-2">
+                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
                         The European population dataset from pop.STR is composed
                         of the following population groups: France – Basque,
                         France – French, Italy (Bergamo) – North Italian, Italy
@@ -541,7 +568,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     )}
 
                     {selectedPopulation === "EAS" && (
-                      <p className="w-full text-sm text-muted-foreground text-left mt-3 py-2">
+                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
                         The East Asian population dataset from pop.STR is
                         composed of the following population groups: Cambodia –
                         Cambodian, China – Dai, China – Daur, China – Han, China
@@ -552,27 +579,28 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </p>
                     )}
 
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       Data source:{" "}
                       <a
                         href="http://spsmart.cesga.es/search.php?dataSet=strs_local&mapPopulation"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
+                        className="text-primary hover:underline"
                       >
                         pop.STR
                       </a>{" "}
                       - Illumina ForenSeq kit
                     </p>
 
-                    <div className="mt-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold">
+                    <div className="mt-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-semibold text-foreground">
                           {t("marker.freqDescription")}
                         </h3>
                         <Button
                           variant="outline"
                           size="sm"
+                          className="h-7 text-xs font-normal rounded-sm px-2"
                           onClick={() => {
                             const csvContent = [
                               [t("common.allele"), t("common.frequency")],
@@ -597,20 +625,20 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                             window.URL.revokeObjectURL(url);
                           }}
                         >
-                          <Download className="h-4 w-4 mr-2" />
+                          <Download className="h-3 w-3 mr-1" />
                           Download CSV
                         </Button>
                       </div>
 
-                      <div className="border rounded-lg overflow-hidden">
+                      <div className="border border-border rounded-md overflow-hidden">
                         <div className="max-h-64 overflow-y-auto">
                           <table className="w-full">
-                            <thead className="bg-muted/50 sticky top-0">
+                            <thead className="bg-muted/30 sticky top-0 border-b border-border">
                               <tr>
-                                <th className="text-left p-3 font-medium">
+                                <th className="text-left p-2 text-xs font-semibold text-foreground">
                                   {t("common.allele")}
                                 </th>
-                                <th className="text-left p-3 font-medium">
+                                <th className="text-left p-2 text-xs font-semibold text-foreground">
                                   {t("common.frequency")}
                                 </th>
                               </tr>
@@ -638,13 +666,13 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                     className={
                                       index % 2 === 0
                                         ? "bg-background"
-                                        : "bg-muted/20"
+                                        : "bg-muted/10"
                                     }
                                   >
-                                    <td className="p-3 font-mono">
+                                    <td className="p-2 text-xs font-mono text-foreground">
                                       {item.allele}
                                     </td>
-                                    <td className="p-3">
+                                    <td className="p-2 text-xs font-normal text-foreground">
                                       {item.frequency.toFixed(4)}
                                     </td>
                                   </tr>
@@ -656,7 +684,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     </div>
                   </>
                 ) : (
-                  <p className="text-muted-foreground text-center py-8">
+                  <p className="text-sm text-muted-foreground text-center py-8">
                     {t("common.notFound")}
                   </p>
                 )}
@@ -664,32 +692,32 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
             </Card>
           </TabsContent>
 
-          <TabsContent value="variants" className="space-y-6">
-            <Card>
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <Database className="h-5 w-5" />
+          <TabsContent value="variants" className="space-y-4">
+            <Card className="border rounded-md shadow-none bg-card">
+              <CardHeader className="pb-3 px-4">
+                <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <Database className="h-4 w-4 text-muted-foreground" />
                   {t("marker.variantAlleles")}
                 </CardTitle>
-                <CardDescription className="text-sm mt-1.5">
+                <CardDescription className="text-xs font-normal mt-1">
                   {t("marker.variantAllelesDescription")}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-4">
                 {marker.sequences && marker.sequences.length > 0 ? (
-                  <div className="space-y-6">
-                    <div className="border rounded-lg overflow-hidden">
+                  <div className="space-y-4">
+                    <div className="border border-border rounded-md overflow-hidden">
                       <div className="max-h-96 overflow-y-auto">
                         <table className="w-full">
-                          <thead className="bg-background sticky top-0 border-b shadow-sm">
+                          <thead className="bg-muted/30 sticky top-0 border-b border-border">
                             <tr>
-                              <th className="text-left px-4 py-3 font-semibold text-sm bg-background">
+                              <th className="text-left px-3 py-2 text-xs font-semibold text-foreground">
                                 {t("marker.alleleDesignation")}
                               </th>
-                              <th className="text-left px-4 py-3 font-semibold text-sm bg-background">
+                              <th className="text-left px-3 py-2 text-xs font-semibold text-foreground">
                                 {t("marker.strNaming")}
                               </th>
-                              <th className="text-left px-4 py-3 font-semibold text-sm bg-background">
+                              <th className="text-left px-3 py-2 text-xs font-semibold text-foreground">
                                 {t("marker.sequence")}
                               </th>
                             </tr>
@@ -701,17 +729,17 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 className={
                                   index % 2 === 0
                                     ? "bg-background"
-                                    : "bg-muted/20"
+                                    : "bg-muted/10"
                                 }
                               >
-                                <td className="px-4 py-3 font-mono font-semibold text-sm">
+                                <td className="px-3 py-2 font-mono font-normal text-xs text-foreground">
                                   {seq.allele}
                                 </td>
-                                <td className="px-4 py-3 text-sm">
+                                <td className="px-3 py-2 text-xs font-normal text-foreground">
                                   {seq.pattern || "—"}
                                 </td>
-                                <td className="px-4 py-3">
-                                  <div className="font-mono text-xs break-all leading-relaxed">
+                                <td className="px-3 py-2">
+                                  <div className="font-mono text-xs font-normal break-all leading-relaxed text-foreground">
                                     {seq.sequence}
                                   </div>
                                 </td>
@@ -722,9 +750,10 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-center gap-3 pt-2">
+                    <div className="flex flex-col items-center gap-2 pt-2">
                       <Button
                         variant="default"
+                        className="h-7 text-xs font-normal rounded-sm px-3"
                         onClick={() => {
                           const csvContent = [
                             [
@@ -756,11 +785,11 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           window.URL.revokeObjectURL(url);
                         }}
                       >
-                        <Download className="h-4 w-4 mr-2" />
+                        <Download className="h-3 w-3 mr-1" />
                         {t("marker.download")}
                       </Button>
 
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         {t("marker.source")}:{" "}
                         <a
                           href="https://strbase.nist.gov/"
@@ -774,7 +803,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-muted-foreground text-center py-8">
+                  <p className="text-sm text-muted-foreground text-center py-8">
                     {t("common.notFound")}
                   </p>
                 )}
@@ -782,53 +811,71 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
             </Card>
           </TabsContent>
 
-          <TabsContent value="tools" className="space-y-6">
-            <Card>
-              <CardHeader className="pb-4">
-                <CardTitle className="text-xl">
+          <TabsContent value="tools" className="space-y-4">
+            <Card className="border rounded-md shadow-none bg-card">
+              <CardHeader className="pb-3 px-4">
+                <CardTitle className="text-sm font-semibold text-foreground">
                   {t("marker.toolsCompatibility")}
                 </CardTitle>
-                <CardDescription className="text-sm mt-1.5">
+                <CardDescription className="text-xs font-normal mt-1">
                   {t("marker.toolsDescription")}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-4">
                 {marker.toolsCompatibility &&
                 Object.keys(marker.toolsCompatibility).length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {Object.entries(marker.toolsCompatibility).map(
                       ([toolKey, tool]) => (
-                        <div key={toolKey} className="border rounded-lg p-4">
+                        <div
+                          key={toolKey}
+                          className="border border-border rounded-md p-3"
+                        >
                           <div className="flex items-center justify-between mb-2">
-                            <h3 className="font-semibold">{tool?.name}</h3>
-                            <Badge variant="outline">
+                            <h3 className="text-sm font-semibold text-foreground">
+                              {tool?.name}
+                            </h3>
+                            <Badge
+                              variant="outline"
+                              className="text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
+                            >
                               {t("marker.supported")}
                             </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
+                          <p className="text-xs font-normal text-muted-foreground leading-relaxed mb-2">
                             {tool.description}
                           </p>
-                          <div className="flex gap-2 pt-1">
+                          <div className="flex gap-2">
                             {tool.github && (
-                              <Button variant="outline" size="sm" asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-7 text-xs font-normal rounded-sm px-2"
+                                asChild
+                              >
                                 <a
                                   href={tool.github}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                 >
-                                  <ExternalLink className="h-4 w-4 mr-2" />
+                                  <ExternalLink className="h-3 w-3 mr-1" />
                                   GitHub
                                 </a>
                               </Button>
                             )}
                             {tool.publication && (
-                              <Button variant="outline" size="sm" asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-7 text-xs font-normal rounded-sm px-2"
+                                asChild
+                              >
                                 <a
                                   href={`https://doi.org/${tool.publication.doi}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                 >
-                                  <FileText className="h-4 w-4 mr-2" />
+                                  <FileText className="h-3 w-3 mr-1" />
                                   {t("marker.originalPublication")}
                                 </a>
                               </Button>
@@ -839,7 +886,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     )}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     {t("common.notFound")}
                   </p>
                 )}

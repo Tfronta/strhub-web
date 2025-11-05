@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useLanguage } from "@/contexts/language-context" // Fixed import path to use correct location
 
-const markers = [
+export const markers = [
   // CODIS Core STRs
   {
     id: "csf1po",

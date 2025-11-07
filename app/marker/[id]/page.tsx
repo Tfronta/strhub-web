@@ -132,6 +132,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
     // Filter tools
     return toolsData.filter((tool) => {
+      // STRspy captures all autosomal and Y markers, so always include it
+      if (tool.id === "strspy") return true;
+
       // Check if tool supports the marker's technology
       const techMatch = tool.tech.some((tech) =>
         compatibleTechs.includes(tech)
@@ -877,6 +880,18 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                 </div>
               </CardHeader>
               <CardContent className="px-4">
+                <div className="mb-4 p-3 bg-muted/30 border border-border rounded-md">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {t("marker.toolsDisclaimer")}{" "}
+                    <Link
+                      href="/about#contact"
+                      className="text-primary hover:underline"
+                    >
+                      {t("marker.contactUs")}
+                    </Link>
+                    .
+                  </p>
+                </div>
                 {compatibleTools.length > 0 ? (
                   <div className="space-y-4">
                     {compatibleTools.map((tool) => (
@@ -885,7 +900,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         className="border border-border rounded-md p-4 space-y-3"
                       >
                         <div className="flex items-center justify-between">
-                          <h3 className="text-sm font-semibold text-foreground">
+                          <h3 className="text-lg font-bold text-foreground">
                             {tool.name}
                           </h3>
                           <Badge
@@ -905,8 +920,8 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               {tool.tech.map((tech) => (
                                 <Badge
                                   key={tech}
-                                  variant="secondary"
-                                  className="text-xs font-normal px-2 py-0.5"
+                                  variant="outline"
+                                  className="text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
                                 >
                                   {tech}
                                 </Badge>
@@ -1005,7 +1020,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                       variant="secondary"
                                       className="text-xs font-normal px-2 py-0.5"
                                     >
-                                      {t("marker.customizableTargets")}
+                                      {t("marker.customizableTargetsLabel")}
                                     </Badge>
                                   </div>
                                 )}
@@ -1127,28 +1142,6 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               </ul>
                             </div>
                           )}
-
-                          {tool.maintainer_initiatives &&
-                            tool.maintainer_initiatives.length > 0 && (
-                              <div className="space-y-2 pt-2 border-t border-border">
-                                <span className="text-xs font-semibold text-foreground">
-                                  {t("marker.maintainerInitiatives")}:
-                                </span>
-                                <div className="flex flex-wrap gap-2">
-                                  {tool.maintainer_initiatives.map(
-                                    (initiative, idx) => (
-                                      <Badge
-                                        key={idx}
-                                        variant="secondary"
-                                        className="text-xs font-normal px-2 py-0.5"
-                                      >
-                                        {initiative}
-                                      </Badge>
-                                    )
-                                  )}
-                                </div>
-                              </div>
-                            )}
 
                           <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
                             {tool.repo_url && (

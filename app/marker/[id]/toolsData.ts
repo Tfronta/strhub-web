@@ -38,7 +38,6 @@ export interface Tool {
   compatibility: Compatibility;
   interfaces?: ToolInterface[];
   limitations?: string[];
-  maintainer_initiatives?: string[];
   repo_url: string | null;
   paper_doi: string | null;
   last_checked: string;
@@ -84,7 +83,6 @@ export const toolsData: Tool[] = [
       "Requires aligned BAM/CRAM files and performs internal realignment (FASTQ not supported).",
       "Designed for Illumina short-read data; not compatible with ONT or PacBio.",
     ],
-    maintainer_initiatives: ["STRhub", "HipSTR-UI"],
     repo_url: "https://github.com/tfwillems/HipSTR",
     paper_doi: "https://doi.org/10.1038/nmeth.4267",
     last_checked: "2025-11-06",
@@ -118,7 +116,6 @@ export const toolsData: Tool[] = [
       "Optimized for Illumina short-read data; not compatible with ONT or PacBio.",
       "Requires BAM/CRAM alignment and BED file with defined loci.",
     ],
-    maintainer_initiatives: ["STRhub"],
     repo_url: "https://github.com/gymreklab/GangSTR",
     paper_doi: "https://doi.org/10.1093/nar/gkz501",
     last_checked: "2025-11-06",
@@ -151,7 +148,6 @@ export const toolsData: Tool[] = [
       "Optimized for ONT forensic STR panels; requires reference file of loci.",
       "Not designed for whole-genome (WGS) applications.",
     ],
-    maintainer_initiatives: ["STRhub"],
     repo_url: "https://github.com/unique379r/strspy",
     paper_doi: "10.1016/j.fsigen.2021.102629",
     last_checked: "2025-11-06",
@@ -187,7 +183,6 @@ export const toolsData: Tool[] = [
       "Requires raw FAST5 files and matching BAM/SAM alignment.",
       "Models not updated for R10.3 chemistry.",
     ],
-    maintainer_initiatives: ["STRhub"],
     repo_url: "https://github.com/giesselmann/STRique",
     docs_url: "https://strique.readthedocs.io/",
     paper_doi: "10.1038/s41587-019-0293-x",
@@ -198,8 +193,8 @@ export const toolsData: Tool[] = [
   {
     id: "straitrazor",
     name: "STRait Razor",
-    tech: ["CE", "Illumina"],
-    input: ["FASTQ", "CE_RFU"],
+    tech: ["Illumina"],
+    input: ["FASTQ"],
     output: ["TXT", "CSV"],
     support: {
       native_panels: [],
@@ -217,16 +212,15 @@ export const toolsData: Tool[] = [
       last_release: "v3.0",
     },
     limitations: [
-      "Compatible with CE and Illumina data; requires panel configuration.",
+      "Designed for Illumina data; requires panel configuration.",
       "Does not perform read alignment; motif matching is direct.",
     ],
-    maintainer_initiatives: ["STRhub"],
     repo_url: "https://github.com/Ahhgust/STRaitRazor",
     online_version: "https://expectationsmanaged.shinyapps.io/STRaitRazoR/",
     paper_doi: "https://doi.org/10.1016/j.fsigen.2021.102463",
     last_checked: "2025-11-06",
     notes:
-      "STRait Razor is included in the STRhub ecosystem for integration with both capillary electrophoresis (CE) and Illumina-based forensic pipelines. Its lightweight motif-matching algorithm makes it suitable for teaching and training purposes in STR interpretation.",
+      "STRait Razor is included in the STRhub ecosystem for integration with Illumina-based forensic pipelines. Its lightweight motif-matching algorithm makes it suitable for teaching and training purposes in STR interpretation.",
   },
   {
     id: "toastr",
@@ -253,7 +247,6 @@ export const toolsData: Tool[] = [
       "Designed for forensic NGS STR analysis; requires STRaitRazor reference panel.",
       "Web interface inactive on some legacy servers.",
     ],
-    maintainer_initiatives: ["STRhub"],
     repo_url: null,
     paper_doi: "10.1016/j.fsigen.2018.07.006",
     last_checked: "2025-11-06",

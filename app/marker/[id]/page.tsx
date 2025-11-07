@@ -43,6 +43,7 @@ import {
 import { markerData } from "./markerData";
 import { useLanguage } from "@/contexts/language-context";
 import { markerFrequencies } from "./markerFrequencies";
+import { oceFrequencies } from "./oceFrequencies";
 import { toolsData, type Tool } from "./toolsData";
 
 export default function MarkerPage({ params }: { params: { id: string } }) {
@@ -188,15 +189,36 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
       citationText = "PubMed ID 40253804";
     }
   } else {
-    const populationData =
-      marker?.populationFrequencies?.[
-        selectedPopulation as keyof typeof marker.populationFrequencies
-      ] || [];
-    chartData = populationData.map((item) => ({
-      allele: item.allele,
-      frequency: item.frequency,
-      count: item.count,
-    }));
+    if (selectedPopulation === "OCE") {
+      const oceEntries =
+        marker?.populationFrequencies?.[
+          selectedPopulation as keyof typeof marker.populationFrequencies
+        ] || [];
+      if (oceEntries.length > 0) {
+        chartData = oceEntries.map((item) => ({
+          allele: item.allele,
+          frequency: item.frequency,
+          count: item.count,
+        }));
+      } else {
+        const oceData = oceFrequencies[markerId];
+        chartData = (oceData || []).map((item) => ({
+          allele: item.allele,
+          frequency: item.frequency,
+          count: 0,
+        }));
+      }
+    } else {
+      const populationData =
+        marker?.populationFrequencies?.[
+          selectedPopulation as keyof typeof marker.populationFrequencies
+        ] || [];
+      chartData = populationData.map((item) => ({
+        allele: item.allele,
+        frequency: item.frequency,
+        count: item.count,
+      }));
+    }
   }
 
   return (
@@ -437,7 +459,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                   <div className="flex items-center justify-between gap-2 flex-wrap border-b border-border pb-3">
                     {selectedTechnology !== "CE" && (
                       <div className="flex gap-2">
-                        {["AFR", "AMR", "EAS", "SAS", "EUR", "MES"].map(
+                        {["AFR", "AMR", "EAS", "SAS", "EUR", "MES", "OCE"].map(
                           (pop) => (
                             <Button
                               key={pop}

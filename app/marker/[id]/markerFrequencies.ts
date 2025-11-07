@@ -1,7 +1,7 @@
 // Auto-generated from TXT frequency files.
 // Do not edit by hand. Update the TXT files and regenerate.
 
-export type Pop = "AFR" | "AMR" | "EAS" | "SAS" | "EUR" | "MES";
+export type Pop = "AFR" | "AMR" | "EAS" | "SAS" | "EUR" | "MES" | "OCE";
 export type AlleleEntry = { allele: string; frequency: number; count: number };
 export const markerFrequencies: Record<string, Partial<{kit:string; technology: string; } & Record<Pop, AlleleEntry[]>>> = {
 

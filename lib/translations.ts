@@ -180,6 +180,7 @@ export const translations = {
         EAS: "East Asian",
         SAS: "South Asian",
         EUR: "European",
+        OCE: "Oceanian",
       },
       citation:
         "Citation: Population frequency data sourced from STRBase – NIST database. All alleles reported in STRbase for each marker are included across all population groups (AFR, AMR, EAS, SAS, EUR).",
@@ -677,6 +678,7 @@ export const translations = {
         EAS: "Asiático Oriental",
         SAS: "Asiático do Sul",
         EUR: "Europeu",
+        OCE: "Oceânico",
       },
       citation:
         "Citação: Dados de frequência populacional obtidos do banco de dados STRBase – NIST. Todos os alelos relatados no STRbase para cada marcador estão incluídos em todos os grupos populacionais (AFR, AMR, EAS, SAS, EUR).",
@@ -1177,6 +1179,7 @@ export const translations = {
         EAS: "Asiático Oriental",
         SAS: "Asiático del Sur",
         EUR: "Europeu",
+        OCE: "Oceánico",
       },
       citation:
         "Cita: Datos de frecuencia poblacional obtenidos de la base de datos STRBase – NIST. Todos los alelos reportados en STRbase para cada marcador están incluidos en todos los grupos poblacionales (AFR, AMR, EAS, SAS, EUR).",

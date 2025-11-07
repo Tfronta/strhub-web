@@ -328,10 +328,10 @@ export default function IgvViewerPage() {
               <div className="border rounded-xl overflow-visible">
                 <div
                   ref={igvContainerRef}
-                  className="w-full h-[820px] md:h-[920px]"
+                  className="w-full h-[820px] md:h-[950px]"
                 />
               </div>
-              <div className="px-6 py-3 text-xs md:text-sm text-muted-foreground border-t bg-muted/30">
+              <div className="px-6 pt-3 text-xs md:text-sm text-muted-foreground border-t bg-muted/30">
                 <p className="font-semibold text-foreground mb-1">
                   Data Integration
                 </p>
@@ -360,13 +360,12 @@ export default function IgvViewerPage() {
                   educational and research purposes.
                 </p>
                 <p className="mt-1 text-[11px] text-muted-foreground">
-                  <code>catalog.dataIntegrationSources</code> IGV.js · 1000
-                  Genomes Project (open data)
+                  IGV.js · 1000 Genomes Project (open data)
                 </p>
-              </div>
-              <div className="px-4 py-2 text-xs text-muted-foreground">
-                IGV status:{" "}
-                {igvLoaded ? "Ready" : "Idle (click Launch IGV Viewer)"}.
+                <p className="mt-1 text-[11px] text-muted-foreground">
+                  IGV status:{" "}
+                  {igvLoaded ? "Ready" : "Idle (click Launch IGV Viewer)"}.
+                </p>
               </div>
             </CardContent>
           </Card>

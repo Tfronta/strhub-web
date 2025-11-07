@@ -43,6 +43,7 @@ import {
 import { markerData } from "./markerData";
 import { useLanguage } from "@/contexts/language-context";
 import { markerFrequencies } from "./markerFrequencies";
+import { toolsData, type Tool } from "./toolsData";
 
 export default function MarkerPage({ params }: { params: { id: string } }) {
   const { t } = useLanguage();
@@ -107,6 +108,45 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
       : null;
 
   const isXSTR = marker.type === "X-STR" || marker.chromosome === "X";
+
+  // Filter tools based on marker compatibility
+  const getCompatibleTools = (): Tool[] => {
+    const markerTech = markerFreqData?.technology;
+    if (!markerTech) return [];
+
+    // Map marker technology to tool technology
+    let compatibleTechs: string[] = [];
+    if (markerTech === "NGS") {
+      compatibleTechs = ["Illumina"];
+    } else if (markerTech === "CE") {
+      compatibleTechs = ["CE"];
+    }
+
+    // Determine compatible input formats
+    const compatibleInputs: string[] = [];
+    if (markerTech === "NGS") {
+      compatibleInputs.push("FASTQ", "BAM", "CRAM");
+    } else if (markerTech === "CE") {
+      compatibleInputs.push("CE_RFU");
+    }
+
+    // Filter tools
+    return toolsData.filter((tool) => {
+      // Check if tool supports the marker's technology
+      const techMatch = tool.tech.some((tech) =>
+        compatibleTechs.includes(tech)
+      );
+      if (!techMatch) return false;
+
+      // Check if tool supports at least one compatible input format
+      const inputMatch = tool.input.some((input) =>
+        compatibleInputs.includes(input)
+      );
+      return inputMatch;
+    });
+  };
+
+  const compatibleTools = getCompatibleTools();
 
   let chartData: any[] = [];
   let citationUrl = "";
@@ -822,31 +862,114 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                 </CardDescription>
               </CardHeader>
               <CardContent className="px-4">
-                {marker.toolsCompatibility &&
-                Object.keys(marker.toolsCompatibility).length > 0 ? (
-                  <div className="space-y-3">
-                    {Object.entries(marker.toolsCompatibility).map(
-                      ([toolKey, tool]) => (
-                        <div
-                          key={toolKey}
-                          className="border border-border rounded-md p-3"
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <h3 className="text-sm font-semibold text-foreground">
-                              {tool?.name}
-                            </h3>
-                            <Badge
-                              variant="outline"
-                              className="text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
-                            >
-                              {t("marker.supported")}
-                            </Badge>
+                {compatibleTools.length > 0 ? (
+                  <div className="space-y-4">
+                    {compatibleTools.map((tool) => (
+                      <div
+                        key={tool.id}
+                        className="border border-border rounded-md p-4 space-y-3"
+                      >
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-semibold text-foreground">
+                            {tool.name}
+                          </h3>
+                          <Badge
+                            variant="outline"
+                            className="text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
+                          >
+                            {t("marker.supported")}
+                          </Badge>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex flex-wrap gap-2">
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs font-normal text-muted-foreground">
+                                {t("marker.technology")}:
+                              </span>
+                              {tool.tech.map((tech) => (
+                                <Badge
+                                  key={tech}
+                                  variant="secondary"
+                                  className="text-xs font-normal px-2 py-0.5"
+                                >
+                                  {tech}
+                                </Badge>
+                              ))}
+                            </div>
                           </div>
-                          <p className="text-xs font-normal text-muted-foreground leading-relaxed mb-2">
-                            {tool.description}
-                          </p>
-                          <div className="flex gap-2">
-                            {tool.github && (
+
+                          <div className="flex flex-wrap gap-2">
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs font-normal text-muted-foreground">
+                                {t("marker.inputFormat")}:
+                              </span>
+                              {tool.input.map((input) => (
+                                <Badge
+                                  key={input}
+                                  variant="outline"
+                                  className="text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
+                                >
+                                  {input}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+
+                          {tool.support.native_panels &&
+                            tool.support.native_panels.length > 0 && (
+                              <div className="space-y-1">
+                                <span className="text-xs font-normal text-muted-foreground">
+                                  {t("marker.nativePanels")}:
+                                </span>
+                                <div className="flex flex-wrap gap-2">
+                                  {tool.support.native_panels.map(
+                                    (panel, idx) => (
+                                      <Button
+                                        key={idx}
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-7 text-xs font-normal rounded-sm px-2"
+                                        asChild
+                                      >
+                                        <a
+                                          href={panel.url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          <ExternalLink className="h-3 w-3 mr-1" />
+                                          {panel.genome
+                                            ? `Panel (${panel.genome})`
+                                            : "Panel"}
+                                        </a>
+                                      </Button>
+                                    )
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                          <div className="flex flex-wrap gap-2">
+                            {tool.support.configurable && (
+                              <Badge
+                                variant="secondary"
+                                className="text-xs font-normal px-2 py-0.5"
+                              >
+                                {t("marker.configurable")}
+                              </Badge>
+                            )}
+                            {tool.support.wrapper && (
+                              <Badge
+                                variant="secondary"
+                                className="text-xs font-normal px-2 py-0.5"
+                              >
+                                {t("marker.wrapper")}
+                              </Badge>
+                            )}
+                          </div>
+
+                          <div className="flex flex-wrap gap-2 pt-1">
+                            {tool.repo_url && (
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -854,16 +977,16 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 asChild
                               >
                                 <a
-                                  href={tool.github}
+                                  href={tool.repo_url}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                 >
                                   <ExternalLink className="h-3 w-3 mr-1" />
-                                  GitHub
+                                  Repository
                                 </a>
                               </Button>
                             )}
-                            {tool.publication && (
+                            {tool.paper_doi && (
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -871,7 +994,11 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 asChild
                               >
                                 <a
-                                  href={`https://doi.org/${tool.publication.doi}`}
+                                  href={
+                                    tool.paper_doi.startsWith("http")
+                                      ? tool.paper_doi
+                                      : `https://doi.org/${tool.paper_doi}`
+                                  }
                                   target="_blank"
                                   rel="noopener noreferrer"
                                 >
@@ -880,14 +1007,35 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 </a>
                               </Button>
                             )}
+                            {tool.online_version && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-7 text-xs font-normal rounded-sm px-2"
+                                asChild
+                              >
+                                <a
+                                  href={tool.online_version}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <ExternalLink className="h-3 w-3 mr-1" />
+                                  {t("marker.onlineVersion")}
+                                </a>
+                              </Button>
+                            )}
+                          </div>
+
+                          <div className="text-xs text-muted-foreground pt-2 border-t border-border">
+                            {t("marker.lastChecked")}: {tool.last_checked}
                           </div>
                         </div>
-                      )
-                    )}
+                      </div>
+                    ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
-                    {t("common.notFound")}
+                  <p className="text-sm text-muted-foreground text-center py-8">
+                    {t("marker.noCompatibleTools")}
                   </p>
                 )}
               </CardContent>

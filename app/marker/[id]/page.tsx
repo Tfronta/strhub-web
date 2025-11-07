@@ -854,12 +854,27 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
           <TabsContent value="tools" className="space-y-4">
             <Card className="border rounded-md shadow-none bg-card">
               <CardHeader className="pb-3 px-4">
-                <CardTitle className="text-sm font-semibold text-foreground">
-                  {t("marker.toolsCompatibility")}
-                </CardTitle>
-                <CardDescription className="text-xs font-normal mt-1">
-                  {t("marker.toolsDescription")}
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-sm font-semibold text-foreground">
+                      {t("marker.toolsCompatibility")}
+                    </CardTitle>
+                    <CardDescription className="text-xs font-normal mt-1">
+                      {t("marker.toolsDescription")}
+                    </CardDescription>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs font-normal rounded-sm px-3"
+                    asChild
+                  >
+                    <Link href="/about#contact">
+                      <ExternalLink className="h-3 w-3 mr-1" />
+                      {t("marker.addNewTool")}
+                    </Link>
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="px-4">
                 {compatibleTools.length > 0 ? (
@@ -916,6 +931,23 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                             </div>
                           </div>
 
+                          <div className="flex flex-wrap gap-2">
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs font-normal text-muted-foreground">
+                                {t("marker.outputFormat")}:
+                              </span>
+                              {tool.output.map((output) => (
+                                <Badge
+                                  key={output}
+                                  variant="outline"
+                                  className="text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
+                                >
+                                  {output}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+
                           {tool.support.native_panels &&
                             tool.support.native_panels.length > 0 && (
                               <div className="space-y-1">
@@ -924,7 +956,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 </span>
                                 <div className="flex flex-wrap gap-2">
                                   {tool.support.native_panels.map(
-                                    (panel, idx) => (
+                                    (panelUrl, idx) => (
                                       <Button
                                         key={idx}
                                         variant="outline"
@@ -933,14 +965,12 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                         asChild
                                       >
                                         <a
-                                          href={panel.url}
+                                          href={panelUrl}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                         >
                                           <ExternalLink className="h-3 w-3 mr-1" />
-                                          {panel.genome
-                                            ? `Panel (${panel.genome})`
-                                            : "Panel"}
+                                          {t("marker.panel")}
                                         </a>
                                       </Button>
                                     )
@@ -949,26 +979,178 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               </div>
                             )}
 
-                          <div className="flex flex-wrap gap-2">
-                            {tool.support.configurable && (
-                              <Badge
-                                variant="secondary"
-                                className="text-xs font-normal px-2 py-0.5"
-                              >
-                                {t("marker.configurable")}
-                              </Badge>
-                            )}
-                            {tool.support.wrapper && (
-                              <Badge
-                                variant="secondary"
-                                className="text-xs font-normal px-2 py-0.5"
-                              >
-                                {t("marker.wrapper")}
-                              </Badge>
-                            )}
+                          <div className="space-y-2 pt-2 border-t border-border">
+                            <div className="space-y-1">
+                              <span className="text-xs font-semibold text-foreground">
+                                {t("marker.configuration")}:
+                              </span>
+                              <div className="text-xs text-muted-foreground space-y-1">
+                                <div>
+                                  <span className="font-medium">
+                                    {t("marker.targetFileFormat")}:
+                                  </span>{" "}
+                                  {tool.config.target_file_format}
+                                </div>
+                                {tool.config.flanking_bp_recommended && (
+                                  <div>
+                                    <span className="font-medium">
+                                      {t("marker.flankingBpRecommended")}:
+                                    </span>{" "}
+                                    {tool.config.flanking_bp_recommended} bp
+                                  </div>
+                                )}
+                                {tool.config.customizable_targets && (
+                                  <div className="flex items-center gap-1">
+                                    <Badge
+                                      variant="secondary"
+                                      className="text-xs font-normal px-2 py-0.5"
+                                    >
+                                      {t("marker.customizableTargets")}
+                                    </Badge>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
                           </div>
 
-                          <div className="flex flex-wrap gap-2 pt-1">
+                          <div className="space-y-2 pt-2 border-t border-border">
+                            <div className="space-y-1">
+                              <span className="text-xs font-semibold text-foreground">
+                                {t("marker.compatibility")}:
+                              </span>
+                              <div className="text-xs text-muted-foreground space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium">
+                                    {t("marker.status")}:
+                                  </span>
+                                  <Badge
+                                    variant={
+                                      tool.compatibility.status === "maintained"
+                                        ? "default"
+                                        : "secondary"
+                                    }
+                                    className="text-xs font-normal px-2 py-0.5"
+                                  >
+                                    {tool.compatibility.status === "maintained"
+                                      ? t("marker.maintained")
+                                      : t("marker.archived")}
+                                  </Badge>
+                                </div>
+                                {tool.compatibility.maintainer && (
+                                  <div>
+                                    <span className="font-medium">
+                                      {t("marker.maintainer")}:
+                                    </span>{" "}
+                                    {tool.compatibility.maintainer}
+                                  </div>
+                                )}
+                                <div>
+                                  <span className="font-medium">
+                                    {t("marker.license")}:
+                                  </span>{" "}
+                                  {tool.compatibility.license}
+                                </div>
+                                {tool.compatibility.last_release && (
+                                  <div>
+                                    <span className="font-medium">
+                                      {t("marker.lastRelease")}:
+                                    </span>{" "}
+                                    {tool.compatibility.last_release}
+                                  </div>
+                                )}
+                                {tool.compatibility.ont_models &&
+                                  tool.compatibility.ont_models.length > 0 && (
+                                    <div>
+                                      <span className="font-medium">
+                                        {t("marker.ontModels")}:
+                                      </span>{" "}
+                                      {tool.compatibility.ont_models.join(", ")}
+                                    </div>
+                                  )}
+                                {tool.compatibility.docker_image && (
+                                  <div>
+                                    <span className="font-medium">
+                                      {t("marker.dockerImage")}:
+                                    </span>{" "}
+                                    <code className="text-xs bg-muted px-1 py-0.5 rounded">
+                                      {tool.compatibility.docker_image}
+                                    </code>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          {tool.interfaces && tool.interfaces.length > 0 && (
+                            <div className="space-y-2 pt-2 border-t border-border">
+                              <span className="text-xs font-semibold text-foreground">
+                                {t("marker.interfaces")}:
+                              </span>
+                              <div className="space-y-2">
+                                {tool.interfaces.map((iface, idx) => (
+                                  <div key={idx} className="space-y-1">
+                                    <div className="flex items-center gap-2">
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-7 text-xs font-normal rounded-sm px-2"
+                                        asChild
+                                      >
+                                        <a
+                                          href={iface.url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          <ExternalLink className="h-3 w-3 mr-1" />
+                                          {iface.name}
+                                        </a>
+                                      </Button>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">
+                                      {iface.description}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {tool.limitations && tool.limitations.length > 0 && (
+                            <div className="space-y-2 pt-2 border-t border-border">
+                              <span className="text-xs font-semibold text-foreground">
+                                {t("marker.limitations")}:
+                              </span>
+                              <ul className="list-disc list-inside space-y-1 text-xs text-muted-foreground">
+                                {tool.limitations.map((limitation, idx) => (
+                                  <li key={idx}>{limitation}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {tool.maintainer_initiatives &&
+                            tool.maintainer_initiatives.length > 0 && (
+                              <div className="space-y-2 pt-2 border-t border-border">
+                                <span className="text-xs font-semibold text-foreground">
+                                  {t("marker.maintainerInitiatives")}:
+                                </span>
+                                <div className="flex flex-wrap gap-2">
+                                  {tool.maintainer_initiatives.map(
+                                    (initiative, idx) => (
+                                      <Badge
+                                        key={idx}
+                                        variant="secondary"
+                                        className="text-xs font-normal px-2 py-0.5"
+                                      >
+                                        {initiative}
+                                      </Badge>
+                                    )
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                          <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
                             {tool.repo_url && (
                               <Button
                                 variant="outline"
@@ -982,7 +1164,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                   rel="noopener noreferrer"
                                 >
                                   <ExternalLink className="h-3 w-3 mr-1" />
-                                  Repository
+                                  {t("marker.repository")}
                                 </a>
                               </Button>
                             )}
@@ -1007,6 +1189,23 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 </a>
                               </Button>
                             )}
+                            {tool.docs_url && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-7 text-xs font-normal rounded-sm px-2"
+                                asChild
+                              >
+                                <a
+                                  href={tool.docs_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <FileText className="h-3 w-3 mr-1" />
+                                  {t("marker.documentation")}
+                                </a>
+                              </Button>
+                            )}
                             {tool.online_version && (
                               <Button
                                 variant="outline"
@@ -1025,6 +1224,17 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               </Button>
                             )}
                           </div>
+
+                          {tool.notes && (
+                            <div className="space-y-1 pt-2 border-t border-border">
+                              <span className="text-xs font-semibold text-foreground">
+                                {t("marker.notes")}:
+                              </span>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                {tool.notes}
+                              </p>
+                            </div>
+                          )}
 
                           <div className="text-xs text-muted-foreground pt-2 border-t border-border">
                             {t("marker.lastChecked")}: {tool.last_checked}

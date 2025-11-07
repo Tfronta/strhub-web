@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
 
@@ -28,6 +28,18 @@ export default function AboutPage() {
     subject: "",
     message: "",
   });
+
+  // Scroll to contact form if hash is present
+  useEffect(() => {
+    if (window.location.hash === "#contact") {
+      const contactElement = document.getElementById("contact");
+      if (contactElement) {
+        setTimeout(() => {
+          contactElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      }
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,7 +136,7 @@ export default function AboutPage() {
             </Card>
 
             {/* Contact */}
-            <Card className="border-0 bg-gradient-to-br from-card to-card/50">
+            <Card id="contact" className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4">
                   <Mail className="h-6 w-6 text-primary-foreground" />

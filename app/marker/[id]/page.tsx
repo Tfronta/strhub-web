@@ -43,7 +43,6 @@ import {
 import { markerData } from "./markerData";
 import { useLanguage } from "@/contexts/language-context";
 import { markerFrequencies } from "./markerFrequencies";
-import { oceFrequencies } from "./oceFrequencies";
 import { toolsData, type Tool } from "./toolsData";
 
 export default function MarkerPage({ params }: { params: { id: string } }) {
@@ -194,20 +193,11 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
         marker?.populationFrequencies?.[
           selectedPopulation as keyof typeof marker.populationFrequencies
         ] || [];
-      if (oceEntries.length > 0) {
-        chartData = oceEntries.map((item) => ({
-          allele: item.allele,
-          frequency: item.frequency,
-          count: item.count,
-        }));
-      } else {
-        const oceData = oceFrequencies[markerId];
-        chartData = (oceData || []).map((item) => ({
-          allele: item.allele,
-          frequency: item.frequency,
-          count: 0,
-        }));
-      }
+      chartData = oceEntries.map((item) => ({
+        allele: item.allele,
+        frequency: item.frequency,
+        count: item.count,
+      }));
     } else {
       const populationData =
         marker?.populationFrequencies?.[

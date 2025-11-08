@@ -1,22 +1,40 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { FileText, Download, Copy, Settings } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageToggle } from "@/components/language-toggle"
-import Link from "next/link"
+import { useState } from "react";
+import { FileText, Download, Copy, Settings } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
+import Link from "next/link";
+import {
+  parseAlleles,
+  generateContent,
+  type ExportType,
+} from "@/lib/fasta-export";
 
 export default function FastaGeneratorPage() {
-  const [selectedMarker, setSelectedMarker] = useState("")
-  const [flankingRegion, setFlankingRegion] = useState("100")
-  const [outputFormat, setOutputFormat] = useState("standard")
-  const [generatedSequence, setGeneratedSequence] = useState("")
+  const [selectedMarker, setSelectedMarker] = useState("");
+  const [allelesInput, setAllelesInput] = useState("10-12");
+  const [flankingRegion, setFlankingRegion] = useState("100");
+  const [outputFormat, setOutputFormat] = useState<ExportType>("reference");
+  const [generatedSequence, setGeneratedSequence] = useState("");
 
   const markers = [
     { id: "csf1po", name: "CSF1PO", chromosome: "5" },
@@ -38,42 +56,45 @@ export default function FastaGeneratorPage() {
     { id: "th01", name: "TH01", chromosome: "11" },
     { id: "tpox", name: "TPOX", chromosome: "2" },
     { id: "vwa", name: "vWA", chromosome: "12" },
-  ]
+  ];
 
   const generateFasta = () => {
-    if (!selectedMarker) return
+    if (!selectedMarker) return;
 
-    const marker = markers.find((m) => m.id === selectedMarker)
-    if (!marker) return
+    const alleles = parseAlleles(allelesInput);
+    if (!alleles.length) {
+      setGeneratedSequence("Please enter alleles (e.g. 10-12 or 9,10,11)");
+      return;
+    }
 
-    // Mock FASTA generation - in a real implementation, this would fetch actual genomic sequences
-    const mockSequence = `ATCGATCGATCGATCG${"AGAT".repeat(Math.floor(Math.random() * 10) + 8)}GCTAGCTAGCTAGCTAG`
-    const flankingBp = Number.parseInt(flankingRegion)
-    const leftFlanking = "A".repeat(flankingBp)
-    const rightFlanking = "T".repeat(flankingBp)
-
-    const fullSequence = leftFlanking + mockSequence + rightFlanking
-    const fastaHeader = `>${marker.name}_Chr${marker.chromosome}_flanking_${flankingBp}bp`
-    const formattedSequence = fullSequence.match(/.{1,80}/g)?.join("\n") || fullSequence
-
-    setGeneratedSequence(`${fastaHeader}\n${formattedSequence}`)
-  }
+    try {
+      const content = generateContent(
+        selectedMarker,
+        alleles,
+        Number(flankingRegion),
+        outputFormat
+      );
+      setGeneratedSequence(content);
+    } catch (e: any) {
+      setGeneratedSequence(`ERROR: ${e?.message ?? String(e)}`);
+    }
+  };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedSequence)
-  }
+    navigator.clipboard.writeText(generatedSequence);
+  };
 
   const downloadFasta = () => {
-    const blob = new Blob([generatedSequence], { type: "text/plain" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `${selectedMarker}_sequence.fasta`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }
+    const blob = new Blob([generatedSequence], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${selectedMarker}_sequence.fasta`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -89,7 +110,10 @@ export default function FastaGeneratorPage() {
             </h1>
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link
+              href="/"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
               ← Back to STRhub
             </Link>
             <div className="flex items-center gap-2">
@@ -106,7 +130,9 @@ export default function FastaGeneratorPage() {
           {/* Page Header */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-4">FASTA Generator</h1>
-            <p className="text-xl text-muted-foreground">Generate custom FASTA sequences for research and analysis.</p>
+            <p className="text-xl text-muted-foreground">
+              Generate custom FASTA sequences for research and analysis.
+            </p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
@@ -117,12 +143,17 @@ export default function FastaGeneratorPage() {
                   <Settings className="h-5 w-5" />
                   Sequence Configuration
                 </CardTitle>
-                <CardDescription>Configure the parameters for FASTA sequence generation</CardDescription>
+                <CardDescription>
+                  Configure the parameters for FASTA sequence generation
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="marker-select">STR Marker</Label>
-                  <Select value={selectedMarker} onValueChange={setSelectedMarker}>
+                  <Select
+                    value={selectedMarker}
+                    onValueChange={setSelectedMarker}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select a marker" />
                     </SelectTrigger>
@@ -137,7 +168,20 @@ export default function FastaGeneratorPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="flanking-region">Flanking Region (bp)</Label>
+                  <Label htmlFor="alleles">Alleles (list or range)</Label>
+                  <Input
+                    id="alleles"
+                    type="text"
+                    value={allelesInput}
+                    onChange={(e) => setAllelesInput(e.target.value)}
+                    placeholder="e.g. 10-12 or 9,10,11"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="flanking-region">
+                    Flanking Region (bp per side)
+                  </Label>
                   <Input
                     id="flanking-region"
                     type="number"
@@ -150,22 +194,32 @@ export default function FastaGeneratorPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="output-format">Output Format</Label>
-                  <Select value={outputFormat} onValueChange={setOutputFormat}>
+                  <Label htmlFor="output-format">Output Type</Label>
+                  <Select
+                    value={outputFormat}
+                    onValueChange={(v) => setOutputFormat(v as ExportType)}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="standard">Standard FASTA</SelectItem>
-                      <SelectItem value="wrapped">Wrapped (80 chars/line)</SelectItem>
-                      <SelectItem value="single-line">Single Line</SelectItem>
+                      <SelectItem value="reference">
+                        Reference-style FASTA
+                      </SelectItem>
+                      <SelectItem value="tabular">Tabular (CSV)</SelectItem>
+                      <SelectItem value="multi">Multi-FASTA</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <Button onClick={generateFasta} className="w-full" disabled={!selectedMarker}>
+                <Button
+                  onClick={generateFasta}
+                  className="w-full"
+                  disabled={!selectedMarker}
+                >
                   <FileText className="h-4 w-4 mr-2" />
-                  Generate FASTA Sequence
+                  Generate Sequence
                 </Button>
               </CardContent>
             </Card>
@@ -174,7 +228,9 @@ export default function FastaGeneratorPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Generated Sequence</CardTitle>
-                <CardDescription>Your generated FASTA sequence will appear here</CardDescription>
+                <CardDescription>
+                  Your generated FASTA sequence will appear here
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {generatedSequence ? (
@@ -186,7 +242,11 @@ export default function FastaGeneratorPage() {
                       placeholder="Generated sequence will appear here..."
                     />
                     <div className="flex gap-2">
-                      <Button onClick={copyToClipboard} variant="outline" size="sm">
+                      <Button
+                        onClick={copyToClipboard}
+                        variant="outline"
+                        size="sm"
+                      >
                         <Copy className="h-4 w-4 mr-2" />
                         Copy
                       </Button>
@@ -199,7 +259,10 @@ export default function FastaGeneratorPage() {
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
                     <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Select a marker and click "Generate FASTA Sequence" to begin</p>
+                    <p>
+                      Select a marker and click "Generate FASTA Sequence" to
+                      begin
+                    </p>
                   </div>
                 )}
               </CardContent>
@@ -213,9 +276,10 @@ export default function FastaGeneratorPage() {
             </CardHeader>
             <CardContent className="prose prose-sm max-w-none dark:prose-invert">
               <p>
-                This tool generates FASTA sequences for STR markers with customizable flanking regions. The sequences
-                include the STR repeat region along with specified upstream and downstream flanking sequences for
-                comprehensive analysis.
+                This tool generates FASTA sequences for STR markers with
+                customizable flanking regions. The sequences include the STR
+                repeat region along with specified upstream and downstream
+                flanking sequences for comprehensive analysis.
               </p>
               <h4>Features:</h4>
               <ul>
@@ -236,5 +300,5 @@ export default function FastaGeneratorPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

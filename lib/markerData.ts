@@ -1,5 +1,5 @@
 // Enhanced marker data with NIST STRBase integration
-import { markerFrequencies, type Pop, type AlleleEntry } from "./markerFrequencies"
+import { markerFrequencies, type Pop, type AlleleEntry } from "../app/marker/[id]/markerFrequencies"
 
 // === NUEVO: helpers para mapear el id del marcador a la clave del objeto ===
 const key = (s: string) => s.toLowerCase().replace(/\s+/g, "_").replace(/-/g, "_")
@@ -18548,3 +18548,4 @@ export const markerData = {
 } as const
 
 export type MarkerData = typeof markerData
+export type MarkerEntry = typeof markerData[keyof typeof markerData]

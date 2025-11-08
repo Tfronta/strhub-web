@@ -41,7 +41,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { markerData } from "./markerData";
+import { markerData } from "../../../lib/markerData";
 import { useLanguage } from "@/contexts/language-context";
 import { markerFrequencies } from "./markerFrequencies";
 import { toolsData, type Tool } from "./toolsData";

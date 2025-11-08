@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   BarChart,
   Bar,
@@ -51,9 +52,17 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   const [xstrFrequencies, setXstrFrequencies] = useState<any>(null);
   const [selectedTechnology, setSelectedTechnology] = useState<string>("NGS");
   const [selectedDataset, setSelectedDataset] = useState<string>("");
+  const searchParams = useSearchParams();
 
   const markerId = params.id.toLowerCase();
   const marker = markerData[markerId as keyof typeof markerData];
+  const tabValues = ["overview", "frequencies", "variants", "tools"] as const;
+  type TabValue = (typeof tabValues)[number];
+  const requestedTab = (searchParams?.get("tab") ?? "overview") as string;
+  const initialTabParam: TabValue = tabValues.includes(requestedTab as TabValue)
+    ? (requestedTab as TabValue)
+    : "overview";
+  const [activeTab, setActiveTab] = useState<TabValue>(initialTabParam);
 
   useEffect(() => {
     if (marker && (marker.type === "X-STR" || marker.chromosome === "X")) {
@@ -73,6 +82,10 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     setSelectedDataset("");
   }, [selectedTechnology, selectedPopulation]);
+
+  useEffect(() => {
+    setActiveTab(initialTabParam);
+  }, [initialTabParam]);
 
   if (!marker) {
     return (
@@ -250,7 +263,11 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
           </p>
         </div>
 
-        <Tabs defaultValue="overview" className="space-y-6">
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => setActiveTab(value as TabValue)}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-4 h-9 bg-muted/50 p-1 rounded-md border-0">
             <TabsTrigger
               value="overview"

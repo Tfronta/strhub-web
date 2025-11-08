@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
-import { Search, Database, BarChart3, ExternalLink } from "lucide-react"
+import { Search, Database, ExternalLink } from "lucide-react"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -1382,9 +1382,50 @@ export default function CatalogPage() {
 
         {/* Markers Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedMarkers.map((marker) => (
-            <Link key={marker.id} href={`/marker/${marker.id}`}>
-              <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 hover:from-primary/5 hover:to-accent/5">
+          {sortedMarkers.map((marker) => {
+            const detailPath = `/marker/${marker.id}`
+
+            const handleCardClick = () => {
+              router.push(detailPath)
+            }
+
+            const handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault()
+                handleCardClick()
+              }
+            }
+
+            const handleTabClick = (
+              event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>,
+              tab: string
+            ) => {
+              event.stopPropagation()
+              if ("preventDefault" in event) {
+                event.preventDefault()
+              }
+              router.push(`${detailPath}?tab=${tab}`)
+            }
+
+            const handleTabKeyDown = (
+              event: React.KeyboardEvent<HTMLElement>,
+              tab: string
+            ) => {
+              if (event.key === "Enter" || event.key === " ") {
+                handleTabClick(event, tab)
+              }
+            }
+
+            return (
+              <div
+                key={marker.id}
+                role="link"
+                tabIndex={0}
+                onClick={handleCardClick}
+                onKeyDown={handleCardKeyDown}
+                className="focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
+              >
+                <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 hover:from-primary/5 hover:to-accent/5 cursor-pointer">
                 <CardHeader>
                   <div className="flex items-start justify-between mb-3">
                     <div>
@@ -1432,37 +1473,30 @@ export default function CatalogPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <BarChart3 className="h-3 w-3" />
-                        {marker.populations} {t("catalog.populations")}
-                      </div>
-                      {marker.strbaseUrl && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-auto p-0 text-xs"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            window.open(marker.strbaseUrl, "_blank")
-                          }}
-                        >
-                          <ExternalLink className="h-3 w-3 mr-1" />
-                          STRBase
-                        </Button>
-                      )}
-                    </div>
-                    <div className="flex gap-1">
-                      <div className="w-2 h-2 bg-primary rounded-full"></div>
-                      <div className="w-2 h-2 bg-accent rounded-full"></div>
-                      <div className="w-2 h-2 bg-secondary rounded-full"></div>
-                    </div>
+                  <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t">
+                    {[
+                      { tab: "frequencies", label: t("marker.tabs.frequencies") },
+                      { tab: "variants", label: t("marker.variantAlleles") },
+                      { tab: "tools", label: t("marker.tabs.tools") },
+                    ].map((item) => (
+                      <Badge
+                        key={item.tab}
+                        role="button"
+                        tabIndex={0}
+                        variant="outline"
+                        className="cursor-pointer border-primary/30 text-primary hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                        onClick={(event) => handleTabClick(event, item.tab)}
+                        onKeyDown={(event) => handleTabKeyDown(event, item.tab)}
+                      >
+                        {item.label}
+                      </Badge>
+                    ))}
                   </div>
                 </CardHeader>
               </Card>
-            </Link>
-          ))}
+              </div>
+            )
+          })}
         </div>
 
         {/* No Results */}

@@ -593,61 +593,63 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
                     {selectedPopulation === "AFR" && (
                       <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The African population dataset from pop.STR is composed
-                        of the following population groups: C. African Republic
-                        – Biaka Pygmies, D. R. of Congo – Mbuti Pygmies, Kenya –
-                        Bantu N.E., Namibia – San, Nigeria – Yoruba, Senegal –
-                        Mandenka, Somalia, and South Africa – Bantu.
+                        The African population dataset from pop.STR includes the
+                        following population groups: Central African Republic
+                        (Biaka Pygmies), Democratic Republic of the Congo (Mbuti
+                        Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria
+                        (Yoruba), Senegal (Mandenka), Somalia, and South Africa
+                        (Bantu).
                       </p>
                     )}
                     {selectedPopulation === "AMR" && (
                       <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The American population dataset from pop.STR is composed
-                        of the following population groups: Brazil – Karitiana,
-                        Brazil – Surui, Colombia – Colombian, Dominican
-                        Republic, Mexico – Maya, Mexico – Pima.
+                        The American population dataset from pop.STR includes
+                        the following population groups: Brazil (Karitiana),
+                        Brazil (Surui), Colombia (Colombian), Dominican
+                        Republic, Mexico (Maya), and Mexico (Pima).
                       </p>
                     )}
 
                     {selectedPopulation === "SAS" && (
                       <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The Central-South Asian population dataset from pop.STR
-                        is composed of the following population groups: China –
-                        Uygur, Pakistan – Balochi, Pakistan – Brahui, Pakistan –
-                        Burusho, Pakistan – Hazara, Pakistan – Kalash, Pakistan
-                        – Makrani, Pakistan – Pathan, Pakistan – Sindhi.
+                        The Central–South Asian population dataset from pop.STR
+                        includes the following population groups: China (Uygur),
+                        Pakistan (Balochi), Pakistan (Brahui), Pakistan
+                        (Burusho), Pakistan (Hazara), Pakistan (Kalash),
+                        Pakistan (Makrani), Pakistan (Pathan), and Pakistan
+                        (Sindhi).
                       </p>
                     )}
 
                     {selectedPopulation === "MES" && (
                       <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The Middle East population dataset from pop.STR is
-                        composed of the following population groups: Algeria
-                        (Mzab) – Mozabite, Israel (Carmel) – Druze, Israel
-                        (Central) – Palestinian, Israel (Negev) – Bedouin.
+                        The Middle East population dataset from pop.STR includes
+                        the following population groups: Algeria (Mzab –
+                        Mozabite), Israel (Carmel – Druze), Israel (Central –
+                        Palestinian), and Israel (Negev – Bedouin).
                       </p>
                     )}
 
                     {selectedPopulation === "EUR" && (
                       <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The European population dataset from pop.STR is composed
-                        of the following population groups: France – Basque,
-                        France – French, Italy (Bergamo) – North Italian, Italy
-                        – Sardinian, Italy – Tuscan, N.W. Spain, Orkney Islands
-                        – Orcadian, Russia – Russian, Russia Caucasus – Adygei,
-                        Sweden, U.S. Europeans.
+                        The European population dataset from pop.STR includes
+                        the following population groups: France (Basque), France
+                        (French), Italy (Bergamo – North Italian), Italy
+                        (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands
+                        (Orcadian), Russia (Russian), Russia Caucasus (Adygei),
+                        Sweden, and U.S. Europeans.
                       </p>
                     )}
 
                     {selectedPopulation === "EAS" && (
                       <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The East Asian population dataset from pop.STR is
-                        composed of the following population groups: Cambodia –
-                        Cambodian, China – Dai, China – Daur, China – Han, China
-                        – Hezhen, China – Lahu, China – Miaozu, China – Mongola,
-                        China – Naxi, China – Oroqen, China – She, China – Tu,
-                        China – Tujia, China – Xibo, China – Yizu, Japan –
-                        Japanese, Siberia – Yakut.
+                        The East Asian population dataset from pop.STR includes
+                        the following population groups: Cambodia (Cambodian),
+                        China (Dai), China (Daur), China (Han), China (Hezhen),
+                        China (Lahu), China (Miaozu), China (Mongola), China
+                        (Naxi), China (Oroqen), China (She), China (Tu), China
+                        (Tujia), China (Xibo), China (Yizu), Japan (Japanese),
+                        and Siberia (Yakut).
                       </p>
                     )}
 
@@ -756,9 +758,17 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     </div>
                   </>
                 ) : (
-                  <p className="text-sm text-muted-foreground text-center py-8">
-                    {t("common.notFound")}
-                  </p>
+                  <div className="flex flex-col items-center justify-center text-center py-10 space-y-4">
+                    <p className="text-sm text-muted-foreground max-w-md">
+                      {t("marker.noFrequenciesMessage")}
+                    </p>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href="/about#contact">
+                        <ExternalLink className="h-3 w-3 mr-2" />
+                        {t("marker.contributeDataCta")}
+                      </Link>
+                    </Button>
+                  </div>
                 )}
               </CardContent>
             </Card>

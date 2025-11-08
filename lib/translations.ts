@@ -249,6 +249,9 @@ export const translations = {
       strNaming: "STRnaming",
       repeatStructure: "Repeat Structure",
       sequence: "Sequence",
+      noFrequenciesMessage:
+        "No data available. Population frequencies for this locus are being curated.",
+      contributeDataCta: "Contribute data",
       notes: "Notes",
       download: "Download",
       source: "Source",
@@ -747,6 +750,9 @@ export const translations = {
       strNaming: "STRnaming",
       repeatStructure: "Estrutura de Repetição",
       sequence: "Sequência",
+      noFrequenciesMessage:
+        "Nenhum dado disponível. As frequências populacionais para este locus estão sendo curadas.",
+      contributeDataCta: "Contribuir com dados",
       notes: "Notas",
       download: "Baixar",
       source: "Fonte",
@@ -1248,6 +1254,9 @@ export const translations = {
       strNaming: "STRnaming",
       repeatStructure: "Repeat Structure",
       sequence: "Sequence",
+      noFrequenciesMessage:
+        "No hay datos disponibles. Las frecuencias poblacionales para este locus están siendo curadas.",
+      contributeDataCta: "Contribuir datos",
       notes: "Notes",
       download: "Download",
       source: "Source",

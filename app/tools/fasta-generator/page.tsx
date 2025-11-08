@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FileText, Download, Copy, Settings } from "lucide-react";
 import {
   Card,
@@ -20,21 +20,36 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import Link from "next/link";
-import {
-  parseAlleles,
-  generateContent,
-  type ExportType,
-} from "@/lib/fasta-export";
+import { parseAlleles, type ExportType } from "@/lib/fasta-export";
+import { generateContentFromSlice } from "@/lib/fasta-export-from-slice";
+import { markerData } from "@/lib/markerData";
+import { useLanguage } from "@/contexts/language-context";
+import { translations, type Language } from "@/lib/translations";
+
+const languageNames: Record<Language, string> = {
+  en: "English",
+  es: "Español",
+  pt: "Português",
+};
 
 export default function FastaGeneratorPage() {
   const [selectedMarker, setSelectedMarker] = useState("");
-  const [allelesInput, setAllelesInput] = useState("10-12");
+  const [allelesInput, setAllelesInput] = useState("");
   const [flankingRegion, setFlankingRegion] = useState("100");
   const [outputFormat, setOutputFormat] = useState<ExportType>("reference");
   const [generatedSequence, setGeneratedSequence] = useState("");
+  const { language } = useLanguage();
+  const languageContent = translations[language] as (typeof translations)["en"];
+  const defaultPageContent = translations.en.fastaGeneratorPage;
+  const pageContent = languageContent?.fastaGeneratorPage ?? defaultPageContent;
+  const about = pageContent?.about ?? defaultPageContent.about;
+  const configContent = pageContent?.config ?? defaultPageContent.config;
+  const outputContent = pageContent?.output ?? defaultPageContent.output;
+  const messages = pageContent?.messages ?? defaultPageContent.messages;
 
   const markers = [
     { id: "csf1po", name: "CSF1PO", chromosome: "5" },
@@ -58,25 +73,66 @@ export default function FastaGeneratorPage() {
     { id: "vwa", name: "vWA", chromosome: "12" },
   ];
 
-  const generateFasta = () => {
+  const getMarkerInfo = (markerId: string) => {
+    const uiMarker = markers.find((m) => m.id === markerId);
+    const markerName = uiMarker?.name;
+    const data =
+      (markerData as Record<string, any>)[markerId] ||
+      (markerName
+        ? (markerData as Record<string, any>)[markerName]
+        : undefined) ||
+      (markerName
+        ? (markerData as Record<string, any>)[markerName.toUpperCase()]
+        : undefined);
+
+    return { uiMarker, data };
+  };
+
+  useEffect(() => {
+    if (!selectedMarker) return;
+
+    const { data } = getMarkerInfo(selectedMarker);
+    const defaultAlleles =
+      typeof data?.alleles === "string" ? data.alleles.trim() : "";
+
+    setAllelesInput(defaultAlleles || "");
+  }, [selectedMarker]);
+
+  const generateFasta = async () => {
     if (!selectedMarker) return;
 
     const alleles = parseAlleles(allelesInput);
     if (!alleles.length) {
-      setGeneratedSequence("Please enter alleles (e.g. 10-12 or 9,10,11)");
+      setGeneratedSequence(messages.enterAlleles);
       return;
     }
 
     try {
-      const content = generateContent(
+      // 1) Resolver el objeto del marcador para obtener el nombre EXACTO (CSF1PO, D21S11, etc.)
+      const { uiMarker, data } = getMarkerInfo(selectedMarker);
+      if (!uiMarker) {
+        setGeneratedSequence(messages.markerNotFound);
+        return;
+      }
+      const markerName = uiMarker.name; // "CSF1PO" / "D21S11" ...
+
+      // 2) Obtener motivo desde markerData (aceptamos llave en id o en nombre)
+      const motif: string = data?.motif ?? "[AGAT]n"; // fallback seguro
+
+      // 3) Generar a partir del slice (usa detector robusto + normaliza nombre internamente)
+      const { fasta } = await generateContentFromSlice(
         selectedMarker,
+        motif,
         alleles,
-        Number(flankingRegion),
+        Number(flankingRegion) || 0,
         outputFormat
       );
-      setGeneratedSequence(content);
+
+      setGeneratedSequence(fasta);
     } catch (e: any) {
-      setGeneratedSequence(`ERROR: ${e?.message ?? String(e)}`);
+      setGeneratedSequence(
+        `${messages.errorPrefix}: ${e?.message ?? String(e)}`
+      );
     }
   };
 
@@ -97,16 +153,16 @@ export default function FastaGeneratorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/40">
       {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b bg-card/60 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
               <FileText className="h-5 w-5 text-primary-foreground" />
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              FASTA Generator
+            <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              {pageContent.title}
             </h1>
           </Link>
           <div className="flex items-center gap-4">
@@ -125,41 +181,51 @@ export default function FastaGeneratorPage() {
       </header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto">
           {/* Page Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-4">FASTA Generator</h1>
-            <p className="text-xl text-muted-foreground">
-              Generate custom FASTA sequences for research and analysis.
+            <h1 className="text-4xl font-extrabold mb-3 tracking-tight">
+              {pageContent.title}
+            </h1>
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto">
+              {pageContent.subtitle}
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-6">
             {/* Configuration Panel */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <Card className="border-0 bg-card/70 backdrop-blur-sm shadow-lg">
+              <CardHeader className="space-y-1.5 pb-4">
+                <CardTitle className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
                   <Settings className="h-5 w-5" />
-                  Sequence Configuration
+                  {configContent.title}
                 </CardTitle>
-                <CardDescription>
-                  Configure the parameters for FASTA sequence generation
-                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 pt-0">
                 <div className="space-y-2">
-                  <Label htmlFor="marker-select">STR Marker</Label>
+                  <Label
+                    htmlFor="marker-select"
+                    className="text-base font-semibold text-foreground"
+                  >
+                    {configContent.markerLabel}
+                  </Label>
                   <Select
                     value={selectedMarker}
                     onValueChange={setSelectedMarker}
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a marker" />
+                    <SelectTrigger className="h-11 text-base">
+                      <SelectValue
+                        placeholder={configContent.markerPlaceholder}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {markers.map((marker) => (
-                        <SelectItem key={marker.id} value={marker.id}>
+                        <SelectItem
+                          key={marker.id}
+                          value={marker.id}
+                          className="text-base"
+                        >
                           {marker.name} (Chr {marker.chromosome})
                         </SelectItem>
                       ))}
@@ -168,19 +234,28 @@ export default function FastaGeneratorPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="alleles">Alleles (list or range)</Label>
+                  <Label
+                    htmlFor="alleles"
+                    className="text-base font-semibold text-foreground"
+                  >
+                    {configContent.allelesLabel}
+                  </Label>
                   <Input
                     id="alleles"
                     type="text"
                     value={allelesInput}
                     onChange={(e) => setAllelesInput(e.target.value)}
-                    placeholder="e.g. 10-12 or 9,10,11"
+                    placeholder={configContent.allelesPlaceholder}
+                    className="h-11 text-base"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="flanking-region">
-                    Flanking Region (bp per side)
+                  <Label
+                    htmlFor="flanking-region"
+                    className="text-base font-semibold text-foreground"
+                  >
+                    {configContent.flankingLabel}
                   </Label>
                   <Input
                     id="flanking-region"
@@ -190,79 +265,93 @@ export default function FastaGeneratorPage() {
                     min="0"
                     max="1000"
                     placeholder="100"
+                    className="h-11 text-base"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="output-format">Output Type</Label>
+                  <Label
+                    htmlFor="output-format"
+                    className="text-base font-semibold text-foreground"
+                  >
+                    {configContent.outputLabel}
+                  </Label>
                   <Select
                     value={outputFormat}
                     onValueChange={(v) => setOutputFormat(v as ExportType)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="h-11 text-base">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="standard">Standard FASTA</SelectItem>
-                      <SelectItem value="reference">
+                      <SelectItem value="standard" className="text-base">
+                        Standard FASTA
+                      </SelectItem>
+                      <SelectItem value="reference" className="text-base">
                         Reference-style FASTA
                       </SelectItem>
-                      <SelectItem value="tabular">Tabular (CSV)</SelectItem>
-                      <SelectItem value="multi">Multi-FASTA</SelectItem>
+                      <SelectItem value="tabular" className="text-base">
+                        Tabular (CSV)
+                      </SelectItem>
+                      <SelectItem value="multi" className="text-base">
+                        Multi-FASTA
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <Button
                   onClick={generateFasta}
-                  className="w-full"
+                  className="w-full h-11 text-base font-semibold tracking-tight"
                   disabled={!selectedMarker}
                 >
                   <FileText className="h-4 w-4 mr-2" />
-                  Generate Sequence
+                  {configContent.generateButton}
                 </Button>
               </CardContent>
             </Card>
 
             {/* Output Panel */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Generated Sequence</CardTitle>
-                <CardDescription>
-                  Your generated FASTA sequence will appear here
+            <Card className="border-0 bg-card/70 backdrop-blur-sm shadow-lg">
+              <CardHeader className="space-y-1.5 pb-4">
+                <CardTitle className="text-2xl font-semibold tracking-tight">
+                  {outputContent.title}
+                </CardTitle>
+                <CardDescription className="text-base text-muted-foreground">
+                  {outputContent.description}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-0">
                 {generatedSequence ? (
                   <div className="space-y-4">
                     <Textarea
                       value={generatedSequence}
                       readOnly
-                      className="font-mono text-sm min-h-[300px]"
-                      placeholder="Generated sequence will appear here..."
+                      className="font-mono text-base min-h-[320px] max-h-[520px] resize-y rounded-xl border border-border bg-gradient-to-br from-background via-muted/40 to-background shadow-inner focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:border-primary/80 transition-colors"
+                      placeholder={outputContent.description}
                     />
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <Button
                         onClick={copyToClipboard}
                         variant="outline"
-                        size="sm"
+                        className="text-base font-medium h-10 px-4"
                       >
                         <Copy className="h-4 w-4 mr-2" />
-                        Copy
+                        {outputContent.copyButton}
                       </Button>
-                      <Button onClick={downloadFasta} size="sm">
+                      <Button
+                        onClick={downloadFasta}
+                        className="text-base font-medium h-10 px-4"
+                      >
                         <Download className="h-4 w-4 mr-2" />
-                        Download FASTA
+                        {outputContent.downloadButton}
                       </Button>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-12 text-muted-foreground">
+                  <div className="text-center py-12 text-base text-muted-foreground">
                     <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>
-                      Select a marker and click "Generate FASTA Sequence" to
-                      begin
-                    </p>
+                    <p>{outputContent.emptyState}</p>
                   </div>
                 )}
               </CardContent>
@@ -270,31 +359,68 @@ export default function FastaGeneratorPage() {
           </div>
 
           {/* Information Section */}
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle>About FASTA Generation</CardTitle>
+          <Card className="mt-10 border-0 bg-card/70 backdrop-blur-sm shadow-lg">
+            <CardHeader className="space-y-1.5 pb-2">
+              <CardTitle className="text-2xl font-semibold tracking-tight">
+                {about.title}
+              </CardTitle>
             </CardHeader>
-            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
-              <p>
-                This tool generates FASTA sequences for STR markers with
-                customizable flanking regions. The sequences include the STR
-                repeat region along with specified upstream and downstream
-                flanking sequences for comprehensive analysis.
-              </p>
-              <h4>Features:</h4>
-              <ul>
-                <li>Support for all CODIS core and extended STR markers</li>
-                <li>Customizable flanking region lengths (0-1000 bp)</li>
-                <li>Multiple output formats for different analysis needs</li>
-                <li>Direct download and clipboard copy functionality</li>
-              </ul>
-              <h4>Use Cases:</h4>
-              <ul>
-                <li>Primer design for STR amplification</li>
-                <li>In silico PCR validation</li>
-                <li>Sequence alignment and comparison</li>
-                <li>Custom analysis pipeline development</li>
-              </ul>
+            <CardContent className="space-y-8 pt-0">
+              <div className="space-y-4 text-base leading-relaxed text-foreground/90">
+                <p>{about.intro}</p>
+                <p>{about.detail}</p>
+              </div>
+
+              <section className="space-y-4">
+                <h3 className="text-xl font-semibold text-foreground tracking-tight">
+                  {about.overview.title}
+                </h3>
+                <div className="space-y-3 text-base leading-relaxed text-muted-foreground">
+                  {about.overview.paragraphs.map((paragraph: string) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              </section>
+
+              <section className="space-y-4">
+                <h3 className="text-xl font-semibold text-foreground tracking-tight">
+                  {about.features.title}
+                </h3>
+                <ul className="grid gap-3 rounded-xl border border-muted/50 bg-background/80 p-5 text-base shadow-sm">
+                  {about.features.items.map((item: string) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-3 text-foreground"
+                    >
+                      <span
+                        className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary"
+                        aria-hidden="true"
+                      />
+                      <span className="leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="space-y-4">
+                <h3 className="text-xl font-semibold text-foreground tracking-tight">
+                  {about.useCases.title}
+                </h3>
+                <ul className="grid gap-3 rounded-xl border border-muted/50 bg-background/80 p-5 text-base shadow-sm">
+                  {about.useCases.items.map((item: string) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-3 text-foreground"
+                    >
+                      <span
+                        className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-accent"
+                        aria-hidden="true"
+                      />
+                      <span className="leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             </CardContent>
           </Card>
         </div>

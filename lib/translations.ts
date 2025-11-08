@@ -239,7 +239,6 @@ export const translations = {
       fastaGenerator: "FASTA Sequence Generator",
       fastaDescription: "Generate FASTA sequences for the {marker} marker",
       flankingRegion: "Flanking Region (bp)",
-      outputFormat: "Output Format",
       generateFasta: "Generate FASTA Sequence",
       generatedSequence: "Generated Sequence",
       downloadFasta: "Download FASTA",
@@ -252,10 +251,71 @@ export const translations = {
       noFrequenciesMessage:
         "No data available. Population frequencies for this locus are being curated.",
       contributeDataCta: "Contribute data",
-      notes: "Notes",
       download: "Download",
       source: "Source",
       viewInStrbase: "View in STRBase",
+    },
+    // FASTA Generator Page
+    fastaGeneratorPage: {
+      languageLabel: "Current language",
+      title: "FASTA Generator",
+      subtitle: "Generate custom FASTA sequences for research and analysis.",
+      config: {
+        title: "Sequence configuration parameters",
+        markerLabel: "STR Marker",
+        markerPlaceholder: "Select a marker",
+        allelesLabel: "Alleles (list or range)",
+        allelesPlaceholder: "e.g. 10-12 or 9,10,11",
+        flankingLabel: "Flanking Region (bp per side)",
+        outputLabel: "Output Type",
+        generateButton: "Generate Sequence",
+      },
+      output: {
+        title: "Generated Sequence",
+        description: "Your generated FASTA sequence will appear here",
+        emptyState:
+          'Select a marker and click "Generate Sequence" to begin',
+        copyButton: "Copy",
+        downloadButton: "Download FASTA",
+      },
+      messages: {
+        enterAlleles: "Please enter alleles (e.g. 10-12 or 9,10,11)",
+        markerNotFound: "Marker not found in list.",
+        errorPrefix: "ERROR",
+      },
+      about: {
+        title: "About FASTA Generation",
+        intro:
+          "This module produces high quality FASTA sequences for Short Tandem Repeat (STR) markers, using curated reference regions derived from GRCh38.",
+        detail:
+          "Each generated sequence represents the expected genomic structure of the STR locus, with customizable upstream and downstream flanking regions.",
+        overview: {
+          title: "Overview",
+          paragraphs: [
+            "STRhub's FASTA Generator allows researchers to explore allelic variability by simulating STR repeat patterns with precise genomic context.",
+            "Users can define allele ranges, adjust flanking lengths, and export the resulting sequences in several standardized formats.",
+          ],
+        },
+        features: {
+          title: "Features",
+          items: [
+            "Full support for CODIS core and extended STR markers",
+            "Reference-based slices aligned to GRCh38",
+            "Customizable flanking regions (0–1000 bp per side)",
+            "Multiple export formats: Standard FASTA, Reference-style FASTA, Multi-FASTA, and Tabular CSV",
+            "Direct download and copy options",
+          ],
+        },
+        useCases: {
+          title: "Use cases",
+          items: [
+            "Forensic and population genetics research",
+            "Allelic reconstruction and in silico analysis",
+            "Primer design and assay validation",
+            "Educational and training purposes in forensic genomics",
+          ],
+        },
+      },
     },
     // STRBase Integration
     strbase: {
@@ -740,7 +800,6 @@ export const translations = {
       fastaGenerator: "Gerador de Sequência FASTA",
       fastaDescription: "Gere sequências FASTA para o marcador {marker}",
       flankingRegion: "Região Flanqueante (pb)",
-      outputFormat: "Formato de Saída",
       generateFasta: "Gerar Sequência FASTA",
       generatedSequence: "Sequência Gerada",
       downloadFasta: "Baixar FASTA",
@@ -753,10 +812,71 @@ export const translations = {
       noFrequenciesMessage:
         "Nenhum dado disponível. As frequências populacionais para este locus estão sendo curadas.",
       contributeDataCta: "Contribuir com dados",
-      notes: "Notas",
       download: "Baixar",
       source: "Fonte",
       viewInStrbase: "Ver no STRBase",
+    },
+    fastaGeneratorPage: {
+      languageLabel: "Idioma atual",
+      title: "Gerador FASTA",
+      subtitle:
+        "Gere sequências FASTA personalizadas para pesquisa e análise.",
+      config: {
+        title: "Parâmetros de configuração da sequência",
+        markerLabel: "Marcador STR",
+        markerPlaceholder: "Selecione um marcador",
+        allelesLabel: "Alelos (lista ou intervalo)",
+        allelesPlaceholder: "ex.: 10-12 ou 9,10,11",
+        flankingLabel: "Região flanqueadora (pb por lado)",
+        outputLabel: "Tipo de saída",
+        generateButton: "Gerar sequência",
+      },
+      output: {
+        title: "Sequência gerada",
+        description: "A sequência FASTA gerada aparecerá aqui",
+        emptyState:
+          'Selecione um marcador e clique em "Gerar sequência" para começar',
+        copyButton: "Copiar",
+        downloadButton: "Baixar FASTA",
+      },
+      messages: {
+        enterAlleles: "Informe os alelos (ex.: 10-12 ou 9,10,11)",
+        markerNotFound: "Marcador não encontrado na lista.",
+        errorPrefix: "ERRO",
+      },
+      about: {
+        title: "About FASTA Generation",
+        intro:
+          "This module produces high-quality FASTA sequences for Short Tandem Repeat (STR) markers, using curated reference regions derived from GRCh38.",
+        detail:
+          "Each generated sequence represents the expected genomic structure of the STR locus, with customizable upstream and downstream flanking regions.",
+        overview: {
+          title: "Overview",
+          paragraphs: [
+            "STRhub's FASTA Generator allows researchers to explore allelic variability by simulating STR repeat patterns with precise genomic context.",
+            "Users can define allele ranges, adjust flanking lengths, and export the resulting sequences in several standardized formats.",
+          ],
+        },
+        features: {
+          title: "Features",
+          items: [
+            "Full support for CODIS core and extended STR markers",
+            "Reference-based slices aligned to GRCh38",
+            "Customizable flanking regions (0–1000 bp per side)",
+            "Multiple export formats: Standard FASTA, Reference-style FASTA, Multi-FASTA, and Tabular CSV",
+            "Direct download and copy options",
+          ],
+        },
+        useCases: {
+          title: "Use cases",
+          items: [
+            "Forensic and population genetics research",
+            "Allelic reconstruction and in silico analysis",
+            "Primer design and assay validation",
+            "Educational and training purposes in forensic genomics",
+          ],
+        },
+      },
     },
     // STRBase Integration
     strbase: {
@@ -1188,7 +1308,7 @@ export const translations = {
         OCE: "Oceánico",
       },
       citation:
-        "Cita: Datos de frecuencia poblacional obtenidos de la base de datos STRBase – NIST. Todos los alelos reportados en STRbase para cada marcador están incluidos en todos los grupos poblacionales (AFR, AMR, EAS, SAS, EUR).",
+        "Cita: Dados de frecuencia poblacional obtenidos de la base de datos STRBase – NIST. Todos los alelos reportados en STRbase para cada marcador están incluidos en todos los grupos poblacionales (AFR, AMR, EAS, SAS, EUR).",
       citationReference: "Referencia: NIST STRBase. Disponible en: https://strbase.nist.gov/",
       toolsCompatibility: "Compatibilidad de Herramientas y Pipelines",
       toolsDescription: "Herramientas de análisis STR y pipelines que soportan este marcador",
@@ -1244,7 +1364,6 @@ export const translations = {
       fastaGenerator: "Generador de Secuencia FASTA",
       fastaDescription: "Genere secuencias FASTA para el marcador {marker}",
       flankingRegion: "Región Flanqueante (pb)",
-      outputFormat: "Formato de Salida",
       generateFasta: "Generar Secuencia FASTA",
       generatedSequence: "Secuencia Generada",
       downloadFasta: "Descargar FASTA",
@@ -1257,10 +1376,71 @@ export const translations = {
       noFrequenciesMessage:
         "No hay datos disponibles. Las frecuencias poblacionales para este locus están siendo curadas.",
       contributeDataCta: "Contribuir datos",
-      notes: "Notes",
       download: "Download",
       source: "Source",
       viewInStrbase: "View in STRBase",
+    },
+    // FASTA Generator Page
+    fastaGeneratorPage: {
+      languageLabel: "Idioma actual",
+      title: "Generador FASTA",
+      subtitle: "Genera secuencias FASTA personalizadas para investigación y análisis.",
+      config: {
+        title: "Parámetros de configuración de secuencia",
+        markerLabel: "Marcador STR",
+        markerPlaceholder: "Selecciona un marcador",
+        allelesLabel: "Alelos (lista o rango)",
+        allelesPlaceholder: "p. ej. 10-12 o 9,10,11",
+        flankingLabel: "Región flanqueante (pb por lado)",
+        outputLabel: "Tipo de salida",
+        generateButton: "Generar secuencia",
+      },
+      output: {
+        title: "Secuencia generada",
+        description: "Tu secuencia FASTA generada aparecerá aquí",
+        emptyState:
+          'Selecciona un marcador y haz clic en "Generar secuencia" para comenzar',
+        copyButton: "Copiar",
+        downloadButton: "Descargar FASTA",
+      },
+      messages: {
+        enterAlleles: "Ingresa alelos (p. ej. 10-12 o 9,10,11)",
+        markerNotFound: "Marcador no encontrado en la lista.",
+        errorPrefix: "ERROR",
+      },
+      about: {
+        title: "About FASTA Generation",
+        intro:
+          "This module produces high-quality FASTA sequences for Short Tandem Repeat (STR) markers, using curated reference regions derived from GRCh38.",
+        detail:
+          "Each generated sequence represents the expected genomic structure of the STR locus, with customizable upstream and downstream flanking regions.",
+        overview: {
+          title: "Overview",
+          paragraphs: [
+            "STRhub's FASTA Generator allows researchers to explore allelic variability by simulating STR repeat patterns with precise genomic context.",
+            "Users can define allele ranges, adjust flanking lengths, and export the resulting sequences in several standardized formats.",
+          ],
+        },
+        features: {
+          title: "Features",
+          items: [
+            "Full support for CODIS core and extended STR markers",
+            "Reference-based slices aligned to GRCh38",
+            "Customizable flanking regions (0–1000 bp per side)",
+            "Multiple export formats: Standard FASTA, Reference-style FASTA, Multi-FASTA, and Tabular CSV",
+            "Direct download and copy options",
+          ],
+        },
+        useCases: {
+          title: "Use cases",
+          items: [
+            "Forensic and population genetics research",
+            "Allelic reconstruction and in silico analysis",
+            "Primer design and assay validation",
+            "Educational and training purposes in forensic genomics",
+          ],
+        },
+      },
     },
     // STRBase Integration
     strbase: {
@@ -1501,8 +1681,8 @@ export const translations = {
         allele: "Alelo",
       },
       charts: {
-        ceTitle: "Análisis CE (RFU)",
-        ngsTitle: "Análisis NGS (Lecturas)",
+        ceTitle: "Análise CE (RFU)",
+        ngsTitle: "Análise NGS (Leituras)",
       },
     },
   },

@@ -480,110 +480,131 @@ type MarkerSequenceEntry = {
   sequence?: string;
 };
 
+// -----------------------------------------------------------------------------
+// Convert CE peaks to simulated NGS rows, using real allele sequences from markerData
+// Shows isoalleles only when a locus truly has >1 identical alleles (e.g., two "20")
+// -----------------------------------------------------------------------------
 export function cePeaksToNGSRowsWithSeq(
-  locusId: LocusId,
-  peaks: Peak[]
+  locusId: string,
+  peaks: Peak[],
+  markerDataOverride?: Record<string, any>,
+  stPctByTargetOverride?: Record<string, number | string>,
+  kOverride?: number
 ) {
-  const k = 1.2; // RFU -> reads (escala didáctica)
+  const rows: any[] = []
+  const markerMap = markerDataOverride ?? (markerData as Record<string, any>)
+  const k = typeof kOverride === "number" && Number.isFinite(kOverride) ? kOverride : 1.2
 
-  // % stutter observado por alelo target (target = alelo -1)
-  const stPctByTarget: Record<string, number> = {};
+  const computedStutterPct: Record<string, number> = {}
   for (const p of peaks) {
-    if (p.kind !== 'stutter') continue;
-    const target = String(p.allele);              // p.ej. "12" (stutter de 13→12)
-    const parent = String(Number(target) + 1);    // alelo padre
+    if (p.kind !== "stutter") continue
+    const target = String(p.allele)
+    const parent = String(Number(target) + 1)
     const parentRFU =
-      peaks.find(q => q.kind === 'true' && String(q.allele) === parent)?.rfu || 0;
+      peaks.find((q) => q.kind === "true" && String(q.allele) === parent)?.rfu ?? 0
     if (parentRFU > 0) {
-      stPctByTarget[target] = Math.round((p.rfu / parentRFU) * 100);
+      computedStutterPct[target] = Math.round((p.rfu / parentRFU) * 100)
     }
   }
 
-  // Solo alelos verdaderos para la tabla
-  const truePeaks = peaks.filter(p => p.kind === 'true');
+  const stPctByTarget = stPctByTargetOverride ?? computedStutterPct
 
-  // Catálogo del locus (para secuencias e isoalelos)
-  const locus = demoCatalog[locusId];
-  const entries = locus?.alleles ?? [];
-  const markerKey = normalizeMarkerKey(locusId);
-  const markerEntry = (markerData as Record<string, any>)[markerKey];
+  // Helper → count true allele occurrences (ignore stutter)
+  const trueCount: Record<string, number> = {}
+  for (const p of peaks) {
+    if (p.kind === "stutter") continue
+    const alleleLabel = String(p.allele)
+    trueCount[alleleLabel] = (trueCount[alleleLabel] ?? 0) + 1
+  }
+
+  // Extract marker info
+  const markerKey = normalizeMarkerKey(locusId)
+  const markerEntry = markerMap?.[markerKey]
   const markerSequences: MarkerSequenceEntry[] = Array.isArray(markerEntry?.sequences)
     ? markerEntry.sequences
-    : [];
+    : []
 
-  // Filas de la tabla
-  const rows: Array<{
-    allele: string;
-    coverage: number;
-    stutterPct: number | '—';
-    repeatSequence: string | '—';
-    fullSequence: string | '—';
-  }> = [];
+  // Helper → get representative sequence(s) for a given allele label
+  const getSequencesForAllele = (alleleLabel: string) => {
+    const all = markerSequences.filter(
+      (s: any) => String(s?.allele ?? '') === alleleLabel
+    )
+    if (!all.length) return []
 
-  for (const p of truePeaks) {
-    const alleleLabel = String(p.allele);
-    const baseReads = Math.max(1, Math.round(p.rfu * k)); // ≥ 1 para que haya barra
-
-    // Todas las entradas del catálogo que coinciden con ese tamaño
-    const entriesForSize = entries.filter(e => String(e.size) === alleleLabel);
-    const sequencesForAllele = markerSequences.filter(
-      (seq) => String(seq?.allele ?? "") === alleleLabel
-    );
-
-    if (sequencesForAllele.length > 0) {
-      const perSeq = Math.max(1, Math.floor(baseReads / sequencesForAllele.length));
-      sequencesForAllele.forEach((seq, index) => {
-        const hasMultiple = sequencesForAllele.length > 1;
-        rows.push({
-          allele: hasMultiple ? `${alleleLabel} iso${index + 1}` : alleleLabel,
-          coverage: perSeq,
-          stutterPct: stPctByTarget[alleleLabel] ?? '—',
-          repeatSequence: seq?.pattern ?? '—',
-          fullSequence: seq?.sequence ?? '—',
-        });
-      });
-      continue;
+    const duplicates = trueCount[alleleLabel] ?? 0
+    if (duplicates <= 1) {
+      // one real copy → pick canonical (non-isoallele) or first
+      const main = all.find((s: any) => !s.isIsoallele) ?? all[0]
+      return [main]
+    } else {
+      // two or more real copies → expand to real isoalleles (if available)
+      const canonical = all.find((s: any) => !s.isIsoallele)
+      const iso = all.filter((s: any) => s.isIsoallele)
+      const totalNeeded = Math.min(duplicates, all.length)
+      const chosen = []
+      if (canonical) chosen.push(canonical)
+      for (const i of iso) {
+        if (chosen.length >= totalNeeded) break
+        chosen.push(i)
+      }
+      // if there were no isoalleles available, just duplicate canonical
+      while (chosen.length < totalNeeded) chosen.push(canonical ?? all[0])
+      return chosen
     }
+  }
 
-    if (entriesForSize.length === 0) {
+  // Build rows for each CE peak (without stutter duplication)
+  for (const p of peaks) {
+    if (p.kind === "stutter") continue
+    const alleleLabel = String(p.allele)
+    const baseReads = Math.max(1, Math.round(p.rfu * k))
+    const seqs = getSequencesForAllele(alleleLabel)
+
+    if (!seqs.length) {
+      // no known sequence → placeholder row
       rows.push({
         allele: alleleLabel,
         coverage: baseReads,
         stutterPct: stPctByTarget[alleleLabel] ?? '—',
         repeatSequence: '—',
         fullSequence: '—',
-      });
-      continue;
+      })
+      continue
     }
 
-    // ¿Hay múltiples isoalelos para este tamaño?
-    const isoCount = entriesForSize.filter(e => e.isIsoallele).length;
-    const hasMultipleIso = isoCount > 1;
-
-    const split = Math.max(1, entriesForSize.length);
-    const perIso = Math.max(1, Math.floor(baseReads / split));
-
-    entriesForSize.forEach((entry, i) => {
-      // Solo agregamos "isoN" si realmente hay múltiples isoalelos
-      const label =
-        entry.isIsoallele && hasMultipleIso ? `${alleleLabel} iso${i + 1}` : alleleLabel;
-
+    // When only one copy → single representative
+    if (seqs.length === 1) {
+      const s = seqs[0]
       rows.push({
-        allele: label,
-        coverage: perIso,
+        allele: alleleLabel,
+        coverage: baseReads,
         stutterPct: stPctByTarget[alleleLabel] ?? '—',
-        repeatSequence: entry.repeatSequence ?? '—',
-        fullSequence: entry.fullSequence ?? '—',
-      });
-    });
+        repeatSequence: s?.pattern ?? '—',
+        fullSequence: s?.sequence ?? '—',
+      })
+      continue
+    }
+
+    // When multiple identical alleles (isoalleles) → split coverage evenly
+    const covPerIso = Math.max(1, Math.round(baseReads / seqs.length))
+    seqs.forEach((s, i) => {
+      rows.push({
+        allele: `${alleleLabel} iso${i + 1}`,
+        coverage: covPerIso,
+        stutterPct: stPctByTarget[alleleLabel] ?? '—',
+        repeatSequence: s?.pattern ?? '—',
+        fullSequence: s?.sequence ?? '—',
+      })
+    })
   }
 
-  // Orden por tamaño (mantiene iso juntos)
+  // Preserve sorting for clean display
   rows.sort((a, b) => {
-    const na = Number(String(a.allele).replace(/[^\d.]/g, ''));
-    const nb = Number(String(b.allele).replace(/[^\d.]/g, ''));
-    return (Number.isNaN(na) || Number.isNaN(nb)) ? String(a.allele).localeCompare(String(b.allele)) : na - nb;
-  });
+    const numA = parseFloat(a.allele)
+    const numB = parseFloat(b.allele)
+    if (!isNaN(numA) && !isNaN(numB)) return numA - numB
+    return String(a.allele).localeCompare(String(b.allele))
+  })
 
-  return rows;
+  return rows
 }

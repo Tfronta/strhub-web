@@ -5,6 +5,7 @@
 // ====================================================================
 
 import { CATALOG } from "@/app/catalog/data";
+import { markerData } from "@/lib/markerData";
 
 // ----------------------------------------------------
 // Umbrales (RFU)
@@ -67,54 +68,170 @@ export const demoCatalog: Record<string, {
 );
 
 // ----------------------------------------------------
-// Genotipos por muestra (controlados, reproducibles, no aleatorios)
-// Ajustá libremente estos perfiles si querés otros ejemplos.
+// Genotipos reales para mezcla (hasta 3 contribuyentes)
 // ----------------------------------------------------
-export const SAMPLES_GENOTYPES: Record<string, Record<string, string[]>> = {
-  Sample_A: {
-    CSF1PO: ['12', '13'], FGA: ['21', '23'], D3S1358: ['15', '17'], TH01: ['6', '9.3'],
-    D21S11: ['28', '30'], D18S51: ['14', '16'], D5S818: ['11', '12'], D13S317: ['11', '12'],
-    D7S820: ['10', '11'], D16S539: ['11', '13'], D2S1338: ['17', '19'],
+type AlleleValue = number;
+
+type SampleProfile = {
+  sampleId: string;
+  loci: Record<string, { alleles: AlleleValue[] }>;
+};
+
+export const SAMPLE_DATABASE: Record<string, SampleProfile> = {
+  HG02944: {
+    sampleId: "HG02944",
+    loci: {
+      CSF1PO: { alleles: [7, 8] },
+      D10S1248: { alleles: [13, 14] },
+      D12S391: { alleles: [17, 20] },
+      D13S317: { alleles: [11, 13] },
+      D16S539: { alleles: [11, 12] },
+      D18S51: { alleles: [15, 16] },
+      D19S433: { alleles: [13, 14.2] },
+      D1S1656: { alleles: [11, 15] },
+      D22S1045: { alleles: [10, 17] },
+      D2S1338: { alleles: [20, 22] },
+      D2S441: { alleles: [14, 14] },
+      D3S1358: { alleles: [16, 17] },
+      D5S818: { alleles: [11, 12] },
+      D7S820: { alleles: [10, 11] },
+      D8S1179: { alleles: [14, 15] },
+      FGA: { alleles: [21, 24] },
+      PentaD: { alleles: [8, 10] },
+      PentaE: { alleles: [7, 10] },
+      TH01: { alleles: [6, 8] },
+      TPOX: { alleles: [8, 9] },
+      vWA: { alleles: [15, 17] },
+    },
   },
-  Sample_B: {
-    CSF1PO: ['11', '12'], FGA: ['20', '21'], D3S1358: ['16', '16'], TH01: ['7', '9.3'],
-    D21S11: ['29', '30'], D18S51: ['12', '13'], D5S818: ['12', '12'], D13S317: ['8', '12'],
-    D7S820: ['11', '12'], D16S539: ['9', '12'], D2S1338: ['18', '23'],
+  HG00097: {
+    sampleId: "HG00097",
+    loci: {
+      CSF1PO: { alleles: [12, 12] },
+      D10S1248: { alleles: [15, 15] },
+      D12S391: { alleles: [22, 23] },
+      D13S317: { alleles: [11, 14] },
+      D16S539: { alleles: [11, 11] },
+      D18S51: { alleles: [14, 14] },
+      D19S433: { alleles: [13, 13] },
+      D1S1656: { alleles: [15, 17.3] },
+      D22S1045: { alleles: [16, 16] },
+      D2S1338: { alleles: [22, 24] },
+      D2S441: { alleles: [10, 14] },
+      D3S1358: { alleles: [15, 16] },
+      D5S818: { alleles: [11, 11] },
+      D7S820: { alleles: [13, 10] },
+      D8S1179: { alleles: [13, 10] },
+      FGA: { alleles: [22, 23] },
+      PentaD: { alleles: [9, 12] },
+      PentaE: { alleles: [7, 7] },
+      TH01: { alleles: [7, 6] },
+      TPOX: { alleles: [8, 11] },
+      vWA: { alleles: [17, 17] },
+    },
   },
-  Sample_C: {
-    CSF1PO: ['10', '12'], FGA: ['19', '22'], D3S1358: ['14', '18'], TH01: ['6', '8'],
-    D21S11: ['30', '31'], D18S51: ['13', '17'], D5S818: ['10', '12'], D13S317: ['12', '13'],
-    D7S820: ['8', '10'], D16S539: ['10', '11'], D2S1338: ['16', '20'],
+  HG00145: {
+    sampleId: "HG00145",
+    loci: {
+      CSF1PO: { alleles: [12, 12] },
+      D10S1248: { alleles: [14, 16] },
+      D12S391: { alleles: [18, 18] },
+      D13S317: { alleles: [10, 13] },
+      D16S539: { alleles: [13, 13] },
+      D18S51: { alleles: [18, 17] },
+      D19S433: { alleles: [14, 13] },
+      D1S1656: { alleles: [16, 16.3] },
+      D22S1045: { alleles: [15, 16] },
+      D2S1338: { alleles: [20, 25] },
+      D2S441: { alleles: [10, 10] },
+      D3S1358: { alleles: [16, 17] },
+      D5S818: { alleles: [12, 12] },
+      D7S820: { alleles: [8, 10] },
+      D8S1179: { alleles: [12, 14] },
+      FGA: { alleles: [22, 21] },
+      PentaD: { alleles: [9, 11] },
+      PentaE: { alleles: [7, 12] },
+      TH01: { alleles: [8, 9] },
+      TPOX: { alleles: [8, 11] },
+      vWA: { alleles: [17, 18] },
+    },
   },
-  Sample_D: {
-    CSF1PO: ['12', '12'], FGA: ['22', '24'], D3S1358: ['15', '16'], TH01: ['9.3', '9.3'],
-    D21S11: ['27', '28'], D18S51: ['11', '12'], D5S818: ['12', '13'], D13S317: ['9', '11'],
-    D7S820: ['12', '12'], D16S539: ['12', '12'], D2S1338: ['19', '19'],
+  HG00372: {
+    sampleId: "HG00372",
+    loci: {
+      CSF1PO: { alleles: [13, 10] },
+      D10S1248: { alleles: [13, 13] },
+      D12S391: { alleles: [18, 19] },
+      D13S317: { alleles: [11, 9] },
+      D16S539: { alleles: [9, 12] },
+      D18S51: { alleles: [16, 19] },
+      D19S433: { alleles: [14, 13] },
+      D1S1656: { alleles: [14, 17.3] },
+      D22S1045: { alleles: [17, 15] },
+      D2S1338: { alleles: [18, 24] },
+      D2S441: { alleles: [11.3, 14] },
+      D3S1358: { alleles: [15, 16] },
+      D5S818: { alleles: [12, 11] },
+      D7S820: { alleles: [11, 11] },
+      D8S1179: { alleles: [11, 14] },
+      FGA: { alleles: [20, 21] },
+      PentaD: { alleles: [9, 10] },
+      PentaE: { alleles: [12, 12] },
+      TH01: { alleles: [7, 6] },
+      TPOX: { alleles: [8, 9] },
+      vWA: { alleles: [18, 18] },
+    },
+  },
+  HG01063: {
+    sampleId: "HG01063",
+    loci: {
+      CSF1PO: { alleles: [12, 12] },
+      D10S1248: { alleles: [13, 16] },
+      D12S391: { alleles: [18, 23] },
+      D13S317: { alleles: [13, 14] },
+      D16S539: { alleles: [12, 12] },
+      D18S51: { alleles: [12, 22] },
+      D19S433: { alleles: [14, 12] },
+      D1S1656: { alleles: [13, 17.3] },
+      D22S1045: { alleles: [17, 16] },
+      D2S1338: { alleles: [23, 17] },
+      D2S441: { alleles: [10, 14] },
+      D3S1358: { alleles: [16, 18] },
+      D5S818: { alleles: [12, 7] },
+      D7S820: { alleles: [8, 11] },
+      D8S1179: { alleles: [10, 14] },
+      FGA: { alleles: [19, 20] },
+      PentaD: { alleles: [13, 5] },
+      PentaE: { alleles: [7, 13] },
+      TH01: { alleles: [9.3, 9.3] },
+      TPOX: { alleles: [8, 8] },
+      vWA: { alleles: [14, 16] },
+    },
   },
 };
 
-export type DemoSampleId = keyof typeof SAMPLES_GENOTYPES;
+export type SampleId = keyof typeof SAMPLE_DATABASE;
 export type LocusId = string;
 
-export function getSampleAlleles(locusId: LocusId, sampleId: DemoSampleId): string[] {
-  const s = SAMPLES_GENOTYPES[sampleId];
-  const alleles = s?.[locusId];
-  return Array.isArray(alleles) ? alleles.map(String) : [];
-}
+export const sampleOptions = Object.keys(SAMPLE_DATABASE) as SampleId[];
+
+export const LOCI_ORDER: LocusId[] = Array.from(
+  new Set(
+    Object.values(SAMPLE_DATABASE)
+      .flatMap((sample) => Object.keys(sample.loci))
+  )
+).sort();
 
 // ----------------------------------------------------
-// Motor CE determinista (sin inventar alelos)
-// - Alturas RFU ajustadas por ratio A/B
-// - Balance heterocigota leve y estable por locus
-// - Stutter -1 según catálogo si existe (fallback 6%)
+// Motor CE determinista con 1-3 contribuyentes
 // ----------------------------------------------------
 export type AlleleLike = number | string;
 
 export type Peak = {
-  allele: AlleleLike;             // tamaño del alelo (p.ej. "12")
+  allele: AlleleLike;
   rfu: number;
-  kind: 'true' | 'stutter';
-  source: 'A' | 'B' | 'A+B';
+  kind: "true" | "stutter";
+  source: string;
 };
 
 export type LocusSimResult = {
@@ -123,118 +240,246 @@ export type LocusSimResult = {
   notes: string[];
 };
 
-const clamp = (x:number,a:number,b:number)=>Math.max(a,Math.min(b,x));
+const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
+
 function hash01(seed: string) {
   let h = 2166136261;
-  for (let i = 0; i < seed.length; i++) { h ^= seed.charCodeAt(i); h = Math.imul(h, 16777619); }
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
   h >>>= 0;
-  return (h % 10000) / 10000; // 0..1
+  return (h % 10000) / 10000;
 }
 
-// stutter% desde catálogo cuando existe; sino fallback 6%
-function stutterPctFor(locusId: LocusId, allele: AlleleLike, fallback = 0.06) {
-  const locus = demoCatalog[locusId];
-  const a = locus?.alleles?.find((al: any) => String(al.size) === String(allele));
-  return a?.stutterPct != null ? Number(a.stutterPct) / 100 : fallback;
+function formatAlleleLabel(value: number): string {
+  const decimals = value % 1 === 0 ? 0 : 1;
+  const factor = decimals ? 10 : 1;
+  return (Math.round(value * factor) / factor).toString();
 }
 
-type SimArgsByAlleles = {
-  locusId: LocusId;
-  allelesA: string[];
-  allelesB: string[];
-  ratioA: number;           // 0..1
-  totalRFU?: number;
-  seed?: string;
-  showStutter?: boolean;
+type StutterPreset = {
+  minus1: number;
+  plus1?: number;
+  minus2?: number;
 };
 
-export function simulateCEForLocus({
-  locusId,
-  allelesA,
-  allelesB,
-  ratioA,
-  totalRFU = 400,
-  seed = 'strhub-real',
-  showStutter = true,
-}: SimArgsByAlleles): LocusSimResult {
-  const ratioB = clamp(1 - ratioA, 0, 1);
+const STUTTER_PRESETS: Record<LocusId, StutterPreset> = {
+  CSF1PO: { minus1: 0.05 },
+  D10S1248: { minus1: 0.04 },
+  D12S391: { minus1: 0.07, plus1: 0.015 },
+  D13S317: { minus1: 0.05 },
+  D16S539: { minus1: 0.04 },
+  D18S51: { minus1: 0.09, plus1: 0.02 },
+  D19S433: { minus1: 0.03 },
+  D1S1656: { minus1: 0.08, plus1: 0.01 },
+  D22S1045: { minus1: 0.04 },
+  D2S1338: { minus1: 0.07 },
+  D2S441: { minus1: 0.04 },
+  D3S1358: { minus1: 0.06 },
+  D5S818: { minus1: 0.05 },
+  D7S820: { minus1: 0.05 },
+  D8S1179: { minus1: 0.06 },
+  FGA: { minus1: 0.1, plus1: 0.025, minus2: 0.015 },
+  PentaD: { minus1: 0.08, minus2: 0.02 },
+  PentaE: { minus1: 0.07 },
+  TH01: { minus1: 0.03 },
+  TPOX: { minus1: 0.02 },
+  vWA: { minus1: 0.06 },
+};
 
-  const nA = Math.max(1, allelesA.length);
-  const nB = Math.max(1, allelesB.length);
+const DEFAULT_STUTTER: StutterPreset = { minus1: 0.06 };
 
-  // leve desbalance heterocigota determinista por locus+seed
-  const hbA = clamp(0.88 + (hash01(`${seed}|A|${locusId}`) - 0.5) * 0.18, 0.7, 1.1);
-  const hbB = clamp(0.88 + (hash01(`${seed}|B|${locusId}`) - 0.5) * 0.18, 0.7, 1.1);
+export type ContributorInput = {
+  sampleId: SampleId;
+  proportion: number; // 0..1
+  label: "A" | "B" | "C";
+};
 
-  const baseA = (ratioA * totalRFU) / nA;
-  const baseB = (ratioB * totalRFU) / nB;
+export type MixtureParams = {
+  targetPerLocus: number;
+  hetImbalanceCV: number;
+  showStutter: boolean;
+  seed: string;
+};
 
-  const rfuMap = new Map<string, { rfu: number; src: 'A'|'B'|'A+B' }>();
-  const add = (al: string, inc: number, who: 'A'|'B') => {
-    const prev = rfuMap.get(al);
-    if (!prev) rfuMap.set(al, { rfu: inc, src: who });
-    else rfuMap.set(al, { rfu: prev.rfu + inc, src: prev.src === who ? who : 'A+B' });
+export const DEFAULT_MIX_PARAMS: MixtureParams = {
+  targetPerLocus: 400,
+  hetImbalanceCV: 0.08,
+  showStutter: true,
+  seed: "strhub-mix",
+};
+
+function getSampleAlleles(locusId: LocusId, sampleId: SampleId): number[] {
+  const profile = SAMPLE_DATABASE[sampleId];
+  const alleles = profile?.loci?.[locusId]?.alleles ?? [];
+  return alleles.filter((a) => a != null);
+}
+
+function splitAlleles(
+  alleles: number[],
+  totalRFU: number,
+  seed: string,
+  cv: number
+): number[] {
+  if (!alleles.length) return [];
+  if (alleles.length === 1) return [totalRFU];
+
+  const bias = (hash01(seed) - 0.5) * 2 * cv;
+  const p1 = clamp(0.5 + bias, 0.2, 0.8);
+  const weights = [p1, 1 - p1];
+
+  if (alleles.length > 2) {
+    const rest = Math.max(1, alleles.length - 2);
+    const residual = Math.max(0, 1 - weights[0] - weights[1]);
+    const per = residual / rest;
+    for (let i = 2; i < alleles.length; i++) {
+      weights[i] = per;
+    }
+  }
+
+  const sum = weights.reduce((acc, w) => acc + w, 0);
+  return weights.map((w) => (w / sum) * totalRFU);
+}
+
+function addToMap(
+  map: Map<string, { rfu: number; sources: Set<string> }>,
+  allele: string,
+  inc: number,
+  label: string
+) {
+  if (inc <= 0) return;
+  const prev = map.get(allele);
+  if (!prev) {
+    map.set(allele, { rfu: inc, sources: new Set([label]) });
+  } else {
+    prev.rfu += inc;
+    prev.sources.add(label);
+  }
+}
+
+function buildSourceLabel(vals: Set<string>): string {
+  return Array.from(vals).sort().join("+");
+}
+
+function createStutter(
+  peak: Peak,
+  preset: StutterPreset,
+  map: Map<string, { rfu: number; sources: Set<string> }>
+) {
+  const alleleNum = Number(peak.allele);
+  if (Number.isNaN(alleleNum)) return;
+
+  const addStutter = (delta: number, rate?: number) => {
+    if (!rate || rate <= 0) return;
+    const shifted = alleleNum + delta;
+    const label = formatAlleleLabel(shifted);
+    addToMap(map, label, peak.rfu * rate, peak.source);
   };
 
-  allelesA.forEach((al, i) => add(String(al), baseA * (i === 0 && allelesA.length === 2 ? 1 : hbA), 'A'));
-  allelesB.forEach((al, i) => add(String(al), baseB * (i === 0 && allelesB.length === 2 ? 1 : hbB), 'B'));
-
-  const AT = DEFAULT_AT;
-  const ST = DEFAULT_IT;
-
-  const peaksTrue: Peak[] = [...rfuMap.entries()]
-  .map(([al, val]) => ({ allele: al, rfu: val.rfu, kind: 'true' as const, source: val.src }));
-
-// Para stutter sí mantenemos el filtro por AT (ruido razonable)
-const peaksStutter: Peak[] = showStutter
-  ? peaksTrue
-      .map((p) => {
-        const st = clamp(stutterPctFor(locusId, p.allele, 0.06), 0, 0.2);
-        return {
-          allele: String(Number(p.allele) - 1),
-          rfu: p.rfu * st,
-          kind: 'stutter' as const,
-          source: p.source,
-        };
-      })
-      .filter((s) => !Number.isNaN(Number(s.allele)) && s.rfu >= AT)
-  : [];
-
-  const notes: string[] = [];
-  peaksTrue.forEach(p => { if (p.rfu < ST) notes.push(`Posible dropout: ${p.allele} (${Math.round(p.rfu)} RFU) < ST (${ST}).`); });
-
-  const all = [...peaksTrue, ...peaksStutter].sort((a,b) => Number(a.allele) - Number(b.allele));
-  return { locusId: String(locusId), peaks: all, notes };
+  addStutter(-1, preset.minus1 ?? DEFAULT_STUTTER.minus1);
+  addStutter(1, preset.plus1);
+  addStutter(-2, preset.minus2);
 }
 
-type SimArgsBySamples = {
+type MixtureArgs = {
   locusId: LocusId;
-  sampleAId: DemoSampleId;
-  sampleBId: DemoSampleId;
-  ratioA: number;
-  totalRFU?: number;
-  seed?: string;
-  showStutter?: boolean;
+  contributors: ContributorInput[];
+  params?: Partial<MixtureParams>;
 };
 
-export function simulateCEFromSamples(args: SimArgsBySamples): LocusSimResult {
-  const allelesA = getSampleAlleles(args.locusId, args.sampleAId);
-  const allelesB = getSampleAlleles(args.locusId, args.sampleBId);
-  return simulateCEForLocus({
-    locusId: args.locusId,
-    allelesA, allelesB,
-    ratioA: args.ratioA,
-    totalRFU: args.totalRFU,
-    seed: args.seed,
-    showStutter: args.showStutter,
-  });
+export function simulateMixtureForLocus({
+  locusId,
+  contributors,
+  params = {},
+}: MixtureArgs): LocusSimResult {
+  const { targetPerLocus, hetImbalanceCV, showStutter, seed } = {
+    ...DEFAULT_MIX_PARAMS,
+    ...params,
+  };
+
+  const trueMap = new Map<string, { rfu: number; sources: Set<string> }>();
+
+  contributors
+    .filter((c) => c.proportion > 0)
+    .forEach((contrib) => {
+      const alleles = getSampleAlleles(locusId, contrib.sampleId);
+      if (!alleles.length) return;
+      const contributorRFU = targetPerLocus * contrib.proportion;
+      const split = splitAlleles(
+        alleles,
+        contributorRFU,
+        `${seed}|${contrib.label}|${locusId}`,
+        hetImbalanceCV
+      );
+      split.forEach((rfu, idx) => {
+        const alleleValue = alleles[idx] ?? alleles[alleles.length - 1];
+        const label = formatAlleleLabel(alleleValue);
+        addToMap(trueMap, label, rfu, contrib.label);
+      });
+    });
+
+  const truePeaks: Peak[] = Array.from(trueMap.entries()).map(([allele, val]) => ({
+    allele,
+    rfu: val.rfu,
+    kind: "true" as const,
+    source: buildSourceLabel(val.sources),
+  }));
+
+  const preset = STUTTER_PRESETS[locusId] ?? DEFAULT_STUTTER;
+  const stutterMap = new Map<string, { rfu: number; sources: Set<string> }>();
+
+  if (showStutter) {
+    truePeaks.forEach((peak) => createStutter(peak, preset, stutterMap));
+  }
+
+  const stutterPeaks: Peak[] = Array.from(stutterMap.entries())
+    .map(([allele, val]) => ({
+      allele,
+      rfu: val.rfu,
+      kind: "stutter" as const,
+      source: buildSourceLabel(val.sources),
+    }))
+    .filter((p) => p.rfu >= DEFAULT_AT);
+
+  const allPeaks = [...truePeaks, ...stutterPeaks].sort(
+    (a, b) => Number(a.allele) - Number(b.allele)
+  );
+
+  const notes: string[] = [];
+  allPeaks
+    .filter((p) => p.kind === "true")
+    .forEach((p) => {
+      if (p.rfu < DEFAULT_IT) {
+        notes.push(
+          `Posible dropout: ${p.allele} (${Math.round(
+            p.rfu
+          )} RFU) < IT (${DEFAULT_IT}).`
+        );
+      }
+    });
+
+  return {
+    locusId,
+    peaks: allPeaks,
+    notes,
+  };
 }
 
 // ----------------------------------------------------
 // NGS: tabla derivada de picos CE + secuencias reales del CATALOG
-// - Usa demoCatalog para mapear repeatSequence / fullSequence / isoalelos
-// - Coverage se deriva de RFU (escala simple); luego podés conectar reales.
 // ----------------------------------------------------
+
+function normalizeMarkerKey(id: string) {
+  return id.toLowerCase().replace(/\s+/g, "_").replace(/-/g, "_");
+}
+
+type MarkerSequenceEntry = {
+  allele?: string;
+  pattern?: string;
+  sequence?: string;
+};
+
 export function cePeaksToNGSRowsWithSeq(
   locusId: LocusId,
   peaks: Peak[]
@@ -260,6 +505,11 @@ export function cePeaksToNGSRowsWithSeq(
   // Catálogo del locus (para secuencias e isoalelos)
   const locus = demoCatalog[locusId];
   const entries = locus?.alleles ?? [];
+  const markerKey = normalizeMarkerKey(locusId);
+  const markerEntry = (markerData as Record<string, any>)[markerKey];
+  const markerSequences: MarkerSequenceEntry[] = Array.isArray(markerEntry?.sequences)
+    ? markerEntry.sequences
+    : [];
 
   // Filas de la tabla
   const rows: Array<{
@@ -276,6 +526,24 @@ export function cePeaksToNGSRowsWithSeq(
 
     // Todas las entradas del catálogo que coinciden con ese tamaño
     const entriesForSize = entries.filter(e => String(e.size) === alleleLabel);
+    const sequencesForAllele = markerSequences.filter(
+      (seq) => String(seq?.allele ?? "") === alleleLabel
+    );
+
+    if (sequencesForAllele.length > 0) {
+      const perSeq = Math.max(1, Math.floor(baseReads / sequencesForAllele.length));
+      sequencesForAllele.forEach((seq, index) => {
+        const hasMultiple = sequencesForAllele.length > 1;
+        rows.push({
+          allele: hasMultiple ? `${alleleLabel} iso${index + 1}` : alleleLabel,
+          coverage: perSeq,
+          stutterPct: stPctByTarget[alleleLabel] ?? '—',
+          repeatSequence: seq?.pattern ?? '—',
+          fullSequence: seq?.sequence ?? '—',
+        });
+      });
+      continue;
+    }
 
     if (entriesForSize.length === 0) {
       rows.push({

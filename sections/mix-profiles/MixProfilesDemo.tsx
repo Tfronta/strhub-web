@@ -9,13 +9,13 @@ import {
   cePeaksToNGSRowsWithSeq,
   sampleOptions,
   LOCI_ORDER,
-  simulateMixtureForLocus,
-  DEFAULT_MIX_PARAMS,
   type LocusId,
   type SampleId,
   type ContributorInput,
   type Peak,
 } from "./data";
+
+import { simulateCE } from "./utils/mix-model";
 
 import CEChart from "./charts/CEChart";
 import NGSChart from "./charts/NGSChart";
@@ -33,36 +33,41 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+/* ------------------------ helpers ------------------------ */
 function parseNum(x: string | number): number {
   if (typeof x === "number") return x;
   const m = String(x).match(/\d+(\.\d+)?/);
   return m ? Number(m[0]) : NaN;
 }
 
-// ✅ Convierte picos discretos en una traza tipo “electroferograma” (suma de gaussianas)
+// electroferograma (suma de gaussianas)
 function makeCETrace(peaks: Peak[]) {
   if (!peaks.length) return [];
-  const nums = peaks
+  // usar SOLO true / dropout para la curva
+  const truePeaks = peaks.filter((p) => p.kind !== "stutter");
+
+  if (!truePeaks.length) return [];
+
+  const nums = truePeaks
     .map((p) => parseNum(String(p.allele)))
     .filter((n) => !Number.isNaN(n));
   const minA = Math.min(...nums) - 1;
   const maxA = Math.max(...nums) + 1;
 
-  const step = 0.02; // resolución del eje x
-  const sigma = 0.06; // ancho de pico (~0.06 alelos)
+  const step = 0.02;
+  const sigma = 0.06;
 
   const out: { allele: number; rfu: number }[] = [];
   for (let x = minA; x <= maxA; x = +(x + step).toFixed(5)) {
     let y = 0;
-    for (const p of peaks) {
+    for (const p of truePeaks) {
       const mu = parseNum(String(p.allele));
       if (Number.isNaN(mu)) continue;
-      const A = p.rfu; // altura del pico
+      const A = p.rfu;
       const g = Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
       y += A * g;
     }
@@ -71,6 +76,32 @@ function makeCETrace(peaks: Peak[]) {
   return out;
 }
 
+function makeCETraceByKind(peaks: Peak[], kind: Peak["kind"]) {
+  const subset = peaks.filter((p) => p.kind === kind);
+  if (!subset.length) return [];
+  const nums = subset
+    .map((p) => parseNum(String(p.allele)))
+    .filter((n) => !Number.isNaN(n));
+  const minA = Math.min(...nums) - 1;
+  const maxA = Math.max(...nums) + 1;
+  const step = 0.02;
+  const sigma = 0.06;
+
+  const out: { allele: number; rfu: number }[] = [];
+  for (let x = minA; x <= maxA; x = +(x + step).toFixed(5)) {
+    let y = 0;
+    for (const p of subset) {
+      const mu = parseNum(String(p.allele));
+      const A = p.rfu;
+      const g = Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
+      y += A * g;
+    }
+    out.push({ allele: x, rfu: y });
+  }
+  return out;
+}
+
+/* ------------------------ tipos locales ------------------------ */
 type ContributorState = {
   label: "A" | "B" | "C";
   sampleId: SampleId | null;
@@ -91,23 +122,19 @@ function normalizeContributors(
   }));
 
   const active = updated.filter((c) => c.sampleId);
-
-  if (active.length === 0) {
+  if (active.length === 0)
     return updated.map((c, idx) => ({
       ...c,
       proportion: idx === 0 ? 100 : 0,
     }));
-  }
 
-  if (active.length === 1) {
+  if (active.length === 1)
     return updated.map((c) => ({
       ...c,
       proportion: c.label === active[0].label ? 100 : 0,
     }));
-  }
 
   const anchor = active.find((c) => c.label === lockedLabel) ?? active[0];
-
   const desired = 100;
   const anchorValue = clamp(
     updated.find((c) => c.label === anchor.label)?.proportion ??
@@ -128,13 +155,10 @@ function normalizeContributors(
 
   const next = updated.map((c) => {
     if (!c.sampleId) return { ...c, proportion: 0 };
-    if (c.label === anchor.label) {
+    if (c.label === anchor.label)
       return { ...c, proportion: Number(anchorValue.toFixed(1)) };
-    }
 
-    if (remainingCapacity <= 0) {
-      return { ...c, proportion: 0 };
-    }
+    if (remainingCapacity <= 0) return { ...c, proportion: 0 };
 
     if (otherSum <= 0) {
       const share = remainingCapacity / otherLabels.length;
@@ -152,46 +176,43 @@ function normalizeContributors(
     .reduce((total, c) => total + c.proportion, 0);
   const diff = desired - sumActive;
   if (Math.abs(diff) > 0.09) {
-    return next.map((c) => {
-      if (c.label === anchor.label) {
-        return {
-          ...c,
-          proportion: Number(clamp(c.proportion + diff, 0, desired).toFixed(1)),
-        };
-      }
-      return c;
-    });
+    return next.map((c) =>
+      c.label === anchor.label
+        ? {
+            ...c,
+            proportion: Number(
+              clamp(c.proportion + diff, 0, desired).toFixed(1)
+            ),
+          }
+        : c
+    );
   }
 
   return next;
 }
 
+/* ------------------------ componente ------------------------ */
 export default function MixProfilesDemo() {
-  const markerKeys = useMemo(() => {
-    if (LOCI_ORDER.length) return LOCI_ORDER as LocusId[];
-    return Object.keys(demoCatalog) as LocusId[];
-  }, []);
+  // Controles de simulación
+  const [AT, setAT] = useState<number>(DEFAULT_AT);
+  const [IT, setIT] = useState<number>(DEFAULT_IT);
+  const [kDeg, setKDeg] = useState<number>(0.015);
+  const [noise, setNoise] = useState<number>(28);
+
+  const markerKeys = useMemo(
+    () =>
+      (LOCI_ORDER.length ? LOCI_ORDER : Object.keys(demoCatalog)) as LocusId[],
+    []
+  );
 
   const [selectedMarker, setSelectedMarker] = useState<LocusId>(
     () => markerKeys[0] ?? ("CSF1PO" as LocusId)
   );
   const [locusOpen, setLocusOpen] = useState(false);
   const [contributors, setContributors] = useState<ContributorState[]>([
-    {
-      label: "A",
-      sampleId: (sampleOptions[0] as SampleId) ?? null,
-      proportion: sampleOptions.length > 1 ? 60 : 100,
-    },
-    {
-      label: "B",
-      sampleId: (sampleOptions[1] as SampleId) ?? null,
-      proportion: sampleOptions.length > 1 ? 40 : 0,
-    },
-    {
-      label: "C",
-      sampleId: null,
-      proportion: 0,
-    },
+    { label: "A", sampleId: sampleOptions[0] as SampleId, proportion: 60 },
+    { label: "B", sampleId: sampleOptions[1] as SampleId, proportion: 40 },
+    { label: "C", sampleId: null, proportion: 0 },
   ]);
   const [comboOpen, setComboOpen] = useState<Record<string, boolean>>({
     A: false,
@@ -199,78 +220,98 @@ export default function MixProfilesDemo() {
     C: false,
   });
 
-  useEffect(() => {
-    if (!markerKeys.length) return;
-    if (!markerKeys.includes(selectedMarker)) {
-      setSelectedMarker(markerKeys[0]);
-    }
-  }, [markerKeys, selectedMarker]);
-
-  useEffect(() => {
-    setContributors((prev) => normalizeContributors(prev));
-  }, []);
+  useEffect(() => setContributors((prev) => normalizeContributors(prev)), []);
 
   const handleSampleChange = (
-    label: ContributorState["label"],
+    label: "A" | "B" | "C",
     value: SampleId | null
   ) => {
-    setContributors((prev) => {
-      const next = prev.map((c) =>
-        c.label === label
-          ? {
-              ...c,
-              sampleId: value,
-              proportion: value ? c.proportion : 0,
-            }
-          : c
-      );
-      return normalizeContributors(next, label);
-    });
+    setContributors((prev) =>
+      normalizeContributors(
+        prev.map((c) =>
+          c.label === label
+            ? { ...c, sampleId: value, proportion: value ? c.proportion : 0 }
+            : c
+        ),
+        label
+      )
+    );
   };
 
-  const handleProportionChange = (
-    label: ContributorState["label"],
-    value: number
-  ) => {
+  const handleProportionChange = (label: "A" | "B" | "C", value: number) => {
     const sanitized = Number.isFinite(value) ? value : 0;
-    setContributors((prev) => {
-      const next = prev.map((c) =>
-        c.label === label ? { ...c, proportion: clamp(sanitized, 0, 100) } : c
-      );
-      return normalizeContributors(next, label);
-    });
+    setContributors((prev) =>
+      normalizeContributors(
+        prev.map((c) =>
+          c.label === label ? { ...c, proportion: clamp(sanitized, 0, 100) } : c
+        ),
+        label
+      )
+    );
   };
 
   const activeContributors: ContributorInput[] = useMemo(() => {
     const active = contributors.filter((c) => c.sampleId && c.proportion > 0);
-    const total = active.reduce((sum, c) => sum + c.proportion, 0);
+    const total = active.reduce((s, c) => s + c.proportion, 0);
     if (!active.length) return [];
-    const safeTotal = total > 0 ? total : active.length * (100 / active.length);
+    const safeTotal = total || 100;
     return active.map((c) => ({
       sampleId: c.sampleId as SampleId,
       label: c.label,
-      proportion: c.proportion / safeTotal || 0,
+      proportion: c.proportion / safeTotal,
     }));
   }, [contributors]);
 
+  // CE
   const ce = useMemo(() => {
-    if (!activeContributors.length) {
+    if (!activeContributors.length)
       return { locusId: selectedMarker, peaks: [], notes: [] };
-    }
-    return simulateMixtureForLocus({
+    return simulateCE({
       locusId: selectedMarker,
       contributors: activeContributors,
+      dnaInputNg: 0.05, // 50 pg
       params: {
-        targetPerLocus: DEFAULT_MIX_PARAMS.targetPerLocus,
-        hetImbalanceCV: DEFAULT_MIX_PARAMS.hetImbalanceCV,
-        showStutter: true,
-        seed: "strhub-mix",
+        AT,
+        ST: IT,
+        kappaRFU: 8000,
+        hetCV: 0.15,
+        sigmaLN: 0.25,
+        locusEff: 0.95,
+        degrK: kDeg,
+        ampliconSize: 150,
+        baselineMu: noise,
+        baselineSd: Math.max(2, noise * 0.35),
+        stutter: { minus1: 0.06, minus2: 0.01, plus1: 0.005, sd: 0.02 },
       },
     });
-  }, [activeContributors, selectedMarker]);
+  }, [activeContributors, selectedMarker, AT, IT, kDeg, noise]);
 
-  const ceSeries = useMemo(() => makeCETrace(ce.peaks), [ce.peaks]);
+  // curvas y marcadores
+  const ceTrueSeries = useMemo(
+    () => makeCETraceByKind(ce.peaks, "true"),
+    [ce.peaks]
+  );
+  const ceStutterSeries = useMemo(
+    () => makeCETraceByKind(ce.peaks, "stutter"),
+    [ce.peaks]
+  );
+  const ceMarkers = useMemo(() => {
+    const m: Array<{
+      allele: number;
+      rfu: number;
+      kind: "dropout" | "stutter" | "true";
+    }> = [];
+    for (const p of ce.peaks) {
+      const allele = parseNum(String(p.allele));
+      if (Number.isNaN(allele) || p.rfu < AT) continue;
+      if (p.kind === "stutter") m.push({ allele, rfu: p.rfu, kind: "stutter" });
+      else if (p.rfu < IT) m.push({ allele, rfu: p.rfu, kind: "dropout" });
+      else m.push({ allele, rfu: p.rfu, kind: "true" });
+    }
+    return m.sort((a, b) => a.allele - b.allele);
+  }, [ce.peaks, AT, IT]);
 
+  // NGS derivado de CE
   const ngsRows = useMemo(
     () => cePeaksToNGSRowsWithSeq(selectedMarker, ce.peaks),
     [selectedMarker, ce.peaks]
@@ -278,37 +319,36 @@ export default function MixProfilesDemo() {
 
   const ngsBars = useMemo(() => {
     const grouped = new Map<number, { allele: number; coverage: number }>();
-
     for (const r of ngsRows) {
       const alleleNum = parseNum(r.allele);
-      if (!Number.isNaN(alleleNum) && alleleNum > 0) {
-        const existing = grouped.get(alleleNum);
-        if (existing) {
-          existing.coverage += r.coverage;
-        } else {
-          grouped.set(alleleNum, { allele: alleleNum, coverage: r.coverage });
-        }
-      }
+      if (!Number.isNaN(alleleNum))
+        grouped.set(alleleNum, {
+          allele: alleleNum,
+          coverage: (grouped.get(alleleNum)?.coverage ?? 0) + r.coverage,
+        });
     }
-
     return Array.from(grouped.values()).sort((a, b) => a.allele - b.allele);
   }, [ngsRows]);
 
-  const mixSummary = useMemo(() => {
-    if (!contributors.length) return "";
-    return contributors
-      .map((c) => {
-        const base = `${c.label}:`;
-        if (!c.sampleId) return `${base} —`;
-        return `${base} ${c.proportion.toFixed(1)}%`;
-      })
-      .join(" • ");
-  }, [contributors]);
+  const mixSummary = useMemo(
+    () =>
+      contributors
+        .map((c) =>
+          !c.sampleId
+            ? `${c.label}: —`
+            : `${c.label}: ${c.proportion.toFixed(1)}%`
+        )
+        .join(" • "),
+    [contributors]
+  );
 
+  /* ------------------------ render ------------------------ */
   return (
     <div className="space-y-6">
+      {/* PANEL SUPERIOR: Locus + Contribuidores + Controles */}
       <div className="rounded-xl border p-4">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+          {/* Locus */}
           <div className="lg:col-span-1">
             <label className="text-sm font-medium">Locus</label>
             <div className="mt-2">
@@ -351,7 +391,9 @@ export default function MixProfilesDemo() {
             </div>
           </div>
 
+          {/* Contribuidores + controles */}
           <div className="lg:col-span-3 space-y-4">
+            {/* Contribuidores */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {contributors.map((contributor) => (
                 <div key={contributor.label} className="rounded-lg border p-3">
@@ -475,23 +517,82 @@ export default function MixProfilesDemo() {
                 </div>
               ))}
             </div>
+
             <div className="text-xs text-muted-foreground">{mixSummary}</div>
+
+            {/* Controles de simulación forense */}
+            <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+              <div className="rounded-lg border p-3">
+                <div className="text-sm font-medium">AT (RFU)</div>
+                <input
+                  type="number"
+                  min={0}
+                  step={5}
+                  className="mt-2 w-full rounded-md border px-2 py-1 text-sm"
+                  value={AT}
+                  onChange={(e) => setAT(Number(e.target.value))}
+                />
+              </div>
+              <div className="rounded-lg border p-3">
+                <div className="text-sm font-medium">ST (RFU)</div>
+                <input
+                  type="number"
+                  min={0}
+                  step={10}
+                  className="mt-2 w-full rounded-md border px-2 py-1 text-sm"
+                  value={IT}
+                  onChange={(e) => setIT(Number(e.target.value))}
+                />
+              </div>
+              <div className="rounded-lg border p-3">
+                <div className="text-sm font-medium">
+                  Degradación k (por 100 bp)
+                </div>
+                <input
+                  type="number"
+                  min={0}
+                  max={0.03}
+                  step={0.001}
+                  className="mt-2 w-full rounded-md border px-2 py-1 text-sm"
+                  value={kDeg}
+                  onChange={(e) => setKDeg(Number(e.target.value))}
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  0.015–0.02 = difícil
+                </p>
+              </div>
+              <div className="rounded-lg border p-3">
+                <div className="text-sm font-medium">Ruido / Base (RFU)</div>
+                <input
+                  type="number"
+                  min={0}
+                  step={1}
+                  className="mt-2 w-full rounded-md border px-2 py-1 text-sm"
+                  value={noise}
+                  onChange={(e) => setNoise(Number(e.target.value))}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
+      {/* CE */}
       <div className="rounded-xl border p-4">
         <h3 className="text-base font-semibold">CE Analysis (RFU)</h3>
         <p className="text-sm text-muted-foreground">
           Capillary Electrophoresis Analysis
         </p>
         <CEChart
-          data={ceSeries}
-          analyticalThreshold={DEFAULT_AT}
-          interpretationThreshold={DEFAULT_IT}
+          dataTrue={ceTrueSeries}
+          dataStutter={ceStutterSeries}
+          markers={ceMarkers}
+          analyticalThreshold={AT}
+          interpretationThreshold={IT}
         />
       </div>
 
+      {/* NGS */}
       <div className="rounded-xl border p-4">
         <h3 className="text-base font-semibold">NGS Analysis (Reads)</h3>
         <p className="text-sm text-muted-foreground">
@@ -500,8 +601,8 @@ export default function MixProfilesDemo() {
         <NGSChart
           bars={ngsBars}
           rows={ngsRows}
-          analyticalThreshold={DEFAULT_AT}
-          interpretationThreshold={DEFAULT_IT}
+          analyticalThreshold={AT}
+          interpretationThreshold={IT}
         />
       </div>
     </div>

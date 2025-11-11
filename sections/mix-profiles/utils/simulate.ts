@@ -198,29 +198,57 @@ export function simulateMixture(params: SimParams): Simulation {
   });
 
   // ---------- 4) Barras NGS (colapsar por tamaño sumando coberturas) ----------
-  const grouped = new Map<number, number>();
-  for (const r of table) {
-    grouped.set(r.allele, (grouped.get(r.allele) ?? 0) + r.coverage);
+  // ---------- 4) Barras NGS (colapsar por tamaño sumando coberturas, considerando isoalelos) ----------
+const grouped = new Map<number, number>();
+for (const r of table) {
+  // extraer número de alelo (p. ej. "13 iso1" → 13)
+  const key =
+    typeof r.allele === "number"
+      ? r.allele
+      : Number.parseFloat(String(r.allele).match(/[0-9]+(\.[0-9]+)?/)?.[0] ?? "NaN");
+  if (Number.isNaN(key)) continue;
+
+  grouped.set(key, (grouped.get(key) ?? 0) + r.coverage);
+}
+
+const ngsBars: NGSChartBar[] = Array.from(grouped.entries())
+  .sort((a, b) => a[0] - b[0])
+  .map(([allele, coverage]) => ({ allele, coverage }));
+
+// ---------- 5) Serie CE (curva suave) ----------
+// ---------- 5) Serie CE (curva suave con stutter) ----------
+
+const AMPLITUDES = new Map<number, number>();
+const STUTTER = { minus1: 0.06, minus2: 0.01, plus1: 0.005 };
+
+// calcula RFU y agrega stutters
+for (const a of sorted) {
+  const base = groupA.includes(a) ? baseRFU * ratioA : baseRFU * ratioB;
+  AMPLITUDES.set(a.size, (AMPLITUDES.get(a.size) ?? 0) + base);
+
+  const s1 = a.size - 1;
+  AMPLITUDES.set(s1, (AMPLITUDES.get(s1) ?? 0) + base * STUTTER.minus1);
+  const s2 = a.size - 2;
+  AMPLITUDES.set(s2, (AMPLITUDES.get(s2) ?? 0) + base * STUTTER.minus2);
+  const p1 = a.size + 1;
+  AMPLITUDES.set(p1, (AMPLITUDES.get(p1) ?? 0) + base * STUTTER.plus1);
+}
+
+// genera la curva final
+const allKeys = Array.from(AMPLITUDES.keys()).filter(k => Number.isFinite(k));
+const minAllele = Math.min(...allKeys) - 0.4;
+const maxAllele = Math.max(...allKeys) + 0.4;
+const step = 0.02;
+const sigma = 0.07;
+
+const ceSeries: CEPoint[] = [];
+for (let x = minAllele; x <= maxAllele; x += step) {
+  let rfu = 0;
+  for (const [mu, A] of AMPLITUDES.entries()) {
+    rfu += (A ?? 0) * gauss(x, mu, sigma);
   }
-  const ngsBars: NGSChartBar[] = Array.from(grouped.entries())
-    .sort((a, b) => a[0] - b[0])
-    .map(([allele, coverage]) => ({ allele, coverage }));
+  ceSeries.push({ allele: Number(x.toFixed(2)), rfu });
+}
 
-  // ---------- 5) Serie CE (curva suave) ----------
-  const minAllele = Math.min(...sorted.map(a => a.size)) - 0.3;
-  const maxAllele = Math.max(...sorted.map(a => a.size)) + 0.3;
-  const step = 0.02;
-  const sigma = 0.07; // ancho de pico
-
-  const ceSeries: CEPoint[] = [];
-  for (let x = minAllele; x <= maxAllele; x += step) {
-    let rfu = 0;
-    for (const a of sorted) {
-      const base = groupA.includes(a) ? baseRFU * ratioA : baseRFU * ratioB;
-      rfu += base * gauss(x, a.size, sigma);
-    }
-    ceSeries.push({ allele: Number(x.toFixed(2)), rfu });
-  }
-
-  return { ceSeries, ngsTable: table, ngsBars };
+return { ceSeries, ngsTable: table, ngsBars };
 }

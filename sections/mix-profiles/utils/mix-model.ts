@@ -2,8 +2,9 @@
 // Motor estocástico CE (RFU) + NGS (lecturas) para mezclas
 // Versión determinista con semilla para SSR/CSR (evita hydration error)
 
-import { SAMPLE_DATABASE } from "../data";
+import { SAMPLE_DATABASE, demoCatalog } from "../data";
 import type { SampleId, LocusId, ContributorInput, Peak } from "../data";
+import { markerData } from "@/lib/markerData";
 
 /* ===================== Tipos y parámetros ===================== */
 
@@ -136,6 +137,48 @@ function negbin(mu: number, disp: number, rand: () => number) {
 function getSampleAlleles(locusId: LocusId, sampleId: SampleId): number[] {
   return SAMPLE_DATABASE[sampleId]?.loci?.[locusId]?.alleles ?? [];
 }
+
+// Get catalog alleles for a locus (for validation)
+function getCatalogAlleles(locusId: LocusId): Set<number> {
+  const catalogEntry = demoCatalog[locusId];
+  if (!catalogEntry || !catalogEntry.alleles) return new Set();
+  const alleles = catalogEntry.alleles.map((a) => {
+    const size = typeof a.size === "number" ? a.size : parseFloat(String(a.size));
+    return isNaN(size) ? null : size;
+  }).filter((a): a is number => a !== null);
+  return new Set(alleles);
+}
+
+// Validate and format allele label (only use catalog labels or valid stutter shifts)
+function formatAlleleLabel(value: number, catalogAlleles: Set<number>, parent?: number): string {
+  // If it's in catalog, use it
+  if (catalogAlleles.has(value)) {
+    return value % 1 === 0 ? String(value) : value.toFixed(1);
+  }
+  // If it's a stutter from a valid parent, allow it
+  if (parent !== undefined) {
+    const shifted = Math.round((value - parent) * 10) / 10;
+    if (Math.abs(shifted) <= 2 && Math.abs(shifted) >= 0.9) {
+      // Valid stutter shift (-2, -1, +1)
+      return value % 1 === 0 ? String(value) : value.toFixed(1);
+    }
+  }
+  // Round to nearest catalog allele or nearest integer
+  let nearest = Math.round(value);
+  if (!catalogAlleles.has(nearest)) {
+    // Find nearest catalog allele
+    const catalogArray = Array.from(catalogAlleles).sort((a, b) => a - b);
+    let minDist = Infinity;
+    for (const catAllele of catalogArray) {
+      const dist = Math.abs(catAllele - value);
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = catAllele;
+      }
+    }
+  }
+  return nearest % 1 === 0 ? String(nearest) : nearest.toFixed(1);
+}
 function splitByHb(nAlleles: number, cv: number, rand: () => number) {
   if (nAlleles <= 1) return [1];
   const bias = clamp(1 + gaussian(rand) * cv, 0.5, 1.5);
@@ -173,6 +216,9 @@ export type CEPeak = {
 
 /* ===================== CE SIM ===================== */
 
+// Extended Peak type to include parent allele for stutters
+type CEPeakExtended = Peak & { parentAllele?: number | string };
+
 export function simulateCE(args: {
   locusId: LocusId;
   contributors: ContributorInput[];
@@ -184,15 +230,84 @@ export function simulateCE(args: {
   allTruePeaks: Peak[]; // ALL true peaks for signal visualization (not gated by AT)
   notes: string[]; 
   baselineRFU: number; // Mean baseline level
-  baselineNoiseTrace: { allele: number; rfu: number }[]; // Smooth wavy baseline
+  baselineNoiseTrace: { allele: number; rfu: number }[]; // Discrete micro-peaks
   stutterPeaks: Peak[]; // All stutter peaks for line (not gated by AT)
+  noisePeaks: Array<{ allele: number; rfu: number }>; // Discrete baseline noise micro-peaks
 } {
   const { locusId, contributors, dnaInputNg, params = {} } = args;
   const p: CEParams = { ...DEFAULT_CE, ...params };
   const st = STUTTER_CE[locusId] ?? DEFAULT_STUTTER_CE;
 
+  // Get catalog alleles for validation
+  const catalogAlleles = getCatalogAlleles(locusId);
+
+  // Per-locus metadata for amplicon length approximation
+  // (alleleRef, Lref in bp, motifLen in bp)
+  // Keys are uppercase to match SAMPLE_DATABASE
+  const LOCUS_LENGTH_META: Record<string, { alleleRef: number; Lref: number; motifLen: number }> = {
+    FGA: { alleleRef: 20, Lref: 280, motifLen: 4 },
+    CSF1PO: { alleleRef: 10, Lref: 200, motifLen: 4 },
+    D10S1248: { alleleRef: 13, Lref: 220, motifLen: 4 },
+    D12S391: { alleleRef: 18, Lref: 250, motifLen: 4 },
+    D13S317: { alleleRef: 11, Lref: 210, motifLen: 4 },
+    D16S539: { alleleRef: 10, Lref: 200, motifLen: 4 },
+    D18S51: { alleleRef: 18, Lref: 270, motifLen: 4 },
+    D19S433: { alleleRef: 13, Lref: 220, motifLen: 4 },
+    D1S1656: { alleleRef: 15, Lref: 240, motifLen: 4 },
+    D22S1045: { alleleRef: 16, Lref: 250, motifLen: 4 },
+    D2S1338: { alleleRef: 20, Lref: 280, motifLen: 4 },
+    D2S441: { alleleRef: 12, Lref: 210, motifLen: 4 },
+    D3S1358: { alleleRef: 15, Lref: 230, motifLen: 4 },
+    D5S818: { alleleRef: 11, Lref: 210, motifLen: 4 },
+    D7S820: { alleleRef: 10, Lref: 200, motifLen: 4 },
+    D8S1179: { alleleRef: 12, Lref: 210, motifLen: 4 },
+    PentaD: { alleleRef: 9, Lref: 190, motifLen: 5 },
+    PentaE: { alleleRef: 10, Lref: 200, motifLen: 5 },
+    TH01: { alleleRef: 7, Lref: 180, motifLen: 4 },
+    TPOX: { alleleRef: 8, Lref: 190, motifLen: 4 },
+    vWA: { alleleRef: 16, Lref: 250, motifLen: 4 },
+  };
+  const defaultMeta = { alleleRef: 10, Lref: 200, motifLen: 4 };
+
+  // Helper to get amplicon length L (bp) for an allele
+  // Uses per-locus metadata to approximate: L ≈ Lref + motifLen * (allele - alleleRef)
+  const getAmpliconLength = (locusId: string, allele: number): number => {
+    // Normalize locusId to uppercase for lookup (SAMPLE_DATABASE uses uppercase)
+    const normalizedLocusId = locusId.toUpperCase();
+    
+    // Try to get real sequence length from markerData if available
+    // Note: markerData uses lowercase keys, so check both cases
+    const marker = (markerData as Record<string, any>)[locusId] ?? (markerData as Record<string, any>)[normalizedLocusId.toLowerCase()];
+    if (marker && marker.sequences && Array.isArray(marker.sequences)) {
+      const alleleStr = String(allele);
+      const alleleNum = parseFloat(alleleStr);
+      
+      // Find matching sequence
+      const matchingSeq = marker.sequences.find((seq: any) => {
+        if (!seq.allele || !seq.sequence) return false;
+        const seqAlleleNum = parseFloat(String(seq.allele));
+        // Exact match or integer part match
+        return Math.abs(seqAlleleNum - alleleNum) < 0.01 || 
+               (allele % 1 !== 0 && Math.floor(seqAlleleNum) === Math.floor(alleleNum));
+      });
+      
+      if (matchingSeq && matchingSeq.sequence && typeof matchingSeq.sequence === 'string') {
+        // Note: markerData sequences are repeat regions only, not full amplicons
+        // So we still use approximation, but could use this for validation
+        // For now, use approximation which accounts for full amplicon structure
+      }
+    }
+
+    // Approximation: L ≈ Lref + motifLen * (allele - alleleRef)
+    // This accounts for:
+    // - Base amplicon length (flanking regions, primers, etc.) = Lref at alleleRef
+    // - Variable repeat region length = motifLen * (allele - alleleRef)
+    const meta = LOCUS_LENGTH_META[normalizedLocusId] ?? defaultMeta;
+    return meta.Lref + meta.motifLen * (allele - meta.alleleRef);
+  };
+
   // semilla determinista (evita hydration mismatch)
-  // Include stutterScale in seed for determinism
+  // Include all parameters in seed for determinism
   const seedStr =
     p.seed ??
     `${locusId}|${contributors
@@ -200,87 +315,162 @@ export function simulateCE(args: {
       .join(",")}|${p.AT}|${p.ST}|${p.degrK}|${p.baselineMu}|${p.baselineSd}|${p.stutterScale ?? 1.0}`;
   const rand = mulberry32(hash32(seedStr));
 
-  // acumuladores por alelo
+  // acumuladores por alelo (first pass: collect true peaks without degradation)
   const map = new Map<
     number,
-    { trueRFU: number; stRFU: number; sources: Set<string> }
+    { trueRFU: number; stRFU: number; sources: Set<string>; parentAllele?: number }
   >();
 
+  // FIRST PASS: Collect base RFU for all true peaks (without degradation)
+  const baseTruePeaks = new Map<number, { rfu: number; sources: Set<string> }>();
+  
   for (const c of contributors.filter((x) => x.proportion > 0)) {
     const alleles = getSampleAlleles(locusId, c.sampleId);
     if (!alleles.length) continue;
 
-    const dnaEff =
-      dnaInputNg *
-      c.proportion *
-      p.locusEff *
-      Math.pow(10, -p.degrK * (p.ampliconSize - 200) / 100);
-
+    // Base DNA efficiency (without per-peak degradation)
+    const dnaEff = dnaInputNg * c.proportion * p.locusEff;
     const weights = splitByHb(alleles.length, p.hetCV, rand);
     const scaleRFU = p.kappaRFU * dnaEff;
 
     alleles.forEach((aNum, idx) => {
       const mean = Math.max(1, scaleRFU * weights[idx]);
-      const trueRFU = lognormal(mean, p.sigmaLN, rand);
-
-      const e = map.get(aNum) ?? { trueRFU: 0, stRFU: 0, sources: new Set<string>() };
-      e.trueRFU += trueRFU;
-      e.sources.add(c.label);
-      map.set(aNum, e);
-
-      // stutter -1 / -2 / +1 (con leve variación, stutterScale, y límite max 20%)
-      // IMPORTANT: Preserve microvariants in stutter positions (e.g., 21.3 - 1 = 20.3, not 20)
-      const sdev = p.stutter.sd ?? 0.02;
-      const stutterScale = p.stutterScale ?? 1.0;
+      const baseRFU = lognormal(mean, p.sigmaLN, rand);
       
-      // Helper to calculate discrete stutter position preserving microvariants
-      const getStutterPosition = (parent: number, delta: number): number => {
-        const result = parent + delta;
-        // If parent has decimals, preserve them in stutter position
-        if (parent % 1 !== 0) {
-          // Parent is microvariant (e.g., 21.3) - preserve single decimal
-          return Math.round(result * 10) / 10;
-        }
-        // Parent is integer - stutter is also integer
-        return Math.round(result);
-      };
-      
-      // Calculate stutter rate and enforce max 20% rule (unless multiplier > 1.5)
-      const baseRate1 = (st.minus1 ?? 0.06) * stutterScale;
-      const maxRate = stutterScale > 1.5 ? 0.25 : 0.20; // Allow up to 25% if scale > 1.5, else 20%
-      const s1 = Math.max(0, Math.min(baseRate1 + gaussian(rand) * sdev, maxRate));
-      const stutterRFU1 = trueRFU * s1;
-      // Use discrete position preserving microvariants (e.g., 21.3 - 1 = 20.3, 8 - 1 = 7)
-      const m1 = getStutterPosition(aNum, -1);
-      const e1 = map.get(m1) ?? { trueRFU: 0, stRFU: 0, sources: new Set<string>() };
-      e1.stRFU += stutterRFU1;
-      map.set(m1, e1);
-
-      if (st.minus2) {
-        const baseRate2 = st.minus2 * stutterScale;
-        const s2 = Math.max(0, Math.min(baseRate2 + gaussian(rand) * sdev, maxRate));
-        const stutterRFU2 = trueRFU * s2;
-        // Use discrete position preserving microvariants (e.g., 21.3 - 2 = 19.3)
-        const m2 = getStutterPosition(aNum, -2);
-        const e2 = map.get(m2) ?? { trueRFU: 0, stRFU: 0, sources: new Set<string>() };
-        e2.stRFU += stutterRFU2;
-        map.set(m2, e2);
-      }
-
-      if (st.plus1) {
-        const baseRateP = st.plus1 * stutterScale;
-        const sp = Math.max(0, Math.min(baseRateP + gaussian(rand) * sdev, maxRate));
-        const stutterRFUP = trueRFU * sp;
-        // Use discrete position preserving microvariants (e.g., 21.3 + 1 = 22.3)
-        const p1 = getStutterPosition(aNum, 1);
-        const ep = map.get(p1) ?? { trueRFU: 0, stRFU: 0, sources: new Set<string>() };
-        ep.stRFU += stutterRFUP;
-        map.set(p1, ep);
-      }
+      const existing = baseTruePeaks.get(aNum) ?? { rfu: 0, sources: new Set<string>() };
+      existing.rfu += baseRFU;
+      existing.sources.add(c.label);
+      baseTruePeaks.set(aNum, existing);
     });
   }
 
-  // baseline/ruido - calcular media y generar traza suave
+  // SECOND PASS: Apply degradation to true peaks, then calculate stutter from degraded parent
+  // Important: do NOT normalize RFUs after degradation.
+  // Attenuation must reflect true signal loss.
+  // Degradation: exponential attenuation per 100 bp.
+  // rfu *= exp(-k * (L/100)), where k is the UI param "per 100 bp".
+  
+  // Flag to prevent any re-normalization after degradation
+  const applyNormalizationAfterDegradation = false; // NEVER normalize after degradation
+  
+  let loggedOnce = false; // Flag for one-time debug logging
+  for (const [aNum, baseData] of baseTruePeaks.entries()) {
+    // Exponential decay by length: rfu *= exp(-k * (L / 100))
+    // where L = amplicon length (bp) for this allele
+    // k = degradation constant (per 100 bp)
+    // For fixed L, larger k ⇒ smaller rfu_degraded (monotonicity in k)
+    // For fixed k, larger L ⇒ smaller rfu_degraded (length effect)
+    let degradedRFU = baseData.rfu;
+    if (p.degrK > 0) {
+      const L = getAmpliconLength(locusId, aNum); // Get amplicon length (bp)
+      // Compute attenuation factor: atten = exp(-k * (L / 100))
+      // This ensures: ↑k ⇒ ↓RFU, and ↑L ⇒ ↓RFU
+      const atten = Math.exp(-p.degrK * (L / 100.0));
+      // Clamp attenuation to [0, 1] (should always be in this range for k > 0 and L > 0)
+      const clampedAtten = Math.max(0, Math.min(1, atten));
+      degradedRFU = baseData.rfu * clampedAtten;
+      
+      // Debug logging: verify degradation is applied correctly
+      // Log first few peaks for verification (one-time per render)
+      // Format: console.debug('DEG TEST', allele, k, rfuRaw, rfuDegraded, rfuFinal);
+      // Increasing k must lower both rfuDegraded and rfuFinal
+      if (!loggedOnce && baseTruePeaks.size > 0) {
+        const firstFewAlleles = Array.from(baseTruePeaks.keys()).slice(0, Math.min(3, baseTruePeaks.size));
+        if (firstFewAlleles.includes(aNum)) {
+          const rfuRaw = baseData.rfu;
+          const rfuDegraded = degradedRFU;
+          const rfuFinal = degradedRFU; // Same as rfuDegraded (no re-normalization)
+          console.debug('DEG TEST', aNum, p.degrK, rfuRaw.toFixed(1), rfuDegraded.toFixed(1), rfuFinal.toFixed(1));
+          if (aNum === firstFewAlleles[firstFewAlleles.length - 1]) {
+            loggedOnce = true;
+          }
+        }
+      }
+    }
+
+    // Store degraded true peak RFU directly (NO re-normalization)
+    // Important: degradedRFU is used as-is, without any scaling or normalization
+    const e = map.get(aNum) ?? { trueRFU: 0, stRFU: 0, sources: new Set<string>() };
+    e.trueRFU += degradedRFU;
+    for (const source of baseData.sources) {
+      e.sources.add(source);
+    }
+    map.set(aNum, e);
+    
+    // Guard: Never re-normalize after degradation
+    if (applyNormalizationAfterDegradation) {
+      // This block should NEVER execute - degradation must reflect true signal loss
+      // If you see this warning, it means someone tried to re-normalize after degradation
+      console.warn('[DEG] WARNING: Re-normalization after degradation is disabled. Degraded RFU must be used as-is.');
+    }
+
+    // Calculate stutter from degraded parent RFU
+    // stutterRFU = trueRFU_degraded * locusRate * stutterLevelX
+    const sdev = p.stutter.sd ?? 0.02;
+    const stutterScale = p.stutterScale ?? 1.0;
+    
+    // Helper to calculate discrete stutter position preserving microvariants
+    const getStutterPosition = (parent: number, delta: number): number => {
+      const result = parent + delta;
+      // If parent has decimals, preserve them in stutter position
+      if (parent % 1 !== 0) {
+        // Parent is microvariant (e.g., 21.3) - preserve single decimal
+        return Math.round(result * 10) / 10;
+      }
+      // Parent is integer - stutter is also integer
+      return Math.round(result);
+    };
+    
+    // Calculate stutter rate and enforce max 20% rule (unless multiplier > 1.5)
+    const baseRate1 = (st.minus1 ?? 0.06) * stutterScale;
+    const maxRate = stutterScale > 1.5 ? 0.25 : 0.20; // Allow up to 25% if scale > 1.5, else 20%
+    const s1 = Math.max(0, Math.min(baseRate1 + gaussian(rand) * sdev, maxRate));
+    const stutterRFU1 = degradedRFU * s1; // Use degraded parent RFU
+    // Use discrete position preserving microvariants (e.g., 21.3 - 1 = 20.3, 8 - 1 = 7)
+    const m1 = getStutterPosition(aNum, -1);
+    // Allow stutter if: (1) stutter allele is in catalog, OR (2) it's a valid stutter shift (-1) from a real parent
+    const isValidStutter1 = catalogAlleles.has(m1) || Math.abs(m1 - aNum) === 1;
+    if (isValidStutter1 && stutterRFU1 > 0) {
+      const e1 = map.get(m1) ?? { trueRFU: 0, stRFU: 0, sources: new Set<string>(), parentAllele: aNum };
+      e1.stRFU += stutterRFU1;
+      if (!e1.parentAllele) e1.parentAllele = aNum;
+      map.set(m1, e1);
+    }
+
+    if (st.minus2) {
+      const baseRate2 = st.minus2 * stutterScale;
+      const s2 = Math.max(0, Math.min(baseRate2 + gaussian(rand) * sdev, maxRate));
+      const stutterRFU2 = degradedRFU * s2; // Use degraded parent RFU
+      // Use discrete position preserving microvariants (e.g., 21.3 - 2 = 19.3)
+      const m2 = getStutterPosition(aNum, -2);
+      // Allow stutter if: (1) stutter allele is in catalog, OR (2) it's a valid stutter shift (-2) from a real parent
+      const isValidStutter2 = catalogAlleles.has(m2) || Math.abs(m2 - aNum) === 2;
+      if (isValidStutter2 && stutterRFU2 > 0) {
+        const e2 = map.get(m2) ?? { trueRFU: 0, stRFU: 0, sources: new Set<string>(), parentAllele: aNum };
+        e2.stRFU += stutterRFU2;
+        if (!e2.parentAllele) e2.parentAllele = aNum;
+        map.set(m2, e2);
+      }
+    }
+
+    if (st.plus1) {
+      const baseRateP = st.plus1 * stutterScale;
+      const sp = Math.max(0, Math.min(baseRateP + gaussian(rand) * sdev, maxRate));
+      const stutterRFUP = degradedRFU * sp; // Use degraded parent RFU
+      // Use discrete position preserving microvariants (e.g., 21.3 + 1 = 22.3)
+      const p1 = getStutterPosition(aNum, 1);
+      // Allow stutter if: (1) stutter allele is in catalog, OR (2) it's a valid stutter shift (+1) from a real parent
+      const isValidStutterP = catalogAlleles.has(p1) || Math.abs(p1 - aNum) === 1;
+      if (isValidStutterP && stutterRFUP > 0) {
+        const ep = map.get(p1) ?? { trueRFU: 0, stRFU: 0, sources: new Set<string>(), parentAllele: aNum };
+        ep.stRFU += stutterRFUP;
+        if (!ep.parentAllele) ep.parentAllele = aNum;
+        map.set(p1, ep);
+      }
+    }
+  }
+
+  // baseline/ruido - generar micro-picos discretos (no línea suave)
   const baselineRFU = Math.max(0, p.baselineMu + gaussian(rand) * p.baselineSd);
   
   // Calcular rango X para baseline (basado en alelos presentes)
@@ -291,89 +481,98 @@ export function simulateCE(args: {
     minA = Math.min(...allelesPresent);
     maxA = Math.max(...allelesPresent);
   }
-  const xRange = Math.max(1, maxA - minA); // Ensure non-zero range
   const xMin = minA - 2;
   const xMax = maxA + 2;
-  const totalRange = xMax - xMin;
+  const totalRange = Math.max(1, xMax - xMin);
   
-  // Generar baseline suave (low-frequency wavy noise)
-  // Frecuencia target: 0.2-0.4 ciclos por unidad de alelo
-  // For normalized position (0 to 1), we want ~0.3 cycles per unit * totalRange
-  const cyclesPerUnit = 0.3; // Target: 0.3 cycles per allele unit
-  const totalCycles = cyclesPerUnit * Math.max(1, totalRange); // Total cycles across range
-  const step = 0.05; // paso fino para suavidad
-  // Baseline noise amplitude: 0-5 RFU, scaled by noise control (subtle background fluctuation)
-  // The noise control determines the amplitude of oscillation (e.g., 30 RFU noise = ~4.5 RFU amplitude)
-  // Baseline noise oscillates around a very low value (close to 0), representing subtle background noise
-  const noiseAmplitudeScale = Math.min(5, Math.max(0.5, p.baselineMu * 0.15)); // ~15% of noise, max 5 RFU, min 0.5 RFU
-  const wobbleAmplitude = noiseAmplitudeScale; // Use scaled amplitude directly
-  // Noise center should be very low (subtle background, not a floor) - oscillate around 0-1 RFU
-  const noiseCenter = Math.min(p.baselineMu * 0.05, 1); // Center around 5% of noise or max 1 RFU (very subtle)
+  // Generate discrete baseline noise micro-peaks (15-30 samples uniformly spaced)
+  // These should look like tiny Gaussian peaks, not a straight line
+  const numNoisePeaks = Math.max(15, Math.min(30, Math.ceil(totalRange * 2)));
+  const noisePeaks: Array<{ allele: number; rfu: number }> = [];
+  const baselineNoiseTrace: { allele: number; rfu: number }[] = [];
   
-  // Generar puntos de control para interpolación suave (usar múltiples frecuencias bajas)
-  const controlPoints: number[] = [];
-  const nControl = Math.max(5, Math.ceil(totalRange / 2) + 1); // ~1 control point per 2 allele units, min 5
-  for (let i = 0; i < nControl; i++) {
-    const xControl = xMin + (i / Math.max(1, nControl - 1)) * totalRange;
-    // Normalize position for wave calculation (0 to 1 range)
-    const normalizedX = (xControl - xMin) / Math.max(1, totalRange);
+  // Noise height range: [AT × 0.15, AT × 0.8], scaled by Noise/Base slider
+  // The noise slider (baselineMu) acts as a ceiling for noise amplitude
+  const noiseMin = Math.max(1, p.AT * 0.15); // Minimum noise height (15% of AT, min 1 RFU)
+  const noiseMaxRaw = p.AT * 0.8; // Maximum noise height (80% of AT)
+  const noiseCeiling = Math.min(noiseMaxRaw, Math.max(noiseMin, p.baselineMu * 0.5)); // Scale by noise slider (50% of slider value, clamped)
+  
+  // Generate sparse micro-peaks across the range with variation
+  for (let i = 0; i < numNoisePeaks; i++) {
+    // Add small random jitter to allele positions to avoid perfect spacing
+    const normalizedPos = (i + gaussian(rand) * 0.1) / Math.max(1, numNoisePeaks - 1);
+    const baseAllele = xMin + Math.max(0, Math.min(1, normalizedPos)) * totalRange;
+    const allele = Math.round(baseAllele * 10) / 10; // Round to 0.1 for clean labels
     
-    // Multiple low-frequency components for smooth baseline noise
-    // Baseline noise oscillates around a very low value (subtle background), not around baselineRFU
-    const wave1 = Math.sin(2 * Math.PI * totalCycles * normalizedX);
-    const wave2 = Math.sin(2 * Math.PI * totalCycles * 0.6 * normalizedX);
-    const wave3 = Math.sin(2 * Math.PI * totalCycles * 1.3 * normalizedX);
-    // Combine waves with small random component - amplitude scaled by noise control
-    const combinedWave = (wave1 * 0.5 + wave2 * 0.3 + wave3 * 0.2) * wobbleAmplitude;
-    const smallNoise = gaussian(rand) * (wobbleAmplitude * 0.25); // Small additional noise
-    // Center noise around a very low value (subtle background fluctuation)
-    const yValue = noiseCenter + combinedWave + smallNoise;
-    controlPoints.push(Math.max(0, yValue));
+    // Sample height from low-mean distribution bounded to [noiseMin, noiseCeiling]
+    // Use lognormal with low mean to create realistic micro-peaks
+    const meanNoise = noiseMin + (noiseCeiling - noiseMin) * 0.35; // Low mean (35% of range from min)
+    let noiseRFU = Math.max(noiseMin * 0.5, Math.min(noiseCeiling, 
+      lognormal(meanNoise, 0.4, rand)
+    ));
+    
+    // Add small random variation to create micro-peak appearance
+    noiseRFU = noiseRFU * (0.7 + gaussian(rand) * 0.3);
+    noiseRFU = Math.max(noiseMin * 0.3, Math.min(noiseCeiling, noiseRFU));
+    
+    // Only add if it's below AT (baseline noise should never cross AT consistently)
+    // Allow occasional peaks very close to AT for realism, but cap at 95% of AT
+    const maxNoiseRFUForPeaks = p.AT * 0.95;
+    if (noiseRFU < maxNoiseRFUForPeaks && noiseRFU > 0) {
+      const peak = { allele, rfu: noiseRFU };
+      noisePeaks.push(peak);
+      // Also add to trace for line rendering (sparse points create wavy appearance)
+      baselineNoiseTrace.push(peak);
+    }
   }
   
-  // Interpolación cúbica suave entre puntos de control
-  const baselineNoiseTrace: { allele: number; rfu: number }[] = [];
-  let x = xMin;
-  while (x <= xMax + step) {
-    // Find surrounding control points for interpolation
-    const normalizedX = (x - xMin) / Math.max(1, totalRange);
-    const idx = normalizedX * (nControl - 1);
-    const i0 = Math.max(0, Math.floor(idx));
-    const i1 = Math.min(nControl - 1, i0 + 1);
-    const t = Math.max(0, Math.min(1, idx - i0)); // Clamp t to [0, 1]
+  // Sort noise peaks by allele position
+  noisePeaks.sort((a, b) => a.allele - b.allele);
+  baselineNoiseTrace.sort((a, b) => a.allele - b.allele);
+  
+  // Fill gaps in trace with interpolated values to create continuous wavy baseline (not straight)
+  // This creates a subtle undulating baseline without looking like a second floor
+  const maxNoiseRFU = p.AT * 0.95; // Cap at 95% of AT
+  if (baselineNoiseTrace.length > 1) {
+    const filledTrace: { allele: number; rfu: number }[] = [];
+    const step = 0.05; // Fine step for smooth interpolation
+    let currentIdx = 0;
+    const startX = baselineNoiseTrace[0].allele;
+    const endX = baselineNoiseTrace[baselineNoiseTrace.length - 1].allele;
     
-    // Get control points for cubic interpolation
-    const idx0 = Math.max(0, i0 - 1);
-    const idx1 = i0;
-    const idx2 = Math.min(nControl - 1, i1);
-    const idx3 = Math.min(nControl - 1, i1 + 1);
-    
-    const p0 = controlPoints[idx0];
-    const p1 = controlPoints[idx1];
-    const p2 = controlPoints[idx2];
-    const p3 = controlPoints[idx3];
-    
-    // Cubic Hermite interpolation (smooth curve)
-    const t2 = t * t;
-    const t3 = t2 * t;
-    const h00 = 2 * t3 - 3 * t2 + 1;
-    const h10 = t3 - 2 * t2 + t;
-    const h01 = -2 * t3 + 3 * t2;
-    const h11 = t3 - t2;
-    
-    // Estimate tangents (simplified finite difference)
-    const m0 = idx1 > idx0 ? (controlPoints[idx2] - controlPoints[idx0]) * 0.5 : 0;
-    const m1 = idx3 > idx2 ? (controlPoints[idx3] - controlPoints[idx1]) * 0.5 : 0;
-    
-    const y = h00 * p1 + h10 * m0 + h01 * p2 + h11 * m1;
-    
-    // Clamp to ensure baseline noise stays subtle (max 8 RFU, well below AT)
-    // Baseline noise should be a subtle background fluctuation, not a visible floor
-    const maxBaselineNoise = Math.min(8, p.AT * 0.15); // Max 15% of AT or 8 RFU, whichever is smaller
-    const clampedY = Math.max(0, Math.min(y, maxBaselineNoise));
-    
-    baselineNoiseTrace.push({ allele: +x.toFixed(5), rfu: clampedY });
-    x = +(x + step).toFixed(5);
+    for (let x = startX; x <= endX; x += step) {
+      const xRounded = Math.round(x * 10) / 10;
+      
+      // Find surrounding points for interpolation
+      while (currentIdx < baselineNoiseTrace.length - 1 && baselineNoiseTrace[currentIdx + 1].allele < x) {
+        currentIdx++;
+      }
+      
+      if (currentIdx < baselineNoiseTrace.length - 1) {
+        const p1 = baselineNoiseTrace[currentIdx];
+        const p2 = baselineNoiseTrace[currentIdx + 1];
+        const dist = Math.max(0.01, p2.allele - p1.allele);
+        const t = (x - p1.allele) / dist;
+        // Linear interpolation with small random variation (creates wavy effect, not straight)
+        const interpolated = p1.rfu + (p2.rfu - p1.rfu) * t;
+        // Add small random variation to avoid straight line appearance
+        const variation = 0.85 + gaussian(rand) * 0.15; // ±15% variation
+        const varied = interpolated * variation;
+        filledTrace.push({ 
+          allele: xRounded, 
+          rfu: Math.max(0, Math.min(maxNoiseRFU, varied)) 
+        });
+      } else {
+        // Use last point
+        filledTrace.push({ 
+          allele: xRounded, 
+          rfu: Math.min(maxNoiseRFU, baselineNoiseTrace[baselineNoiseTrace.length - 1].rfu) 
+        });
+      }
+    }
+    // Replace trace with filled version (creates wavy baseline effect)
+    baselineNoiseTrace.length = 0;
+    baselineNoiseTrace.push(...filledTrace);
   }
 
   const peaks: Peak[] = []; // Filtered peaks for markers (gated by AT)
@@ -382,7 +581,11 @@ export function simulateCE(args: {
   const notes: string[] = [];
 
   // construir picos reportables (SIN sumar baseline)
+  // Important: Use degraded RFU values directly - NO re-normalization after degradation
+  // The chart's yMax will auto-expand based on data, so no need to scale to a fixed maximum
+  // Never recalc or clamp RFUs to 100% after degradation - attenuation must reflect true signal loss
   for (const [alleleNum, v] of map.entries()) {
+    // Use degraded RFU directly (no re-normalization)
     const trueRFU = v.trueRFU;
     const stRFU = v.stRFU;
 
@@ -413,7 +616,7 @@ export function simulateCE(args: {
 
     // stutter - collect all for line, but markers only if >= AT
     // IMPORTANT: Use discrete allele positions (no jitter) - stutters must sit at exact targets
-    // The alleleNum in the map is already discrete (calculated as parent-1, parent+1, or parent-2)
+    // NOTE: Stutter RFU is already calculated from degraded parent RFU, so no need to apply degradation again
     if (stRFU > 0) {
       // Format allele label to preserve microvariants (e.g., 20.3, not 20.299...)
       // If alleleNum is an integer, use it directly; if it has decimals, preserve single decimal
@@ -430,30 +633,51 @@ export function simulateCE(args: {
       
       // Always add to stutterPeaks for line visualization (not gated by AT)
       // Use discrete position - NO JITTER (already discrete from map calculation)
+      // Store parent allele in source for tooltip (format: "source|parent:parentAllele")
+      const parentAllele = v.parentAllele ?? alleleNum;
+      const baseSource = Array.from(v.sources).sort().join("+") || "—";
       stutterPeaks.push({
         allele: stutterAllele, // Discrete position: parent-1, parent+1, or parent-2
-        rfu: stRFU,
+        rfu: stRFU, // Stutter RFU is already calculated from degraded parent
         kind: "stutter",
-        source: Array.from(v.sources).sort().join("+") || "—",
+        source: `${baseSource}|parent:${parentAllele}`, // Encode parent for tooltip
       } as Peak);
       
       // Add to peaks only if >= AT (for markers) - use same discrete position
       if (stRFU >= p.AT) {
         peaks.push({
           allele: stutterAllele, // Same discrete position for markers
-          rfu: stRFU,
+          rfu: stRFU, // Stutter RFU is already calculated from degraded parent
           kind: "stutter",
-          source: Array.from(v.sources).sort().join("+") || "—",
+          source: `${baseSource}|parent:${parentAllele}`, // Encode parent for tooltip
         } as Peak);
       }
     }
   }
-
+  
+  // Filter out RFU=0 points before rendering (prevents "0 RFU : 0 RFU" tooltips)
+  const filteredPeaks = peaks.filter((p) => p.rfu > 0);
+  const filteredAllTruePeaks = allTruePeaks.filter((p) => p.rfu > 0);
+  const filteredStutterPeaks = stutterPeaks.filter((p) => p.rfu > 0);
+  
   // ordenar picos y devolver
-  peaks.sort((a, b) => Number(a.allele) - Number(b.allele));
-  allTruePeaks.sort((a, b) => Number(a.allele) - Number(b.allele));
-  stutterPeaks.sort((a, b) => Number(a.allele) - Number(b.allele));
-  return { locusId, peaks, allTruePeaks, notes, baselineRFU, baselineNoiseTrace, stutterPeaks };
+  filteredPeaks.sort((a, b) => Number(a.allele) - Number(b.allele));
+  filteredAllTruePeaks.sort((a, b) => Number(a.allele) - Number(b.allele));
+  filteredStutterPeaks.sort((a, b) => Number(a.allele) - Number(b.allele));
+  
+  // Parent allele information is already encoded in the source field for stutter peaks
+  // Format: "source|parent:parentAllele" (e.g., "A+B|parent:21.3")
+  
+  return { 
+    locusId, 
+    peaks: filteredPeaks, 
+    allTruePeaks: filteredAllTruePeaks, 
+    notes, 
+    baselineRFU: p.baselineMu, 
+    baselineNoiseTrace, // Sparse trace for line rendering
+    stutterPeaks: filteredStutterPeaks, // Parent info already encoded in source field
+    noisePeaks, // Discrete micro-peaks for scatter rendering
+  };
 }
 
 /* ===================== NGS SIM ===================== */

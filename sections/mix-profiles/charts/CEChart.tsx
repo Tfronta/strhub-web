@@ -28,9 +28,14 @@ export default function CEChart(props: {
   interpretationThreshold?: number;
   showMarkers?: boolean;
   baselineRFU?: number;
-  baselineNoiseTrace?: Pt[]; // Smooth wavy baseline trace
+  baselineNoiseTrace?: Pt[]; // Sparse trace for line rendering
+  noisePeaks?: Pt[]; // Discrete micro-peaks for scatter rendering
   allTruePeaks?: Array<{ allele: number | string; rfu: number }>; // All true peaks for tick calculation
-  stutterPeaks?: Array<{ allele: number | string; rfu: number }>; // All stutter peaks for tick calculation
+  stutterPeaks?: Array<{
+    allele: number | string;
+    rfu: number;
+    source?: string;
+  }>; // All stutter peaks for tick calculation (source contains parent info)
 }) {
   const {
     dataTrue,
@@ -41,6 +46,7 @@ export default function CEChart(props: {
     showMarkers = true,
     baselineRFU,
     baselineNoiseTrace = [],
+    noisePeaks = [],
     allTruePeaks = [],
     stutterPeaks = [],
   } = props;
@@ -123,11 +129,27 @@ export default function CEChart(props: {
       .filter((n) => !Number.isNaN(n))
       .sort((a, b) => a - b);
 
-    // Return unique allele values from peaks, sorted numerically
-    // This preserves all peaks exactly as they appear (including microvariants like 17.3, 19.1)
-    // Never filter or hide a tick - if it exists in peaks, it must be visible
-    // Always includes the smallest and largest allele labels (off-by-one fix)
-    return Array.from(new Set(alleles)).sort((a, b) => a - b);
+    if (alleles.length === 0) return [];
+
+    // Get min and max allele values
+    const minA = Math.floor(alleles[0]);
+    const maxA = Math.ceil(alleles[alleles.length - 1]);
+
+    // Fill integers between min and max (ensures last/first numbers render, e.g., includes 13)
+    const filledTicks = new Set<number>();
+
+    // Add all visible allele positions (preserves microvariants like 17.3, 19.1)
+    for (const a of alleles) {
+      filledTicks.add(a);
+    }
+
+    // Fill integers between min and max
+    for (let i = minA; i <= maxA; i++) {
+      filledTicks.add(i);
+    }
+
+    // Return sorted array (includes visible positions + filled integers)
+    return Array.from(filledTicks).sort((a, b) => a - b);
   }, [allTruePeaks, stutterPeaks, analyticalThreshold, dataTrue, dataStutter]);
 
   // Determine if we need decimals based on allele values from peaks
@@ -216,23 +238,22 @@ export default function CEChart(props: {
           }}
         />
 
-        {/* Baseline noise - render FIRST so it appears behind signal curves (faint wavy trace only, no mean line) */}
-        {/* Baseline noise must be a subtle undulating path, not a straight line or second floor */}
-        {baselineRFU != null &&
-          baselineRFU > 0 &&
-          baselineNoiseTrace.length > 0 && (
-            <Line
-              name={t("mixProfiles.ceChart.legendBaselineNoise")}
-              type="monotone"
-              data={baselineNoiseTrace}
-              dataKey="rfu"
-              dot={false}
-              stroke="#9CA3AF" // Gray (as specified)
-              strokeOpacity={0.2} // Very faint (subtle background)
-              strokeWidth={0.7}
-              isAnimationActive={false}
-            />
-          )}
+        {/* Baseline noise - render FIRST so it appears behind signal curves (discrete micro-peaks) */}
+        {/* Baseline noise must be discrete micro-peaks, not a straight line or second floor */}
+        {noisePeaks && noisePeaks.length > 0 && (
+          <Line
+            name={t("mixProfiles.ceChart.legendBaselineNoise")}
+            type="monotone"
+            data={baselineNoiseTrace}
+            dataKey="rfu"
+            dot={false}
+            stroke="#9CA3AF" // Gray (as specified)
+            strokeOpacity={0.2} // Very faint (subtle background)
+            strokeWidth={0.7}
+            isAnimationActive={false}
+            connectNulls={false}
+          />
+        )}
 
         {/* Signal curves - render AFTER baseline so they appear on top (pure values, start from 0) */}
         <Line
@@ -264,8 +285,10 @@ export default function CEChart(props: {
             name={t("mixProfiles.ceChart.legendCalled")}
             data={mTrue}
             fill="#22C55E" // Green-500 (as specified)
+            stroke="none" // No stroke (as specified)
             shape="circle"
             r={4} // Radius 4px (as specified)
+            isAnimationActive={false} // Disable animation (as specified)
           />
         )}
         {showMarkers && mDrop.length > 0 && (
@@ -320,9 +343,69 @@ export default function CEChart(props: {
         )}
 
         <Tooltip
-          formatter={(value: any, name: string, props: any) => {
+          formatter={(value: any, name: string, itemProps: any) => {
             // Round RFU value for all series
-            return [Math.round(value as number) + " RFU", name];
+            const rfu = Math.round(value as number);
+            const rfuStr = String(rfu);
+
+            // Check if this is a stutter peak with parent info
+            if (itemProps?.payload?.source) {
+              const parentMatch =
+                itemProps.payload.source.match(/parent:([\d.]+)/);
+              if (
+                parentMatch &&
+                (name === t("mixProfiles.ceChart.legendStutter") ||
+                  name.includes("Stutter"))
+              ) {
+                // This is a stutter peak - show allele and parent
+                const alleleLabel =
+                  itemProps?.payload?.allele ??
+                  itemProps?.payload?.label ??
+                  "?";
+                return [
+                  `${rfuStr} RFU`,
+                  t("mixProfiles.ceChart.tooltipStutter", {
+                    allele: String(alleleLabel),
+                    parent: parentMatch[1],
+                    rfu: rfuStr,
+                  }),
+                ];
+              }
+            }
+
+            // Check if this is a true peak
+            if (
+              name === t("mixProfiles.ceChart.legendTrueAlleles") ||
+              name.includes("Signal")
+            ) {
+              const alleleLabel =
+                itemProps?.payload?.allele ?? itemProps?.payload?.label ?? "?";
+              return [
+                `${rfuStr} RFU`,
+                t("mixProfiles.ceChart.tooltipTrue", {
+                  label: String(alleleLabel),
+                  rfu: rfuStr,
+                }),
+              ];
+            }
+
+            // Check if this is a marker (called or dropout)
+            const isCalled =
+              name === t("mixProfiles.ceChart.legendCalled") ||
+              name === "Called";
+            const isDropout =
+              name === t("mixProfiles.ceChart.legendDropoutRisk") ||
+              name === "Drop-out risk";
+
+            if (isCalled) {
+              return [`${rfuStr} RFU`, t("mixProfiles.ceChart.tooltipCalled")];
+            }
+            if (isDropout) {
+              return [`${rfuStr} RFU`, t("mixProfiles.ceChart.tooltipDropout")];
+            }
+
+            // Default: show RFU value
+            return [`${rfuStr} RFU`, name];
           }}
           labelFormatter={(label: any, payload: readonly any[]) => {
             if (!payload || payload.length === 0) {
@@ -352,9 +435,47 @@ export default function CEChart(props: {
               );
 
               if (scatterItem) {
+                // Check if it's a stutter with parent info
+                if (scatterItem.payload?.source) {
+                  const parentMatch =
+                    scatterItem.payload.source.match(/parent:([\d.]+)/);
+                  if (parentMatch) {
+                    const rfu = Math.round(scatterItem.payload.rfu ?? 0);
+                    const alleleLabel = scatterItem.payload.allele ?? label;
+                    return t("mixProfiles.ceChart.tooltipStutter", {
+                      allele: String(alleleLabel),
+                      parent: parentMatch[1],
+                      rfu: String(rfu),
+                    });
+                  }
+                }
+
                 return t("mixProfiles.ceChart.tooltipAlleleMarker", {
-                  allele: label,
+                  allele: String(label),
                   marker: scatterItem.name,
+                });
+              }
+            }
+
+            // For line series, check if it's a stutter with parent
+            const lineItem = payload.find(
+              (item: any) =>
+                item.name === t("mixProfiles.ceChart.legendStutter") ||
+                item.name === "Stutter (RFU)" ||
+                item.name?.includes("Stutter")
+            );
+            if (lineItem?.payload?.source) {
+              const parentMatch =
+                lineItem.payload.source.match(/parent:([\d.]+)/);
+              if (parentMatch) {
+                const rfu = Math.round(
+                  lineItem.payload.rfu ?? lineItem.value ?? 0
+                );
+                const alleleLabel = lineItem.payload.allele ?? label;
+                return t("mixProfiles.ceChart.tooltipStutter", {
+                  allele: String(alleleLabel),
+                  parent: parentMatch[1],
+                  rfu: String(rfu),
                 });
               }
             }

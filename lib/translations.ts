@@ -582,6 +582,10 @@ export const translations = {
         thresholdST: "ST",
         tooltipAllele: "Allele {allele}",
         tooltipAlleleMarker: "Allele {allele} — {marker}",
+        tooltipTrue: "Allele {label} — {rfu} RFU",
+        tooltipStutter: "Stutter at {allele} — {rfu} RFU (from {parent})",
+        tooltipCalled: "Called",
+        tooltipDropout: "Drop-out risk",
       },
       parameters: {
         at: "AT (RFU)",
@@ -1181,6 +1185,10 @@ export const translations = {
         thresholdST: "ST",
         tooltipAllele: "Alelo {allele}",
         tooltipAlleleMarker: "Alelo {allele} — {marker}",
+        tooltipTrue: "Alelo {label} — {rfu} RFU",
+        tooltipStutter: "Stutter em {allele} — {rfu} RFU (de {parent})",
+        tooltipCalled: "Chamado",
+        tooltipDropout: "Risco de perda",
       },
       parameters: {
         at: "AT (RFU)",
@@ -1781,6 +1789,10 @@ export const translations = {
         thresholdST: "ST",
         tooltipAllele: "Alelo {allele}",
         tooltipAlleleMarker: "Alelo {allele} — {marker}",
+        tooltipTrue: "Alelo {label} — {rfu} RFU",
+        tooltipStutter: "Stutter en {allele} — {rfu} RFU (de {parent})",
+        tooltipCalled: "Llamado",
+        tooltipDropout: "Riesgo de pérdida",
       },
       parameters: {
         at: "AT (RFU)",

@@ -290,7 +290,8 @@ export default function MixProfilesDemo() {
         notes: [], 
         baselineRFU: 0, 
         baselineNoiseTrace: [],
-        stutterPeaks: [] 
+        stutterPeaks: [],
+        noisePeaks: [],
       };
     return simulateCE({
       locusId: selectedMarker,
@@ -776,6 +777,7 @@ export default function MixProfilesDemo() {
           showMarkers={showTrueGenotypes}
           baselineRFU={ce.baselineRFU || 0}
           baselineNoiseTrace={ce.baselineNoiseTrace || []}
+          noisePeaks={ce.noisePeaks || []}
           allTruePeaks={ce.allTruePeaks || []}
           stutterPeaks={ce.stutterPeaks || []}
         />

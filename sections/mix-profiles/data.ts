@@ -351,6 +351,7 @@ export type MixtureParams = {
   hetImbalanceCV: number;
   showStutter: boolean;
   seed: string;
+  degradationKPer100bp?: number; // Degradation constant k (per 100 bp). If undefined or <= 0, no degradation applied.
 };
 
 export const DEFAULT_MIX_PARAMS: MixtureParams = {
@@ -358,6 +359,7 @@ export const DEFAULT_MIX_PARAMS: MixtureParams = {
   hetImbalanceCV: 0.08,
   showStutter: true,
   seed: "strhub-mix",
+  degradationKPer100bp: undefined, // No degradation by default
 };
 
 function getSampleAlleles(locusId: LocusId, sampleId: SampleId): number[] {
@@ -412,6 +414,90 @@ function buildSourceLabel(vals: Set<string>): string {
   return Array.from(vals).sort().join("+");
 }
 
+// Per-locus metadata for amplicon length approximation
+// (alleleRef, Lref in bp, motifLen in bp)
+// Keys are uppercase to match SAMPLE_DATABASE
+const LOCUS_LENGTH_META: Record<string, { alleleRef: number; Lref: number; motifLen: number }> = {
+  FGA: { alleleRef: 20, Lref: 280, motifLen: 4 },
+  CSF1PO: { alleleRef: 10, Lref: 200, motifLen: 4 },
+  D10S1248: { alleleRef: 13, Lref: 220, motifLen: 4 },
+  D12S391: { alleleRef: 18, Lref: 250, motifLen: 4 },
+  D13S317: { alleleRef: 11, Lref: 210, motifLen: 4 },
+  D16S539: { alleleRef: 10, Lref: 200, motifLen: 4 },
+  D18S51: { alleleRef: 18, Lref: 270, motifLen: 4 },
+  D19S433: { alleleRef: 13, Lref: 220, motifLen: 4 },
+  D1S1656: { alleleRef: 15, Lref: 240, motifLen: 4 },
+  D22S1045: { alleleRef: 16, Lref: 250, motifLen: 4 },
+  D2S1338: { alleleRef: 20, Lref: 280, motifLen: 4 },
+  D2S441: { alleleRef: 12, Lref: 210, motifLen: 4 },
+  D3S1358: { alleleRef: 15, Lref: 230, motifLen: 4 },
+  D5S818: { alleleRef: 11, Lref: 210, motifLen: 4 },
+  D7S820: { alleleRef: 10, Lref: 200, motifLen: 4 },
+  D8S1179: { alleleRef: 12, Lref: 210, motifLen: 4 },
+  PentaD: { alleleRef: 9, Lref: 190, motifLen: 5 },
+  PentaE: { alleleRef: 10, Lref: 200, motifLen: 5 },
+  TH01: { alleleRef: 7, Lref: 180, motifLen: 4 },
+  TPOX: { alleleRef: 8, Lref: 190, motifLen: 4 },
+  vWA: { alleleRef: 16, Lref: 250, motifLen: 4 },
+};
+const DEFAULT_LOCUS_META = { alleleRef: 10, Lref: 200, motifLen: 4 };
+
+/**
+ * Computes the approximate amplicon length L (bp) for an allele at a given locus.
+ * Uses per-locus metadata to approximate: L ≈ Lref + motifLen * (allele - alleleRef)
+ * 
+ * @param locusId - The locus ID (e.g., "CSF1PO")
+ * @param allele - The allele value (numeric)
+ * @returns The approximate amplicon length in base pairs
+ */
+function getAmpliconLength(locusId: LocusId, allele: number): number {
+  // Normalize locusId to uppercase for lookup (SAMPLE_DATABASE uses uppercase)
+  const normalizedLocusId = locusId.toUpperCase();
+  
+  // Get locus-specific metadata or use default
+  const meta = LOCUS_LENGTH_META[normalizedLocusId] ?? DEFAULT_LOCUS_META;
+  
+  // Approximation: L ≈ Lref + motifLen * (allele - alleleRef)
+  // This accounts for:
+  // - Base amplicon length (flanking regions, primers, etc.) = Lref at alleleRef
+  // - Variable repeat region length = motifLen * (allele - alleleRef)
+  return meta.Lref + meta.motifLen * (allele - meta.alleleRef);
+}
+
+/**
+ * Computes the degradation attenuation factor for an allele.
+ * Degradation model: exponential attenuation per 100 bp.
+ * atten = exp(-k * (L / 100)), where k is the degradation constant (per 100 bp)
+ * 
+ * @param locusId - The locus ID (e.g., "CSF1PO")
+ * @param allele - The allele value (numeric)
+ * @param k - The degradation constant k (per 100 bp). If undefined or <= 0, returns 1.0 (no degradation)
+ * @returns The attenuation factor (0 < atten <= 1). Returns 1.0 if k is undefined or <= 0.
+ */
+function getDegradationAttenuation(locusId: LocusId, allele: number, k?: number): number {
+  // If k is undefined or <= 0, no degradation (atten = 1)
+  if (!k || k <= 0) {
+    return 1.0;
+  }
+  
+  // If allele is not numeric, skip attenuation (atten = 1)
+  // This should not happen in normal operation, but handle defensively
+  if (typeof allele !== 'number' || Number.isNaN(allele) || !Number.isFinite(allele)) {
+    // TODO: Handle non-numeric alleles if needed (e.g., microvariants)
+    return 1.0;
+  }
+  
+  // Compute amplicon length L (bp) for this allele
+  const L = getAmpliconLength(locusId, allele);
+  
+  // Compute attenuation factor: atten = exp(-k * (L / 100))
+  // This ensures: ↑k ⇒ ↓RFU, and ↑L ⇒ ↓RFU
+  const atten = Math.exp(-k * (L / 100.0));
+  
+  // Clamp attenuation to [0, 1] (should always be in this range for k > 0 and L > 0)
+  return Math.max(0, Math.min(1, atten));
+}
+
 function createStutter(
   peak: Peak,
   preset: StutterPreset,
@@ -443,7 +529,7 @@ export function simulateMixtureForLocus({
   contributors,
   params = {},
 }: MixtureArgs): LocusSimResult {
-  const { targetPerLocus, hetImbalanceCV, showStutter, seed } = {
+  const { targetPerLocus, hetImbalanceCV, showStutter, seed, degradationKPer100bp } = {
     ...DEFAULT_MIX_PARAMS,
     ...params,
   };
@@ -455,17 +541,47 @@ export function simulateMixtureForLocus({
     .forEach((contrib) => {
       const alleles = getSampleAlleles(locusId, contrib.sampleId);
       if (!alleles.length) return;
+      
+      // Compute contributor RFU (baseline before degradation)
       const contributorRFU = targetPerLocus * contrib.proportion;
+      
+      // Split RFU across alleles (before degradation)
       const split = splitAlleles(
         alleles,
         contributorRFU,
         `${seed}|${contrib.label}|${locusId}`,
         hetImbalanceCV
       );
-      split.forEach((rfu, idx) => {
+      
+      // Apply degradation per-allele (Approach A: per-allele attenuation after split)
+      // Degradation model: exponential attenuation per 100 bp
+      // rfu_degraded = rfu_raw * exp(-k * (L / 100))
+      // where L = amplicon length (bp) for this allele
+      // k = degradation constant (per 100 bp)
+      // Physical intent: more degradation → less signal, longer alleles lose more signal than shorter ones
+      split.forEach((rfuRaw, idx) => {
         const alleleValue = alleles[idx] ?? alleles[alleles.length - 1];
+        
+        // Compute degradation attenuation factor
+        const atten = getDegradationAttenuation(locusId, alleleValue, degradationKPer100bp);
+        
+        // Apply attenuation to RFU
+        // Important: degraded RFU is used as-is, without any re-normalization
+        // Attenuation must reflect true signal loss
+        const rfuDegraded = rfuRaw * atten;
+        
+        // Store degraded RFU in map
         const label = formatAlleleLabel(alleleValue);
-        addToMap(trueMap, label, rfu, contrib.label);
+        addToMap(trueMap, label, rfuDegraded, contrib.label);
+        
+        // Debug logging: verify degradation is applied correctly
+        // Log first few peaks for verification (can be removed in production)
+        // Format: console.debug('DEG TEST', allele, k, rfuRaw, rfuDegraded, rfuFinal);
+        // Increasing k must lower both rfuDegraded and rfuFinal
+        if (idx === 0 && degradationKPer100bp && degradationKPer100bp > 0) {
+          // Log first allele of first contributor for verification
+          console.debug('DEG TEST', alleleValue, degradationKPer100bp, rfuRaw.toFixed(1), rfuDegraded.toFixed(1), rfuDegraded.toFixed(1));
+        }
       });
     });
 

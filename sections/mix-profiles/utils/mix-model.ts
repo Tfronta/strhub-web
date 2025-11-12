@@ -229,16 +229,29 @@ export function simulateCE(args: {
       map.set(aNum, e);
 
       // stutter -1 / -2 / +1 (con leve variación, stutterScale, y límite max 20%)
+      // IMPORTANT: Preserve microvariants in stutter positions (e.g., 21.3 - 1 = 20.3, not 20)
       const sdev = p.stutter.sd ?? 0.02;
       const stutterScale = p.stutterScale ?? 1.0;
+      
+      // Helper to calculate discrete stutter position preserving microvariants
+      const getStutterPosition = (parent: number, delta: number): number => {
+        const result = parent + delta;
+        // If parent has decimals, preserve them in stutter position
+        if (parent % 1 !== 0) {
+          // Parent is microvariant (e.g., 21.3) - preserve single decimal
+          return Math.round(result * 10) / 10;
+        }
+        // Parent is integer - stutter is also integer
+        return Math.round(result);
+      };
       
       // Calculate stutter rate and enforce max 20% rule (unless multiplier > 1.5)
       const baseRate1 = (st.minus1 ?? 0.06) * stutterScale;
       const maxRate = stutterScale > 1.5 ? 0.25 : 0.20; // Allow up to 25% if scale > 1.5, else 20%
       const s1 = Math.max(0, Math.min(baseRate1 + gaussian(rand) * sdev, maxRate));
       const stutterRFU1 = trueRFU * s1;
-      // Accumulate at integer position (for accurate calculations)
-      const m1 = Math.round(aNum - 1);
+      // Use discrete position preserving microvariants (e.g., 21.3 - 1 = 20.3, 8 - 1 = 7)
+      const m1 = getStutterPosition(aNum, -1);
       const e1 = map.get(m1) ?? { trueRFU: 0, stRFU: 0, sources: new Set<string>() };
       e1.stRFU += stutterRFU1;
       map.set(m1, e1);
@@ -247,7 +260,8 @@ export function simulateCE(args: {
         const baseRate2 = st.minus2 * stutterScale;
         const s2 = Math.max(0, Math.min(baseRate2 + gaussian(rand) * sdev, maxRate));
         const stutterRFU2 = trueRFU * s2;
-        const m2 = Math.round(aNum - 2);
+        // Use discrete position preserving microvariants (e.g., 21.3 - 2 = 19.3)
+        const m2 = getStutterPosition(aNum, -2);
         const e2 = map.get(m2) ?? { trueRFU: 0, stRFU: 0, sources: new Set<string>() };
         e2.stRFU += stutterRFU2;
         map.set(m2, e2);
@@ -257,7 +271,8 @@ export function simulateCE(args: {
         const baseRateP = st.plus1 * stutterScale;
         const sp = Math.max(0, Math.min(baseRateP + gaussian(rand) * sdev, maxRate));
         const stutterRFUP = trueRFU * sp;
-        const p1 = Math.round(aNum + 1);
+        // Use discrete position preserving microvariants (e.g., 21.3 + 1 = 22.3)
+        const p1 = getStutterPosition(aNum, 1);
         const ep = map.get(p1) ?? { trueRFU: 0, stRFU: 0, sources: new Set<string>() };
         ep.stRFU += stutterRFUP;
         map.set(p1, ep);
@@ -287,12 +302,13 @@ export function simulateCE(args: {
   const cyclesPerUnit = 0.3; // Target: 0.3 cycles per allele unit
   const totalCycles = cyclesPerUnit * Math.max(1, totalRange); // Total cycles across range
   const step = 0.05; // paso fino para suavidad
-  const maxWobble = baselineRFU > 0 
-    ? Math.min(baselineRFU * 0.4, p.AT * 0.6) 
-    : Math.min(p.baselineMu * 0.4, p.AT * 0.6); // Max wobble: 40% of baseline or 60% of AT
-  const wobbleAmplitude = baselineRFU > 0
-    ? Math.min(maxWobble, baselineRFU * 0.35) 
-    : Math.min(maxWobble, p.baselineMu * 0.35); // ±20-40% of baseline
+  // Baseline noise amplitude: 0-5 RFU, scaled by noise control (subtle background fluctuation)
+  // The noise control determines the amplitude of oscillation (e.g., 30 RFU noise = ~4.5 RFU amplitude)
+  // Baseline noise oscillates around a very low value (close to 0), representing subtle background noise
+  const noiseAmplitudeScale = Math.min(5, Math.max(0.5, p.baselineMu * 0.15)); // ~15% of noise, max 5 RFU, min 0.5 RFU
+  const wobbleAmplitude = noiseAmplitudeScale; // Use scaled amplitude directly
+  // Noise center should be very low (subtle background, not a floor) - oscillate around 0-1 RFU
+  const noiseCenter = Math.min(p.baselineMu * 0.05, 1); // Center around 5% of noise or max 1 RFU (very subtle)
   
   // Generar puntos de control para interpolación suave (usar múltiples frecuencias bajas)
   const controlPoints: number[] = [];
@@ -302,14 +318,16 @@ export function simulateCE(args: {
     // Normalize position for wave calculation (0 to 1 range)
     const normalizedX = (xControl - xMin) / Math.max(1, totalRange);
     
-    // Multiple low-frequency components for smooth baseline
+    // Multiple low-frequency components for smooth baseline noise
+    // Baseline noise oscillates around a very low value (subtle background), not around baselineRFU
     const wave1 = Math.sin(2 * Math.PI * totalCycles * normalizedX);
     const wave2 = Math.sin(2 * Math.PI * totalCycles * 0.6 * normalizedX);
     const wave3 = Math.sin(2 * Math.PI * totalCycles * 1.3 * normalizedX);
-    // Combine waves with small random component
+    // Combine waves with small random component - amplitude scaled by noise control
     const combinedWave = (wave1 * 0.5 + wave2 * 0.3 + wave3 * 0.2) * wobbleAmplitude;
-    const smallNoise = gaussian(rand) * (wobbleAmplitude * 0.15); // Small additional noise
-    const yValue = baselineRFU + combinedWave + smallNoise;
+    const smallNoise = gaussian(rand) * (wobbleAmplitude * 0.25); // Small additional noise
+    // Center noise around a very low value (subtle background fluctuation)
+    const yValue = noiseCenter + combinedWave + smallNoise;
     controlPoints.push(Math.max(0, yValue));
   }
   
@@ -349,9 +367,10 @@ export function simulateCE(args: {
     
     const y = h00 * p1 + h10 * m0 + h01 * p2 + h11 * m1;
     
-    // Clamp to ensure baseline never exceeds 0.6×AT and never crosses AT
-    const maxBaseline = p.AT > 0 ? Math.min(baselineRFU + wobbleAmplitude, p.AT * 0.95) : baselineRFU + wobbleAmplitude;
-    const clampedY = Math.max(0, Math.min(y, maxBaseline));
+    // Clamp to ensure baseline noise stays subtle (max 8 RFU, well below AT)
+    // Baseline noise should be a subtle background fluctuation, not a visible floor
+    const maxBaselineNoise = Math.min(8, p.AT * 0.15); // Max 15% of AT or 8 RFU, whichever is smaller
+    const clampedY = Math.max(0, Math.min(y, maxBaselineNoise));
     
     baselineNoiseTrace.push({ allele: +x.toFixed(5), rfu: clampedY });
     x = +(x + step).toFixed(5);
@@ -393,23 +412,35 @@ export function simulateCE(args: {
     }
 
     // stutter - collect all for line, but markers only if >= AT
+    // IMPORTANT: Use discrete allele positions (no jitter) - stutters must sit at exact targets
+    // The alleleNum in the map is already discrete (calculated as parent-1, parent+1, or parent-2)
     if (stRFU > 0) {
-      // Add position jitter for visualization (±0.1 alleles) - makes stutters look more realistic
-      const jitter = (gaussian(rand) * 0.1);
-      const jitteredAllele = alleleNum + jitter;
+      // Format allele label to preserve microvariants (e.g., 20.3, not 20.299...)
+      // If alleleNum is an integer, use it directly; if it has decimals, preserve single decimal
+      let stutterAllele: number | string = alleleNum;
+      
+      // Check if this is a microvariant (has decimal part)
+      if (alleleNum % 1 !== 0) {
+        // Preserve single decimal place for microvariants (e.g., 20.3, 17.2)
+        stutterAllele = Math.round(alleleNum * 10) / 10;
+      } else {
+        // Integer allele - use as-is (e.g., 7, 10, 13)
+        stutterAllele = alleleNum;
+      }
       
       // Always add to stutterPeaks for line visualization (not gated by AT)
+      // Use discrete position - NO JITTER (already discrete from map calculation)
       stutterPeaks.push({
-        allele: jitteredAllele, // Use jittered position for visualization
+        allele: stutterAllele, // Discrete position: parent-1, parent+1, or parent-2
         rfu: stRFU,
         kind: "stutter",
         source: Array.from(v.sources).sort().join("+") || "—",
       } as Peak);
       
-      // Add to peaks only if >= AT (for markers) - use original position for markers
+      // Add to peaks only if >= AT (for markers) - use same discrete position
       if (stRFU >= p.AT) {
         peaks.push({
-          allele: alleleNum, // Use original integer position for markers
+          allele: stutterAllele, // Same discrete position for markers
           rfu: stRFU,
           kind: "stutter",
           source: Array.from(v.sources).sort().join("+") || "—",

@@ -47,7 +47,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
 
@@ -209,12 +209,12 @@ function normalizeContributors(
 export default function MixProfilesDemo() {
   const { t } = useLanguage();
   
-  // Controles de simulación
-  const [AT, setAT] = useState<number>(DEFAULT_AT);
-  const [IT, setIT] = useState<number>(DEFAULT_IT);
-  const [kDeg, setKDeg] = useState<number>(0.015);
-  const [noise, setNoise] = useState<number>(28);
-  const [stutterScale, setStutterScale] = useState<number>(1.0);
+  // Controles de simulación - defaults para mostrar picos coherentes
+  const [AT, setAT] = useState<number>(DEFAULT_AT); // 50 RFU
+  const [IT, setIT] = useState<number>(DEFAULT_IT); // 80 RFU
+  const [kDeg, setKDeg] = useState<number>(0.015); // Degradation k
+  const [noise, setNoise] = useState<number>(30); // Noise/Base = 30 RFU
+  const [stutterScale, setStutterScale] = useState<number>(1.3); // Stutter level × = 1.3
 
   const markerKeys = useMemo(
     () =>
@@ -295,7 +295,7 @@ export default function MixProfilesDemo() {
     return simulateCE({
       locusId: selectedMarker,
       contributors: activeContributors,
-      dnaInputNg: 0.05, // 50 pg
+      dnaInputNg: 0.10, // 0.10 ng (100 pg) - increased for clearer peaks
       params: {
         AT,
         ST: IT,
@@ -421,7 +421,7 @@ export default function MixProfilesDemo() {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
           {/* Locus */}
           <div className="lg:col-span-1">
-            <label className="text-sm font-medium">Locus</label>
+            <label className="text-sm font-medium">{t("mixProfiles.controls.locus")}</label>
             <div className="mt-2">
               <Popover open={locusOpen} onOpenChange={setLocusOpen}>
                 <PopoverTrigger className="w-full justify-between border rounded-md p-2 flex flex-row items-center">
@@ -496,7 +496,7 @@ export default function MixProfilesDemo() {
                           >
                             <div className="flex flex-col gap-1">
                               <span className="text-xs font-medium">
-                                Contributor {label}
+                                {t("mixProfiles.controls.contributor", { label })}
                               </span>
                               <span className="text-xs text-muted-foreground">
                                 {sampleId ?? t("mixProfiles.trueGenotypes.notSelected")}
@@ -542,10 +542,10 @@ export default function MixProfilesDemo() {
                 <div key={contributor.label} className="rounded-lg border p-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">
-                      Contributor {contributor.label}
+                      {t("mixProfiles.controls.contributor", { label: contributor.label })}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      {contributor.sampleId ?? "None"}
+                      {contributor.sampleId ?? t("mixProfiles.trueGenotypes.noSample")}
                     </span>
                   </div>
 
@@ -560,16 +560,16 @@ export default function MixProfilesDemo() {
                       }
                     >
                       <PopoverTrigger className="w-full justify-between border rounded-md p-2 flex flex-row items-center">
-                        {contributor.sampleId ?? "None"}
+                        {contributor.sampleId ?? t("mixProfiles.trueGenotypes.noSample")}
                         <ChevronsUpDown className="ml-2 size-4 opacity-50" />
                       </PopoverTrigger>
                       <PopoverContent className="w-[220px] p-0">
                         <Command>
                           <CommandInput
-                            placeholder={`Search ${contributor.label} sample...`}
+                            placeholder={t("mixProfiles.controls.searchSample", { label: contributor.label })}
                           />
                           <CommandList>
-                            <CommandEmpty>No sample found.</CommandEmpty>
+                            <CommandEmpty>{t("mixProfiles.controls.noSampleFound")}</CommandEmpty>
                             <CommandGroup>
                               <CommandItem
                                 value="none"
@@ -589,7 +589,7 @@ export default function MixProfilesDemo() {
                                       : "opacity-0"
                                   )}
                                 />
-                                None
+                                {t("mixProfiles.trueGenotypes.noSample")}
                               </CommandItem>
                               {sampleOptions.map((option) => (
                                 <CommandItem
@@ -666,7 +666,9 @@ export default function MixProfilesDemo() {
             {/* Controles de simulación forense */}
             <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-5">
               <div className="rounded-lg border p-3">
-                <div className="text-sm font-medium">AT (RFU)</div>
+                <div className="flex items-center gap-1">
+                  <div className="text-sm font-medium">{t("mixProfiles.parameters.at")}</div>
+                </div>
                 <input
                   type="number"
                   min={0}
@@ -677,7 +679,9 @@ export default function MixProfilesDemo() {
                 />
               </div>
               <div className="rounded-lg border p-3">
-                <div className="text-sm font-medium">ST (RFU)</div>
+                <div className="flex items-center gap-1">
+                  <div className="text-sm font-medium">{t("mixProfiles.parameters.st")}</div>
+                </div>
                 <input
                   type="number"
                   min={0}
@@ -688,8 +692,16 @@ export default function MixProfilesDemo() {
                 />
               </div>
               <div className="rounded-lg border p-3">
-                <div className="text-sm font-medium">
-                  Degradación k (por 100 bp)
+                <div className="flex items-center gap-1">
+                  <div className="text-sm font-medium">{t("mixProfiles.parameters.degradationK")}</div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs whitespace-pre-line">
+                      <p>{t("mixProfiles.parameters.degradationKTooltip")}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
                 <input
                   type="number"
@@ -700,12 +712,19 @@ export default function MixProfilesDemo() {
                   value={kDeg}
                   onChange={(e) => setKDeg(Number(e.target.value))}
                 />
-                <p className="mt-1 text-xs text-muted-foreground">
-                  0.015–0.02 = difícil
-                </p>
               </div>
               <div className="rounded-lg border p-3">
-                <div className="text-sm font-medium">Ruido / Base (RFU)</div>
+                <div className="flex items-center gap-1">
+                  <div className="text-sm font-medium">{t("mixProfiles.parameters.noiseBase")}</div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs whitespace-pre-line">
+                      <p>{t("mixProfiles.parameters.noiseBaseTooltip")}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
                 <input
                   type="number"
                   min={0}
@@ -716,7 +735,17 @@ export default function MixProfilesDemo() {
                 />
               </div>
               <div className="rounded-lg border p-3">
-                <div className="text-sm font-medium">Stutter level (×)</div>
+                <div className="flex items-center gap-1">
+                  <div className="text-sm font-medium">{t("mixProfiles.parameters.stutterLevel")}</div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs whitespace-pre-line">
+                      <p>{t("mixProfiles.parameters.stutterLevelTooltip")}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
                 <input
                   type="number"
                   min={0.5}
@@ -726,9 +755,6 @@ export default function MixProfilesDemo() {
                   value={stutterScale}
                   onChange={(e) => setStutterScale(Number(e.target.value))}
                 />
-                <p className="mt-1 text-xs text-muted-foreground">
-                  0.5–2.0
-                </p>
               </div>
             </div>
           </div>
@@ -737,7 +763,7 @@ export default function MixProfilesDemo() {
 
       {/* CE */}
       <div className="rounded-xl border p-4">
-        <h3 className="text-base font-semibold">CE Analysis (RFU)</h3>
+        <h3 className="text-base font-semibold">{t("mixProfiles.charts.ceTitle")}</h3>
         <p className="text-sm text-muted-foreground">
           Capillary Electrophoresis Analysis
         </p>
@@ -750,6 +776,8 @@ export default function MixProfilesDemo() {
           showMarkers={showTrueGenotypes}
           baselineRFU={ce.baselineRFU || 0}
           baselineNoiseTrace={ce.baselineNoiseTrace || []}
+          allTruePeaks={ce.allTruePeaks || []}
+          stutterPeaks={ce.stutterPeaks || []}
         />
       </div>
 

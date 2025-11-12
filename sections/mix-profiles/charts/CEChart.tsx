@@ -11,6 +11,7 @@ import {
   Scatter,
   Legend,
 } from "recharts";
+import { useLanguage } from "@/contexts/language-context";
 
 type Pt = { allele: number; rfu: number };
 type Marker = {
@@ -28,6 +29,8 @@ export default function CEChart(props: {
   showMarkers?: boolean;
   baselineRFU?: number;
   baselineNoiseTrace?: Pt[]; // Smooth wavy baseline trace
+  allTruePeaks?: Array<{ allele: number | string; rfu: number }>; // All true peaks for tick calculation
+  stutterPeaks?: Array<{ allele: number | string; rfu: number }>; // All stutter peaks for tick calculation
 }) {
   const {
     dataTrue,
@@ -38,184 +41,202 @@ export default function CEChart(props: {
     showMarkers = true,
     baselineRFU,
     baselineNoiseTrace = [],
+    allTruePeaks = [],
+    stutterPeaks = [],
   } = props;
 
   // Evita medir antes de montar (soluciona width/height -1 en algunos layouts)
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  // Translations
+  const { t } = useLanguage();
+
   // datasets para scatters por tipo
   const mTrue = markers.filter((m) => m.kind === "true");
   const mStutter = markers.filter((m) => m.kind === "stutter");
   const mDrop = markers.filter((m) => m.kind === "dropout");
 
-  // Extract all unique allele values from markers for X-axis ticks
+  // Build ticks from real peaks - use peak.allele directly (as strings or numbers)
+  // Include: (a) all true peaks (blue series), (b) stutter peaks >= AT (orange series)
+  // Never round or modify allele values - use them exactly as they appear in peaks
   const alleleValues = useMemo(() => {
-    // First, try to get alleles from markers (these are the actual called alleles)
-    if (markers.length > 0) {
-      const markerAlleles = markers
-        .map((m) => m.allele)
-        .filter((a) => !Number.isNaN(a));
-      if (markerAlleles.length > 0) {
-        // Normalize near-integer values first, then get unique values and sort
-        const normalized = markerAlleles.map((a) => {
-          // Normalize values that are essentially integers (within 0.01)
-          const rounded = Math.round(a);
-          return Math.abs(a - rounded) < 0.01 ? rounded : a;
-        });
-        const unique = Array.from(new Set(normalized)).sort((a, b) => a - b);
-        return unique;
+    const alleleSet = new Set<number | string>();
+
+    // Helper to normalize allele to number (for sorting) while preserving original value
+    const normalizeAllele = (a: number | string): number | null => {
+      if (typeof a === "number") {
+        if (Number.isNaN(a)) return null;
+        return a;
+      }
+      const num = parseFloat(String(a));
+      return !Number.isNaN(num) ? num : null;
+    };
+
+    // Collect alleles from true peaks (all true peaks are visible in blue series)
+    // Use peak.allele directly - don't round or modify
+    for (const peak of allTruePeaks) {
+      if (peak.rfu > 0) {
+        // Use allele value directly (string or number) - preserve microvariants
+        const allele = peak.allele;
+        if (allele != null && allele !== "") {
+          // Normalize to number for set comparison (handles "13" vs 13)
+          const normalized = normalizeAllele(allele);
+          if (normalized != null) {
+            // Store as number for consistent sorting, but preserve decimal precision
+            alleleSet.add(normalized);
+          }
+        }
       }
     }
 
-    // Fallback: extract integer allele values from data range
-    const allData = [...dataTrue, ...dataStutter];
-    if (allData.length === 0) return [];
-
-    const alleles = allData
-      .map((d) => d.allele)
-      .filter((a) => !Number.isNaN(a));
-
-    if (alleles.length === 0) return [];
-
-    // Generate integer ticks for the range
-    const minA = Math.floor(Math.min(...alleles));
-    const maxA = Math.ceil(Math.max(...alleles));
-    const ticks: number[] = [];
-    for (let i = minA; i <= maxA; i++) {
-      ticks.push(i);
+    // Collect alleles from stutter peaks (only those >= AT are visible as markers)
+    // Use peak.allele directly - don't round or modify
+    for (const peak of stutterPeaks) {
+      if (peak.rfu >= (analyticalThreshold ?? 0)) {
+        const allele = peak.allele;
+        if (allele != null && allele !== "") {
+          const normalized = normalizeAllele(allele);
+          if (normalized != null) {
+            alleleSet.add(normalized);
+          }
+        }
+      }
     }
-    return ticks;
-  }, [markers, dataTrue, dataStutter]);
 
-  // Determine if we need decimals based on marker allele values
+    // Fallback: if no peaks provided, extract from data traces
+    if (alleleSet.size === 0) {
+      const allData = [...dataTrue, ...dataStutter];
+      for (const pt of allData) {
+        if (!Number.isNaN(pt.allele) && pt.rfu > 0) {
+          alleleSet.add(pt.allele);
+        }
+      }
+    }
+
+    if (alleleSet.size === 0) return [];
+
+    // Convert to array and sort numerically
+    // This preserves microvariants (e.g., 17.3, 19.1) exactly as they appear
+    const alleles = Array.from(alleleSet)
+      .map((a) => (typeof a === "number" ? a : parseFloat(String(a))))
+      .filter((n) => !Number.isNaN(n))
+      .sort((a, b) => a - b);
+
+    // Return unique allele values from peaks, sorted numerically
+    // This preserves all peaks exactly as they appear (including microvariants like 17.3, 19.1)
+    // Never filter or hide a tick - if it exists in peaks, it must be visible
+    // Always includes the smallest and largest allele labels (off-by-one fix)
+    return Array.from(new Set(alleles)).sort((a, b) => a - b);
+  }, [allTruePeaks, stutterPeaks, analyticalThreshold, dataTrue, dataStutter]);
+
+  // Determine if we need decimals based on allele values from peaks
   const hasDecimals = useMemo(() => {
-    return markers.some((m) => m.allele % 1 !== 0);
-  }, [markers]);
+    // Check allTruePeaks and stutterPeaks for microvariants
+    const checkPeak = (peak: { allele: number | string }) => {
+      if (typeof peak.allele === "number") {
+        return peak.allele % 1 !== 0;
+      }
+      const num = parseFloat(String(peak.allele));
+      return !Number.isNaN(num) && num % 1 !== 0;
+    };
 
-  // Calculate domain from data if needed
+    const hasDecimalInTrue = (allTruePeaks || []).some(checkPeak);
+    const hasDecimalInStutter = (stutterPeaks || []).some(checkPeak);
+    const hasDecimalInMarkers = markers.some((m) => {
+      const num =
+        typeof m.allele === "number" ? m.allele : parseFloat(String(m.allele));
+      return !Number.isNaN(num) && num % 1 !== 0;
+    });
+
+    return hasDecimalInTrue || hasDecimalInStutter || hasDecimalInMarkers;
+  }, [allTruePeaks, stutterPeaks, markers]);
+
+  // Calculate domain from allele values - ensure last peak is fully visible
   const domain = useMemo(() => {
     if (alleleValues.length > 0) {
       const minA = Math.min(...alleleValues);
       const maxA = Math.max(...alleleValues);
-      return [minA - 0.5, maxA + 0.5];
+      // Add small padding to ensure last peak is fully visible (off-by-one fix)
+      // Use floor/ceil to handle microvariants correctly
+      return [Math.floor(minA) - 0.5, Math.ceil(maxA) + 0.5];
+    }
+    // Fallback: use data traces to determine domain
+    const allData = [...dataTrue, ...dataStutter];
+    if (allData.length > 0) {
+      const alleles = allData
+        .map((d) => d.allele)
+        .filter((a) => !Number.isNaN(a));
+      if (alleles.length > 0) {
+        const minA = Math.min(...alleles);
+        const maxA = Math.max(...alleles);
+        // Ensure last peak is visible
+        return [Math.floor(minA) - 0.5, Math.ceil(maxA) + 0.5];
+      }
     }
     return ["auto", "auto"];
-  }, [alleleValues]);
+  }, [alleleValues, dataTrue, dataStutter]);
 
   if (!mounted) return <div style={{ height: 320 }} />;
 
   return (
     <ResponsiveContainer width="100%" height={320} minWidth={0}>
       <LineChart margin={{ top: 12, right: 20, bottom: 50, left: 20 }}>
-        {/* Ejes */}
+        {/* Ejes - sin gridlines horizontales */}
         <XAxis
           type="number"
           dataKey="allele"
           domain={domain}
           ticks={alleleValues.length > 0 ? alleleValues : undefined}
           allowDecimals={hasDecimals}
-          label={{ value: "Allele", position: "insideBottom", offset: -10 }}
+          label={{
+            value: t("mixProfiles.ceChart.axisAllele"),
+            position: "insideBottom",
+            offset: -10,
+          }}
+          // Force display of all ticks, including microvariants and last peak
+          interval={0}
+          // Format ticks to preserve microvariants (show decimals when needed)
+          tickFormatter={(value) => {
+            // Check if this value is a microvariant (has decimal part)
+            if (value % 1 === 0) {
+              return String(value); // Integer: show as "13"
+            }
+            // Decimal: show with 1 decimal place (e.g., "17.3", "19.1")
+            return value.toFixed(1);
+          }}
         />
         <YAxis
           type="number"
           domain={[0, "auto"]}
-          label={{ value: "RFU", angle: -90, position: "insideLeft" }}
+          label={{
+            value: t("mixProfiles.ceChart.axisRFU"),
+            angle: -90,
+            position: "insideLeft",
+          }}
         />
 
-        {/* Líneas de umbral - solo AT y ST (no baseline ReferenceLines) */}
-        {analyticalThreshold != null && (
-          <ReferenceLine
-            y={analyticalThreshold}
-            stroke="#9CA3AF"
-            strokeDasharray="6 6"
-            label={{ value: "AT", position: "right", offset: 5 }}
-          />
-        )}
-        {interpretationThreshold != null && (
-          <ReferenceLine
-            y={interpretationThreshold}
-            stroke="#6B7280"
-            strokeDasharray="4 4"
-            label={{ value: "ST", position: "right", offset: 5 }}
-          />
-        )}
-
-        {/* Baseline - render FIRST so it appears behind signal curves (visual only, NOT added to signal values) */}
-        {/* Baseline mean - dashed gray line */}
-        {baselineRFU != null &&
-          baselineRFU > 0 &&
-          (() => {
-            // Calculate X range from data for baseline mean line
-            const allAlleles = [
-              ...dataTrue.map((d) => d.allele),
-              ...dataStutter.map((d) => d.allele),
-              ...markers.map((m) => m.allele),
-            ].filter((a) => !Number.isNaN(a));
-
-            let minX = 5;
-            let maxX = 25;
-            if (allAlleles.length > 0) {
-              minX = Math.min(...allAlleles) - 1;
-              maxX = Math.max(...allAlleles) + 1;
-            } else if (
-              typeof domain[0] === "number" &&
-              typeof domain[1] === "number"
-            ) {
-              minX = domain[0];
-              maxX = domain[1];
-            }
-
-            const baselineMeanData = [
-              { allele: minX, rfu: baselineRFU },
-              { allele: maxX, rfu: baselineRFU },
-            ];
-            return (
-              <Line
-                name="Baseline (mean)"
-                type="linear"
-                data={baselineMeanData}
-                dataKey="rfu"
-                dot={false}
-                stroke="#9CA3AF"
-                strokeDasharray="3 3"
-                strokeOpacity={0.6}
-                strokeWidth={1}
-                isAnimationActive={false}
-                connectNulls={true}
-              />
-            );
-          })()}
-
-        {/* Baseline noise - faint wavy gray line (only render if baseline exists) */}
+        {/* Baseline noise - render FIRST so it appears behind signal curves (faint wavy trace only, no mean line) */}
+        {/* Baseline noise must be a subtle undulating path, not a straight line or second floor */}
         {baselineRFU != null &&
           baselineRFU > 0 &&
           baselineNoiseTrace.length > 0 && (
             <Line
-              name="Baseline noise (RFU)"
+              name={t("mixProfiles.ceChart.legendBaselineNoise")}
               type="monotone"
               data={baselineNoiseTrace}
               dataKey="rfu"
               dot={false}
-              stroke="#9CA3AF"
-              strokeOpacity={0.3}
-              strokeWidth={1}
+              stroke="#9CA3AF" // Gray (as specified)
+              strokeOpacity={0.2} // Very faint (subtle background)
+              strokeWidth={0.7}
               isAnimationActive={false}
             />
           )}
 
         {/* Signal curves - render AFTER baseline so they appear on top (pure values, start from 0) */}
-        {/* Legend order (controlled by render order):
-            1. Baseline (mean) - Dashed gray line (rendered above)
-            2. Baseline noise (RFU) - Faint wavy gray line (rendered above)
-            3. True alleles / Signal (RFU) - Blue line
-            4. Stutter (RFU) - Orange line
-            5. Called - Green circles
-            6. Drop-out risk - Red stars
-            7. Stutter peak - Orange triangles
-        */}
         <Line
-          name="True alleles / Signal (RFU)"
+          name={t("mixProfiles.ceChart.legendTrueAlleles")}
           type="monotone"
           data={dataTrue}
           dataKey="rfu"
@@ -226,7 +247,7 @@ export default function CEChart(props: {
         />
 
         <Line
-          name="Stutter (RFU)"
+          name={t("mixProfiles.ceChart.legendStutter")}
           type="monotone"
           data={dataStutter}
           dataKey="rfu"
@@ -237,19 +258,19 @@ export default function CEChart(props: {
           isAnimationActive={false}
         />
 
-        {/* Markers - render LAST so they appear on top of curves (clearly visible) */}
+        {/* Markers - render AFTER curves so they appear on top (clearly visible) */}
         {showMarkers && mTrue.length > 0 && (
           <Scatter
-            name="Called"
+            name={t("mixProfiles.ceChart.legendCalled")}
             data={mTrue}
-            fill="#10B981"
+            fill="#22C55E" // Green-500 (as specified)
             shape="circle"
-            r={6}
+            r={4} // Radius 4px (as specified)
           />
         )}
         {showMarkers && mDrop.length > 0 && (
           <Scatter
-            name="Drop-out risk"
+            name={t("mixProfiles.ceChart.legendDropoutRisk")}
             data={mDrop}
             fill="#EF4444"
             shape="star"
@@ -258,11 +279,43 @@ export default function CEChart(props: {
         )}
         {showMarkers && mStutter.length > 0 && (
           <Scatter
-            name="Stutter peak"
+            name={t("mixProfiles.ceChart.legendStutterPeak")}
             data={mStutter}
             fill="#F59E0B"
             shape="triangle"
             r={6}
+          />
+        )}
+
+        {/* Líneas de umbral - solo AT y ST con labels (sin otras líneas) */}
+        {analyticalThreshold != null && (
+          <ReferenceLine
+            y={analyticalThreshold}
+            stroke="#9CA3AF"
+            strokeDasharray="6 6"
+            strokeWidth={1}
+            label={{
+              value: t("mixProfiles.ceChart.thresholdAT"),
+              position: "right",
+              offset: 5,
+              fill: "#6B7280",
+              fontSize: 12,
+            }}
+          />
+        )}
+        {interpretationThreshold != null && (
+          <ReferenceLine
+            y={interpretationThreshold}
+            stroke="#6B7280"
+            strokeDasharray="4 4"
+            strokeWidth={1}
+            label={{
+              value: t("mixProfiles.ceChart.thresholdST"),
+              position: "right",
+              offset: 5,
+              fill: "#6B7280",
+              fontSize: 12,
+            }}
           />
         )}
 
@@ -273,7 +326,7 @@ export default function CEChart(props: {
           }}
           labelFormatter={(label: any, payload: readonly any[]) => {
             if (!payload || payload.length === 0) {
-              return `Allele ${label}`;
+              return t("mixProfiles.ceChart.tooltipAllele", { allele: label });
             }
 
             // Check if this is a scatter point (has actual allele data in payload)
@@ -287,27 +340,40 @@ export default function CEChart(props: {
 
             if (isScatterPoint) {
               // For scatter points, find the scatter series (not the line series)
+              // Note: name may be localized, so we check against all possible marker names
               const scatterItem = payload.find(
                 (item: any) =>
-                  item.name === "True alleles" ||
+                  item.name === t("mixProfiles.ceChart.legendCalled") ||
+                  item.name === t("mixProfiles.ceChart.legendStutterPeak") ||
+                  item.name === t("mixProfiles.ceChart.legendDropoutRisk") ||
+                  item.name === "Called" ||
                   item.name === "Stutter peak" ||
                   item.name === "Drop-out risk"
               );
 
               if (scatterItem) {
-                return `Allele ${label} — ${scatterItem.name}`;
+                return t("mixProfiles.ceChart.tooltipAlleleMarker", {
+                  allele: label,
+                  marker: scatterItem.name,
+                });
               }
             }
 
             // For line series, just show "Allele X"
-            return `Allele ${label}`;
+            return t("mixProfiles.ceChart.tooltipAllele", { allele: label });
           }}
         />
         <Legend
           verticalAlign="bottom"
           wrapperStyle={{ paddingTop: "20px" }}
-          // El orden en la leyenda se controla por el orden de renderizado
-          // Orden: Signal (RFU), True alleles, Stutter (RFU), Drop-out risk
+          // Legend shows only visible series (controlled by conditional rendering)
+          // Order matches render order:
+          // 1. Baseline noise (if visible)
+          // 2. True alleles / Signal (RFU) - always visible
+          // 3. Stutter (RFU) - always visible
+          // 4. Called (if markers visible and >= ST)
+          // 5. Drop-out risk (if markers visible and AT <= RFU < ST)
+          // 6. Stutter peak (if markers visible and stutter >= AT)
         />
       </LineChart>
     </ResponsiveContainer>

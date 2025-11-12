@@ -214,6 +214,7 @@ export default function MixProfilesDemo() {
   const [IT, setIT] = useState<number>(DEFAULT_IT);
   const [kDeg, setKDeg] = useState<number>(0.015);
   const [noise, setNoise] = useState<number>(28);
+  const [stutterScale, setStutterScale] = useState<number>(1.0);
 
   const markerKeys = useMemo(
     () =>
@@ -282,7 +283,15 @@ export default function MixProfilesDemo() {
   // CE
   const ce = useMemo(() => {
     if (!activeContributors.length)
-      return { locusId: selectedMarker, peaks: [], notes: [] };
+      return { 
+        locusId: selectedMarker, 
+        peaks: [], 
+        allTruePeaks: [],
+        notes: [], 
+        baselineRFU: 0, 
+        baselineNoiseTrace: [],
+        stutterPeaks: [] 
+      };
     return simulateCE({
       locusId: selectedMarker,
       contributors: activeContributors,
@@ -297,36 +306,69 @@ export default function MixProfilesDemo() {
         degrK: kDeg,
         ampliconSize: 150,
         baselineMu: noise,
-        baselineSd: Math.max(2, noise * 0.35),
+        baselineSd: Math.max(2, Math.round(noise * 0.45)),
         stutter: { minus1: 0.06, minus2: 0.01, plus1: 0.005, sd: 0.02 },
+        stutterScale,
       },
     });
-  }, [activeContributors, selectedMarker, AT, IT, kDeg, noise]);
+  }, [activeContributors, selectedMarker, AT, IT, kDeg, noise, stutterScale]);
 
   // curvas y marcadores
+  // Signal trace: ALL true peaks (not gated by AT) - baseline is visual only, NOT added to signal
   const ceTrueSeries = useMemo(
-    () => makeCETraceByKind(ce.peaks, "true"),
-    [ce.peaks]
+    () => makeCETraceByKind(ce.allTruePeaks || [], "true"),
+    [ce.allTruePeaks]
   );
+  
+  // Stutter trace: ALL stutter peaks (not gated by AT) - baseline is visual only, NOT added to signal
   const ceStutterSeries = useMemo(
-    () => makeCETraceByKind(ce.peaks, "stutter"),
-    [ce.peaks]
+    () => makeCETraceByKind(ce.stutterPeaks || [], "stutter"),
+    [ce.stutterPeaks]
   );
+  
+  // Markers: correctly categorized based on thresholds
+  // RFU < AT: no marker (uninterpreted low signal)
+  // AT ≤ RFU < ST: red marker (Drop-out risk)
+  // RFU ≥ ST: green marker (Called)
+  // Stutter >= AT: orange triangle
   const ceMarkers = useMemo(() => {
     const m: Array<{
       allele: number;
       rfu: number;
       kind: "dropout" | "stutter" | "true";
     }> = [];
-    for (const p of ce.peaks) {
+    
+    // Process ALL true peaks for markers (not just filtered peaks)
+    for (const p of ce.allTruePeaks || []) {
       const allele = parseNum(String(p.allele));
-      if (Number.isNaN(allele) || p.rfu < AT) continue;
-      if (p.kind === "stutter") m.push({ allele, rfu: p.rfu, kind: "stutter" });
-      else if (p.rfu < IT) m.push({ allele, rfu: p.rfu, kind: "dropout" });
-      else m.push({ allele, rfu: p.rfu, kind: "true" });
+      if (Number.isNaN(allele)) continue;
+      
+      if (p.kind === "true") {
+        // RFU ≥ ST: green marker (Called)
+        if (p.rfu >= IT) {
+          m.push({ allele, rfu: p.rfu, kind: "true" });
+        } 
+        // AT ≤ RFU < ST: red marker (Drop-out risk)
+        else if (p.rfu >= AT) {
+          m.push({ allele, rfu: p.rfu, kind: "dropout" });
+        }
+        // RFU < AT: no marker (uninterpreted low signal)
+      }
     }
+    
+    // Process stutter peaks for markers (only those >= AT)
+    for (const p of ce.peaks || []) {
+      const allele = parseNum(String(p.allele));
+      if (Number.isNaN(allele)) continue;
+      
+      if (p.kind === "stutter" && p.rfu >= AT) {
+        // Orange triangle: stutter >= AT
+        m.push({ allele, rfu: p.rfu, kind: "stutter" });
+      }
+    }
+    
     return m.sort((a, b) => a.allele - b.allele);
-  }, [ce.peaks, AT, IT]);
+  }, [ce.allTruePeaks, ce.peaks, AT, IT]);
 
   // NGS derivado de CE
   const ngsRows = useMemo(
@@ -622,7 +664,7 @@ export default function MixProfilesDemo() {
             <div className="text-xs text-muted-foreground">{mixSummary}</div>
 
             {/* Controles de simulación forense */}
-            <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-5">
               <div className="rounded-lg border p-3">
                 <div className="text-sm font-medium">AT (RFU)</div>
                 <input
@@ -673,6 +715,21 @@ export default function MixProfilesDemo() {
                   onChange={(e) => setNoise(Number(e.target.value))}
                 />
               </div>
+              <div className="rounded-lg border p-3">
+                <div className="text-sm font-medium">Stutter level (×)</div>
+                <input
+                  type="number"
+                  min={0.5}
+                  max={2.0}
+                  step={0.1}
+                  className="mt-2 w-full rounded-md border px-2 py-1 text-sm"
+                  value={stutterScale}
+                  onChange={(e) => setStutterScale(Number(e.target.value))}
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  0.5–2.0
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -690,6 +747,9 @@ export default function MixProfilesDemo() {
           markers={ceMarkers}
           analyticalThreshold={AT}
           interpretationThreshold={IT}
+          showMarkers={showTrueGenotypes}
+          baselineRFU={ce.baselineRFU || 0}
+          baselineNoiseTrace={ce.baselineNoiseTrace || []}
         />
       </div>
 

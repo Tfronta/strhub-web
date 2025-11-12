@@ -25,6 +25,9 @@ export default function CEChart(props: {
   markers?: Marker[];
   analyticalThreshold?: number;
   interpretationThreshold?: number;
+  showMarkers?: boolean;
+  baselineRFU?: number;
+  baselineNoiseTrace?: Pt[]; // Smooth wavy baseline trace
 }) {
   const {
     dataTrue,
@@ -32,6 +35,9 @@ export default function CEChart(props: {
     markers = [],
     analyticalThreshold,
     interpretationThreshold,
+    showMarkers = true,
+    baselineRFU,
+    baselineNoiseTrace = [],
   } = props;
 
   // Evita medir antes de montar (soluciona width/height -1 en algunos layouts)
@@ -117,12 +123,13 @@ export default function CEChart(props: {
           label={{ value: "RFU", angle: -90, position: "insideLeft" }}
         />
 
-        {/* Líneas de umbral */}
+        {/* Líneas de umbral - solo AT y ST (no baseline ReferenceLines) */}
         {analyticalThreshold != null && (
           <ReferenceLine
             y={analyticalThreshold}
             stroke="#9CA3AF"
             strokeDasharray="6 6"
+            label={{ value: "AT", position: "right", offset: 5 }}
           />
         )}
         {interpretationThreshold != null && (
@@ -130,58 +137,178 @@ export default function CEChart(props: {
             y={interpretationThreshold}
             stroke="#6B7280"
             strokeDasharray="4 4"
+            label={{ value: "ST", position: "right", offset: 5 }}
           />
         )}
 
-        {/* Curvas */}
+        {/* Baseline - render FIRST so it appears behind signal curves (visual only, NOT added to signal values) */}
+        {/* Baseline mean - dashed gray line */}
+        {baselineRFU != null &&
+          baselineRFU > 0 &&
+          (() => {
+            // Calculate X range from data for baseline mean line
+            const allAlleles = [
+              ...dataTrue.map((d) => d.allele),
+              ...dataStutter.map((d) => d.allele),
+              ...markers.map((m) => m.allele),
+            ].filter((a) => !Number.isNaN(a));
+
+            let minX = 5;
+            let maxX = 25;
+            if (allAlleles.length > 0) {
+              minX = Math.min(...allAlleles) - 1;
+              maxX = Math.max(...allAlleles) + 1;
+            } else if (
+              typeof domain[0] === "number" &&
+              typeof domain[1] === "number"
+            ) {
+              minX = domain[0];
+              maxX = domain[1];
+            }
+
+            const baselineMeanData = [
+              { allele: minX, rfu: baselineRFU },
+              { allele: maxX, rfu: baselineRFU },
+            ];
+            return (
+              <Line
+                name="Baseline (mean)"
+                type="linear"
+                data={baselineMeanData}
+                dataKey="rfu"
+                dot={false}
+                stroke="#9CA3AF"
+                strokeDasharray="3 3"
+                strokeOpacity={0.6}
+                strokeWidth={1}
+                isAnimationActive={false}
+                connectNulls={true}
+              />
+            );
+          })()}
+
+        {/* Baseline noise - faint wavy gray line (only render if baseline exists) */}
+        {baselineRFU != null &&
+          baselineRFU > 0 &&
+          baselineNoiseTrace.length > 0 && (
+            <Line
+              name="Baseline noise (RFU)"
+              type="monotone"
+              data={baselineNoiseTrace}
+              dataKey="rfu"
+              dot={false}
+              stroke="#9CA3AF"
+              strokeOpacity={0.3}
+              strokeWidth={1}
+              isAnimationActive={false}
+            />
+          )}
+
+        {/* Signal curves - render AFTER baseline so they appear on top (pure values, start from 0) */}
+        {/* Legend order (controlled by render order):
+            1. Baseline (mean) - Dashed gray line (rendered above)
+            2. Baseline noise (RFU) - Faint wavy gray line (rendered above)
+            3. True alleles / Signal (RFU) - Blue line
+            4. Stutter (RFU) - Orange line
+            5. Called - Green circles
+            6. Drop-out risk - Red stars
+            7. Stutter peak - Orange triangles
+        */}
         <Line
-          name="True alleles"
+          name="True alleles / Signal (RFU)"
           type="monotone"
           data={dataTrue}
           dataKey="rfu"
           dot={false}
-          stroke="#2563EB" // azul
-          strokeWidth={2}
-          isAnimationActive={false}
-        />
-        <Line
-          name="Stutter"
-          type="monotone"
-          data={dataStutter}
-          dataKey="rfu"
-          dot={false}
-          stroke="#F59E0B" // naranja
-          strokeOpacity={0.8}
+          stroke="#2563EB" // Blue
           strokeWidth={2}
           isAnimationActive={false}
         />
 
-        {/* Marcadores */}
-        {mTrue.length > 0 && (
-          <Scatter name="Called" data={mTrue} fill="#10B981" shape="circle" />
-        )}
-        {mStutter.length > 0 && (
+        <Line
+          name="Stutter (RFU)"
+          type="monotone"
+          data={dataStutter}
+          dataKey="rfu"
+          dot={false}
+          stroke="#F59E0B" // Orange
+          strokeOpacity={0.6}
+          strokeWidth={1.5}
+          isAnimationActive={false}
+        />
+
+        {/* Markers - render LAST so they appear on top of curves (clearly visible) */}
+        {showMarkers && mTrue.length > 0 && (
           <Scatter
-            name="Stutter peak"
-            data={mStutter}
-            fill="#F59E0B"
-            shape="triangle"
+            name="Called"
+            data={mTrue}
+            fill="#10B981"
+            shape="circle"
+            r={6}
           />
         )}
-        {mDrop.length > 0 && (
+        {showMarkers && mDrop.length > 0 && (
           <Scatter
             name="Drop-out risk"
             data={mDrop}
             fill="#EF4444"
             shape="star"
+            r={6}
+          />
+        )}
+        {showMarkers && mStutter.length > 0 && (
+          <Scatter
+            name="Stutter peak"
+            data={mStutter}
+            fill="#F59E0B"
+            shape="triangle"
+            r={6}
           />
         )}
 
         <Tooltip
-          formatter={(v: any, n) => [Math.round(v as number) + " RFU", n]}
-          labelFormatter={(x: any) => `Allele ${x}`}
+          formatter={(value: any, name: string, props: any) => {
+            // Round RFU value for all series
+            return [Math.round(value as number) + " RFU", name];
+          }}
+          labelFormatter={(label: any, payload: readonly any[]) => {
+            if (!payload || payload.length === 0) {
+              return `Allele ${label}`;
+            }
+
+            // Check if this is a scatter point (has actual allele data in payload)
+            // Scatter points have payload.payload.allele matching the label
+            const isScatterPoint = payload.some(
+              (item: any) =>
+                item.payload &&
+                typeof item.payload.allele !== "undefined" &&
+                Math.abs(item.payload.allele - label) < 0.01
+            );
+
+            if (isScatterPoint) {
+              // For scatter points, find the scatter series (not the line series)
+              const scatterItem = payload.find(
+                (item: any) =>
+                  item.name === "True alleles" ||
+                  item.name === "Stutter peak" ||
+                  item.name === "Drop-out risk"
+              );
+
+              if (scatterItem) {
+                return `Allele ${label} — ${scatterItem.name}`;
+              }
+            }
+
+            // For line series, just show "Allele X"
+            return `Allele ${label}`;
+          }}
         />
-        <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: "20px" }} />
+        <Legend
+          verticalAlign="bottom"
+          wrapperStyle={{ paddingTop: "20px" }}
+          // El orden en la leyenda se controla por el orden de renderizado
+          // Orden: Signal (RFU), True alleles, Stutter (RFU), Drop-out risk
+        />
       </LineChart>
     </ResponsiveContainer>
   );

@@ -13,6 +13,7 @@ import {
   type SampleId,
   type ContributorInput,
   type Peak,
+  getTrueGenotype,
 } from "./data";
 
 import { simulateCE } from "./utils/mix-model";
@@ -34,8 +35,21 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/language-context";
 
 /* ------------------------ helpers ------------------------ */
 function parseNum(x: string | number): number {
@@ -193,6 +207,8 @@ function normalizeContributors(
 
 /* ------------------------ componente ------------------------ */
 export default function MixProfilesDemo() {
+  const { t } = useLanguage();
+  
   // Controles de simulación
   const [AT, setAT] = useState<number>(DEFAULT_AT);
   const [IT, setIT] = useState<number>(DEFAULT_IT);
@@ -209,6 +225,7 @@ export default function MixProfilesDemo() {
     () => markerKeys[0] ?? ("CSF1PO" as LocusId)
   );
   const [locusOpen, setLocusOpen] = useState(false);
+  const [showTrueGenotypes, setShowTrueGenotypes] = useState<boolean>(false);
   const [contributors, setContributors] = useState<ContributorState[]>([
     { label: "A", sampleId: sampleOptions[0] as SampleId, proportion: 60 },
     { label: "B", sampleId: sampleOptions[1] as SampleId, proportion: 40 },
@@ -342,6 +359,18 @@ export default function MixProfilesDemo() {
     [contributors]
   );
 
+  // True genotypes lookup (memoized for reactivity)
+  const trueGenotypes = useMemo(() => {
+    return contributors.map((contributor) => {
+      const genotype = getTrueGenotype(contributor.sampleId, selectedMarker);
+      return {
+        label: contributor.label,
+        sampleId: contributor.sampleId,
+        genotype,
+      };
+    });
+  }, [contributors, selectedMarker]);
+
   /* ------------------------ render ------------------------ */
   return (
     <div className="space-y-6">
@@ -389,6 +418,78 @@ export default function MixProfilesDemo() {
                 </PopoverContent>
               </Popover>
             </div>
+            {/* Show true genotypes toggle */}
+            <div className="mt-4 flex items-center gap-2">
+              <Switch
+                id="show-true-genotypes"
+                checked={showTrueGenotypes}
+                onCheckedChange={setShowTrueGenotypes}
+              />
+              <label
+                htmlFor="show-true-genotypes"
+                className="text-sm font-medium cursor-pointer"
+              >
+                {t("mixProfiles.trueGenotypes.toggleLabel")}
+              </label>
+            </div>
+            {/* True Genotypes Panel */}
+            {showTrueGenotypes && (
+              <div className="mt-4">
+                <Card className="rounded-lg border">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-semibold">
+                      {t("mixProfiles.trueGenotypes.title", {
+                        locus: selectedMarker,
+                      })}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-2">
+                      {trueGenotypes.map((item) => {
+                        const { label, sampleId, genotype } = item;
+                        return (
+                          <div
+                            key={label}
+                            className="flex items-center justify-between border-b pb-2 last:border-b-0 last:pb-0"
+                          >
+                            <div className="flex flex-col gap-1">
+                              <span className="text-xs font-medium">
+                                Contributor {label}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {sampleId ?? t("mixProfiles.trueGenotypes.notSelected")}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {!sampleId ? (
+                                <span className="text-xs text-muted-foreground">
+                                  {t("mixProfiles.trueGenotypes.none")}
+                                </span>
+                              ) : genotype ? (
+                                <span className="text-xs font-mono">
+                                  {genotype.allele1}, {genotype.allele2}
+                                </span>
+                              ) : (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="text-xs text-muted-foreground cursor-help underline decoration-dotted">
+                                      {t("mixProfiles.trueGenotypes.na")}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>{t("mixProfiles.trueGenotypes.naHelp")}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </div>
 
           {/* Contribuidores + controles */}

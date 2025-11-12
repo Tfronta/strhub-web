@@ -557,6 +557,14 @@ export const translations = {
         ceTitle: "CE Analysis (RFU)",
         ngsTitle: "NGS Analysis (Reads)",
       },
+      trueGenotypes: {
+        toggleLabel: "Show true genotypes",
+        title: "True genotypes at {locus}",
+        notSelected: "Not selected",
+        none: "—",
+        na: "No genotype available",
+        naHelp: "No true alleles found for this locus in the demo dataset.",
+      },
     },
   },
   pt: {
@@ -1119,6 +1127,14 @@ export const translations = {
       charts: {
         ceTitle: "Análise CE (RFU)",
         ngsTitle: "Análise NGS (Leituras)",
+      },
+      trueGenotypes: {
+        toggleLabel: "Mostrar genótipos verdadeiros",
+        title: "Genótipos verdadeiros em {locus}",
+        notSelected: "Não selecionado",
+        none: "—",
+        na: "Genótipo não disponível",
+        naHelp: "Nenhum alelo verdadeiro encontrado para este locus no conjunto de dados de demonstração.",
       },
     },
   },
@@ -1683,6 +1699,14 @@ export const translations = {
       charts: {
         ceTitle: "Análise CE (RFU)",
         ngsTitle: "Análise NGS (Leituras)",
+      },
+      trueGenotypes: {
+        toggleLabel: "Mostrar genotipos verdaderos",
+        title: "Genotipos verdaderos en {locus}",
+        notSelected: "No seleccionado",
+        none: "—",
+        na: "Genotipo no disponible",
+        naHelp: "No se encontraron alelos verdaderos para este locus en el conjunto de datos de demostración.",
       },
     },
   },

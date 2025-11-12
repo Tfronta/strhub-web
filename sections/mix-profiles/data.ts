@@ -223,6 +223,56 @@ export const LOCI_ORDER: LocusId[] = Array.from(
 ).sort();
 
 // ----------------------------------------------------
+// Utility: Get true genotype from SAMPLE_DATABASE
+// ----------------------------------------------------
+/**
+ * Retrieves the true genotype for a given sample and locus from SAMPLE_DATABASE.
+ * Returns null if no data is available (never synthesizes or infers alleles).
+ * 
+ * @param sampleId - The sample ID (e.g., "HG02944")
+ * @param locus - The locus name (e.g., "CSF1PO")
+ * @returns Object with allele1 and allele2, or null if not found
+ */
+export function getTrueGenotype(
+  sampleId: SampleId | null,
+  locus: LocusId
+): { allele1: string | number; allele2: string | number } | null {
+  if (!sampleId) {
+    return null;
+  }
+
+  const profile = SAMPLE_DATABASE[sampleId];
+  if (!profile) {
+    return null;
+  }
+
+  const locusData = profile.loci?.[locus];
+  if (!locusData || !locusData.alleles || locusData.alleles.length === 0) {
+    return null;
+  }
+
+  const alleles = locusData.alleles;
+  
+  // Return both alleles (for homozygotes, both will be the same)
+  if (alleles.length >= 2) {
+    return {
+      allele1: alleles[0],
+      allele2: alleles[1],
+    };
+  }
+  
+  // Single allele case (rare, but handle it)
+  if (alleles.length === 1) {
+    return {
+      allele1: alleles[0],
+      allele2: alleles[0],
+    };
+  }
+
+  return null;
+}
+
+// ----------------------------------------------------
 // Motor CE determinista con 1-3 contribuyentes
 // ----------------------------------------------------
 export type AlleleLike = number | string;

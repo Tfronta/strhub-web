@@ -205,11 +205,11 @@ export default function MixProfilesDemo() {
   const { t } = useLanguage();
 
   // Controles de simulación - defaults para mostrar picos coherentes
-  const [AT, setAT] = useState<number>(DEFAULT_AT); // 50 RFU
-  const [IT, setIT] = useState<number>(DEFAULT_IT); // 80 RFU
-  const [kDeg, setKDeg] = useState<number>(0.015); // Degradation k
-  const [noise, setNoise] = useState<number>(30); // Noise/Base = 30 RFU
-  const [stutterScale, setStutterScale] = useState<number>(1.3); // Stutter level × = 1.3
+  const [AT, setAT] = useState<number>(80); // 80 RFU
+  const [IT, setIT] = useState<number>(170); // 170 RFU
+  const [kDeg, setKDeg] = useState<number>(0.022); // Degradation k
+  const [noise, setNoise] = useState<number>(25); // Noise/Base = 25 RFU
+  const [stutterScale, setStutterScale] = useState<number>(1.2); // Stutter level × = 1.2
 
   const markerKeys = useMemo(
     () =>
@@ -217,14 +217,12 @@ export default function MixProfilesDemo() {
     []
   );
 
-  const [selectedMarker, setSelectedMarker] = useState<LocusId>(
-    () => markerKeys[0] ?? ("CSF1PO" as LocusId)
-  );
+  const [selectedMarker, setSelectedMarker] = useState<LocusId>("CSF1PO");
   const [locusOpen, setLocusOpen] = useState(false);
   const [showTrueGenotypes, setShowTrueGenotypes] = useState<boolean>(false);
   const [contributors, setContributors] = useState<ContributorState[]>([
-    { label: "A", sampleId: sampleOptions[0] as SampleId, proportion: 60 },
-    { label: "B", sampleId: sampleOptions[1] as SampleId, proportion: 40 },
+    { label: "A", sampleId: "HG02944" as SampleId, proportion: 70 },
+    { label: "B", sampleId: "HG00097" as SampleId, proportion: 30 },
     { label: "C", sampleId: null, proportion: 0 },
   ]);
   const [comboOpen, setComboOpen] = useState<Record<string, boolean>>({

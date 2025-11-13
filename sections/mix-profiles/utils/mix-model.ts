@@ -137,7 +137,14 @@ function negbin(mu: number, disp: number, rand: () => number) {
 function getSampleAlleles(locusId: LocusId, sampleId: SampleId): number[] {
   return SAMPLE_DATABASE[sampleId]?.loci?.[locusId]?.alleles ?? [];
 }
-
+const LONG_LOCI = new Set([
+  "PentaE",
+  "PentaD",
+  "FGA",
+  "D21S11",
+  "D18S51",
+  "D2S1338",
+]);
 // Get catalog alleles for a locus (for validation)
 function getCatalogAlleles(locusId: LocusId): Set<number> {
   const catalogEntry = demoCatalog[locusId];
@@ -246,27 +253,28 @@ export function simulateCE(args: {
   // (alleleRef, Lref in bp, motifLen in bp)
   // Keys are uppercase to match SAMPLE_DATABASE
   const LOCUS_LENGTH_META: Record<string, { alleleRef: number; Lref: number; motifLen: number }> = {
-    FGA: { alleleRef: 20, Lref: 280, motifLen: 4 },
-    CSF1PO: { alleleRef: 10, Lref: 200, motifLen: 4 },
+    FGA: { alleleRef: 20, Lref: 340, motifLen: 4 },
+    CSF1PO: { alleleRef: 10, Lref: 310, motifLen: 4 },
     D10S1248: { alleleRef: 13, Lref: 220, motifLen: 4 },
     D12S391: { alleleRef: 18, Lref: 250, motifLen: 4 },
     D13S317: { alleleRef: 11, Lref: 210, motifLen: 4 },
     D16S539: { alleleRef: 10, Lref: 200, motifLen: 4 },
-    D18S51: { alleleRef: 18, Lref: 270, motifLen: 4 },
+    D18S51: { alleleRef: 18, Lref: 290, motifLen: 4 },
     D19S433: { alleleRef: 13, Lref: 220, motifLen: 4 },
     D1S1656: { alleleRef: 15, Lref: 240, motifLen: 4 },
+    D21S11:   { alleleRef: 30, Lref: 330, motifLen: 4 },
     D22S1045: { alleleRef: 16, Lref: 250, motifLen: 4 },
-    D2S1338: { alleleRef: 20, Lref: 280, motifLen: 4 },
-    D2S441: { alleleRef: 12, Lref: 210, motifLen: 4 },
+    D2S1338: { alleleRef: 20, Lref: 320, motifLen: 4 },
+    D2S441: { alleleRef: 12, Lref: 330, motifLen: 4 },
     D3S1358: { alleleRef: 15, Lref: 230, motifLen: 4 },
     D5S818: { alleleRef: 11, Lref: 210, motifLen: 4 },
     D7S820: { alleleRef: 10, Lref: 200, motifLen: 4 },
     D8S1179: { alleleRef: 12, Lref: 210, motifLen: 4 },
-    PentaD: { alleleRef: 9, Lref: 190, motifLen: 5 },
+    PentaD: { alleleRef: 9, Lref: 390, motifLen: 5 },
     PentaE: { alleleRef: 10, Lref: 430, motifLen: 5 },
     TH01: { alleleRef: 7, Lref: 180, motifLen: 4 },
     TPOX: { alleleRef: 8, Lref: 190, motifLen: 4 },
-    vWA: { alleleRef: 16, Lref: 250, motifLen: 4 },
+    vWA: { alleleRef: 16, Lref: 330, motifLen: 4 },
   };
   const defaultMeta = { alleleRef: 10, Lref: 200, motifLen: 4 };
 
@@ -363,23 +371,24 @@ export function simulateCE(args: {
     // For fixed k, larger L ⇒ smaller rfu_degraded (length effect)
     let degradedRFU = baseData.rfu;
     if (p.degrK > 0) {
-      const L = getAmpliconLength(locusId, aNum); // Get amplicon length (bp)
+      // Longitud del amplicón (bp)
+      const L = getAmpliconLength(locusId, aNum);
 
-      // UI: p.degrK está en rango 0–0.04 (per 100 bp)
-      // Internamente lo hacemos más agresivo para que se note en el gráfico.
+      // Loci largos vs normales
+      const normalizedLocusId = locusId.toUpperCase();
+      const isLong = LONG_LOCI.has(normalizedLocusId);
+
       const kUI = p.degrK;
-      // Escala interna: hasta 4× más fuerte (0–0.16)
-      const kInternal = kUI * 4;
+      // Loci “normales” → x4, loci largos → x6 (más crueles)
+      const internalScale = isLong ? 6 : 4;
+      const kInternal = kUI * internalScale;
 
-      // Exponential decay by length:
-      // rfu *= exp(-kInternal * (L / 100))
-      const atten = Math.exp(-kInternal * (L / 100.0));
-
-      // Clamp attenuation to [0, 1]
+      // Degradación exponencial por longitud
+      const atten = Math.exp(-kInternal * (L / 100));
       const clampedAtten = Math.max(0, Math.min(1, atten));
       degradedRFU = baseData.rfu * clampedAtten;
 
-      // (logging opcional, si lo querés dejar)
+      // Logging opcional
       if (!loggedOnce && baseTruePeaks.size > 0) {
         const firstFewAlleles = Array.from(baseTruePeaks.keys()).slice(
           0,
@@ -388,14 +397,12 @@ export function simulateCE(args: {
         if (firstFewAlleles.includes(aNum)) {
           const rfuRaw = baseData.rfu;
           const rfuDegraded = degradedRFU;
-          const rfuFinal = degradedRFU;
           console.debug(
             "DEG TEST",
             aNum,
             kInternal.toFixed(4),
             rfuRaw.toFixed(1),
-            rfuDegraded.toFixed(1),
-            rfuFinal.toFixed(1)
+            rfuDegraded.toFixed(1)
           );
           if (aNum === firstFewAlleles[firstFewAlleles.length - 1]) {
             loggedOnce = true;

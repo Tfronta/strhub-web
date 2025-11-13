@@ -299,7 +299,7 @@ export default function CEChart(props: {
         {showMarkers && mDrop.length > 0 && (
           <Scatter
             name={t("mixProfiles.ceChart.legendDropoutRisk")}
-            data={mDrop.map((m) => ({ allele: m.allele, rfu: m.rfu }))}
+            data={mDrop.map((m) => ({ ...m, rfu: m.rfu + 10 }))}
             dataKey="rfu"
             fill="#EF4444"
             shape="circle"

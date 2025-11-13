@@ -207,10 +207,10 @@ export default function MixProfilesDemo() {
   // Controles de simulación - defaults para mostrar picos coherentes
   const [AT, setAT] = useState<number>(80); // 80 RFU
   const [IT, setIT] = useState<number>(170); // 170 RFU
-  const [kDeg, setKDeg] = useState<number>(0.022); // Degradation k
+  const [kDeg, setKDeg] = useState<number>(0.015); // Degradation k
   const [noise, setNoise] = useState<number>(25); // Noise/Base = 25 RFU
   const [stutterScale, setStutterScale] = useState<number>(1.2); // Stutter level × = 1.2
-  const [useFixedScale, setUseFixedScale] = useState<boolean>(true); // Fixed forensic scale (0-800 RFU) by default
+  const [useFixedScale, setUseFixedScale] = useState<boolean>(false); // Auto-scale Y axis by default
 
   const markerKeys = useMemo(
     () =>

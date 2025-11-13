@@ -203,6 +203,7 @@ const STUTTER_CE: Record<
   D3S1358: { minus1: 0.06 },
   D18S51: { minus1: 0.09, plus1: 0.02 },
   FGA: { minus1: 0.1, plus1: 0.025, minus2: 0.015 },
+  PentaE: { minus1: 0.11, minus2: 0.03 }, // 👈 nueva línea
 };
 const DEFAULT_STUTTER_CE = { minus1: 0.06 };
 
@@ -262,7 +263,7 @@ export function simulateCE(args: {
     D7S820: { alleleRef: 10, Lref: 200, motifLen: 4 },
     D8S1179: { alleleRef: 12, Lref: 210, motifLen: 4 },
     PentaD: { alleleRef: 9, Lref: 190, motifLen: 5 },
-    PentaE: { alleleRef: 10, Lref: 200, motifLen: 5 },
+    PentaE: { alleleRef: 10, Lref: 430, motifLen: 5 },
     TH01: { alleleRef: 7, Lref: 180, motifLen: 4 },
     TPOX: { alleleRef: 8, Lref: 190, motifLen: 4 },
     vWA: { alleleRef: 16, Lref: 250, motifLen: 4 },
@@ -363,24 +364,39 @@ export function simulateCE(args: {
     let degradedRFU = baseData.rfu;
     if (p.degrK > 0) {
       const L = getAmpliconLength(locusId, aNum); // Get amplicon length (bp)
-      // Compute attenuation factor: atten = exp(-k * (L / 100))
-      // This ensures: ↑k ⇒ ↓RFU, and ↑L ⇒ ↓RFU
-      const atten = Math.exp(-p.degrK * (L / 100.0));
-      // Clamp attenuation to [0, 1] (should always be in this range for k > 0 and L > 0)
+
+      // UI: p.degrK está en rango 0–0.04 (per 100 bp)
+      // Internamente lo hacemos más agresivo para que se note en el gráfico.
+      const kUI = p.degrK;
+      // Escala interna: hasta 4× más fuerte (0–0.16)
+      const kInternal = kUI * 4;
+
+      // Exponential decay by length:
+      // rfu *= exp(-kInternal * (L / 100))
+      const atten = Math.exp(-kInternal * (L / 100.0));
+
+      // Clamp attenuation to [0, 1]
       const clampedAtten = Math.max(0, Math.min(1, atten));
       degradedRFU = baseData.rfu * clampedAtten;
-      
-      // Debug logging: verify degradation is applied correctly
-      // Log first few peaks for verification (one-time per render)
-      // Format: console.debug('DEG TEST', allele, k, rfuRaw, rfuDegraded, rfuFinal);
-      // Increasing k must lower both rfuDegraded and rfuFinal
+
+      // (logging opcional, si lo querés dejar)
       if (!loggedOnce && baseTruePeaks.size > 0) {
-        const firstFewAlleles = Array.from(baseTruePeaks.keys()).slice(0, Math.min(3, baseTruePeaks.size));
+        const firstFewAlleles = Array.from(baseTruePeaks.keys()).slice(
+          0,
+          Math.min(3, baseTruePeaks.size)
+        );
         if (firstFewAlleles.includes(aNum)) {
           const rfuRaw = baseData.rfu;
           const rfuDegraded = degradedRFU;
-          const rfuFinal = degradedRFU; // Same as rfuDegraded (no re-normalization)
-          console.debug('DEG TEST', aNum, p.degrK, rfuRaw.toFixed(1), rfuDegraded.toFixed(1), rfuFinal.toFixed(1));
+          const rfuFinal = degradedRFU;
+          console.debug(
+            "DEG TEST",
+            aNum,
+            kInternal.toFixed(4),
+            rfuRaw.toFixed(1),
+            rfuDegraded.toFixed(1),
+            rfuFinal.toFixed(1)
+          );
           if (aNum === firstFewAlleles[firstFewAlleles.length - 1]) {
             loggedOnce = true;
           }
@@ -423,7 +439,8 @@ export function simulateCE(args: {
     
     // Calculate stutter rate and enforce max 20% rule (unless multiplier > 1.5)
     const baseRate1 = (st.minus1 ?? 0.06) * stutterScale;
-    const maxRate = stutterScale > 1.5 ? 0.25 : 0.20; // Allow up to 25% if scale > 1.5, else 20%
+    // Permitimos hasta 22% en general y 30% con stutterScale alto (modo didáctico)
+    const maxRate = stutterScale > 1.5 ? 0.30 : 0.22;
     const s1 = Math.max(0, Math.min(baseRate1 + gaussian(rand) * sdev, maxRate));
     const stutterRFU1 = degradedRFU * s1; // Use degraded parent RFU
     // Use discrete position preserving microvariants (e.g., 21.3 - 1 = 20.3, 8 - 1 = 7)
@@ -494,9 +511,14 @@ export function simulateCE(args: {
   // Noise height range: [AT × 0.15, AT × 0.8], scaled by Noise/Base slider
   // The noise slider (baselineMu) acts as a ceiling for noise amplitude
   const noiseMin = Math.max(1, p.AT * 0.15); // Minimum noise height (15% of AT, min 1 RFU)
-  const noiseMaxRaw = p.AT * 0.8; // Maximum noise height (80% of AT)
-  const noiseCeiling = Math.min(noiseMaxRaw, Math.max(noiseMin, p.baselineMu * 0.5)); // Scale by noise slider (50% of slider value, clamped)
-  
+
+  // Nuevo comportamiento:
+  // - El slider baselineMu se interpreta como "nivel típico" de ruido.
+  // - Permitimos que el ruido llegue hasta 3×AT como máximo para escenarios extremos.
+  const noiseCeiling = Math.max(
+    noiseMin,
+    Math.min(p.baselineMu, p.AT * 3)
+  );
   // Generate sparse micro-peaks across the range with variation
   for (let i = 0; i < numNoisePeaks; i++) {
     // Add small random jitter to allele positions to avoid perfect spacing
@@ -515,9 +537,7 @@ export function simulateCE(args: {
     noiseRFU = noiseRFU * (0.7 + gaussian(rand) * 0.3);
     noiseRFU = Math.max(noiseMin * 0.3, Math.min(noiseCeiling, noiseRFU));
     
-    // Only add if it's below AT (baseline noise should never cross AT consistently)
-    // Allow occasional peaks very close to AT for realism, but cap at 95% of AT
-    const maxNoiseRFUForPeaks = p.AT * 0.95;
+    const maxNoiseRFUForPeaks = noiseCeiling;
     if (noiseRFU < maxNoiseRFUForPeaks && noiseRFU > 0) {
       const peak = { allele, rfu: noiseRFU };
       noisePeaks.push(peak);
@@ -532,7 +552,7 @@ export function simulateCE(args: {
   
   // Fill gaps in trace with interpolated values to create continuous wavy baseline (not straight)
   // This creates a subtle undulating baseline without looking like a second floor
-  const maxNoiseRFU = p.AT * 0.95; // Cap at 95% of AT
+  const maxNoiseRFU = noiseCeiling; // Cap at noiseCeiling (controlado por slider)
   if (baselineNoiseTrace.length > 1) {
     const filledTrace: { allele: number; rfu: number }[] = [];
     const step = 0.05; // Fine step for smooth interpolation

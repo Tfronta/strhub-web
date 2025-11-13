@@ -36,12 +36,7 @@ import {
 } from "@/components/ui/popover";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
@@ -208,7 +203,7 @@ function normalizeContributors(
 /* ------------------------ componente ------------------------ */
 export default function MixProfilesDemo() {
   const { t } = useLanguage();
-  
+
   // Controles de simulación - defaults para mostrar picos coherentes
   const [AT, setAT] = useState<number>(DEFAULT_AT); // 50 RFU
   const [IT, setIT] = useState<number>(DEFAULT_IT); // 80 RFU
@@ -283,12 +278,12 @@ export default function MixProfilesDemo() {
   // CE
   const ce = useMemo(() => {
     if (!activeContributors.length)
-      return { 
-        locusId: selectedMarker, 
-        peaks: [], 
+      return {
+        locusId: selectedMarker,
+        peaks: [],
         allTruePeaks: [],
-        notes: [], 
-        baselineRFU: 0, 
+        notes: [],
+        baselineRFU: 0,
         baselineNoiseTrace: [],
         stutterPeaks: [],
         noisePeaks: [],
@@ -296,7 +291,7 @@ export default function MixProfilesDemo() {
     return simulateCE({
       locusId: selectedMarker,
       contributors: activeContributors,
-      dnaInputNg: 0.10, // 0.10 ng (100 pg) - increased for clearer peaks
+      dnaInputNg: 0.1, // 0.10 ng (100 pg) - increased for clearer peaks
       params: {
         AT,
         ST: IT,
@@ -316,76 +311,65 @@ export default function MixProfilesDemo() {
 
   // curvas y marcadores
   // Signal trace: ALL true peaks (not gated by AT) - baseline is visual only, NOT added to signal
-  const ceTrueSeries = useMemo(
-    () => makeCETraceByKind(ce.allTruePeaks || [], "true"),
-    [ce.allTruePeaks]
-  );
-  
+  const ceTrueSeries = makeCETraceByKind(ce.allTruePeaks || [], "true");
+
   // Stutter trace: ALL stutter peaks (not gated by AT) - baseline is visual only, NOT added to signal
-  const ceStutterSeries = useMemo(
-    () => makeCETraceByKind(ce.stutterPeaks || [], "stutter"),
-    [ce.stutterPeaks]
-  );
-  
-  // Markers: correctly categorized based on thresholds
-  // RFU < AT: no marker (uninterpreted low signal)
-  // AT ≤ RFU < ST: red marker (Drop-out risk)
-  // RFU ≥ ST: green marker (Called)
-  // Stutter >= AT: orange triangle
-  const ceMarkers = useMemo(() => {
+  const ceStutterSeries = makeCETraceByKind(ce.stutterPeaks || [], "stutter");
+
+  // Markers: correctamente categorizados según los umbrales
+  // RFU < AT: sin marcador
+  // AT ≤ RFU < ST: rojo (Drop-out risk)
+  // RFU ≥ ST: verde (Called)
+  // Stutter ≥ AT: triángulo naranja
+  const ceMarkers = (() => {
     const m: Array<{
       allele: number;
       rfu: number;
       kind: "dropout" | "stutter" | "true";
     }> = [];
-    
-    // Process ALL true peaks for markers (not just filtered peaks)
+
     for (const p of ce.allTruePeaks || []) {
       const allele = parseNum(String(p.allele));
       if (Number.isNaN(allele)) continue;
-      
+
       if (p.kind === "true") {
-        // RFU ≥ ST: green marker (Called)
         if (p.rfu >= IT) {
           m.push({ allele, rfu: p.rfu, kind: "true" });
-        } 
-        // AT ≤ RFU < ST: red marker (Drop-out risk)
-        else if (p.rfu >= AT) {
+        } else if (p.rfu >= AT) {
           m.push({ allele, rfu: p.rfu, kind: "dropout" });
         }
-        // RFU < AT: no marker (uninterpreted low signal)
       }
     }
-    
-    // Process stutter peaks for markers (only those >= AT)
+
     for (const p of ce.peaks || []) {
       const allele = parseNum(String(p.allele));
       if (Number.isNaN(allele)) continue;
-      
+
       if (p.kind === "stutter" && p.rfu >= AT) {
-        // Orange triangle: stutter >= AT
         m.push({ allele, rfu: p.rfu, kind: "stutter" });
       }
     }
-    
+
     return m.sort((a, b) => a.allele - b.allele);
-  }, [ce.allTruePeaks, ce.peaks, AT, IT]);
+  })();
 
   // NGS derivado de CE
   const ngsRows = useMemo(
     () => cePeaksToNGSRowsWithSeq(selectedMarker, ce.peaks),
-    [selectedMarker, ce.peaks]
+    // 👉 si ce cambia (porque cambia k, AT, ruido...), recalculamos filas
+    [selectedMarker, ce]
   );
 
   const ngsBars = useMemo(() => {
     const grouped = new Map<number, { allele: number; coverage: number }>();
     for (const r of ngsRows) {
       const alleleNum = parseNum(r.allele);
-      if (!Number.isNaN(alleleNum))
+      if (!Number.isNaN(alleleNum)) {
         grouped.set(alleleNum, {
           allele: alleleNum,
           coverage: (grouped.get(alleleNum)?.coverage ?? 0) + r.coverage,
         });
+      }
     }
     return Array.from(grouped.values()).sort((a, b) => a.allele - b.allele);
   }, [ngsRows]);
@@ -422,7 +406,9 @@ export default function MixProfilesDemo() {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
           {/* Locus */}
           <div className="lg:col-span-1">
-            <label className="text-sm font-medium">{t("mixProfiles.controls.locus")}</label>
+            <label className="text-sm font-medium">
+              {t("mixProfiles.controls.locus")}
+            </label>
             <div className="mt-2">
               <Popover open={locusOpen} onOpenChange={setLocusOpen}>
                 <PopoverTrigger className="w-full justify-between border rounded-md p-2 flex flex-row items-center">
@@ -497,10 +483,13 @@ export default function MixProfilesDemo() {
                           >
                             <div className="flex flex-col gap-1">
                               <span className="text-xs font-medium">
-                                {t("mixProfiles.controls.contributor", { label })}
+                                {t("mixProfiles.controls.contributor", {
+                                  label,
+                                })}
                               </span>
                               <span className="text-xs text-muted-foreground">
-                                {sampleId ?? t("mixProfiles.trueGenotypes.notSelected")}
+                                {sampleId ??
+                                  t("mixProfiles.trueGenotypes.notSelected")}
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
@@ -520,7 +509,9 @@ export default function MixProfilesDemo() {
                                     </span>
                                   </TooltipTrigger>
                                   <TooltipContent>
-                                    <p>{t("mixProfiles.trueGenotypes.naHelp")}</p>
+                                    <p>
+                                      {t("mixProfiles.trueGenotypes.naHelp")}
+                                    </p>
                                   </TooltipContent>
                                 </Tooltip>
                               )}
@@ -543,10 +534,13 @@ export default function MixProfilesDemo() {
                 <div key={contributor.label} className="rounded-lg border p-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">
-                      {t("mixProfiles.controls.contributor", { label: contributor.label })}
+                      {t("mixProfiles.controls.contributor", {
+                        label: contributor.label,
+                      })}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      {contributor.sampleId ?? t("mixProfiles.trueGenotypes.noSample")}
+                      {contributor.sampleId ??
+                        t("mixProfiles.trueGenotypes.noSample")}
                     </span>
                   </div>
 
@@ -561,16 +555,22 @@ export default function MixProfilesDemo() {
                       }
                     >
                       <PopoverTrigger className="w-full justify-between border rounded-md p-2 flex flex-row items-center">
-                        {contributor.sampleId ?? t("mixProfiles.trueGenotypes.noSample")}
+                        {contributor.sampleId ??
+                          t("mixProfiles.trueGenotypes.noSample")}
                         <ChevronsUpDown className="ml-2 size-4 opacity-50" />
                       </PopoverTrigger>
                       <PopoverContent className="w-[220px] p-0">
                         <Command>
                           <CommandInput
-                            placeholder={t("mixProfiles.controls.searchSample", { label: contributor.label })}
+                            placeholder={t(
+                              "mixProfiles.controls.searchSample",
+                              { label: contributor.label }
+                            )}
                           />
                           <CommandList>
-                            <CommandEmpty>{t("mixProfiles.controls.noSampleFound")}</CommandEmpty>
+                            <CommandEmpty>
+                              {t("mixProfiles.controls.noSampleFound")}
+                            </CommandEmpty>
                             <CommandGroup>
                               <CommandItem
                                 value="none"
@@ -668,7 +668,9 @@ export default function MixProfilesDemo() {
             <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-5">
               <div className="rounded-lg border p-3">
                 <div className="flex items-center gap-1">
-                  <div className="text-sm font-medium">{t("mixProfiles.parameters.at")}</div>
+                  <div className="text-sm font-medium">
+                    {t("mixProfiles.parameters.at")}
+                  </div>
                 </div>
                 <input
                   type="number"
@@ -681,7 +683,9 @@ export default function MixProfilesDemo() {
               </div>
               <div className="rounded-lg border p-3">
                 <div className="flex items-center gap-1">
-                  <div className="text-sm font-medium">{t("mixProfiles.parameters.st")}</div>
+                  <div className="text-sm font-medium">
+                    {t("mixProfiles.parameters.st")}
+                  </div>
                 </div>
                 <input
                   type="number"
@@ -694,7 +698,9 @@ export default function MixProfilesDemo() {
               </div>
               <div className="rounded-lg border p-3">
                 <div className="flex items-center gap-1">
-                  <div className="text-sm font-medium">{t("mixProfiles.parameters.degradationK")}</div>
+                  <div className="text-sm font-medium">
+                    {t("mixProfiles.parameters.degradationK")}
+                  </div>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
@@ -716,7 +722,9 @@ export default function MixProfilesDemo() {
               </div>
               <div className="rounded-lg border p-3">
                 <div className="flex items-center gap-1">
-                  <div className="text-sm font-medium">{t("mixProfiles.parameters.noiseBase")}</div>
+                  <div className="text-sm font-medium">
+                    {t("mixProfiles.parameters.noiseBase")}
+                  </div>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
@@ -737,7 +745,9 @@ export default function MixProfilesDemo() {
               </div>
               <div className="rounded-lg border p-3">
                 <div className="flex items-center gap-1">
-                  <div className="text-sm font-medium">{t("mixProfiles.parameters.stutterLevel")}</div>
+                  <div className="text-sm font-medium">
+                    {t("mixProfiles.parameters.stutterLevel")}
+                  </div>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
@@ -764,7 +774,9 @@ export default function MixProfilesDemo() {
 
       {/* CE */}
       <div className="rounded-xl border p-4">
-        <h3 className="text-base font-semibold">{t("mixProfiles.charts.ceTitle")}</h3>
+        <h3 className="text-base font-semibold">
+          {t("mixProfiles.charts.ceTitle")}
+        </h3>
         <p className="text-sm text-muted-foreground">
           Capillary Electrophoresis Analysis
         </p>

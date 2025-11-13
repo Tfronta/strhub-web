@@ -201,6 +201,9 @@ export default function CEChart(props: {
 
   if (!mounted) return <div style={{ height: 320 }} />;
 
+  console.log("@@showMarkers", showMarkers);
+  console.log("@@mTrue", mTrue);
+  console.log("@@dataTrue", dataTrue);
   return (
     <ResponsiveContainer width="100%" height={320} minWidth={0}>
       <LineChart margin={{ top: 12, right: 20, bottom: 50, left: 20 }}>
@@ -247,8 +250,8 @@ export default function CEChart(props: {
             data={baselineNoiseTrace}
             dataKey="rfu"
             dot={false}
-            stroke="#9CA3AF" // Gray (as specified)
-            strokeOpacity={0.2} // Very faint (subtle background)
+            stroke="#666" // Gray (as specified)
+            strokeOpacity={1} // Very faint (subtle background)
             strokeWidth={0.7}
             isAnimationActive={false}
             connectNulls={false}
@@ -283,12 +286,12 @@ export default function CEChart(props: {
         {showMarkers && mTrue.length > 0 && (
           <Scatter
             name={t("mixProfiles.ceChart.legendCalled")}
-            data={mTrue}
-            fill="#22C55E" // Green-500 (as specified)
-            stroke="none" // No stroke (as specified)
-            shape="circle"
-            r={4} // Radius 4px (as specified)
-            isAnimationActive={false} // Disable animation (as specified)
+            data={mTrue.map((m) => ({ ...m, rfu: m.rfu + 10 }))}
+            dataKey="rfu"
+            shape="star"
+            r={4}
+            fill="#15803d" // Green-700
+            isAnimationActive={false}
           />
         )}
         {showMarkers && mDrop.length > 0 && (
@@ -487,6 +490,69 @@ export default function CEChart(props: {
         <Legend
           verticalAlign="bottom"
           wrapperStyle={{ paddingTop: "20px" }}
+          content={({ payload }) => {
+            if (!payload || !payload.length) return null;
+            return (
+              <ul
+                className="recharts-default-legend"
+                style={{ padding: 0, margin: 0, textAlign: "center" }}
+              >
+                {payload.map((entry, index) => {
+                  const isCalled =
+                    entry.value === t("mixProfiles.ceChart.legendCalled") ||
+                    entry.value === "Called";
+
+                  return (
+                    <li
+                      key={`legend-item-${index}`}
+                      className={`recharts-legend-item legend-item-${index}`}
+                      style={{ display: "inline-block", marginRight: "10px" }}
+                    >
+                      {isCalled ? (
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill={entry.color || "#22C55E"}
+                          style={{
+                            display: "inline-block",
+                            verticalAlign: "middle",
+                            marginRight: "4px",
+                          }}
+                        >
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
+                      ) : (
+                        <span
+                          className="recharts-legend-icon"
+                          style={{
+                            display: "inline-block",
+                            width: "14px",
+                            height: "14px",
+                            backgroundColor: entry.color,
+                            borderRadius: entry.value?.includes("Stutter peak")
+                              ? "0"
+                              : "50%",
+                            marginRight: "4px",
+                            verticalAlign: "middle",
+                            clipPath: entry.value?.includes("Stutter peak")
+                              ? "polygon(50% 0%, 0% 100%, 100% 100%)"
+                              : undefined,
+                            transform: entry.value?.includes("Stutter peak")
+                              ? "rotate(0deg)"
+                              : undefined,
+                          }}
+                        />
+                      )}
+                      <span className="recharts-legend-item-text">
+                        {entry.value}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            );
+          }}
           // Legend shows only visible series (controlled by conditional rendering)
           // Order matches render order:
           // 1. Baseline noise (if visible)

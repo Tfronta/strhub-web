@@ -36,6 +36,7 @@ export default function CEChart(props: {
     rfu: number;
     source?: string;
   }>; // All stutter peaks for tick calculation (source contains parent info)
+  useFixedScale?: boolean; // If true, use fixed scale (0-800 RFU), otherwise auto-scale
 }) {
   const {
     dataTrue,
@@ -49,6 +50,7 @@ export default function CEChart(props: {
     noisePeaks = [],
     allTruePeaks = [],
     stutterPeaks = [],
+    useFixedScale = false,
   } = props;
 
   // Evita medir antes de montar (soluciona width/height -1 en algunos layouts)
@@ -233,7 +235,7 @@ export default function CEChart(props: {
         />
         <YAxis
           type="number"
-          domain={[0, "auto"]}
+          domain={useFixedScale ? [0, 800] : [0, "auto"]}
           label={{
             value: t("mixProfiles.ceChart.axisRFU"),
             angle: -90,
@@ -299,8 +301,9 @@ export default function CEChart(props: {
             name={t("mixProfiles.ceChart.legendDropoutRisk")}
             data={mDrop}
             fill="#EF4444"
-            shape="star"
-            r={6}
+            shape="circle"
+            r={4}
+            isAnimationActive={false}
           />
         )}
         {showMarkers && mStutter.length > 0 && (

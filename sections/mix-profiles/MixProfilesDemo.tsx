@@ -210,6 +210,7 @@ export default function MixProfilesDemo() {
   const [kDeg, setKDeg] = useState<number>(0.022); // Degradation k
   const [noise, setNoise] = useState<number>(25); // Noise/Base = 25 RFU
   const [stutterScale, setStutterScale] = useState<number>(1.2); // Stutter level × = 1.2
+  const [useFixedScale, setUseFixedScale] = useState<boolean>(true); // Fixed forensic scale (0-800 RFU) by default
 
   const markerKeys = useMemo(
     () =>
@@ -219,7 +220,7 @@ export default function MixProfilesDemo() {
 
   const [selectedMarker, setSelectedMarker] = useState<LocusId>("CSF1PO");
   const [locusOpen, setLocusOpen] = useState(false);
-  const [showTrueGenotypes, setShowTrueGenotypes] = useState<boolean>(false);
+  const [showTrueGenotypes, setShowTrueGenotypes] = useState<boolean>(true);
   const [contributors, setContributors] = useState<ContributorState[]>([
     { label: "A", sampleId: "HG02944" as SampleId, proportion: 70 },
     { label: "B", sampleId: "HG00097" as SampleId, proportion: 30 },
@@ -766,6 +767,23 @@ export default function MixProfilesDemo() {
                 />
               </div>
             </div>
+
+            {/* Y-axis scale toggle */}
+            <div className="mt-4 flex items-center gap-2 rounded-lg border p-3">
+              <Switch
+                id="y-axis-scale"
+                checked={useFixedScale}
+                onCheckedChange={setUseFixedScale}
+              />
+              <label
+                htmlFor="y-axis-scale"
+                className="text-sm font-medium cursor-pointer"
+              >
+                {useFixedScale
+                  ? "Fixed forensic scale (0–800 RFU)"
+                  : "Auto-scale Y axis"}
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -790,6 +808,7 @@ export default function MixProfilesDemo() {
           noisePeaks={ce.noisePeaks || []}
           allTruePeaks={ce.allTruePeaks || []}
           stutterPeaks={ce.stutterPeaks || []}
+          useFixedScale={useFixedScale}
         />
       </div>
 

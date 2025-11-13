@@ -299,7 +299,8 @@ export default function CEChart(props: {
         {showMarkers && mDrop.length > 0 && (
           <Scatter
             name={t("mixProfiles.ceChart.legendDropoutRisk")}
-            data={mDrop}
+            data={mDrop.map((m) => ({ allele: m.allele, rfu: m.rfu }))}
+            dataKey="rfu"
             fill="#EF4444"
             shape="circle"
             r={4}
@@ -309,10 +310,12 @@ export default function CEChart(props: {
         {showMarkers && mStutter.length > 0 && (
           <Scatter
             name={t("mixProfiles.ceChart.legendStutterPeak")}
-            data={mStutter}
+            data={mStutter.map((m) => ({ allele: m.allele, rfu: m.rfu }))}
+            dataKey="rfu"
             fill="#F59E0B"
             shape="triangle"
             r={6}
+            isAnimationActive={false}
           />
         )}
 

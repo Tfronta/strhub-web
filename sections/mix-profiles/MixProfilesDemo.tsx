@@ -399,7 +399,7 @@ export default function MixProfilesDemo() {
 
   /* ------------------------ render ------------------------ */
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* PANEL SUPERIOR: Locus + Contribuidores + Controles */}
       <div className="rounded-xl border p-4">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
@@ -660,8 +660,6 @@ export default function MixProfilesDemo() {
                 </div>
               ))}
             </div>
-
-            <div className="text-xs text-muted-foreground">{mixSummary}</div>
 
             {/* Controles de simulación forense */}
             <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-5">

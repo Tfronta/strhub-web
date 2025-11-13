@@ -65,6 +65,40 @@ export default function CEChart(props: {
   const mStutter = markers.filter((m) => m.kind === "stutter");
   const mDrop = markers.filter((m) => m.kind === "dropout");
 
+  // Solo dibujar la curva de STUTTER cerca de los picos marcados
+  const stutterVisible = useMemo(() => {
+    if (!dataStutter || dataStutter.length === 0) return [];
+
+    // Posiciones exactas de los stutters (markers)
+    const stutterAlleles = mStutter
+      .map((m) =>
+        typeof m.allele === "number" ? m.allele : parseFloat(String(m.allele))
+      )
+      .filter((v) => !Number.isNaN(v));
+
+    // Si algo falló → usar la serie completa
+    if (stutterAlleles.length === 0) return dataStutter;
+
+    const windowSize = 0.35; // rango alrededor del stutter
+
+    return dataStutter.map((pt) => {
+      const pos =
+        typeof pt.allele === "number"
+          ? pt.allele
+          : parseFloat(String(pt.allele));
+
+      const isNear =
+        !Number.isNaN(pos) &&
+        stutterAlleles.some((a) => Math.abs(a - pos) <= windowSize);
+
+      // Si está lejos → ocultar completamente (retornar objeto con rfu: null)
+      return {
+        ...pt,
+        rfu: isNear ? pt.rfu : null,
+      };
+    });
+  }, [dataStutter, mStutter]);
+
   // Build ticks from real peaks - use peak.allele directly (as strings or numbers)
   // Include: (a) all true peaks (blue series), (b) stutter peaks >= AT (orange series)
   // Never round or modify allele values - use them exactly as they appear in peaks
@@ -203,12 +237,9 @@ export default function CEChart(props: {
 
   if (!mounted) return <div style={{ height: 420 }} />;
 
-  console.log("@@showMarkers", showMarkers);
-  console.log("@@mTrue", mTrue);
-  console.log("@@dataTrue", dataTrue);
   return (
     <ResponsiveContainer width="100%" height={420} minWidth={0}>
-      <LineChart margin={{ top: 12, right: 20, bottom: 45, left: 20 }}>
+      <LineChart margin={{ top: 12, right: 20, bottom: 0, left: 20 }}>
         {/* Ejes - sin gridlines horizontales */}
         <XAxis
           type="number"
@@ -255,8 +286,8 @@ export default function CEChart(props: {
             stroke="#666" // Gray (as specified)
             strokeOpacity={1} // Very faint (subtle background)
             strokeWidth={0.7}
-            isAnimationActive={false}
             connectNulls={false}
+            isAnimationActive={false}
           />
         )}
 
@@ -275,12 +306,13 @@ export default function CEChart(props: {
         <Line
           name={t("mixProfiles.ceChart.legendStutter")}
           type="monotone"
-          data={dataStutter}
+          data={stutterVisible}
           dataKey="rfu"
           dot={false}
-          stroke="#EF4444"
-          strokeOpacity={0.6}
-          strokeWidth={1.5}
+          stroke="#DC2626"
+          strokeOpacity={0.9}
+          strokeWidth={2.2}
+          connectNulls={false}
           isAnimationActive={false}
         />
 

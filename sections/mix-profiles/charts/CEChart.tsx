@@ -201,14 +201,14 @@ export default function CEChart(props: {
     return ["auto", "auto"];
   }, [alleleValues, dataTrue, dataStutter]);
 
-  if (!mounted) return <div style={{ height: 320 }} />;
+  if (!mounted) return <div style={{ height: 420 }} />;
 
   console.log("@@showMarkers", showMarkers);
   console.log("@@mTrue", mTrue);
   console.log("@@dataTrue", dataTrue);
   return (
-    <ResponsiveContainer width="100%" height={320} minWidth={0}>
-      <LineChart margin={{ top: 12, right: 20, bottom: 50, left: 20 }}>
+    <ResponsiveContainer width="100%" height={420} minWidth={0}>
+      <LineChart margin={{ top: 12, right: 20, bottom: 45, left: 20 }}>
         {/* Ejes - sin gridlines horizontales */}
         <XAxis
           type="number"
@@ -278,7 +278,7 @@ export default function CEChart(props: {
           data={dataStutter}
           dataKey="rfu"
           dot={false}
-          stroke="#F59E0B" // Orange
+          stroke="#EF4444"
           strokeOpacity={0.6}
           strokeWidth={1.5}
           isAnimationActive={false}
@@ -301,7 +301,7 @@ export default function CEChart(props: {
             name={t("mixProfiles.ceChart.legendDropoutRisk")}
             data={mDrop.map((m) => ({ ...m, rfu: m.rfu + 10 }))}
             dataKey="rfu"
-            fill="#EF4444"
+            fill="#F59E0B"
             shape="circle"
             r={4}
             isAnimationActive={false}
@@ -495,7 +495,7 @@ export default function CEChart(props: {
         />
         <Legend
           verticalAlign="bottom"
-          wrapperStyle={{ paddingTop: "20px" }}
+          wrapperStyle={{ paddingTop: "20px", paddingBottom: "5px" }}
           content={({ payload }) => {
             if (!payload || !payload.length) return null;
             return (

@@ -791,9 +791,6 @@ export default function MixProfilesDemo() {
         <h3 className="text-base font-semibold">
           {t("mixProfiles.charts.ceTitle")}
         </h3>
-        <p className="text-sm text-muted-foreground">
-          Capillary Electrophoresis Analysis
-        </p>
         <CEChart
           dataTrue={ceTrueSeries}
           dataStutter={ceStutterSeries}
@@ -812,10 +809,9 @@ export default function MixProfilesDemo() {
 
       {/* NGS */}
       <div className="rounded-xl border p-4">
-        <h3 className="text-base font-semibold">NGS Analysis (Reads)</h3>
-        <p className="text-sm text-muted-foreground">
-          Next-Generation Sequencing Analysis
-        </p>
+        <h3 className="text-base font-semibold">
+          {t("mixProfiles.charts.ngsTitle")}
+        </h3>
         <NGSChart
           bars={ngsBars}
           rows={ngsRows}

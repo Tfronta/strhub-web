@@ -557,8 +557,8 @@ export const translations = {
         allele: "Allele",
       },
       charts: {
-        ceTitle: "CE Analysis (RFU)",
-        ngsTitle: "NGS Analysis (Reads)",
+        ceTitle: "Capillary Electrophoresis Analysis (RFU)",
+        ngsTitle: "Next-Generation Sequencing Analysis",
       },
       trueGenotypes: {
         toggleLabel: "Show true genotypes",
@@ -1160,8 +1160,8 @@ export const translations = {
         allele: "Alelo",
       },
       charts: {
-        ceTitle: "Análise CE (RFU)",
-        ngsTitle: "Análise NGS (Leituras)",
+        ceTitle: "Análise de Eletroforese Capilar (RFU)",
+        ngsTitle: "Análise de Sequenciamento de Nova Geração",
       },
       trueGenotypes: {
         toggleLabel: "Mostrar genótipos verdadeiros",
@@ -1764,8 +1764,8 @@ export const translations = {
         allele: "Alelo",
       },
       charts: {
-        ceTitle: "Análise CE (RFU)",
-        ngsTitle: "Análise NGS (Leituras)",
+        ceTitle: "Análisis de Electroforesis Capilar (RFU)",
+        ngsTitle: "Análisis de Secuenciación de Nueva Generación",
       },
       trueGenotypes: {
         toggleLabel: "Mostrar genotipos verdaderos",

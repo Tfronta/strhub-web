@@ -354,6 +354,14 @@ export const translations = {
       explanation: {
         generic: "",
       },
+      sequenceExample: {
+        tooltip: {
+          repeat: "Repeat motif (occurrence of the canonical motif; see note below)",
+          flank: "Flanking region — not counted",
+          interruption: "Interruption / internal variant inside the repeat region",
+        },
+        note: "Note: Not every occurrence of the repeat motif is counted for the allele size. Only the core repeat block defined by the motif structure contributes to the allele designation.",
+      },
     },
     // STRBase Integration
     strbase: {
@@ -1045,6 +1053,14 @@ export const translations = {
       },
       explanation: {
         generic: "",
+      },
+      sequenceExample: {
+        tooltip: {
+          repeat: "Motivo repetitivo (ocorrência do motivo canônico; ver nota abaixo)",
+          flank: "Região flanqueadora — não conta para o alelo",
+          interruption: "Interrupção / variante interna dentro da região repetitiva",
+        },
+        note: "Observação: nem toda ocorrência do motivo repetitivo é contabilizada para o tamanho do alelo. Apenas o bloco repetitivo central definido pela estrutura do motivo contribui para a designação do alelo.",
       },
     },
     // STRBase Integration
@@ -1740,6 +1756,14 @@ export const translations = {
       },
       explanation: {
         generic: "",
+      },
+      sequenceExample: {
+        tooltip: {
+          repeat: "Motivo repetitivo (ocurrencia del motivo canónico; ver nota abajo)",
+          flank: "Región flanqueadora — no cuenta para el alelo",
+          interruption: "Interrupción / variante interna dentro de la región repetitiva",
+        },
+        note: "Nota: no todas las apariciones del motivo repetitivo se cuentan para el tamaño del alelo. Solo el bloque repetitivo central definido por la estructura del motivo contribuye a la designación del alelo.",
       },
     },
     // STRBase Integration

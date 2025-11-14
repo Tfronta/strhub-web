@@ -8,6 +8,7 @@ import {
 } from "../utils/motifData";
 import {
   highlightExampleSequence,
+  splitMotif,
   type ExampleBlock,
 } from "../utils/exampleHighlight";
 import {
@@ -35,6 +36,14 @@ type MotifVisualizationProps = {
     };
     summary?: {
       caption: string;
+    };
+    sequenceExample?: {
+      tooltip: {
+        repeat: string;
+        flank: string;
+        interruption: string;
+      };
+      note: string;
     };
   };
 };
@@ -313,52 +322,59 @@ function ExampleAlleleSequence({
     return null;
   }
 
-  const blocks = highlightExampleSequence(
+  // Use splitMotif to create one block per motif unit
+  const blocks = splitMotif(
     marker.exampleAllele.sequence,
     marker.canonicalMotif
   );
 
-  const motifLength = marker.canonicalMotif.toUpperCase().length || 4;
+  const getTooltip = (tooltipKey?: string): string | undefined => {
+    if (!tooltipKey || !pageContent.sequenceExample?.tooltip) return undefined;
+    switch (tooltipKey) {
+      case "repeat":
+        return pageContent.sequenceExample.tooltip.repeat;
+      case "flank":
+        return pageContent.sequenceExample.tooltip.flank;
+      case "interruption":
+        return pageContent.sequenceExample.tooltip.interruption;
+      default:
+        return undefined;
+    }
+  };
 
-  const renderExampleBlock = (block: ExampleBlock, blockIndex: number) => {
+  const renderBlock = (block: ExampleBlock, blockIndex: number) => {
+    const tooltip = getTooltip(block.tooltipKey);
+    const text = block.text.toUpperCase();
+
     if (block.type === "repeat") {
-      // Split repeat block into individual motif capsules
-      const repeatText = block.text.toUpperCase();
-      const capsules: string[] = [];
-      
-      for (let i = 0; i < repeatText.length; i += motifLength) {
-        const unit = repeatText.slice(i, i + motifLength);
-        if (unit.length === motifLength) {
-          capsules.push(unit);
-        }
-      }
-      
       return (
-        <>
-          {capsules.map((capsule, capIdx) => (
-            <span
-              key={`${blockIndex}-${capIdx}`}
-              className="inline-flex items-center bg-emerald-50 border border-emerald-200 text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
-            >
-              {capsule}
-            </span>
-          ))}
-        </>
+        <span
+          key={blockIndex}
+          className="inline-flex items-center bg-emerald-50 border border-emerald-200 text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
+          title={tooltip}
+        >
+          {text}
+        </span>
       );
     } else if (block.type === "interruption") {
       return (
         <span
+          key={blockIndex}
           className="inline-flex items-center bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium underline"
-          title="Interruption / internal variant (indels, SNVs, etc.)"
+          title={tooltip}
         >
-          {block.text.toUpperCase()}
+          {text}
         </span>
       );
     } else {
       // Flank - render as continuous text without capsules
       return (
-        <span className="text-slate-600 dark:text-slate-400 font-mono">
-          {block.text.toUpperCase()}
+        <span
+          key={blockIndex}
+          className="text-slate-600 dark:text-slate-400 font-mono"
+          title={tooltip}
+        >
+          {text}
         </span>
       );
     }
@@ -371,13 +387,14 @@ function ExampleAlleleSequence({
       </div>
       <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 px-4 py-4">
         <div className="inline-flex flex-wrap gap-x-1 items-center font-mono text-xs md:text-sm leading-relaxed text-slate-900 dark:text-slate-100 break-all">
-          {blocks.map((block, i) => (
-            <span key={i} className="inline-flex items-center">
-              {renderExampleBlock(block, i)}
-            </span>
-          ))}
+          {blocks.map((block, i) => renderBlock(block, i))}
         </div>
       </div>
+      {pageContent.sequenceExample?.note && (
+        <div className="mt-2 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+          {pageContent.sequenceExample.note}
+        </div>
+      )}
     </div>
   );
 }

@@ -560,6 +560,14 @@ export const translations = {
         ceTitle: "Capillary Electrophoresis Analysis (RFU)",
         ngsTitle: "Next-Generation Sequencing Analysis",
       },
+      ngs: {
+        subtitle: "Full amplicon sequence: flanks + STR repeats",
+        fullSequenceColumnLabel: "Full Sequence",
+        fullSequenceTooltipAria: "Explanation about full amplicon sequence",
+        fullSequenceNote:
+          "In NGS, the full amplicon sequence is shown, including flanking regions and internal variants. Because these regions may contain insertions, deletions, or interruptions, one allele can have a longer total sequence than another allele even when it has fewer repeat units. This is normal in sequence-based STR typing.",
+        highlightRepeatsLabel: "Highlight STR repeat region",
+      },
       trueGenotypes: {
         toggleLabel: "Show true genotypes",
         title: "True genotypes at {locus}",
@@ -1205,6 +1213,14 @@ export const translations = {
       charts: {
         ceTitle: "Análise de Eletroforese Capilar (RFU)",
         ngsTitle: "Análise de Sequenciamento de Nova Geração",
+      },
+      ngs: {
+        subtitle: "Sequência completa do amplicon: flancos + repetições STR",
+        fullSequenceColumnLabel: "Sequência completa",
+        fullSequenceTooltipAria: "Explicação sobre a sequência completa do amplicon",
+        fullSequenceNote:
+          "No NGS é mostrada a sequência completa do amplicon, incluindo regiões flanqueadoras e variantes internas. Essas regiões podem ter inserções, deleções ou interrupções, fazendo com que um alelo tenha uma sequência total mais longa que outro mesmo tendo menos unidades de repetição. Isso é normal na genotipagem de STR por sequenciamento.",
+        highlightRepeatsLabel: "Destacar região repetitiva STR",
       },
       trueGenotypes: {
         toggleLabel: "Mostrar genótipos verdadeiros",
@@ -1852,6 +1868,14 @@ export const translations = {
       charts: {
         ceTitle: "Análisis de Electroforesis Capilar (RFU)",
         ngsTitle: "Análisis de Secuenciación de Nueva Generación",
+      },
+      ngs: {
+        subtitle: "Secuencia completa del amplicón: flancos + repeticiones STR",
+        fullSequenceColumnLabel: "Secuencia completa",
+        fullSequenceTooltipAria: "Explicación sobre la secuencia completa del amplicón",
+        fullSequenceNote:
+          "En NGS se muestra la secuencia completa del amplicón, incluyendo regiones flanqueadoras y variantes internas. Estas regiones pueden tener inserciones, deleciones o interrupciones, por lo que un alelo puede tener una secuencia total más larga que otro aun cuando tenga menos repeticiones. Esto es normal en la tipificación de STR por secuenciación.",
+        highlightRepeatsLabel: "Resaltar región repetitiva STR",
       },
       trueGenotypes: {
         toggleLabel: "Mostrar genotipos verdaderos",

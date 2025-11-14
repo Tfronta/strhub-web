@@ -53,6 +53,10 @@ export const translations = {
           description:
             "Explore major international genomic projects advancing STR research and human genetic diversity",
         },
+        motifExplorer: {
+          title: "STR Motif Explorer",
+          description: "Interactively explore STR repeat motifs across markers and allele structures.",
+        },
         communityHub: {
           title: "Community Hub",
           description: "User experiences, tutorials, updates, and collaborative research discussions",
@@ -315,6 +319,35 @@ export const translations = {
             "Educational and training purposes in forensic genomics",
           ],
         },
+      },
+    },
+    motifExplorerPage: {
+      title: "STR Motif Explorer",
+      subtitle: "Visualize canonical STR repeat motifs and interruptions for selected markers.",
+      fields: {
+        marker: {
+          label: "STR Marker",
+        },
+        viewMode: {
+          schematic: "Motif schematic",
+          text: "Motif description",
+        },
+      },
+      help: {
+        general:
+          "Motifs are simplified canonical patterns derived from STR literature and databases. They highlight the structure of the repeat region, not the full amplicon sequence.",
+      },
+      labels: {
+        canonicalPattern: "Canonical repeat pattern:",
+      },
+      legend: {
+        repeat: "Repeat unit",
+        interruption: "Interruption / internal variant",
+        other: "Other / schematic element",
+      },
+      explanation: {
+        generic:
+          "This view highlights the internal structure of the STR repeat region. Complex loci may contain variant repeat units and interruptions that can only be fully resolved with sequencing-based methods.",
       },
     },
     // STRBase Integration
@@ -707,6 +740,10 @@ export const translations = {
           description:
             "Explore grandes projetos genômicos internacionais que avançam a pesquisa STR e diversidade genética humana",
         },
+        motifExplorer: {
+          title: "Explorador de Motivos STR",
+          description: "Explore interativamente motivos repetitivos STR em marcadores e estruturas alélicas.",
+        },
         communityHub: {
           title: "Centro Comunitário",
           description: "Experiências de usuários, tutoriais, atualizações e discussões de pesquisa colaborativa",
@@ -969,6 +1006,35 @@ export const translations = {
             "Educational and training purposes in forensic genomics",
           ],
         },
+      },
+    },
+    motifExplorerPage: {
+      title: "Explorador de Motivos STR",
+      subtitle: "Visualize motivos repetitivos STR canônicos e interrupções para marcadores selecionados.",
+      fields: {
+        marker: {
+          label: "Marcador STR",
+        },
+        viewMode: {
+          schematic: "Esquema de motivo",
+          text: "Descrição do motivo",
+        },
+      },
+      help: {
+        general:
+          "Os motivos são padrões canônicos simplificados derivados da literatura e bancos de dados STR. Eles destacam a estrutura da região repetitiva, não a sequência completa do amplicon.",
+      },
+      labels: {
+        canonicalPattern: "Padrão repetitivo canônico:",
+      },
+      legend: {
+        repeat: "Unidade repetitiva",
+        interruption: "Interrupção / variante interna",
+        other: "Outro / elemento esquemático",
+      },
+      explanation: {
+        generic:
+          "Esta visualização destaca a estrutura interna da região repetitiva STR. Loci complexos podem conter unidades repetitivas variantes e interrupções que só podem ser totalmente resolvidas com métodos baseados em sequenciamento.",
       },
     },
     // STRBase Integration
@@ -1363,6 +1429,10 @@ export const translations = {
           description:
             "Explore grandes proyectos genómicos internacionales que avanzan la investigación STR y diversidad genética humana",
         },
+        motifExplorer: {
+          title: "Explorador de Motivos STR",
+          description: "Explore interactivamente motivos repetitivos STR en marcadores y estructuras alélicas.",
+        },
         communityHub: {
           title: "Centro Comunitario",
           description:
@@ -1626,6 +1696,35 @@ export const translations = {
             "Educational and training purposes in forensic genomics",
           ],
         },
+      },
+    },
+    motifExplorerPage: {
+      title: "Explorador de Motivos STR",
+      subtitle: "Visualice motivos repetitivos STR canónicos e interrupciones para marcadores seleccionados.",
+      fields: {
+        marker: {
+          label: "Marcador STR",
+        },
+        viewMode: {
+          schematic: "Esquema de motivo",
+          text: "Descripción del motivo",
+        },
+      },
+      help: {
+        general:
+          "Los motivos son patrones canónicos simplificados derivados de la literatura y bases de datos STR. Destacan la estructura de la región repetitiva, no la secuencia completa del amplicón.",
+      },
+      labels: {
+        canonicalPattern: "Patrón repetitivo canónico:",
+      },
+      legend: {
+        repeat: "Unidad repetitiva",
+        interruption: "Interrupción / variante interna",
+        other: "Otro / elemento esquemático",
+      },
+      explanation: {
+        generic:
+          "Esta vista destaca la estructura interna de la región repetitiva STR. Los loci complejos pueden contener unidades repetitivas variantes e interrupciones que solo pueden resolverse completamente con métodos basados en secuenciación.",
       },
     },
     // STRBase Integration

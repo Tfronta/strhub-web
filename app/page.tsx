@@ -15,6 +15,7 @@ import {
   Heart,
   Layers,
   Beaker,
+  Grid3x3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -257,16 +258,16 @@ export default function HomePage() {
               </Card>
             </Link>
 
-            {/* 8. Community Hub */}
-            <Link href="/blog">
+            {/* 8. STR Motif Explorer */}
+            <Link href="/tools/str-motif-explorer">
               <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 h-full">
                 <CardHeader>
                   <div className="w-12 h-12 bg-gradient-to-br from-accent to-secondary rounded-lg flex items-center justify-center mb-4">
-                    <Users className="h-6 w-6 text-accent-foreground" />
+                    <Grid3x3 className="h-6 w-6 text-accent-foreground" />
                   </div>
-                  <CardTitle>{t("home.explore.communityHub.title")}</CardTitle>
+                  <CardTitle>{t("home.explore.motifExplorer.title")}</CardTitle>
                   <CardDescription>
-                    {t("home.explore.communityHub.description")}
+                    {t("home.explore.motifExplorer.description")}
                   </CardDescription>
                 </CardHeader>
               </Card>

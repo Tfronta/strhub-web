@@ -651,20 +651,20 @@ type MarkerSequenceEntry = {
 };
 
 // -----------------------------------------------------------------------------
-// Convert CE peaks to simulated NGS rows, using real allele sequences from markerData
-// Shows isoalleles only when a locus truly has >1 identical alleles (e.g., two "20")
+// Convert CE peaks to simulated NGS rows, using real allele sequences from CATALOG
+// Counts allele copies from contributors' genotypes and selects variants from catalog
 // -----------------------------------------------------------------------------
 export function cePeaksToNGSRowsWithSeq(
   locusId: string,
   peaks: Peak[],
-  markerDataOverride?: Record<string, any>,
+  contributors?: ContributorInput[],
   stPctByTargetOverride?: Record<string, number | string>,
   kOverride?: number
 ) {
   const rows: any[] = []
-  const markerMap = markerDataOverride ?? (markerData as Record<string, any>)
   const k = typeof kOverride === "number" && Number.isFinite(kOverride) ? kOverride : 1.2
 
+  // Compute stutter percentages from peaks
   const computedStutterPct: Record<string, number> = {}
   for (const p of peaks) {
     if (p.kind !== "stutter") continue
@@ -679,100 +679,152 @@ export function cePeaksToNGSRowsWithSeq(
 
   const stPctByTarget = stPctByTargetOverride ?? computedStutterPct
 
-  // Helper → count true allele occurrences (ignore stutter)
-  const trueCount: Record<string, number> = {}
-  for (const p of peaks) {
-    if (p.kind === "stutter") continue
-    const alleleLabel = String(p.allele)
-    trueCount[alleleLabel] = (trueCount[alleleLabel] ?? 0) + 1
-  }
+  // Count allele copies from contributors' genotypes
+  const alleleCounts: Record<string, number> = {}
+  if (contributors && contributors.length > 0) {
+    for (const contrib of contributors) {
+      if (contrib.proportion <= 0) continue
+      const genotype = getTrueGenotype(contrib.sampleId, locusId)
+      if (!genotype) continue
 
-  // Extract marker info
-  const markerKey = normalizeMarkerKey(locusId)
-  const markerEntry = markerMap?.[markerKey]
-  const markerSequences: MarkerSequenceEntry[] = Array.isArray(markerEntry?.sequences)
-    ? markerEntry.sequences
-    : []
-
-  // Helper → get representative sequence(s) for a given allele label
-  const getSequencesForAllele = (alleleLabel: string) => {
-    const all = markerSequences.filter(
-      (s: any) => String(s?.allele ?? '') === alleleLabel
-    )
-    if (!all.length) return []
-
-    const duplicates = trueCount[alleleLabel] ?? 0
-    if (duplicates <= 1) {
-      // one real copy → pick canonical (non-isoallele) or first
-      const main = all.find((s: any) => !s.isIsoallele) ?? all[0]
-      return [main]
-    } else {
-      // two or more real copies → expand to real isoalleles (if available)
-      const canonical = all.find((s: any) => !s.isIsoallele)
-      const iso = all.filter((s: any) => s.isIsoallele)
-      const totalNeeded = Math.min(duplicates, all.length)
-      const chosen = []
-      if (canonical) chosen.push(canonical)
-      for (const i of iso) {
-        if (chosen.length >= totalNeeded) break
-        chosen.push(i)
-      }
-      // if there were no isoalleles available, just duplicate canonical
-      while (chosen.length < totalNeeded) chosen.push(canonical ?? all[0])
-      return chosen
+      // Count both alleles
+      const a1 = String(genotype.allele1)
+      const a2 = String(genotype.allele2)
+      alleleCounts[a1] = (alleleCounts[a1] ?? 0) + 1
+      alleleCounts[a2] = (alleleCounts[a2] ?? 0) + 1
+    }
+  } else {
+    // Fallback: count from peaks if no contributors provided
+    for (const p of peaks) {
+      if (p.kind === "stutter") continue
+      const alleleLabel = String(p.allele)
+      alleleCounts[alleleLabel] = (alleleCounts[alleleLabel] ?? 0) + 1
     }
   }
 
-  // Build rows for each CE peak (without stutter duplication)
+  // Get marker data for this locus (same source as Variant Alleles tab)
+  const markerKey = normalizeMarkerKey(locusId)
+  const markerEntry = markerData[markerKey]
+  const markerSequences: Array<{
+    allele?: string;
+    pattern?: string;
+    sequence?: string;
+    isIsoallele?: boolean;
+  }> = Array.isArray(markerEntry?.sequences) ? markerEntry.sequences : []
+
+  // Debug log to inspect catalog structure
+  if (typeof console !== 'undefined' && console.log) {
+    console.log("NGS locus catalog", locusId, markerSequences.slice(0, 10))
+  }
+
+  // Helper: get variants for an allele from markerData
+  // Match by numeric repeat number from the allele field
+  const getVariantsForAllele = (alleleNumber: string | number): Array<{
+    repeatSequence?: string;
+    fullSequence?: string;
+    isIsoallele?: boolean;
+  }> => {
+    const num = typeof alleleNumber === 'number' ? alleleNumber : parseFloat(String(alleleNumber))
+    if (Number.isNaN(num)) return []
+    
+    const variants = markerSequences.filter((v: any) => {
+      // Extract numeric repeat number from allele field
+      // allele can be "7", "8", "12", "12.3", etc.
+      const variantAllele = v.allele
+      if (!variantAllele) return false
+      
+      // Parse the numeric part (handle cases like "12.3" or "12 iso")
+      const variantNum = parseFloat(String(variantAllele))
+      if (Number.isNaN(variantNum)) return false
+      
+      // Compare with tolerance for floating point
+      return Math.abs(variantNum - num) < 0.01
+    })
+
+    // Debug log to verify matching
+    if (typeof console !== 'undefined' && console.log) {
+      console.log(
+        "[NGS variants match]",
+        locusId,
+        "alleleNumber=",
+        alleleNumber,
+        "found=",
+        variants.length
+      )
+    }
+
+    return variants.map((v: any) => ({
+      repeatSequence: v.pattern,
+      fullSequence: v.sequence,
+      isIsoallele: v.isIsoallele || false,
+    }))
+  }
+
+  // Build rows: one per variant needed for each allele
+  const alleleToCoverage: Record<string, number> = {}
   for (const p of peaks) {
     if (p.kind === "stutter") continue
     const alleleLabel = String(p.allele)
     const baseReads = Math.max(1, Math.round(p.rfu * k))
-    const seqs = getSequencesForAllele(alleleLabel)
+    alleleToCoverage[alleleLabel] = (alleleToCoverage[alleleLabel] ?? 0) + baseReads
+  }
 
-    if (!seqs.length) {
-      // no known sequence → placeholder row
+  // Ensure all alleles with coverage are included (fallback for alleles in peaks but not in contributors)
+  for (const alleleLabel of Object.keys(alleleToCoverage)) {
+    if (!(alleleLabel in alleleCounts)) {
+      alleleCounts[alleleLabel] = 1 // Default to 1 copy if not found in contributors
+    }
+  }
+
+  // For each unique allele, create rows based on copies needed
+  // Only process alleles that have coverage (appear in peaks)
+  for (const [alleleLabel, copiesNeeded] of Object.entries(alleleCounts)) {
+    const totalCoverage = alleleToCoverage[alleleLabel] ?? 0
+    
+    // Skip alleles with no coverage (they don't appear in peaks)
+    if (totalCoverage <= 0) continue
+
+    // Get all variants for this allele from catalog
+    const variantsForAllele = getVariantsForAllele(alleleLabel)
+
+    // Generate exactly copiesNeeded entries, always trying to use catalog variants
+    for (let i = 0; i < copiesNeeded; i++) {
+      // Select variant: cycle through available variants, or use null if none exist
+      const variant = variantsForAllele.length > 0
+        ? variantsForAllele[i % variantsForAllele.length]
+        : null
+
+      // Distribute coverage across copies
+      const coveragePerCopy = copiesNeeded > 0
+        ? Math.max(1, Math.floor(totalCoverage / copiesNeeded))
+        : totalCoverage
+      const remainder = totalCoverage - (coveragePerCopy * copiesNeeded)
+      // Add remainder to last copy to ensure total matches
+      const coverage = i === copiesNeeded - 1
+        ? coveragePerCopy + remainder
+        : coveragePerCopy
+
       rows.push({
         allele: alleleLabel,
-        coverage: baseReads,
-        stutterPct: stPctByTarget[alleleLabel] ?? '—',
-        repeatSequence: '—',
-        fullSequence: '—',
+        coverage: coverage,
+        stutterPct: variant?.stutterPct ?? stPctByTarget[alleleLabel] ?? '—',
+        repeatSequence: variant?.repeatSequence ?? '—',
+        fullSequence: variant?.fullSequence ?? '—',
+        isIsoallele: variant?.isIsoallele || (copiesNeeded > 1 && i > 0),
+        sequenceId: `${alleleLabel}-${i}`, // Unique identifier for React keys
       })
-      continue
     }
-
-    // When only one copy → single representative
-    if (seqs.length === 1) {
-      const s = seqs[0]
-      rows.push({
-        allele: alleleLabel,
-        coverage: baseReads,
-        stutterPct: stPctByTarget[alleleLabel] ?? '—',
-        repeatSequence: s?.pattern ?? '—',
-        fullSequence: s?.sequence ?? '—',
-      })
-      continue
-    }
-
-    // When multiple identical alleles (isoalleles) → split coverage evenly
-    const covPerIso = Math.max(1, Math.round(baseReads / seqs.length))
-    seqs.forEach((s, i) => {
-      rows.push({
-        allele: `${alleleLabel} iso${i + 1}`,
-        coverage: covPerIso,
-        stutterPct: stPctByTarget[alleleLabel] ?? '—',
-        repeatSequence: s?.pattern ?? '—',
-        fullSequence: s?.sequence ?? '—',
-      })
-    })
   }
 
   // Preserve sorting for clean display
   rows.sort((a, b) => {
-    const numA = parseFloat(a.allele)
-    const numB = parseFloat(b.allele)
-    if (!isNaN(numA) && !isNaN(numB)) return numA - numB
+    const numA = parseFloat(String(a.allele))
+    const numB = parseFloat(String(b.allele))
+    if (!Number.isNaN(numA) && !Number.isNaN(numB)) {
+      if (numA !== numB) return numA - numB
+      // If same allele number, sort by sequenceId to maintain order
+      return String(a.sequenceId).localeCompare(String(b.sequenceId))
+    }
     return String(a.allele).localeCompare(String(b.allele))
   })
 

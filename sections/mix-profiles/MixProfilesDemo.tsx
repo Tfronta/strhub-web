@@ -354,9 +354,9 @@ export default function MixProfilesDemo() {
 
   // NGS derivado de CE
   const ngsRows = useMemo(
-    () => cePeaksToNGSRowsWithSeq(selectedMarker, ce.peaks),
+    () => cePeaksToNGSRowsWithSeq(selectedMarker, ce.peaks, activeContributors),
     // 👉 si ce cambia (porque cambia k, AT, ruido...), recalculamos filas
-    [selectedMarker, ce]
+    [selectedMarker, ce, activeContributors]
   );
 
   const ngsBars = useMemo(() => {

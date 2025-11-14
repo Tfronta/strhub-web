@@ -37,6 +37,7 @@ export type NGSRow = {
   repeatSequence?: string | '—';
   fullSequence?: string | '—'; // columna de secuencia completa
   isIsoallele?: boolean;
+  sequenceId?: string;         // Unique identifier for React keys (e.g., "12-0", "12-1")
 };
 
 export type NGSChartBar = { allele: number; coverage: number };

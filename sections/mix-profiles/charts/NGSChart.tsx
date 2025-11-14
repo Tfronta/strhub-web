@@ -68,7 +68,6 @@ export default function NGSChart({
             <tr>
               <th className="px-3 py-2 text-center">Allele</th>
               <th className="px-3 py-2 text-center">Coverage (reads)</th>
-              <th className="px-3 py-2 text-center">Stutter %</th>
               <th className="px-3 py-2 text-left">Repeat Sequence</th>
               <th className="px-3 py-2 text-left">Full Sequence</th>
             </tr>
@@ -92,13 +91,12 @@ export default function NGSChart({
                 return aStr.localeCompare(bStr);
               })
               .map((r, i) => (
-                <tr key={`${r.allele}-${i}`} className="odd:bg-background even:bg-muted/10">
+                <tr key={r.sequenceId ?? `${r.allele}-${i}`} className="odd:bg-background even:bg-muted/10">
                   <td className="px-3 py-2 text-center">
                     {r.allele}
                     {r.isIsoallele ? <sup className="ml-1 text-xs">iso</sup> : null}
                   </td>
                   <td className="px-3 py-2 text-center">{r.coverage}</td>
-                  <td className="px-3 py-2 text-center">{r.stutterPct ?? '—'}</td>
                   <td className="px-3 py-2 text-left whitespace-pre-wrap break-words">
                     {r.repeatSequence ?? '—'}
                   </td>

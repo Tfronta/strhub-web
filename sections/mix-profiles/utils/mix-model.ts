@@ -427,8 +427,9 @@ export function simulateCE(args: {
       console.warn('[DEG] WARNING: Re-normalization after degradation is disabled. Degraded RFU must be used as-is.');
     }
 
-    // Calculate stutter from degraded parent RFU
-    // stutterRFU = trueRFU_degraded * locusRate * stutterLevelX
+    // Calculate stutter from final parent peak height (after all scaling)
+    // Parent peak height = degradedRFU (already includes: mixture proportion, hetCV, degradation, log-normal sigma)
+    // Stutter = parentPeakHeight × stutterRate, then apply independent noise distribution
     const sdev = p.stutter.sd ?? 0.02;
     const stutterScale = p.stutterScale ?? 1.0;
     
@@ -449,7 +450,10 @@ export function simulateCE(args: {
     // Permitimos hasta 22% en general y 30% con stutterScale alto (modo didáctico)
     const maxRate = stutterScale > 1.5 ? 0.30 : 0.22;
     const s1 = Math.max(0, Math.min(baseRate1 + gaussian(rand) * sdev, maxRate));
-    const stutterRFU1 = degradedRFU * s1; // Use degraded parent RFU
+    // Calculate mean stutter RFU from parent peak height
+    const meanStutterRFU1 = degradedRFU * s1;
+    // Apply independent noise distribution to stutter peak (same log-normal sigma as true peaks)
+    const stutterRFU1 = meanStutterRFU1 > 0 ? Math.max(0, lognormal(meanStutterRFU1, p.sigmaLN, rand)) : 0;
     // Use discrete position preserving microvariants (e.g., 21.3 - 1 = 20.3, 8 - 1 = 7)
     const m1 = getStutterPosition(aNum, -1);
     // Allow stutter if: (1) stutter allele is in catalog, OR (2) it's a valid stutter shift (-1) from a real parent
@@ -464,7 +468,10 @@ export function simulateCE(args: {
     if (st.minus2) {
       const baseRate2 = st.minus2 * stutterScale;
       const s2 = Math.max(0, Math.min(baseRate2 + gaussian(rand) * sdev, maxRate));
-      const stutterRFU2 = degradedRFU * s2; // Use degraded parent RFU
+      // Calculate mean stutter RFU from parent peak height
+      const meanStutterRFU2 = degradedRFU * s2;
+      // Apply independent noise distribution to stutter peak (same log-normal sigma as true peaks)
+      const stutterRFU2 = meanStutterRFU2 > 0 ? Math.max(0, lognormal(meanStutterRFU2, p.sigmaLN, rand)) : 0;
       // Use discrete position preserving microvariants (e.g., 21.3 - 2 = 19.3)
       const m2 = getStutterPosition(aNum, -2);
       // Allow stutter if: (1) stutter allele is in catalog, OR (2) it's a valid stutter shift (-2) from a real parent
@@ -480,7 +487,10 @@ export function simulateCE(args: {
     if (st.plus1) {
       const baseRateP = st.plus1 * stutterScale;
       const sp = Math.max(0, Math.min(baseRateP + gaussian(rand) * sdev, maxRate));
-      const stutterRFUP = degradedRFU * sp; // Use degraded parent RFU
+      // Calculate mean stutter RFU from parent peak height
+      const meanStutterRFUP = degradedRFU * sp;
+      // Apply independent noise distribution to stutter peak (same log-normal sigma as true peaks)
+      const stutterRFUP = meanStutterRFUP > 0 ? Math.max(0, lognormal(meanStutterRFUP, p.sigmaLN, rand)) : 0;
       // Use discrete position preserving microvariants (e.g., 21.3 + 1 = 22.3)
       const p1 = getStutterPosition(aNum, 1);
       // Allow stutter if: (1) stutter allele is in catalog, OR (2) it's a valid stutter shift (+1) from a real parent

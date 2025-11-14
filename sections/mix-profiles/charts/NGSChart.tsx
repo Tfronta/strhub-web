@@ -1,7 +1,6 @@
 // app/sections/mix-profiles/charts/NGSChart.tsx
 'use client';
 
-import { useState } from 'react';
 import {
   Bar,
   BarChart,
@@ -15,10 +14,7 @@ import {
 } from 'recharts';
 import type { NGSChartBar, NGSRow } from '../utils/simulate';
 import { getChartColors } from '../data';
-import { highlightRepeatRegion } from '../utils/highlightRepeatRegion';
-import { markerData } from '@/lib/markerData';
 import { useLanguage } from '@/contexts/language-context';
-import { Switch } from '@/components/ui/switch';
 import {
   Tooltip as UITooltip,
   TooltipContent,
@@ -31,7 +27,6 @@ type Props = {
   rows: NGSRow[];
   analyticalThreshold?: number;
   interpretationThreshold?: number;
-  locusId?: string;
 };
 
 // Resuelve una CSS var a color real (rgb/hex). Intenta varias vars por si una no existe.
@@ -54,19 +49,13 @@ function resolveThemeColor(fallback: string): string {
   return fallback;
 }
 
-function normalizeMarkerKey(id: string): string {
-  return id.toLowerCase().replace(/\s+/g, "_").replace(/-/g, "_");
-}
-
 export default function NGSChart({
   bars,
   rows,
   analyticalThreshold = 50,
   interpretationThreshold = 80,
-  locusId = '',
 }: Props) {
   const { t } = useLanguage();
-  const [highlightRepeats, setHighlightRepeats] = useState(false);
 
   if (!bars?.length) return <div className="h-[320px]" />;
 
@@ -79,46 +68,8 @@ export default function NGSChart({
   const fallback = getChartColors()[0]; // por si falla la var CSS
   const themeColor = resolveThemeColor(fallback);
 
-  // Get motif from markerData and check if it's complex
-  const markerKey = normalizeMarkerKey(locusId);
-  const markerEntry = (markerData as Record<string, any>)[markerKey];
-  const rawPattern = markerEntry?.motif || markerEntry?.repeatMotif || null;
-  
-  // Check if motif is complex (contains brackets or spaces)
-  const isComplexMotif =
-    !!rawPattern &&
-    (rawPattern.includes("[") || rawPattern.includes("]") || rawPattern.includes(" "));
-
-  // Extract simple motif from patterns like "[ATCT]n" -> "ATCT"
-  let simpleMotif: string | null = null;
-  if (!isComplexMotif && rawPattern) {
-    // If pattern is like "[ATCT]n", extract "ATCT"
-    const match = rawPattern.match(/\[?([ACGT]+)\]?/);
-    if (match && match[1]) {
-      simpleMotif = match[1];
-    } else if (!rawPattern.includes("[") && !rawPattern.includes("]")) {
-      // Already a simple motif
-      simpleMotif = rawPattern;
-    }
-  }
-
   return (
     <div className="space-y-4">
-      {/* Toggle for highlighting */}
-      <div className="flex items-center gap-2">
-        <Switch
-          id="highlight-repeats"
-          checked={highlightRepeats}
-          onCheckedChange={setHighlightRepeats}
-        />
-        <label
-          htmlFor="highlight-repeats"
-          className="text-sm font-medium cursor-pointer"
-        >
-          {t("mixProfiles.ngs.highlightRepeatsLabel")}
-        </label>
-      </div>
-
       {/* Tabla */}
       <div className="overflow-x-auto rounded-xl border">
         <table className="w-full text-sm">
@@ -178,8 +129,8 @@ export default function NGSChart({
                   <td className="px-3 py-2 text-left whitespace-pre-wrap break-words">
                     {r.repeatSequence ?? '—'}
                   </td>
-                  <td className="px-3 py-2 text-left whitespace-pre-wrap break-words">
-                    {highlightRepeatRegion(r.fullSequence, simpleMotif, highlightRepeats)}
+                  <td className="px-3 py-2 text-left whitespace-pre-wrap break-words font-mono">
+                    {r.fullSequence ?? '—'}
                   </td>
                 </tr>
               ))}

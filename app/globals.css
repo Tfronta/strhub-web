@@ -179,10 +179,3 @@
 #cms-body li::before {
   content: none !important;
 }
-
-/* Repeat region highlight for NGS sequences */
-.repeat-region-highlight {
-  background-color: rgba(56, 189, 248, 0.18);
-  border-radius: 0.125rem;
-  padding: 0 0.12rem;
-}

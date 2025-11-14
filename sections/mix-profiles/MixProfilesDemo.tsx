@@ -833,20 +833,17 @@ export default function MixProfilesDemo() {
 
       {/* NGS */}
       <div className="rounded-xl border p-4">
-        <div>
-          <h3 className="text-base font-semibold">
-            {t("mixProfiles.charts.ngsTitle")}
-          </h3>
-          <p className="text-xs text-muted-foreground mt-1">
-            {t("mixProfiles.ngs.subtitle")}
-          </p>
-        </div>
+        <h3 className="text-base font-semibold">
+          {t("mixProfiles.charts.ngsTitle")}
+        </h3>
+        <p className="text-sm text-muted-foreground leading-relaxed pb-2 max-w-none">
+          {t("mixProfiles.ngs.disclaimer")}
+        </p>
         <NGSChart
           bars={ngsBars}
           rows={ngsRows}
           analyticalThreshold={AT}
           interpretationThreshold={IT}
-          locusId={selectedMarker}
         />
       </div>
     </div>

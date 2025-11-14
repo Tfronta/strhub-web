@@ -50,7 +50,7 @@ export function buildSequenceBlocks(
       };
     }
     return {
-      text: seg.label.repeat(seg.repeatCount),
+      text: seg.label.toUpperCase().repeat(seg.repeatCount),
       type: seg.type,
     };
   });

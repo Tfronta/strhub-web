@@ -329,14 +329,14 @@ export const translations = {
           label: "STR Marker",
         },
         viewMode: {
-          schematic: "Motif schematic",
           sequence: "Sequence highlight",
+          schematic: "Motif schematic",
           text: "Motif description",
         },
       },
       help: {
         general:
-          "Motifs are simplified canonical patterns derived from STR literature and databases. They highlight the structure of the repeat region, not the full amplicon sequence.",
+          "Displays the full STR allele sequence with flanking regions, repeat units, and internal variants highlighted.",
       },
       labels: {
         canonicalPattern: "Canonical repeat pattern:",
@@ -352,8 +352,7 @@ export const translations = {
           "Summary of repeat structure: repeat units are shown as MOTIF[n]; 'flank' marks non-repetitive regions.",
       },
       explanation: {
-        generic:
-          "This view highlights the internal structure of the STR repeat region. Complex loci may contain variant repeat units and interruptions that can only be fully resolved with sequencing-based methods.",
+        generic: "",
       },
     },
     // STRBase Integration
@@ -1022,14 +1021,14 @@ export const translations = {
           label: "Marcador STR",
         },
         viewMode: {
-          schematic: "Esquema de motivo",
           sequence: "Destaque de sequência",
+          schematic: "Esquema de motivo",
           text: "Descrição do motivo",
         },
       },
       help: {
         general:
-          "Os motivos são padrões canônicos simplificados derivados da literatura e bancos de dados STR. Eles destacam a estrutura da região repetitiva, não a sequência completa do amplicon.",
+          "Exibe a sequência completa do alelo STR com flancos, unidades repetitivas e variantes internas destacadas.",
       },
       labels: {
         canonicalPattern: "Padrão repetitivo canônico:",
@@ -1045,8 +1044,7 @@ export const translations = {
           "Resumo da estrutura repetitiva: unidades repetitivas são mostradas como MOTIF[n]; 'flank' marca regiões não repetitivas.",
       },
       explanation: {
-        generic:
-          "Esta visualização destaca a estrutura interna da região repetitiva STR. Loci complexos podem conter unidades repetitivas variantes e interrupções que só podem ser totalmente resolvidas com métodos baseados em sequenciamento.",
+        generic: "",
       },
     },
     // STRBase Integration
@@ -1718,14 +1716,14 @@ export const translations = {
           label: "Marcador STR",
         },
         viewMode: {
-          schematic: "Esquema de motivo",
           sequence: "Resaltado de secuencia",
+          schematic: "Esquema de motivo",
           text: "Descripción del motivo",
         },
       },
       help: {
         general:
-          "Los motivos son patrones canónicos simplificados derivados de la literatura y bases de datos STR. Destacan la estructura de la región repetitiva, no la secuencia completa del amplicón.",
+          "Muestra la secuencia completa del alelo STR con flancos, unidades repetitivas y variantes internas destacadas.",
       },
       labels: {
         canonicalPattern: "Patrón repetitivo canónico:",
@@ -1741,8 +1739,7 @@ export const translations = {
           "Resumen de la estructura repetitiva: las unidades repetitivas se muestran como MOTIF[n]; 'flank' marca regiones no repetitivas.",
       },
       explanation: {
-        generic:
-          "Esta vista destaca la estructura interna de la región repetitiva STR. Los loci complejos pueden contener unidades repetitivas variantes e interrupciones que solo pueden resolverse completamente con métodos basados en secuenciación.",
+        generic: "",
       },
     },
     // STRBase Integration

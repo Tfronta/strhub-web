@@ -29,8 +29,8 @@ export default function MotifExplorerPage() {
   const [selectedMarkerId, setSelectedMarkerId] = useState<string>(
     STR_MOTIFS[0]?.id || ""
   );
-  const [viewMode, setViewMode] = useState<"schematic" | "text" | "sequence">(
-    "schematic"
+  const [viewMode, setViewMode] = useState<"sequence" | "schematic" | "text">(
+    "sequence"
   );
   const { language } = useLanguage();
   const languageContent = translations[language] as (typeof translations)["en"];
@@ -81,7 +81,7 @@ export default function MotifExplorerPage() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-[40%_60%] gap-6">
+          <div className="grid lg:grid-cols-[35%_65%] gap-6">
             {/* Configuration Panel */}
             <Card className="border-0 bg-card/70 backdrop-blur-sm shadow-lg">
               <CardHeader className="space-y-1.5 pb-4">
@@ -126,18 +126,18 @@ export default function MotifExplorerPage() {
                   <Select
                     value={viewMode}
                     onValueChange={(v) =>
-                      setViewMode(v as "schematic" | "text")
+                      setViewMode(v as "sequence" | "schematic" | "text")
                     }
                   >
                     <SelectTrigger className="h-11 text-base">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="schematic" className="text-base">
-                        {pageContent.fields.viewMode.schematic}
-                      </SelectItem>
                       <SelectItem value="sequence" className="text-base">
                         {pageContent.fields.viewMode.sequence}
+                      </SelectItem>
+                      <SelectItem value="schematic" className="text-base">
+                        {pageContent.fields.viewMode.schematic}
                       </SelectItem>
                       <SelectItem value="text" className="text-base">
                         {pageContent.fields.viewMode.text}
@@ -147,7 +147,7 @@ export default function MotifExplorerPage() {
                 </div>
 
                 <div className="pt-4 border-t">
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                     {pageContent.help.general}
                   </p>
                 </div>
@@ -170,7 +170,7 @@ export default function MotifExplorerPage() {
                 {selectedMarker ? (
                   <MotifVisualization
                     marker={selectedMarker}
-                    viewMode={viewMode as "schematic" | "text" | "sequence"}
+                    viewMode={viewMode as "sequence" | "schematic" | "text"}
                     pageContent={pageContent}
                   />
                 ) : (

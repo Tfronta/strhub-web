@@ -33,17 +33,9 @@ export default function Page() {
       </header>
 
       <main className="container mx-auto px-4 py-6">
-        <div className="flex items-start justify-between mb-6">
+        <div className="flex items-start justify-between mb-3">
           <div>
-            <h1 className="text-2xl font-semibold">
-              {t("mixProfiles.title")}{" "}
-              <span className="text-xs align-super">
-                {t("mixProfiles.subtitle")}
-              </span>
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {t("mixProfiles.description")}
-            </p>
+            <h1 className="text-2xl font-semibold">{t("mixProfiles.title")}</h1>
           </div>
           <Popover>
             <PopoverTrigger asChild>
@@ -109,7 +101,9 @@ export default function Page() {
                   </h4>
                   <ul className="list-disc pl-4 space-y-1">
                     <li>{t("mixProfiles.quickGuide.simulation.ratio")}</li>
-                    <li>{t("mixProfiles.quickGuide.simulation.degradation")}</li>
+                    <li>
+                      {t("mixProfiles.quickGuide.simulation.degradation")}
+                    </li>
                     <li>{t("mixProfiles.quickGuide.simulation.stutter")}</li>
                     <li>{t("mixProfiles.quickGuide.simulation.loci")}</li>
                   </ul>

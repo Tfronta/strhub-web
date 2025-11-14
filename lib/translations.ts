@@ -567,6 +567,8 @@ export const translations = {
         fullSequenceTooltipAria: "Explanation about full amplicon sequence",
         fullSequenceNote:
           "In NGS, the full amplicon sequence is shown, including flanking regions and internal variants. These regions may contain insertions, deletions, or interruptions, so one allele can have a longer total sequence than another even when it has fewer repeat units. This is normal in sequence-based STR typing.",
+        isoTooltip:
+          "Isoallele: sequence variation without a change in length. Detectable only with NGS and increases the power of discrimination between individuals.",
       },
       trueGenotypes: {
         toggleLabel: "Show true genotypes",
@@ -1221,6 +1223,8 @@ export const translations = {
         fullSequenceTooltipAria: "Explicação sobre a sequência completa do amplicon",
         fullSequenceNote:
           "No NGS é mostrada a sequência completa do amplicon, incluindo as regiões flanqueadoras e variantes internas. Essas regiões podem conter inserções, deleções ou interrupções, de modo que um alelo pode ter uma sequência total mais longa do que outro mesmo tendo menos unidades repetitivas. Isso é normal na tipagem de STR baseada em sequenciamento.",
+        isoTooltip:
+          "Isoalelo: variação na sequência sem mudança no comprimento. Detectável apenas com NGS e aumenta o poder de discriminação entre indivíduos.",
       },
       trueGenotypes: {
         toggleLabel: "Mostrar genótipos verdadeiros",
@@ -1876,6 +1880,8 @@ export const translations = {
         fullSequenceTooltipAria: "Explicación sobre la secuencia completa del amplicón",
         fullSequenceNote:
           "En NGS se muestra la secuencia completa del amplicón, incluyendo las regiones flanqueadoras y variantes internas. Estas regiones pueden contener inserciones, deleciones o interrupciones, por lo que un alelo puede tener una secuencia total más larga que otro aun teniendo menos unidades repetitivas. Esto es normal en la tipificación de STR basada en secuenciación.",
+        isoTooltip:
+          "Isoalelo: variación en la secuencia sin cambio en la longitud. Es detectable solo con NGS y aumenta el poder de discriminación entre individuos.",
       },
       trueGenotypes: {
         toggleLabel: "Mostrar genotipos verdaderos",

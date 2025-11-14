@@ -18,6 +18,7 @@ import { useLanguage } from '@/contexts/language-context';
 import {
   Tooltip as UITooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Info } from 'lucide-react';
@@ -123,7 +124,20 @@ export default function NGSChart({
                 <tr key={r.sequenceId ?? `${r.allele}-${i}`} className="odd:bg-background even:bg-muted/10">
                   <td className="px-3 py-2 text-center">
                     {r.allele}
-                    {r.isIsoallele ? <sup className="ml-1 text-xs">iso</sup> : null}
+                    {r.isIsoallele ? (
+                      <TooltipProvider>
+                        <UITooltip>
+                          <TooltipTrigger asChild>
+                            <span className="ml-1 text-[11px] text-gray-500 cursor-help align-super">
+                              iso
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-xs text-sm leading-snug">
+                            {t("mixProfiles.ngs.isoTooltip")}
+                          </TooltipContent>
+                        </UITooltip>
+                      </TooltipProvider>
+                    ) : null}
                   </td>
                   <td className="px-3 py-2 text-center">{r.coverage}</td>
                   <td className="px-3 py-2 text-left whitespace-pre-wrap break-words">

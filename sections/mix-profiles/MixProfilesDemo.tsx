@@ -42,7 +42,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Check, ChevronsUpDown, Info } from "lucide-react";
+import { Check, ChevronsUpDown, Info, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
 
@@ -668,6 +668,14 @@ export default function MixProfilesDemo() {
                   <div className="text-sm font-medium">
                     {t("mixProfiles.parameters.at")}
                   </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs whitespace-pre-line">
+                      <p>{t("mixProfiles.parameters.atTooltip")}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
                 <input
                   type="number"
@@ -683,6 +691,14 @@ export default function MixProfilesDemo() {
                   <div className="text-sm font-medium">
                     {t("mixProfiles.parameters.st")}
                   </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs whitespace-pre-line">
+                      <p>{t("mixProfiles.parameters.stTooltip")}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
                 <input
                   type="number"
@@ -766,21 +782,119 @@ export default function MixProfilesDemo() {
               </div>
             </div>
 
-            {/* Y-axis scale toggle */}
-            <div className="mt-4 flex items-center gap-2 rounded-lg border p-3">
-              <Switch
-                id="y-axis-scale"
-                checked={useFixedScale}
-                onCheckedChange={setUseFixedScale}
-              />
-              <label
-                htmlFor="y-axis-scale"
-                className="text-sm font-medium cursor-pointer"
-              >
-                {useFixedScale
-                  ? "Fixed forensic scale (0–800 RFU)"
-                  : "Auto-scale Y axis"}
-              </label>
+            {/* Y-axis scale toggle and Quick Guide */}
+            <div className="mt-4 flex items-center justify-between gap-4 rounded-lg border p-3">
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="y-axis-scale"
+                  checked={useFixedScale}
+                  onCheckedChange={setUseFixedScale}
+                />
+                <label
+                  htmlFor="y-axis-scale"
+                  className="text-sm font-medium cursor-pointer"
+                >
+                  {useFixedScale
+                    ? "Fixed forensic scale (0–800 RFU)"
+                    : "Auto-scale Y axis"}
+                </label>
+              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"
+                    aria-label={t("mixProfiles.quickGuide.title")}
+                  >
+                    <HelpCircle className="h-4 w-4" />
+                    {t("mixProfiles.quickGuide.button")}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  side="bottom"
+                  align="end"
+                  sideOffset={8}
+                  className="w-[420px] p-4 max-h-96 overflow-y-auto"
+                >
+                  <div className="space-y-4">
+              <h3 className="text-base font-semibold">
+                {t("mixProfiles.quickGuide.title")}
+              </h3>
+              
+              <div>
+                <h4 className="text-sm font-semibold mb-2">
+                  {t("mixProfiles.quickGuide.parameters.title")}
+                </h4>
+                <ul className="text-sm space-y-1.5 list-disc list-inside text-muted-foreground">
+                  <li>
+                    <strong>{t("mixProfiles.quickGuide.parameters.at")}</strong>
+                  </li>
+                  <li>
+                    <strong>{t("mixProfiles.quickGuide.parameters.st")}</strong>
+                  </li>
+                  <li>
+                    <strong>{t("mixProfiles.quickGuide.parameters.noiseBase")}</strong>
+                  </li>
+                  <li>
+                    <strong>{t("mixProfiles.quickGuide.parameters.stutterLevel")}</strong>
+                  </li>
+                  <li>
+                    <strong>{t("mixProfiles.quickGuide.parameters.degradationK")}</strong>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="text-sm font-semibold mb-2">
+                  {t("mixProfiles.quickGuide.mixture.title")}
+                </h4>
+                <ul className="text-sm space-y-1.5 list-disc list-inside text-muted-foreground">
+                  <li>{t("mixProfiles.quickGuide.mixture.balanced")}</li>
+                  <li>{t("mixProfiles.quickGuide.mixture.moderate")}</li>
+                  <li>{t("mixProfiles.quickGuide.mixture.strong")}</li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="text-sm font-semibold mb-2">
+                  {t("mixProfiles.quickGuide.markers.title")}
+                </h4>
+                <p className="text-sm text-muted-foreground mb-2">
+                  {t("mixProfiles.quickGuide.markers.description")}
+                </p>
+                <ul className="text-sm space-y-1.5 list-disc list-inside text-muted-foreground">
+                  <li>{t("mixProfiles.quickGuide.markers.fga")}</li>
+                  <li>{t("mixProfiles.quickGuide.markers.d18s51")}</li>
+                  <li>{t("mixProfiles.quickGuide.markers.d21s11")}</li>
+                  <li>{t("mixProfiles.quickGuide.markers.d2s1338")}</li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="text-sm font-semibold mb-2">
+                  {t("mixProfiles.quickGuide.simulation.title")}
+                </h4>
+                <ul className="text-sm space-y-1.5 list-disc list-inside text-muted-foreground">
+                  <li>{t("mixProfiles.quickGuide.simulation.ratio")}</li>
+                  <li>{t("mixProfiles.quickGuide.simulation.degradation")}</li>
+                  <li>{t("mixProfiles.quickGuide.simulation.stutter")}</li>
+                  <li>{t("mixProfiles.quickGuide.simulation.loci")}</li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="text-sm font-semibold mb-2">
+                  {t("mixProfiles.quickGuide.notes.title")}
+                </h4>
+                <ul className="text-sm space-y-1.5 list-disc list-inside text-muted-foreground">
+                  <li>{t("mixProfiles.quickGuide.notes.longerAlleles")}</li>
+                  <li>{t("mixProfiles.quickGuide.notes.minorContributors")}</li>
+                  <li>{t("mixProfiles.quickGuide.notes.stutter")}</li>
+                  <li>{t("mixProfiles.quickGuide.notes.notAllLoci")}</li>
+                </ul>
+              </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </div>

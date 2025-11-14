@@ -209,6 +209,7 @@ const STUTTER_CE: Record<
   CSF1PO: { minus1: 0.06 },
   D3S1358: { minus1: 0.06 },
   D18S51: { minus1: 0.09, plus1: 0.02 },
+  D21S11: { minus1: 0.08, plus1: 0.015 },
   FGA: { minus1: 0.1, plus1: 0.025, minus2: 0.015 },
   PentaE: { minus1: 0.11, minus2: 0.03 }, // 👈 nueva línea
 };

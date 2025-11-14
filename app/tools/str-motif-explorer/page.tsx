@@ -29,7 +29,9 @@ export default function MotifExplorerPage() {
   const [selectedMarkerId, setSelectedMarkerId] = useState<string>(
     STR_MOTIFS[0]?.id || ""
   );
-  const [viewMode, setViewMode] = useState<"schematic" | "text">("schematic");
+  const [viewMode, setViewMode] = useState<"schematic" | "text" | "sequence">(
+    "schematic"
+  );
   const { language } = useLanguage();
   const languageContent = translations[language] as (typeof translations)["en"];
   const defaultPageContent = translations.en.motifExplorerPage;
@@ -134,6 +136,9 @@ export default function MotifExplorerPage() {
                       <SelectItem value="schematic" className="text-base">
                         {pageContent.fields.viewMode.schematic}
                       </SelectItem>
+                      <SelectItem value="sequence" className="text-base">
+                        {pageContent.fields.viewMode.sequence}
+                      </SelectItem>
                       <SelectItem value="text" className="text-base">
                         {pageContent.fields.viewMode.text}
                       </SelectItem>
@@ -165,7 +170,7 @@ export default function MotifExplorerPage() {
                 {selectedMarker ? (
                   <MotifVisualization
                     marker={selectedMarker}
-                    viewMode={viewMode}
+                    viewMode={viewMode as "schematic" | "text" | "sequence"}
                     pageContent={pageContent}
                   />
                 ) : (

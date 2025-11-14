@@ -330,6 +330,7 @@ export const translations = {
         },
         viewMode: {
           schematic: "Motif schematic",
+          sequence: "Sequence highlight",
           text: "Motif description",
         },
       },
@@ -344,6 +345,11 @@ export const translations = {
         repeat: "Repeat unit",
         interruption: "Interruption / internal variant",
         other: "Other / schematic element",
+        flank: "Flanking region",
+      },
+      summary: {
+        caption:
+          "Summary of repeat structure: repeat units are shown as MOTIF[n]; 'flank' marks non-repetitive regions.",
       },
       explanation: {
         generic:
@@ -1017,6 +1023,7 @@ export const translations = {
         },
         viewMode: {
           schematic: "Esquema de motivo",
+          sequence: "Destaque de sequência",
           text: "Descrição do motivo",
         },
       },
@@ -1031,6 +1038,11 @@ export const translations = {
         repeat: "Unidade repetitiva",
         interruption: "Interrupção / variante interna",
         other: "Outro / elemento esquemático",
+        flank: "Região flanqueadora",
+      },
+      summary: {
+        caption:
+          "Resumo da estrutura repetitiva: unidades repetitivas são mostradas como MOTIF[n]; 'flank' marca regiões não repetitivas.",
       },
       explanation: {
         generic:
@@ -1707,6 +1719,7 @@ export const translations = {
         },
         viewMode: {
           schematic: "Esquema de motivo",
+          sequence: "Resaltado de secuencia",
           text: "Descripción del motivo",
         },
       },
@@ -1721,6 +1734,11 @@ export const translations = {
         repeat: "Unidad repetitiva",
         interruption: "Interrupción / variante interna",
         other: "Otro / elemento esquemático",
+        flank: "Región flanqueadora",
+      },
+      summary: {
+        caption:
+          "Resumen de la estructura repetitiva: las unidades repetitivas se muestran como MOTIF[n]; 'flank' marca regiones no repetitivas.",
       },
       explanation: {
         generic:

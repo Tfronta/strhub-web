@@ -1,13 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Grid3x3, Settings } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -23,21 +18,58 @@ import { useLanguage } from "@/contexts/language-context";
 import { translations, type Language } from "@/lib/translations";
 import { STR_MOTIFS, type MarkerMotif } from "./utils/motifData";
 import { MotifVisualization } from "./components/MotifVisualization";
+import { markerRefs } from "@/lib/markerRefs-from-data";
+import {
+  getMotifAllelesForMarker,
+  getMotifAllele,
+  type MotifAlleleDef,
+} from "@/lib/strMotifData";
 
 export default function MotifExplorerPage() {
   const [selectedMarkerId, setSelectedMarkerId] = useState<string>(
     STR_MOTIFS[0]?.id || ""
   );
+  const [selectedKitId, setSelectedKitId] = useState<string | null>(null);
+  const [selectedAllele, setSelectedAllele] = useState<number>(13); // for now we focus on 13
   const [viewMode, setViewMode] = useState<"sequence" | "schematic" | "text">(
     "sequence"
   );
   const { language } = useLanguage();
   const languageContent = translations[language] as (typeof translations)["en"];
   const defaultPageContent = translations.en.motifExplorerPage;
-  const pageContent =
-    languageContent?.motifExplorerPage ?? defaultPageContent;
+  const pageContent = languageContent?.motifExplorerPage ?? defaultPageContent;
 
   const selectedMarker = STR_MOTIFS.find((m) => m.id === selectedMarkerId);
+
+  // Get marker info from markerRefs
+  const markerKey = selectedMarkerId.toUpperCase();
+  const markerInfo = markerRefs[markerKey];
+
+  // Derive available kits for the currently selected marker
+  const motifDefsForMarker = getMotifAllelesForMarker(selectedMarkerId);
+  const availableKits = Array.from(
+    new Set(motifDefsForMarker.map((m) => m.kitId))
+  ).sort();
+
+  // Ensure selectedKitId is always valid when the marker changes
+  useEffect(() => {
+    if (!availableKits.length) {
+      setSelectedKitId(null);
+      return;
+    }
+    if (!selectedKitId || !availableKits.includes(selectedKitId)) {
+      setSelectedKitId(availableKits[0]);
+    }
+  }, [selectedMarkerId, availableKits.join(","), selectedKitId]);
+
+  // Compute the current motifAllele
+  const motifAllele: MotifAlleleDef | undefined = useMemo(
+    () =>
+      selectedKitId
+        ? getMotifAllele(selectedMarkerId, selectedKitId, selectedAllele)
+        : undefined,
+    [selectedMarkerId, selectedKitId, selectedAllele]
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/40">
@@ -118,6 +150,29 @@ export default function MotifExplorerPage() {
                   </Select>
                 </div>
 
+                {availableKits.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-base font-semibold text-foreground">
+                      Kit / reference sequence
+                    </Label>
+                    <Select
+                      value={selectedKitId || ""}
+                      onValueChange={setSelectedKitId}
+                    >
+                      <SelectTrigger className="h-11 text-base">
+                        <SelectValue placeholder="Select a kit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableKits.map((kit) => (
+                          <SelectItem key={kit} value={kit} className="text-base">
+                            {kit}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label className="text-base font-semibold text-foreground">
                     Display Mode
@@ -166,6 +221,9 @@ export default function MotifExplorerPage() {
                     marker={selectedMarker}
                     viewMode={viewMode as "sequence" | "schematic" | "text"}
                     pageContent={pageContent}
+                    markerInfo={markerInfo}
+                    motifAllele={motifAllele}
+                    selectedKitId={selectedKitId ?? undefined}
                   />
                 ) : (
                   <div className="text-center py-12 text-base text-muted-foreground">
@@ -181,4 +239,3 @@ export default function MotifExplorerPage() {
     </div>
   );
 }
-

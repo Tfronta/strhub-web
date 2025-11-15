@@ -43,7 +43,7 @@ export function buildSequenceBlocks(
   return segments.map((seg) => {
     // For flanks, show a short placeholder; for repeats/interruptions, repeat the label
     if (seg.type === "flank") {
-      const flankLabel = seg.label.includes("L") ? "..." : "...";
+      const flankLabel = "flank";
       return {
         text: flankLabel,
         type: seg.type,

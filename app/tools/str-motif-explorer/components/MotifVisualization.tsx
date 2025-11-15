@@ -4,7 +4,6 @@ import {
   type MarkerMotif,
   type SequenceBlock,
   buildSequenceBlocks,
-  buildMotifSummary,
 } from "../utils/motifData";
 import {
   highlightExampleSequence,
@@ -58,7 +57,7 @@ export function MotifVisualization({
       case "repeat":
         return "bg-teal-500/20 text-teal-700 dark:text-teal-300 border-teal-500/30";
       case "interruption":
-        return "bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/30";
+        return "bg-[#fdba74]/20 text-[#27272a] dark:text-[#27272a] border-[#fdba74]/30";
       case "other":
         return "bg-gray-500/20 text-gray-700 dark:text-gray-300 border-gray-500/30";
       default:
@@ -90,33 +89,35 @@ export function MotifVisualization({
     }
 
     const blocks = buildSequenceBlocks(marker.segments);
-    const summary = buildMotifSummary(marker.segments);
 
     // Helper to split repeat blocks into individual capsules
     const renderSequenceBlock = (block: SequenceBlock, blockIndex: number) => {
       if (block.type === "repeat") {
         // Block index directly maps to segment index since buildSequenceBlocks creates blocks for all segments
         const segment = marker.segments![blockIndex];
-        const motifLabel = segment?.label.toUpperCase() || marker.canonicalMotif?.toUpperCase() || "";
+        const motifLabel =
+          segment?.label.toUpperCase() ||
+          marker.canonicalMotif?.toUpperCase() ||
+          "";
         const motifLength = motifLabel.length || 4; // Default to 4 if not found
-        
+
         // Split the repeat text into individual motif units
         const repeatText = block.text.toUpperCase();
         const capsules: string[] = [];
-        
+
         for (let i = 0; i < repeatText.length; i += motifLength) {
           const unit = repeatText.slice(i, i + motifLength);
           if (unit.length === motifLength) {
             capsules.push(unit);
           }
         }
-        
+
         return (
           <>
             {capsules.map((capsule, capIdx) => (
               <span
                 key={`${blockIndex}-${capIdx}`}
-                className="inline-flex items-center bg-emerald-50 border border-emerald-200 text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
+                className="inline-flex items-center bg-[#6ee7b7]/20 border border-[#6ee7b7]/50 text-teal-700 dark:bg-[#6ee7b7]/30 dark:border-[#6ee7b7]/70 dark:text-[#6ee7b7] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
               >
                 {capsule}
               </span>
@@ -126,16 +127,16 @@ export function MotifVisualization({
       } else if (block.type === "interruption") {
         return (
           <span
-            className="inline-flex items-center bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium underline"
+            className="inline-flex items-center bg-[#fdba74]/20 border border-[#fdba74]/50 text-[#27272a] dark:bg-[#fdba74]/30 dark:border-[#fdba74]/70 dark:text-[#27272a] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
             title="Interruption / internal variant (indels, SNVs, etc.)"
           >
             {block.text.toUpperCase()}
           </span>
         );
       } else {
-        // Flank - render as continuous text without capsules
+        // Flank - render with styled background
         return (
-          <span className="text-slate-600 dark:text-slate-400 font-mono">
+          <span className="inline-flex items-center bg-slate-50 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium">
             {block.text}
           </span>
         );
@@ -146,12 +147,11 @@ export function MotifVisualization({
       <div className="space-y-4">
         {/* Header */}
         <div>
-          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
-            {marker.name}
-          </p>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+          <p className="text-base text-slate-600 dark:text-slate-400 mb-1">
             {pageContent.labels.canonicalPattern}{" "}
-            <span className="font-mono">{marker.canonicalPattern || marker.motifPattern}</span>
+            <span className="font-mono">
+              {marker.canonicalPattern || marker.motifPattern}
+            </span>
           </p>
         </div>
 
@@ -168,22 +168,9 @@ export function MotifVisualization({
             </div>
           </div>
 
-          {/* Compact Summary */}
-          <div className="rounded-lg border bg-white dark:bg-slate-800 px-3 py-2 font-mono text-xs text-slate-700 dark:text-slate-300">
-            {summary}
-          </div>
-          {pageContent.summary?.caption && (
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              {pageContent.summary.caption}
-            </p>
-          )}
-
           {/* Example Allele Sequence */}
           {marker.exampleAllele && marker.canonicalMotif && (
-            <ExampleAlleleSequence
-              marker={marker}
-              pageContent={pageContent}
-            />
+            <ExampleAlleleSequence marker={marker} pageContent={pageContent} />
           )}
         </div>
 
@@ -194,13 +181,13 @@ export function MotifVisualization({
           </p>
           <div className="flex flex-wrap gap-4 text-sm">
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-emerald-500/30 border border-emerald-500/50"></span>
+              <span className="w-3 h-3 rounded-full bg-[#6ee7b7]/30 border border-[#6ee7b7]/50"></span>
               <span className="text-slate-600 dark:text-slate-400">
                 {pageContent.legend.repeat}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-amber-500/30 border border-amber-500/50"></span>
+              <span className="w-3 h-3 rounded-full bg-[#fdba74]/30 border border-[#fdba74]/50"></span>
               <span className="text-slate-600 dark:text-slate-400">
                 {pageContent.legend.interruption}
               </span>
@@ -222,12 +209,11 @@ export function MotifVisualization({
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
-            {marker.name}
-          </p>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+          <p className="text-base text-slate-600 dark:text-slate-400 mb-1">
             {pageContent.labels.canonicalPattern}{" "}
-            <span className="font-mono">{marker.canonicalPattern || marker.motifPattern}</span>
+            <span className="font-mono">
+              {marker.canonicalPattern || marker.motifPattern}
+            </span>
           </p>
         </div>
 
@@ -268,7 +254,7 @@ export function MotifVisualization({
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-amber-500/30 border border-amber-500/50"></span>
+              <span className="w-3 h-3 rounded-full bg-[#fdba74]/30 border border-[#fdba74]/50"></span>
               <span className="text-slate-600 dark:text-slate-400">
                 {pageContent.legend.interruption}
               </span>
@@ -350,7 +336,7 @@ function ExampleAlleleSequence({
       return (
         <span
           key={blockIndex}
-          className="inline-flex items-center bg-emerald-50 border border-emerald-200 text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
+          className="inline-flex items-center bg-[#6ee7b7]/20 border border-[#6ee7b7]/50 text-teal-700 dark:bg-[#6ee7b7]/30 dark:border-[#6ee7b7]/70 dark:text-[#6ee7b7] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
           title={tooltip}
         >
           {text}
@@ -360,18 +346,18 @@ function ExampleAlleleSequence({
       return (
         <span
           key={blockIndex}
-          className="inline-flex items-center bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium underline"
+          className="inline-flex items-center bg-[#fdba74]/20 border border-[#fdba74]/50 text-[#27272a] dark:bg-[#fdba74]/30 dark:border-[#fdba74]/70 dark:text-[#27272a] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
           title={tooltip}
         >
           {text}
         </span>
       );
     } else {
-      // Flank - render as continuous text without capsules
+      // Flank - render with styled background
       return (
         <span
           key={blockIndex}
-          className="text-slate-600 dark:text-slate-400 font-mono"
+          className="inline-flex items-center bg-slate-50 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
           title={tooltip}
         >
           {text}
@@ -383,7 +369,8 @@ function ExampleAlleleSequence({
   return (
     <div className="space-y-2">
       <div className="text-sm font-medium text-slate-800 dark:text-slate-200">
-        Example allele sequence (from STRbase): {marker.exampleAllele.alleleLabel}
+        Representative internal sequence structure of allele{" "}
+        {marker.exampleAllele.alleleLabel}
       </div>
       <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 px-4 py-4">
         <div className="inline-flex flex-wrap gap-x-1 items-center font-mono text-xs md:text-sm leading-relaxed text-slate-900 dark:text-slate-100 break-all">
@@ -398,4 +385,3 @@ function ExampleAlleleSequence({
     </div>
   );
 }
-

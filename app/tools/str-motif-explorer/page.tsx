@@ -5,7 +5,6 @@ import { Grid3x3, Settings } from "lucide-react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -156,15 +155,10 @@ export default function MotifExplorerPage() {
 
             {/* Visualization Panel */}
             <Card className="border-0 bg-card/70 backdrop-blur-sm shadow-lg">
-              <CardHeader className="space-y-1.5 pb-4">
+              <CardHeader className="space-y-1.5 pb-2">
                 <CardTitle className="text-2xl font-semibold tracking-tight">
-                  Motif Visualization
+                  Exploring the structure of CSF1PO
                 </CardTitle>
-                <CardDescription className="text-base text-muted-foreground">
-                  {selectedMarker
-                    ? `Exploring ${selectedMarker.name}`
-                    : "Select a marker to view its motif structure"}
-                </CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
                 {selectedMarker ? (

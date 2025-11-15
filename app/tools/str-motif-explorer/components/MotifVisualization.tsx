@@ -16,6 +16,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import type { MotifBlock, MotifBlockKind } from "../types";
+import { csf1poAllele10 } from "../data/csf1po";
 
 type MotifVisualizationProps = {
   marker: MarkerMotif;
@@ -74,6 +76,37 @@ export function MotifVisualization({
         return pageContent.legend.interruption;
       default:
         return pageContent.legend.other;
+    }
+  };
+
+  const getMotifTooltip = (block: MotifBlock): string => {
+    if (block.note) return block.note;
+
+    switch (block.kind) {
+      case "coreRepeat":
+        return "Core repeat unit that counts toward the allele designation.";
+      case "interruption":
+        return "Internal variant / interruption within the repeat region (does not add to the allele count).";
+      case "otherRepeat":
+        return "Repeat-like sequence outside the core block (not counted in the allele designation).";
+      case "flank":
+      default:
+        return "Flanking region around the STR locus.";
+    }
+  };
+
+  const getBlockClassName = (kind: MotifBlockKind): string => {
+    switch (kind) {
+      case "coreRepeat":
+        return "inline-flex items-center bg-[#6ee7b7]/20 border border-[#6ee7b7]/50 text-teal-700 dark:bg-[#6ee7b7]/30 dark:border-[#6ee7b7]/70 dark:text-[#6ee7b7] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
+      case "interruption":
+        return "inline-flex items-center bg-[#fdba74]/20 border border-[#fdba74]/50 text-[#27272a] dark:bg-[#fdba74]/30 dark:border-[#fdba74]/70 dark:text-[#27272a] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
+      case "flank":
+        return "inline-flex items-center bg-slate-50 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
+      case "otherRepeat":
+        return "inline-flex items-center bg-gray-500/20 text-gray-700 dark:text-gray-300 border-gray-500/30 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
+      default:
+        return "inline-flex items-center bg-slate-50 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
     }
   };
 
@@ -143,6 +176,9 @@ export function MotifVisualization({
       }
     };
 
+    // Use CSF1PO data if available, otherwise fall back to old structure
+    const alleleData = marker.id === "CSF1PO" ? csf1poAllele10 : null;
+
     return (
       <div className="space-y-4">
         {/* Header */}
@@ -155,22 +191,69 @@ export function MotifVisualization({
           </p>
         </div>
 
+        {/* Canonical Pattern Blocks */}
+        {alleleData && (
+          <div className="mt-4">
+            <TooltipProvider>
+              <div className="flex flex-wrap gap-2">
+                {alleleData.canonicalPatternBlocks.map((block, index) => {
+                  const tokenType =
+                    block.kind === "coreRepeat"
+                      ? "repeat"
+                      : block.kind === "interruption"
+                      ? "interruption"
+                      : "other";
+                  return (
+                    <Tooltip key={index}>
+                      <TooltipTrigger asChild>
+                        <span
+                          className={`px-3 py-1.5 rounded-lg text-sm font-medium border cursor-help transition-colors ${getTokenColor(
+                            tokenType
+                          )}`}
+                        >
+                          {block.label}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p className="text-xs">{getMotifTooltip(block)}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </div>
+            </TooltipProvider>
+          </div>
+        )}
+
         {/* Conceptual sequence, summary, and example sequence */}
         <div className="mt-4 space-y-3">
           {/* Colored Full Sequence */}
-          <div className="rounded-lg border bg-slate-50 dark:bg-slate-900/50 p-4 font-mono text-xs md:text-sm leading-relaxed break-all">
-            <div className="inline-flex flex-wrap gap-x-1 items-center">
-              {blocks.map((b, i) => (
-                <span key={i} className="inline-flex items-center">
-                  {renderSequenceBlock(b, i)}
-                </span>
-              ))}
+          {!alleleData && (
+            <div className="rounded-lg border bg-slate-50 dark:bg-slate-900/50 p-4 font-mono text-xs md:text-sm leading-relaxed break-all">
+              <div className="inline-flex flex-wrap gap-x-1 items-center">
+                {blocks.map((b, i) => (
+                  <span key={i} className="inline-flex items-center">
+                    {renderSequenceBlock(b, i)}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Example Allele Sequence */}
-          {marker.exampleAllele && marker.canonicalMotif && (
-            <ExampleAlleleSequence marker={marker} pageContent={pageContent} />
+          {/* Representative Allele Sequence */}
+          {alleleData ? (
+            <RepresentativeAlleleSequence
+              alleleData={alleleData}
+              pageContent={pageContent}
+            />
+          ) : (
+            marker.exampleAllele &&
+            marker.canonicalMotif && (
+              <ExampleAlleleSequence
+                marker={marker}
+                pageContent={pageContent}
+              />
+            )
           )}
         </div>
 
@@ -295,6 +378,80 @@ export function MotifVisualization({
 
   // Default: sequence mode (should not reach here, but keeping as fallback)
   return null;
+}
+
+function RepresentativeAlleleSequence({
+  alleleData,
+  pageContent,
+}: {
+  alleleData: {
+    marker: string;
+    allele: string;
+    internalSequenceBlocks: MotifBlock[];
+  };
+  pageContent: MotifVisualizationProps["pageContent"];
+}) {
+  const getMotifTooltip = (block: MotifBlock): string => {
+    if (block.note) return block.note;
+
+    switch (block.kind) {
+      case "coreRepeat":
+        return "Core repeat unit that counts toward the allele designation.";
+      case "interruption":
+        return "Internal variant / interruption within the repeat region (does not add to the allele count).";
+      case "otherRepeat":
+        return "Repeat-like sequence outside the core block (not counted in the allele designation).";
+      case "flank":
+      default:
+        return "Flanking region around the STR locus.";
+    }
+  };
+
+  const getBlockClassName = (kind: MotifBlockKind): string => {
+    switch (kind) {
+      case "coreRepeat":
+        return "inline-flex items-center bg-[#6ee7b7]/20 border border-[#6ee7b7]/50 text-teal-700 dark:bg-[#6ee7b7]/30 dark:border-[#6ee7b7]/70 dark:text-[#6ee7b7] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
+      case "interruption":
+        return "inline-flex items-center bg-[#fdba74]/20 border border-[#fdba74]/50 text-[#27272a] dark:bg-[#fdba74]/30 dark:border-[#fdba74]/70 dark:text-[#27272a] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
+      case "flank":
+        return "inline-flex items-center bg-slate-50 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
+      case "otherRepeat":
+        return "inline-flex items-center bg-gray-500/20 text-gray-700 dark:text-gray-300 border-gray-500/30 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
+      default:
+        return "inline-flex items-center bg-slate-50 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="text-sm font-medium text-slate-800 dark:text-slate-200">
+        Representative internal sequence structure of allele {alleleData.allele}
+      </div>
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 px-4 py-4">
+        <TooltipProvider>
+          <div className="inline-flex flex-wrap gap-x-1 items-center font-mono text-xs md:text-sm leading-relaxed text-slate-900 dark:text-slate-100 break-all">
+            {alleleData.internalSequenceBlocks.map((block, i) => (
+              <Tooltip key={i}>
+                <TooltipTrigger asChild>
+                  <span className={getBlockClassName(block.kind)}>
+                    {block.label.toUpperCase()}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p className="text-xs">{getMotifTooltip(block)}</p>
+                </TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
+        </TooltipProvider>
+      </div>
+      {pageContent.sequenceExample?.note && (
+        <div className="mt-2 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+          {pageContent.sequenceExample.note}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function ExampleAlleleSequence({

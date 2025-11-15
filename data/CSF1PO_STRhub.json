@@ -1,0 +1,221 @@
+[
+  {
+    "markerId": "CSF1PO",
+    "kitId": "ForenSeq",
+    "allele": "13",
+    "canonicalMotif": "ATCT",
+    "fullSequence": "CTTCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCTATCTATCTT",
+    "flank5": "CTTCCT",
+    "flank3": "AATCTATCTATCTT",
+    "repeatCore": "ATCT×13",
+    "source": "STRider",
+    "segments": [
+      {
+        "kind": "flank",
+        "label": "CTTCCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "flank",
+        "label": "AATCTATCTATCTT"
+      }
+    ]
+  },
+  {
+    "markerId": "CSF1PO",
+    "kitId": "GlobalFiler",
+    "allele": "13",
+    "canonicalMotif": "ATCT",
+    "fullSequence": "CTGTGTCAGACCCTGTTCTAAGTACTTCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATAT",
+    "flank5": "CTGTGTCAGACCCTGTTCTAAGTACTTCCT",
+    "flank3": "AATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATAT",
+    "repeatCore": "ATCT×13",
+    "source": "STRider",
+    "segments": [
+      {
+        "kind": "flank",
+        "label": "CTGTGTCAGACCCTGTTCTAAGTACTTCCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "flank",
+        "label": "AATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATAT"
+      }
+    ]
+  },
+  {
+    "markerId": "CSF1PO",
+    "kitId": "PowerSeq",
+    "allele": "13",
+    "canonicalMotif": "ATCT",
+    "fullSequence": "CTAAGTACTTCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATATCTTCATTTTACAGGTAGGAAAACTGAGACACAGGGTGGTTAGCAACCTGCTAGTCCTTGGCAGACTCAG",
+    "flank5": "CTAAGTACTTCCT",
+    "flank3": "AATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATATCTTCATTTTACAGGTAGGAAAACTGAGACACAGGGTGGTTAGCAACCTGCTAGTCCTTGGCAGACTCAG",
+    "repeatCore": "ATCT×13",
+    "source": "STRider",
+    "segments": [
+      {
+        "kind": "flank",
+        "label": "CTAAGTACTTCCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "core",
+        "label": "ATCT"
+      },
+      {
+        "kind": "flank",
+        "label": "AATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATATCTTCATTTTACAGGTAGGAAAACTGAGACACAGGGTGGTTAGCAACCTGCTAGTCCTTGGCAGACTCAG"
+      }
+    ]
+  }
+]

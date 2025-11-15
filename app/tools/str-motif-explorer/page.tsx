@@ -20,7 +20,7 @@ import { STR_MOTIFS, type MarkerMotif } from "./utils/motifData";
 import { MotifVisualization } from "./components/MotifVisualization";
 import { markerRefs } from "@/lib/markerRefs-from-data";
 import {
-  getMotifAllelesForMarker,
+  motifAlleles,
   getMotifAllele,
   type MotifAlleleDef,
 } from "@/lib/strMotifData";
@@ -30,7 +30,6 @@ export default function MotifExplorerPage() {
     STR_MOTIFS[0]?.id || ""
   );
   const [selectedKitId, setSelectedKitId] = useState<string | null>(null);
-  const [selectedAllele, setSelectedAllele] = useState<number>(13); // for now we focus on 13
   const [viewMode, setViewMode] = useState<"sequence" | "schematic" | "text">(
     "sequence"
   );
@@ -45,30 +44,36 @@ export default function MotifExplorerPage() {
   const markerKey = selectedMarkerId.toUpperCase();
   const markerInfo = markerRefs[markerKey];
 
-  // Derive available kits for the currently selected marker
-  const motifDefsForMarker = getMotifAllelesForMarker(selectedMarkerId);
-  const availableKits = Array.from(
-    new Set(motifDefsForMarker.map((m) => m.kitId))
+  // For now we only support CSF1PO
+  const markerId = "CSF1PO";
+
+  // Derive available kits for the marker
+  const kitsForMarker = Array.from(
+    new Set(
+      motifAlleles
+        .filter((m) => m.markerId === markerId)
+        .map((m) => m.kitId.trim())
+    )
   ).sort();
 
   // Ensure selectedKitId is always valid when the marker changes
   useEffect(() => {
-    if (!availableKits.length) {
+    if (!kitsForMarker.length) {
       setSelectedKitId(null);
       return;
     }
-    if (!selectedKitId || !availableKits.includes(selectedKitId)) {
-      setSelectedKitId(availableKits[0]);
+    if (!selectedKitId || !kitsForMarker.includes(selectedKitId.trim())) {
+      setSelectedKitId(kitsForMarker[0]);
     }
-  }, [selectedMarkerId, availableKits.join(","), selectedKitId]);
+  }, [markerId, kitsForMarker.join(","), selectedKitId]);
 
   // Compute the current motifAllele
   const motifAllele: MotifAlleleDef | undefined = useMemo(
     () =>
       selectedKitId
-        ? getMotifAllele(selectedMarkerId, selectedKitId, selectedAllele)
+        ? getMotifAllele(markerId, selectedKitId, "13")
         : undefined,
-    [selectedMarkerId, selectedKitId, selectedAllele]
+    [markerId, selectedKitId]
   );
 
   return (
@@ -150,7 +155,7 @@ export default function MotifExplorerPage() {
                   </Select>
                 </div>
 
-                {availableKits.length > 0 && (
+                {kitsForMarker.length > 0 && (
                   <div className="space-y-2">
                     <Label className="text-base font-semibold text-foreground">
                       Kit / reference sequence
@@ -163,7 +168,7 @@ export default function MotifExplorerPage() {
                         <SelectValue placeholder="Select a kit" />
                       </SelectTrigger>
                       <SelectContent>
-                        {availableKits.map((kit) => (
+                        {kitsForMarker.map((kit) => (
                           <SelectItem key={kit} value={kit} className="text-base">
                             {kit}
                           </SelectItem>

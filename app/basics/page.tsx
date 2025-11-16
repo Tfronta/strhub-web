@@ -57,14 +57,14 @@ export default async function BasicsPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto text-center">
+      <section className="pt-16 pb-8 px-4">
+        <div className="container mx-auto text-left">
           <ClientBasicsHero />
         </div>
       </section>
 
       {/* Articles Grid */}
-      <section className="py-16 px-4">
+      <section className="pt-8 pb-16 px-4">
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-8">
             {posts.map((post: BackToBasicsPost) => (

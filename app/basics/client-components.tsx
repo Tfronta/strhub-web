@@ -12,7 +12,7 @@ export function ClientBasicsHero() {
   return (
     <>
       <h2 className="text-4xl font-bold mb-6">{t("basics.subtitle")}</h2>
-      <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
+      <p className="text-xl text-muted-foreground text-pretty">
         {t("basics.description")}
       </p>
     </>

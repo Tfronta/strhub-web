@@ -479,6 +479,9 @@ export const translations = {
       subtitle: "Analysis & Processing Tools",
       description:
         "Comprehensive suite of bioinformatics tools and pipelines for STR analysis, from raw data processing to population genetics.",
+      hero: {
+        ctaCollaborate: "Contribute a tool or tutorial",
+      },
       categories: {
         analysis: "Analysis Tools",
         processing: "Data Processing",
@@ -488,6 +491,52 @@ export const translations = {
       learnMore: "Learn More",
       documentation: "Documentation",
       github: "View on GitHub",
+      commands: {
+        title: "Essential Bioinformatics Commands",
+        card1: {
+          title: "Essential Read Processing Commands",
+          subtitle: "For cleaning, filtering, and preparing FASTQ reads before genotyping.",
+          features: {
+            1: "Trim adapters and low-quality bases",
+            2: "Filter out too-short or poor-quality reads",
+            3: "Prepare clean FASTQ files for alignment",
+          },
+          commands: {
+            trimmomatic: "trimmomatic PE sample_R1.fastq sample_R2.fastq \\\n  output_R1_paired.fastq output_R1_unpaired.fastq \\\n  output_R2_paired.fastq output_R2_unpaired.fastq \\\n  ILLUMINACLIP:adapters.fa:2:30:10 SLIDINGWINDOW:4:20 MINLEN:50",
+            fastp: "fastp -i sample_R1.fastq -I sample_R2.fastq \\\n      -o clean_R1.fastq -O clean_R2.fastq \\\n      --detect_adapter_for_pe --html report.html",
+          },
+        },
+        card2: {
+          title: "Alignment & BAM Processing Essentials",
+          subtitle: "For aligning reads and generating ready-to-analyze BAM files.",
+          features: {
+            1: "High-quality alignment",
+            2: "Sorting and indexing",
+            3: "BAM cleanup operations",
+          },
+          commands: {
+            bwa: "bwa-mem2 mem reference.fasta sample_R1.fastq sample_R2.fastq > sample.sam",
+            samtools: "samtools view -bS sample.sam | samtools sort -o sample.sorted.bam\nsamtools index sample.sorted.bam",
+            rmdup: "samtools rmdup sample.sorted.bam sample.rmdup.bam",
+          },
+        },
+        card3: {
+          title: "Inspecting STR Regions & Coverage",
+          subtitle: "For exploring coverage, flanking regions, and STR quality signals.",
+          features: {
+            1: "Visualize STR flanking regions",
+            2: "Inspect soft-clips and misalignments",
+            3: "Evaluate STR coverage depth",
+          },
+          commands: {
+            depth: "samtools depth -r chr12:100000-100300 sample.bam > depth.txt",
+            view: "samtools view sample.bam chr12:100000-100300",
+            tview: "samtools tview sample.bam reference.fasta",
+          },
+        },
+        compatibilityNote:
+          "These commands work natively on Linux and macOS. On Windows, we recommend using WSL2 or a Linux container to ensure full compatibility with bioinformatics tools.",
+      },
       strnaming: {
         title: "STRNaming",
         description: "Unbiased method to automatically generate short, informative, and human-readable descriptions of STR alleles.",
@@ -1256,6 +1305,9 @@ export const translations = {
       subtitle: "Ferramentas de Análise e Processamento",
       description:
         "Suite abrangente de ferramentas de bioinformática e pipelines para análise de STRs, desde processamento de dados brutos até genética populacional.",
+      hero: {
+        ctaCollaborate: "Enviar ferramenta ou tutorial",
+      },
       categories: {
         analysis: "Ferramentas de Análise",
         processing: "Processamento de Dados",
@@ -1265,6 +1317,52 @@ export const translations = {
       learnMore: "Saber Mais",
       documentation: "Documentação",
       github: "Ver no GitHub",
+      commands: {
+        title: "Comandos Essenciais de Bioinformática",
+        card1: {
+          title: "Comandos Essenciais para Processar Leituras",
+          subtitle: "Para limpar, filtrar e preparar leituras FASTQ antes do genotipagem.",
+          features: {
+            1: "Remover adaptadores e bases de baixa qualidade",
+            2: "Filtrar leituras muito curtas ou de baixa qualidade",
+            3: "Preparar FASTQs limpos para o alinhamento",
+          },
+          commands: {
+            trimmomatic: "trimmomatic PE sample_R1.fastq sample_R2.fastq \\\n  output_R1_paired.fastq output_R1_unpaired.fastq \\\n  output_R2_paired.fastq output_R2_unpaired.fastq \\\n  ILLUMINACLIP:adapters.fa:2:30:10 SLIDINGWINDOW:4:20 MINLEN:50",
+            fastp: "fastp -i sample_R1.fastq -I sample_R2.fastq \\\n      -o clean_R1.fastq -O clean_R2.fastq \\\n      --detect_adapter_for_pe --html report.html",
+          },
+        },
+        card2: {
+          title: "Processamento de Alinhamento e BAM",
+          subtitle: "Para alinhar leituras e gerar BAM prontos para análise.",
+          features: {
+            1: "Alinhamento de alta qualidade",
+            2: "Ordenação e indexação",
+            3: "Operações de limpeza BAM",
+          },
+          commands: {
+            bwa: "bwa-mem2 mem reference.fasta sample_R1.fastq sample_R2.fastq > sample.sam",
+            samtools: "samtools view -bS sample.sam | samtools sort -o sample.sorted.bam\nsamtools index sample.sorted.bam",
+            rmdup: "samtools rmdup sample.sorted.bam sample.rmdup.bam",
+          },
+        },
+        card3: {
+          title: "Inspeção de Regiões STR e Cobertura",
+          subtitle: "Para explorar cobertura, regiões flanqueadoras e sinais de qualidade em STR.",
+          features: {
+            1: "Visualizar regiões flanqueadoras",
+            2: "Inspecionar soft-clips e desalinhamentos",
+            3: "Avaliar profundidade de cobertura STR",
+          },
+          commands: {
+            depth: "samtools depth -r chr12:100000-100300 sample.bam > depth.txt",
+            view: "samtools view sample.bam chr12:100000-100300",
+            tview: "samtools tview sample.bam reference.fasta",
+          },
+        },
+        compatibilityNote:
+          "Esses comandos funcionam nativamente em Linux e macOS. No Windows, recomendamos usar WSL2 ou um contêiner Linux para garantir compatibilidade total com ferramentas de bioinformática.",
+      },
       strnaming: {
         title: "STRNaming",
         description: "Método imparcial para gerar automaticamente descrições curtas, informativas e legíveis de alelos STR.",
@@ -2124,6 +2222,9 @@ export const translations = {
       subtitle: "Herramientas de Análisis y Procesamiento",
       description:
         "Suite integral de herramientas de bioinformática y pipelines para análisis STR, desde procesamiento de datos en bruto hasta genética poblacional.",
+      hero: {
+        ctaCollaborate: "Contribuir con una herramienta o tutorial",
+      },
       categories: {
         analysis: "Herramientas de Análisis",
         processing: "Procesamiento de Datos",
@@ -2133,6 +2234,52 @@ export const translations = {
       learnMore: "Saber Más",
       documentation: "Documentación",
       github: "Ver en GitHub",
+      commands: {
+        title: "Comandos Esenciales de Bioinformática",
+        card1: {
+          title: "Comandos Esenciales para Procesar Lecturas",
+          subtitle: "Para limpiar, filtrar y preparar lecturas FASTQ antes del genotipado.",
+          features: {
+            1: "Recortar adaptadores y bases de baja calidad",
+            2: "Filtrar lecturas demasiado cortas o con mala calidad",
+            3: "Preparar FASTQ limpios para el alineamiento",
+          },
+          commands: {
+            trimmomatic: "trimmomatic PE sample_R1.fastq sample_R2.fastq \\\n  output_R1_paired.fastq output_R1_unpaired.fastq \\\n  output_R2_paired.fastq output_R2_unpaired.fastq \\\n  ILLUMINACLIP:adapters.fa:2:30:10 SLIDINGWINDOW:4:20 MINLEN:50",
+            fastp: "fastp -i sample_R1.fastq -I sample_R2.fastq \\\n      -o clean_R1.fastq -O clean_R2.fastq \\\n      --detect_adapter_for_pe --html report.html",
+          },
+        },
+        card2: {
+          title: "Alineamiento y Procesamiento de BAM",
+          subtitle: "Para alinear lecturas y generar BAM listos para análisis.",
+          features: {
+            1: "Alineamiento de alta calidad",
+            2: "Ordenamiento e indexación",
+            3: "Operaciones de limpieza BAM",
+          },
+          commands: {
+            bwa: "bwa-mem2 mem reference.fasta sample_R1.fastq sample_R2.fastq > sample.sam",
+            samtools: "samtools view -bS sample.sam | samtools sort -o sample.sorted.bam\nsamtools index sample.sorted.bam",
+            rmdup: "samtools rmdup sample.sorted.bam sample.rmdup.bam",
+          },
+        },
+        card3: {
+          title: "Inspección de Regiones STR y Cobertura",
+          subtitle: "Para explorar la cobertura, regiones flanqueadoras y señales de calidad en STR.",
+          features: {
+            1: "Visualizar regiones flanqueadoras",
+            2: "Inspeccionar soft-clips y desalineamientos",
+            3: "Evaluar profundidad de cobertura STR",
+          },
+          commands: {
+            depth: "samtools depth -r chr12:100000-100300 sample.bam > depth.txt",
+            view: "samtools view sample.bam chr12:100000-100300",
+            tview: "samtools tview sample.bam reference.fasta",
+          },
+        },
+        compatibilityNote:
+          "Estos comandos funcionan de forma nativa en Linux y macOS. En Windows, recomendamos usar WSL2 o un contenedor Linux para garantizar compatibilidad completa con herramientas bioinformáticas.",
+      },
       strnaming: {
         title: "STRNaming",
         description: "Método imparcial para generar automáticamente descripciones cortas, informativas y legibles de alelos STR.",

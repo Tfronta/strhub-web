@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Wrench,
-  Code,
-  Play,
-  Download,
-  ExternalLink,
-  Github,
-} from "lucide-react";
+import { Wrench, Code, Play, ExternalLink, Github } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -17,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CodeBlock } from "@/components/ui/code-block";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
 
@@ -104,23 +98,6 @@ export default function ToolsPage() {
     },
   ];
 
-  const pipelines = [
-    {
-      name: "STR-Nextflow",
-      description: "Nextflow pipeline for comprehensive STR analysis",
-      type: "Nextflow",
-      features: ["Containerized", "Scalable", "Reproducible"],
-      colab: true,
-    },
-    {
-      name: "Forensic STR Workflow",
-      description: "End-to-end pipeline for forensic STR analysis",
-      type: "Snakemake",
-      features: ["Quality control", "Allele calling", "Report generation"],
-      colab: true,
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -149,16 +126,27 @@ export default function ToolsPage() {
           <h2 className="text-4xl font-bold mb-6">
             Powerful Tools for STR Analysis
           </h2>
-          <p className="text-xl text-muted-foreground text-pretty">
+          <p className="text-xl text-muted-foreground text-pretty mb-4">
             Comprehensive collection of tools, pipelines, and tutorials for
             Short Tandem Repeat analysis. From genotyping to visualization, find
             everything you need for your research.
           </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 text-xs font-normal rounded-sm px-3"
+            asChild
+          >
+            <Link href="/about#contact">
+              <ExternalLink className="h-3 w-3 mr-1" />
+              {t("tools.hero.ctaCollaborate")}
+            </Link>
+          </Button>
         </div>
       </section>
 
       {/* Tools Section */}
-      <section className="pt-8 pb-16 px-4">
+      <section className="pt-4 pb-16 px-4">
         <div className="container mx-auto">
           <h3 className="text-3xl font-bold mb-12">Analysis Tools</h3>
           <div className="grid lg:grid-cols-2 gap-6">
@@ -249,54 +237,142 @@ export default function ToolsPage() {
         </div>
       </section>
 
-      {/* Pipelines Section */}
+      {/* Essential Bioinformatics Commands Section */}
       <section className="py-16 px-4 bg-muted/30">
-        <div className="container mx-auto">
-          <h3 className="text-3xl font-bold mb-12">Workflow Pipelines</h3>
-          <div className="grid lg:grid-cols-2 gap-6">
-            {pipelines.map((pipeline, index) => (
-              <Card
-                key={index}
-                className="border-0 bg-gradient-to-br from-card to-card/50"
-              >
-                <CardHeader>
-                  <CardTitle className="text-xl mb-2">
-                    {pipeline.name}
-                  </CardTitle>
-                  <CardDescription className="text-base mb-4">
-                    {pipeline.description}
-                  </CardDescription>
-                  <Badge variant="secondary" className="w-fit">
-                    {pipeline.type}
-                  </Badge>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-semibold mb-2">Features:</h4>
-                      <ul className="text-sm text-muted-foreground space-y-1">
-                        {pipeline.features.map((feature, idx) => (
-                          <li key={idx}>• {feature}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button size="sm">
-                        <Download className="h-4 w-4 mr-1" />
-                        Download
-                      </Button>
-                      {pipeline.colab && (
-                        <Button size="sm" variant="outline">
-                          <ExternalLink className="h-4 w-4 mr-1" />
-                          Colab Example
-                        </Button>
-                      )}
-                    </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h3 className="text-3xl font-bold mb-12 text-left">
+            {t("tools.commands.title")}
+          </h3>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Card 1 - Essential Read Processing Commands */}
+            <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left">
+              <h4 className="text-2xl font-semibold text-gray-900 mb-2">
+                {t("tools.commands.card1.title")}
+              </h4>
+              <p className="text-base text-muted-foreground mb-4">
+                {t("tools.commands.card1.subtitle")}
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <h5 className="font-semibold mb-2 text-sm">Key Features:</h5>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• {t("tools.commands.card1.features.1")}</li>
+                    <li>• {t("tools.commands.card1.features.2")}</li>
+                    <li>• {t("tools.commands.card1.features.3")}</li>
+                  </ul>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs font-semibold mb-1 text-foreground">
+                      Trimmomatic
+                    </p>
+                    <CodeBlock
+                      code={t("tools.commands.card1.commands.trimmomatic")}
+                    />
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                  <div>
+                    <p className="text-xs font-semibold mb-1 text-foreground">
+                      fastp
+                    </p>
+                    <CodeBlock
+                      code={t("tools.commands.card1.commands.fastp")}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2 - Alignment & BAM Processing Essentials */}
+            <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left">
+              <h4 className="text-2xl font-semibold text-gray-900 mb-2">
+                {t("tools.commands.card2.title")}
+              </h4>
+              <p className="text-base text-muted-foreground mb-4">
+                {t("tools.commands.card2.subtitle")}
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <h5 className="font-semibold mb-2 text-sm">Key Features:</h5>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• {t("tools.commands.card2.features.1")}</li>
+                    <li>• {t("tools.commands.card2.features.2")}</li>
+                    <li>• {t("tools.commands.card2.features.3")}</li>
+                  </ul>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs font-semibold mb-1 text-foreground">
+                      BWA-MEM2 alignment
+                    </p>
+                    <CodeBlock code={t("tools.commands.card2.commands.bwa")} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold mb-1 text-foreground">
+                      Convert / sort / index
+                    </p>
+                    <CodeBlock
+                      code={t("tools.commands.card2.commands.samtools")}
+                    />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold mb-1 text-foreground">
+                      Remove duplicates
+                    </p>
+                    <CodeBlock
+                      code={t("tools.commands.card2.commands.rmdup")}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3 - Inspecting STR Regions & Coverage */}
+            <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left">
+              <h4 className="text-2xl font-semibold text-gray-900 mb-2">
+                {t("tools.commands.card3.title")}
+              </h4>
+              <p className="text-base text-muted-foreground mb-4">
+                {t("tools.commands.card3.subtitle")}
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <h5 className="font-semibold mb-2 text-sm">Key Features:</h5>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• {t("tools.commands.card3.features.1")}</li>
+                    <li>• {t("tools.commands.card3.features.2")}</li>
+                    <li>• {t("tools.commands.card3.features.3")}</li>
+                  </ul>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs font-semibold mb-1 text-foreground">
+                      Depth coverage
+                    </p>
+                    <CodeBlock
+                      code={t("tools.commands.card3.commands.depth")}
+                    />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold mb-1 text-foreground">
+                      Region inspection
+                    </p>
+                    <CodeBlock code={t("tools.commands.card3.commands.view")} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold mb-1 text-foreground">
+                      Quick visualization
+                    </p>
+                    <CodeBlock
+                      code={t("tools.commands.card3.commands.tview")}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+          <p className="text-sm text-gray-500 max-w-4xl mt-12 text-left">
+            {t("tools.commands.compatibilityNote")}
+          </p>
         </div>
       </section>
 

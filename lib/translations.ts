@@ -494,7 +494,7 @@ export const translations = {
         tags: {
           annotation: "Annotation",
           forensic: "Forensic",
-          webtool: "Web tool",
+          webtool: "Web",
         },
         features: {
           1: "Standardized allele naming",
@@ -511,7 +511,7 @@ export const translations = {
         tags: {
           population: "Population data",
           qc: "Quality control",
-          webtool: "Web tool",
+          webtool: "Web",
         },
         features: {
           1: "High-quality curated allele frequencies",
@@ -521,6 +521,24 @@ export const translations = {
         },
         buttons: {
           website: "Website",
+        },
+      },
+      strspy: {
+        title: "STRspy",
+        description: "Python toolkit for STR analysis, allele profiling, and visualization.",
+        tags: {
+          category: "Analysis",
+          language: "Python",
+        },
+        features: {
+          1: "STR profiles genotyping",
+          2: "Statistical analysis of allele patterns",
+          3: "Easy integration with bioinformatics pipelines",
+          4: "Open-source toolkit",
+        },
+        buttons: {
+          github: "GitHub",
+          paper: "Paper",
         },
       },
     },
@@ -1253,7 +1271,7 @@ export const translations = {
         tags: {
           annotation: "Anotação",
           forensic: "Forense",
-          webtool: "Ferramenta web",
+          webtool: "Web",
         },
         features: {
           1: "Nomenclatura padronizada de alelos",
@@ -1270,7 +1288,7 @@ export const translations = {
         tags: {
           population: "Dados populacionais",
           qc: "Controle de qualidade",
-          webtool: "Ferramenta web",
+          webtool: "Web",
         },
         features: {
           1: "Frequências alélicas de alta qualidade e curadas",
@@ -1280,6 +1298,24 @@ export const translations = {
         },
         buttons: {
           website: "Website",
+        },
+      },
+      strspy: {
+        title: "STRspy",
+        description: "Toolkit em Python para análise de STR, perfilagem de alelos e visualização.",
+        tags: {
+          category: "Análise",
+          language: "Python",
+        },
+        features: {
+          1: "Genotipagem de perfis STR",
+          2: "Análise estatística de padrões de alelos",
+          3: "Integração simples com pipelines de bioinformática",
+          4: "Toolkit open source",
+        },
+        buttons: {
+          github: "GitHub",
+          paper: "Artigo",
         },
       },
     },
@@ -2103,7 +2139,7 @@ export const translations = {
         tags: {
           annotation: "Anotación",
           forensic: "Forense",
-          webtool: "Herramienta web",
+          webtool: "Web",
         },
         features: {
           1: "Nomenclatura estandarizada de alelos",
@@ -2120,7 +2156,7 @@ export const translations = {
         tags: {
           population: "Datos poblacionales",
           qc: "Control de calidad",
-          webtool: "Herramienta web",
+          webtool: "Web",
         },
         features: {
           1: "Frecuencias alélicas cuidadosamente curadas",
@@ -2130,6 +2166,24 @@ export const translations = {
         },
         buttons: {
           website: "Sitio web",
+        },
+      },
+      strspy: {
+        title: "STRspy",
+        description: "Conjunto de herramientas en Python para análisis de STR, perfilado de alelos y visualización.",
+        tags: {
+          category: "Análisis",
+          language: "Python",
+        },
+        features: {
+          1: "Genotipado de perfiles STR",
+          2: "Análisis estadístico de patrones de alelos",
+          3: "Integración sencilla con pipelines de bioinformática",
+          4: "Toolkit de código abierto",
+        },
+        buttons: {
+          github: "GitHub",
+          paper: "Artículo",
         },
       },
     },

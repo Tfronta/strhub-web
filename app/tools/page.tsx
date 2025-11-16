@@ -1,14 +1,27 @@
-"use client"
+"use client";
 
-import { Wrench, Code, Play, Download, ExternalLink, Github } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { useLanguage } from "@/contexts/language-context"
+import {
+  Wrench,
+  Code,
+  Play,
+  Download,
+  ExternalLink,
+  Github,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function ToolsPage() {
-  const { t } = useLanguage()
+  const { t } = useLanguage();
 
   const tools = [
     {
@@ -48,32 +61,48 @@ export default function ToolsPage() {
     },
     {
       name: "HipSTR",
-      description: "Tool for genotyping short tandem repeats from Illumina sequencing data",
+      description:
+        "Tool for genotyping short tandem repeats from Illumina sequencing data",
       category: "Genotyping",
       language: "C++",
-      features: ["High accuracy", "Handles complex STRs", "Population-scale analysis"],
+      features: [
+        "High accuracy",
+        "Handles complex STRs",
+        "Population-scale analysis",
+      ],
       github: "https://github.com/HipSTR-Tool/HipSTR",
       tutorial: true,
     },
     {
-      name: "STRspy",
-      description: "Python package for STR analysis and visualization",
-      category: "Analysis",
-      language: "Python",
-      features: ["Interactive plots", "Statistical analysis", "Easy integration"],
-      github: "https://github.com/example/strspy",
-      tutorial: true,
+      name: t("tools.strspy.title"),
+      description: t("tools.strspy.description"),
+      category: t("tools.strspy.tags.category"),
+      language: t("tools.strspy.tags.language"),
+      features: [
+        t("tools.strspy.features.1"),
+        t("tools.strspy.features.2"),
+        t("tools.strspy.features.3"),
+        t("tools.strspy.features.4"),
+      ],
+      github: "https://github.com/unique379r/strspy/tree/main",
+      paper: "https://pubmed.ncbi.nlm.nih.gov/34837788/",
+      paperLabel: t("tools.strspy.buttons.paper"),
     },
     {
       name: "GangSTR",
-      description: "Tool for genome-wide profiling of tandem repeats from short reads",
+      description:
+        "Tool for genome-wide profiling of tandem repeats from short reads",
       category: "Profiling",
       language: "C++",
-      features: ["Genome-wide analysis", "Short read support", "High throughput"],
+      features: [
+        "Genome-wide analysis",
+        "Short read support",
+        "High throughput",
+      ],
       github: "https://github.com/gymreklab/GangSTR",
       tutorial: true,
     },
-  ]
+  ];
 
   const pipelines = [
     {
@@ -90,7 +119,7 @@ export default function ToolsPage() {
       features: ["Quality control", "Allele calling", "Report generation"],
       colab: true,
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -105,7 +134,10 @@ export default function ToolsPage() {
               Tools & Pipelines
             </h1>
           </Link>
-          <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link
+            href="/"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             ← Back to STRhub
           </Link>
         </div>
@@ -114,10 +146,13 @@ export default function ToolsPage() {
       {/* Hero Section */}
       <section className="pt-16 pb-8 px-4">
         <div className="container mx-auto text-left">
-          <h2 className="text-4xl font-bold mb-6">Powerful Tools for STR Analysis</h2>
+          <h2 className="text-4xl font-bold mb-6">
+            Powerful Tools for STR Analysis
+          </h2>
           <p className="text-xl text-muted-foreground text-pretty">
-            Comprehensive collection of tools, pipelines, and tutorials for Short Tandem Repeat analysis. From
-            genotyping to visualization, find everything you need for your research.
+            Comprehensive collection of tools, pipelines, and tutorials for
+            Short Tandem Repeat analysis. From genotyping to visualization, find
+            everything you need for your research.
           </p>
         </div>
       </section>
@@ -128,12 +163,19 @@ export default function ToolsPage() {
           <h3 className="text-3xl font-bold mb-12">Analysis Tools</h3>
           <div className="grid lg:grid-cols-2 gap-6">
             {tools.map((tool, index) => (
-              <Card key={index} className="border-0 bg-gradient-to-br from-card to-card/50">
+              <Card
+                key={index}
+                className="border-0 bg-gradient-to-br from-card to-card/50"
+              >
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>
-                      <CardTitle className="text-xl mb-2">{tool.name}</CardTitle>
-                      <CardDescription className="text-base mb-4">{tool.description}</CardDescription>
+                      <CardTitle className="text-xl mb-2">
+                        {tool.name}
+                      </CardTitle>
+                      <CardDescription className="text-base mb-4">
+                        {tool.description}
+                      </CardDescription>
                       <div className="flex items-center gap-2 mb-4 flex-wrap">
                         {tool.category && tool.language ? (
                           <>
@@ -164,7 +206,11 @@ export default function ToolsPage() {
                     <div className="flex gap-2">
                       {tool.github && (
                         <Button size="sm" variant="outline" asChild>
-                          <a href={tool.github} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={tool.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <Github className="h-4 w-4 mr-1" />
                             GitHub
                           </a>
@@ -172,16 +218,26 @@ export default function ToolsPage() {
                       )}
                       {tool.website && (
                         <Button size="sm" variant="outline" asChild>
-                          <a href={tool.website} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={tool.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <ExternalLink className="h-4 w-4 mr-1" />
                             {tool.websiteLabel || "Website"}
                           </a>
                         </Button>
                       )}
-                      {tool.tutorial && (
-                        <Button size="sm">
-                          <Play className="h-4 w-4 mr-1" />
-                          Tutorial
+                      {tool.paper && (
+                        <Button size="sm" variant="outline" asChild>
+                          <a
+                            href={tool.paper}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <ExternalLink className="h-4 w-4 mr-1" />
+                            {tool.paperLabel || "Paper"}
+                          </a>
                         </Button>
                       )}
                     </div>
@@ -199,10 +255,17 @@ export default function ToolsPage() {
           <h3 className="text-3xl font-bold mb-12">Workflow Pipelines</h3>
           <div className="grid lg:grid-cols-2 gap-6">
             {pipelines.map((pipeline, index) => (
-              <Card key={index} className="border-0 bg-gradient-to-br from-card to-card/50">
+              <Card
+                key={index}
+                className="border-0 bg-gradient-to-br from-card to-card/50"
+              >
                 <CardHeader>
-                  <CardTitle className="text-xl mb-2">{pipeline.name}</CardTitle>
-                  <CardDescription className="text-base mb-4">{pipeline.description}</CardDescription>
+                  <CardTitle className="text-xl mb-2">
+                    {pipeline.name}
+                  </CardTitle>
+                  <CardDescription className="text-base mb-4">
+                    {pipeline.description}
+                  </CardDescription>
                   <Badge variant="secondary" className="w-fit">
                     {pipeline.type}
                   </Badge>
@@ -248,7 +311,9 @@ export default function ToolsPage() {
                   <Code className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>HipSTR Basics</CardTitle>
-                <CardDescription>Learn the fundamentals of STR genotyping with HipSTR</CardDescription>
+                <CardDescription>
+                  Learn the fundamentals of STR genotyping with HipSTR
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button className="w-full">
@@ -264,7 +329,9 @@ export default function ToolsPage() {
                   <Code className="h-6 w-6 text-secondary-foreground" />
                 </div>
                 <CardTitle>Nextflow for STRs</CardTitle>
-                <CardDescription>Build scalable STR analysis pipelines with Nextflow</CardDescription>
+                <CardDescription>
+                  Build scalable STR analysis pipelines with Nextflow
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button className="w-full">
@@ -280,7 +347,9 @@ export default function ToolsPage() {
                   <Code className="h-6 w-6 text-accent-foreground" />
                 </div>
                 <CardTitle>Python STR Analysis</CardTitle>
-                <CardDescription>Analyze STR data using Python and popular libraries</CardDescription>
+                <CardDescription>
+                  Analyze STR data using Python and popular libraries
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button className="w-full">
@@ -293,5 +362,5 @@ export default function ToolsPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

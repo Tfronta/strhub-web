@@ -9,6 +9,7 @@ export type SearchResult = SearchIndexItem & {
 
 export type SearchResultsByType = {
   markers: SearchResult[];
+  markerSections: SearchResult[];
   tools: SearchResult[];
   blog: SearchResult[];
   page: SearchResult[];
@@ -74,19 +75,21 @@ function calculateScore(
  */
 export function performSearch(
   query: string,
-  t: (key: string) => string
+  t: (key: string) => string,
+  language: "en" | "es" | "pt" = "en"
 ): SearchResultsByType {
   const normalizedQuery = normalizeQuery(query);
   if (!normalizedQuery) {
     return {
       markers: [],
+      markerSections: [],
       tools: [],
       blog: [],
       page: [],
     };
   }
 
-  const index = buildSearchIndex(t);
+  const index = buildSearchIndex(t, language);
   const results: SearchResult[] = [];
 
   // Filter and score results
@@ -116,6 +119,7 @@ export function performSearch(
   // Group by type
   const grouped: SearchResultsByType = {
     markers: [],
+    markerSections: [],
     tools: [],
     blog: [],
     page: [],
@@ -124,6 +128,8 @@ export function performSearch(
   results.forEach((result) => {
     if (result.type === "marker") {
       grouped.markers.push(result);
+    } else if (result.type === "marker-section") {
+      grouped.markerSections.push(result);
     } else if (result.type === "tool") {
       grouped.tools.push(result);
     } else if (result.type === "blog") {
@@ -142,6 +148,7 @@ export function performSearch(
 export function getTotalResults(results: SearchResultsByType): number {
   return (
     results.markers.length +
+    results.markerSections.length +
     results.tools.length +
     results.blog.length +
     results.page.length

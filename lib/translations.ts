@@ -28,6 +28,7 @@ export const translations = {
       enterSearchTerm: "Enter a search term to find content across STRhub",
       types: {
         markers: "Markers",
+        markerSections: "Marker Sections",
         tools: "Tools",
         blog: "Articles",
         page: "Pages",
@@ -175,6 +176,24 @@ export const translations = {
         tools: "Tools",
         igv: "IGV Viewer",
         fasta: "FASTA Generator",
+      },
+      sections: {
+        overview: {
+          description: "Basic information, genomic coordinates, and reference data",
+          tags: ["overview", "basic info", "coordinates", "reference"],
+        },
+        frequencies: {
+          description: "Allele frequency distribution and population panels",
+          tags: ["frequencies", "allele frequencies", "population data", "statistics"],
+        },
+        variants: {
+          description: "Variant alleles, isoalleles, and sequence patterns",
+          tags: ["variants", "isoalleles", "sequences", "allele patterns"],
+        },
+        tools: {
+          description: "Compatible tools and pipelines for analysis",
+          tags: ["tools", "pipelines", "analysis", "compatibility"],
+        },
       },
       basicInfo: "Basic Information",
       genomicCoords: "Genomic Coordinates",
@@ -995,6 +1014,7 @@ export const translations = {
       enterSearchTerm: "Digite um termo de busca para encontrar conteúdo no STRhub",
       types: {
         markers: "Marcadores",
+        markerSections: "Seções de Marcadores",
         tools: "Ferramentas",
         blog: "Artigos",
         page: "Páginas",
@@ -1143,6 +1163,24 @@ export const translations = {
         tools: "Ferramentas",
         igv: "Visualizador IGV",
         fasta: "Gerador FASTA",
+      },
+      sections: {
+        overview: {
+          description: "Informações básicas, coordenadas genômicas e dados de referência",
+          tags: ["visão geral", "informações básicas", "coordenadas", "referência"],
+        },
+        frequencies: {
+          description: "Distribuição de frequências alélicas e painéis populacionais",
+          tags: ["frequências", "frequências alélicas", "dados populacionais", "estatísticas"],
+        },
+        variants: {
+          description: "Alelos variantes, isoalelos e padrões de sequência",
+          tags: ["variantes", "isoalelos", "sequências", "padrões alélicos"],
+        },
+        tools: {
+          description: "Ferramentas e pipelines compatíveis para análise",
+          tags: ["ferramentas", "pipelines", "análise", "compatibilidade"],
+        },
       },
       basicInfo: "Informações Básicas",
       genomicCoords: "Coordenadas Genômicas",
@@ -1965,6 +2003,7 @@ export const translations = {
       enterSearchTerm: "Ingresa un término de búsqueda para encontrar contenido en STRhub",
       types: {
         markers: "Marcadores",
+        markerSections: "Secciones de Marcadores",
         tools: "Herramientas",
         blog: "Artículos",
         page: "Páginas",
@@ -2110,10 +2149,28 @@ export const translations = {
       tabs: {
         overview: "Resumen",
         isoalleles: "Isoalelos",
-        frequencies: "Frequências",
+        frequencies: "Frecuencias",
         tools: "Herramientas",
         igv: "Visor IGV",
         fasta: "Generador FASTA",
+      },
+      sections: {
+        overview: {
+          description: "Información básica, coordenadas genómicas y datos de referencia",
+          tags: ["resumen", "información básica", "coordenadas", "referencia"],
+        },
+        frequencies: {
+          description: "Distribución de frecuencias alélicas y paneles poblacionales",
+          tags: ["frecuencias", "frecuencias alélicas", "datos poblacionales", "estadísticas"],
+        },
+        variants: {
+          description: "Alelos variantes, isoalelos y patrones de secuencia",
+          tags: ["variantes", "isoalelos", "secuencias", "patrones alélicos"],
+        },
+        tools: {
+          description: "Herramientas y pipelines compatibles para análisis",
+          tags: ["herramientas", "pipelines", "análisis", "compatibilidad"],
+        },
       },
       basicInfo: "Información Básica",
       genomicCoords: "Coordenadas Genômicas",

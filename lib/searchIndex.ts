@@ -4,9 +4,11 @@
 import { markers } from "@/app/catalog/page";
 import { backToBasicsArticles } from "@/lib/content/backToBasics";
 import { getToolsData } from "@/lib/toolsData";
+import { translations, type Language } from "@/lib/translations";
+import { getNestedTranslation } from "@/lib/translations";
 
 export type SearchIndexItem = {
-  type: "marker" | "tool" | "blog" | "page";
+  type: "marker" | "marker-section" | "tool" | "blog" | "page";
   id: string;
   title: string;
   description: string;
@@ -14,13 +16,17 @@ export type SearchIndexItem = {
   href: string;
   // For markers: exact name match priority
   exactMatch?: boolean;
+  // For marker sections: parent marker ID
+  markerId?: string;
 };
 
-export function buildSearchIndex(t: (key: string) => string): SearchIndexItem[] {
+export function buildSearchIndex(t: (key: string) => string, language: Language = "en"): SearchIndexItem[] {
   const index: SearchIndexItem[] = [];
+  const langTranslations = translations[language];
 
-  // 1. Add markers
+  // 1. Add markers and their sections
   markers.forEach((marker) => {
+    // Add main marker entry
     index.push({
       type: "marker",
       id: marker.id,
@@ -36,6 +42,55 @@ export function buildSearchIndex(t: (key: string) => string): SearchIndexItem[] 
       ],
       href: `/marker/${marker.id}`,
       exactMatch: false, // Will be set during search
+    });
+
+    // Add marker section entries
+    const sections = [
+      {
+        tab: "overview",
+        title: t("marker.tabs.overview"),
+        description: t("marker.sections.overview.description"),
+        tagsKey: "marker.sections.overview.tags",
+      },
+      {
+        tab: "frequencies",
+        title: t("marker.tabs.frequencies"),
+        description: t("marker.sections.frequencies.description"),
+        tagsKey: "marker.sections.frequencies.tags",
+      },
+      {
+        tab: "variants",
+        title: t("marker.variantAlleles"),
+        description: t("marker.sections.variants.description"),
+        tagsKey: "marker.sections.variants.tags",
+      },
+      {
+        tab: "tools",
+        title: t("marker.tabs.tools"),
+        description: t("marker.sections.tools.description"),
+        tagsKey: "marker.sections.tools.tags",
+      },
+    ];
+
+    sections.forEach((section) => {
+      // Get tags from translations - they're stored as arrays
+      const tagsArray = getNestedTranslation(langTranslations, section.tagsKey);
+      const tags = Array.isArray(tagsArray) ? tagsArray : [];
+
+      index.push({
+        type: "marker-section",
+        id: `${marker.id}-${section.tab}`,
+        title: `${marker.name} – ${section.title}`,
+        description: section.description,
+        tags: [
+          ...tags,
+          marker.name,
+          marker.fullName,
+          section.title.toLowerCase(),
+        ],
+        href: `/marker/${marker.id}?tab=${section.tab}`,
+        markerId: marker.id,
+      });
     });
   });
 

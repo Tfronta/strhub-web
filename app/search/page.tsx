@@ -26,25 +26,27 @@ function SearchResults() {
   const [searchTerm, setSearchTerm] = useState(query);
   const [results, setResults] = useState<SearchResultsByType>({
     markers: [],
+    markerSections: [],
     tools: [],
     blog: [],
     page: [],
   });
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     if (query) {
-      const searchResults = performSearch(query, t);
+      const searchResults = performSearch(query, t, language);
       setResults(searchResults);
     } else {
       setResults({
         markers: [],
+        markerSections: [],
         tools: [],
         blog: [],
         page: [],
       });
     }
-  }, [query, t]);
+  }, [query, t, language]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,12 +78,14 @@ function SearchResults() {
                 </CardDescription>
               </div>
             </div>
-            <Badge
-              variant="secondary"
-              className="bg-primary/10 text-primary border-primary/20 shrink-0"
-            >
-              {t(`search.types.${item.type === "blog" ? "blog" : item.type}`)}
-            </Badge>
+            {item.type !== "marker-section" && (
+              <Badge
+                variant="secondary"
+                className="bg-primary/10 text-primary border-primary/20 shrink-0"
+              >
+                {t(`search.types.${item.type === "blog" ? "blog" : item.type}`)}
+              </Badge>
+            )}
           </div>
           {item.tags && item.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
@@ -171,6 +175,21 @@ function SearchResults() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {results.markers.map((marker) =>
                     renderResultCard(marker, <Database className="h-5 w-5 text-primary" />)
+                  )}
+                </div>
+              </section>
+            )}
+
+            {/* Marker Sections */}
+            {results.markerSections.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <Database className="h-5 w-5" />
+                  {t("search.types.markerSections")} ({results.markerSections.length})
+                </h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {results.markerSections.map((section) =>
+                    renderResultCard(section, <Database className="h-5 w-5 text-primary" />)
                   )}
                 </div>
               </section>

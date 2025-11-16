@@ -480,8 +480,55 @@ export const translations = {
       description:
         "Comprehensive suite of bioinformatics tools and pipelines for STR analysis, from raw data processing to population genetics.",
       hero: {
+        title: "Powerful Tools for STR Analysis",
+        description: "Comprehensive collection of tools, pipelines, and tutorials for Short Tandem Repeat analysis. From genotyping to visualization, find everything you need for your research.",
         ctaCollaborate: "Contribute a tool or tutorial",
         disclaimer: "All software tools listed in this section are open-access. STRhub maintains no commercial relationship with the developers of these tools and receives no financial compensation for their inclusion.",
+      },
+      header: {
+        backToStrhub: "← Back to STRhub",
+      },
+      common: {
+        keyFeatures: "Key Features:",
+        github: "GitHub",
+        website: "Website",
+        originalPublication: "Original publication",
+      },
+      codeLabels: {
+        trimmomatic: "Trimmomatic",
+        fastp: "fastp",
+        bwaAlignment: "BWA-MEM2 alignment",
+        convertSortIndex: "Convert / sort / index",
+        removeDuplicates: "Remove duplicates",
+        depthCoverage: "Depth coverage",
+        regionInspection: "Region inspection",
+        quickVisualization: "Quick visualization",
+      },
+      hipstr: {
+        title: "HipSTR",
+        description: "Tool for genotyping short tandem repeats from Illumina sequencing data",
+        category: "Genotyping",
+        language: "C++",
+        features: {
+          1: "High accuracy",
+          2: "Handles complex STRs",
+          3: "Population-scale analysis",
+        },
+      },
+      gangstr: {
+        title: "GangSTR",
+        description: "Tool for genome-wide profiling of tandem repeats from short reads",
+        category: "Profiling",
+        language: "C++",
+        features: {
+          1: "Genome-wide analysis",
+          2: "Short read support",
+          3: "High throughput",
+        },
+      },
+      tutorials: {
+        title: "Interactive Tutorials",
+        comingSoon: "Coming soon",
       },
       categories: {
         analysis: "Analysis Tools",
@@ -616,9 +663,6 @@ export const translations = {
           github: "GitHub",
           paper: "Original publication",
         },
-      },
-      tutorials: {
-        comingSoon: "Coming soon",
       },
     },
     // About
@@ -1336,8 +1380,55 @@ export const translations = {
       description:
         "Suite abrangente de ferramentas de bioinformática e pipelines para análise de STRs, desde processamento de dados brutos até genética populacional.",
       hero: {
+        title: "Ferramentas Poderosas para Análise STR",
+        description: "Coleção abrangente de ferramentas, pipelines e tutoriais para análise de Repetições em Tandem Curtas. Desde genotipagem até visualização, encontre tudo que você precisa para sua pesquisa.",
         ctaCollaborate: "Enviar ferramenta ou tutorial",
         disclaimer: "Todas as ferramentas de software listadas nesta seção são de acesso aberto. O STRhub não mantém relacionamento comercial com os desenvolvedores dessas ferramentas e não recebe compensação financeira por sua inclusão.",
+      },
+      header: {
+        backToStrhub: "← Voltar ao STRhub",
+      },
+      common: {
+        keyFeatures: "Características Principais:",
+        github: "GitHub",
+        website: "Site",
+        originalPublication: "Publicação original",
+      },
+      codeLabels: {
+        trimmomatic: "Trimmomatic",
+        fastp: "fastp",
+        bwaAlignment: "Alinhamento BWA-MEM2",
+        convertSortIndex: "Converter / ordenar / indexar",
+        removeDuplicates: "Remover duplicatas",
+        depthCoverage: "Cobertura de profundidade",
+        regionInspection: "Inspeção de região",
+        quickVisualization: "Visualização rápida",
+      },
+      hipstr: {
+        title: "HipSTR",
+        description: "Ferramenta para genotipagem de repetições em tandem curtas a partir de dados de sequenciamento Illumina",
+        category: "Genotipagem",
+        language: "C++",
+        features: {
+          1: "Alta precisão",
+          2: "Lida com STRs complexos",
+          3: "Análise em escala populacional",
+        },
+      },
+      gangstr: {
+        title: "GangSTR",
+        description: "Ferramenta para perfilamento genômico de repetições em tandem a partir de leituras curtas",
+        category: "Perfilamento",
+        language: "C++",
+        features: {
+          1: "Análise genômica completa",
+          2: "Suporte para leituras curtas",
+          3: "Alto rendimento",
+        },
+      },
+      tutorials: {
+        title: "Tutoriais Interativos",
+        comingSoon: "Em breve",
       },
       categories: {
         analysis: "Ferramentas de Análise",
@@ -1472,9 +1563,6 @@ export const translations = {
           github: "GitHub",
           paper: "Publicação original",
         },
-      },
-      tutorials: {
-        comingSoon: "Em breve",
       },
     },
     // STRBase Integration
@@ -2283,8 +2371,55 @@ export const translations = {
       description:
         "Suite integral de herramientas de bioinformática y pipelines para análisis STR, desde procesamiento de datos en bruto hasta genética poblacional.",
       hero: {
+        title: "Herramientas Poderosas para Análisis STR",
+        description: "Colección integral de herramientas, pipelines y tutoriales para análisis de Repeticiones en Tándem Cortas. Desde genotipado hasta visualización, encuentra todo lo que necesitas para tu investigación.",
         ctaCollaborate: "Contribuir con una herramienta o tutorial",
         disclaimer: "Todas las herramientas de software listadas en esta sección son de acceso abierto. STRhub no mantiene relación comercial con los desarrolladores de estas herramientas y no recibe compensación financiera por su inclusión.",
+      },
+      header: {
+        backToStrhub: "← Volver a STRhub",
+      },
+      common: {
+        keyFeatures: "Características Clave:",
+        github: "GitHub",
+        website: "Sitio web",
+        originalPublication: "Publicación original",
+      },
+      codeLabels: {
+        trimmomatic: "Trimmomatic",
+        fastp: "fastp",
+        bwaAlignment: "Alineamiento BWA-MEM2",
+        convertSortIndex: "Convertir / ordenar / indexar",
+        removeDuplicates: "Eliminar duplicados",
+        depthCoverage: "Cobertura de profundidad",
+        regionInspection: "Inspección de región",
+        quickVisualization: "Visualización rápida",
+      },
+      hipstr: {
+        title: "HipSTR",
+        description: "Herramienta para genotipado de repeticiones en tándem cortas a partir de datos de secuenciación Illumina",
+        category: "Genotipado",
+        language: "C++",
+        features: {
+          1: "Alta precisión",
+          2: "Maneja STRs complejos",
+          3: "Análisis a escala poblacional",
+        },
+      },
+      gangstr: {
+        title: "GangSTR",
+        description: "Herramienta para perfilado genómico de repeticiones en tándem a partir de lecturas cortas",
+        category: "Perfilado",
+        language: "C++",
+        features: {
+          1: "Análisis genómico completo",
+          2: "Soporte para lecturas cortas",
+          3: "Alto rendimiento",
+        },
+      },
+      tutorials: {
+        title: "Tutoriales Interactivos",
+        comingSoon: "Próximamente",
       },
       categories: {
         analysis: "Herramientas de Análisis",
@@ -2419,9 +2554,6 @@ export const translations = {
           github: "GitHub",
           paper: "Publicación original",
         },
-      },
-      tutorials: {
-        comingSoon: "Próximamente",
       },
     },
     // About

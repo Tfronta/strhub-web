@@ -59,15 +59,14 @@ export default function ToolsPage() {
       isWebTool: true,
     },
     {
-      name: "HipSTR",
-      description:
-        "Tool for genotyping short tandem repeats from Illumina sequencing data",
-      category: "Genotyping",
-      language: "C++",
+      name: t("tools.hipstr.title"),
+      description: t("tools.hipstr.description"),
+      category: t("tools.hipstr.category"),
+      language: t("tools.hipstr.language"),
       features: [
-        "High accuracy",
-        "Handles complex STRs",
-        "Population-scale analysis",
+        t("tools.hipstr.features.1"),
+        t("tools.hipstr.features.2"),
+        t("tools.hipstr.features.3"),
       ],
       github: "https://github.com/HipSTR-Tool/HipSTR",
       paper: "https://www.nature.com/articles/nmeth.4267",
@@ -90,15 +89,14 @@ export default function ToolsPage() {
       paperLabel: t("tools.strspy.buttons.paper"),
     },
     {
-      name: "GangSTR",
-      description:
-        "Tool for genome-wide profiling of tandem repeats from short reads",
-      category: "Profiling",
-      language: "C++",
+      name: t("tools.gangstr.title"),
+      description: t("tools.gangstr.description"),
+      category: t("tools.gangstr.category"),
+      language: t("tools.gangstr.language"),
       features: [
-        "Genome-wide analysis",
-        "Short read support",
-        "High throughput",
+        t("tools.gangstr.features.1"),
+        t("tools.gangstr.features.2"),
+        t("tools.gangstr.features.3"),
       ],
       github: "https://github.com/gymreklab/GangSTR",
       paper: "https://pubmed.ncbi.nlm.nih.gov/31194863/",
@@ -136,14 +134,14 @@ export default function ToolsPage() {
               <Wrench className="h-5 w-5 text-primary-foreground" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Tools & Pipelines
+              {t("tools.title")}
             </h1>
           </Link>
           <Link
             href="/"
             className="text-sm font-medium hover:text-primary transition-colors"
           >
-            ← Back to STRhub
+            {t("tools.header.backToStrhub")}
           </Link>
         </div>
       </header>
@@ -151,13 +149,9 @@ export default function ToolsPage() {
       {/* Hero Section */}
       <section className="pt-16 pb-8 px-4">
         <div className="container mx-auto text-left">
-          <h2 className="text-4xl font-bold mb-6">
-            Powerful Tools for STR Analysis
-          </h2>
+          <h2 className="text-4xl font-bold mb-6">{t("tools.hero.title")}</h2>
           <p className="text-xl text-muted-foreground text-pretty mb-4">
-            Comprehensive collection of tools, pipelines, and tutorials for
-            Short Tandem Repeat analysis. From genotyping to visualization, find
-            everything you need for your research.
+            {t("tools.hero.description")}
           </p>
           <p className="text-sm text-muted-foreground text-pretty mb-4">
             {t("tools.hero.disclaimer")}
@@ -179,7 +173,9 @@ export default function ToolsPage() {
       {/* Tools Section */}
       <section className="pt-4 pb-16 px-4">
         <div className="container mx-auto">
-          <h3 className="text-3xl font-bold mb-12">Analysis Tools</h3>
+          <h3 className="text-3xl font-bold mb-12">
+            {t("tools.categories.analysis")}
+          </h3>
           <div className="grid lg:grid-cols-2 gap-6">
             {tools.map((tool, index) => (
               <Card
@@ -215,7 +211,9 @@ export default function ToolsPage() {
                 <CardContent>
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold mb-2">Key Features:</h4>
+                      <h4 className="font-semibold mb-2">
+                        {t("tools.common.keyFeatures")}
+                      </h4>
                       <ul className="text-sm text-muted-foreground space-y-1">
                         {tool.features.map((feature, idx) => (
                           <li key={idx}>• {feature}</li>
@@ -231,7 +229,7 @@ export default function ToolsPage() {
                             rel="noopener noreferrer"
                           >
                             <Github className="h-4 w-4 mr-1" />
-                            GitHub
+                            {t("tools.common.github")}
                           </a>
                         </Button>
                       )}
@@ -243,7 +241,7 @@ export default function ToolsPage() {
                             rel="noopener noreferrer"
                           >
                             <ExternalLink className="h-4 w-4 mr-1" />
-                            {tool.websiteLabel || "Website"}
+                            {tool.websiteLabel || t("tools.common.website")}
                           </a>
                         </Button>
                       )}
@@ -255,7 +253,8 @@ export default function ToolsPage() {
                             rel="noopener noreferrer"
                           >
                             <FileText className="h-4 w-4 mr-1" />
-                            {tool.paperLabel || "Original publication"}
+                            {tool.paperLabel ||
+                              t("tools.common.originalPublication")}
                           </a>
                         </Button>
                       )}
@@ -285,7 +284,9 @@ export default function ToolsPage() {
               </p>
               <div className="space-y-4">
                 <div>
-                  <h5 className="font-semibold mb-2 text-sm">Key Features:</h5>
+                  <h5 className="font-semibold mb-2 text-sm">
+                    {t("tools.common.keyFeatures")}
+                  </h5>
                   <ul className="text-sm text-muted-foreground space-y-1">
                     <li>• {t("tools.commands.card1.features.1")}</li>
                     <li>• {t("tools.commands.card1.features.2")}</li>
@@ -295,13 +296,13 @@ export default function ToolsPage() {
                 <div className="space-y-3">
                   <div>
                     <CodeBlock
-                      label="Trimmomatic"
+                      label={t("tools.codeLabels.trimmomatic")}
                       code={t("tools.commands.card1.commands.trimmomatic")}
                     />
                   </div>
                   <div>
                     <CodeBlock
-                      label="fastp"
+                      label={t("tools.codeLabels.fastp")}
                       code={t("tools.commands.card1.commands.fastp")}
                     />
                   </div>
@@ -319,7 +320,9 @@ export default function ToolsPage() {
               </p>
               <div className="space-y-4">
                 <div>
-                  <h5 className="font-semibold mb-2 text-sm">Key Features:</h5>
+                  <h5 className="font-semibold mb-2 text-sm">
+                    {t("tools.common.keyFeatures")}
+                  </h5>
                   <ul className="text-sm text-muted-foreground space-y-1">
                     <li>• {t("tools.commands.card2.features.1")}</li>
                     <li>• {t("tools.commands.card2.features.2")}</li>
@@ -329,19 +332,19 @@ export default function ToolsPage() {
                 <div className="space-y-3">
                   <div>
                     <CodeBlock
-                      label="BWA-MEM2 alignment"
+                      label={t("tools.codeLabels.bwaAlignment")}
                       code={t("tools.commands.card2.commands.bwa")}
                     />
                   </div>
                   <div>
                     <CodeBlock
-                      label="Convert / sort / index"
+                      label={t("tools.codeLabels.convertSortIndex")}
                       code={t("tools.commands.card2.commands.samtools")}
                     />
                   </div>
                   <div>
                     <CodeBlock
-                      label="Remove duplicates"
+                      label={t("tools.codeLabels.removeDuplicates")}
                       code={t("tools.commands.card2.commands.rmdup")}
                     />
                   </div>
@@ -359,7 +362,9 @@ export default function ToolsPage() {
               </p>
               <div className="space-y-4">
                 <div>
-                  <h5 className="font-semibold mb-2 text-sm">Key Features:</h5>
+                  <h5 className="font-semibold mb-2 text-sm">
+                    {t("tools.common.keyFeatures")}
+                  </h5>
                   <ul className="text-sm text-muted-foreground space-y-1">
                     <li>• {t("tools.commands.card3.features.1")}</li>
                     <li>• {t("tools.commands.card3.features.2")}</li>
@@ -369,19 +374,19 @@ export default function ToolsPage() {
                 <div className="space-y-3">
                   <div>
                     <CodeBlock
-                      label="Depth coverage"
+                      label={t("tools.codeLabels.depthCoverage")}
                       code={t("tools.commands.card3.commands.depth")}
                     />
                   </div>
                   <div>
                     <CodeBlock
-                      label="Region inspection"
+                      label={t("tools.codeLabels.regionInspection")}
                       code={t("tools.commands.card3.commands.view")}
                     />
                   </div>
                   <div>
                     <CodeBlock
-                      label="Quick visualization"
+                      label={t("tools.codeLabels.quickVisualization")}
                       code={t("tools.commands.card3.commands.tview")}
                     />
                   </div>
@@ -436,7 +441,9 @@ export default function ToolsPage() {
       {/* Tutorials Section */}
       <section className="pt-8 pb-16 px-4">
         <div className="container mx-auto">
-          <h3 className="text-3xl font-bold mb-12">Interactive Tutorials</h3>
+          <h3 className="text-3xl font-bold mb-12">
+            {t("tools.tutorials.title")}
+          </h3>
           <Alert>
             <Info className="h-4 w-4" />
             <AlertDescription>

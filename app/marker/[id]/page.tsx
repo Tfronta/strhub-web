@@ -50,7 +50,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   const { t } = useLanguage();
   const [selectedPopulation, setSelectedPopulation] = useState<string>("AFR");
   const [xstrFrequencies, setXstrFrequencies] = useState<any>(null);
-  const [selectedTechnology, setSelectedTechnology] = useState<string>("NGS");
+  const [selectedTechnology, setSelectedTechnology] = useState<string>("CE");
   const [selectedDataset, setSelectedDataset] = useState<string>("");
   const searchParams = useSearchParams();
 
@@ -129,18 +129,18 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
     // Map marker technology to tool technology
     let compatibleTechs: string[] = [];
-    if (markerTech === "NGS") {
+    if (markerTech === "CE") {
       compatibleTechs = ["Illumina"];
-    } else if (markerTech === "CE") {
-      compatibleTechs = ["CE"];
+    } else if (markerTech === "NGS") {
+      compatibleTechs = ["NGS"];
     }
 
     // Determine compatible input formats
     const compatibleInputs: string[] = [];
-    if (markerTech === "NGS") {
+    if (markerTech === "CE") {
       compatibleInputs.push("FASTQ", "BAM", "CRAM");
-    } else if (markerTech === "CE") {
-      compatibleInputs.push("CE_RFU");
+    } else if (markerTech === "NGS") {
+      compatibleInputs.push("FASTQ", "BAM", "CRAM");
     }
 
     // Filter tools
@@ -464,7 +464,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
               <CardContent className="px-4">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between gap-2 flex-wrap border-b border-border pb-3">
-                    {selectedTechnology !== "CE" && (
+                    {selectedTechnology !== "NGS" && (
                       <div className="flex gap-2">
                         {["AFR", "NAM", "EAS", "SAS", "EUR", "MES", "OCE"].map(
                           (pop) => (
@@ -485,7 +485,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         )}
                       </div>
                     )}
-                    {selectedTechnology === "CE" && (
+                    {selectedTechnology === "NGS" && (
                       <div className="flex items-center gap-2">
                         <Label className="text-xs text-muted-foreground whitespace-nowrap">
                           Dataset:
@@ -505,7 +505,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           }
                         >
                           <SelectTrigger className="h-7 w-[200px] text-xs">
-                            <SelectValue placeholder="No CE datasets available yet" />
+                            <SelectValue placeholder="No NGS datasets available yet" />
                           </SelectTrigger>
                           {marker?.ceStudiesByPop?.[
                             selectedPopulation as keyof typeof marker.ceStudiesByPop
@@ -545,7 +545,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           Technology:
                         </span>
                         <div className="flex gap-2">
-                          {["NGS", "CE"].map((tech) => (
+                          {["CE", "NGS"].map((tech) => (
                             <Button
                               key={tech}
                               variant={
@@ -662,8 +662,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         className="text-primary hover:underline"
                       >
                         pop.STR
-                      </a>{" "}
-                      - Illumina ForenSeq kit
+                      </a>
                     </p>
 
                     <div className="mt-4">

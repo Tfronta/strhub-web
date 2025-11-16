@@ -7,7 +7,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
 
   csf1po: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "6", frequency: 0.002, count: 2 },
       { allele: "7", frequency: 0.018, count: 18 },
@@ -83,7 +83,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d10s1248: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "8", frequency: 0.01, count: 10 },
       { allele: "9", frequency: 0.005, count: 5 },
@@ -168,7 +168,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d12s391: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "15", frequency: 0.064, count: 64 },
       { allele: "16", frequency: 0.059, count: 59 },
@@ -338,7 +338,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d13s317: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "7", frequency: 0.001, count: 1 },
       { allele: "8", frequency: 0.134, count: 134 },
@@ -415,7 +415,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d16s539: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "8", frequency: 0.046, count: 46 },
       { allele: "9", frequency: 0.137, count: 137 },
@@ -489,7 +489,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d17s1301: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "10", frequency: 0.005, count: 5 },
       { allele: "11", frequency: 0.105, count: 105 },
@@ -561,7 +561,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d18s51: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "10.2", frequency: 0.003, count: 3 },
       { allele: "11", frequency: 0.007, count: 7 },
@@ -732,7 +732,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d19s433: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "9", frequency: 0.001, count: 1 },
       { allele: "10", frequency: 0.023, count: 23 },
@@ -849,7 +849,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d1s1656: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "10", frequency: 0.025, count: 25 },
       { allele: "11", frequency: 0.059, count: 59 },
@@ -985,7 +985,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d20s482: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "9", frequency: 0.005, count: 5 },
       { allele: "10", frequency: 0.02, count: 20 },
@@ -1060,7 +1060,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d21s11: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "24.3", frequency: 0.005, count: 5 },
       { allele: "25.3", frequency: 0.001, count: 1 },
@@ -1246,7 +1246,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d22s1045: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "10", frequency: 0.088, count: 88 },
       { allele: "11", frequency: 0.157, count: 157 },
@@ -1322,7 +1322,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d2s1338: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "14", frequency: 0.029, count: 29 },
       { allele: "16", frequency: 0.039, count: 39 },
@@ -1434,7 +1434,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d2s441: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "8", frequency: 0.005, count: 5 },
       { allele: "9", frequency: 0.005, count: 5 },
@@ -1531,7 +1531,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d3s1358: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "6", frequency: 0.001, count: 1 },
       { allele: "12", frequency: 0.001, count: 1 },
@@ -1614,7 +1614,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d4s2408: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "6", frequency: 0.005, count: 5 },
       { allele: "8", frequency: 0.123, count: 123 },
@@ -1678,7 +1678,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d5s818: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "8", frequency: 0.068, count: 68 },
       { allele: "9", frequency: 0.027, count: 27 },
@@ -1742,7 +1742,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d6s1043: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "11", frequency: 0.098, count: 98 },
       { allele: "12", frequency: 0.235, count: 235 },
@@ -1877,7 +1877,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d7s820: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "6", frequency: 0.002, count: 2 },
       { allele: "7", frequency: 0.004, count: 4 },
@@ -1983,7 +1983,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d8s1179: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "8", frequency: 0.003, count: 3 },
       { allele: "10", frequency: 0.012, count: 12 },
@@ -2077,7 +2077,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   d9s1122: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "9", frequency: 0.01, count: 10 },
       { allele: "10", frequency: 0.01, count: 10 },
@@ -2147,7 +2147,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   fga: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "16", frequency: 0.001, count: 1 },
       { allele: "18", frequency: 0.017, count: 17 },
@@ -2308,7 +2308,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   pentad: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "2.2", frequency: 0.204, count: 204 },
       { allele: "3.2", frequency: 0.01, count: 10 },
@@ -2396,7 +2396,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   pentae: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "5", frequency: 0.091, count: 91 },
       { allele: "7", frequency: 0.04, count: 40 },
@@ -2514,7 +2514,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   th01: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "6", frequency: 0.223, count: 223 },
       { allele: "7", frequency: 0.416, count: 416 },
@@ -2573,7 +2573,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   tpox: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "6", frequency: 0.018, count: 18 },
       { allele: "7", frequency: 0.01, count: 10 },
@@ -2629,7 +2629,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
   },
   vwa: {
     kit: "Illumina ForenSeq",
-    technology: "NGS",
+    technology: "CE",
     AFR: [
       { allele: "11", frequency: 0.001, count: 1 },
       { allele: "14", frequency: 0.039, count: 39 },

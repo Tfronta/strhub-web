@@ -221,6 +221,10 @@ export const translations = {
       alleleFreqDistribution: "Allele Frequency Distribution",
       freqDescription: "Population frequency data for different alleles",
       dataSource: "Data source: STRBase – NIST",
+      additionalSourceInfo:
+        "Additional source information: Allele frequencies in STRhub are obtained from the STRs Local dataset of the SP-SMART portal (CESGA).",
+      datasetButton: "Dataset",
+      originalPublicationButton: "Original publication",
       populationGroup: "Population Group",
       populations: {
         AFR: "African",
@@ -1208,6 +1212,10 @@ export const translations = {
       alleleFreqDistribution: "Distribuição de Frequência de Alelos",
       freqDescription: "Dados de frequência populacional para diferentes alelos",
       dataSource: "Fonte de dados: STRBase – NIST",
+      additionalSourceInfo:
+        "Informações adicionais da fonte: As frequências alélicas no STRhub são obtidas do conjunto de dados STRs Local do portal SP-SMART (CESGA).",
+      datasetButton: "Conjunto de dados",
+      originalPublicationButton: "Publicação original",
       populationGroup: "Grupo Populacional",
       populations: {
         AFR: "Africano",
@@ -2198,6 +2206,10 @@ export const translations = {
       alleleFreqDistribution: "Distribución de Frecuencia de Alelos",
       freqDescription: "Datos de frecuencia poblacional para diferentes alelos",
       dataSource: "Fuente de datos: STRBase – NIST",
+      additionalSourceInfo:
+        "Información adicional de la fuente: Las frecuencias alélicas en STRhub se obtienen del conjunto de datos STRs Local del portal SP-SMART (CESGA).",
+      datasetButton: "Conjunto de datos",
+      originalPublicationButton: "Publicación original",
       populationGroup: "Grupo Poblacional",
       populations: {
         AFR: "Africano",

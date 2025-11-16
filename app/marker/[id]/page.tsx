@@ -653,17 +653,41 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </p>
                     )}
 
-                    <p className="text-xs text-muted-foreground">
-                      Data source:{" "}
-                      <a
-                        href="http://spsmart.cesga.es/search.php?dataSet=strs_local&mapPopulation"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline"
-                      >
-                        pop.STR
-                      </a>
-                    </p>
+                    <div className="space-y-3">
+                      <p className="text-xs text-muted-foreground">
+                        {t("marker.additionalSourceInfo")}
+                      </p>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                          className="text-xs"
+                        >
+                          <a
+                            href="http://spsmart.cesga.es/search.php?dataSet=strs_local"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {t("marker.datasetButton")}
+                          </a>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                          className="text-xs"
+                        >
+                          <a
+                            href="https://pubmed.ncbi.nlm.nih.gov/18847484/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {t("marker.originalPublicationButton")}
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
 
                     <div className="mt-4">
                       <div className="flex items-center justify-between mb-3">

@@ -567,6 +567,7 @@ export const translations = {
           'Back to basics articles to help you and your team build a solid foundation in STR and NGS analysis.',
         loading: "Loading posts...",
         readMore: "Read More",
+        viewAll: "View all Back to Basics posts",
       },
       comingSoon: {
         title: "What's coming next",
@@ -1134,7 +1135,7 @@ export const translations = {
       hero: {
         title: "Conectar, aprender, colaborar",
         subtitle:
-          "Estamos construindo a primeira comunidade global dedicada à análise de STRs com sequenciamento de nova geração. Em breve você vai encontrar tutoriais, guias, exemplos reais e colaborações criadas por pesquisadores, laboratórios e estudantes do mundo todo.",
+          "Estamos construindo a primeira comunidade global dedicada à análise de STRs com sequenciamento de nova geração. Em breve você vai encontrar tutoriais, guias, casos reais e colaborações criadas por pesquisadores, laboratórios e estudantes do mundo todo.",
         cta: "Participar como colaborador(a) inicial",
       },
       howToJoin: {
@@ -1168,6 +1169,7 @@ export const translations = {
           'Artigos "Back to basics" para ajudar você e sua equipe a construir uma base sólida em análise de STRs e NGS.',
         loading: "Carregando publicações...",
         readMore: "Ler Mais",
+        viewAll: "Ver todos os artigos do Back to Basics",
       },
       comingSoon: {
         title: "O que vem por aí",
@@ -2070,7 +2072,7 @@ export const translations = {
       hero: {
         title: "Conectar, aprender, colaborar",
         subtitle:
-          "Estamos construyendo la primera comunidad global dedicada al análisis de STRs con secuenciación de nueva generación. Muy pronto vas a encontrar tutoriales, guías, ejemplos reales y colaboraciones creadas por investigadores, laboratorios y estudiantes de todo el mundo.",
+          "Estamos construyendo la primera comunidad global dedicada al análisis de STRs con secuenciación de nueva generación. Muy pronto vas a encontrar tutoriales, guías, casos reales y colaboraciones creadas por investigadores, laboratorios y estudiantes de todo el mundo.",
         cta: "Unirte como colaborador/a inicial",
       },
       howToJoin: {
@@ -2104,6 +2106,7 @@ export const translations = {
           'Artículos "Back to basics" para ayudarte a vos y a tu equipo a construir una base sólida en análisis de STRs y NGS.',
         loading: "Cargando publicaciones...",
         readMore: "Leer Más",
+        viewAll: "Ver todos los artículos de Back to Basics",
       },
       comingSoon: {
         title: "Lo que viene pronto",

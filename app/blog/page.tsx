@@ -108,10 +108,10 @@ export default function BlogPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-16 px-4">
+      <section className="py-10 md:py-12 px-4">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">{t("communityHub.hero.title")}</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty mb-8">
+          <h2 className="text-4xl font-bold mb-4">{t("communityHub.hero.title")}</h2>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty mb-6">
             {t("communityHub.hero.subtitle")}
           </p>
           <Button size="lg" className="bg-gradient-to-r from-primary to-accent" asChild>
@@ -121,13 +121,13 @@ export default function BlogPage() {
       </section>
 
       {/* How You Can Be Part of This */}
-      <section className="py-16 px-4 bg-muted/30">
+      <section className="py-10 md:py-12 px-4 bg-muted/30">
         <div className="container mx-auto">
           <h3 className="text-3xl font-bold mb-4 text-center">{t("communityHub.howToJoin.title")}</h3>
-          <p className="text-lg text-muted-foreground mb-12 max-w-3xl mx-auto text-center">
+          <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto text-center">
             {t("communityHub.howToJoin.intro")}
           </p>
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="grid md:grid-cols-3 gap-6 mb-6">
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
@@ -167,10 +167,10 @@ export default function BlogPage() {
       </section>
 
       {/* Early Contributors & Partner Labs */}
-      <section className="py-16 px-4">
+      <section className="py-8 md:py-10 px-4">
         <div className="container mx-auto">
           <h3 className="text-3xl font-bold mb-4 text-center">{t("communityHub.earlyContributors.title")}</h3>
-          <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto text-center">
+          <p className="text-lg text-muted-foreground mb-4 max-w-3xl mx-auto text-center">
             {t("communityHub.earlyContributors.body")}
           </p>
           <div className="flex justify-center">
@@ -184,30 +184,48 @@ export default function BlogPage() {
       </section>
 
       {/* Recent Posts */}
-      <section className="py-16 px-4 bg-muted/30">
+      <section className="py-10 md:py-12 px-4 bg-muted/30">
         <div className="container mx-auto">
-          <h3 className="text-3xl font-bold mb-2">{t("communityHub.recentPosts.title")}</h3>
-          <p className="text-muted-foreground mb-12">{t("communityHub.recentPosts.subtitle")}</p>
+          <div className="flex items-start justify-between mb-2">
+            <h3 className="text-3xl font-bold">{t("communityHub.recentPosts.title")}</h3>
+            <Link
+              href="/basics"
+              className="text-sm font-medium text-primary hover:underline mt-1"
+            >
+              {t("communityHub.recentPosts.viewAll")}
+            </Link>
+          </div>
+          <p className="text-muted-foreground mb-8">{t("communityHub.recentPosts.subtitle")}</p>
 
-          {backToBasicsArticles.length > 0 ? (
-            <div className="grid lg:grid-cols-2 gap-8">
-              {backToBasicsArticles.slice(0, 3).map((post) => (
-                <BackToBasicsCard key={post.sys.id} post={post} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">No posts available yet.</p>
-            </div>
-          )}
+          {(() => {
+            const targetTitles = [
+              "Understanding Sequencing File Formats: An Introductory Guide",
+              "FASTQ files",
+            ];
+            const orderedRecentCommunityPosts = targetTitles
+              .map((title) => backToBasicsArticles.find((post) => post.fields.title === title))
+              .filter(Boolean);
+
+            return orderedRecentCommunityPosts.length > 0 ? (
+              <div className="grid lg:grid-cols-2 gap-8">
+                {orderedRecentCommunityPosts.map((post) => (
+                  <BackToBasicsCard key={post.sys.id} post={post} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No posts available yet.</p>
+              </div>
+            );
+          })()}
         </div>
       </section>
 
       {/* Coming Soon */}
-      <section className="py-16 px-4">
+      <section className="py-10 md:py-12 px-4">
         <div className="container mx-auto">
           <h3 className="text-3xl font-bold mb-4 text-center">{t("communityHub.comingSoon.title")}</h3>
-          <p className="text-lg text-muted-foreground mb-12 max-w-3xl mx-auto text-center">
+          <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto text-center">
             {t("communityHub.comingSoon.intro")}
           </p>
           <div className="grid md:grid-cols-3 gap-6">
@@ -245,17 +263,17 @@ export default function BlogPage() {
       </section>
 
       {/* Contact / Join the Conversation */}
-      <section id="contact" className="py-16 px-4 bg-muted/30">
+      <section id="contact" className="py-10 md:py-12 px-4 bg-muted/30">
         <div className="container mx-auto max-w-2xl">
           <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-            <CardHeader>
+            <CardHeader className="pb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4">
                 <MessageSquare className="h-6 w-6 text-primary-foreground" />
               </div>
               <CardTitle className="text-2xl">{t("communityHub.contact.title")}</CardTitle>
               <CardDescription className="mt-2">{t("communityHub.contact.intro")}</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">

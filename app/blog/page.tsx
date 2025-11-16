@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useLanguage } from "@/contexts/language-context"
+import { backToBasicsArticles } from "@/lib/content/backToBasics"
+import { BackToBasicsCard } from "@/components/back-to-basics/BackToBasicsCard"
 
 interface BlogPost {
   id: string
@@ -187,46 +189,15 @@ export default function BlogPage() {
           <h3 className="text-3xl font-bold mb-2">{t("communityHub.recentPosts.title")}</h3>
           <p className="text-muted-foreground mb-12">{t("communityHub.recentPosts.subtitle")}</p>
 
-          {isLoading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="text-muted-foreground mt-4">{t("communityHub.recentPosts.loading")}</p>
-            </div>
-          ) : displayPosts.length > 0 ? (
-            <div className="space-y-6">
-              {displayPosts.map((post) => (
-                <Card
-                  key={post.id}
-                  className="border-0 bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-all duration-300"
-                >
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge variant="secondary">{post.category}</Badge>
-                        </div>
-                        <CardTitle className="text-xl mb-2">{post.title}</CardTitle>
-                        <CardDescription className="text-base">{getExcerpt(post.content)}</CardDescription>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between pt-4">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
-                        <span>{formatDate(post.date)}</span>
-                      </div>
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/basics/${post.id}`}>
-                          {t("communityHub.recentPosts.readMore")} <ArrowRight className="h-4 w-4 ml-1" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardHeader>
-                </Card>
+          {backToBasicsArticles.length > 0 ? (
+            <div className="grid lg:grid-cols-2 gap-8">
+              {backToBasicsArticles.slice(0, 3).map((post) => (
+                <BackToBasicsCard key={post.sys.id} post={post} />
               ))}
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">{t("communityHub.recentPosts.loading")}</p>
+              <p className="text-muted-foreground">No posts available yet.</p>
             </div>
           )}
         </div>

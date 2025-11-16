@@ -72,10 +72,10 @@ export default function ToolsPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto text-center">
+      <section className="pt-16 pb-8 px-4">
+        <div className="container mx-auto text-left">
           <h2 className="text-4xl font-bold mb-6">Powerful Tools for STR Analysis</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
+          <p className="text-xl text-muted-foreground text-pretty">
             Comprehensive collection of tools, pipelines, and tutorials for Short Tandem Repeat analysis. From
             genotyping to visualization, find everything you need for your research.
           </p>
@@ -83,7 +83,7 @@ export default function ToolsPage() {
       </section>
 
       {/* Tools Section */}
-      <section className="py-16 px-4">
+      <section className="pt-8 pb-16 px-4">
         <div className="container mx-auto">
           <h3 className="text-3xl font-bold mb-12">Analysis Tools</h3>
           <div className="grid lg:grid-cols-2 gap-6">

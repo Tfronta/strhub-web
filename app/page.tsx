@@ -74,7 +74,7 @@ export default function HomePage() {
               {t("nav.catalog")}
             </Link>
             <Link
-              href="/blog"
+              href="/community"
               className="text-base font-medium hover:text-primary transition-colors"
             >
               {t("nav.blog")}

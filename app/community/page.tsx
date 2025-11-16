@@ -108,26 +108,36 @@ export default function BlogPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-10 md:py-12 px-4">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-4">{t("communityHub.hero.title")}</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty mb-6">
-            {t("communityHub.hero.subtitle")}
-          </p>
-          <Button size="lg" className="bg-gradient-to-r from-primary to-accent" asChild>
-            <Link href="#contact">{t("communityHub.hero.cta")}</Link>
-          </Button>
+      <section className="border-b bg-background">
+        <div className="container mx-auto px-4 py-8 md:py-10">
+          <div className="flex flex-col gap-4">
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
+              {t("communityHub.hero.title")}
+            </h1>
+            <p className="text-sm md:text-base text-muted-foreground">
+              {t("communityHub.hero.subtitle")}
+            </p>
+            <div className="mt-2">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-accent" asChild>
+                <Link href="#contact">{t("communityHub.hero.cta")}</Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* How You Can Be Part of This */}
-      <section className="py-10 md:py-12 px-4 bg-muted/30">
-        <div className="container mx-auto">
-          <h3 className="text-3xl font-bold mb-4 text-center">{t("communityHub.howToJoin.title")}</h3>
-          <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto text-center">
-            {t("communityHub.howToJoin.intro")}
-          </p>
-          <div className="grid md:grid-cols-3 gap-6 mb-6">
+      <section className="border-b bg-muted/40 px-4">
+        <div className="container mx-auto py-8 md:py-10">
+          <div className="max-w-3xl">
+            <h2 className="text-xl md:text-2xl font-semibold tracking-tight">
+              {t("communityHub.howToJoin.title")}
+            </h2>
+            <p className="mt-2 text-sm md:text-base text-muted-foreground">
+              {t("communityHub.howToJoin.intro")}
+            </p>
+          </div>
+          <div className="mt-6 grid gap-6 md:grid-cols-3">
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
@@ -158,7 +168,7 @@ export default function BlogPage() {
               </CardHeader>
             </Card>
           </div>
-          <div className="text-center">
+          <div className="mt-6 text-center">
             <Button size="lg" variant="outline" asChild>
               <Link href="#contact">{t("communityHub.howToJoin.cta")}</Link>
             </Button>

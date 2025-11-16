@@ -263,18 +263,14 @@ export default function ToolsPage() {
                 </div>
                 <div className="space-y-3">
                   <div>
-                    <p className="text-xs font-semibold mb-1 text-foreground">
-                      Trimmomatic
-                    </p>
                     <CodeBlock
+                      label="Trimmomatic"
                       code={t("tools.commands.card1.commands.trimmomatic")}
                     />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold mb-1 text-foreground">
-                      fastp
-                    </p>
                     <CodeBlock
+                      label="fastp"
                       code={t("tools.commands.card1.commands.fastp")}
                     />
                   </div>
@@ -301,24 +297,20 @@ export default function ToolsPage() {
                 </div>
                 <div className="space-y-3">
                   <div>
-                    <p className="text-xs font-semibold mb-1 text-foreground">
-                      BWA-MEM2 alignment
-                    </p>
-                    <CodeBlock code={t("tools.commands.card2.commands.bwa")} />
+                    <CodeBlock
+                      label="BWA-MEM2 alignment"
+                      code={t("tools.commands.card2.commands.bwa")}
+                    />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold mb-1 text-foreground">
-                      Convert / sort / index
-                    </p>
                     <CodeBlock
+                      label="Convert / sort / index"
                       code={t("tools.commands.card2.commands.samtools")}
                     />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold mb-1 text-foreground">
-                      Remove duplicates
-                    </p>
                     <CodeBlock
+                      label="Remove duplicates"
                       code={t("tools.commands.card2.commands.rmdup")}
                     />
                   </div>
@@ -345,24 +337,20 @@ export default function ToolsPage() {
                 </div>
                 <div className="space-y-3">
                   <div>
-                    <p className="text-xs font-semibold mb-1 text-foreground">
-                      Depth coverage
-                    </p>
                     <CodeBlock
+                      label="Depth coverage"
                       code={t("tools.commands.card3.commands.depth")}
                     />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold mb-1 text-foreground">
-                      Region inspection
-                    </p>
-                    <CodeBlock code={t("tools.commands.card3.commands.view")} />
+                    <CodeBlock
+                      label="Region inspection"
+                      code={t("tools.commands.card3.commands.view")}
+                    />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold mb-1 text-foreground">
-                      Quick visualization
-                    </p>
                     <CodeBlock
+                      label="Quick visualization"
                       code={t("tools.commands.card3.commands.tview")}
                     />
                   </div>
@@ -383,30 +371,27 @@ export default function ToolsPage() {
 
             <div className="space-y-4 text-sm">
               <div>
-                <h3 className="font-medium">
-                  {t("tools.commands.installation.linuxTitle")}
-                </h3>
-                <CodeBlock code="sudo apt update && sudo apt install samtools bcftools minimap2 trimmomatic fastp" />
+                <CodeBlock
+                  label={t("tools.commands.installation.linuxTitle")}
+                  code="sudo apt update && sudo apt install samtools bcftools minimap2 trimmomatic fastp"
+                />
               </div>
 
               <div>
-                <h3 className="font-medium">
-                  {t("tools.commands.installation.macTitle")}
-                </h3>
                 <CodeBlock
+                  label={t("tools.commands.installation.macTitle")}
                   code={`brew install samtools bcftools minimap2 fastp\nbrew install --cask trimmomatic`}
                 />
               </div>
 
               <div>
-                <h3 className="font-medium">
-                  {t("tools.commands.installation.windowsTitle")}
-                </h3>
-                <p className="mt-2">
+                <p className="mb-2">
                   {t("tools.commands.installation.windowsNote")}
                 </p>
-
-                <CodeBlock code="sudo apt update && sudo apt install samtools bcftools minimap2 trimmomatic fastp" />
+                <CodeBlock
+                  label={t("tools.commands.installation.windowsTitle")}
+                  code="sudo apt update && sudo apt install samtools bcftools minimap2 trimmomatic fastp"
+                />
               </div>
             </div>
 

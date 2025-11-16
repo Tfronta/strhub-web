@@ -8,9 +8,11 @@ import { cn } from "@/lib/utils";
 interface CodeBlockProps {
   code: string;
   className?: string;
+  label?: string;
+  onCopyButtonClick?: () => void;
 }
 
-export function CodeBlock({ code, className }: CodeBlockProps) {
+export function CodeBlock({ code, className, label, onCopyButtonClick }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -18,30 +20,35 @@ export function CodeBlock({ code, className }: CodeBlockProps) {
       await navigator.clipboard.writeText(code);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      onCopyButtonClick?.();
     } catch (err) {
       console.error("Failed to copy:", err);
     }
   };
 
   return (
-    <div className={cn("relative group", className)}>
-      <pre className="bg-background border rounded-md p-3 mt-2 overflow-x-auto text-xs whitespace-pre font-mono">
+    <div className={cn("mt-2", className)}>
+      {label && (
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-xs font-semibold text-foreground">{label}</p>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0"
+            onClick={handleCopy}
+            aria-label="Copy code"
+          >
+            {copied ? (
+              <Check className="h-3.5 w-3.5" />
+            ) : (
+              <Copy className="h-3.5 w-3.5" />
+            )}
+          </Button>
+        </div>
+      )}
+      <pre className="bg-background border rounded-md p-3 overflow-x-auto text-xs whitespace-pre font-mono">
         <code>{code}</code>
       </pre>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="absolute top-2 right-2 h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-        onClick={handleCopy}
-        aria-label="Copy code"
-      >
-        {copied ? (
-          <Check className="h-3.5 w-3.5" />
-        ) : (
-          <Copy className="h-3.5 w-3.5" />
-        )}
-      </Button>
     </div>
   );
 }
-

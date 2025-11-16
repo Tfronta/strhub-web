@@ -110,7 +110,7 @@ export default function BlogPage() {
       {/* Main Content Container */}
       <main className="mx-auto w-full max-w-7xl px-6 lg:px-10 pb-16 space-y-16">
         {/* Hero Section */}
-        <section className="pt-10 border-b border-border pb-10 mb-0">
+        <section className="pt-10 border-b border-border pb-10">
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
             {t("communityHub.hero.title")}
           </h1>

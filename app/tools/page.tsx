@@ -1,11 +1,51 @@
+"use client"
+
 import { Wrench, Code, Play, Download, ExternalLink, Github } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useLanguage } from "@/contexts/language-context"
 
 export default function ToolsPage() {
+  const { t } = useLanguage()
+
   const tools = [
+    {
+      name: t("tools.strider.title"),
+      description: t("tools.strider.description"),
+      tags: [
+        t("tools.strider.tags.population"),
+        t("tools.strider.tags.qc"),
+        t("tools.strider.tags.webtool"),
+      ],
+      features: [
+        t("tools.strider.features.1"),
+        t("tools.strider.features.2"),
+        t("tools.strider.features.3"),
+        t("tools.strider.features.4"),
+      ],
+      website: "https://strider.online/",
+      websiteLabel: t("tools.strider.buttons.website"),
+      isWebTool: true,
+    },
+    {
+      name: t("tools.strnaming.title"),
+      description: t("tools.strnaming.description"),
+      tags: [
+        t("tools.strnaming.tags.annotation"),
+        t("tools.strnaming.tags.forensic"),
+        t("tools.strnaming.tags.webtool"),
+      ],
+      features: [
+        t("tools.strnaming.features.1"),
+        t("tools.strnaming.features.2"),
+        t("tools.strnaming.features.3"),
+      ],
+      website: "https://www.fdstools.nl/strnaming/index.html",
+      websiteLabel: t("tools.strnaming.buttons.website"),
+      isWebTool: true,
+    },
     {
       name: "HipSTR",
       description: "Tool for genotyping short tandem repeats from Illumina sequencing data",
@@ -94,9 +134,19 @@ export default function ToolsPage() {
                     <div>
                       <CardTitle className="text-xl mb-2">{tool.name}</CardTitle>
                       <CardDescription className="text-base mb-4">{tool.description}</CardDescription>
-                      <div className="flex items-center gap-2 mb-4">
-                        <Badge variant="secondary">{tool.category}</Badge>
-                        <Badge variant="outline">{tool.language}</Badge>
+                      <div className="flex items-center gap-2 mb-4 flex-wrap">
+                        {tool.category && tool.language ? (
+                          <>
+                            <Badge variant="secondary">{tool.category}</Badge>
+                            <Badge variant="outline">{tool.language}</Badge>
+                          </>
+                        ) : tool.tags ? (
+                          tool.tags.map((tag, tagIdx) => (
+                            <Badge key={tagIdx} variant="secondary">
+                              {tag}
+                            </Badge>
+                          ))
+                        ) : null}
                       </div>
                     </div>
                   </div>
@@ -112,12 +162,22 @@ export default function ToolsPage() {
                       </ul>
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline" asChild>
-                        <a href={tool.github} target="_blank" rel="noopener noreferrer">
-                          <Github className="h-4 w-4 mr-1" />
-                          GitHub
-                        </a>
-                      </Button>
+                      {tool.github && (
+                        <Button size="sm" variant="outline" asChild>
+                          <a href={tool.github} target="_blank" rel="noopener noreferrer">
+                            <Github className="h-4 w-4 mr-1" />
+                            GitHub
+                          </a>
+                        </Button>
+                      )}
+                      {tool.website && (
+                        <Button size="sm" variant="outline" asChild>
+                          <a href={tool.website} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-4 w-4 mr-1" />
+                            {tool.websiteLabel || "Website"}
+                          </a>
+                        </Button>
+                      )}
                       {tool.tutorial && (
                         <Button size="sm">
                           <Play className="h-4 w-4 mr-1" />

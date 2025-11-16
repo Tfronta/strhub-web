@@ -488,6 +488,41 @@ export const translations = {
       learnMore: "Learn More",
       documentation: "Documentation",
       github: "View on GitHub",
+      strnaming: {
+        title: "STRNaming",
+        description: "Unbiased method to automatically generate short, informative, and human-readable descriptions of STR alleles.",
+        tags: {
+          annotation: "Annotation",
+          forensic: "Forensic",
+          webtool: "Web tool",
+        },
+        features: {
+          1: "Standardized allele naming",
+          2: "Automated allele description",
+          3: "Developed by the Netherlands Forensic Institute",
+        },
+        buttons: {
+          website: "Website",
+        },
+      },
+      strider: {
+        title: "STRIDER",
+        description: "Curated online STR allele-frequency population database providing high-quality genotype probability estimates and autosomal STR quality control.",
+        tags: {
+          population: "Population data",
+          qc: "Quality control",
+          webtool: "Web tool",
+        },
+        features: {
+          1: "High-quality curated allele frequencies",
+          2: "Genotype probability estimates",
+          3: "Quality control for autosomal STR data",
+          4: "Developed at the Institute of Legal Medicine, Medical University of Innsbruck",
+        },
+        buttons: {
+          website: "Website",
+        },
+      },
     },
     // About
     about: {
@@ -1197,6 +1232,57 @@ export const translations = {
           "Conte sobre sua pesquisa, ideias de colaboração ou funcionalidades que você gostaria de ver no STRhub...",
       },
     },
+    // Tools
+    tools: {
+      title: "Ferramentas e Pipelines",
+      subtitle: "Ferramentas de Análise e Processamento",
+      description:
+        "Suite abrangente de ferramentas de bioinformática e pipelines para análise de STRs, desde processamento de dados brutos até genética populacional.",
+      categories: {
+        analysis: "Ferramentas de Análise",
+        processing: "Processamento de Dados",
+        visualization: "Visualização",
+        statistics: "Estatísticas",
+      },
+      learnMore: "Saber Mais",
+      documentation: "Documentação",
+      github: "Ver no GitHub",
+      strnaming: {
+        title: "STRNaming",
+        description: "Método imparcial para gerar automaticamente descrições curtas, informativas e legíveis de alelos STR.",
+        tags: {
+          annotation: "Anotação",
+          forensic: "Forense",
+          webtool: "Ferramenta web",
+        },
+        features: {
+          1: "Nomenclatura padronizada de alelos",
+          2: "Descrição automatizada de alelos",
+          3: "Desenvolvido pelo Instituto Forense da Holanda",
+        },
+        buttons: {
+          website: "Website",
+        },
+      },
+      strider: {
+        title: "STRIDER",
+        description: "Banco de dados populacional online de frequências alélicas STR, cuidadosamente curado, que oferece estimativas de probabilidade de genótipos e controle de qualidade de STR autossômicos.",
+        tags: {
+          population: "Dados populacionais",
+          qc: "Controle de qualidade",
+          webtool: "Ferramenta web",
+        },
+        features: {
+          1: "Frequências alélicas de alta qualidade e curadas",
+          2: "Estimativas de probabilidade de genótipos",
+          3: "Controle de qualidade para STR autossômicos",
+          4: "Desenvolvido no Instituto de Medicina Legal, Universidade Médica de Innsbruck",
+        },
+        buttons: {
+          website: "Website",
+        },
+      },
+    },
     // STRBase Integration
     strbase: {
       title: "Integração NIST STRBase",
@@ -1308,22 +1394,6 @@ export const translations = {
       },
       readMore: "Leer Más",
       publishedOn: "Publicado el",
-    },
-    // Tools
-    tools: {
-      title: "Herramientas y Pipelines",
-      subtitle: "Herramientas de Análisis y Procesamiento",
-      description:
-        "Suite integral de herramientas de bioinformática y pipelines para análisis STR, desde procesamiento de datos en bruto hasta genética poblacional.",
-      categories: {
-        analysis: "Herramientas de Análisis",
-        processing: "Procesamiento de Datos",
-        visualization: "Visualización",
-        statistics: "Estadísticas",
-      },
-      learnMore: "Saber Más",
-      documentation: "Documentación",
-      github: "Ver en GitHub",
     },
     // About
     about: {
@@ -2027,6 +2097,41 @@ export const translations = {
       learnMore: "Saber Más",
       documentation: "Documentación",
       github: "Ver en GitHub",
+      strnaming: {
+        title: "STRNaming",
+        description: "Método imparcial para generar automáticamente descripciones cortas, informativas y legibles de alelos STR.",
+        tags: {
+          annotation: "Anotación",
+          forensic: "Forense",
+          webtool: "Herramienta web",
+        },
+        features: {
+          1: "Nomenclatura estandarizada de alelos",
+          2: "Descripción automatizada de alelos",
+          3: "Desarrollado por el Instituto Forense de los Países Bajos",
+        },
+        buttons: {
+          website: "Sitio web",
+        },
+      },
+      strider: {
+        title: "STRIDER",
+        description: "Base de datos poblacional de frecuencias alélicas STR cuidadosamente curada, que ofrece estimaciones de probabilidad de genotipos y control de calidad para STR autosómicos.",
+        tags: {
+          population: "Datos poblacionales",
+          qc: "Control de calidad",
+          webtool: "Herramienta web",
+        },
+        features: {
+          1: "Frecuencias alélicas cuidadosamente curadas",
+          2: "Estimaciones de probabilidad de genotipos",
+          3: "Control de calidad para datos STR autosómicos",
+          4: "Desarrollado en el Instituto de Medicina Legal, Universidad Médica de Innsbruck",
+        },
+        buttons: {
+          website: "Sitio web",
+        },
+      },
     },
     // About
     about: {

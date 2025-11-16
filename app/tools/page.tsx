@@ -13,9 +13,13 @@ import { Button } from "@/components/ui/button";
 import { CodeBlock } from "@/components/ui/code-block";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
+import { toolsData } from "@/app/marker/[id]/toolsData";
 
 export default function ToolsPage() {
   const { t } = useLanguage();
+
+  // Get STrait Razor from tools catalog
+  const straitRazorTool = toolsData.find((tool) => tool.id === "straitrazor");
 
   const tools = [
     {
@@ -95,6 +99,25 @@ export default function ToolsPage() {
       ],
       github: "https://github.com/gymreklab/GangSTR",
       tutorial: true,
+    },
+    {
+      name: t("tools.straitrazor.title"),
+      description: t("tools.straitrazor.description"),
+      category: t("tools.straitrazor.tags.category"),
+      language: t("tools.straitrazor.tags.language"),
+      features: [
+        t("tools.straitrazor.features.1"),
+        t("tools.straitrazor.features.2"),
+        t("tools.straitrazor.features.3"),
+        t("tools.straitrazor.features.4"),
+      ],
+      github: straitRazorTool?.repo_url || "",
+      paper: straitRazorTool?.paper_doi || "",
+      paperLabel: t("tools.straitrazor.buttons.paper"),
+      website: straitRazorTool?.online_version,
+      websiteLabel: straitRazorTool?.online_version
+        ? t("tools.straitrazor.buttons.online")
+        : undefined,
     },
   ];
 

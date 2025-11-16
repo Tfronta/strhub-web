@@ -544,6 +544,25 @@ export const translations = {
           guideSoon: "A full step-by-step installation guide for each OS will be added soon.",
         },
       },
+      straitrazor: {
+        title: "STRait Razor",
+        description: "Lightweight motif-matching tool for Illumina-based forensic STR analysis. Suitable for teaching and training purposes in STR interpretation.",
+        tags: {
+          category: "Genotyping",
+          language: "R",
+        },
+        features: {
+          1: "Direct motif matching from FASTQ",
+          2: "Lightweight algorithm for forensic panels",
+          3: "Online web interface available",
+          4: "Integrated into STRhub for Illumina-based pipelines",
+        },
+        buttons: {
+          github: "GitHub",
+          paper: "Paper",
+          online: "Online Version",
+        },
+      },
       strnaming: {
         title: "STRNaming",
         description: "Unbiased method to automatically generate short, informative, and human-readable descriptions of STR alleles.",
@@ -1375,6 +1394,25 @@ export const translations = {
           windowsTitle: "Windows (WSL2 recomendado)",
           windowsNote: "Ferramentas de bioinformática não funcionam de forma nativa no Windows. Use WSL2 (Ubuntu) ou um contêiner Linux para garantir total compatibilidade.",
           guideSoon: "Em breve adicionaremos um guia completo de instalação para cada sistema operacional.",
+        },
+      },
+      straitrazor: {
+        title: "STRait Razor",
+        description: "Ferramenta leve de correspondência de motivos para análise forense de STR baseada em Illumina. Adequada para fins de ensino e treinamento em interpretação de STR.",
+        tags: {
+          category: "Genotipagem",
+          language: "R",
+        },
+        features: {
+          1: "Correspondência direta de motivos a partir de FASTQ",
+          2: "Algoritmo leve para painéis forenses",
+          3: "Interface web online disponível",
+          4: "Integrado ao STRhub para pipelines baseados em Illumina",
+        },
+        buttons: {
+          github: "GitHub",
+          paper: "Artigo",
+          online: "Versão Online",
         },
       },
       strnaming: {
@@ -2299,6 +2337,25 @@ export const translations = {
           windowsTitle: "Windows (WSL2 recomendado)",
           windowsNote: "Las herramientas de bioinformática no funcionan de forma nativa en Windows. Usa WSL2 (Ubuntu) o un contenedor Linux para asegurar la compatibilidad completa.",
           guideSoon: "Muy pronto añadiremos una guía detallada de instalación para cada sistema operativo.",
+        },
+      },
+      straitrazor: {
+        title: "STRait Razor",
+        description: "Herramienta ligera de coincidencia de motivos para análisis forense de STR basado en Illumina. Adecuada para fines de enseñanza y capacitación en interpretación de STR.",
+        tags: {
+          category: "Genotipado",
+          language: "R",
+        },
+        features: {
+          1: "Coincidencia directa de motivos desde FASTQ",
+          2: "Algoritmo ligero para paneles forenses",
+          3: "Interfaz web en línea disponible",
+          4: "Integrado en STRhub para pipelines basados en Illumina",
+        },
+        buttons: {
+          github: "GitHub",
+          paper: "Artículo",
+          online: "Versión Online",
         },
       },
       strnaming: {

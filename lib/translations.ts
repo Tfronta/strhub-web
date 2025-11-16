@@ -534,8 +534,15 @@ export const translations = {
             tview: "samtools tview sample.bam reference.fasta",
           },
         },
-        compatibilityNote:
-          "These commands work natively on Linux and macOS. On Windows, we recommend using WSL2 or a Linux container to ensure full compatibility with bioinformatics tools.",
+        installation: {
+          title: "Installation Requirements",
+          intro: "The tools shown above do not come pre-installed. To run these commands, you need to install the corresponding bioinformatics utilities according to your operating system.",
+          linuxTitle: "Linux (Ubuntu/Debian)",
+          macTitle: "macOS (Homebrew)",
+          windowsTitle: "Windows (WSL2 recommended)",
+          windowsNote: "Bioinformatics tools are not supported natively on Windows. Use WSL2 (Ubuntu) or a Linux container for full compatibility.",
+          guideSoon: "A full step-by-step installation guide for each OS will be added soon.",
+        },
       },
       strnaming: {
         title: "STRNaming",
@@ -1360,8 +1367,15 @@ export const translations = {
             tview: "samtools tview sample.bam reference.fasta",
           },
         },
-        compatibilityNote:
-          "Esses comandos funcionam nativamente em Linux e macOS. No Windows, recomendamos usar WSL2 ou um contêiner Linux para garantir compatibilidade total com ferramentas de bioinformática.",
+        installation: {
+          title: "Requisitos de Instalação",
+          intro: "As ferramentas mostradas acima não vêm instaladas por padrão. Para executar estes comandos, você precisa instalar as ferramentas de bioinformática de acordo com seu sistema operacional.",
+          linuxTitle: "Linux (Ubuntu/Debian)",
+          macTitle: "macOS (Homebrew)",
+          windowsTitle: "Windows (WSL2 recomendado)",
+          windowsNote: "Ferramentas de bioinformática não funcionam de forma nativa no Windows. Use WSL2 (Ubuntu) ou um contêiner Linux para garantir total compatibilidade.",
+          guideSoon: "Em breve adicionaremos um guia completo de instalação para cada sistema operacional.",
+        },
       },
       strnaming: {
         title: "STRNaming",
@@ -2277,8 +2291,15 @@ export const translations = {
             tview: "samtools tview sample.bam reference.fasta",
           },
         },
-        compatibilityNote:
-          "Estos comandos funcionan de forma nativa en Linux y macOS. En Windows, recomendamos usar WSL2 o un contenedor Linux para garantizar compatibilidad completa con herramientas bioinformáticas.",
+        installation: {
+          title: "Requisitos de Instalación",
+          intro: "Las herramientas mostradas arriba no vienen instaladas por defecto. Para ejecutar estos comandos, es necesario instalar previamente los programas según tu sistema operativo.",
+          linuxTitle: "Linux (Ubuntu/Debian)",
+          macTitle: "macOS (Homebrew)",
+          windowsTitle: "Windows (WSL2 recomendado)",
+          windowsNote: "Las herramientas de bioinformática no funcionan de forma nativa en Windows. Usa WSL2 (Ubuntu) o un contenedor Linux para asegurar la compatibilidad completa.",
+          guideSoon: "Muy pronto añadiremos una guía detallada de instalación para cada sistema operativo.",
+        },
       },
       strnaming: {
         title: "STRNaming",

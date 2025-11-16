@@ -370,9 +370,50 @@ export default function ToolsPage() {
               </div>
             </div>
           </div>
-          <p className="text-base font-semibold text-gray-500 mt-12 text-left">
-            {t("tools.commands.compatibilityNote")}
-          </p>
+
+          {/* Installation Requirements Block */}
+          <div className="mt-10 rounded-xl border bg-muted/40 p-6">
+            <h2 className="text-xl font-semibold mb-4">
+              {t("tools.commands.installation.title")}
+            </h2>
+
+            <p className="text-sm leading-relaxed mb-6">
+              {t("tools.commands.installation.intro")}
+            </p>
+
+            <div className="space-y-4 text-sm">
+              <div>
+                <h3 className="font-medium">
+                  {t("tools.commands.installation.linuxTitle")}
+                </h3>
+                <CodeBlock code="sudo apt update && sudo apt install samtools bcftools minimap2 trimmomatic fastp" />
+              </div>
+
+              <div>
+                <h3 className="font-medium">
+                  {t("tools.commands.installation.macTitle")}
+                </h3>
+                <CodeBlock
+                  code={`brew install samtools bcftools minimap2 fastp\nbrew install --cask trimmomatic`}
+                />
+              </div>
+
+              <div>
+                <h3 className="font-medium">
+                  {t("tools.commands.installation.windowsTitle")}
+                </h3>
+                <p className="mt-2">
+                  {t("tools.commands.installation.windowsNote")}
+                </p>
+
+                <CodeBlock code="sudo apt update && sudo apt install samtools bcftools minimap2 trimmomatic fastp" />
+              </div>
+            </div>
+
+            <p className="text-xs mt-6 opacity-70">
+              {t("tools.commands.installation.guideSoon")}
+            </p>
+          </div>
         </div>
       </section>
 

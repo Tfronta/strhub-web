@@ -25,13 +25,13 @@ export function CodeBlock({ code, className }: CodeBlockProps) {
 
   return (
     <div className={cn("relative group", className)}>
-      <pre className="text-xs bg-muted p-3 rounded-md overflow-x-auto font-mono">
+      <pre className="bg-background border rounded-md p-3 mt-2 overflow-x-auto text-xs whitespace-pre font-mono">
         <code>{code}</code>
       </pre>
       <Button
         variant="ghost"
         size="sm"
-        className="absolute top-2 right-2 h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute top-2 right-2 h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity z-10"
         onClick={handleCopy}
         aria-label="Copy code"
       >

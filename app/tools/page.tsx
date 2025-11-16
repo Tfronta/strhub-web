@@ -370,7 +370,7 @@ export default function ToolsPage() {
               </div>
             </div>
           </div>
-          <p className="text-sm text-gray-500 max-w-4xl mt-12 text-left">
+          <p className="text-base font-semibold text-gray-500 mt-12 text-left">
             {t("tools.commands.compatibilityNote")}
           </p>
         </div>

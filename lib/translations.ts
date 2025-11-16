@@ -481,6 +481,7 @@ export const translations = {
         "Comprehensive suite of bioinformatics tools and pipelines for STR analysis, from raw data processing to population genetics.",
       hero: {
         ctaCollaborate: "Contribute a tool or tutorial",
+        disclaimer: "All software tools listed in this section are open-access. STRhub maintains no commercial relationship with the developers of these tools and receives no financial compensation for their inclusion.",
       },
       categories: {
         analysis: "Analysis Tools",
@@ -559,7 +560,7 @@ export const translations = {
         },
         buttons: {
           github: "GitHub",
-          paper: "Paper",
+          paper: "Original publication",
           online: "Online Version",
         },
       },
@@ -613,8 +614,11 @@ export const translations = {
         },
         buttons: {
           github: "GitHub",
-          paper: "Paper",
+          paper: "Original publication",
         },
+      },
+      tutorials: {
+        comingSoon: "Coming soon",
       },
     },
     // About
@@ -1333,6 +1337,7 @@ export const translations = {
         "Suite abrangente de ferramentas de bioinformática e pipelines para análise de STRs, desde processamento de dados brutos até genética populacional.",
       hero: {
         ctaCollaborate: "Enviar ferramenta ou tutorial",
+        disclaimer: "Todas as ferramentas de software listadas nesta seção são de acesso aberto. O STRhub não mantém relacionamento comercial com os desenvolvedores dessas ferramentas e não recebe compensação financeira por sua inclusão.",
       },
       categories: {
         analysis: "Ferramentas de Análise",
@@ -1411,7 +1416,7 @@ export const translations = {
         },
         buttons: {
           github: "GitHub",
-          paper: "Artigo",
+          paper: "Publicação original",
           online: "Versão Online",
         },
       },
@@ -1465,8 +1470,11 @@ export const translations = {
         },
         buttons: {
           github: "GitHub",
-          paper: "Artigo",
+          paper: "Publicação original",
         },
+      },
+      tutorials: {
+        comingSoon: "Em breve",
       },
     },
     // STRBase Integration
@@ -2276,6 +2284,7 @@ export const translations = {
         "Suite integral de herramientas de bioinformática y pipelines para análisis STR, desde procesamiento de datos en bruto hasta genética poblacional.",
       hero: {
         ctaCollaborate: "Contribuir con una herramienta o tutorial",
+        disclaimer: "Todas las herramientas de software listadas en esta sección son de acceso abierto. STRhub no mantiene relación comercial con los desarrolladores de estas herramientas y no recibe compensación financiera por su inclusión.",
       },
       categories: {
         analysis: "Herramientas de Análisis",
@@ -2354,7 +2363,7 @@ export const translations = {
         },
         buttons: {
           github: "GitHub",
-          paper: "Artículo",
+          paper: "Publicación original",
           online: "Versión Online",
         },
       },
@@ -2408,8 +2417,11 @@ export const translations = {
         },
         buttons: {
           github: "GitHub",
-          paper: "Artículo",
+          paper: "Publicación original",
         },
+      },
+      tutorials: {
+        comingSoon: "Próximamente",
       },
     },
     // About

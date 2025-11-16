@@ -1,6 +1,6 @@
 "use client";
 
-import { Wrench, Code, Play, ExternalLink, Github } from "lucide-react";
+import { Wrench, ExternalLink, Github, Info, FileText } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CodeBlock } from "@/components/ui/code-block";
@@ -69,6 +70,8 @@ export default function ToolsPage() {
         "Population-scale analysis",
       ],
       github: "https://github.com/HipSTR-Tool/HipSTR",
+      paper: "https://www.nature.com/articles/nmeth.4267",
+      paperLabel: t("tools.strspy.buttons.paper"),
       tutorial: true,
     },
     {
@@ -98,6 +101,8 @@ export default function ToolsPage() {
         "High throughput",
       ],
       github: "https://github.com/gymreklab/GangSTR",
+      paper: "https://pubmed.ncbi.nlm.nih.gov/31194863/",
+      paperLabel: t("tools.strspy.buttons.paper"),
       tutorial: true,
     },
     {
@@ -153,6 +158,9 @@ export default function ToolsPage() {
             Comprehensive collection of tools, pipelines, and tutorials for
             Short Tandem Repeat analysis. From genotyping to visualization, find
             everything you need for your research.
+          </p>
+          <p className="text-sm text-muted-foreground text-pretty mb-4">
+            {t("tools.hero.disclaimer")}
           </p>
           <Button
             variant="outline"
@@ -246,8 +254,8 @@ export default function ToolsPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            <ExternalLink className="h-4 w-4 mr-1" />
-                            {tool.paperLabel || "Paper"}
+                            <FileText className="h-4 w-4 mr-1" />
+                            {tool.paperLabel || "Original publication"}
                           </a>
                         </Button>
                       )}
@@ -261,7 +269,7 @@ export default function ToolsPage() {
       </section>
 
       {/* Essential Bioinformatics Commands Section */}
-      <section className="py-16 px-4 bg-muted/30">
+      <section className="pt-16 pb-8 px-4 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold mb-12 text-left">
             {t("tools.commands.title")}
@@ -426,64 +434,15 @@ export default function ToolsPage() {
       </section>
 
       {/* Tutorials Section */}
-      <section className="py-16 px-4">
+      <section className="pt-8 pb-16 px-4">
         <div className="container mx-auto">
           <h3 className="text-3xl font-bold mb-12">Interactive Tutorials</h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="border-0 bg-gradient-to-br from-primary/10 to-accent/10">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
-                  <Code className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <CardTitle>HipSTR Basics</CardTitle>
-                <CardDescription>
-                  Learn the fundamentals of STR genotyping with HipSTR
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full">
-                  <Play className="h-4 w-4 mr-2" />
-                  Start Tutorial
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 bg-gradient-to-br from-secondary/10 to-primary/10">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-lg flex items-center justify-center mb-4">
-                  <Code className="h-6 w-6 text-secondary-foreground" />
-                </div>
-                <CardTitle>Nextflow for STRs</CardTitle>
-                <CardDescription>
-                  Build scalable STR analysis pipelines with Nextflow
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full">
-                  <Play className="h-4 w-4 mr-2" />
-                  Start Tutorial
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 bg-gradient-to-br from-accent/10 to-secondary/10">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent to-secondary rounded-lg flex items-center justify-center mb-4">
-                  <Code className="h-6 w-6 text-accent-foreground" />
-                </div>
-                <CardTitle>Python STR Analysis</CardTitle>
-                <CardDescription>
-                  Analyze STR data using Python and popular libraries
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full">
-                  <Play className="h-4 w-4 mr-2" />
-                  Start Tutorial
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              {t("tools.tutorials.comingSoon")}
+            </AlertDescription>
+          </Alert>
         </div>
       </section>
     </div>

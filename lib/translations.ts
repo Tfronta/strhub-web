@@ -96,7 +96,7 @@ export const translations = {
         integratedDatabase: {
           title: "Integrated STR Database",
           description:
-            "Access CODIS and non-CODIS markers with allele frequencies, flanking sequences, and population data across AFR, AMR, EAS, SAS, and EUR groups",
+            "Access CODIS and non-CODIS markers with allele frequencies, flanking sequences, and population data across AFR, NAM, EAS, SAS, and EUR groups",
         },
         visualizationSuite: {
           title: "Visualization Suite",
@@ -224,14 +224,14 @@ export const translations = {
       populationGroup: "Population Group",
       populations: {
         AFR: "African",
-        AMR: "American",
+        NAM: "American",
         EAS: "East Asian",
         SAS: "South Asian",
         EUR: "European",
         OCE: "Oceanian",
       },
       citation:
-        "Citation: Population frequency data sourced from STRBase – NIST database. All alleles reported in STRbase for each marker are included across all population groups (AFR, AMR, EAS, SAS, EUR).",
+        "Citation: Population frequency data sourced from STRBase – NIST database. All alleles reported in STRbase for each marker are included across all population groups (AFR, NAM, EAS, SAS, EUR).",
       citationReference: "Reference: NIST STRBase. Available at: https://strbase.nist.gov/",
       toolsCompatibility: "Tools & Pipelines Compatibility",
       toolsDescription: "STR analysis tools and pipelines that support this marker",
@@ -452,7 +452,7 @@ export const translations = {
       features: {
         populationFrequency: {
           title: "Population Frequency Data",
-          description: "Complete allele frequency distributions for AFR, AMR, EAS, SAS, and EUR populations",
+          description: "Complete allele frequency distributions for AFR, NAM, EAS, SAS, and EUR populations",
         },
         markerVerification: {
           title: "Marker Verification",
@@ -1083,7 +1083,7 @@ export const translations = {
         integratedDatabase: {
           title: "Banco de Dados Integrado de STR",
           description:
-            "Acesse marcadores CODIS e não-CODIS com frequências alélicas, sequências flanqueantes e dados populacionais em grupos AFR, AMR, EAS, SAS e EUR",
+            "Acesse marcadores CODIS e não-CODIS com frequências alélicas, sequências flanqueantes e dados populacionais em grupos AFR, NAM, EAS, SAS e EUR",
         },
         visualizationSuite: {
           title: "Suite de Visualização",
@@ -1211,14 +1211,14 @@ export const translations = {
       populationGroup: "Grupo Populacional",
       populations: {
         AFR: "Africano",
-        AMR: "Americano",
+        NAM: "Americano",
         EAS: "Asiático Oriental",
         SAS: "Asiático do Sul",
         EUR: "Europeu",
         OCE: "Oceânico",
       },
       citation:
-        "Citação: Dados de frequência populacional obtidos do banco de dados STRBase – NIST. Todos os alelos relatados no STRbase para cada marcador estão incluídos em todos os grupos populacionais (AFR, AMR, EAS, SAS, EUR).",
+        "Citação: Dados de frequência populacional obtidos do banco de dados STRBase – NIST. Todos os alelos relatados no STRbase para cada marcador estão incluídos em todos os grupos populacionais (AFR, NAM, EAS, SAS, EUR).",
       citationReference: "Referência: NIST STRBase. Disponível em: https://strbase.nist.gov/",
       toolsCompatibility: "Compatibilidade de Ferramentas e Pipelines",
       toolsDescription: "Ferramentas de análise STR e pipelines que suportam este marcador",
@@ -1700,7 +1700,7 @@ export const translations = {
       features: {
         populationFrequency: {
           title: "Datos de Frecuencia Poblacional",
-          description: "Distribuciones completas de frecuencia alélica para poblaciones AFR, AMR, EAS, SAS y EUR",
+          description: "Distribuciones completas de frecuencia alélica para poblaciones AFR, NAM, EAS, SAS y EUR",
         },
         markerVerification: {
           title: "Verificación de Marcadores",
@@ -2073,7 +2073,7 @@ export const translations = {
         integratedDatabase: {
           title: "Base de Datos Integrada de STR",
           description:
-            "Acceda a marcadores CODIS y no-CODIS con frecuencias alélicas, secuencias flanqueantes y datos poblacionales en grupos AFR, AMR, EAS, SAS y EUR",
+            "Acceda a marcadores CODIS y no-CODIS con frecuencias alélicas, secuencias flanqueantes y datos poblacionales en grupos AFR, NAM, EAS, SAS y EUR",
         },
         visualizationSuite: {
           title: "Suite de Visualización",
@@ -2201,14 +2201,14 @@ export const translations = {
       populationGroup: "Grupo Poblacional",
       populations: {
         AFR: "Africano",
-        AMR: "Americano",
+        NAM: "Americano",
         EAS: "Asiático Oriental",
         SAS: "Asiático del Sur",
         EUR: "Europeu",
         OCE: "Oceánico",
       },
       citation:
-        "Cita: Dados de frecuencia poblacional obtenidos de la base de datos STRBase – NIST. Todos los alelos reportados en STRbase para cada marcador están incluidos en todos los grupos poblacionales (AFR, AMR, EAS, SAS, EUR).",
+        "Cita: Dados de frecuencia poblacional obtenidos de la base de datos STRBase – NIST. Todos los alelos reportados en STRbase para cada marcador están incluidos en todos los grupos poblacionales (AFR, NAM, EAS, SAS, EUR).",
       citationReference: "Referencia: NIST STRBase. Disponible en: https://strbase.nist.gov/",
       toolsCompatibility: "Compatibilidad de Herramientas y Pipelines",
       toolsDescription: "Herramientas de análisis STR y pipelines que soportan este marcador",
@@ -2431,7 +2431,7 @@ export const translations = {
       features: {
         populationFrequency: {
           title: "Datos de Frecuencia Poblacional",
-          description: "Distribuciones completas de frecuencia alélica para poblaciones AFR, AMR, EAS, SAS y EUR",
+          description: "Distribuciones completas de frecuencia alélica para poblaciones AFR, NAM, EAS, SAS y EUR",
         },
         markerVerification: {
           title: "Verificación de Marcadores",

@@ -6,7 +6,7 @@ const key = (s: string) => s.toLowerCase().replace(/\s+/g, "_").replace(/-/g, "_
 
 const pf = (markerId: string): Record<Pop, AlleleEntry[]> => ({
   AFR: markerFrequencies[markerId]?.AFR ?? [],
-  AMR: markerFrequencies[markerId]?.AMR ?? [],
+  NAM: markerFrequencies[markerId]?.NAM ?? [],
   EAS: markerFrequencies[markerId]?.EAS ?? [],
   SAS: markerFrequencies[markerId]?.SAS ?? [],
   EUR: markerFrequencies[markerId]?.EUR ?? [],

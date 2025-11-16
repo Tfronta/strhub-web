@@ -1,7 +1,7 @@
 // Auto-generated from TXT frequency files.
 // Do not edit by hand. Update the TXT files and regenerate.
 
-export type Pop = "AFR" | "AMR" | "EAS" | "SAS" | "EUR" | "MES" | "OCE";
+export type Pop = "AFR" | "NAM" | "EAS" | "SAS" | "EUR" | "MES" | "OCE";
 export type AlleleEntry = { allele: string; frequency: number; count: number };
 export const markerFrequencies: Record<string, Partial<{kit:string; technology: string; } & Record<Pop, AlleleEntry[]>>> = {
 
@@ -19,7 +19,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "13", frequency: 0.036, count: 36 },
       { allele: "14", frequency: 0.004, count: 4 },
     ],
-    AMR: [
+    NAM: [
       { allele: "6", frequency: 0.0, count: 0 },
       { allele: "7", frequency: 0.038, count: 38 },
       { allele: "8", frequency: 0.032, count: 32 },
@@ -97,7 +97,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "17", frequency: 0.02, count: 20 },
       { allele: "18", frequency: 0.005, count: 5 },
     ],
-    AMR: [
+    NAM: [
       { allele: "8", frequency: 0.005, count: 5 },
       { allele: "9", frequency: 0.002, count: 2 },
       { allele: "10", frequency: 0.005, count: 5 },
@@ -189,7 +189,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "26.2", frequency: 0.01, count: 10 },
       { allele: "27.2", frequency: 0.005, count: 5 },
     ],
-    AMR: [
+    NAM: [
       { allele: "12", frequency: 0.0, count: 0 },
       { allele: "13", frequency: 0.001, count: 1 },
       { allele: "14", frequency: 0.0, count: 0 },
@@ -349,7 +349,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "13", frequency: 0.121, count: 121 },
       { allele: "14", frequency: 0.03, count: 30 },
     ],
-    AMR: [
+    NAM: [
       { allele: "7", frequency: 0.0, count: 0 },
       { allele: "8", frequency: 0.056, count: 56 },
       { allele: "9", frequency: 0.089, count: 89 },
@@ -426,7 +426,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "14", frequency: 0.03, count: 30 },
       { allele: "15", frequency: 0.002, count: 2 },
     ],
-    AMR: [
+    NAM: [
       { allele: "5", frequency: 0.0, count: 0 },
       { allele: "8", frequency: 0.03, count: 30 },
       { allele: "9", frequency: 0.186, count: 186 },
@@ -498,7 +498,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "14", frequency: 0.065, count: 65 },
       { allele: "15", frequency: 0.005, count: 5 },
     ],
-    AMR: [
+    NAM: [
       { allele: "7", frequency: 0.0, count: 0 },
       { allele: "8", frequency: 0.0, count: 0 },
       { allele: "9", frequency: 0.0, count: 0 },
@@ -586,7 +586,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "22", frequency: 0.006, count: 6 },
       { allele: "23", frequency: 0.001, count: 1 },
     ],
-    AMR: [
+    NAM: [
       { allele: "9", frequency: 0.0, count: 0 },
       { allele: "10", frequency: 0.006, count: 6 },
       { allele: "10.2", frequency: 0.0, count: 0 },
@@ -749,7 +749,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "16.2", frequency: 0.034, count: 34 },
       { allele: "17", frequency: 0.002, count: 2 },
     ],
-    AMR: [
+    NAM: [
       { allele: "9", frequency: 0.0, count: 0 },
       { allele: "9.2", frequency: 0.0, count: 0 },
       { allele: "10", frequency: 0.006, count: 6 },
@@ -866,7 +866,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "17.3", frequency: 0.025, count: 25 },
       { allele: "18.3", frequency: 0.01, count: 10 },
     ],
-    AMR: [
+    NAM: [
       { allele: "8", frequency: 0.0, count: 0 },
       { allele: "9", frequency: 0.0, count: 0 },
       { allele: "10", frequency: 0.003, count: 3 },
@@ -996,7 +996,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "15", frequency: 0.145, count: 145 },
       { allele: "16", frequency: 0.045, count: 45 },
     ],
-    AMR: [
+    NAM: [
       { allele: "9", frequency: 0.0, count: 0 },
       { allele: "10", frequency: 0.0, count: 0 },
       { allele: "11", frequency: 0.0, count: 0 },
@@ -1086,7 +1086,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "37", frequency: 0.006, count: 6 },
       { allele: "38", frequency: 0.003, count: 3 },
     ],
-    AMR: [
+    NAM: [
       { allele: "24.2", frequency: 0.0, count: 0 },
       { allele: "24.3", frequency: 0.001, count: 1 },
       { allele: "25", frequency: 0.0, count: 0 },
@@ -1337,7 +1337,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "25", frequency: 0.029, count: 29 },
       { allele: "26", frequency: 0.008, count: 8 },
     ],
-    AMR: [
+    NAM: [
       { allele: "11", frequency: 0.0, count: 0 },
       { allele: "13", frequency: 0.001, count: 1 },
       { allele: "14", frequency: 0.0, count: 0 },
@@ -1449,7 +1449,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "15", frequency: 0.025, count: 25 },
       { allele: "17", frequency: 0.005, count: 5 },
     ],
-    AMR: [
+    NAM: [
       { allele: "8", frequency: 0.0, count: 0 },
       { allele: "9", frequency: 0.005, count: 5 },
       { allele: "9.1", frequency: 0.0, count: 0 },
@@ -1542,7 +1542,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "18", frequency: 0.066, count: 66 },
       { allele: "19", frequency: 0.003, count: 3 },
     ],
-    AMR: [
+    NAM: [
       { allele: "6", frequency: 0.0, count: 0 },
       { allele: "9", frequency: 0.001, count: 1 },
       { allele: "11", frequency: 0.0, count: 0 },
@@ -1624,7 +1624,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "12", frequency: 0.123, count: 123 },
       { allele: "13", frequency: 0.005, count: 5 },
     ],
-    AMR: [
+    NAM: [
       { allele: "6", frequency: 0.0, count: 0 },
       { allele: "7", frequency: 0.0, count: 0 },
       { allele: "8", frequency: 0.016, count: 16 },
@@ -1757,7 +1757,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "21", frequency: 0.01, count: 10 },
       { allele: "24", frequency: 0.005, count: 5 },
     ],
-    AMR: [
+    NAM: [
       { allele: "7", frequency: 0.0, count: 0 },
       { allele: "9", frequency: 0.002, count: 2 },
       { allele: "10", frequency: 0.008, count: 8 },
@@ -1895,7 +1895,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "13", frequency: 0.012, count: 12 },
       { allele: "14", frequency: 0.002, count: 2 },
     ],
-    AMR: [
+    NAM: [
       { allele: "6", frequency: 0.0, count: 0 },
       { allele: "6.3", frequency: 0.001, count: 1 },
       { allele: "7", frequency: 0.009, count: 9 },
@@ -1997,7 +1997,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "17", frequency: 0.016, count: 16 },
       { allele: "18", frequency: 0.002, count: 2 },
     ],
-    AMR: [
+    NAM: [
       { allele: "8", frequency: 0.004, count: 4 },
       { allele: "9", frequency: 0.005, count: 5 },
       { allele: "10", frequency: 0.063, count: 63 },
@@ -2088,7 +2088,7 @@ export const markerFrequencies: Record<string, Partial<{kit:string; technology: 
       { allele: "15", frequency: 0.01, count: 10 },
       { allele: "16", frequency: 0.005, count: 5 },
     ],
-    AMR: [
+    NAM: [
       { allele: "9", frequency: 0.0, count: 0 },
       { allele: "10", frequency: 0.016, count: 16 },
       { allele: "11", frequency: 0.07, count: 70 },

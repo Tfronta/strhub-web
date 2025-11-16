@@ -466,7 +466,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                   <div className="flex items-center justify-between gap-2 flex-wrap border-b border-border pb-3">
                     {selectedTechnology !== "CE" && (
                       <div className="flex gap-2">
-                        {["AFR", "AMR", "EAS", "SAS", "EUR", "MES", "OCE"].map(
+                        {["AFR", "NAM", "EAS", "SAS", "EUR", "MES", "OCE"].map(
                           (pop) => (
                             <Button
                               key={pop}
@@ -601,9 +601,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         (Bantu).
                       </p>
                     )}
-                    {selectedPopulation === "AMR" && (
+                    {selectedPopulation === "NAM" && (
                       <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The American population dataset from pop.STR includes
+                        The Native American population dataset from pop.STR includes
                         the following population groups: Brazil (Karitiana),
                         Brazil (Surui), Colombia (Colombian), Dominican
                         Republic, Mexico (Maya), and Mexico (Pima).

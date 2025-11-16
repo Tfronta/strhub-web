@@ -67,9 +67,26 @@ export default async function BasicsPage() {
       <section className="pt-8 pb-16 px-4">
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-8">
-            {posts.map((post: BackToBasicsPost) => (
-              <BackToBasicsCard key={post.sys.id} post={post} />
-            ))}
+            {(() => {
+              // Sort posts to show "Understanding Sequencing File Formats" first and "FASTQ files" second
+              const sortedPosts = [...posts].sort((a, b) => {
+                const firstTitle = "Understanding Sequencing File Formats: An Introductory Guide";
+                const secondTitle = "FASTQ files";
+                
+                // First priority: Understanding Sequencing File Formats
+                if (a.fields.title === firstTitle) return -1;
+                if (b.fields.title === firstTitle) return 1;
+                
+                // Second priority: FASTQ files
+                if (a.fields.title === secondTitle) return -1;
+                if (b.fields.title === secondTitle) return 1;
+                
+                return 0;
+              });
+              return sortedPosts.map((post: BackToBasicsPost) => (
+                <BackToBasicsCard key={post.sys.id} post={post} />
+              ));
+            })()}
           </div>
         </div>
       </section>

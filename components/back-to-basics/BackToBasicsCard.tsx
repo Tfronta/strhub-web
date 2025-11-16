@@ -57,9 +57,9 @@ export function BackToBasicsCard({ post }: BackToBasicsCardProps) {
 
   return (
     <Card
-      className="border-0 bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-shadow"
+      className="border-0 bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-shadow flex flex-col h-full"
     >
-      <CardHeader>
+      <CardHeader className="flex-shrink-0 mb-6">
         <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
           <IconComponent className="h-6 w-6 text-primary-foreground" />
         </div>
@@ -71,8 +71,8 @@ export function BackToBasicsCard({ post }: BackToBasicsCardProps) {
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
+      <CardContent className="space-y-4 flex flex-col flex-grow">
+        <div className="space-y-2 flex-grow">
           <ClientTopicsCovered />
           <div className="flex flex-wrap gap-2">
             {post.fields.keywords.map((keyword: string, index: number) => (
@@ -82,8 +82,8 @@ export function BackToBasicsCard({ post }: BackToBasicsCardProps) {
             ))}
           </div>
         </div>
-        <Link href={`/basics/${slug}`}>
-          <Button className="w-full mt-4">
+        <Link href={`/basics/${slug}`} className="mt-auto">
+          <Button className="w-full">
             <ClientReadArticle />
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>

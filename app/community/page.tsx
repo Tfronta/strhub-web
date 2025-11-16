@@ -1,67 +1,86 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Users, MessageSquare, BookOpen, Calendar, ArrowRight, Share2, Code, Handshake, Sparkles, FileText, Database, Wrench } from "lucide-react"
-import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import Link from "next/link"
-import { useLanguage } from "@/contexts/language-context"
-import { backToBasicsArticles } from "@/lib/content/backToBasics"
-import { BackToBasicsCard } from "@/components/back-to-basics/BackToBasicsCard"
+import { useState, useEffect } from "react";
+import {
+  Users,
+  MessageSquare,
+  BookOpen,
+  Calendar,
+  ArrowRight,
+  Share2,
+  Code,
+  Handshake,
+  Sparkles,
+  FileText,
+  Database,
+  Wrench,
+} from "lucide-react";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import Link from "next/link";
+import { useLanguage } from "@/contexts/language-context";
+import { backToBasicsArticles } from "@/lib/content/backToBasics";
+import { BackToBasicsCard } from "@/components/back-to-basics/BackToBasicsCard";
 
 interface BlogPost {
-  id: string
-  title: string
-  content: string
-  category: "Blog" | "Projects" | "Educational"
-  date: string
-  published: boolean
+  id: string;
+  title: string;
+  content: string;
+  category: "Blog" | "Projects" | "Educational";
+  date: string;
+  published: boolean;
 }
 
 export default function BlogPage() {
-  const { t } = useLanguage()
-  const [posts, setPosts] = useState<BlogPost[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const { t } = useLanguage();
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
-  })
+  });
 
-  const fallbackPosts: BlogPost[] = []
+  const fallbackPosts: BlogPost[] = [];
 
   useEffect(() => {
-    loadPosts()
-  }, [])
+    loadPosts();
+  }, []);
 
   const loadPosts = async () => {
     try {
-      const response = await fetch("/api/content?category=Educational")
+      const response = await fetch("/api/content?category=Educational");
       if (response.ok) {
-        const data = await response.json()
-        setPosts(data.entries || [])
+        const data = await response.json();
+        setPosts(data.entries || []);
       }
     } catch (error) {
-      console.error("Failed to load blog posts:", error)
+      console.error("Failed to load blog posts:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  const displayPosts = posts.length > 0 ? posts : fallbackPosts
+  const displayPosts = posts.length > 0 ? posts : fallbackPosts;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
-    })
-  }
+    });
+  };
 
   const getExcerpt = (content: string, maxLength = 150) => {
     const plainText = content
@@ -74,19 +93,19 @@ export default function BlogPage() {
       .replace(/^\* /gm, "") // Remove list markers
       .replace(/^\d+\. /gm, "") // Remove numbered list markers
       .replace(/^> /gm, "") // Remove blockquote markers
-      .trim()
+      .trim();
 
-    if (plainText.length <= maxLength) return plainText
-    return plainText.substring(0, maxLength).trim() + "..."
-  }
+    if (plainText.length <= maxLength) return plainText;
+    return plainText.substring(0, maxLength).trim() + "...";
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // Handle form submission - you can implement this based on your backend
-    console.log("Form submitted:", formData)
+    console.log("Form submitted:", formData);
     // Reset form
-    setFormData({ name: "", email: "", subject: "", message: "" })
-  }
+    setFormData({ name: "", email: "", subject: "", message: "" });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -101,16 +120,19 @@ export default function BlogPage() {
               {t("nav.blog")}
             </h1>
           </Link>
-          <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link
+            href="/"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             ← {t("common.backToHome")}
           </Link>
         </div>
       </header>
 
       {/* Main Content Container */}
-      <main className="mx-auto w-full max-w-7xl px-6 lg:px-10 pb-16 space-y-16">
+      <main className="mx-auto w-full max-w-7xl px-6 lg:px-10 pb-16 space-y-6">
         {/* Hero Section */}
-        <section className="pt-10 border-b border-border pb-10">
+        <section className="pt-4 border-b border-border pb-4">
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
             {t("communityHub.hero.title")}
           </h1>
@@ -118,14 +140,18 @@ export default function BlogPage() {
             {t("communityHub.hero.subtitle")}
           </p>
           <div className="mt-5">
-            <Button size="lg" className="bg-gradient-to-r from-primary to-accent" asChild>
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-primary to-accent"
+              asChild
+            >
               <Link href="#contact">{t("communityHub.hero.cta")}</Link>
             </Button>
           </div>
         </section>
 
         {/* How You Can Be Part of This */}
-        <section className="pt-10">
+        <section className="pt-4">
           <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
             {t("communityHub.howToJoin.title")}
           </h2>
@@ -138,8 +164,12 @@ export default function BlogPage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
                   <Share2 className="h-6 w-6 text-primary-foreground" />
                 </div>
-                <CardTitle>{t("communityHub.howToJoin.cards.experience.title")}</CardTitle>
-                <CardDescription>{t("communityHub.howToJoin.cards.experience.body")}</CardDescription>
+                <CardTitle>
+                  {t("communityHub.howToJoin.cards.experience.title")}
+                </CardTitle>
+                <CardDescription>
+                  {t("communityHub.howToJoin.cards.experience.body")}
+                </CardDescription>
               </CardHeader>
             </Card>
 
@@ -148,8 +178,12 @@ export default function BlogPage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-lg flex items-center justify-center mb-4">
                   <BookOpen className="h-6 w-6 text-secondary-foreground" />
                 </div>
-                <CardTitle>{t("communityHub.howToJoin.cards.tutorials.title")}</CardTitle>
-                <CardDescription>{t("communityHub.howToJoin.cards.tutorials.body")}</CardDescription>
+                <CardTitle>
+                  {t("communityHub.howToJoin.cards.tutorials.title")}
+                </CardTitle>
+                <CardDescription>
+                  {t("communityHub.howToJoin.cards.tutorials.body")}
+                </CardDescription>
               </CardHeader>
             </Card>
 
@@ -158,8 +192,12 @@ export default function BlogPage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-accent to-secondary rounded-lg flex items-center justify-center mb-4">
                   <Handshake className="h-6 w-6 text-accent-foreground" />
                 </div>
-                <CardTitle>{t("communityHub.howToJoin.cards.collaborations.title")}</CardTitle>
-                <CardDescription>{t("communityHub.howToJoin.cards.collaborations.body")}</CardDescription>
+                <CardTitle>
+                  {t("communityHub.howToJoin.cards.collaborations.title")}
+                </CardTitle>
+                <CardDescription>
+                  {t("communityHub.howToJoin.cards.collaborations.body")}
+                </CardDescription>
               </CardHeader>
             </Card>
           </div>
@@ -181,7 +219,9 @@ export default function BlogPage() {
           <div className="mt-6">
             <Card className="border-0 bg-muted/50 max-w-md py-3">
               <CardContent className="py-0">
-                <p className="text-muted-foreground">{t("communityHub.earlyContributors.comingSoon")}</p>
+                <p className="text-muted-foreground">
+                  {t("communityHub.earlyContributors.comingSoon")}
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -210,7 +250,9 @@ export default function BlogPage() {
               "FASTQ files",
             ];
             const orderedRecentCommunityPosts = targetTitles
-              .map((title) => backToBasicsArticles.find((post) => post.fields.title === title))
+              .map((title) =>
+                backToBasicsArticles.find((post) => post.fields.title === title)
+              )
               .filter(Boolean);
 
             return orderedRecentCommunityPosts.length > 0 ? (
@@ -241,8 +283,12 @@ export default function BlogPage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
                   <Database className="h-6 w-6 text-primary-foreground" />
                 </div>
-                <CardTitle>{t("communityHub.comingSoon.cards.structureBrowser.title")}</CardTitle>
-                <CardDescription>{t("communityHub.comingSoon.cards.structureBrowser.body")}</CardDescription>
+                <CardTitle>
+                  {t("communityHub.comingSoon.cards.structureBrowser.title")}
+                </CardTitle>
+                <CardDescription>
+                  {t("communityHub.comingSoon.cards.structureBrowser.body")}
+                </CardDescription>
               </CardHeader>
             </Card>
 
@@ -251,8 +297,12 @@ export default function BlogPage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-lg flex items-center justify-center mb-4">
                   <FileText className="h-6 w-6 text-secondary-foreground" />
                 </div>
-                <CardTitle>{t("communityHub.comingSoon.cards.caseStudies.title")}</CardTitle>
-                <CardDescription>{t("communityHub.comingSoon.cards.caseStudies.body")}</CardDescription>
+                <CardTitle>
+                  {t("communityHub.comingSoon.cards.caseStudies.title")}
+                </CardTitle>
+                <CardDescription>
+                  {t("communityHub.comingSoon.cards.caseStudies.body")}
+                </CardDescription>
               </CardHeader>
             </Card>
 
@@ -261,8 +311,12 @@ export default function BlogPage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-accent to-secondary rounded-lg flex items-center justify-center mb-4">
                   <Wrench className="h-6 w-6 text-accent-foreground" />
                 </div>
-                <CardTitle>{t("communityHub.comingSoon.cards.pipelines.title")}</CardTitle>
-                <CardDescription>{t("communityHub.comingSoon.cards.pipelines.body")}</CardDescription>
+                <CardTitle>
+                  {t("communityHub.comingSoon.cards.pipelines.title")}
+                </CardTitle>
+                <CardDescription>
+                  {t("communityHub.comingSoon.cards.pipelines.body")}
+                </CardDescription>
               </CardHeader>
             </Card>
           </div>
@@ -275,8 +329,12 @@ export default function BlogPage() {
               <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4">
                 <MessageSquare className="h-6 w-6 text-primary-foreground" />
               </div>
-              <CardTitle className="text-2xl">{t("communityHub.contact.title")}</CardTitle>
-              <CardDescription className="mt-2">{t("communityHub.contact.intro")}</CardDescription>
+              <CardTitle className="text-2xl">
+                {t("communityHub.contact.title")}
+              </CardTitle>
+              <CardDescription className="mt-2">
+                {t("communityHub.contact.intro")}
+              </CardDescription>
             </CardHeader>
             <CardContent className="pt-0">
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -287,7 +345,9 @@ export default function BlogPage() {
                       id="name"
                       placeholder={t("about.formNamePlaceholder")}
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
                       required
                     />
                   </div>
@@ -298,7 +358,9 @@ export default function BlogPage() {
                       type="email"
                       placeholder={t("about.formEmailPlaceholder")}
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
                       required
                     />
                   </div>
@@ -309,7 +371,9 @@ export default function BlogPage() {
                     id="subject"
                     placeholder={t("about.formSubjectPlaceholder")}
                     value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, subject: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -320,7 +384,9 @@ export default function BlogPage() {
                     placeholder={t("communityHub.contact.messagePlaceholder")}
                     rows={5}
                     value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, message: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -333,5 +399,5 @@ export default function BlogPage() {
         </section>
       </main>
     </div>
-  )
+  );
 }

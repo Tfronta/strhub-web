@@ -30,9 +30,6 @@ export default function MotifExplorerPage() {
     STR_MOTIFS[0]?.id || ""
   );
   const [selectedKitId, setSelectedKitId] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<"sequence" | "schematic" | "text">(
-    "sequence"
-  );
   const { language } = useLanguage();
   const languageContent = translations[language] as (typeof translations)["en"];
   const defaultPageContent = translations.en.motifExplorerPage;
@@ -178,33 +175,6 @@ export default function MotifExplorerPage() {
                   </div>
                 )}
 
-                <div className="space-y-2">
-                  <Label className="text-base font-semibold text-foreground">
-                    Display Mode
-                  </Label>
-                  <Select
-                    value={viewMode}
-                    onValueChange={(v) =>
-                      setViewMode(v as "sequence" | "schematic" | "text")
-                    }
-                  >
-                    <SelectTrigger className="h-11 text-base">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="sequence" className="text-base">
-                        {pageContent.fields.viewMode.sequence}
-                      </SelectItem>
-                      <SelectItem value="schematic" className="text-base">
-                        {pageContent.fields.viewMode.schematic}
-                      </SelectItem>
-                      <SelectItem value="text" className="text-base">
-                        {pageContent.fields.viewMode.text}
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div className="pt-4 border-t">
                   <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                     {pageContent.help.general}
@@ -224,7 +194,6 @@ export default function MotifExplorerPage() {
                 {selectedMarker ? (
                   <MotifVisualization
                     marker={selectedMarker}
-                    viewMode={viewMode as "sequence" | "schematic" | "text"}
                     pageContent={pageContent}
                     markerInfo={markerInfo}
                     motifAllele={motifAllele}

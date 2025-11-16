@@ -528,6 +528,72 @@ export const translations = {
       documentation: "Documentation",
       support: "Support",
     },
+    // Community Hub
+    communityHub: {
+      hero: {
+        title: "Connect, Learn, Collaborate",
+        subtitle:
+          "We're building the first global community dedicated to STR analysis with next-generation sequencing. Soon you'll find tutorials, guides, real case examples, and collaborations created by researchers, labs, and students from around the world.",
+        cta: "Join as an early contributor",
+      },
+      howToJoin: {
+        title: "How you can be part of this",
+        intro:
+          "For STR analysis with NGS to be truly useful and accessible, we need a diverse global community: labs, students, educators, developers, and practitioners working together. We're not asking for your data – we care about your experience, your questions, and your ideas.",
+        cards: {
+          experience: {
+            title: "Share your experience",
+            body: "Tell us how you use STRs in your work: case studies, validation results, teaching materials, or lessons learned from challenging samples.",
+          },
+          tutorials: {
+            title: "Contribute tutorials and guides",
+            body: "Help others learn by explaining a pipeline, a marker, a concept, or a tool you wish you had understood earlier.",
+          },
+          collaborations: {
+            title: "Join early collaborations",
+            body: "Take part in testing new STRhub features, giving feedback on ideas, or helping shape open standards for STR analysis with NGS.",
+          },
+        },
+        cta: "I want to contribute",
+      },
+      earlyContributors: {
+        title: "Early contributors and partner labs",
+        body: "STRhub is being shaped with input from researchers, students, and laboratories that believe in open science and accessible technology. This section will highlight the teams and individuals who are helping to build and validate the platform.",
+        comingSoon: "Coming soon",
+      },
+      recentPosts: {
+        title: "Recent educational posts",
+        subtitle:
+          "Back to basics articles to help you and your team build a solid foundation in STR and NGS analysis.",
+        loading: "Loading posts...",
+        readMore: "Read More",
+      },
+      comingSoon: {
+        title: "What's coming next",
+        intro: "We're working on new resources and tools that will gradually appear in this hub.",
+        cards: {
+          structureBrowser: {
+            title: "STR structure browser",
+            body: "Interactive views to explore repeat structures, flanking regions, and internal variants for different markers.",
+          },
+          caseStudies: {
+            title: "Case studies from labs",
+            body: "Didactic examples of mixtures, stutter, degradation, and validation results shared by the community.",
+          },
+          pipelines: {
+            title: "Pipelines and open tools",
+            body: "Guides to build and connect STR pipelines using STRhub with common analysis tools and scripting languages.",
+          },
+        },
+      },
+      contact: {
+        title: "Join the conversation",
+        intro:
+          "Have ideas, questions, or collaboration proposals? Tell us how STRhub could support your work or what you would like to see in this community.",
+        messagePlaceholder:
+          "Tell us about your research, collaboration ideas, or features you'd like to see in STRhub...",
+      },
+    },
     // Common
     common: {
       loading: "Loading...",

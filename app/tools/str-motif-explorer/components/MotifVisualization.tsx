@@ -97,7 +97,6 @@ function buildSequenceTokensFromMotifAllele(
 
 type MotifVisualizationProps = {
   marker: MarkerMotif;
-  viewMode: "sequence" | "schematic" | "text";
   markerInfo?: MarkerRefs;
   motifAllele?: MotifAlleleDef;
   selectedKitId?: string;
@@ -130,7 +129,6 @@ type MotifVisualizationProps = {
 
 export function MotifVisualization({
   marker,
-  viewMode,
   markerInfo,
   motifAllele,
   selectedKitId,
@@ -192,21 +190,20 @@ export function MotifVisualization({
     }
   };
 
-  if (viewMode === "sequence") {
-    if (!marker.segments || marker.segments.length === 0) {
-      return (
-        <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            Sequence highlight mode is not available for this marker.
-          </p>
-        </div>
-      );
-    }
+  if (!marker.segments || marker.segments.length === 0) {
+    return (
+      <div className="space-y-4">
+        <p className="text-sm text-muted-foreground">
+          Sequence highlight mode is not available for this marker.
+        </p>
+      </div>
+    );
+  }
 
-    const blocks = buildSequenceBlocks(marker.segments);
+  const blocks = buildSequenceBlocks(marker.segments);
 
-    // Helper to split repeat blocks into individual capsules
-    const renderSequenceBlock = (block: SequenceBlock, blockIndex: number) => {
+  // Helper to split repeat blocks into individual capsules
+  const renderSequenceBlock = (block: SequenceBlock, blockIndex: number) => {
       if (block.type === "repeat") {
         // Block index directly maps to segment index since buildSequenceBlocks creates blocks for all segments
         const segment = marker.segments![blockIndex];
@@ -256,257 +253,157 @@ export function MotifVisualization({
           </span>
         );
       }
-    };
+  };
 
-    // Use CSF1PO data if available, otherwise fall back to old structure
-    const alleleData = marker.id === "CSF1PO" ? csf1poAllele10 : null;
+  // Use CSF1PO data if available, otherwise fall back to old structure
+  const alleleData = marker.id === "CSF1PO" ? csf1poAllele10 : null;
 
-    // Build repeat chips from markerInfo if available
-    const repeatChips = markerInfo
-      ? Array.from(
-          { length: markerInfo.refAlleleRepeats },
-          () => markerInfo.motif
-        )
-      : [];
+  // Build repeat chips from markerInfo if available
+  const repeatChips = markerInfo
+    ? Array.from(
+        { length: markerInfo.refAlleleRepeats },
+        () => markerInfo.motif
+      )
+    : [];
 
-    return (
-      <div className="space-y-4">
-        {/* Header */}
-        <div>
-          <p className="text-base text-slate-600 dark:text-slate-400 mb-1">
-            {pageContent.labels.canonicalPattern}{" "}
-            <span className="font-mono">
-              {(() => {
-                const canonicalMotif =
-                  motifAllele?.canonicalMotif ??
-                  markerInfo?.motif ??
-                  marker.canonicalMotif ??
-                  "";
-                return canonicalMotif
-                  ? `[${canonicalMotif}]ₙ`
-                  : marker.canonicalPattern || marker.motifPattern;
-              })()}
-            </span>
-          </p>
-        </div>
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div>
+        <p className="text-base text-slate-600 dark:text-slate-400 mb-1">
+          {pageContent.labels.canonicalPattern}{" "}
+          <span className="font-mono">
+            {(() => {
+              const canonicalMotif =
+                motifAllele?.canonicalMotif ??
+                markerInfo?.motif ??
+                marker.canonicalMotif ??
+                "";
+              return canonicalMotif
+                ? `[${canonicalMotif}]ₙ`
+                : marker.canonicalPattern || marker.motifPattern;
+            })()}
+          </span>
+        </p>
+      </div>
 
-        {/* Canonical Pattern Blocks */}
-        {(() => {
-          const canonicalSegments = buildCanonicalDisplaySegments(motifAllele);
-          if (canonicalSegments.length > 0) {
-            return (
-              <div className="mt-4">
-                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                  Structure
-                </p>
-                <div className="break-words font-mono text-sm flex flex-wrap gap-1 items-center">
-                  {canonicalSegments.map((seg, idx) => (
-                    <span
-                      key={idx}
-                      className={
-                        seg.kind === "core"
-                          ? "inline-flex items-center bg-[#6ee7b7]/20 border border-[#6ee7b7]/50 text-teal-700 dark:bg-[#6ee7b7]/30 dark:border-[#6ee7b7]/70 dark:text-[#6ee7b7] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
-                          : "inline-flex items-center bg-slate-50 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
-                      }
-                    >
-                      {seg.label}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            );
-          }
-          if (markerInfo && repeatChips.length > 0) {
-            return (
-              <div className="mt-4">
-                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                  Structure
-                </p>
-                <div className="break-words font-mono text-sm">
-                  flank {repeatChips.join("")} flank
-                </div>
-              </div>
-            );
-          }
-          if (alleleData) {
-            return (
-              <div className="mt-4">
-                <div className="break-words font-mono text-sm">
-                  {alleleData.canonicalPatternBlocks
-                    .map((block) => block.label)
-                    .join("")}
-                </div>
-              </div>
-            );
-          }
-          return null;
-        })()}
-
-        {/* Conceptual sequence, summary, and example sequence */}
-        <div className="mt-4 space-y-3">
-          {/* Colored Full Sequence */}
-          {!alleleData && (
-            <div className="rounded-lg border bg-slate-50 dark:bg-slate-900/50 p-4 font-mono text-xs md:text-sm leading-relaxed break-all">
-              <div className="inline-flex flex-wrap gap-x-1 items-center">
-                {blocks.map((b, i) => (
-                  <span key={i} className="inline-flex items-center">
-                    {renderSequenceBlock(b, i)}
+      {/* Canonical Pattern Blocks */}
+      {(() => {
+        const canonicalSegments = buildCanonicalDisplaySegments(motifAllele);
+        if (canonicalSegments.length > 0) {
+          return (
+            <div className="mt-4">
+              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                Structure
+              </p>
+              <div className="break-words font-mono text-sm flex flex-wrap gap-1 items-center">
+                {canonicalSegments.map((seg, idx) => (
+                  <span
+                    key={idx}
+                    className={
+                      seg.kind === "core"
+                        ? "inline-flex items-center bg-[#6ee7b7]/20 border border-[#6ee7b7]/50 text-teal-700 dark:bg-[#6ee7b7]/30 dark:border-[#6ee7b7]/70 dark:text-[#6ee7b7] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
+                        : "inline-flex items-center bg-slate-50 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
+                    }
+                  >
+                    {seg.label}
                   </span>
                 ))}
               </div>
             </div>
-          )}
-
-          {/* Representative Allele Sequence */}
-          {motifAllele ? (
-            <RepresentativeAlleleSequence
-              motifAllele={motifAllele}
-              pageContent={pageContent}
-            />
-          ) : alleleData ? (
-            <RepresentativeAlleleSequence
-              alleleData={alleleData}
-              pageContent={pageContent}
-            />
-          ) : (
-            marker.exampleAllele &&
-            marker.canonicalMotif && (
-              <ExampleAlleleSequence
-                marker={marker}
-                pageContent={pageContent}
-              />
-            )
-          )}
-        </div>
-
-        {/* Legend */}
-        <div className="mt-6 pt-4 border-t">
-          <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">
-            Legend:
-          </p>
-          <div className="flex flex-wrap gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-[#6ee7b7]/30 border border-[#6ee7b7]/50"></span>
-              <span className="text-slate-600 dark:text-slate-400">
-                {pageContent.legend.repeat}
-              </span>
+          );
+        }
+        if (markerInfo && repeatChips.length > 0) {
+          return (
+            <div className="mt-4">
+              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                Structure
+              </p>
+              <div className="break-words font-mono text-sm">
+                flank {repeatChips.join("")} flank
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-[#fdba74]/30 border border-[#fdba74]/50"></span>
-              <span className="text-slate-600 dark:text-slate-400">
-                {pageContent.legend.interruption}
-              </span>
+          );
+        }
+        if (alleleData) {
+          return (
+            <div className="mt-4">
+              <div className="break-words font-mono text-sm">
+                {alleleData.canonicalPatternBlocks
+                  .map((block) => block.label)
+                  .join("")}
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-slate-500/30 border border-slate-500/50"></span>
-              <span className="text-slate-600 dark:text-slate-400">
-                {pageContent.legend.flank || "Flanking region"}
-              </span>
+          );
+        }
+        return null;
+      })()}
+
+      {/* Conceptual sequence, summary, and example sequence */}
+      <div className="mt-4 space-y-3">
+        {/* Colored Full Sequence */}
+        {!alleleData && (
+          <div className="rounded-lg border bg-slate-50 dark:bg-slate-900/50 p-4 font-mono text-xs md:text-sm leading-relaxed break-all">
+            <div className="inline-flex flex-wrap gap-x-1 items-center">
+              {blocks.map((b, i) => (
+                <span key={i} className="inline-flex items-center">
+                  {renderSequenceBlock(b, i)}
+                </span>
+              ))}
             </div>
           </div>
-        </div>
-      </div>
-    );
-  }
+        )}
 
-  if (viewMode === "schematic") {
-    // Build repeat chips from markerInfo if available
-    const repeatChips = markerInfo
-      ? Array.from(
-          { length: markerInfo.refAlleleRepeats },
-          () => markerInfo.motif
-        )
-      : [];
-
-    return (
-      <div className="space-y-6">
-        {/* Header */}
-        <div>
-          <p className="text-base text-slate-600 dark:text-slate-400 mb-1">
-            {pageContent.labels.canonicalPattern}{" "}
-            <span className="font-mono">
-              {motifAllele?.canonicalMotif
-                ? `[${motifAllele.canonicalMotif}]n`
-                : markerInfo
-                ? `[${markerInfo.motif}]n`
-                : marker.canonicalPattern || marker.motifPattern}
-            </span>
-          </p>
-        </div>
-
-        {/* Canonical Pattern Blocks from markerInfo */}
-        {markerInfo && repeatChips.length > 0 ? (
-          <div>
-            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-              Structure
-            </p>
-            <div className="break-words font-mono text-sm">
-              flank {repeatChips.join("")} flank
-            </div>
-          </div>
+        {/* Representative Allele Sequence */}
+        {motifAllele ? (
+          <RepresentativeAlleleSequence
+            motifAllele={motifAllele}
+            pageContent={pageContent}
+          />
+        ) : alleleData ? (
+          <RepresentativeAlleleSequence
+            alleleData={alleleData}
+            pageContent={pageContent}
+          />
         ) : (
-          /* Schematic Visualization */
-          <div>
-            <div className="break-words font-mono text-sm">
-              {marker.tokens.map((token) => token.label).join("")}
-            </div>
-          </div>
+          marker.exampleAllele &&
+          marker.canonicalMotif && (
+            <ExampleAlleleSequence
+              marker={marker}
+              pageContent={pageContent}
+            />
+          )
         )}
+      </div>
 
-        {/* Legend */}
-        <div className="pt-4 border-t">
-          <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">
-            Legend:
-          </p>
-          <div className="flex flex-wrap gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-teal-500/30 border border-teal-500/50"></span>
-              <span className="text-slate-600 dark:text-slate-400">
-                {pageContent.legend.repeat}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-[#fdba74]/30 border border-[#fdba74]/50"></span>
-              <span className="text-slate-600 dark:text-slate-400">
-                {pageContent.legend.interruption}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-gray-500/30 border border-gray-500/50"></span>
-              <span className="text-slate-600 dark:text-slate-400">
-                {pageContent.legend.other}
-              </span>
-            </div>
+      {/* Legend */}
+      <div className="mt-6 pt-4 border-t">
+        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">
+          Legend:
+        </p>
+        <div className="flex flex-wrap gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-[#6ee7b7]/30 border border-[#6ee7b7]/50"></span>
+            <span className="text-slate-600 dark:text-slate-400">
+              {pageContent.legend.repeat}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-[#fdba74]/30 border border-[#fdba74]/50"></span>
+            <span className="text-slate-600 dark:text-slate-400">
+              {pageContent.legend.interruption}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-slate-500/30 border border-slate-500/50"></span>
+            <span className="text-slate-600 dark:text-slate-400">
+              {pageContent.legend.flank || "Flanking region"}
+            </span>
           </div>
         </div>
       </div>
-    );
-  }
-
-  if (viewMode === "text") {
-    return (
-      <div className="space-y-4">
-        <div>
-          <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-            {pageContent.labels.canonicalPattern}
-          </p>
-          <p className="text-base font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg">
-            {marker.canonicalPattern || marker.motifPattern}
-          </p>
-        </div>
-        {marker.notes && (
-          <div className="pt-4 border-t">
-            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              {marker.notes}
-            </p>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  // Default: sequence mode (should not reach here, but keeping as fallback)
-  return null;
+    </div>
+  );
 }
 
 // Helper types and functions for new motif allele data
@@ -585,10 +482,21 @@ function RepresentativeAlleleSequence({
     return `${baseClasses} ${colorClasses}`;
   };
 
+  // Helper function to add line breaks to sequence
+  const formatSequenceWithLineBreaks = (sequence: string, lineLength: number = 60): string => {
+    if (!sequence) return "";
+    const chunks: string[] = [];
+    for (let i = 0; i < sequence.length; i += lineLength) {
+      chunks.push(sequence.slice(i, i + lineLength));
+    }
+    return chunks.join("\n");
+  };
+
   // Use new motifAllele data if available
   if (motifAllele) {
     const alleleLabel = motifAllele.allele != null ? motifAllele.allele : "?";
     const sequenceToShow = motifAllele?.fullSequence?.trim() || "";
+    const formattedSequence = formatSequenceWithLineBreaks(sequenceToShow);
     const sequenceTokens = buildSequenceTokensFromMotifAllele(motifAllele);
 
     return (
@@ -605,8 +513,10 @@ function RepresentativeAlleleSequence({
           </p>
         </div>
         {sequenceToShow && (
-          <div className="rounded-md bg-slate-50 px-3 py-2 text-sm font-mono text-slate-800">
-            {sequenceToShow}
+          <div className="mt-2 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 px-3 py-2">
+            <pre className="font-mono text-sm leading-snug whitespace-pre-wrap break-words max-h-40 overflow-y-auto text-slate-800 dark:text-slate-200">
+              {formattedSequence}
+            </pre>
           </div>
         )}
         {sequenceTokens ? (

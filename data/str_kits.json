@@ -1,0 +1,2140 @@
+{
+  "D1S1677": {
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "ATAGAGCAGTGTTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCATTCCGTCCTTCCTGTCACACTAAGAAATACAATTTCTATTA",
+      "leftFlank": "ATAGAGCAGTGT",
+      "rightFlank": "TTCATTCCGTCCTTCCTGTCACACTAAGAAATACAATTTCTATTA",
+      "segments": [
+        "TTCC",
+        "TTCC",
+        "TTCC",
+        "TTCC",
+        "TTCC",
+        "TTCC",
+        "TTCC",
+        "TTCC",
+        "TTCC",
+        "TTCC",
+        "TTCC",
+        "TTCC",
+        "TTCC",
+        "TTCC",
+        "TTCC"
+      ]
+    }
+  },
+  "D1S1656": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "TTCAGAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+      "leftFlank": "TTCAGAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACAC",
+      "rightFlank": "CTA",
+      "segments": [
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "AATATATATACATACAATTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATCAC",
+      "leftFlank": "AATATATATACATACAATTAAACACACACACAC",
+      "rightFlank": "CTACATCAC",
+      "segments": [
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "GAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATCACACAGTTGACCCTTGAGCA",
+      "leftFlank": "GAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACAC",
+      "rightFlank": "CTACATCACACAGTTGACCCTTGAGCA",
+      "segments": [
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "GAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATCACACAGTTGACCCTTGA",
+      "leftFlank": "GAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACAC",
+      "rightFlank": "CTACATCACACAGTTGACCCTTGA",
+      "segments": [
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT"
+      ]
+    }
+  },
+  "TPOX": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "AATGAATGAATGAATGAATGAATGAATGAATGTTTGG",
+      "leftFlank": "",
+      "rightFlank": "TTTGG",
+      "segments": [
+        "AATG",
+        "AATG",
+        "AATG",
+        "AATG",
+        "AATG",
+        "AATG",
+        "AATG",
+        "AATG"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "CTCACTGAATGAATGAATGAATGAATGAATGAATGAATGTTTGG",
+      "leftFlank": "CTCAC",
+      "rightFlank": "TGTTTGG",
+      "segments": [
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "CCAGAACCGTCGACTGGCACAGAACAGGCACTTAGGGAACCCTCACTGAATGAATGAATGAATGAATGAATGAATGAATGTTTGGGCAAATAAACGCTGACAAGGACAGAAGGGCCTAGCGGGAAGGG",
+      "leftFlank": "CCAGAACCGTCGACTGGCACAGAACAGGCACTTAGGGAACCCTCAC",
+      "rightFlank": "TGTTTGGGCAAATAAACGCTGACAAGGACAGAAGGGCCTAGCGGGAAGGG",
+      "segments": [
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "CACTGGCCTGTGGGTCCCCCCATAGATCGTAAGCCCAGGAGGAAGGGCTGTGTTTCAGGGCTGTGATCACTAGCACCCAGAACCGTCGACTGGCACAGAACAGGCACTTAGGGAACCCTCACTGAATGAATGAATGAATGAATGAATGAATGAATGTTTGGGCAAATAAACGCT",
+      "leftFlank": "CACTGGCCTGTGGGTCCCCCCATAGATCGTAAGCCCAGGAGGAAGGGCTGTGTTTCAGGGCTGTGATCACTAGCACCCAGAACCGTCGACTGGCACAGAACAGGCACTTAGGGAACCCTCAC",
+      "rightFlank": "TGTTTGGGCAAATAAACGCT",
+      "segments": [
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA"
+      ]
+    }
+  },
+  "D2S441": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "CCAGGAACTGTGGCTCATCTATGAAAACTTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATATCATAACACCACAGCCACTTA",
+      "leftFlank": "CCAGGAACTGTGGCTCATCTATGAAAACT",
+      "rightFlank": "TATCATAACACCACAGCCACTTA",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "CATGAGCCAGGAACTGTGGCTCATCTATGAAAACTTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATA",
+      "leftFlank": "CATGAGCCAGGAACTGTGGCTCATCTATGAAAACT",
+      "rightFlank": "TA",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "GAGCCAGGAACTGTGGCTCATCTATGAAAACTTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATATCATAACACCACAGCCACTTAGCTCCAATTTAAAAGATTAAT",
+      "leftFlank": "GAGCCAGGAACTGTGGCTCATCTATGAAAACT",
+      "rightFlank": "TATCATAACACCACAGCCACTTAGCTCCAATTTAAAAGATTAAT",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "TGCACCCAACATTCTAACAAAAGGCTGTAACAAGGGCTACAGGAATCATGAGCCAGGAACTGTGGCTCATCTATGAAAACTTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATATCA",
+      "leftFlank": "TGCACCCAACATTCTAACAAAAGGCTGTAACAAGGGCTACAGGAATCATGAGCCAGGAACTGTGGCTCATCTATGAAAACT",
+      "rightFlank": "TATCA",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    }
+  },
+  "D2S1776": {
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "TGTGCGTATACACACACACAGATAAAAAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATGATAGATATTTCATAACTGTCCACCTCAGAGCCTAGAGTCAATGCCTCCTCAGTAGCTCC",
+      "leftFlank": "TGTGCGTATACACACACACAGATAAAA",
+      "rightFlank": "GATAGATATTTCATAACTGTCCACCTCAGAGCCTAGAGTCAATGCCTCCTCAGTAGCTCC",
+      "segments": [
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT"
+      ]
+    }
+  },
+  "D2S1338": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "GAGGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTT",
+      "leftFlank": "GAGGGAAGGAAGGAC",
+      "rightFlank": "GGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTT",
+      "segments": [
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "TGGTACCTGCAGGTGGCCCATAATCATGAGTTATTCAGTAAGTTAAAGGATTGCAGGAGGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAAGG",
+      "leftFlank": "TGGTACCTGCAGGTGGCCCATAATCATGAGTTATTCAGTAAGTTAAAGGATTGCAGGAGGGAAGGAAGGAC",
+      "rightFlank": "GGCAGGCAGGCAGGCAGGCAGGCAGGCAAGG",
+      "segments": [
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "GCAGGAGGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTTCTGTTTCCAAATCCACTGGC",
+      "leftFlank": "GCAGGAGGGAAGGAAGGAC",
+      "rightFlank": "GGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTTCTGTTTCCAAATCCACTGGC",
+      "segments": [
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "CTAGCATGGTACCTGCAGGTGGCCCATAATCATGAGTTATTCAGTAAGTTAAAGGATTGCAGGAGGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTTCTGTTTCCAAATCCACTGGCTCCCTCCCACAGCT",
+      "leftFlank": "CTAGCATGGTACCTGCAGGTGGCCCATAATCATGAGTTATTCAGTAAGTTAAAGGATTGCAGGAGGGAAGGAAGGAC",
+      "rightFlank": "GGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTTCTGTTTCCAAATCCACTGGCTCCCTCCCACAGCT",
+      "segments": [
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA"
+      ]
+    }
+  },
+  "D3S1358": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "TTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGACAGGGTCTTGCTC",
+      "leftFlank": "TTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATGTATCTATCTG",
+      "rightFlank": "TGAGACAGGGTCTTGCTC",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "ATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGACAGGGTCT",
+      "leftFlank": "ATCTATCTG",
+      "rightFlank": "TGAGACAGGGTCT",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "CAGAGGCTTGCATGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGACAGGGTCTTGCTCTGTCACCCAGATTG",
+      "leftFlank": "CAGAGGCTTGCATGTATCTATCTG",
+      "rightFlank": "TGAGACAGGGTCTTGCTCTGTCACCCAGATTG",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "TGCCCACTTCTGCCCAGGGATCTATTTTTCTGTGGTGTGTATTCCCTGTGCCTTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGACAGGGTCTTGCTCTGTC",
+      "leftFlank": "TGCCCACTTCTGCCCAGGGATCTATTTTTCTGTGGTGTGTATTCCCTGTGCCTTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATGTATCTATCTG",
+      "rightFlank": "TGAGACAGGGTCTTGCTCTGTC",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    }
+  },
+  "D3S4529": {
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "AAAGGAACTGTTAGGGGCCTCCAGGGAGACAAAATGAAGAAACAGACAGATAGATAGATAGATAAATAGATAGATAGATAGATAGATAGATAGATAGATCAATTGATCGATATTTATTTTAA",
+      "leftFlank": "AAAGGAACTGTTAGGGGCCTCCAGGGAGACAAAATGAAGAAACAGACAGATAGATAGATAGATAA",
+      "rightFlank": "ATCAATTGATCGATATTTATTTTAA",
+      "segments": [
+        "ATAG",
+        "ATAG",
+        "ATAG",
+        "ATAG",
+        "ATAG",
+        "ATAG",
+        "ATAG",
+        "ATAG"
+      ]
+    }
+  },
+  "D4S2408": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "CTATGCATCTATCTATCTATCTATCTATCTATCTATCTATCTAATGGTTA",
+      "leftFlank": "CTATGC",
+      "rightFlank": "AATGGTTA",
+      "segments": [
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "TACATAACAGTTCAATAGAAAGCTATGCATCTATCTATCTATCTATCTATCTATCTATCTATCTAA",
+      "leftFlank": "TACATAACAGTTCAATAGAAAGCTATGC",
+      "rightFlank": "AA",
+      "segments": [
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "AAATTCAGCAAGTTAAGAACTTCTACATTTAAGGTACATAACAGTTCAATAGAAAGCTATGCATCTATCTATCTATCTATCTATCTATCTATCTATCTAATGGTTACTATTTTTCAGTCA",
+      "leftFlank": "AAATTCAGCAAGTTAAGAACTTCTACATTTAAGGTACATAACAGTTCAATAGAAAGCTATGC",
+      "rightFlank": "AATGGTTACTATTTTTCAGTCA",
+      "segments": [
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT"
+      ]
+    }
+  },
+  "FGA": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "CCAGCAAAAAAGAAAGGAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTAGCTTGTAAATATGC",
+      "leftFlank": "CCAGCAAAAAAGAAAGGAAGAAAGGAAGGAAGG",
+      "rightFlank": "AGAGAAAAAAGAAAGAAAGAAACTAGCTTGTAAATATGC",
+      "segments": [
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "AAAAAAGAAAGGAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTA",
+      "leftFlank": "AAAAAAGAAAGGAAGAAAGGAAGGAAGG",
+      "rightFlank": "AGAGAAAAAAGAAAGAAAGAAACTA",
+      "segments": [
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "AAGAAAGGAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTAGCTTGTAAATAT",
+      "leftFlank": "AAGAAAGGAAGAAAGGAAGGAAGG",
+      "rightFlank": "AGAGAAAAAAGAAAGAAAGAAACTAGCTTGTAAATAT",
+      "segments": [
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "GTCTGAAATCGAAAATATGGTTATTGAAGTAGCTGCTGAGTGATTTGTCTGTAATTGCCAGCAAAAAAGAAAGGAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA",
+      "leftFlank": "GTCTGAAATCGAAAATATGGTTATTGAAGTAGCTGCTGAGTGATTTGTCTGTAATTGCCAGCAAAAAAGAAAGGAAGAAAGGAAGGAAGG",
+      "rightFlank": "AGAGAAAAAAGAAAGAAAGAAA",
+      "segments": [
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA"
+      ]
+    }
+  },
+  "D5S2800": {
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "TCTCCAAAACATAATTTTTTAAATTTTAAATTTCTGTTGGTACATAATAGGTAGGTAGGTAGACAGACAGACAGACAGACAGACAGACAGACAGATAGATAGATAGATTGATTGATTTATGGGGCCCAC",
+      "leftFlank": "TCTCCAAAACATAATTTTTTAAATTTTAAATTTCTGTTGGTACATAATAGGTAGGTAGGT",
+      "rightFlank": "AGATAGATAGATAGATTGATTGATTTATGGGGCCCAC",
+      "segments": [
+        "AGAC",
+        "AGAC",
+        "AGAC",
+        "AGAC",
+        "AGAC",
+        "AGAC",
+        "AGAC",
+        "AGAC"
+      ]
+    }
+  },
+  "D5S818": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "TATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTTCAAAAT",
+      "leftFlank": "TATTTATACC",
+      "rightFlank": "TCTTCAAAAT",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "TTTGTATCTTTATCTGTATCCTTATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTTCAAAATATTACATA",
+      "leftFlank": "TTTGTATCTTTATCTGTATCCTTATTTATACC",
+      "rightFlank": "TCTTCAAAATATTACATA",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "ACAACATTTGTATCTTTATCTGTATCCTTATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTTCAAAATATTACATAAGGATACCAAA",
+      "leftFlank": "ACAACATTTGTATCTTTATCTGTATCCTTATTTATACC",
+      "rightFlank": "TCTTCAAAATATTACATAAGGATACCAAA",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "AACATTTGTATCTTTATCTGTATCCTTATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTTCAAAATATTACATAAGGATACCAAAGAGGAAAATCACCCTTGTCACATACTTGCTATTAAAATATACTTTTATTAGTACA",
+      "leftFlank": "AACATTTGTATCTTTATCTGTATCCTTATTTATACC",
+      "rightFlank": "TCTTCAAAATATTACATAAGGATACCAAAGAGGAAAATCACCCTTGTCACATACTTGCTATTAAAATATACTTTTATTAGTACA",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    }
+  },
+  "CSF1PO": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "CTTCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCTATCTATCTT",
+      "leftFlank": "CTTCCT",
+      "rightFlank": "AATCTATCTATCTT",
+      "segments": [
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATA",
+      "leftFlank": "",
+      "rightFlank": "AATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATA",
+      "segments": [
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "CTGTGTCAGACCCTGTTCTAAGTACTTCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATAT",
+      "leftFlank": "CTGTGTCAGACCCTGTTCTAAGTACTTCCT",
+      "rightFlank": "AATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATAT",
+      "segments": [
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "CTAAGTACTTCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATATCTTCATTTTACAGGTAGGAAAACTGAGACACAGGGTGGTTAGCAACCTGCTAGTCCTTGGCAGACTCAG",
+      "leftFlank": "CTAAGTACTTCCT",
+      "rightFlank": "AATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATATCTTCATTTTACAGGTAGGAAAACTGAGACACAGGGTGGTTAGCAACCTGCTAGTCCTTGGCAGACTCAG",
+      "segments": [
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT",
+        "ATCT"
+      ]
+    }
+  },
+  "SE33": {
+    "ForenSeq MainstAY SE": {
+      "sequence": "CTCTTTCTTTCCTTCCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTCTTTCTTTCTTTCTCTTTCTTTCTTTTTCTTTCTTTTTCTTCCTTCCTTCCTTTCTCTCTCTCTCTCTTTCTTTCTTTCTAACTCTCTTTGTCTCTTTCTTTCTTTCTTTTGACGGAGTT",
+      "leftFlank": "CTCTTTCTTTCCTTC",
+      "rightFlank": "TTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTCTTTCTTTCTTTCTCTTTCTTTCTTTTTCTTTCTTTTTCTTCCTTCCTTCCTTTCTCTCTCTCTCTCTTTCTTTCTTTCTAACTCTCTTTGTCTCTTTCTTTCTTTCTTTTGACGGAGTT",
+      "segments": [
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "GTAACTTGCTCTTTCTTTCCTTCCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTCTTTCTTTCTTTCTCTTTCTTTCTTTTTCTTTCTTTTTCTTCCTTCCTTCCTTTCTCTCTCTCTCTCTTTCTTTCTTTCTAACTCTCTTTGTCTCTTTCTTTCTTTCTTTTGACGGAGTT",
+      "leftFlank": "GTAACTTGCTCTTTCTTTCCTTC",
+      "rightFlank": "TTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTCTTTCTTTCTTTCTCTTTCTTTCTTTTTCTTTCTTTTTCTTCCTTCCTTCCTTTCTCTCTCTCTCTCTTTCTTTCTTTCTAACTCTCTTTGTCTCTTTCTTTCTTTCTTTTGACGGAGTT",
+      "segments": [
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT",
+        "CTTT"
+      ]
+    }
+  },
+  "D6S1043": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "AGATGGCATATTGTGAAATTTCTCAGCTTCCATAATTGTATGAGCCACTTCCCATAATAAATCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTGATCTATCAATCTATTGATC",
+      "leftFlank": "AGATGGCATATTGTGAAATTTCTCAGCTTCCATAATTGTATGAGCCACTTCCCATAATAAATC",
+      "rightFlank": "CTGATCTATCAATCTATTGATC",
+      "segments": [
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "CTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTGATCTATCAATCTATTG",
+      "leftFlank": "",
+      "rightFlank": "CTGATCTATCAATCTATTG",
+      "segments": [
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "AATAAATCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTGATCTATCAATCTATTGATCCACCCATCCTTGCACACTATTGCTTCTATCTCTCTGGAGAGCTAAT",
+      "leftFlank": "AATAAATC",
+      "rightFlank": "CTGATCTATCAATCTATTGATCCACCCATCCTTGCACACTATTGCTTCTATCTCTCTGGAGAGCTAAT",
+      "segments": [
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT",
+        "CTAT"
+      ]
+    }
+  },
+  "D6S474": {
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "TAGTCAGGGTTTTCCAAGAGATAGACCAATTAGATAGATAGATAGATAGATGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAAAAGATAGATATGAGTAGGGATTTAT",
+      "leftFlank": "TAGTCAGGGTTTTCCAAGAGATAGACCAATTAGATAGATAGATAGATAGAT",
+      "rightFlank": "AAAGATAGATATGAGTAGGGATTTAT",
+      "segments": [
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA"
+      ]
+    }
+  },
+  "D7S820": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "TATTTAGTGAGATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTAGTTCGTTCTAAACTAT",
+      "leftFlank": "TATTTAGTGAGATTAAAAAAAACTATCAATCTG",
+      "rightFlank": "TCGTTAGTTCGTTCTAAACTAT",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "AATATTGGTAATTAAATGTTTACTATAGACTATTTAGTGAGATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTAGTTCGTTCTA",
+      "leftFlank": "AATATTGGTAATTAAATGTTTACTATAGACTATTTAGTGAGATTAAAAAAAACTATCAATCTG",
+      "rightFlank": "TCGTTAGTTCGTTCTA",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "AAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTAGTTCGTTCTAAACTAT",
+      "leftFlank": "AAAAAAACTATCAATCTG",
+      "rightFlank": "TCGTTAGTTCGTTCTAAACTAT",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "AGAATTGCACCAAATATTGGTAATTAAATGTTTACTATAGACTATTTAGTGAGATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTAGTTCGTTCTAAACTATGACAAGTGTTCTATCATACCCTTTATATATATTAACCTTAAAATAACTC",
+      "leftFlank": "AGAATTGCACCAAATATTGGTAATTAAATGTTTACTATAGACTATTTAGTGAGATTAAAAAAAACTATCAATCTG",
+      "rightFlank": "TCGTTAGTTCGTTCTAAACTATGACAAGTGTTCTATCATACCCTTTATATATATTAACCTTAAAATAACTC",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    }
+  },
+  "D8S1179": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "TCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCC",
+      "leftFlank": "TCTATCTG",
+      "rightFlank": "TTCCC",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "CATGTGTACATTCGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCC",
+      "leftFlank": "CATGTGTACATTCGTATCTATCTG",
+      "rightFlank": "TTCC",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "TCATGTGTACATTCGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCCCACAGTGAAAATAATCTACAGGATAGGTAAATAAATTAAGGCATATTCA",
+      "leftFlank": "TCATGTGTACATTCGTATCTATCTG",
+      "rightFlank": "TTCCCCACAGTGAAAATAATCTACAGGATAGGTAAATAAATTAAGGCATATTCA",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "TGTGTACATTCGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCCCACAGTGAAAATAATCTACAGGATAGGTAAATAAATTAAGGCATATTCACGCAATGGGATACGATACAGTGATGAAAATGAACTAATTATAGCTACGT",
+      "leftFlank": "TGTGTACATTCGTATCTATCTG",
+      "rightFlank": "TTCCCCACAGTGAAAATAATCTACAGGATAGGTAAATAAATTAAGGCATATTCACGCAATGGGATACGATACAGTGATGAAAATGAACTAATTATAGCTACGT",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    }
+  },
+  "D9S1122": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "AGATAACTGTAGATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATTAAT",
+      "leftFlank": "AGATAACTGTAGATAGG",
+      "rightFlank": "TATTAAT",
+      "segments": [
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "TAGATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATTAAT",
+      "leftFlank": "TAGATAGG",
+      "rightFlank": "TATTAAT",
+      "segments": [
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA"
+      ]
+    }
+  },
+  "D10S1248": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "TTGAACAAATGAGTGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAATGAAGACAATACAACCAGAGTT",
+      "leftFlank": "TTGAACAAATGAGTGAGT",
+      "rightFlank": "ATGAAGACAATACAACCAGAGTT",
+      "segments": [
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "TGAGTGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAAT",
+      "leftFlank": "TGAGTGAGT",
+      "rightFlank": "AT",
+      "segments": [
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "TTAATGAATTGAACAAATGAGTGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAATGAAGACAATACAACCAGAGTTGTTCCTTTAATAACAAGACA",
+      "leftFlank": "TTAATGAATTGAACAAATGAGTGAGT",
+      "rightFlank": "ATGAAGACAATACAACCAGAGTTGTTCCTTTAATAACAAGACA",
+      "segments": [
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "CCCCAGGACCAATCTGGTCACAAACATATTAATGAATTGAACAAATGAGTGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
+      "leftFlank": "CCCCAGGACCAATCTGGTCACAAACATATTAATGAATTGAACAAATGAGTGAGT",
+      "rightFlank": "",
+      "segments": [
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA",
+        "GGAA"
+      ]
+    }
+  },
+  "TH01": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "TGCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAATGAGGGAAATAAGG",
+      "leftFlank": "TGCAGGTCACAGGGAACACAGACTCCATGG",
+      "rightFlank": "TGAGGGAAATAAGG",
+      "segments": [
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "ATGGTGAATGAATGAATGAATGAATGAATGAATGAGG",
+      "leftFlank": "ATGG",
+      "rightFlank": "TGAGG",
+      "segments": [
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "GCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAATGAGGGAAATAAGGGAGGAACAGGCCAATGGGAATCACCCC",
+      "leftFlank": "GCAGGTCACAGGGAACACAGACTCCATGG",
+      "rightFlank": "TGAGGGAAATAAGGGAGGAACAGGCCAATGGGAATCACCCC",
+      "segments": [
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "CTCCATGGTGAATGAATGAATGAATGAATGAATGAATGAGGGAAATAAGGGAGGAACAGGCCAATGGGAATCACCCCAGAGCCCAGATACCCTTTGAATTTTGCCCCCTATTTGCCCAGGACCCCCCACCATGAGCTGCTGCTAGAGCCTGGGAAGGGCCTTGGGGCTGCCTCCCCAAGCAGGCAGGCTGGTTGGGGTGC",
+      "leftFlank": "CTCCATGG",
+      "rightFlank": "TGAGGGAAATAAGGGAGGAACAGGCCAATGGGAATCACCCCAGAGCCCAGATACCCTTTGAATTTTGCCCCCTATTTGCCCAGGACCCCCCACCATGAGCTGCTGCTAGAGCCTGGGAAGGGCCTTGGGGCTGCCTCCCCAAGCAGGCAGGCTGGTTGGGGTGC",
+      "segments": [
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA",
+        "TGAA"
+      ]
+    }
+  },
+  "vWA": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "AATACATAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGATAGATCAAT",
+      "leftFlank": "AATACATAGGATGGATGGATAGATG",
+      "rightFlank": "GACAGACAGACAGACAGACAGATAGATCAAT",
+      "segments": [
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "TAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGATAGATCAATCCAAGT",
+      "leftFlank": "TAGGATGGATGGATAGATG",
+      "rightFlank": "GACAGACAGACAGACAGACAGATAGATCAATCCAAGT",
+      "segments": [
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "TGATAAATACATAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGATAGATCAATCCAAGTCACATA",
+      "leftFlank": "TGATAAATACATAGGATGGATGGATAGATG",
+      "rightFlank": "GACAGACAGACAGACAGACAGATAGATCAATCCAAGTCACATA",
+      "segments": [
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "GGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGATAGATCAATCCAAGTCACATACTGATTATTCTTATCATCCACTAGGGCTTTCACATCTCAGCCAAGTCAACTTGGATCCTCTAGACCTGTTTCTTCTTCTGGAA",
+      "leftFlank": "GGATAGATG",
+      "rightFlank": "GACAGACAGACAGACAGACAGATAGATCAATCCAAGTCACATACTGATTATTCTTATCATCCACTAGGGCTTTCACATCTCAGCCAAGTCAACTTGGATCCTCTAGACCTGTTTCTTCTTCTGGAA",
+      "segments": [
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA"
+      ]
+    }
+  },
+  "D12S391": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "CAGAGAGAAAGAATCAACAGGATCAATGGATGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGATGAGAGGGGATTTATTAGAGGAATTAGCTCAAGTGATATGGAGGCTGAAAAATCTCATGACAGTCCATCTGCAAGCTGGAGACCCAGGGACACTA",
+      "leftFlank": "CAGAGAGAAAGAATCAACAGGATCAATGGATGCATAGG",
+      "rightFlank": "CAGACAGACAGACAGACAGACAGACAGATGAGAGGGGATTTATTAGAGGAATTAGCTCAAGTGATATGGAGGCTGAAAAATCTCATGACAGTCCATCTGCAAGCTGGAGACCCAGGGACACTA",
+      "segments": [
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "ATGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGAT",
+      "leftFlank": "ATGCATAGG",
+      "rightFlank": "CAGACAGACAGACAGACAGACAGACAGAT",
+      "segments": [
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "ATCAATGGATGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGATGAGAGGGGATTTATTAGAGGAATTA",
+      "leftFlank": "ATCAATGGATGCATAGG",
+      "rightFlank": "CAGACAGACAGACAGACAGACAGACAGATGAGAGGGGATTTATTAGAGGAATTA",
+      "segments": [
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "CAATGGATGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGATGAGAGGG",
+      "leftFlank": "CAATGGATGCATAGG",
+      "rightFlank": "CAGACAGACAGACAGACAGACAGACAGATGAGAGGG",
+      "segments": [
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA",
+        "TAGA"
+      ]
+    }
+  },
+  "D12ATA63": {
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "AGCAATTTAAAAATGTTGTTGTTGTTATTATTATTATTATTATTATTATTATTACTTGAGACAGGGTCTCGCTCTGTTATCCAGGCTGGAGTACAGTGG",
+      "leftFlank": "AGCAATTTAAAAATGTTGTTGTTG",
+      "rightFlank": "CTTGAGACAGGGTCTCGCTCTGTTATCCAGGCTGGAGTACAGTGG",
+      "segments": [
+        "TTA",
+        "TTA",
+        "TTA",
+        "TTA",
+        "TTA",
+        "TTA",
+        "TTA",
+        "TTA",
+        "TTA",
+        "TTA"
+      ]
+    }
+  },
+  "D13S317": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "TCTGACCCATCTAACGCCTATCTGTATTTACAAATACATTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTGTCTGTCTTTTTGGG",
+      "leftFlank": "TCTGACCCATCTAACGCCTATCTGTATTTACAAATACAT",
+      "rightFlank": "AATCAATCATCTATCTATCTTTCTGTCTGTCTTTTTGGG",
+      "segments": [
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "TAACGCCTATCTGTATTTACAAATACATTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTG",
+      "leftFlank": "TAACGCCTATCTGTATTTACAAATACAT",
+      "rightFlank": "AATCAATCATCTATCTATCTTTCTG",
+      "segments": [
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "TCTGACCCATCTAACGCCTATCTGTATTTACAAATACATTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTGTCTGTCTTTTTGGGCT",
+      "leftFlank": "TCTGACCCATCTAACGCCTATCTGTATTTACAAATACAT",
+      "rightFlank": "AATCAATCATCTATCTATCTTTCTGTCTGTCTTTTTGGGCT",
+      "segments": [
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "TTCTTTAGTGGGCATCCGTGACTCTCTGGACTCTGACCCATCTAACGCCTATCTGTATTTACAAATACATTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTGTCTGTCTTTTTGGGCTGCCTATGGCTCAACCCAAGTTGAAGGAGGAGATTT",
+      "leftFlank": "TTCTTTAGTGGGCATCCGTGACTCTCTGGACTCTGACCCATCTAACGCCTATCTGTATTTACAAATACAT",
+      "rightFlank": "AATCAATCATCTATCTATCTTTCTGTCTGTCTTTTTGGGCTGCCTATGGCTCAACCCAAGTTGAAGGAGGAGATTT",
+      "segments": [
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC"
+      ]
+    }
+  },
+  "D14S1434": {
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "ACTCTACGACTGTCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCCATCCATCCACCTCCTATTGGTTCTACAGTTATTTTTTAAACCACTGCTCCGGAGCCAGAGC",
+      "leftFlank": "ACTCTACGACTGTCTGTCTG",
+      "rightFlank": "TCCATCCATCCACCTCCTATTGGTTCTACAGTTATTTTTTAAACCACTGCTCCGGAGCCAGAGC",
+      "segments": [
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA",
+        "TCTA"
+      ]
+    }
+  },
+  "Penta E": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "AGAAAACTCCTTACAATTTTCTTTTCTTTTCTTTTCTTTTCTTT",
+      "leftFlank": "AGAAAACTCCTTACAA",
+      "rightFlank": "TTT",
+      "segments": [
+        "TTTTC",
+        "TTTTC",
+        "TTTTC",
+        "TTTTC",
+        "TTTTC"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "ATTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGAC",
+      "leftFlank": "A",
+      "rightFlank": "TTTGAGAC",
+      "segments": [
+        "TTTTC",
+        "TTTTC",
+        "TTTTC",
+        "TTTTC",
+        "TTTTC"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "TATTTGGGTTATTAATTGAGAAAACTCCTTACAATTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGACTGAGTCTTGCTCAGTCGCCCAGGCTGGAGTGCAATGGCGTGATCTCGGCTCAC",
+      "leftFlank": "TATTTGGGTTATTAATTGAGAAAACTCCTTACAA",
+      "rightFlank": "TTTGAGACTGAGTCTTGCTCAGTCGCCCAGGCTGGAGTGCAATGGCGTGATCTCGGCTCAC",
+      "segments": [
+        "TTTTC",
+        "TTTTC",
+        "TTTTC",
+        "TTTTC",
+        "TTTTC"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "TAATGATTACATAACATACATGTGTGTAAAGTGCTTAGTATCATGATTGATACATGGAAAGAATTCTCTTATTTGGGTTATTAATTGAGAAAACTCCTTACAATTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGAC",
+      "leftFlank": "TAATGATTACATAACATACATGTGTGTAAAGTGCTTAGTATCATGATTGATACATGGAAAGAATTCTCTTATTTGGGTTATTAATTGAGAAAACTCCTTACAA",
+      "rightFlank": "TTTGAGAC",
+      "segments": [
+        "TTTTC",
+        "TTTTC",
+        "TTTTC",
+        "TTTTC",
+        "TTTTC"
+      ]
+    }
+  },
+  "D16S539": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "TCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCATTGAAAGACAAAACAGAGATGGATGATAGATAC",
+      "leftFlank": "TCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTG",
+      "rightFlank": "TCATTGAAAGACAAAACAGAGATGGATGATAGATAC",
+      "segments": [
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "AAGCACTGAAAGAAGAATCCAGAAAACCACAGTTCCCATTTTTATATGGGAGCAAACAAAGGCAGATCCCAAGCTCTTCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCATTGAAAGACAAAA",
+      "leftFlank": "AAGCACTGAAAGAAGAATCCAGAAAACCACAGTTCCCATTTTTATATGGGAGCAAACAAAGGCAGATCCCAAGCTCTTCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTG",
+      "rightFlank": "TCATTGAAAGACAAAA",
+      "segments": [
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "TCTTCCCTAGATCAATACAGACAGACAGACAGGTGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCATTGAAAGACAAAACAGAGATGGATGATAGATACATGCTT",
+      "leftFlank": "TCTTCCCTAGATCAATACAGACAGACAGACAGGTG",
+      "rightFlank": "TCATTGAAAGACAAAACAGAGATGGATGATAGATACATGCTT",
+      "segments": [
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "GTGCACAAATCTAAATGCAGAAAAGCACTGAAAGAAGAATCCAGAAAACCACAGTTCCCATTTTTATATGGGAGCAAACAAAGGCAGATCCCAAGCTCTTCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAT",
+      "leftFlank": "GTGCACAAATCTAAATGCAGAAAAGCACTGAAAGAAGAATCCAGAAAACCACAGTTCCCATTTTTATATGGGAGCAAACAAAGGCAGATCCCAAGCTCTTCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTG",
+      "rightFlank": "T",
+      "segments": [
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA",
+        "GATA"
+      ]
+    }
+  },
+  "D17S1301": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "ATATGTGTGAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATCCATCATAGGAATTTT",
+      "leftFlank": "ATATGTGTG",
+      "rightFlank": "CCATCATAGGAATTTT",
+      "segments": [
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "ATGCATGTGTTTATTTATACATATGTGTGAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGAT",
+      "leftFlank": "ATGCATGTGTTTATTTATACATATGTGTG",
+      "rightFlank": "",
+      "segments": [
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT"
+      ]
+    }
+  },
+  "D18S51": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "GTCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAAAGAGAGAGGAAAGAAAGAGAAAAAGAAAAGAAATAGTAGCAACTGTTATTGTAAGA",
+      "leftFlank": "GTCTC",
+      "rightFlank": "AAAGAGAGAGGAAAGAAAGAGAAAAAGAAAAGAAATAGTAGCAACTGTTATTGTAAGA",
+      "segments": [
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "CTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAAAGAGAGAGGAAAGAAAGAGAAAAAGAAAAGAAATAGT",
+      "leftFlank": "CTC",
+      "rightFlank": "AAAGAGAGAGGAAAGAAAGAGAAAAAGAAAAGAAATAGT",
+      "segments": [
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "CTGAGTGACAAATTGAGACCTTGTCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAAAGAGAGAGGAAAGAAAGAGAAAAAGAAAAGAAATAGTAGCAACTGTTATT",
+      "leftFlank": "CTGAGTGACAAATTGAGACCTTGTCTC",
+      "rightFlank": "AAAGAGAGAGGAAAGAAAGAGAAAAAGAAAAGAAATAGTAGCAACTGTTATT",
+      "segments": [
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "AGGCTGCAGTGAGCCATGTTCATGCCACTGCACTTCACTCTGAGTGACAAATTGAGACCTTGTCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAAAGAGAGAGGAAAGAAAGAGAAAAAGAAAAGAAATAGTAGCAACTGTTATTGTA",
+      "leftFlank": "AGGCTGCAGTGAGCCATGTTCATGCCACTGCACTTCACTCTGAGTGACAAATTGAGACCTTGTCTC",
+      "rightFlank": "AAAGAGAGAGGAAAGAAAGAGAAAAAGAAAAGAAATAGTAGCAACTGTTATTGTA",
+      "segments": [
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA",
+        "AGAA"
+      ]
+    }
+  },
+  "D19S433": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "AATAAAAATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGTGGTACAATTATAGCT",
+      "leftFlank": "AATAAAAATCTTCTCTCTTTCTTCCTCTC",
+      "rightFlank": "ACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGTGGTACAATTATAGCT",
+      "segments": [
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "CTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACAGAAT",
+      "leftFlank": "CTCTC",
+      "rightFlank": "ACCTTCTTTCCTTCAACAGAAT",
+      "segments": [
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "AAAAATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGT",
+      "leftFlank": "AAAAATCTTCTCTCTTTCTTCCTCTC",
+      "rightFlank": "ACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGT",
+      "segments": [
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "AAGTTCTTTAGCAGTGATTTCTGATATTTTGGTGCACCCATTACCCGAATAAAAATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCA",
+      "leftFlank": "AAGTTCTTTAGCAGTGATTTCTGATATTTTGGTGCACCCATTACCCGAATAAAAATCTTCTCTCTTTCTTCCTCTC",
+      "rightFlank": "ACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCA",
+      "segments": [
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT",
+        "TCCT"
+      ]
+    }
+  },
+  "D20S482": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "AGACACCGAACCAATAAGAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGAGATTTATTATAGGAATTGATT",
+      "leftFlank": "AGACACCGAACCAATAAG",
+      "rightFlank": "AGAGATTTATTATAGGAATTGATT",
+      "segments": [
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "AAAGGAACCTAAAACTCTAAGGAAGCGTGTACTAGAGTTCTTCAGAGACACCGAACCAATAAGAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGAGATTTA",
+      "leftFlank": "AAAGGAACCTAAAACTCTAAGGAAGCGTGTACTAGAGTTCTTCAGAGACACCGAACCAATAAG",
+      "rightFlank": "AGAGATTTA",
+      "segments": [
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT",
+        "AGAT"
+      ]
+    }
+  },
+  "D21S11": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "AAATATGTGAGTCAATTCCCCAAGTGAATTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTCTATCTAT",
+      "leftFlank": "AAATATGTGAGTCAATTCCCCAAGTGAATTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCA",
+      "rightFlank": "GTCTATCTAT",
+      "segments": [
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "TTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTCTATCTATCCAGTCTATCT",
+      "leftFlank": "TTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCA",
+      "rightFlank": "GTCTATCTATCCAGTCTATCT",
+      "segments": [
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "AATTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTCTATCTATCCAGTCTATC",
+      "leftFlank": "AATTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCA",
+      "rightFlank": "GTCTATCTATCCAGTCTATC",
+      "segments": [
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "TGAATTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTCTATCTATCCAGTCTATCTACCTCCTATTAGTCT",
+      "leftFlank": "TGAATTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCA",
+      "rightFlank": "GTCTATCTATCCAGTCTATCTACCTCCTATTAGTCT",
+      "segments": [
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC",
+        "TATC"
+      ]
+    }
+  },
+  "Penta D": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "GATCACTTGAGCCTGGAAGGTCGAAGCTGAAGTGAGCCATGATCACACCACTACACTCCAGCCTAGGTGACAGAGCAAGACACCATCTCAAGAAAGAAAAAAAAGAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAAACGAAGGGGAAAAAAAGAGAATCATAAACATAAATGTAAAATTTCTCAA",
+      "leftFlank": "GATCACTTGAGCCTGGAAGGTCGAAGCTGAAGTGAGCCATGATCACACCACTACACTCCAGCCTAGGTGACAGAGCAAGACACCATCTCAAGAAAGAAAAAAAAG",
+      "rightFlank": "AAAAACGAAGGGGAAAAAAAGAGAATCATAAACATAAATGTAAAATTTCTCAA",
+      "segments": [
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "AAAAAAAAGAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAAACGAAGGGGAAAAAAAGAGAATCATAAACATAAATGTAAAATTTCTCAA",
+      "leftFlank": "AAAAAAAAG",
+      "rightFlank": "AAAAACGAAGGGGAAAAAAAGAGAATCATAAACATAAATGTAAAATTTCTCAA",
+      "segments": [
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "AGAAAAAAAAGAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAAACGAAGGGGAAAAAAAGAGAATCATAAACATAAATGTAAAATTTCTCAAAAAAAT",
+      "leftFlank": "AGAAAAAAAAG",
+      "rightFlank": "AAAAACGAAGGGGAAAAAAAGAGAATCATAAACATAAATGTAAAATTTCTCAAAAAAAT",
+      "segments": [
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "GAGCCATGATCACACCACTACACTCCAGCCTAGGTGACAGAGCAAGACACCATCTCAAGAAAGAAAAAAAAGAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAAACGAAGGGGAAAAAAAGAGAATCATAAACATAAATGTAAAATTTCTCAAAAAAATCGTTA",
+      "leftFlank": "GAGCCATGATCACACCACTACACTCCAGCCTAGGTGACAGAGCAAGACACCATCTCAAGAAAGAAAAAAAAG",
+      "rightFlank": "AAAAACGAAGGGGAAAAAAAGAGAATCATAAACATAAATGTAAAATTTCTCAAAAAAATCGTTA",
+      "segments": [
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA",
+        "AAAGA"
+      ]
+    }
+  },
+  "D22S1045": {
+    "ForenSeq MainstAY/Signature": {
+      "sequence": "CGTTGGAATTCCCCAAACTGGCCAGTTCCTCTCCACCCTATAGACCCTGTCCTAGCCTTCTTATAGCTGCTATGGGGGCTAGATTTTCCCCGATGATAGTAGTCTCATTATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTATAAAAATATTGCCAAT",
+      "leftFlank": "CGTTGGAATTCCCCAAACTGGCCAGTTCCTCTCCACCCTATAGACCCTGTCCTAGCCTTCTTATAGCTGCTATGGGGGCTAGATTTTCCCCGATGATAGTAGTCTC",
+      "rightFlank": "ACTATTATTGTTATAAAAATATTGCCAAT",
+      "segments": [
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT"
+      ]
+    },
+    "IDSeek OmniSTR Global": {
+      "sequence": "CCCGATGATAGTAGTCTCATTATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTAT",
+      "leftFlank": "CCCGATGATAGTAGTCTC",
+      "rightFlank": "ACTATTATTGTTAT",
+      "segments": [
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT"
+      ]
+    },
+    "Precision ID GlobalFiler NGS STR Panel v2 ": {
+      "sequence": "ATGATAGTAGTCTCATTATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTATAAAAATATTGCCAATCATACATTCGCGTGATCACTCACACTGTGCCGGGCACTCTTGAGAGCACTTTACATATATTGTCTCATTTA",
+      "leftFlank": "ATGATAGTAGTCTC",
+      "rightFlank": "ACTATTATTGTTATAAAAATATTGCCAATCATACATTCGCGTGATCACTCACACTGTGCCGGGCACTCTTGAGAGCACTTTACATATATTGTCTCATTTA",
+      "segments": [
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT"
+      ]
+    },
+    "PowerSeq 46GY": {
+      "sequence": "CCTTCTTATAGCTGCTATGGGGGCTAGATTTTCCCCGATGATAGTAGTCTCATTATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTATAAAAATATTG",
+      "leftFlank": "CCTTCTTATAGCTGCTATGGGGGCTAGATTTTCCCCGATGATAGTAGTCTC",
+      "rightFlank": "ACTATTATTGTTATAAAAATATTG",
+      "segments": [
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT",
+        "ATT"
+      ]
+    }
+  }
+}

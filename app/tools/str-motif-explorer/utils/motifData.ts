@@ -29,8 +29,7 @@ export type MarkerMotif = {
   id: string; // e.g. "CSF1PO"
   name: string; // e.g. "CSF1PO (Chr 5)"
   motifPattern: string; // human-readable pattern, e.g. "[TCTA]n"
-  canonicalPattern: string; // e.g. "[AGAT]n"
-  canonicalMotif?: string; // e.g. "AGAT" (extracted from canonicalPattern for highlighting)
+  pattern: string; // pattern from markerData, e.g. "[ATCT]n"
   tokens: MotifToken[]; // ordered schematic of the pattern (for schematic view)
   segments?: MotifSegment[]; // conceptual structure with repeat counts (for sequence highlight)
   exampleAllele?: MotifExampleAllele; // real sequence example from STRbase

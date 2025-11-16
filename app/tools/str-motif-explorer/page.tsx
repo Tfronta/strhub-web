@@ -24,10 +24,71 @@ import {
   getMotifAllele,
   type MotifAlleleDef,
 } from "@/lib/strMotifData";
+import strKitsData from "@/data/str_kits.json";
+import { markerData } from "@/lib/markerData";
+
+// Helper to convert marker ID to markerData key format (lowercase)
+function getMarkerDataKey(markerId: string): string {
+  return markerId.toLowerCase().replace(/\s+/g, "_").replace(/-/g, "_");
+}
+
+// Get markers from str_kits.json
+function getMarkersFromStrKits(): MarkerMotif[] {
+  const markers: MarkerMotif[] = [];
+  const kitsData = strKitsData as Record<string, Record<string, any>>;
+
+  Object.keys(kitsData).forEach((markerId) => {
+    const markerDataEntry = kitsData[markerId];
+    const firstKit = Object.values(markerDataEntry)[0] as any;
+
+    if (firstKit && firstKit.segments && Array.isArray(firstKit.segments)) {
+      // Get pattern from markerData
+      const markerKey = getMarkerDataKey(markerId);
+      const markerInfo = (markerData as Record<string, any>)[markerKey];
+      const pattern = markerInfo?.motif || `[${firstKit.segments[0]}]n`;
+
+      // Determine motif from segments (most common segment) for tokens
+      const segmentCounts: Record<string, number> = {};
+      firstKit.segments.forEach((seg: string) => {
+        segmentCounts[seg] = (segmentCounts[seg] || 0) + 1;
+      });
+      const mostCommonMotif = Object.keys(segmentCounts).reduce((a, b) =>
+        segmentCounts[a] > segmentCounts[b] ? a : b
+      );
+
+      // Build segments array for MarkerMotif
+      const segments = [
+        { label: "FLANK_L", repeatCount: 1, type: "flank" as const },
+        ...firstKit.segments.map((seg: string) => ({
+          label: seg,
+          repeatCount: 1,
+          type: "repeat" as const,
+        })),
+        { label: "FLANK_R", repeatCount: 1, type: "flank" as const },
+      ];
+
+      // Use markerId as name (markerRefs doesn't have name property)
+      const markerName = markerId;
+
+      markers.push({
+        id: markerId,
+        name: markerName,
+        motifPattern: pattern,
+        pattern: pattern,
+        tokens: [{ label: mostCommonMotif.toUpperCase(), type: "repeat" }],
+        segments,
+      });
+    }
+  });
+
+  return markers.sort((a, b) => a.id.localeCompare(b.id));
+}
+
+const MARKERS_FROM_STR_KITS = getMarkersFromStrKits();
 
 export default function MotifExplorerPage() {
   const [selectedMarkerId, setSelectedMarkerId] = useState<string>(
-    STR_MOTIFS[0]?.id || ""
+    MARKERS_FROM_STR_KITS[0]?.id || ""
   );
   const [selectedKitId, setSelectedKitId] = useState<string | null>(null);
   const { language } = useLanguage();
@@ -35,22 +96,36 @@ export default function MotifExplorerPage() {
   const defaultPageContent = translations.en.motifExplorerPage;
   const pageContent = languageContent?.motifExplorerPage ?? defaultPageContent;
 
-  const selectedMarker = STR_MOTIFS.find((m) => m.id === selectedMarkerId);
+  const selectedMarker = MARKERS_FROM_STR_KITS.find(
+    (m) => m.id === selectedMarkerId
+  );
 
   // Get marker info from markerRefs
   const markerKey = selectedMarkerId.toUpperCase();
   const markerInfo = markerRefs[markerKey];
 
-  // For now we only support CSF1PO
-  const markerId = "CSF1PO";
+  // Use the selected marker ID
+  const markerId = selectedMarkerId;
 
-  // Derive available kits for the marker
-  const kitsForMarker = Array.from(
+  // Get available kits from str_kits.json first, then fallback to motifAlleles
+  const strKitsMarkerData = (
+    strKitsData as Record<string, Record<string, any>>
+  )[markerKey];
+  const kitsFromStrKits = strKitsMarkerData
+    ? Object.keys(strKitsMarkerData)
+    : [];
+
+  const kitsFromMotifAlleles = Array.from(
     new Set(
       motifAlleles
-        .filter((m) => m.markerId === markerId)
+        .filter((m) => m.markerId.toUpperCase() === markerKey)
         .map((m) => m.kitId.trim())
     )
+  );
+
+  // Combine and deduplicate kits
+  const kitsForMarker = Array.from(
+    new Set([...kitsFromStrKits, ...kitsFromMotifAlleles])
   ).sort();
 
   // Ensure selectedKitId is always valid when the marker changes
@@ -67,9 +142,7 @@ export default function MotifExplorerPage() {
   // Compute the current motifAllele
   const motifAllele: MotifAlleleDef | undefined = useMemo(
     () =>
-      selectedKitId
-        ? getMotifAllele(markerId, selectedKitId, "13")
-        : undefined,
+      selectedKitId ? getMotifAllele(markerId, selectedKitId, "13") : undefined,
     [markerId, selectedKitId]
   );
 
@@ -139,7 +212,7 @@ export default function MotifExplorerPage() {
                       <SelectValue placeholder="Select a marker" />
                     </SelectTrigger>
                     <SelectContent>
-                      {STR_MOTIFS.map((marker) => (
+                      {MARKERS_FROM_STR_KITS.map((marker) => (
                         <SelectItem
                           key={marker.id}
                           value={marker.id}
@@ -166,7 +239,11 @@ export default function MotifExplorerPage() {
                       </SelectTrigger>
                       <SelectContent>
                         {kitsForMarker.map((kit) => (
-                          <SelectItem key={kit} value={kit} className="text-base">
+                          <SelectItem
+                            key={kit}
+                            value={kit}
+                            className="text-base"
+                          >
                             {kit}
                           </SelectItem>
                         ))}
@@ -187,7 +264,8 @@ export default function MotifExplorerPage() {
             <Card className="border-0 bg-card/70 backdrop-blur-sm shadow-lg">
               <CardHeader className="space-y-1.5 pb-2">
                 <CardTitle className="text-2xl font-semibold tracking-tight">
-                  Exploring the structure of CSF1PO
+                  Exploring the structure of{" "}
+                  {selectedMarker?.name || selectedMarkerId}
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">

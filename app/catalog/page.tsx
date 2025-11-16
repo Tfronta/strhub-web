@@ -1232,7 +1232,7 @@ export default function CatalogPage() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
-        <div className="text-center mb-12">
+        <div className="text-left mb-12">
           <h1 className="text-4xl font-bold mb-4">{t("catalog.title")}</h1>
           <p className="text-lg text-muted-foreground">
             {t("catalog.description")}

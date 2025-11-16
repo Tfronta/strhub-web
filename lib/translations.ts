@@ -564,7 +564,7 @@ export const translations = {
       recentPosts: {
         title: "Recent educational posts",
         subtitle:
-          "Back to basics articles to help you and your team build a solid foundation in STR and NGS analysis.",
+          'Back to basics articles to help you and your team build a solid foundation in STR and NGS analysis.',
         loading: "Loading posts...",
         readMore: "Read More",
       },
@@ -1127,6 +1127,72 @@ export const translations = {
           interruption: "Interrupção / variante interna dentro da região repetitiva",
         },
         note: "Observação: nem toda ocorrência do motivo repetitivo é contabilizada para o tamanho do alelo. Apenas o bloco repetitivo central definido pela estrutura do motivo contribui para a designação do alelo.",
+      },
+    },
+    // Community Hub
+    communityHub: {
+      hero: {
+        title: "Conectar, aprender, colaborar",
+        subtitle:
+          "Estamos construindo a primeira comunidade global dedicada à análise de STRs com sequenciamento de nova geração. Em breve você vai encontrar tutoriais, guias, exemplos reais e colaborações criadas por pesquisadores, laboratórios e estudantes do mundo todo.",
+        cta: "Participar como colaborador(a) inicial",
+      },
+      howToJoin: {
+        title: "Como você pode fazer parte disso",
+        intro:
+          "Para que a análise de STRs com NGS seja realmente útil e acessível, precisamos de uma comunidade global diversa: laboratórios, estudantes, docentes, desenvolvedores e profissionais trabalhando juntos. Não estamos pedindo seus dados: o que importa é a sua experiência, suas perguntas e suas ideias.",
+        cards: {
+          experience: {
+            title: "Compartilhe sua experiência",
+            body: "Conte como você usa STRs no seu trabalho: estudos de caso, resultados de validação, materiais de ensino ou aprendizados com amostras desafiadoras.",
+          },
+          tutorials: {
+            title: "Contribua com tutoriais e guias",
+            body: "Ajude outras pessoas explicando um pipeline, um marcador, um conceito ou uma ferramenta que você gostaria de ter entendido antes.",
+          },
+          collaborations: {
+            title: "Participe de colaborações iniciais",
+            body: "Participe dos testes de novas funcionalidades do STRhub, dê feedback sobre ideias ou ajude a construir padrões abertos para a análise de STRs com NGS.",
+          },
+        },
+        cta: "Quero contribuir",
+      },
+      earlyContributors: {
+        title: "Colaboradores iniciais e laboratórios parceiros",
+        body: "O STRhub está sendo construído com contribuições de pesquisadores, estudantes e laboratórios que acreditam em ciência aberta e tecnologia acessível. Nesta seção vamos destacar as equipes e pessoas que ajudam a construir e validar a plataforma.",
+        comingSoon: "Em breve",
+      },
+      recentPosts: {
+        title: "Publicações educacionais recentes",
+        subtitle:
+          'Artigos "Back to basics" para ajudar você e sua equipe a construir uma base sólida em análise de STRs e NGS.',
+        loading: "Carregando publicações...",
+        readMore: "Ler Mais",
+      },
+      comingSoon: {
+        title: "O que vem por aí",
+        intro: "Estamos desenvolvendo novos recursos e ferramentas que vão aparecer neste hub aos poucos.",
+        cards: {
+          structureBrowser: {
+            title: "Navegador de estruturas STR",
+            body: "Vistas interativas para explorar estruturas repetitivas, regiões flanqueadoras e variantes internas de diferentes marcadores.",
+          },
+          caseStudies: {
+            title: "Estudos de caso de laboratórios",
+            body: "Exemplos didáticos de misturas, stutter, degradação e resultados de validação compartilhados pela comunidade.",
+          },
+          pipelines: {
+            title: "Pipelines e ferramentas abertas",
+            body: "Guias para construir e conectar pipelines de STR usando o STRhub com ferramentas de análise e linguagens de script comuns.",
+          },
+        },
+      },
+      contact: {
+        title: "Entre na conversa",
+        intro:
+          "Tem ideias, perguntas ou propostas de colaboração? Conte como o STRhub pode apoiar o seu trabalho ou o que você gostaria de ver nesta comunidade.",
+        messagePlaceholder:
+          "Conte sobre sua pesquisa, ideias de colaboração ou funcionalidades que você gostaria de ver no STRhub...",
       },
     },
     // STRBase Integration
@@ -1998,6 +2064,72 @@ export const translations = {
       contribute: "Contribuir",
       documentation: "Documentación",
       support: "Soporte",
+    },
+    // Community Hub
+    communityHub: {
+      hero: {
+        title: "Conectar, aprender, colaborar",
+        subtitle:
+          "Estamos construyendo la primera comunidad global dedicada al análisis de STRs con secuenciación de nueva generación. Muy pronto vas a encontrar tutoriales, guías, ejemplos reales y colaboraciones creadas por investigadores, laboratorios y estudiantes de todo el mundo.",
+        cta: "Unirte como colaborador/a inicial",
+      },
+      howToJoin: {
+        title: "Cómo podés ser parte de esto",
+        intro:
+          "Para que el análisis de STRs con NGS sea realmente útil y accesible, necesitamos una comunidad global diversa: laboratorios, estudiantes, docentes, desarrolladores y profesionales trabajando juntos. No estamos pidiendo tus datos: nos importa tu experiencia, tus preguntas y tus ideas.",
+        cards: {
+          experience: {
+            title: "Compartí tu experiencia",
+            body: "Contanos cómo usás los STRs en tu trabajo: estudios de caso, resultados de validación, materiales de enseñanza o aprendizajes de muestras desafiantes.",
+          },
+          tutorials: {
+            title: "Contribuí con tutoriales y guías",
+            body: "Ayudá a otros explicando un pipeline, un marcador, un concepto o una herramienta que te hubiera gustado entender antes.",
+          },
+          collaborations: {
+            title: "Sumate a colaboraciones tempranas",
+            body: "Formá parte de las pruebas de nuevas funciones de STRhub, aportá feedback sobre ideas o ayudá a construir estándares abiertos para el análisis de STRs con NGS.",
+          },
+        },
+        cta: "Quiero contribuir",
+      },
+      earlyContributors: {
+        title: "Colaboradores iniciales y laboratorios aliados",
+        body: "STRhub se está construyendo con el aporte de investigadores, estudiantes y laboratorios que creen en la ciencia abierta y en la tecnología accesible. En esta sección vamos a destacar a los equipos y personas que ayudan a construir y validar la plataforma.",
+        comingSoon: "Próximamente",
+      },
+      recentPosts: {
+        title: "Publicaciones educativas recientes",
+        subtitle:
+          'Artículos "Back to basics" para ayudarte a vos y a tu equipo a construir una base sólida en análisis de STRs y NGS.',
+        loading: "Cargando publicaciones...",
+        readMore: "Leer Más",
+      },
+      comingSoon: {
+        title: "Lo que viene pronto",
+        intro: "Estamos trabajando en nuevos recursos y herramientas que se irán sumando a este hub.",
+        cards: {
+          structureBrowser: {
+            title: "Explorador de estructuras STR",
+            body: "Vistas interactivas para explorar estructuras repetitivas, regiones flanqueadoras y variantes internas de distintos marcadores.",
+          },
+          caseStudies: {
+            title: "Estudios de caso desde laboratorios",
+            body: "Ejemplos didácticos de mezclas, stutter, degradación y resultados de validación compartidos por la comunidad.",
+          },
+          pipelines: {
+            title: "Pipelines y herramientas abiertas",
+            body: "Guías para construir y conectar pipelines de STR usando STRhub con herramientas de análisis y lenguajes de scripting comunes.",
+          },
+        },
+      },
+      contact: {
+        title: "Sumate a la conversación",
+        intro:
+          "¿Tenés ideas, preguntas o propuestas de colaboración? Contanos cómo STRhub podría apoyar tu trabajo o qué te gustaría ver en esta comunidad.",
+        messagePlaceholder:
+          "Contanos sobre tu investigación, ideas de colaboración o funciones que te gustaría ver en STRhub...",
+      },
     },
     // Common
     common: {

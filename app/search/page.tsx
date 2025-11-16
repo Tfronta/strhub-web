@@ -4,7 +4,7 @@ import type React from "react";
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Search, Database, Filter } from "lucide-react";
+import { Search, Database, Wrench, FileText, Globe, Filter } from "lucide-react";
 import {
   Card,
   CardDescription,
@@ -17,32 +17,34 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import Link from "next/link";
-import { markers } from "@/app/catalog/page";
+import { useLanguage } from "@/contexts/language-context";
+import { performSearch, getTotalResults, type SearchResultsByType } from "@/lib/search";
 
 function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
   const [searchTerm, setSearchTerm] = useState(query);
-  const [results, setResults] = useState<typeof markers>([]);
+  const [results, setResults] = useState<SearchResultsByType>({
+    markers: [],
+    tools: [],
+    blog: [],
+    page: [],
+  });
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (query) {
-      const filtered = markers.filter((marker) => {
-        const searchLower = query.toLowerCase();
-        return (
-          marker.name.toLowerCase().includes(searchLower) ||
-          marker.fullName.toLowerCase().includes(searchLower) ||
-          marker.motif.toLowerCase().includes(searchLower) ||
-          marker.chromosome.toLowerCase().includes(searchLower) ||
-          marker.category.toLowerCase().includes(searchLower) ||
-          marker.type.toLowerCase().includes(searchLower)
-        );
-      });
-      setResults(filtered);
+      const searchResults = performSearch(query, t);
+      setResults(searchResults);
     } else {
-      setResults([]);
+      setResults({
+        markers: [],
+        tools: [],
+        blog: [],
+        page: [],
+      });
     }
-  }, [query]);
+  }, [query, t]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +54,52 @@ function SearchResults() {
       )}`;
     }
   };
+
+  const totalResults = getTotalResults(results);
+
+  const renderResultCard = (
+    item: typeof results.markers[0],
+    icon: React.ReactNode
+  ) => (
+    <Link key={item.id} href={item.href}>
+      <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 hover:from-primary/5 hover:to-accent/5">
+        <CardHeader>
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-start gap-3 flex-1">
+              <div className="mt-1">{icon}</div>
+              <div className="flex-1">
+                <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  {item.title}
+                </CardTitle>
+                <CardDescription className="mt-1 line-clamp-2">
+                  {item.description}
+                </CardDescription>
+              </div>
+            </div>
+            <Badge
+              variant="secondary"
+              className="bg-primary/10 text-primary border-primary/20 shrink-0"
+            >
+              {t(`search.types.${item.type === "blog" ? "blog" : item.type}`)}
+            </Badge>
+          </div>
+          {item.tags && item.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {item.tags.slice(0, 3).map((tag, idx) => (
+                <Badge
+                  key={idx}
+                  variant="outline"
+                  className="text-xs"
+                >
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </CardHeader>
+      </Card>
+    </Link>
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -76,10 +124,11 @@ function SearchResults() {
       <div className="container mx-auto px-4 py-8">
         {/* Search Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">Search Results</h1>
+          <h1 className="text-4xl font-bold mb-4">{t("search.title")}</h1>
           {query && (
             <p className="text-lg text-muted-foreground">
-              Results for "<span className="font-semibold">{query}</span>"
+              {t("search.resultsFor")}{" "}
+              "<span className="font-semibold">{query}</span>"
             </p>
           )}
         </div>
@@ -89,111 +138,121 @@ function SearchResults() {
           <form onSubmit={handleSearch} className="relative max-w-2xl">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
-              placeholder="Search markers, alleles, or populations..."
+              placeholder={t("search.placeholder")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 h-12 text-lg"
             />
             <Button type="submit" className="absolute right-1 top-1 h-10">
-              Search
+              {t("nav.search")}
             </Button>
           </form>
         </div>
 
-        {/* Results */}
-        {query && (
+        {/* Results Summary */}
+        {query && totalResults > 0 && (
           <div className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
             <Filter className="h-4 w-4" />
-            Found {results.length} marker{results.length !== 1 ? "s" : ""}
+            {t("search.found")} {totalResults}{" "}
+            {totalResults === 1 ? t("search.result") : t("search.results")}
           </div>
         )}
 
-        {results.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {results.map((marker) => (
-              <Link key={marker.id} href={`/marker/${marker.id}`}>
-                <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 hover:from-primary/5 hover:to-accent/5">
-                  <CardHeader>
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                          {marker.name}
-                        </CardTitle>
-                        <CardDescription className="font-medium">
-                          {marker.fullName}
-                        </CardDescription>
-                      </div>
-                      <Badge
-                        variant="secondary"
-                        className="bg-primary/10 text-primary border-primary/20"
-                      >
-                        {marker.category}
-                      </Badge>
-                    </div>
+        {/* Results */}
+        {query && totalResults > 0 ? (
+          <div className="space-y-8">
+            {/* Markers */}
+            {results.markers.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <Database className="h-5 w-5" />
+                  {t("search.types.markers")} ({results.markers.length})
+                </h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {results.markers.map((marker) =>
+                    renderResultCard(marker, <Database className="h-5 w-5 text-primary" />)
+                  )}
+                </div>
+              </section>
+            )}
 
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">
-                          Chromosome:
-                        </span>
-                        <span className="font-medium">{marker.chromosome}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Motif:</span>
-                        <span className="font-mono font-medium">
-                          {marker.motif}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Type:</span>
-                        <span className="font-medium">{marker.type}</span>
-                      </div>
-                    </div>
+            {/* Tools */}
+            {results.tools.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <Wrench className="h-5 w-5" />
+                  {t("search.types.tools")} ({results.tools.length})
+                </h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {results.tools.map((tool) =>
+                    renderResultCard(tool, <Wrench className="h-5 w-5 text-primary" />)
+                  )}
+                </div>
+              </section>
+            )}
 
-                    <p className="text-sm text-muted-foreground mt-3 line-clamp-2">
-                      {marker.fullName} - {marker.type} STR on chromosome{" "}
-                      {marker.chromosome}
-                    </p>
+            {/* Blog/Articles */}
+            {results.blog.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  {t("search.types.blog")} ({results.blog.length})
+                </h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {results.blog.map((article) =>
+                    renderResultCard(article, <FileText className="h-5 w-5 text-primary" />)
+                  )}
+                </div>
+              </section>
+            )}
 
-                    <div className="flex justify-end mt-4 pt-4 border-t">
-                      <div className="flex gap-1">
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
-                        <div className="w-2 h-2 bg-accent rounded-full"></div>
-                        <div className="w-2 h-2 bg-secondary rounded-full"></div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                </Card>
-              </Link>
-            ))}
+            {/* Pages */}
+            {results.page.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  {t("search.types.page")} ({results.page.length})
+                </h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {results.page.map((page) =>
+                    renderResultCard(page, <Globe className="h-5 w-5 text-primary" />)
+                  )}
+                </div>
+              </section>
+            )}
           </div>
         ) : query ? (
           <div className="text-center py-12">
             <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No results found</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {t("search.noResults")}
+            </h3>
             <p className="text-muted-foreground mb-4">
-              No markers found for "
-              <span className="font-semibold">{query}</span>"
+              {t("search.noResultsDescription")}{" "}
+              "<span className="font-semibold">{query}</span>"
             </p>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <p>Try searching for:</p>
+            <div className="space-y-2 text-sm text-muted-foreground mb-6">
+              <p>{t("search.trySearching")}</p>
               <ul className="list-disc list-inside space-y-1">
-                <li>Marker names (FGA, D18S51, TH01)</li>
-                <li>Full names (Fibrinogen Alpha Chain)</li>
-                <li>Chromosome numbers (4, 18, 21)</li>
-                <li>Motifs (TTTC, AGAA, TCTA)</li>
+                <li>{t("search.suggestions.markers")}</li>
+                <li>{t("search.suggestions.tools")}</li>
+                <li>{t("search.suggestions.topics")}</li>
               </ul>
             </div>
             <Link href="/catalog">
-              <Button className="mt-4">Browse All Markers</Button>
+              <Button variant="outline" className="mt-4">
+                {t("catalog.viewAll")}
+              </Button>
             </Link>
           </div>
         ) : (
           <div className="text-center py-12">
             <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Start your search</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {t("search.startSearch")}
+            </h3>
             <p className="text-muted-foreground">
-              Enter a search term to find STR markers
+              {t("search.enterSearchTerm")}
             </p>
           </div>
         )}

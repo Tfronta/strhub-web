@@ -172,8 +172,8 @@ export default function BlogPage() {
             {t("communityHub.earlyContributors.body")}
           </p>
           <div className="flex justify-center">
-            <Card className="border-0 bg-muted/50 max-w-md">
-              <CardContent className="pt-6">
+            <Card className="border-0 bg-muted/50 max-w-md py-3 flex items-center justify-center">
+              <CardContent className="py-0">
                 <p className="text-center text-muted-foreground">{t("communityHub.earlyContributors.comingSoon")}</p>
               </CardContent>
             </Card>

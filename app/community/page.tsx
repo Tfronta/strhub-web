@@ -107,36 +107,31 @@ export default function BlogPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="border-b bg-background">
-        <div className="container mx-auto px-4 py-8 md:py-10">
-          <div className="flex flex-col gap-4">
-            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
-              {t("communityHub.hero.title")}
-            </h1>
-            <p className="text-sm md:text-base text-muted-foreground">
-              {t("communityHub.hero.subtitle")}
-            </p>
-            <div className="mt-2">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-accent" asChild>
-                <Link href="#contact">{t("communityHub.hero.cta")}</Link>
-              </Button>
-            </div>
+      {/* Main Content Container */}
+      <main className="mx-auto w-full max-w-7xl px-6 lg:px-10 pb-16 space-y-16">
+        {/* Hero Section */}
+        <section className="pt-10 border-b border-border pb-10 mb-0">
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+            {t("communityHub.hero.title")}
+          </h1>
+          <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+            {t("communityHub.hero.subtitle")}
+          </p>
+          <div className="mt-5">
+            <Button size="lg" className="bg-gradient-to-r from-primary to-accent" asChild>
+              <Link href="#contact">{t("communityHub.hero.cta")}</Link>
+            </Button>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* How You Can Be Part of This */}
-      <section className="border-b bg-muted/40 px-4">
-        <div className="container mx-auto py-8 md:py-10">
-          <div className="max-w-3xl">
-            <h2 className="text-xl md:text-2xl font-semibold tracking-tight">
-              {t("communityHub.howToJoin.title")}
-            </h2>
-            <p className="mt-2 text-sm md:text-base text-muted-foreground">
-              {t("communityHub.howToJoin.intro")}
-            </p>
-          </div>
+        {/* How You Can Be Part of This */}
+        <section className="pt-10">
+          <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+            {t("communityHub.howToJoin.title")}
+          </h2>
+          <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+            {t("communityHub.howToJoin.intro")}
+          </p>
           <div className="mt-6 grid gap-6 md:grid-cols-3">
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
@@ -168,36 +163,36 @@ export default function BlogPage() {
               </CardHeader>
             </Card>
           </div>
-          <div className="mt-6 text-center">
+          <div className="mt-6">
             <Button size="lg" variant="outline" asChild>
               <Link href="#contact">{t("communityHub.howToJoin.cta")}</Link>
             </Button>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Early Contributors & Partner Labs */}
-      <section className="py-8 md:py-10 px-4">
-        <div className="container mx-auto">
-          <h3 className="text-3xl font-bold mb-4 text-center">{t("communityHub.earlyContributors.title")}</h3>
-          <p className="text-lg text-muted-foreground mb-4 max-w-3xl mx-auto text-center">
+        {/* Early Contributors & Partner Labs */}
+        <section className="border-t border-border pt-12">
+          <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+            {t("communityHub.earlyContributors.title")}
+          </h2>
+          <p className="mt-3 text-base leading-relaxed text-muted-foreground">
             {t("communityHub.earlyContributors.body")}
           </p>
-          <div className="flex justify-center">
-            <Card className="border-0 bg-muted/50 max-w-md py-3 flex items-center justify-center">
+          <div className="mt-6">
+            <Card className="border-0 bg-muted/50 max-w-md py-3">
               <CardContent className="py-0">
-                <p className="text-center text-muted-foreground">{t("communityHub.earlyContributors.comingSoon")}</p>
+                <p className="text-muted-foreground">{t("communityHub.earlyContributors.comingSoon")}</p>
               </CardContent>
             </Card>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Recent Posts */}
-      <section className="py-10 md:py-12 px-4 bg-muted/30">
-        <div className="container mx-auto">
+        {/* Recent Posts */}
+        <section className="border-t border-border pt-12">
           <div className="flex items-start justify-between mb-2">
-            <h3 className="text-3xl font-bold">{t("communityHub.recentPosts.title")}</h3>
+            <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+              {t("communityHub.recentPosts.title")}
+            </h2>
             <Link
               href="/basics"
               className="text-sm font-medium text-primary hover:underline mt-1"
@@ -205,7 +200,9 @@ export default function BlogPage() {
               {t("communityHub.recentPosts.viewAll")}
             </Link>
           </div>
-          <p className="text-muted-foreground mb-8">{t("communityHub.recentPosts.subtitle")}</p>
+          <p className="mt-3 text-base leading-relaxed text-muted-foreground mb-8">
+            {t("communityHub.recentPosts.subtitle")}
+          </p>
 
           {(() => {
             const targetTitles = [
@@ -223,19 +220,19 @@ export default function BlogPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8">
+              <div className="py-8">
                 <p className="text-muted-foreground">No posts available yet.</p>
               </div>
             );
           })()}
-        </div>
-      </section>
+        </section>
 
-      {/* Coming Soon */}
-      <section className="py-10 md:py-12 px-4">
-        <div className="container mx-auto">
-          <h3 className="text-3xl font-bold mb-4 text-center">{t("communityHub.comingSoon.title")}</h3>
-          <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto text-center">
+        {/* Coming Soon */}
+        <section className="border-t border-border pt-12">
+          <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+            {t("communityHub.comingSoon.title")}
+          </h2>
+          <p className="mt-3 text-base leading-relaxed text-muted-foreground mb-8">
             {t("communityHub.comingSoon.intro")}
           </p>
           <div className="grid md:grid-cols-3 gap-6">
@@ -269,12 +266,10 @@ export default function BlogPage() {
               </CardHeader>
             </Card>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Contact / Join the Conversation */}
-      <section id="contact" className="py-10 md:py-12 px-4 bg-muted/30">
-        <div className="container mx-auto max-w-2xl">
+        {/* Contact / Join the Conversation */}
+        <section id="contact" className="border-t border-border pt-12">
           <Card className="border-0 bg-gradient-to-br from-card to-card/50">
             <CardHeader className="pb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4">
@@ -335,8 +330,8 @@ export default function BlogPage() {
               </form>
             </CardContent>
           </Card>
-        </div>
-      </section>
+        </section>
+      </main>
     </div>
   )
 }

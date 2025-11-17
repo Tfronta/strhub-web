@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   ArrowLeft,
   Database,
@@ -30,6 +30,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -45,13 +50,21 @@ import { markerData } from "../../../lib/markerData";
 import { useLanguage } from "@/contexts/language-context";
 import { markerFrequencies } from "./markerFrequencies";
 import { toolsData, type Tool } from "./toolsData";
+import {
+  LATAM_POPULATIONS,
+  type LatamPopulationId,
+} from "./latamPopulations";
+import { cn } from "@/lib/utils";
 
 export default function MarkerPage({ params }: { params: { id: string } }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [selectedPopulation, setSelectedPopulation] = useState<string>("AFR");
   const [xstrFrequencies, setXstrFrequencies] = useState<any>(null);
   const [selectedTechnology, setSelectedTechnology] = useState<string>("CE");
   const [selectedDataset, setSelectedDataset] = useState<string>("");
+  const [selectedLatamPopulationId, setSelectedLatamPopulationId] =
+    useState<LatamPopulationId | null>(null);
+  const [latamPopoverOpen, setLatamPopoverOpen] = useState(false);
   const searchParams = useSearchParams();
 
   const markerId = params.id.toLowerCase();
@@ -81,6 +94,11 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   // Reset selected dataset when technology or population changes
   useEffect(() => {
     setSelectedDataset("");
+    // Reset LATAM selection when switching to non-LATAM population
+    if (selectedPopulation !== "LATAM") {
+      setSelectedLatamPopulationId(null);
+      setLatamPopoverOpen(false);
+    }
   }, [selectedTechnology, selectedPopulation]);
 
   useEffect(() => {
@@ -139,12 +157,50 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
       }
       return [];
     } else {
-      // For CE, return standard populations
-      return ["AFR", "NAM", "EAS", "SAS", "EUR", "MES", "OCE"];
+      // For CE, return standard populations including LATAM
+      return ["AFR", "NAM", "EAS", "SAS", "EUR", "MES", "OCE", "LATAM"];
     }
   };
   
   const availablePopulations = getAvailablePopulations();
+
+  // Get available LATAM populations for current locus and technology
+  const availableLatamPops = useMemo(() => {
+    if (selectedTechnology !== "CE") return [];
+    return LATAM_POPULATIONS.filter((pop) => {
+      if (pop.technology !== selectedTechnology) return false;
+      return !!pop.frequenciesByLocus[markerId];
+    });
+  }, [selectedTechnology, markerId]);
+
+  // Get selected LATAM population
+  const selectedLatamPopulation = useMemo(
+    () =>
+      LATAM_POPULATIONS.find((pop) => pop.id === selectedLatamPopulationId) ??
+      null,
+    [selectedLatamPopulationId]
+  );
+
+  // Auto-select first available LATAM population if LATAM is selected but no sub-population is chosen
+  useEffect(() => {
+    if (
+      selectedPopulation === "LATAM" &&
+      !selectedLatamPopulationId &&
+      availableLatamPops.length > 0
+    ) {
+      setSelectedLatamPopulationId(availableLatamPops[0].id);
+    }
+  }, [
+    selectedPopulation,
+    selectedLatamPopulationId,
+    availableLatamPops,
+  ]);
+
+  // Get selected LATAM label for display
+  const selectedLatamLabel =
+    selectedLatamPopulation?.label[
+      language as keyof typeof selectedLatamPopulation.label
+    ] ?? null;
 
   const isXSTR = marker.type === "X-STR" || marker.chromosome === "X";
 
@@ -232,6 +288,16 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
       const populationData = markerFreqData[selectedPopulation as keyof typeof markerFreqData] as any[];
       if (populationData && Array.isArray(populationData)) {
         chartData = populationData.map((item) => ({
+          allele: item.allele,
+          frequency: item.frequency,
+          count: item.count,
+        }));
+      }
+    } else if (selectedPopulation === "LATAM" && selectedLatamPopulation) {
+      // Use LATAM population data
+      const latamData = selectedLatamPopulation.frequenciesByLocus[markerId];
+      if (latamData && Array.isArray(latamData)) {
+        chartData = latamData.map((item) => ({
           allele: item.allele,
           frequency: item.frequency,
           count: item.count,
@@ -504,7 +570,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between gap-2 flex-wrap border-b border-border pb-3">
                     {selectedTechnology !== "NGS" && (
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
                         {["AFR", "NAM", "EAS", "SAS", "EUR", "MES", "OCE"].map(
                           (pop) => (
                             <Button
@@ -515,13 +581,120 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                   : "outline"
                               }
                               size="sm"
-                              onClick={() => setSelectedPopulation(pop)}
+                              onClick={() => {
+                                setSelectedPopulation(pop);
+                                setSelectedLatamPopulationId(null);
+                              }}
                               className="h-7 text-xs font-normal rounded-sm px-2"
                             >
                               {pop}
                             </Button>
                           )
                         )}
+                        <Popover
+                          open={latamPopoverOpen && selectedPopulation === "LATAM"}
+                          onOpenChange={(open) => {
+                            setLatamPopoverOpen(open);
+                            if (open) {
+                              setSelectedPopulation("LATAM");
+                            }
+                          }}
+                        >
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={
+                                selectedPopulation === "LATAM"
+                                  ? "default"
+                                  : "outline"
+                              }
+                              size="sm"
+                              onClick={() => {
+                                setSelectedPopulation("LATAM");
+                                setLatamPopoverOpen(true);
+                                if (!selectedLatamPopulationId && availableLatamPops.length > 0) {
+                                  setSelectedLatamPopulationId(availableLatamPops[0].id);
+                                }
+                              }}
+                              className="h-7 text-xs font-normal rounded-sm px-2"
+                            >
+                              {t("marker.frequencies.region.latam")}
+                              {selectedPopulation === "LATAM" &&
+                                selectedLatamLabel && (
+                                  <span className="ml-1.5 text-[10px] opacity-80">
+                                    ({selectedLatamLabel.split("–")[0].trim()})
+                                  </span>
+                                )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-[360px] max-h-[400px] overflow-y-auto p-3"
+                            align="start"
+                          >
+                            <div className="space-y-2">
+                              <div className="text-xs text-muted-foreground mb-2">
+                                {t("marker.frequencies.latam.selectorHint")}
+                              </div>
+                              {availableLatamPops.length === 0 ? (
+                                <div className="text-xs text-muted-foreground py-2">
+                                  {t("marker.frequencies.latam.noDataForLocus")}
+                                </div>
+                              ) : (
+                                <ul className="space-y-1">
+                                  {availableLatamPops.map((pop) => {
+                                    const isActive =
+                                      pop.id === selectedLatamPopulationId;
+                                    const label =
+                                      pop.label[
+                                        language as keyof typeof pop.label
+                                      ];
+
+                                    return (
+                                      <li key={pop.id}>
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setSelectedPopulation("LATAM");
+                                            setSelectedLatamPopulationId(pop.id);
+                                            setLatamPopoverOpen(false);
+                                          }}
+                                          className={cn(
+                                            "w-full text-left rounded-lg border px-3 py-2 text-xs transition",
+                                            "hover:bg-accent hover:text-accent-foreground",
+                                            isActive &&
+                                              "border-primary bg-primary/5"
+                                          )}
+                                        >
+                                          <div className="flex items-center justify-between gap-2">
+                                            <div className="flex flex-col">
+                                              <span className="font-medium">
+                                                {label}
+                                              </span>
+                                              <span className="text-[11px] text-muted-foreground">
+                                                {pop.kitName}
+                                              </span>
+                                            </div>
+                                            <div className="text-[11px] text-muted-foreground text-right">
+                                              <div>
+                                                {t("marker.frequencies.latam.sampleSize", {
+                                                  n: String(pop.n),
+                                                })}
+                                              </div>
+                                              <div>
+                                                {t("marker.frequencies.latam.markerCount", {
+                                                  count: String(pop.markerCount),
+                                                })}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </button>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              )}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
                       </div>
                     )}
                     {selectedTechnology === "NGS" && (

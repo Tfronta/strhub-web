@@ -237,6 +237,17 @@ export const translations = {
         EUR: "European",
         OCE: "Oceanian",
       },
+      frequencies: {
+        region: {
+          latam: "LATAM",
+        },
+        latam: {
+          selectorHint: "Select a LATAM population for this marker.",
+          noDataForLocus: "No LATAM datasets available for this marker.",
+          sampleSize: "n = {n}",
+          markerCount: "{count} STR markers",
+        },
+      },
       citation:
         "Citation: Population frequency data sourced from STRBase – NIST database. All alleles reported in STRbase for each marker are included across all population groups (AFR, NAM, EAS, SAS, EUR).",
       citationReference: "Reference: NIST STRBase. Available at: https://strbase.nist.gov/",
@@ -1230,6 +1241,17 @@ export const translations = {
         SAS: "Asiático do Sul",
         EUR: "Europeu",
         OCE: "Oceânico",
+      },
+      frequencies: {
+        region: {
+          latam: "LATAM",
+        },
+        latam: {
+          selectorHint: "Selecione uma população LATAM para este marcador.",
+          noDataForLocus: "Não há dados LATAM disponíveis para este marcador.",
+          sampleSize: "n = {n}",
+          markerCount: "{count} marcadores STR",
+        },
       },
       citation:
         "Citação: Dados de frequência populacional obtidos do banco de dados STRBase – NIST. Todos os alelos relatados no STRbase para cada marcador estão incluídos em todos os grupos populacionais (AFR, NAM, EAS, SAS, EUR).",
@@ -2227,6 +2249,17 @@ export const translations = {
         SAS: "Asiático del Sur",
         EUR: "Europeu",
         OCE: "Oceánico",
+      },
+      frequencies: {
+        region: {
+          latam: "LATAM",
+        },
+        latam: {
+          selectorHint: "Selecciona una población LATAM para este marcador.",
+          noDataForLocus: "No hay datos LATAM disponibles para este marcador.",
+          sampleSize: "n = {n}",
+          markerCount: "{count} marcadores STR",
+        },
       },
       citation:
         "Cita: Dados de frecuencia poblacional obtenidos de la base de datos STRBase – NIST. Todos los alelos reportados en STRbase para cada marcador están incluidos en todos los grupos poblacionales (AFR, NAM, EAS, SAS, EUR).",

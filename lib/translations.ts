@@ -134,7 +134,7 @@ export const translations = {
       title: "STR Marker Catalog",
       description:
         "Comprehensive database of Short Tandem Repeat markers including CODIS core, non-core, autosomal, X-STRs, and Y-STRs",
-      subtitle: "All markers verified against NIST STRBase database",
+      subtitle: "This catalog compiles STR data from NIST STRBase, pop.STR, and open-access peer-reviewed population studies.",
       searchPlaceholder: "Search markers by name or description...",
       filterByCategory: "Filter by Category",
       allCategories: "All Categories",
@@ -1128,7 +1128,7 @@ export const translations = {
       title: "Catálogo de Marcadores STR",
       description:
         "Banco de dados abrangente de marcadores de Repetições Curtas em Tándem incluindo CODIS core, não-core, autossômicos, X-STRs e Y-STRs",
-      subtitle: "Todos os marcadores verificados contra o banco de dados NIST STRBase",
+      subtitle: "Este catálogo reúne dados de STR provenientes do NIST STRBase, pop.STR e estudos populacionais de acesso aberto revisados por pares.",
       searchPlaceholder: "Buscar marcadores por nome ou descrição...",
       filterByCategory: "Filtrar por Categoria",
       allCategories: "Todas as Categorias",
@@ -2125,7 +2125,7 @@ export const translations = {
       title: "Catálogo de Marcadores STR",
       description:
         "Base de datos integral de marcadores de Repeticiones Cortas en Tándem incluyendo CODIS core, no-core, autosómicos, X-STRs y Y-STRs",
-      subtitle: "Todos los marcadores verificados contra la base de datos NIST STRBase",
+      subtitle: "Este catálogo reúne datos STR provenientes de NIST STRBase, pop.STR y estudios poblacionales de acceso abierto revisados por pares.",
       searchPlaceholder: "Buscar marcadores por nombre o descripción...",
       filterByCategory: "Filtrar por Categoría",
       allCategories: "Todas las Categorías",

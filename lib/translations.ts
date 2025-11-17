@@ -163,8 +163,9 @@ export const translations = {
       populations: "populations",
       dataIntegration: "Data Integration",
       dataIntegrationDescription:
-        "This catalog integrates curated data from both the NIST STRBase (allele sequences, variant structures, and reference information) and pop.STR (allele frequency data across global populations). Together, these sources provide a unified and interactive view of forensic STR markers allowing users to explore allele ranges, sequence variants, and population frequency distributions in a single interface.",
-      visitNistStrbase: "Visit NIST STRBase",
+        "This catalog compiles STR data from NIST STRBase, pop.STR, and open-access peer-reviewed population studies, providing a unified, high-resolution reference for allele structures, sequence variants, and population frequency profiles.",
+      visitStrbase: "Visit NIST STRBase",
+      visitPopStr: "Visit pop.STR",
     },
     // Marker Details
     marker: {
@@ -1156,8 +1157,9 @@ export const translations = {
       populations: "populações",
       dataIntegration: "Integração de Dados",
       dataIntegrationDescription:
-        "Este catálogo integra dados curados tanto do NIST STRBase (sequências de alelos, estruturas variantes e informações de referência) quanto do pop.STR (dados de frequência alélica em populações globais). Juntas, essas fontes fornecem uma visão unificada e interativa de marcadores STR forenses, permitindo aos usuários explorar faixas de alelos, variantes de sequência e distribuições de frequência populacional em uma única interface.",
-      visitNistStrbase: "Visitar NIST STRBase",
+        "Este catálogo reúne dados de STR provenientes do NIST STRBase, pop.STR e estudos populacionais de acesso aberto revisados por pares, oferecendo uma referência unificada e de alta resolução sobre estruturas alélicas, variantes de sequência e perfis de frequências populacionais.",
+      visitStrbase: "Visitar NIST STRBase",
+      visitPopStr: "Visitar pop.STR",
     },
     // Marker Details
     marker: {
@@ -2152,8 +2154,9 @@ export const translations = {
       populations: "poblaciones",
       dataIntegration: "Integración de Datos",
       dataIntegrationDescription:
-        "Este catálogo integra datos curados tanto del NIST STRBase (secuencias de alelos, estructuras variantes e información de referencia) como de pop.STR (datos de frecuencia alélica en poblaciones globales). Juntas, estas fuentes proporcionan una vista unificada e interactiva de marcadores STR forenses, permitiendo a los usuarios explorar rangos de alelos, variantes de secuencia y distribuciones de frecuencia poblacional en una sola interfaz.",
-      visitNistStrbase: "Visitar NIST STRBase",
+        "Este catálogo reúne datos STR provenientes de NIST STRBase, pop.STR y estudios poblacionales de acceso abierto revisados por pares, ofreciendo una referencia unificada y de alta resolución sobre estructuras alélicas, variantes de secuencia y perfiles de frecuencias poblacionales.",
+      visitStrbase: "Visitar NIST STRBase",
+      visitPopStr: "Visitar pop.STR",
     },
     // Marker Details
     marker: {

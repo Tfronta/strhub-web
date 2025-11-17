@@ -111,14 +111,40 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
   const markerFreqData =
     markerFrequencies[markerId as keyof typeof markerFrequencies];
-  const availableTechnologies = markerFreqData?.technology
-    ? [markerFreqData.technology]
-    : [];
+  
+  // Check if NGS data exists (RAO)
+  const hasNGS = markerFreqData?.RAO !== undefined;
+  const hasCE = markerFreqData?.technology === "CE" || 
+                (markerFreqData && Object.keys(markerFreqData).some(k => 
+                  k !== "kit" && k !== "technology" && k !== "RAO" && Array.isArray(markerFreqData[k as keyof typeof markerFreqData])));
+  
+  // Build available technologies list
+  const availableTechnologies: string[] = [];
+  if (hasCE) availableTechnologies.push("CE");
+  if (hasNGS) availableTechnologies.push("NGS");
 
   const currentTechInfo =
     markerFreqData?.technology === selectedTechnology
       ? { technology: markerFreqData.technology, kit: markerFreqData.kit }
+      : selectedTechnology === "NGS" && hasNGS
+      ? { technology: "NGS", kit: "HaloPlex Target Enrichment System" }
       : null;
+  
+  // Compute available populations based on technology
+  const getAvailablePopulations = (): string[] => {
+    if (selectedTechnology === "NGS") {
+      // For NGS, check markerFrequencies for RAO
+      if (hasNGS) {
+        return ["RAO"];
+      }
+      return [];
+    } else {
+      // For CE, return standard populations
+      return ["AFR", "NAM", "EAS", "SAS", "EUR", "MES", "OCE"];
+    }
+  };
+  
+  const availablePopulations = getAvailablePopulations();
 
   const isXSTR = marker.type === "X-STR" || marker.chromosome === "X";
 
@@ -201,26 +227,39 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
       citationText = "PubMed ID 40253804";
     }
   } else {
-    if (selectedPopulation === "OCE") {
-      const oceEntries =
-        marker?.populationFrequencies?.[
-          selectedPopulation as keyof typeof marker.populationFrequencies
-        ] || [];
-      chartData = oceEntries.map((item) => ({
-        allele: item.allele,
-        frequency: item.frequency,
-        count: item.count,
-      }));
+    // Use markerFrequencies for NGS technology (RAO)
+    if (selectedTechnology === "NGS" && markerFreqData) {
+      const populationData = markerFreqData[selectedPopulation as keyof typeof markerFreqData] as any[];
+      if (populationData && Array.isArray(populationData)) {
+        chartData = populationData.map((item) => ({
+          allele: item.allele,
+          frequency: item.frequency,
+          count: item.count,
+        }));
+      }
     } else {
-      const populationData =
-        marker?.populationFrequencies?.[
-          selectedPopulation as keyof typeof marker.populationFrequencies
-        ] || [];
-      chartData = populationData.map((item) => ({
-        allele: item.allele,
-        frequency: item.frequency,
-        count: item.count,
-      }));
+      // Use marker.populationFrequencies for CE technology
+      if (selectedPopulation === "OCE") {
+        const oceEntries =
+          marker?.populationFrequencies?.[
+            selectedPopulation as keyof typeof marker.populationFrequencies
+          ] || [];
+        chartData = oceEntries.map((item) => ({
+          allele: item.allele,
+          frequency: item.frequency,
+          count: item.count,
+        }));
+      } else {
+        const populationData =
+          marker?.populationFrequencies?.[
+            selectedPopulation as keyof typeof marker.populationFrequencies
+          ] || [];
+        chartData = populationData.map((item) => ({
+          allele: item.allele,
+          frequency: item.frequency,
+          count: item.count,
+        }));
+      }
     }
   }
 
@@ -486,57 +525,79 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </div>
                     )}
                     {selectedTechnology === "NGS" && (
-                      <div className="flex items-center gap-2">
-                        <Label className="text-xs text-muted-foreground whitespace-nowrap">
-                          Dataset:
-                        </Label>
-                        <Select
-                          value={selectedDataset}
-                          onValueChange={setSelectedDataset}
-                          disabled={
-                            !marker?.ceStudiesByPop?.[
-                              selectedPopulation as keyof typeof marker.ceStudiesByPop
-                            ] ||
-                            (
-                              marker.ceStudiesByPop[
-                                selectedPopulation as keyof typeof marker.ceStudiesByPop
-                              ] as any[]
-                            )?.length === 0
-                          }
-                        >
-                          <SelectTrigger className="h-7 w-[200px] text-xs">
-                            <SelectValue placeholder="No NGS datasets available yet" />
-                          </SelectTrigger>
-                          {marker?.ceStudiesByPop?.[
-                            selectedPopulation as keyof typeof marker.ceStudiesByPop
-                          ] &&
-                            (
-                              marker.ceStudiesByPop[
-                                selectedPopulation as keyof typeof marker.ceStudiesByPop
-                              ] as any[]
-                            )?.length > 0 && (
-                              <SelectContent>
-                                {(
+                      <>
+                        {hasNGS ? (
+                          <div className="flex gap-2">
+                            {availablePopulations.map((pop) => (
+                              <Button
+                                key={pop}
+                                variant={
+                                  selectedPopulation === pop
+                                    ? "default"
+                                    : "outline"
+                                }
+                                size="sm"
+                                onClick={() => setSelectedPopulation(pop)}
+                                className="h-7 text-xs font-normal rounded-sm px-2"
+                              >
+                                {pop}
+                              </Button>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Label className="text-xs text-muted-foreground whitespace-nowrap">
+                              Dataset:
+                            </Label>
+                            <Select
+                              value={selectedDataset}
+                              onValueChange={setSelectedDataset}
+                              disabled={
+                                !marker?.ceStudiesByPop?.[
+                                  selectedPopulation as keyof typeof marker.ceStudiesByPop
+                                ] ||
+                                (
                                   marker.ceStudiesByPop[
                                     selectedPopulation as keyof typeof marker.ceStudiesByPop
                                   ] as any[]
-                                ).map((study: any, index: number) => {
-                                  const country =
-                                    study.country ||
-                                    study.location ||
-                                    "Unknown";
-                                  const n = study.n || study.sampleSize || 0;
-                                  const value = `dataset_${index}`;
-                                  return (
-                                    <SelectItem key={value} value={value}>
-                                      {country}, n={n}
-                                    </SelectItem>
-                                  );
-                                })}
-                              </SelectContent>
-                            )}
-                        </Select>
-                      </div>
+                                )?.length === 0
+                              }
+                            >
+                              <SelectTrigger className="h-7 w-[200px] text-xs">
+                                <SelectValue placeholder="No NGS datasets available" />
+                              </SelectTrigger>
+                              {marker?.ceStudiesByPop?.[
+                                selectedPopulation as keyof typeof marker.ceStudiesByPop
+                              ] &&
+                                (
+                                  marker.ceStudiesByPop[
+                                    selectedPopulation as keyof typeof marker.ceStudiesByPop
+                                  ] as any[]
+                                )?.length > 0 && (
+                                  <SelectContent>
+                                    {(
+                                      marker.ceStudiesByPop[
+                                        selectedPopulation as keyof typeof marker.ceStudiesByPop
+                                      ] as any[]
+                                    ).map((study: any, index: number) => {
+                                      const country =
+                                        study.country ||
+                                        study.location ||
+                                        "Unknown";
+                                      const n = study.n || study.sampleSize || 0;
+                                      const value = `dataset_${index}`;
+                                      return (
+                                        <SelectItem key={value} value={value}>
+                                          {country}, n={n}
+                                        </SelectItem>
+                                      );
+                                    })}
+                                  </SelectContent>
+                                )}
+                            </Select>
+                          </div>
+                        )}
+                      </>
                     )}
 
                     {availableTechnologies.length > 0 && (
@@ -545,7 +606,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           Technology:
                         </span>
                         <div className="flex gap-2">
-                          {["CE", "NGS"].map((tech) => (
+                          {availableTechnologies.map((tech) => (
                             <Button
                               key={tech}
                               variant={
@@ -554,7 +615,15 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                   : "outline"
                               }
                               size="sm"
-                              onClick={() => setSelectedTechnology(tech)}
+                              onClick={() => {
+                                setSelectedTechnology(tech);
+                                // Auto-select RAO when switching to NGS
+                                if (tech === "NGS" && hasNGS) {
+                                  setSelectedPopulation("RAO");
+                                } else if (tech === "CE") {
+                                  setSelectedPopulation("AFR");
+                                }
+                              }}
                               className="h-7 text-xs font-normal rounded-sm px-2"
                             >
                               {tech}
@@ -653,25 +722,33 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </p>
                     )}
 
+                    {selectedPopulation === "OCE" && (
+                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
+                        {t("marker.ocePopulationInfo")}
+                      </p>
+                    )}
+
                     <div className="space-y-3">
                       <p className="text-xs text-muted-foreground">
                         {t("marker.additionalSourceInfo")}
                       </p>
                       <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          asChild
-                          className="text-xs"
-                        >
-                          <a
-                            href="http://spsmart.cesga.es/search.php?dataSet=strs_local"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        {!(selectedTechnology === "NGS" && selectedPopulation === "RAO") && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="text-xs"
                           >
-                            {t("marker.datasetButton")}
-                          </a>
-                        </Button>
+                            <a
+                              href="http://spsmart.cesga.es/search.php?dataSet=strs_local"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {t("marker.datasetButton")}
+                            </a>
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           size="sm"
@@ -679,7 +756,12 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           className="text-xs"
                         >
                           <a
-                            href="https://pubmed.ncbi.nlm.nih.gov/18847484/"
+                            href={
+                              selectedTechnology === "NGS" &&
+                              selectedPopulation === "RAO"
+                                ? "https://www.fsigenetics.com/article/S1872-4973(22)00017-5/abstract"
+                                : "https://pubmed.ncbi.nlm.nih.gov/18847484/"
+                            }
                             target="_blank"
                             rel="noopener noreferrer"
                           >

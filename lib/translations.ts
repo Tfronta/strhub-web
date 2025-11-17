@@ -221,8 +221,10 @@ export const translations = {
       alleleFreqDistribution: "Allele Frequency Distribution",
       freqDescription: "Population frequency data for different alleles",
       dataSource: "Data source: STRBase – NIST",
+      ocePopulationInfo:
+        "The Oceania population dataset from pop.STR includes the following population groups: Bougainville (NAN Melanesian) and New Guinea (Papuan).",
       additionalSourceInfo:
-        "Additional source information: Allele frequencies in STRhub are obtained from the STRs Local dataset of the SP-SMART portal (CESGA).",
+        "Allele frequencies in STRhub are derived from the STRs Local dataset of the SP-SMART portal (CESGA), comprising 3.809 genotyped individuals from diverse populations.",
       datasetButton: "Dataset",
       originalPublicationButton: "Original publication",
       populationGroup: "Population Group",
@@ -1212,8 +1214,10 @@ export const translations = {
       alleleFreqDistribution: "Distribuição de Frequência de Alelos",
       freqDescription: "Dados de frequência populacional para diferentes alelos",
       dataSource: "Fonte de dados: STRBase – NIST",
+      ocePopulationInfo:
+        "O conjunto de dados populacional da Oceania do pop.STR inclui os seguintes grupos populacionais: Bougainville (Melanésio NAN) e Nova Guiné (Papua).",
       additionalSourceInfo:
-        "Informações adicionais da fonte: As frequências alélicas no STRhub são obtidas do conjunto de dados STRs Local do portal SP-SMART (CESGA).",
+        "As frequências alélicas no STRhub são derivadas do conjunto de dados STRs Local do portal SP-SMART (CESGA), que inclui 3.809 indivíduos genotipados de diferentes populações.",
       datasetButton: "Conjunto de dados",
       originalPublicationButton: "Publicação original",
       populationGroup: "Grupo Populacional",
@@ -2206,8 +2210,10 @@ export const translations = {
       alleleFreqDistribution: "Distribución de Frecuencia de Alelos",
       freqDescription: "Datos de frecuencia poblacional para diferentes alelos",
       dataSource: "Fuente de datos: STRBase – NIST",
+      ocePopulationInfo:
+        "El conjunto de datos poblacional de Oceanía de pop.STR incluye los siguientes grupos poblacionales: Bougainville (Melanesio NAN) y Nueva Guinea (Papúa).",
       additionalSourceInfo:
-        "Información adicional de la fuente: Las frecuencias alélicas en STRhub se obtienen del conjunto de datos STRs Local del portal SP-SMART (CESGA).",
+        "Las frecuencias alélicas en STRhub se derivan del conjunto de datos STRs Local del portal SP-SMART (CESGA), que comprende 3.809 individuos genotipados de diversas poblaciones.",
       datasetButton: "Conjunto de datos",
       originalPublicationButton: "Publicación original",
       populationGroup: "Grupo Poblacional",

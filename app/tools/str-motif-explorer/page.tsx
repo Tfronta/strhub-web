@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Grid3x3, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -15,90 +15,22 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
-import { translations, type Language } from "@/lib/translations";
-import { STR_MOTIFS, type MarkerMotif } from "./utils/motifData";
+import { translations } from "@/lib/translations";
+import { StrKitData, StrKitType } from "./utils/motifData";
 import { MotifVisualization } from "./components/MotifVisualization";
 import { markerRefs } from "@/lib/markerRefs-from-data";
-import {
-  motifAlleles,
-  getMotifAllele,
-  type MotifAlleleDef,
-} from "@/lib/strMotifData";
 import strKitsData from "@/data/str_kits.json";
-import { markerData } from "@/lib/markerData";
-
-// Helper to convert marker ID to markerData key format (lowercase)
-function getMarkerDataKey(markerId: string): string {
-  return markerId.toLowerCase().replace(/\s+/g, "_").replace(/-/g, "_");
-}
-
-// Get markers from str_kits.json
-function getMarkersFromStrKits(): MarkerMotif[] {
-  const markers: MarkerMotif[] = [];
-  const kitsData = strKitsData as Record<string, Record<string, any>>;
-
-  Object.keys(kitsData).forEach((markerId) => {
-    const markerDataEntry = kitsData[markerId];
-    const firstKit = Object.values(markerDataEntry)[0] as any;
-
-    if (firstKit && firstKit.segments && Array.isArray(firstKit.segments)) {
-      // Get pattern from markerData
-      const markerKey = getMarkerDataKey(markerId);
-      const markerInfo = (markerData as Record<string, any>)[markerKey];
-      const pattern = markerInfo?.motif || `[${firstKit.segments[0]}]n`;
-
-      // Determine motif from segments (most common segment) for tokens
-      const segmentCounts: Record<string, number> = {};
-      firstKit.segments.forEach((seg: string) => {
-        segmentCounts[seg] = (segmentCounts[seg] || 0) + 1;
-      });
-      const mostCommonMotif = Object.keys(segmentCounts).reduce((a, b) =>
-        segmentCounts[a] > segmentCounts[b] ? a : b
-      );
-
-      // Build segments array for MarkerMotif
-      const segments = [
-        { label: "FLANK_L", repeatCount: 1, type: "flank" as const },
-        ...firstKit.segments.map((seg: string) => ({
-          label: seg,
-          repeatCount: 1,
-          type: "repeat" as const,
-        })),
-        { label: "FLANK_R", repeatCount: 1, type: "flank" as const },
-      ];
-
-      // Use markerId as name (markerRefs doesn't have name property)
-      const markerName = markerId;
-
-      markers.push({
-        id: markerId,
-        name: markerName,
-        motifPattern: pattern,
-        pattern: pattern,
-        tokens: [{ label: mostCommonMotif.toUpperCase(), type: "repeat" }],
-        segments,
-      });
-    }
-  });
-
-  return markers.sort((a, b) => a.id.localeCompare(b.id));
-}
-
-const MARKERS_FROM_STR_KITS = getMarkersFromStrKits();
 
 export default function MotifExplorerPage() {
-  const [selectedMarkerId, setSelectedMarkerId] = useState<string>(
-    MARKERS_FROM_STR_KITS[0]?.id || ""
-  );
-  const [selectedKitId, setSelectedKitId] = useState<string | null>(null);
+  const [selectedMarkerId, setSelectedMarkerId] =
+    useState<keyof typeof strKitsData>("CSF1PO");
+  const [selectedKitId, setSelectedKitId] = useState<StrKitType | null>(null);
   const { language } = useLanguage();
   const languageContent = translations[language] as (typeof translations)["en"];
   const defaultPageContent = translations.en.motifExplorerPage;
   const pageContent = languageContent?.motifExplorerPage ?? defaultPageContent;
 
-  const selectedMarker = MARKERS_FROM_STR_KITS.find(
-    (m) => m.id === selectedMarkerId
-  );
+  const selectedMarker = strKitsData[selectedMarkerId];
 
   // Get marker info from markerRefs
   const markerKey = selectedMarkerId.toUpperCase();
@@ -107,26 +39,9 @@ export default function MotifExplorerPage() {
   // Use the selected marker ID
   const markerId = selectedMarkerId;
 
-  // Get available kits from str_kits.json first, then fallback to motifAlleles
-  const strKitsMarkerData = (
-    strKitsData as Record<string, Record<string, any>>
-  )[markerKey];
-  const kitsFromStrKits = strKitsMarkerData
-    ? Object.keys(strKitsMarkerData)
-    : [];
-
-  const kitsFromMotifAlleles = Array.from(
-    new Set(
-      motifAlleles
-        .filter((m) => m.markerId.toUpperCase() === markerKey)
-        .map((m) => m.kitId.trim())
-    )
-  );
-
-  // Combine and deduplicate kits
-  const kitsForMarker = Array.from(
-    new Set([...kitsFromStrKits, ...kitsFromMotifAlleles])
-  ).sort();
+  const kitsForMarker = Object.keys(
+    strKitsData[selectedMarkerId]
+  ) as StrKitType[];
 
   // Ensure selectedKitId is always valid when the marker changes
   useEffect(() => {
@@ -134,17 +49,14 @@ export default function MotifExplorerPage() {
       setSelectedKitId(null);
       return;
     }
-    if (!selectedKitId || !kitsForMarker.includes(selectedKitId.trim())) {
+    if (!selectedKitId || !kitsForMarker.includes(selectedKitId)) {
       setSelectedKitId(kitsForMarker[0]);
     }
   }, [markerId, kitsForMarker.join(","), selectedKitId]);
 
-  // Compute the current motifAllele
-  const motifAllele: MotifAlleleDef | undefined = useMemo(
-    () =>
-      selectedKitId ? getMotifAllele(markerId, selectedKitId, "13") : undefined,
-    [markerId, selectedKitId]
-  );
+  const markerData = selectedMarker[
+    selectedKitId as keyof typeof selectedMarker
+  ] as StrKitData | undefined;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/40">
@@ -206,19 +118,21 @@ export default function MotifExplorerPage() {
                   </Label>
                   <Select
                     value={selectedMarkerId}
-                    onValueChange={setSelectedMarkerId}
+                    onValueChange={(value) =>
+                      setSelectedMarkerId(value as keyof typeof strKitsData)
+                    }
                   >
                     <SelectTrigger className="h-11 text-base">
                       <SelectValue placeholder="Select a marker" />
                     </SelectTrigger>
                     <SelectContent>
-                      {MARKERS_FROM_STR_KITS.map((marker) => (
+                      {Object.keys(strKitsData).map((marker) => (
                         <SelectItem
-                          key={marker.id}
-                          value={marker.id}
+                          key={marker}
+                          value={marker}
                           className="text-base"
                         >
-                          {marker.name}
+                          {marker}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -232,7 +146,9 @@ export default function MotifExplorerPage() {
                     </Label>
                     <Select
                       value={selectedKitId || ""}
-                      onValueChange={setSelectedKitId}
+                      onValueChange={(value) =>
+                        setSelectedKitId(value as StrKitType)
+                      }
                     >
                       <SelectTrigger className="h-11 text-base">
                         <SelectValue placeholder="Select a kit" />
@@ -264,17 +180,17 @@ export default function MotifExplorerPage() {
             <Card className="border-0 bg-card/70 backdrop-blur-sm shadow-lg">
               <CardHeader className="space-y-1.5 pb-2">
                 <CardTitle className="text-2xl font-semibold tracking-tight">
-                  Exploring the structure of{" "}
-                  {selectedMarker?.name || selectedMarkerId}
+                  Exploring the structure of {selectedMarkerId}
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                {selectedMarker ? (
+                {selectedMarker && selectedKitId && markerData ? (
                   <MotifVisualization
-                    marker={selectedMarker}
+                    markerId={selectedMarkerId}
+                    marker={markerData}
                     pageContent={pageContent}
                     markerInfo={markerInfo}
-                    motifAllele={motifAllele}
+                    // motifAllele={motifAllele}
                     selectedKitId={selectedKitId ?? undefined}
                   />
                 ) : (

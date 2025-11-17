@@ -5,115 +5,368 @@
       "leftFlank": "ATAGAGCAGTGT",
       "rightFlank": "TTCATTCCGTCCTTCCTGTCACACTAAGAAATACAATTTCTATTA",
       "segments": [
-        "TTCC",
-        "TTCC",
-        "TTCC",
-        "TTCC",
-        "TTCC",
-        "TTCC",
-        "TTCC",
-        "TTCC",
-        "TTCC",
-        "TTCC",
-        "TTCC",
-        "TTCC",
-        "TTCC",
-        "TTCC",
-        "TTCC"
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        },
+        {
+          "sequence": "TTCC",
+          "type": "core"
+        }
       ]
     }
   },
   "D1S1656": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "TTCAGAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
-      "leftFlank": "TTCAGAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACAC",
-      "rightFlank": "CTA",
+      "leftFlank": "TTCAGAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACA",
+      "rightFlank": "",
       "segments": [
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT"
+        {
+          "sequence": "CCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "AATATATATACATACAATTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATCAC",
-      "leftFlank": "AATATATATACATACAATTAAACACACACACAC",
-      "rightFlank": "CTACATCAC",
+      "leftFlank": "AATATATATACATACAATTAAACACACACACA",
+      "rightFlank": "CATCAC",
       "segments": [
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT"
+        {
+          "sequence": "CCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "GAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATCACACAGTTGACCCTTGAGCA",
-      "leftFlank": "GAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACAC",
-      "rightFlank": "CTACATCACACAGTTGACCCTTGAGCA",
+      "leftFlank": "GAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACA",
+      "rightFlank": "CATCACACAGTTGACCCTTGAGCA",
       "segments": [
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT"
+        {
+          "sequence": "CCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "GAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATCACACAGTTGACCCTTGA",
-      "leftFlank": "GAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACAC",
-      "rightFlank": "CTACATCACACAGTTGACCCTTGA",
+      "leftFlank": "GAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAAACACACACACA",
+      "rightFlank": "CATCACACAGTTGACCCTTGA",
       "segments": [
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT"
+        {
+          "sequence": "CCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     }
   },
@@ -123,59 +376,155 @@
       "leftFlank": "",
       "rightFlank": "TTTGG",
       "segments": [
-        "AATG",
-        "AATG",
-        "AATG",
-        "AATG",
-        "AATG",
-        "AATG",
-        "AATG",
-        "AATG"
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "CTCACTGAATGAATGAATGAATGAATGAATGAATGAATGTTTGG",
-      "leftFlank": "CTCAC",
-      "rightFlank": "TGTTTGG",
+      "leftFlank": "CTCACTG",
+      "rightFlank": "TTTGG",
       "segments": [
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA"
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "CCAGAACCGTCGACTGGCACAGAACAGGCACTTAGGGAACCCTCACTGAATGAATGAATGAATGAATGAATGAATGAATGTTTGGGCAAATAAACGCTGACAAGGACAGAAGGGCCTAGCGGGAAGGG",
-      "leftFlank": "CCAGAACCGTCGACTGGCACAGAACAGGCACTTAGGGAACCCTCAC",
-      "rightFlank": "TGTTTGGGCAAATAAACGCTGACAAGGACAGAAGGGCCTAGCGGGAAGGG",
+      "leftFlank": "CCAGAACCGTCGACTGGCACAGAACAGGCACTTAGGGAACCCTCACTG",
+      "rightFlank": "TTTGGGCAAATAAACGCTGACAAGGACAGAAGGGCCTAGCGGGAAGGG",
       "segments": [
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA"
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "CACTGGCCTGTGGGTCCCCCCATAGATCGTAAGCCCAGGAGGAAGGGCTGTGTTTCAGGGCTGTGATCACTAGCACCCAGAACCGTCGACTGGCACAGAACAGGCACTTAGGGAACCCTCACTGAATGAATGAATGAATGAATGAATGAATGAATGTTTGGGCAAATAAACGCT",
-      "leftFlank": "CACTGGCCTGTGGGTCCCCCCATAGATCGTAAGCCCAGGAGGAAGGGCTGTGTTTCAGGGCTGTGATCACTAGCACCCAGAACCGTCGACTGGCACAGAACAGGCACTTAGGGAACCCTCAC",
-      "rightFlank": "TGTTTGGGCAAATAAACGCT",
+      "leftFlank": "CACTGGCCTGTGGGTCCCCCCATAGATCGTAAGCCCAGGAGGAAGGGCTGTGTTTCAGGGCTGTGATCACTAGCACCCAGAACCGTCGACTGGCACAGAACAGGCACTTAGGGAACCCTCACTG",
+      "rightFlank": "TTTGGGCAAATAAACGCT",
       "segments": [
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA"
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        }
       ]
     }
   },
@@ -185,18 +534,54 @@
       "leftFlank": "CCAGGAACTGTGGCTCATCTATGAAAACT",
       "rightFlank": "TATCATAACACCACAGCCACTTA",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
@@ -204,18 +589,54 @@
       "leftFlank": "CATGAGCCAGGAACTGTGGCTCATCTATGAAAACT",
       "rightFlank": "TA",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
@@ -223,18 +644,54 @@
       "leftFlank": "GAGCCAGGAACTGTGGCTCATCTATGAAAACT",
       "rightFlank": "TATCATAACACCACAGCCACTTAGCTCCAATTTAAAAGATTAAT",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
@@ -242,18 +699,54 @@
       "leftFlank": "TGCACCCAACATTCTAACAAAAGGCTGTAACAAGGGCTACAGGAATCATGAGCCAGGAACTGTGGCTCATCTATGAAAACT",
       "rightFlank": "TATCA",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     }
   },
@@ -263,429 +756,1581 @@
       "leftFlank": "TGTGCGTATACACACACACAGATAAAA",
       "rightFlank": "GATAGATATTTCATAACTGTCCACCTCAGAGCCTAGAGTCAATGCCTCCTCAGTAGCTCC",
       "segments": [
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT"
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        }
       ]
     }
   },
   "D2S1338": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "GAGGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTT",
-      "leftFlank": "GAGGGAAGGAAGGAC",
-      "rightFlank": "GGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTT",
+      "leftFlank": "GAG",
+      "rightFlank": "AGGCCAAGCCATTT",
       "segments": [
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA"
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "TGGTACCTGCAGGTGGCCCATAATCATGAGTTATTCAGTAAGTTAAAGGATTGCAGGAGGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAAGG",
-      "leftFlank": "TGGTACCTGCAGGTGGCCCATAATCATGAGTTATTCAGTAAGTTAAAGGATTGCAGGAGGGAAGGAAGGAC",
-      "rightFlank": "GGCAGGCAGGCAGGCAGGCAGGCAGGCAAGG",
+      "leftFlank": "TGGTACCTGCAGGTGGCCCATAATCATGAGTTATTCAGTAAGTTAAAGGATTGCAGGAG",
+      "rightFlank": "AGG",
       "segments": [
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA"
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "GCAGGAGGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTTCTGTTTCCAAATCCACTGGC",
-      "leftFlank": "GCAGGAGGGAAGGAAGGAC",
-      "rightFlank": "GGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTTCTGTTTCCAAATCCACTGGC",
+      "leftFlank": "GCAGGAG",
+      "rightFlank": "AGGCCAAGCCATTTCTGTTTCCAAATCCACTGGC",
       "segments": [
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA"
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "CTAGCATGGTACCTGCAGGTGGCCCATAATCATGAGTTATTCAGTAAGTTAAAGGATTGCAGGAGGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTTCTGTTTCCAAATCCACTGGCTCCCTCCCACAGCT",
-      "leftFlank": "CTAGCATGGTACCTGCAGGTGGCCCATAATCATGAGTTATTCAGTAAGTTAAAGGATTGCAGGAGGGAAGGAAGGAC",
-      "rightFlank": "GGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTTCTGTTTCCAAATCCACTGGCTCCCTCCCACAGCT",
+      "leftFlank": "CTAGCATGGTACCTGCAGGTGGCCCATAATCATGAGTTATTCAGTAAGTTAAAGGATTGCAGGAG",
+      "rightFlank": "AGGCCAAGCCATTTCTGTTTCCAAATCCACTGGCTCCCTCCCACAGCT",
       "segments": [
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA"
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGCA",
+          "type": "core"
+        }
       ]
     }
   },
   "D3S1358": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "TTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGACAGGGTCTTGCTC",
-      "leftFlank": "TTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATGTATCTATCTG",
+      "leftFlank": "TTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATGTA",
       "rightFlank": "TGAGACAGGGTCTTGCTC",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "ATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGACAGGGTCT",
-      "leftFlank": "ATCTATCTG",
+      "leftFlank": "A",
       "rightFlank": "TGAGACAGGGTCT",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "CAGAGGCTTGCATGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGACAGGGTCTTGCTCTGTCACCCAGATTG",
-      "leftFlank": "CAGAGGCTTGCATGTATCTATCTG",
+      "leftFlank": "CAGAGGCTTGCATGTA",
       "rightFlank": "TGAGACAGGGTCTTGCTCTGTCACCCAGATTG",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "TGCCCACTTCTGCCCAGGGATCTATTTTTCTGTGGTGTGTATTCCCTGTGCCTTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGACAGGGTCTTGCTCTGTC",
-      "leftFlank": "TGCCCACTTCTGCCCAGGGATCTATTTTTCTGTGGTGTGTATTCCCTGTGCCTTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATGTATCTATCTG",
+      "leftFlank": "TGCCCACTTCTGCCCAGGGATCTATTTTTCTGTGGTGTGTATTCCCTGTGCCTTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATGTA",
       "rightFlank": "TGAGACAGGGTCTTGCTCTGTC",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     }
   },
   "D3S4529": {
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "AAAGGAACTGTTAGGGGCCTCCAGGGAGACAAAATGAAGAAACAGACAGATAGATAGATAGATAAATAGATAGATAGATAGATAGATAGATAGATAGATCAATTGATCGATATTTATTTTAA",
-      "leftFlank": "AAAGGAACTGTTAGGGGCCTCCAGGGAGACAAAATGAAGAAACAGACAGATAGATAGATAGATAA",
-      "rightFlank": "ATCAATTGATCGATATTTATTTTAA",
+      "leftFlank": "AAAGGAACTGTTAGGGGCCTCCAGGGAGACAAAATGAAGAAACAGAC",
+      "rightFlank": "CAATTGATCGATATTTATTTTAA",
       "segments": [
-        "ATAG",
-        "ATAG",
-        "ATAG",
-        "ATAG",
-        "ATAG",
-        "ATAG",
-        "ATAG",
-        "ATAG"
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        }
       ]
     }
   },
   "D4S2408": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "CTATGCATCTATCTATCTATCTATCTATCTATCTATCTATCTAATGGTTA",
-      "leftFlank": "CTATGC",
+      "leftFlank": "CTATGCATCT",
       "rightFlank": "AATGGTTA",
       "segments": [
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT"
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "TACATAACAGTTCAATAGAAAGCTATGCATCTATCTATCTATCTATCTATCTATCTATCTATCTAA",
-      "leftFlank": "TACATAACAGTTCAATAGAAAGCTATGC",
+      "leftFlank": "TACATAACAGTTCAATAGAAAGCTATGCATCT",
       "rightFlank": "AA",
       "segments": [
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT"
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "AAATTCAGCAAGTTAAGAACTTCTACATTTAAGGTACATAACAGTTCAATAGAAAGCTATGCATCTATCTATCTATCTATCTATCTATCTATCTATCTAATGGTTACTATTTTTCAGTCA",
-      "leftFlank": "AAATTCAGCAAGTTAAGAACTTCTACATTTAAGGTACATAACAGTTCAATAGAAAGCTATGC",
+      "leftFlank": "AAATTCAGCAAGTTAAGAACTTCTACATTTAAGGTACATAACAGTTCAATAGAAAGCTATGCATCT",
       "rightFlank": "AATGGTTACTATTTTTCAGTCA",
       "segments": [
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT"
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     }
   },
   "FGA": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "CCAGCAAAAAAGAAAGGAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTAGCTTGTAAATATGC",
-      "leftFlank": "CCAGCAAAAAAGAAAGGAAGAAAGGAAGGAAGG",
-      "rightFlank": "AGAGAAAAAAGAAAGAAAGAAACTAGCTTGTAAATATGC",
+      "leftFlank": "CCAGCAAAAAAGAAAGGAAGAAA",
+      "rightFlank": "CTAGCTTGTAAATATGC",
       "segments": [
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA"
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GAAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GAAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GAAA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "AAAAAAGAAAGGAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTA",
-      "leftFlank": "AAAAAAGAAAGGAAGAAAGGAAGGAAGG",
-      "rightFlank": "AGAGAAAAAAGAAAGAAAGAAACTA",
+      "leftFlank": "AAAAAAGAAAGGAAGAAA",
+      "rightFlank": "CTA",
       "segments": [
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA"
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GAAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GAAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GAAA",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "AAGAAAGGAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTAGCTTGTAAATAT",
-      "leftFlank": "AAGAAAGGAAGAAAGGAAGGAAGG",
-      "rightFlank": "AGAGAAAAAAGAAAGAAAGAAACTAGCTTGTAAATAT",
+      "leftFlank": "AAGAAAGGAAGAAA",
+      "rightFlank": "CTAGCTTGTAAATAT",
       "segments": [
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA"
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GAAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GAAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GAAA",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "GTCTGAAATCGAAAATATGGTTATTGAAGTAGCTGCTGAGTGATTTGTCTGTAATTGCCAGCAAAAAAGAAAGGAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA",
-      "leftFlank": "GTCTGAAATCGAAAATATGGTTATTGAAGTAGCTGCTGAGTGATTTGTCTGTAATTGCCAGCAAAAAAGAAAGGAAGAAAGGAAGGAAGG",
-      "rightFlank": "AGAGAAAAAAGAAAGAAAGAAA",
+      "leftFlank": "GTCTGAAATCGAAAATATGGTTATTGAAGTAGCTGCTGAGTGATTTGTCTGTAATTGCCAGCAAAAAAGAAAGGAAGAAA",
+      "rightFlank": "",
       "segments": [
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA"
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAG",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GAAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GAAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GAAA",
+          "type": "core"
+        }
       ]
     }
   },
   "D5S2800": {
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "TCTCCAAAACATAATTTTTTAAATTTTAAATTTCTGTTGGTACATAATAGGTAGGTAGGTAGACAGACAGACAGACAGACAGACAGACAGACAGATAGATAGATAGATTGATTGATTTATGGGGCCCAC",
-      "leftFlank": "TCTCCAAAACATAATTTTTTAAATTTTAAATTTCTGTTGGTACATAATAGGTAGGTAGGT",
-      "rightFlank": "AGATAGATAGATAGATTGATTGATTTATGGGGCCCAC",
+      "leftFlank": "TCTCCAAAACATAATTTTTTAAATTTTAAATTTCTGTTGGTACATAATA",
+      "rightFlank": "TATGGGGCCCAC",
       "segments": [
-        "AGAC",
-        "AGAC",
-        "AGAC",
-        "AGAC",
-        "AGAC",
-        "AGAC",
-        "AGAC",
-        "AGAC"
+        {
+          "sequence": "GGTA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGTA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGTA",
+          "type": "core"
+        },
+        {
+          "sequence": "GACA",
+          "type": "core"
+        },
+        {
+          "sequence": "GACA",
+          "type": "core"
+        },
+        {
+          "sequence": "GACA",
+          "type": "core"
+        },
+        {
+          "sequence": "GACA",
+          "type": "core"
+        },
+        {
+          "sequence": "GACA",
+          "type": "core"
+        },
+        {
+          "sequence": "GACA",
+          "type": "core"
+        },
+        {
+          "sequence": "GACA",
+          "type": "core"
+        },
+        {
+          "sequence": "GACA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATT",
+          "type": "core"
+        },
+        {
+          "sequence": "GATT",
+          "type": "core",
+          "pos": "+2"
+        },
+        {
+          "sequence": "GATT",
+          "type": "core",
+          "pos": "+6"
+        }
       ]
     }
   },
   "D5S818": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "TATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTTCAAAAT",
-      "leftFlank": "TATTTATACC",
-      "rightFlank": "TCTTCAAAAT",
+      "leftFlank": "TATTTATACCTCT",
+      "rightFlank": "TCAAAAT",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "TTTGTATCTTTATCTGTATCCTTATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTTCAAAATATTACATA",
-      "leftFlank": "TTTGTATCTTTATCTGTATCCTTATTTATACC",
-      "rightFlank": "TCTTCAAAATATTACATA",
+      "leftFlank": "TTTGTATCTTTATCTGTATCCTTATTTATACCTCT",
+      "rightFlank": "TCAAAATATTACATA",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "ACAACATTTGTATCTTTATCTGTATCCTTATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTTCAAAATATTACATAAGGATACCAAA",
-      "leftFlank": "ACAACATTTGTATCTTTATCTGTATCCTTATTTATACC",
-      "rightFlank": "TCTTCAAAATATTACATAAGGATACCAAA",
+      "leftFlank": "ACAACATTTGTATCTTTATCTGTATCCTTATTTATACCTCT",
+      "rightFlank": "TCAAAATATTACATAAGGATACCAAA",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "AACATTTGTATCTTTATCTGTATCCTTATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTTCAAAATATTACATAAGGATACCAAAGAGGAAAATCACCCTTGTCACATACTTGCTATTAAAATATACTTTTATTAGTACA",
-      "leftFlank": "AACATTTGTATCTTTATCTGTATCCTTATTTATACC",
-      "rightFlank": "TCTTCAAAATATTACATAAGGATACCAAAGAGGAAAATCACCCTTGTCACATACTTGCTATTAAAATATACTTTTATTAGTACA",
+      "leftFlank": "AACATTTGTATCTTTATCTGTATCCTTATTTATACCTCT",
+      "rightFlank": "TCAAAATATTACATAAGGATACCAAAGAGGAAAATCACCCTTGTCACATACTTGCTATTAAAATATACTTTTATTAGTACA",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     }
   },
@@ -695,19 +2340,59 @@
       "leftFlank": "CTTCCT",
       "rightFlank": "AATCTATCTATCTT",
       "segments": [
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT"
+        {
+          "sequence": "ATCT",
+          "type": "core",
+          "pos": "-1"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
@@ -715,19 +2400,59 @@
       "leftFlank": "",
       "rightFlank": "AATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATA",
       "segments": [
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT"
+        {
+          "sequence": "ATCT",
+          "type": "core",
+          "pos": "-1"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
@@ -735,19 +2460,59 @@
       "leftFlank": "CTGTGTCAGACCCTGTTCTAAGTACTTCCT",
       "rightFlank": "AATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATAT",
       "segments": [
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT"
+        {
+          "sequence": "ATCT",
+          "type": "core",
+          "pos": "-1"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
@@ -755,19 +2520,59 @@
       "leftFlank": "CTAAGTACTTCCT",
       "rightFlank": "AATCTATCTATCTTCTATCTATGAAGGCAGTTACTGTTAATATCTTCATTTTACAGGTAGGAAAACTGAGACACAGGGTGGTTAGCAACCTGCTAGTCCTTGGCAGACTCAG",
       "segments": [
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT",
-        "ATCT"
+        {
+          "sequence": "ATCT",
+          "type": "core",
+          "pos": "-1"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     }
   },
@@ -775,283 +2580,940 @@
     "ForenSeq MainstAY SE": {
       "sequence": "CTCTTTCTTTCCTTCCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTCTTTCTTTCTTTCTCTTTCTTTCTTTTTCTTTCTTTTTCTTCCTTCCTTCCTTTCTCTCTCTCTCTCTTTCTTTCTTTCTAACTCTCTTTGTCTCTTTCTTTCTTTCTTTTGACGGAGTT",
       "leftFlank": "CTCTTTCTTTCCTTC",
-      "rightFlank": "TTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTCTTTCTTTCTTTCTCTTTCTTTCTTTTTCTTTCTTTTTCTTCCTTCCTTCCTTTCTCTCTCTCTCTCTTTCTTTCTTTCTAACTCTCTTTGTCTCTTTCTTTCTTTCTTTTGACGGAGTT",
+      "rightFlank": "TCTTTCTTTCTTTCTCTTTCTTTCTTTTTCTTTCTTTTTCTTCCTTCCTTCCTTTCTCTCTCTCTCTCTTTCTTTCTTTCTAACTCTCTTTGTCTCTTTCTTTCTTTCTTTTGACGGAGTT",
       "segments": [
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT"
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TT",
+          "type": "insertion"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTTC",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "GTAACTTGCTCTTTCTTTCCTTCCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTCTTTCTTTCTTTCTCTTTCTTTCTTTTTCTTTCTTTTTCTTCCTTCCTTCCTTTCTCTCTCTCTCTCTTTCTTTCTTTCTAACTCTCTTTGTCTCTTTCTTTCTTTCTTTTGACGGAGTT",
       "leftFlank": "GTAACTTGCTCTTTCTTTCCTTC",
-      "rightFlank": "TTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTCTTTCTTTCTTTCTCTTTCTTTCTTTTTCTTTCTTTTTCTTCCTTCCTTCCTTTCTCTCTCTCTCTCTTTCTTTCTTTCTAACTCTCTTTGTCTCTTTCTTTCTTTCTTTTGACGGAGTT",
+      "rightFlank": "TCTTTCTTTCTTTCTCTTTCTTTCTTTTTCTTTCTTTTTCTTCCTTCCTTCCTTTCTCTCTCTCTCTCTTTCTTTCTTTCTAACTCTCTTTGTCTCTTTCTTTCTTTCTTTTGACGGAGTT",
       "segments": [
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT",
-        "CTTT"
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TT",
+          "type": "insertion"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTTTC",
+          "type": "core"
+        }
       ]
     }
   },
   "D6S1043": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "AGATGGCATATTGTGAAATTTCTCAGCTTCCATAATTGTATGAGCCACTTCCCATAATAAATCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTGATCTATCAATCTATTGATC",
-      "leftFlank": "AGATGGCATATTGTGAAATTTCTCAGCTTCCATAATTGTATGAGCCACTTCCCATAATAAATC",
-      "rightFlank": "CTGATCTATCAATCTATTGATC",
+      "leftFlank": "AGATGGCATATTGTGAAATTTCTCAGCTTCCATAATTGTATGAGCCACTTCCCATAATAAATCCT",
+      "rightFlank": "GATCTATCAATCTATTGATC",
       "segments": [
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT"
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "CTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTGATCTATCAATCTATTG",
-      "leftFlank": "",
-      "rightFlank": "CTGATCTATCAATCTATTG",
+      "leftFlank": "CT",
+      "rightFlank": "GATCTATCAATCTATTG",
       "segments": [
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT"
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "AATAAATCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTGATCTATCAATCTATTGATCCACCCATCCTTGCACACTATTGCTTCTATCTCTCTGGAGAGCTAAT",
-      "leftFlank": "AATAAATC",
-      "rightFlank": "CTGATCTATCAATCTATTGATCCACCCATCCTTGCACACTATTGCTTCTATCTCTCTGGAGAGCTAAT",
+      "leftFlank": "AATAAATCCT",
+      "rightFlank": "GATCTATCAATCTATTGATCCACCCATCCTTGCACACTATTGCTTCTATCTCTCTGGAGAGCTAAT",
       "segments": [
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT",
-        "CTAT"
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATCT",
+          "type": "core"
+        }
       ]
     }
   },
   "D6S474": {
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "TAGTCAGGGTTTTCCAAGAGATAGACCAATTAGATAGATAGATAGATAGATGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAAAAGATAGATATGAGTAGGGATTTAT",
-      "leftFlank": "TAGTCAGGGTTTTCCAAGAGATAGACCAATTAGATAGATAGATAGATAGAT",
-      "rightFlank": "AAAGATAGATATGAGTAGGGATTTAT",
+      "leftFlank": "TAGTCAGGGTTTTCCAAGAGATAGACCAAT",
+      "rightFlank": "TAAAAGATAGATATGAGTAGGGATTTAT",
       "segments": [
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA"
+        {
+          "sequence": "TAGA",
+          "type": "core",
+          "pos": "-1"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGATAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TGA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        }
       ]
     }
   },
   "D7S820": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "TATTTAGTGAGATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTAGTTCGTTCTAAACTAT",
-      "leftFlank": "TATTTAGTGAGATTAAAAAAAACTATCAATCTG",
-      "rightFlank": "TCGTTAGTTCGTTCTAAACTAT",
+      "leftFlank": "TATTTAGTGAGATTAAAAAAAACTATCAATCTGTC",
+      "rightFlank": "GTTAGTTCGTTCTAAACTAT",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "AATATTGGTAATTAAATGTTTACTATAGACTATTTAGTGAGATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTAGTTCGTTCTA",
-      "leftFlank": "AATATTGGTAATTAAATGTTTACTATAGACTATTTAGTGAGATTAAAAAAAACTATCAATCTG",
-      "rightFlank": "TCGTTAGTTCGTTCTA",
+      "leftFlank": "AATATTGGTAATTAAATGTTTACTATAGACTATTTAGTGAGATTAAAAAAAACTATCAATCTGTC",
+      "rightFlank": "GTTAGTTCGTTCTA",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "AAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTAGTTCGTTCTAAACTAT",
-      "leftFlank": "AAAAAAACTATCAATCTG",
-      "rightFlank": "TCGTTAGTTCGTTCTAAACTAT",
+      "leftFlank": "AAAAAAACTATCAATCTGTC",
+      "rightFlank": "GTTAGTTCGTTCTAAACTAT",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "AGAATTGCACCAAATATTGGTAATTAAATGTTTACTATAGACTATTTAGTGAGATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTAGTTCGTTCTAAACTATGACAAGTGTTCTATCATACCCTTTATATATATTAACCTTAAAATAACTC",
-      "leftFlank": "AGAATTGCACCAAATATTGGTAATTAAATGTTTACTATAGACTATTTAGTGAGATTAAAAAAAACTATCAATCTG",
-      "rightFlank": "TCGTTAGTTCGTTCTAAACTATGACAAGTGTTCTATCATACCCTTTATATATATTAACCTTAAAATAACTC",
+      "leftFlank": "AGAATTGCACCAAATATTGGTAATTAAATGTTTACTATAGACTATTTAGTGAGATTAAAAAAAACTATCAATCTGTC",
+      "rightFlank": "GTTAGTTCGTTCTAAACTATGACAAGTGTTCTATCATACCCTTTATATATATTAACCTTAAAATAACTC",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        }
       ]
     }
   },
   "D8S1179": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "TCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCC",
-      "leftFlank": "TCTATCTG",
+      "leftFlank": "",
       "rightFlank": "TTCCC",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "CATGTGTACATTCGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCC",
-      "leftFlank": "CATGTGTACATTCGTATCTATCTG",
+      "leftFlank": "CATGTGTACATTCGTA",
       "rightFlank": "TTCC",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "TCATGTGTACATTCGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCCCACAGTGAAAATAATCTACAGGATAGGTAAATAAATTAAGGCATATTCA",
-      "leftFlank": "TCATGTGTACATTCGTATCTATCTG",
+      "leftFlank": "TCATGTGTACATTCGTA",
       "rightFlank": "TTCCCCACAGTGAAAATAATCTACAGGATAGGTAAATAAATTAAGGCATATTCA",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "TGTGTACATTCGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCCCACAGTGAAAATAATCTACAGGATAGGTAAATAAATTAAGGCATATTCACGCAATGGGATACGATACAGTGATGAAAATGAACTAATTATAGCTACGT",
-      "leftFlank": "TGTGTACATTCGTATCTATCTG",
+      "leftFlank": "TGTGTACATTCGTA",
       "rightFlank": "TTCCCCACAGTGAAAATAATCTACAGGATAGGTAAATAAATTAAGGCATATTCACGCAATGGGATACGATACAGTGATGAAAATGAACTAATTATAGCTACGT",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     }
   },
@@ -1061,18 +3523,54 @@
       "leftFlank": "AGATAACTGTAGATAGG",
       "rightFlank": "TATTAAT",
       "segments": [
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA"
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
@@ -1080,18 +3578,54 @@
       "leftFlank": "TAGATAGG",
       "rightFlank": "TATTAAT",
       "segments": [
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA"
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        }
       ]
     }
   },
@@ -1101,19 +3635,58 @@
       "leftFlank": "TTGAACAAATGAGTGAGT",
       "rightFlank": "ATGAAGACAATACAACCAGAGTT",
       "segments": [
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA"
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
@@ -1121,19 +3694,58 @@
       "leftFlank": "TGAGTGAGT",
       "rightFlank": "AT",
       "segments": [
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA"
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
@@ -1141,19 +3753,58 @@
       "leftFlank": "TTAATGAATTGAACAAATGAGTGAGT",
       "rightFlank": "ATGAAGACAATACAACCAGAGTTGTTCCTTTAATAACAAGACA",
       "segments": [
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA"
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
@@ -1161,248 +3812,897 @@
       "leftFlank": "CCCCAGGACCAATCTGGTCACAAACATATTAATGAATTGAACAAATGAGTGAGT",
       "rightFlank": "",
       "segments": [
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA",
-        "GGAA"
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "GGAA",
+          "type": "core"
+        }
       ]
     }
   },
   "TH01": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "TGCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAATGAGGGAAATAAGG",
-      "leftFlank": "TGCAGGTCACAGGGAACACAGACTCCATGG",
-      "rightFlank": "TGAGGGAAATAAGG",
+      "leftFlank": "TGCAGGTCACAGGGAACACAGACTCCATGGTG",
+      "rightFlank": "AGGGAAATAAGG",
       "segments": [
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA"
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "ATGGTGAATGAATGAATGAATGAATGAATGAATGAGG",
-      "leftFlank": "ATGG",
-      "rightFlank": "TGAGG",
+      "leftFlank": "ATGGTG",
+      "rightFlank": "AGG",
       "segments": [
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA"
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "GCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAATGAGGGAAATAAGGGAGGAACAGGCCAATGGGAATCACCCC",
-      "leftFlank": "GCAGGTCACAGGGAACACAGACTCCATGG",
-      "rightFlank": "TGAGGGAAATAAGGGAGGAACAGGCCAATGGGAATCACCCC",
+      "leftFlank": "GCAGGTCACAGGGAACACAGACTCCATGGTG",
+      "rightFlank": "AGGGAAATAAGGGAGGAACAGGCCAATGGGAATCACCCC",
       "segments": [
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA"
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "CTCCATGGTGAATGAATGAATGAATGAATGAATGAATGAGGGAAATAAGGGAGGAACAGGCCAATGGGAATCACCCCAGAGCCCAGATACCCTTTGAATTTTGCCCCCTATTTGCCCAGGACCCCCCACCATGAGCTGCTGCTAGAGCCTGGGAAGGGCCTTGGGGCTGCCTCCCCAAGCAGGCAGGCTGGTTGGGGTGC",
-      "leftFlank": "CTCCATGG",
-      "rightFlank": "TGAGGGAAATAAGGGAGGAACAGGCCAATGGGAATCACCCCAGAGCCCAGATACCCTTTGAATTTTGCCCCCTATTTGCCCAGGACCCCCCACCATGAGCTGCTGCTAGAGCCTGGGAAGGGCCTTGGGGCTGCCTCCCCAAGCAGGCAGGCTGGTTGGGGTGC",
+      "leftFlank": "CTCCATGGTG",
+      "rightFlank": "AGGGAAATAAGGGAGGAACAGGCCAATGGGAATCACCCCAGAGCCCAGATACCCTTTGAATTTTGCCCCCTATTTGCCCAGGACCCCCCACCATGAGCTGCTGCTAGAGCCTGGGAAGGGCCTTGGGGCTGCCTCCCCAAGCAGGCAGGCTGGTTGGGGTGC",
       "segments": [
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA",
-        "TGAA"
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        },
+        {
+          "sequence": "AATG",
+          "type": "core"
+        }
       ]
     }
   },
   "vWA": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "AATACATAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGATAGATCAAT",
-      "leftFlank": "AATACATAGGATGGATGGATAGATG",
-      "rightFlank": "GACAGACAGACAGACAGACAGATAGATCAAT",
+      "leftFlank": "AATACATAGGATGGATGGATAGATGGA",
+      "rightFlank": "TCAAT",
       "segments": [
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA"
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "TAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGATAGATCAATCCAAGT",
-      "leftFlank": "TAGGATGGATGGATAGATG",
-      "rightFlank": "GACAGACAGACAGACAGACAGATAGATCAATCCAAGT",
+      "leftFlank": "TAGGATGGATGGATAGATGGA",
+      "rightFlank": "TCAATCCAAGT",
       "segments": [
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA"
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "TGATAAATACATAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGATAGATCAATCCAAGTCACATA",
-      "leftFlank": "TGATAAATACATAGGATGGATGGATAGATG",
-      "rightFlank": "GACAGACAGACAGACAGACAGATAGATCAATCCAAGTCACATA",
+      "leftFlank": "TGATAAATACATAGGATGGATGGATAGATGGA",
+      "rightFlank": "TCAATCCAAGTCACATA",
       "segments": [
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA"
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "GGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGATAGATCAATCCAAGTCACATACTGATTATTCTTATCATCCACTAGGGCTTTCACATCTCAGCCAAGTCAACTTGGATCCTCTAGACCTGTTTCTTCTTCTGGAA",
-      "leftFlank": "GGATAGATG",
-      "rightFlank": "GACAGACAGACAGACAGACAGATAGATCAATCCAAGTCACATACTGATTATTCTTATCATCCACTAGGGCTTTCACATCTCAGCCAAGTCAACTTGGATCCTCTAGACCTGTTTCTTCTTCTGGAA",
+      "leftFlank": "GGATAGATGGA",
+      "rightFlank": "TCAATCCAAGTCACATACTGATTATTCTTATCATCCACTAGGGCTTTCACATCTCAGCCAAGTCAACTTGGATCCTCTAGACCTGTTTCTTCTTCTGGAA",
       "segments": [
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA"
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "CAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "TAGA",
+          "type": "core"
+        }
       ]
     }
   },
   "D12S391": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "CAGAGAGAAAGAATCAACAGGATCAATGGATGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGATGAGAGGGGATTTATTAGAGGAATTAGCTCAAGTGATATGGAGGCTGAAAAATCTCATGACAGTCCATCTGCAAGCTGGAGACCCAGGGACACTA",
-      "leftFlank": "CAGAGAGAAAGAATCAACAGGATCAATGGATGCATAGG",
-      "rightFlank": "CAGACAGACAGACAGACAGACAGACAGATGAGAGGGGATTTATTAGAGGAATTAGCTCAAGTGATATGGAGGCTGAAAAATCTCATGACAGTCCATCTGCAAGCTGGAGACCCAGGGACACTA",
+      "leftFlank": "CAGAGAGAAAGAATCAACAGGATCAATGGATGCATAGGT",
+      "rightFlank": "GAGAGGGGATTTATTAGAGGAATTAGCTCAAGTGATATGGAGGCTGAAAAATCTCATGACAGTCCATCTGCAAGCTGGAGACCCAGGGACACTA",
       "segments": [
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA"
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "ATGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGAT",
-      "leftFlank": "ATGCATAGG",
-      "rightFlank": "CAGACAGACAGACAGACAGACAGACAGAT",
+      "leftFlank": "ATGCATAGGT",
+      "rightFlank": "",
       "segments": [
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA"
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "ATCAATGGATGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGATGAGAGGGGATTTATTAGAGGAATTA",
-      "leftFlank": "ATCAATGGATGCATAGG",
-      "rightFlank": "CAGACAGACAGACAGACAGACAGACAGATGAGAGGGGATTTATTAGAGGAATTA",
+      "leftFlank": "ATCAATGGATGCATAGGT",
+      "rightFlank": "GAGAGGGGATTTATTAGAGGAATTA",
       "segments": [
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA"
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "CAATGGATGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGATGAGAGGG",
-      "leftFlank": "CAATGGATGCATAGG",
-      "rightFlank": "CAGACAGACAGACAGACAGACAGACAGATGAGAGGG",
+      "leftFlank": "CAATGGATGCATAGGT",
+      "rightFlank": "GAGAGGG",
       "segments": [
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA",
-        "TAGA"
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAC",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        }
       ]
     }
   },
   "D12ATA63": {
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "AGCAATTTAAAAATGTTGTTGTTGTTATTATTATTATTATTATTATTATTATTACTTGAGACAGGGTCTCGCTCTGTTATCCAGGCTGGAGTACAGTGG",
-      "leftFlank": "AGCAATTTAAAAATGTTGTTGTTG",
+      "leftFlank": "AGCAATTTAAAAATG",
       "rightFlank": "CTTGAGACAGGGTCTCGCTCTGTTATCCAGGCTGGAGTACAGTGG",
       "segments": [
-        "TTA",
-        "TTA",
-        "TTA",
-        "TTA",
-        "TTA",
-        "TTA",
-        "TTA",
-        "TTA",
-        "TTA",
-        "TTA"
+        {
+          "sequence": "TTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TTA",
+          "type": "core"
+        }
       ]
     }
   },
@@ -1412,17 +4712,50 @@
       "leftFlank": "TCTGACCCATCTAACGCCTATCTGTATTTACAAATACAT",
       "rightFlank": "AATCAATCATCTATCTATCTTTCTGTCTGTCTTTTTGGG",
       "segments": [
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC"
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
@@ -1430,17 +4763,50 @@
       "leftFlank": "TAACGCCTATCTGTATTTACAAATACAT",
       "rightFlank": "AATCAATCATCTATCTATCTTTCTG",
       "segments": [
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC"
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
@@ -1448,17 +4814,50 @@
       "leftFlank": "TCTGACCCATCTAACGCCTATCTGTATTTACAAATACAT",
       "rightFlank": "AATCAATCATCTATCTATCTTTCTGTCTGTCTTTTTGGGCT",
       "segments": [
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC"
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
@@ -1466,86 +4865,221 @@
       "leftFlank": "TTCTTTAGTGGGCATCCGTGACTCTCTGGACTCTGACCCATCTAACGCCTATCTGTATTTACAAATACAT",
       "rightFlank": "AATCAATCATCTATCTATCTTTCTGTCTGTCTTTTTGGGCTGCCTATGGCTCAACCCAAGTTGAAGGAGGAGATTT",
       "segments": [
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC"
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        },
+        {
+          "sequence": "TATC",
+          "type": "core"
+        }
       ]
     }
   },
   "D14S1434": {
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "ACTCTACGACTGTCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCCATCCATCCACCTCCTATTGGTTCTACAGTTATTTTTTAAACCACTGCTCCGGAGCCAGAGC",
-      "leftFlank": "ACTCTACGACTGTCTGTCTG",
-      "rightFlank": "TCCATCCATCCACCTCCTATTGGTTCTACAGTTATTTTTTAAACCACTGCTCCGGAGCCAGAGC",
+      "leftFlank": "ACTCTACGA",
+      "rightFlank": "CCATCCATCCACCTCCTATTGGTTCTACAGTTATTTTTTAAACCACTGCTCCGGAGCCAGAGC",
       "segments": [
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA",
-        "TCTA"
+        {
+          "sequence": "CTGT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTGT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTGT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTAT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTAT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTAT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTAT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTAT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTAT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTAT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTAT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTAT",
+          "type": "core"
+        },
+        {
+          "sequence": "CTAT",
+          "type": "core"
+        }
       ]
     }
   },
   "Penta E": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "AGAAAACTCCTTACAATTTTCTTTTCTTTTCTTTTCTTTTCTTT",
-      "leftFlank": "AGAAAACTCCTTACAA",
-      "rightFlank": "TTT",
+      "leftFlank": "AGAAAACTCCTTACAATTT",
+      "rightFlank": "",
       "segments": [
-        "TTTTC",
-        "TTTTC",
-        "TTTTC",
-        "TTTTC",
-        "TTTTC"
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "ATTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGAC",
-      "leftFlank": "A",
-      "rightFlank": "TTTGAGAC",
+      "leftFlank": "ATTT",
+      "rightFlank": "GAGAC",
       "segments": [
-        "TTTTC",
-        "TTTTC",
-        "TTTTC",
-        "TTTTC",
-        "TTTTC"
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "TATTTGGGTTATTAATTGAGAAAACTCCTTACAATTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGACTGAGTCTTGCTCAGTCGCCCAGGCTGGAGTGCAATGGCGTGATCTCGGCTCAC",
-      "leftFlank": "TATTTGGGTTATTAATTGAGAAAACTCCTTACAA",
-      "rightFlank": "TTTGAGACTGAGTCTTGCTCAGTCGCCCAGGCTGGAGTGCAATGGCGTGATCTCGGCTCAC",
+      "leftFlank": "TATTTGGGTTATTAATTGAGAAAACTCCTTACAATTT",
+      "rightFlank": "GAGACTGAGTCTTGCTCAGTCGCCCAGGCTGGAGTGCAATGGCGTGATCTCGGCTCAC",
       "segments": [
-        "TTTTC",
-        "TTTTC",
-        "TTTTC",
-        "TTTTC",
-        "TTTTC"
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "TAATGATTACATAACATACATGTGTGTAAAGTGCTTAGTATCATGATTGATACATGGAAAGAATTCTCTTATTTGGGTTATTAATTGAGAAAACTCCTTACAATTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGAC",
-      "leftFlank": "TAATGATTACATAACATACATGTGTGTAAAGTGCTTAGTATCATGATTGATACATGGAAAGAATTCTCTTATTTGGGTTATTAATTGAGAAAACTCCTTACAA",
-      "rightFlank": "TTTGAGAC",
+      "leftFlank": "TAATGATTACATAACATACATGTGTGTAAAGTGCTTAGTATCATGATTGATACATGGAAAGAATTCTCTTATTTGGGTTATTAATTGAGAAAACTCCTTACAATTT",
+      "rightFlank": "GAGAC",
       "segments": [
-        "TTTTC",
-        "TTTTC",
-        "TTTTC",
-        "TTTTC",
-        "TTTTC"
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTTT",
+          "type": "core"
+        }
       ]
     }
   },
@@ -1555,17 +5089,50 @@
       "leftFlank": "TCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTG",
       "rightFlank": "TCATTGAAAGACAAAACAGAGATGGATGATAGATAC",
       "segments": [
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA"
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
@@ -1573,17 +5140,50 @@
       "leftFlank": "AAGCACTGAAAGAAGAATCCAGAAAACCACAGTTCCCATTTTTATATGGGAGCAAACAAAGGCAGATCCCAAGCTCTTCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTG",
       "rightFlank": "TCATTGAAAGACAAAA",
       "segments": [
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA"
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
@@ -1591,17 +5191,50 @@
       "leftFlank": "TCTTCCCTAGATCAATACAGACAGACAGACAGGTG",
       "rightFlank": "TCATTGAAAGACAAAACAGAGATGGATGATAGATACATGCTT",
       "segments": [
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA"
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
@@ -1609,17 +5242,50 @@
       "leftFlank": "GTGCACAAATCTAAATGCAGAAAAGCACTGAAAGAAGAATCCAGAAAACCACAGTTCCCATTTTTATATGGGAGCAAACAAAGGCAGATCCCAAGCTCTTCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTG",
       "rightFlank": "T",
       "segments": [
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA",
-        "GATA"
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        },
+        {
+          "sequence": "GATA",
+          "type": "core"
+        }
       ]
     }
   },
@@ -1629,18 +5295,54 @@
       "leftFlank": "ATATGTGTG",
       "rightFlank": "CCATCATAGGAATTTT",
       "segments": [
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT"
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
@@ -1648,18 +5350,54 @@
       "leftFlank": "ATGCATGTGTTTATTTATACATATGTGTG",
       "rightFlank": "",
       "segments": [
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT"
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        }
       ]
     }
   },
@@ -1669,24 +5407,79 @@
       "leftFlank": "GTCTC",
       "rightFlank": "AAAGAGAGAGGAAAGAAAGAGAAAAAGAAAAGAAATAGTAGCAACTGTTATTGTAAGA",
       "segments": [
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA"
+        {
+          "sequence": "AGAA",
+          "type": "core",
+          "pos": "-1"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
@@ -1694,24 +5487,79 @@
       "leftFlank": "CTC",
       "rightFlank": "AAAGAGAGAGGAAAGAAAGAGAAAAAGAAAAGAAATAGT",
       "segments": [
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA"
+        {
+          "sequence": "AGAA",
+          "type": "core",
+          "pos": "-1"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
@@ -1719,24 +5567,79 @@
       "leftFlank": "CTGAGTGACAAATTGAGACCTTGTCTC",
       "rightFlank": "AAAGAGAGAGGAAAGAAAGAGAAAAAGAAAAGAAATAGTAGCAACTGTTATT",
       "segments": [
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA"
+        {
+          "sequence": "AGAA",
+          "type": "core",
+          "pos": "-1"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
@@ -1744,106 +5647,337 @@
       "leftFlank": "AGGCTGCAGTGAGCCATGTTCATGCCACTGCACTTCACTCTGAGTGACAAATTGAGACCTTGTCTC",
       "rightFlank": "AAAGAGAGAGGAAAGAAAGAGAAAAAGAAAAGAAATAGTAGCAACTGTTATTGTA",
       "segments": [
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA",
-        "AGAA"
+        {
+          "sequence": "AGAA",
+          "type": "core",
+          "pos": "-1"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAA",
+          "type": "core"
+        }
       ]
     }
   },
   "D19S433": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "AATAAAAATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGTGGTACAATTATAGCT",
-      "leftFlank": "AATAAAAATCTTCTCTCTTTCTTCCTCTC",
-      "rightFlank": "ACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGTGGTACAATTATAGCT",
+      "leftFlank": "AATAAAAATCTTCTCTCTTTCTTCCTCTCT",
+      "rightFlank": "CAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGTGGTACAATTATAGCT",
       "segments": [
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT"
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTACCTTCTTT",
+          "type": "insertion"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core",
+          "pos": "+10"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "CTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACAGAAT",
-      "leftFlank": "CTCTC",
-      "rightFlank": "ACCTTCTTTCCTTCAACAGAAT",
+      "leftFlank": "CTCTCT",
+      "rightFlank": "CAACAGAAT",
       "segments": [
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT"
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTACCTTCTTT",
+          "type": "insertion"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core",
+          "pos": "+10"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "AAAAATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGT",
-      "leftFlank": "AAAAATCTTCTCTCTTTCTTCCTCTC",
-      "rightFlank": "ACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGT",
+      "leftFlank": "AAAAATCTTCTCTCTTTCTTCCTCTCT",
+      "rightFlank": "CAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGT",
       "segments": [
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT"
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTACCTTCTTT",
+          "type": "insertion"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core",
+          "pos": "+10"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "AAGTTCTTTAGCAGTGATTTCTGATATTTTGGTGCACCCATTACCCGAATAAAAATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCA",
-      "leftFlank": "AAGTTCTTTAGCAGTGATTTCTGATATTTTGGTGCACCCATTACCCGAATAAAAATCTTCTCTCTTTCTTCCTCTC",
-      "rightFlank": "ACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCA",
+      "leftFlank": "AAGTTCTTTAGCAGTGATTTCTGATATTTTGGTGCACCCATTACCCGAATAAAAATCTTCTCTCTTTCTTCCTCTCT",
+      "rightFlank": "CAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCA",
       "segments": [
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT",
-        "TCCT"
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core"
+        },
+        {
+          "sequence": "CCTACCTTCTTT",
+          "type": "insertion"
+        },
+        {
+          "sequence": "CCTT",
+          "type": "core",
+          "pos": "+10"
+        }
       ]
     }
   },
@@ -1853,20 +5987,62 @@
       "leftFlank": "AGACACCGAACCAATAAG",
       "rightFlank": "AGAGATTTATTATAGGAATTGATT",
       "segments": [
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT"
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
@@ -1874,98 +6050,604 @@
       "leftFlank": "AAAGGAACCTAAAACTCTAAGGAAGCGTGTACTAGAGTTCTTCAGAGACACCGAACCAATAAG",
       "rightFlank": "AGAGATTTA",
       "segments": [
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT",
-        "AGAT"
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        },
+        {
+          "sequence": "AGAT",
+          "type": "core"
+        }
       ]
     }
   },
   "D21S11": {
     "ForenSeq MainstAY/Signature": {
       "sequence": "AAATATGTGAGTCAATTCCCCAAGTGAATTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTCTATCTAT",
-      "leftFlank": "AAATATGTGAGTCAATTCCCCAAGTGAATTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCA",
-      "rightFlank": "GTCTATCTAT",
+      "leftFlank": "AAATATGTGAGTCAATTCCCCAAGTGAATTGCCT",
+      "rightFlank": "TCGTCTATCTAT",
       "segments": [
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCCATA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "TTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTCTATCTATCCAGTCTATCT",
-      "leftFlank": "TTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCA",
-      "rightFlank": "GTCTATCTATCCAGTCTATCT",
+      "leftFlank": "TTGCCT",
+      "rightFlank": "TCGTCTATCTATCCAGTCTATCT",
       "segments": [
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCCATA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "AATTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTCTATCTATCCAGTCTATC",
-      "leftFlank": "AATTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCA",
-      "rightFlank": "GTCTATCTATCCAGTCTATC",
+      "leftFlank": "AATTGCCT",
+      "rightFlank": "TCGTCTATCTATCCAGTCTATC",
       "segments": [
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCCATA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "TGAATTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTCTATCTATCCAGTCTATCTACCTCCTATTAGTCT",
-      "leftFlank": "TGAATTGCCTTCTATCTATCTATCTATCTGTCTGTCTGTCTGTCTGTCTGTCTATCTATCTATATCTATCTATCTATCATCTATCTATCCA",
-      "rightFlank": "GTCTATCTATCCAGTCTATCTACCTCCTATTAGTCT",
+      "leftFlank": "TGAATTGCCT",
+      "rightFlank": "TCGTCTATCTATCCAGTCTATCTACCTCCTATTAGTCT",
       "segments": [
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC",
-        "TATC"
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTG",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCCATA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "insertion"
+        },
+        {
+          "sequence": "TCTA",
+          "type": "core"
+        }
       ]
     }
   },
@@ -1975,19 +6657,58 @@
       "leftFlank": "GATCACTTGAGCCTGGAAGGTCGAAGCTGAAGTGAGCCATGATCACACCACTACACTCCAGCCTAGGTGACAGAGCAAGACACCATCTCAAGAAAGAAAAAAAAG",
       "rightFlank": "AAAAACGAAGGGGAAAAAAAGAGAATCATAAACATAAATGTAAAATTTCTCAA",
       "segments": [
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA"
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
@@ -1995,19 +6716,58 @@
       "leftFlank": "AAAAAAAAG",
       "rightFlank": "AAAAACGAAGGGGAAAAAAAGAGAATCATAAACATAAATGTAAAATTTCTCAA",
       "segments": [
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA"
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
@@ -2015,19 +6775,58 @@
       "leftFlank": "AGAAAAAAAAG",
       "rightFlank": "AAAAACGAAGGGGAAAAAAAGAGAATCATAAACATAAATGTAAAATTTCTCAAAAAAAT",
       "segments": [
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA"
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
@@ -2035,19 +6834,58 @@
       "leftFlank": "GAGCCATGATCACACCACTACACTCCAGCCTAGGTGACAGAGCAAGACACCATCTCAAGAAAGAAAAAAAAG",
       "rightFlank": "AAAAACGAAGGGGAAAAAAAGAGAATCATAAACATAAATGTAAAATTTCTCAAAAAAATCGTTA",
       "segments": [
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA",
-        "AAAGA"
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        },
+        {
+          "sequence": "AAAGA",
+          "type": "core"
+        }
       ]
     }
   },
@@ -2055,85 +6893,301 @@
     "ForenSeq MainstAY/Signature": {
       "sequence": "CGTTGGAATTCCCCAAACTGGCCAGTTCCTCTCCACCCTATAGACCCTGTCCTAGCCTTCTTATAGCTGCTATGGGGGCTAGATTTTCCCCGATGATAGTAGTCTCATTATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTATAAAAATATTGCCAAT",
       "leftFlank": "CGTTGGAATTCCCCAAACTGGCCAGTTCCTCTCCACCCTATAGACCCTGTCCTAGCCTTCTTATAGCTGCTATGGGGGCTAGATTTTCCCCGATGATAGTAGTCTC",
-      "rightFlank": "ACTATTATTGTTATAAAAATATTGCCAAT",
+      "rightFlank": "GTTATAAAAATATTGCCAAT",
       "segments": [
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT"
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ACT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        }
       ]
     },
     "IDSeek OmniSTR Global": {
       "sequence": "CCCGATGATAGTAGTCTCATTATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTAT",
       "leftFlank": "CCCGATGATAGTAGTCTC",
-      "rightFlank": "ACTATTATTGTTAT",
+      "rightFlank": "GTTAT",
       "segments": [
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT"
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ACT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        }
       ]
     },
     "Precision ID GlobalFiler NGS STR Panel v2 ": {
       "sequence": "ATGATAGTAGTCTCATTATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTATAAAAATATTGCCAATCATACATTCGCGTGATCACTCACACTGTGCCGGGCACTCTTGAGAGCACTTTACATATATTGTCTCATTTA",
       "leftFlank": "ATGATAGTAGTCTC",
-      "rightFlank": "ACTATTATTGTTATAAAAATATTGCCAATCATACATTCGCGTGATCACTCACACTGTGCCGGGCACTCTTGAGAGCACTTTACATATATTGTCTCATTTA",
+      "rightFlank": "GTTATAAAAATATTGCCAATCATACATTCGCGTGATCACTCACACTGTGCCGGGCACTCTTGAGAGCACTTTACATATATTGTCTCATTTA",
       "segments": [
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT"
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ACT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        }
       ]
     },
     "PowerSeq 46GY": {
       "sequence": "CCTTCTTATAGCTGCTATGGGGGCTAGATTTTCCCCGATGATAGTAGTCTCATTATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTATAAAAATATTG",
       "leftFlank": "CCTTCTTATAGCTGCTATGGGGGCTAGATTTTCCCCGATGATAGTAGTCTC",
-      "rightFlank": "ACTATTATTGTTATAAAAATATTG",
+      "rightFlank": "GTTATAAAAATATTG",
       "segments": [
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT",
-        "ATT"
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ACT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        },
+        {
+          "sequence": "ATT",
+          "type": "core"
+        }
       ]
     }
   }

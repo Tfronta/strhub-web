@@ -1,10 +1,18 @@
 "use client";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import strKitsData from "@/data/str_kits.json";
 import { markerData } from "@/lib/markerData";
 import type { MarkerRefs } from "@/lib/markerRefs-from-data";
 import type { MotifBlock } from "../types";
 import { StrKitData, StrKitType } from "../utils/motifData";
+
+const FLANKING_MOTIF_CLASS =
+  "inline-flex items-center border border-[#6ee7b7]/60 text-slate-700 dark:text-slate-200 px-1 py-0.5 rounded-lg bg-transparent text-xs md:text-sm font-mono font-medium";
 
 type MotifVisualizationProps = {
   markerId: keyof typeof strKitsData;
@@ -20,10 +28,12 @@ type MotifVisualizationProps = {
       interruption: string;
       other: string;
       flank?: string;
+      flankingMotifLike?: string;
     };
     explanation: {
       generic: string;
     };
+    scientificNote?: string;
     summary?: {
       caption: string;
     };
@@ -34,6 +44,18 @@ type MotifVisualizationProps = {
         interruption: string;
       };
       note: string;
+    };
+    tooltipsShort?: {
+      repeat: string;
+      internal: string;
+      flanking: string;
+      flankingMotifLike: string;
+    };
+    tooltipsLong?: {
+      repeat: string;
+      internal: string;
+      flanking: string;
+      flankingMotifLike: string;
     };
   };
 };
@@ -71,6 +93,53 @@ export function MotifVisualization({
         () => markerInfo.motif
       )
     : [];
+
+  const legendTooltips = pageContent.tooltipsLong || {};
+  const legendItems = [
+    {
+      key: "repeat",
+      label: pageContent.legend.repeat,
+      tooltip: legendTooltips.repeat || pageContent.legend.repeat,
+      icon: (
+        <span className="w-3 h-3 rounded-full bg-[#6ee7b7]/30 border border-[#6ee7b7]/50" />
+      ),
+    },
+    {
+      key: "internal",
+      label: pageContent.legend.interruption,
+      tooltip: legendTooltips.internal || pageContent.legend.interruption,
+      icon: (
+        <span className="w-3 h-3 rounded-full bg-[#fdba74]/30 border border-[#fdba74]/50" />
+      ),
+    },
+    {
+      key: "flank",
+      label: pageContent.legend.flank || "Flanking region",
+      tooltip:
+        legendTooltips.flanking ||
+        pageContent.legend.flank ||
+        "Flanking region",
+      icon: (
+        <span className="w-3 h-3 rounded-full bg-zinc-300 border border-slate-500/50" />
+      ),
+    },
+    {
+      key: "flankingMotifLike",
+      label: pageContent.legend.flankingMotifLike,
+      tooltip:
+        legendTooltips.flankingMotifLike ||
+        pageContent.legend.flankingMotifLike ||
+        "Motif-like sequence in flanking region",
+      icon: (
+        <span
+          className={`${FLANKING_MOTIF_CLASS} text-[10px] leading-none`}
+          aria-hidden="true"
+        >
+          motif
+        </span>
+      ),
+    },
+  ].filter((item) => Boolean(item.label));
 
   return (
     <div className="space-y-4">
@@ -162,24 +231,21 @@ export function MotifVisualization({
           Legend:
         </p>
         <div className="flex flex-wrap gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-[#6ee7b7]/30 border border-[#6ee7b7]/50"></span>
-            <span className="text-slate-600 dark:text-slate-400">
-              {pageContent.legend.repeat}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-[#fdba74]/30 border border-[#fdba74]/50"></span>
-            <span className="text-slate-600 dark:text-slate-400">
-              {pageContent.legend.interruption}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-zinc-300 border border-slate-500/50"></span>
-            <span className="text-slate-600 dark:text-slate-400">
-              {pageContent.legend.flank || "Flanking region"}
-            </span>
-          </div>
+          {legendItems.map((item) => (
+            <Tooltip key={item.key}>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-2 cursor-help">
+                  {item.icon}
+                  <span className="text-slate-600 dark:text-slate-400">
+                    {item.label}
+                  </span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent sideOffset={8}>
+                {item.tooltip}
+              </TooltipContent>
+            </Tooltip>
+          ))}
         </div>
       </div>
     </div>
@@ -232,7 +298,6 @@ function RepresentativeAlleleSequence({
     canonicalMotif?.toUpperCase().trim() ||
     sequenceTokens?.find((token) => token.type === "core")?.sequence?.toUpperCase() ||
     "";
-
   const getTokenClassName = (kind: string) => {
     switch (kind) {
       case "core":
@@ -243,10 +308,78 @@ function RepresentativeAlleleSequence({
       case "nc":
         return "inline-flex items-center bg-sky-50 border border-sky-200 text-sky-800 dark:bg-sky-900/30 dark:border-sky-700 dark:text-sky-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
       case "flankingMotifLike":
-        return "inline-flex items-center border border-[#6ee7b7]/60 text-slate-700 dark:text-slate-200 px-1 py-0.5 rounded-lg bg-transparent mx-0.5 text-xs md:text-sm font-mono font-medium";
+        return `${FLANKING_MOTIF_CLASS} mx-0.5`;
       default:
         return "inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all";
     }
+  };
+
+  const getShortTooltip = (kind: TokenKind) => {
+    const shortTooltips = pageContent.tooltipsShort;
+    switch (kind) {
+      case "core":
+        return (
+          shortTooltips?.repeat ||
+          pageContent.legend.repeat ||
+          "Repeat unit"
+        );
+      case "interruption":
+      case "insertion":
+        return (
+          shortTooltips?.internal ||
+          pageContent.legend.interruption ||
+          "Internal variant"
+        );
+      case "nc":
+        return (
+          shortTooltips?.flankingMotifLike ||
+          shortTooltips?.internal ||
+          pageContent.legend.interruption ||
+          "Motif-like copy"
+        );
+      case "flankingMotifLike":
+        return (
+          shortTooltips?.flankingMotifLike ||
+          shortTooltips?.flanking ||
+          pageContent.legend.flankingMotifLike ||
+          "Motif-like copy in flanking region"
+        );
+      case "flanking":
+        return (
+          shortTooltips?.flanking ||
+          pageContent.legend.flank ||
+          "Flanking region"
+        );
+      case "other":
+        return (
+          pageContent.legend.other ||
+          shortTooltips?.flanking ||
+          "Sequence segment"
+        );
+      default:
+        return shortTooltips?.flanking || "";
+    }
+  };
+
+  const renderTokenWithTooltip = (
+    sequence: string,
+    kind: TokenKind,
+    key: string,
+    customClassName?: string
+  ) => {
+    if (!sequence) return null;
+    return (
+      <Tooltip key={key}>
+        <TooltipTrigger asChild>
+          <span className={customClassName ?? getTokenClassName(kind)}>
+            {sequence}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent sideOffset={8}>
+          {getShortTooltip(kind)}
+        </TooltipContent>
+      </Tooltip>
+    );
   };
 
   const renderFlankPill = (sequence: string, flankKey: string) => {
@@ -255,22 +388,29 @@ function RepresentativeAlleleSequence({
     if (!tokens.length) return null;
 
     return (
-      <span
-        key={flankKey}
-        className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all"
-      >
-        {tokens.map((token, idx) =>
-          token.type === "flankingMotifLike" ? (
-            <span key={`${flankKey}-${idx}`} className={getTokenClassName("flankingMotifLike")}>
-              {token.sequence}
-            </span>
-          ) : (
-            <span key={`${flankKey}-${idx}`} className="whitespace-pre">
-              {token.sequence}
-            </span>
-          )
-        )}
-      </span>
+      <Tooltip key={flankKey}>
+        <TooltipTrigger asChild>
+          <span className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
+            {tokens.map((token, idx) =>
+              token.type === "flankingMotifLike"
+                ? renderTokenWithTooltip(
+                    token.sequence,
+                    "flankingMotifLike",
+                    `${flankKey}-${idx}`,
+                    `${FLANKING_MOTIF_CLASS} mx-0.5`
+                  )
+                : (
+                    <span key={`${flankKey}-${idx}`} className="whitespace-pre">
+                      {token.sequence}
+                    </span>
+                  )
+            )}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent sideOffset={8}>
+          {getShortTooltip("flanking")}
+        </TooltipContent>
+      </Tooltip>
     );
   };
 
@@ -297,11 +437,13 @@ function RepresentativeAlleleSequence({
       {sequenceTokens && (
         <div className="flex flex-wrap gap-2">
           {renderFlankPill(motifAllele.leftFlank, "left-flank")}
-          {sequenceTokens.map((token, idx) => (
-            <span key={idx} className={getTokenClassName(token.type)}>
-              {token.sequence}
-            </span>
-          ))}
+          {sequenceTokens.map((token, idx) =>
+            renderTokenWithTooltip(
+              token.sequence,
+              (token.type as TokenKind) || "core",
+              `core-${idx}`
+            )
+          )}
 
           {renderFlankPill(motifAllele.rightFlank, "right-flank")}
         </div>
@@ -319,6 +461,15 @@ type FlankingToken = {
   sequence: string;
   type: "flanking" | "flankingMotifLike";
 };
+
+type TokenKind =
+  | "core"
+  | "interruption"
+  | "insertion"
+  | "nc"
+  | "other"
+  | "flanking"
+  | "flankingMotifLike";
 
 function tokenizeFlankingSequence(sequence: string, canonicalMotif: string): FlankingToken[] {
   if (!sequence) return [];

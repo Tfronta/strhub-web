@@ -435,6 +435,8 @@ export const translations = {
         general:
           "Displays the full STR allele sequence with flanking regions, repeat units, and internal variants highlighted.",
       },
+      scientificNote:
+        "Scientific note: Only the uninterrupted canonical repeat block contributes to the allele designation. Motif-like copies in the flanks or interruptions are visual cues and do not change the allele size.",
       labels: {
         canonicalPattern: "Canonical repeat pattern:",
       },
@@ -443,6 +445,7 @@ export const translations = {
         interruption: "Interruption / internal variant",
         other: "Other / schematic element",
         flank: "Flanking region",
+        flankingMotifLike: "Motif-like copy in flanking region",
       },
       summary: {
         caption:
@@ -458,6 +461,22 @@ export const translations = {
           interruption: "Interruption / internal variant inside the repeat region",
         },
         note: "Note: Not every occurrence of the repeat motif is counted for the allele size. Only the core repeat block defined by the motif structure contributes to the allele designation.",
+      },
+      tooltipsShort: {
+        repeat: "Canonical repeat that counts toward the allele size.",
+        internal: "Internal variant inside the repeat block; does not add repeats.",
+        flanking: "Flanking DNA outside the core repeat block.",
+        flankingMotifLike: "Motif-like copy inside the flank; highlighted for context only.",
+      },
+      tooltipsLong: {
+        repeat:
+          "These canonical repeats make up the allele size. Each uninterrupted repeat contributes fully to the allele designation.",
+        internal:
+          "Interruptions or insertions occur within the repeat block. They are informative for sequence-based alleles but do not increase the repeat count.",
+        flanking:
+          "Flanking regions are upstream or downstream DNA that frame the STR locus. They stabilize the assay but are not counted toward the allele.",
+        flankingMotifLike:
+          "Motif-like copies inside the flanks resemble the canonical repeat but lie outside the counted block. They are highlighted with an outline only to show nearby motif echoes.",
       },
     },
     // STRBase Integration
@@ -1475,6 +1494,8 @@ export const translations = {
         general:
           "Exibe a sequência completa do alelo STR com flancos, unidades repetitivas e variantes internas destacadas.",
       },
+      scientificNote:
+        "Nota científica: Apenas o bloco contínuo de repetições canônicas contribui para a designação do alelo. Cópias semelhantes ao motivo nos flancos ou interrupções são indicativos visuais e não alteram o tamanho do alelo.",
       labels: {
         canonicalPattern: "Padrão repetitivo canônico:",
       },
@@ -1483,6 +1504,7 @@ export const translations = {
         interruption: "Interrupção / variante interna",
         other: "Outro / elemento esquemático",
         flank: "Região flanqueadora",
+        flankingMotifLike: "Cópia de motivo no flanco",
       },
       summary: {
         caption:
@@ -1498,6 +1520,22 @@ export const translations = {
           interruption: "Interrupção / variante interna dentro da região repetitiva",
         },
         note: "Observação: nem toda ocorrência do motivo repetitivo é contabilizada para o tamanho do alelo. Apenas o bloco repetitivo central definido pela estrutura do motivo contribui para a designação do alelo.",
+      },
+      tooltipsShort: {
+        repeat: "Repetição canônica que conta para o tamanho do alelo.",
+        internal: "Variação interna no bloco repetitivo; não adiciona repetições.",
+        flanking: "DNA flanqueador fora do bloco principal.",
+        flankingMotifLike: "Cópia semelhante ao motivo no flanco; destacada apenas para contexto.",
+      },
+      tooltipsLong: {
+        repeat:
+          "Estas repetições canônicas compõem o tamanho do alelo. Cada repetição contínua contribui integralmente para a designação do alelo.",
+        internal:
+          "Interrupções ou inserções dentro do bloco repetitivo são úteis para nomenclatura por sequência, mas não aumentam a contagem de repetições.",
+        flanking:
+          "As regiões flanqueadoras delimitam o lócus STR. Elas ajudam no desenho do ensaio, porém não são contabilizadas no tamanho do alelo.",
+        flankingMotifLike:
+          "Cópias semelhantes ao motivo nos flancos lembram o motivo canônico, mas estão fora do bloco contado. São mostradas apenas com contorno para indicar ecos do motivo.",
       },
     },
     // Community Hub
@@ -2518,6 +2556,8 @@ export const translations = {
         general:
           "Muestra la secuencia completa del alelo STR con flancos, unidades repetitivas y variantes internas destacadas.",
       },
+      scientificNote:
+        "Nota científica: Solo el bloque continuo de repeticiones canónicas contribuye a la designación del alelo. Las copias similares al motivo en los flancos o las interrupciones son indicios visuales y no modifican el tamaño del alelo.",
       labels: {
         canonicalPattern: "Patrón repetitivo canónico:",
       },
@@ -2526,6 +2566,7 @@ export const translations = {
         interruption: "Interrupción / variante interna",
         other: "Otro / elemento esquemático",
         flank: "Región flanqueadora",
+        flankingMotifLike: "Copia tipo motivo en el flanco",
       },
       summary: {
         caption:
@@ -2541,6 +2582,22 @@ export const translations = {
           interruption: "Interrupción / variante interna dentro de la región repetitiva",
         },
         note: "Nota: no todas las apariciones del motivo repetitivo se cuentan para el tamaño del alelo. Solo el bloque repetitivo central definido por la estructura del motivo contribuye a la designación del alelo.",
+      },
+      tooltipsShort: {
+        repeat: "Repetición canónica que sí cuenta para el tamaño del alelo.",
+        internal: "Variación interna dentro del bloque repetitivo; no suma repeticiones.",
+        flanking: "ADN flanqueante fuera del bloque principal.",
+        flankingMotifLike: "Copia parecida al motivo dentro del flanco; solo referencia visual.",
+      },
+      tooltipsLong: {
+        repeat:
+          "Estas repeticiones canónicas forman el tamaño del alelo. Cada repetición continua contribuye plenamente a la designación del alelo.",
+        internal:
+          "Interrupciones o inserciones dentro del bloque repetitivo aportan información para alelos por secuencia, pero no incrementan la cuenta de repeticiones.",
+        flanking:
+          "Las regiones flanqueadoras rodean el locus STR y estabilizan el ensayo, pero no se contabilizan dentro del tamaño del alelo.",
+        flankingMotifLike:
+          "Las copias parecidas al motivo dentro de los flancos imitan el motivo canónico, aunque están fuera del bloque contado. Se resaltan solo con contorno para mostrar ecos del motivo.",
       },
     },
     // STRBase Integration

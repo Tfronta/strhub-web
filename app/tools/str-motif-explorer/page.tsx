@@ -172,6 +172,11 @@ export default function MotifExplorerPage() {
                   <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                     {pageContent.help.general}
                   </p>
+                  {pageContent.scientificNote && (
+                    <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
+                      {pageContent.scientificNote}
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>

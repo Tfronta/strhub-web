@@ -241,6 +241,41 @@ export const translations = {
         region: {
           latam: "LATAM",
         },
+        datasetNotes: {
+          provenance:
+            "These frequencies are derived from the STRs Local dataset of the SP-SMART portal (CESGA), comprising 3,809 genotyped individuals from diverse populations.",
+          populationLabel: "Population groups included",
+          populationAfr:
+            "Central African Republic (Biaka Pygmies), Democratic Republic of the Congo (Mbuti Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria (Yoruba), Senegal (Mandenka), Somalia, and South Africa (Bantu).",
+          populationNam:
+            "Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), and Mexico (Pima).",
+          populationEas:
+            "Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), and Siberia (Yakut).",
+          populationSas:
+            "China (Uygur), Pakistan (Balochi), Pakistan (Brahui), Pakistan (Burusho), Pakistan (Hazara), Pakistan (Kalash), Pakistan (Makrani), Pakistan (Pathan), and Pakistan (Sindhi).",
+          populationEur:
+            "France (Basque), France (French), Italy (Bergamo – North Italian), Italy (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands (Orcadian), Russia (Russian), Russia Caucasus (Adygei), Sweden, and U.S. Europeans.",
+          populationMes:
+            "Algeria (Mzab – Mozabite), Israel (Carmel – Druze), Israel (Central – Palestinian), and Israel (Negev – Bedouin).",
+          populationOce:
+            "Bougainville (NAN Melanesian) and New Guinea (Papuan).",
+          populationLatam: "",
+          title: "⚠️ Dataset notes (important)",
+          shortLine1:
+            "The allele frequencies shown here come directly from the STRs Local dataset of SP-SMART / pop.STR.",
+          shortLine2:
+            "STRhub does not modify, infer, reconstruct, or reinterpret any component of the STRs Local dataset. All methodological limitations originate exclusively from the structure, metadata availability, and design choices of the SP-SMART / pop.STR platform.",
+          accordionTrigger: "Read full methodological note",
+          full1:
+            "All allele frequencies displayed in this section derive directly from the STRs Local dataset of the SP-SMART / pop.STR platform (CESGA). The methodological characteristics and constraints described here are inherent to the original dataset and platform, and do not originate from STRhub’s processing or implementation.",
+          full2:
+            "In pop.STR, selecting a “kit” acts only as a locus filter, and does not reflect the genotyping technology used in the contributing studies. The STRs Local dataset compiles population data generated mainly through capillary electrophoresis (CE), not NGS, and SP-SMART does not provide technology-specific metadata at locus level. Therefore, STRhub reproduces the dataset exactly as provided, without reconstruction, harmonization beyond nomenclature, or imputation.",
+          full3:
+            "Although STRs Local offers harmonized allele frequencies across multiple populations, it does not constitute a unified global reference panel. pop.STR delivers populations individually, which is suitable for forensic comparison but not for pooled analyses such as PCA, STRUCTURE, or ADMIXTURE. These limitations reflect the design and scope of the SP-SMART / pop.STR platform rather than any STRhub constraint.",
+          referenceLabel: "Reference",
+          referenceText:
+            "Amigo J, Phillips C, Lareu MV, Carracedo A. The SNPforID and SP-SMART databases: Resources for forensic population genetics. Forensic Sci Int Genet. 2008;2(3):212–217. Dataset: http://spsmart.cesga.es/",
+        },
         latam: {
           selectorHint: "Select a LATAM population for this marker.",
           noDataForLocus: "No LATAM datasets available for this marker.",
@@ -1245,6 +1280,41 @@ export const translations = {
       frequencies: {
         region: {
           latam: "LATAM",
+        },
+        datasetNotes: {
+          provenance:
+            "Essas frequências são derivadas do conjunto de dados STRs Local do portal SP-SMART (CESGA), que inclui 3.809 indivíduos genotipados de populações diversas.",
+          populationLabel: "Grupos populacionais incluídos",
+          populationAfr:
+            "Central African Republic (Biaka Pygmies), Democratic Republic of the Congo (Mbuti Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria (Yoruba), Senegal (Mandenka), Somalia, and South Africa (Bantu).",
+          populationNam:
+            "Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), and Mexico (Pima).",
+          populationEas:
+            "Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), and Siberia (Yakut).",
+          populationSas:
+            "China (Uygur), Pakistan (Balochi), Pakistan (Brahui), Pakistan (Burusho), Pakistan (Hazara), Pakistan (Kalash), Pakistan (Makrani), Pakistan (Pathan), and Pakistan (Sindhi).",
+          populationEur:
+            "France (Basque), France (French), Italy (Bergamo – North Italian), Italy (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands (Orcadian), Russia (Russian), Russia Caucasus (Adygei), Sweden, and U.S. Europeans.",
+          populationMes:
+            "Algeria (Mzab – Mozabite), Israel (Carmel – Druze), Israel (Central – Palestinian), and Israel (Negev – Bedouin).",
+          populationOce:
+            "Bougainville (NAN Melanesian) and New Guinea (Papuan).",
+          populationLatam: "",
+          title: "⚠️ Notas sobre o conjunto de dados (importante)",
+          shortLine1:
+            "As frequências alélicas mostradas aqui vêm diretamente do conjunto de dados STRs Local do SP-SMART / pop.STR.",
+          shortLine2:
+            "O STRhub não modifica, infere, reconstrói nem reinterpreta qualquer componente do conjunto de dados STRs Local. Todas as limitações metodológicas originam-se exclusivamente da estrutura, da disponibilidade de metadados e das decisões de design da plataforma SP-SMART / pop.STR.",
+          accordionTrigger: "Ler nota metodológica completa",
+          full1:
+            "Todas as frequências alélicas apresentadas nesta seção derivam diretamente do conjunto de dados STRs Local da plataforma SP-SMART / pop.STR (CESGA). As características e limitações metodológicas descritas aqui são inerentes ao conjunto de dados e à plataforma originais e não se originam do processamento ou da implementação do STRhub.",
+          full2:
+            "No pop.STR, a seleção de um “kit” atua apenas como um filtro de locos e não reflete a tecnologia de genotipagem utilizada nos estudos que contribuíram com os dados. O conjunto de dados STRs Local compila dados populacionais gerados principalmente por eletroforese capilar (CE), e não por NGS, e o SP-SMART não fornece metadados específicos de tecnologia em nível de loco. Portanto, o STRhub reproduz o conjunto de dados exatamente como ele é disponibilizado, sem reconstrução, sem harmonização além da nomenclatura e sem imputação.",
+          full3:
+            "Embora o STRs Local ofereça frequências alélicas harmonizadas para múltiplas populações, ele não constitui um painel de referência global unificado. O pop.STR disponibiliza as populações individualmente, o que é adequado para comparações forenses, mas não para análises agrupadas como PCA, STRUCTURE ou ADMIXTURE. Essas limitações refletem o design e o escopo da plataforma SP-SMART / pop.STR, e não uma restrição do STRhub.",
+          referenceLabel: "Referência",
+          referenceText:
+            "Amigo J, Phillips C, Lareu MV, Carracedo A. The SNPforID and SP-SMART databases: Resources for forensic population genetics. Forensic Sci Int Genet. 2008;2(3):212–217. Dataset: http://spsmart.cesga.es/",
         },
         latam: {
           selectorHint: "Selecione uma população LATAM para este marcador.",
@@ -2253,6 +2323,41 @@ export const translations = {
       frequencies: {
         region: {
           latam: "LATAM",
+        },
+        datasetNotes: {
+          provenance:
+            "Estas frecuencias se derivan del conjunto de datos STRs Local del portal SP-SMART (CESGA), que comprende 3.809 individuos genotipados de poblaciones diversas.",
+          populationLabel: "Grupos poblacionales incluidos",
+          populationAfr:
+            "Central African Republic (Biaka Pygmies), Democratic Republic of the Congo (Mbuti Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria (Yoruba), Senegal (Mandenka), Somalia, and South Africa (Bantu).",
+          populationNam:
+            "Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), and Mexico (Pima).",
+          populationEas:
+            "Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), and Siberia (Yakut).",
+          populationSas:
+            "China (Uygur), Pakistan (Balochi), Pakistan (Brahui), Pakistan (Burusho), Pakistan (Hazara), Pakistan (Kalash), Pakistan (Makrani), Pakistan (Pathan), and Pakistan (Sindhi).",
+          populationEur:
+            "France (Basque), France (French), Italy (Bergamo – North Italian), Italy (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands (Orcadian), Russia (Russian), Russia Caucasus (Adygei), Sweden, and U.S. Europeans.",
+          populationMes:
+            "Algeria (Mzab – Mozabite), Israel (Carmel – Druze), Israel (Central – Palestinian), and Israel (Negev – Bedouin).",
+          populationOce:
+            "Bougainville (NAN Melanesian) and New Guinea (Papuan).",
+          populationLatam: "",
+          title: "⚠️ Notas sobre el conjunto de datos (importante)",
+          shortLine1:
+            "Las frecuencias alélicas mostradas aquí provienen directamente del conjunto de datos STRs Local de SP-SMART / pop.STR.",
+          shortLine2:
+            "STRhub no modifica, infiere, reconstruye ni reinterpreta ningún componente del conjunto de datos STRs Local. Todas las limitaciones metodológicas se originan exclusivamente en la estructura, la disponibilidad de metadatos y las decisiones de diseño de la plataforma SP-SMART / pop.STR.",
+          accordionTrigger: "Leer nota metodológica completa",
+          full1:
+            "Todas las frecuencias alélicas mostradas en esta sección se derivan directamente del conjunto de datos STRs Local de la plataforma SP-SMART / pop.STR (CESGA). Las características y limitaciones metodológicas descritas aquí son inherentes al conjunto de datos y a la plataforma originales, y no se originan en el procesamiento ni en la implementación de STRhub.",
+          full2:
+            "En pop.STR, la selección de un “kit” actúa únicamente como un filtro de loci y no refleja la tecnología de genotipado utilizada en los estudios que aportan los datos. El conjunto de datos STRs Local compila datos poblacionales generados principalmente mediante electroforesis capilar (CE), y no por NGS, y SP-SMART no proporciona metadatos específicos de la tecnología a nivel de locus. Por lo tanto, STRhub reproduce el conjunto de datos exactamente como se proporciona, sin reconstrucción, sin armonización más allá de la nomenclatura y sin imputación.",
+          full3:
+            "Aunque STRs Local ofrece frecuencias alélicas armonizadas para múltiples poblaciones, no constituye un panel de referencia global unificado. pop.STR proporciona las poblaciones de forma individual, lo que es adecuado para la comparación forense, pero no para análisis conjuntos como PCA, STRUCTURE o ADMIXTURE. Estas limitaciones reflejan el diseño y el alcance de la plataforma SP-SMART / pop.STR y no una restricción de STRhub.",
+          referenceLabel: "Referencia",
+          referenceText:
+            "Amigo J, Phillips C, Lareu MV, Carracedo A. The SNPforID and SP-SMART databases: Resources for forensic population genetics. Forensic Sci Int Genet. 2008;2(3):212–217. Dataset: http://spsmart.cesga.es/",
         },
         latam: {
           selectorHint: "Selecciona una población LATAM para este marcador.",

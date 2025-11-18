@@ -59,15 +59,15 @@ import { toolsData, type Tool } from "./toolsData";
 import { LATAMCatalog, type LatamSubpop } from "@/lib/latamCatalog";
 import { cn } from "@/lib/utils";
 
-const POP_SUBPOP_DESCRIPTIONS: Record<string, string> = {
-  AFR: "Central African Republic (Biaka Pygmies), Democratic Republic of the Congo (Mbuti Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria (Yoruba), Senegal (Mandenka), Somalia, and South Africa (Bantu).",
-  NAM: "Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), and Mexico (Pima).",
-  EAS: "Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), and Siberia (Yakut).",
-  SAS: "China (Uygur), Pakistan (Balochi), Pakistan (Brahui), Pakistan (Burusho), Pakistan (Hazara), Pakistan (Kalash), Pakistan (Makrani), Pakistan (Pathan), and Pakistan (Sindhi).",
-  EUR: "France (Basque), France (French), Italy (Bergamo – North Italian), Italy (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands (Orcadian), Russia (Russian), Russia Caucasus (Adygei), Sweden, and U.S. Europeans.",
-  MES: "Algeria (Mzab – Mozabite), Israel (Carmel – Druze), Israel (Central – Palestinian), and Israel (Negev – Bedouin).",
-  OCE: "Bougainville (NAN Melanesian) and New Guinea (Papuan).",
-  LATAM: "",
+const POP_SUBPOP_DESCRIPTION_KEYS: Record<string, string> = {
+  AFR: "populationAfr",
+  NAM: "populationNam",
+  EAS: "populationEas",
+  SAS: "populationSas",
+  EUR: "populationEur",
+  MES: "populationMes",
+  OCE: "populationOce",
+  LATAM: "populationLatam",
 };
 
 export default function MarkerPage({ params }: { params: { id: string } }) {
@@ -215,8 +215,11 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     : "LATAM";
 
   const isXSTR = marker.type === "X-STR" || marker.chromosome === "X";
-  const populationDescription =
-    POP_SUBPOP_DESCRIPTIONS[selectedPopulation] ?? "";
+  const populationDescriptionKey =
+    POP_SUBPOP_DESCRIPTION_KEYS[selectedPopulation] ?? "";
+  const populationDescription = populationDescriptionKey
+    ? t(`marker.frequencies.datasetNotes.${populationDescriptionKey}`)
+    : "";
   const isPopStrDataset = selectedPopulation !== "LATAM";
 
   // Filter tools based on marker compatibility
@@ -823,11 +826,13 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
                     {isPopStrDataset && (
                       <p className="mt-2 text-sm text-muted-foreground">
-                        These frequencies are derived from the STRs Local dataset of the SP-SMART portal (CESGA), comprising 3,809 genotyped individuals from diverse populations.
+                        {t("marker.frequencies.datasetNotes.provenance")}
                       </p>
                     )}
                     <p className="mt-2 text-sm text-muted-foreground">
-                      <span className="font-medium">Population groups included</span>
+                      <span className="font-medium">
+                        {t("marker.frequencies.datasetNotes.populationLabel")}
+                      </span>
                       <br />
                       {populationDescription}
                     </p>
@@ -836,34 +841,32 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         {/* TODO: move these dataset notes strings into the i18n translation files (EN/ES/PT) */}
                         <div className="mt-3 text-sm text-muted-foreground space-y-1">
                           <p className="font-medium flex items-center gap-2">
-                            <span>⚠️ Dataset notes (important)</span>
+                            <span>
+                              {t("marker.frequencies.datasetNotes.title")}
+                            </span>
                           </p>
-                          <p>
-                            The allele frequencies shown here come directly from the <span className="font-semibold">STRs Local</span> dataset of <span className="font-semibold">SP-SMART / pop.STR</span>.
-                          </p>
-                          <p>
-                            STRhub does not modify, infer, reconstruct, or reinterpret any component of the STRs Local dataset. All methodological limitations originate exclusively from the structure, metadata availability, and design choices of the <span className="font-semibold">SP-SMART / pop.STR</span> platform.
-                          </p>
+                          <p>{t("marker.frequencies.datasetNotes.shortLine1")}</p>
+                          <p>{t("marker.frequencies.datasetNotes.shortLine2")}</p>
                         </div>
                         <Accordion type="single" collapsible className="mt-2">
                           <AccordionItem value="method-note">
                             <AccordionTrigger className="text-sm font-medium">
-                              Read full methodological note
+                              {t(
+                                "marker.frequencies.datasetNotes.accordionTrigger"
+                              )}
                             </AccordionTrigger>
                             <AccordionContent className="text-sm text-muted-foreground space-y-2">
-                              <p>
-                                All allele frequencies displayed in this section derive directly from the STRs Local dataset of the SP-SMART / pop.STR platform (CESGA). The methodological characteristics and constraints described here are inherent to the original dataset and platform, and do not originate from STRhub’s processing or implementation.
-                              </p>
-                              <p>
-                                In pop.STR, selecting a “kit” acts only as a <span className="font-semibold">locus filter</span>, and does <span className="font-semibold">not</span> reflect the genotyping technology used in the contributing studies. The STRs Local dataset compiles population data generated mainly through <span className="font-semibold">capillary electrophoresis (CE)</span>, not NGS, and SP-SMART does not provide technology-specific metadata at locus level. Therefore, STRhub reproduces the dataset exactly as provided, without reconstruction, harmonization beyond nomenclature, or imputation.
-                              </p>
-                              <p>
-                                Although STRs Local offers harmonized allele frequencies across multiple populations, it does <span className="font-semibold">not</span> constitute a unified global reference panel. pop.STR delivers populations individually, which is suitable for forensic comparison but not for pooled analyses such as PCA, STRUCTURE, or ADMIXTURE. These limitations reflect the design and scope of the SP-SMART / pop.STR platform rather than any STRhub constraint.
-                              </p>
+                              <p>{t("marker.frequencies.datasetNotes.full1")}</p>
+                              <p>{t("marker.frequencies.datasetNotes.full2")}</p>
+                              <p>{t("marker.frequencies.datasetNotes.full3")}</p>
                               <p className="text-xs">
-                                <span className="font-semibold">Reference</span>
+                                <span className="font-semibold">
+                                  {t(
+                                    "marker.frequencies.datasetNotes.referenceLabel"
+                                  )}
+                                </span>
                                 <br />
-                                Amigo J, Phillips C, Lareu MV, Carracedo A. <em>The SNPforID and SP-SMART databases: Resources for forensic population genetics.</em> Forensic Sci Int Genet. 2008;2(3):212–217. Dataset: http://spsmart.cesga.es/
+                                {t("marker.frequencies.datasetNotes.referenceText")}
                               </p>
                             </AccordionContent>
                           </AccordionItem>

@@ -1005,6 +1005,9 @@ export const translations = {
         tooltipStutter: "Stutter at {allele} — {rfu} RFU (from {parent})",
         tooltipCalled: "Called",
         tooltipDropout: "Drop-out risk",
+        infoLabel: "Show stutter modeling note",
+        infoText:
+          "Educational simulator: stutter is modeled as a locus-specific fraction of the true peak height (typically ~6–11%, higher for some long loci). These are educational approximations, not validated parameters for any specific kit.",
       },
       parameters: {
         at: "AT (RFU)",
@@ -2071,6 +2074,9 @@ export const translations = {
         tooltipStutter: "Stutter em {allele} — {rfu} RFU (de {parent})",
         tooltipCalled: "Chamado",
         tooltipDropout: "Risco de perda",
+        infoLabel: "Mostrar nota sobre o modelo de stutter",
+        infoText:
+          "Simulador educacional: o stutter é modelado como uma fração específica de cada locus em relação à altura do pico verdadeiro (tipicamente ~6–11%, maior em alguns loci longos). Esses valores são aproximações educacionais, não parâmetros validados de nenhum kit específico.",
       },
       parameters: {
         at: "AT (RFU)",
@@ -3138,6 +3144,9 @@ export const translations = {
         tooltipStutter: "Stutter en {allele} — {rfu} RFU (de {parent})",
         tooltipCalled: "Llamado",
         tooltipDropout: "Riesgo de pérdida",
+        infoLabel: "Mostrar nota sobre el modelado de stutter",
+        infoText:
+          "Simulador educativo: el stutter se modela como una fracción específica de cada locus de la altura del pico verdadero (típicamente ~6–11%, mayor en algunos loci largos). Estos valores son aproximaciones educativas, no parámetros validados de un kit específico.",
       },
       parameters: {
         at: "AT (RFU)",

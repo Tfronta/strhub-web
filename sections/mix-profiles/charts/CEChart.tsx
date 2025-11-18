@@ -6,11 +6,17 @@ import {
   Line,
   XAxis,
   YAxis,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   ReferenceLine,
   Scatter,
   Legend,
 } from "recharts";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { useLanguage } from "@/contexts/language-context";
 
 type Pt = { allele: number; rfu: number };
@@ -238,369 +244,398 @@ export default function CEChart(props: {
   if (!mounted) return <div style={{ height: 420 }} />;
 
   return (
-    <ResponsiveContainer width="100%" height={420} minWidth={0}>
-      <LineChart margin={{ top: 12, right: 20, bottom: 0, left: 20 }}>
-        {/* Ejes - sin gridlines horizontales */}
-        <XAxis
-          type="number"
-          dataKey="allele"
-          domain={domain}
-          ticks={alleleValues.length > 0 ? alleleValues : undefined}
-          allowDecimals={hasDecimals}
-          label={{
-            value: t("mixProfiles.ceChart.axisAllele"),
-            position: "insideBottom",
-            offset: -10,
-          }}
-          // Force display of all ticks, including microvariants and last peak
-          interval={0}
-          // Format ticks to preserve microvariants (show decimals when needed)
-          tickFormatter={(value) => {
-            // Check if this value is a microvariant (has decimal part)
-            if (value % 1 === 0) {
-              return String(value); // Integer: show as "13"
-            }
-            // Decimal: show with 1 decimal place (e.g., "17.3", "19.1")
-            return value.toFixed(1);
-          }}
-        />
-        <YAxis
-          type="number"
-          domain={useFixedScale ? [0, 800] : [0, "auto"]}
-          label={{
-            value: t("mixProfiles.ceChart.axisRFU"),
-            angle: -90,
-            position: "insideLeft",
-          }}
-        />
+    <div className="relative w-full h-[420px]">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            aria-label={t("mixProfiles.ceChart.infoLabel")}
+            className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full border text-[10px] text-muted-foreground bg-background/80 backdrop-blur-sm hover:bg-accent transition z-10"
+          >
+            <Info className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="left" align="end" className="max-w-xs text-xs">
+          {t("mixProfiles.ceChart.infoText")}
+        </TooltipContent>
+      </Tooltip>
 
-        {/* Baseline noise - render FIRST so it appears behind signal curves (discrete micro-peaks) */}
-        {/* Baseline noise must be discrete micro-peaks, not a straight line or second floor */}
-        {noisePeaks && noisePeaks.length > 0 && (
+      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+        <LineChart margin={{ top: 12, right: 20, bottom: 0, left: 20 }}>
+          {/* Ejes - sin gridlines horizontales */}
+          <XAxis
+            type="number"
+            dataKey="allele"
+            domain={domain}
+            ticks={alleleValues.length > 0 ? alleleValues : undefined}
+            allowDecimals={hasDecimals}
+            label={{
+              value: t("mixProfiles.ceChart.axisAllele"),
+              position: "insideBottom",
+              offset: -10,
+            }}
+            // Force display of all ticks, including microvariants and last peak
+            interval={0}
+            // Format ticks to preserve microvariants (show decimals when needed)
+            tickFormatter={(value) => {
+              // Check if this value is a microvariant (has decimal part)
+              if (value % 1 === 0) {
+                return String(value); // Integer: show as "13"
+              }
+              // Decimal: show with 1 decimal place (e.g., "17.3", "19.1")
+              return value.toFixed(1);
+            }}
+          />
+          <YAxis
+            type="number"
+            domain={useFixedScale ? [0, 800] : [0, "auto"]}
+            label={{
+              value: t("mixProfiles.ceChart.axisRFU"),
+              angle: -90,
+              position: "insideLeft",
+            }}
+          />
+
+          {/* Baseline noise - render FIRST so it appears behind signal curves (discrete micro-peaks) */}
+          {/* Baseline noise must be discrete micro-peaks, not a straight line or second floor */}
+          {noisePeaks && noisePeaks.length > 0 && (
+            <Line
+              name={t("mixProfiles.ceChart.legendBaselineNoise")}
+              type="monotone"
+              data={baselineNoiseTrace}
+              dataKey="rfu"
+              dot={false}
+              stroke="#666" // Gray (as specified)
+              strokeOpacity={1} // Very faint (subtle background)
+              strokeWidth={0.7}
+              connectNulls={false}
+              isAnimationActive={false}
+            />
+          )}
+
+          {/* Signal curves - render AFTER baseline so they appear on top (pure values, start from 0) */}
           <Line
-            name={t("mixProfiles.ceChart.legendBaselineNoise")}
+            name={t("mixProfiles.ceChart.legendTrueAlleles")}
             type="monotone"
-            data={baselineNoiseTrace}
+            data={dataTrue}
             dataKey="rfu"
             dot={false}
-            stroke="#666" // Gray (as specified)
-            strokeOpacity={1} // Very faint (subtle background)
-            strokeWidth={0.7}
+            stroke="#2563EB" // Blue
+            strokeWidth={2}
+            isAnimationActive={false}
+          />
+
+          <Line
+            name={t("mixProfiles.ceChart.legendStutter")}
+            type="monotone"
+            data={stutterVisible}
+            dataKey="rfu"
+            dot={false}
+            stroke="#DC2626"
+            strokeOpacity={0.9}
+            strokeWidth={2.2}
             connectNulls={false}
             isAnimationActive={false}
           />
-        )}
 
-        {/* Signal curves - render AFTER baseline so they appear on top (pure values, start from 0) */}
-        <Line
-          name={t("mixProfiles.ceChart.legendTrueAlleles")}
-          type="monotone"
-          data={dataTrue}
-          dataKey="rfu"
-          dot={false}
-          stroke="#2563EB" // Blue
-          strokeWidth={2}
-          isAnimationActive={false}
-        />
+          {/* Markers - render AFTER curves so they appear on top (clearly visible) */}
+          {showMarkers && mTrue.length > 0 && (
+            <Scatter
+              name={t("mixProfiles.ceChart.legendCalled")}
+              data={mTrue.map((m) => ({ ...m, rfu: m.rfu + 10 }))}
+              dataKey="rfu"
+              shape="star"
+              r={4}
+              fill="#15803d" // Green-700
+              isAnimationActive={false}
+            />
+          )}
+          {showMarkers && mDrop.length > 0 && (
+            <Scatter
+              name={t("mixProfiles.ceChart.legendDropoutRisk")}
+              data={mDrop.map((m) => ({ ...m, rfu: m.rfu + 10 }))}
+              dataKey="rfu"
+              fill="#F59E0B"
+              shape="circle"
+              r={4}
+              isAnimationActive={false}
+            />
+          )}
+          {showMarkers && mStutter.length > 0 && (
+            <Scatter
+              name={t("mixProfiles.ceChart.legendStutterPeak")}
+              data={mStutter.map((m) => ({ allele: m.allele, rfu: m.rfu }))}
+              dataKey="rfu"
+              fill="#F59E0B"
+              shape="triangle"
+              r={6}
+              isAnimationActive={false}
+            />
+          )}
 
-        <Line
-          name={t("mixProfiles.ceChart.legendStutter")}
-          type="monotone"
-          data={stutterVisible}
-          dataKey="rfu"
-          dot={false}
-          stroke="#DC2626"
-          strokeOpacity={0.9}
-          strokeWidth={2.2}
-          connectNulls={false}
-          isAnimationActive={false}
-        />
+          {/* Líneas de umbral - solo AT y ST con labels (sin otras líneas) */}
+          {analyticalThreshold != null && (
+            <ReferenceLine
+              y={analyticalThreshold}
+              stroke="#9CA3AF"
+              strokeDasharray="6 6"
+              strokeWidth={1}
+              label={{
+                value: t("mixProfiles.ceChart.thresholdAT"),
+                position: "right",
+                offset: 5,
+                fill: "#6B7280",
+                fontSize: 12,
+              }}
+            />
+          )}
+          {interpretationThreshold != null && (
+            <ReferenceLine
+              y={interpretationThreshold}
+              stroke="#6B7280"
+              strokeDasharray="4 4"
+              strokeWidth={1}
+              label={{
+                value: t("mixProfiles.ceChart.thresholdST"),
+                position: "right",
+                offset: 5,
+                fill: "#6B7280",
+                fontSize: 12,
+              }}
+            />
+          )}
 
-        {/* Markers - render AFTER curves so they appear on top (clearly visible) */}
-        {showMarkers && mTrue.length > 0 && (
-          <Scatter
-            name={t("mixProfiles.ceChart.legendCalled")}
-            data={mTrue.map((m) => ({ ...m, rfu: m.rfu + 10 }))}
-            dataKey="rfu"
-            shape="star"
-            r={4}
-            fill="#15803d" // Green-700
-            isAnimationActive={false}
-          />
-        )}
-        {showMarkers && mDrop.length > 0 && (
-          <Scatter
-            name={t("mixProfiles.ceChart.legendDropoutRisk")}
-            data={mDrop.map((m) => ({ ...m, rfu: m.rfu + 10 }))}
-            dataKey="rfu"
-            fill="#F59E0B"
-            shape="circle"
-            r={4}
-            isAnimationActive={false}
-          />
-        )}
-        {showMarkers && mStutter.length > 0 && (
-          <Scatter
-            name={t("mixProfiles.ceChart.legendStutterPeak")}
-            data={mStutter.map((m) => ({ allele: m.allele, rfu: m.rfu }))}
-            dataKey="rfu"
-            fill="#F59E0B"
-            shape="triangle"
-            r={6}
-            isAnimationActive={false}
-          />
-        )}
+          <RechartsTooltip
+            formatter={(value: any, name: string, itemProps: any) => {
+              // Round RFU value for all series
+              const rfu = Math.round(value as number);
+              const rfuStr = String(rfu);
 
-        {/* Líneas de umbral - solo AT y ST con labels (sin otras líneas) */}
-        {analyticalThreshold != null && (
-          <ReferenceLine
-            y={analyticalThreshold}
-            stroke="#9CA3AF"
-            strokeDasharray="6 6"
-            strokeWidth={1}
-            label={{
-              value: t("mixProfiles.ceChart.thresholdAT"),
-              position: "right",
-              offset: 5,
-              fill: "#6B7280",
-              fontSize: 12,
-            }}
-          />
-        )}
-        {interpretationThreshold != null && (
-          <ReferenceLine
-            y={interpretationThreshold}
-            stroke="#6B7280"
-            strokeDasharray="4 4"
-            strokeWidth={1}
-            label={{
-              value: t("mixProfiles.ceChart.thresholdST"),
-              position: "right",
-              offset: 5,
-              fill: "#6B7280",
-              fontSize: 12,
-            }}
-          />
-        )}
+              // Check if this is a stutter peak with parent info
+              if (itemProps?.payload?.source) {
+                const parentMatch =
+                  itemProps.payload.source.match(/parent:([\d.]+)/);
+                if (
+                  parentMatch &&
+                  (name === t("mixProfiles.ceChart.legendStutter") ||
+                    name.includes("Stutter"))
+                ) {
+                  // This is a stutter peak - show allele and parent
+                  const alleleLabel =
+                    itemProps?.payload?.allele ??
+                    itemProps?.payload?.label ??
+                    "?";
+                  return [
+                    `${rfuStr} RFU`,
+                    t("mixProfiles.ceChart.tooltipStutter", {
+                      allele: String(alleleLabel),
+                      parent: parentMatch[1],
+                      rfu: rfuStr,
+                    }),
+                  ];
+                }
+              }
 
-        <Tooltip
-          formatter={(value: any, name: string, itemProps: any) => {
-            // Round RFU value for all series
-            const rfu = Math.round(value as number);
-            const rfuStr = String(rfu);
-
-            // Check if this is a stutter peak with parent info
-            if (itemProps?.payload?.source) {
-              const parentMatch =
-                itemProps.payload.source.match(/parent:([\d.]+)/);
+              // Check if this is a true peak
               if (
-                parentMatch &&
-                (name === t("mixProfiles.ceChart.legendStutter") ||
-                  name.includes("Stutter"))
+                name === t("mixProfiles.ceChart.legendTrueAlleles") ||
+                name.includes("Signal")
               ) {
-                // This is a stutter peak - show allele and parent
                 const alleleLabel =
                   itemProps?.payload?.allele ??
                   itemProps?.payload?.label ??
                   "?";
                 return [
                   `${rfuStr} RFU`,
-                  t("mixProfiles.ceChart.tooltipStutter", {
-                    allele: String(alleleLabel),
-                    parent: parentMatch[1],
+                  t("mixProfiles.ceChart.tooltipTrue", {
+                    label: String(alleleLabel),
                     rfu: rfuStr,
                   }),
                 ];
               }
-            }
 
-            // Check if this is a true peak
-            if (
-              name === t("mixProfiles.ceChart.legendTrueAlleles") ||
-              name.includes("Signal")
-            ) {
-              const alleleLabel =
-                itemProps?.payload?.allele ?? itemProps?.payload?.label ?? "?";
-              return [
-                `${rfuStr} RFU`,
-                t("mixProfiles.ceChart.tooltipTrue", {
-                  label: String(alleleLabel),
-                  rfu: rfuStr,
-                }),
-              ];
-            }
+              // Check if this is a marker (called or dropout)
+              const isCalled =
+                name === t("mixProfiles.ceChart.legendCalled") ||
+                name === "Called";
+              const isDropout =
+                name === t("mixProfiles.ceChart.legendDropoutRisk") ||
+                name === "Drop-out risk";
 
-            // Check if this is a marker (called or dropout)
-            const isCalled =
-              name === t("mixProfiles.ceChart.legendCalled") ||
-              name === "Called";
-            const isDropout =
-              name === t("mixProfiles.ceChart.legendDropoutRisk") ||
-              name === "Drop-out risk";
+              if (isCalled) {
+                return [
+                  `${rfuStr} RFU`,
+                  t("mixProfiles.ceChart.tooltipCalled"),
+                ];
+              }
+              if (isDropout) {
+                return [
+                  `${rfuStr} RFU`,
+                  t("mixProfiles.ceChart.tooltipDropout"),
+                ];
+              }
 
-            if (isCalled) {
-              return [`${rfuStr} RFU`, t("mixProfiles.ceChart.tooltipCalled")];
-            }
-            if (isDropout) {
-              return [`${rfuStr} RFU`, t("mixProfiles.ceChart.tooltipDropout")];
-            }
+              // Default: show RFU value
+              return [`${rfuStr} RFU`, name];
+            }}
+            labelFormatter={(label: any, payload: readonly any[]) => {
+              if (!payload || payload.length === 0) {
+                return t("mixProfiles.ceChart.tooltipAllele", {
+                  allele: label,
+                });
+              }
 
-            // Default: show RFU value
-            return [`${rfuStr} RFU`, name];
-          }}
-          labelFormatter={(label: any, payload: readonly any[]) => {
-            if (!payload || payload.length === 0) {
-              return t("mixProfiles.ceChart.tooltipAllele", { allele: label });
-            }
-
-            // Check if this is a scatter point (has actual allele data in payload)
-            // Scatter points have payload.payload.allele matching the label
-            const isScatterPoint = payload.some(
-              (item: any) =>
-                item.payload &&
-                typeof item.payload.allele !== "undefined" &&
-                Math.abs(item.payload.allele - label) < 0.01
-            );
-
-            if (isScatterPoint) {
-              // For scatter points, find the scatter series (not the line series)
-              // Note: name may be localized, so we check against all possible marker names
-              const scatterItem = payload.find(
+              // Check if this is a scatter point (has actual allele data in payload)
+              // Scatter points have payload.payload.allele matching the label
+              const isScatterPoint = payload.some(
                 (item: any) =>
-                  item.name === t("mixProfiles.ceChart.legendCalled") ||
-                  item.name === t("mixProfiles.ceChart.legendStutterPeak") ||
-                  item.name === t("mixProfiles.ceChart.legendDropoutRisk") ||
-                  item.name === "Called" ||
-                  item.name === "Stutter peak" ||
-                  item.name === "Drop-out risk"
+                  item.payload &&
+                  typeof item.payload.allele !== "undefined" &&
+                  Math.abs(item.payload.allele - label) < 0.01
               );
 
-              if (scatterItem) {
-                // Check if it's a stutter with parent info
-                if (scatterItem.payload?.source) {
-                  const parentMatch =
-                    scatterItem.payload.source.match(/parent:([\d.]+)/);
-                  if (parentMatch) {
-                    const rfu = Math.round(scatterItem.payload.rfu ?? 0);
-                    const alleleLabel = scatterItem.payload.allele ?? label;
-                    return t("mixProfiles.ceChart.tooltipStutter", {
-                      allele: String(alleleLabel),
-                      parent: parentMatch[1],
-                      rfu: String(rfu),
-                    });
-                  }
-                }
-
-                return t("mixProfiles.ceChart.tooltipAlleleMarker", {
-                  allele: String(label),
-                  marker: scatterItem.name,
-                });
-              }
-            }
-
-            // For line series, check if it's a stutter with parent
-            const lineItem = payload.find(
-              (item: any) =>
-                item.name === t("mixProfiles.ceChart.legendStutter") ||
-                item.name === "Stutter (RFU)" ||
-                item.name?.includes("Stutter")
-            );
-            if (lineItem?.payload?.source) {
-              const parentMatch =
-                lineItem.payload.source.match(/parent:([\d.]+)/);
-              if (parentMatch) {
-                const rfu = Math.round(
-                  lineItem.payload.rfu ?? lineItem.value ?? 0
+              if (isScatterPoint) {
+                // For scatter points, find the scatter series (not the line series)
+                // Note: name may be localized, so we check against all possible marker names
+                const scatterItem = payload.find(
+                  (item: any) =>
+                    item.name === t("mixProfiles.ceChart.legendCalled") ||
+                    item.name === t("mixProfiles.ceChart.legendStutterPeak") ||
+                    item.name === t("mixProfiles.ceChart.legendDropoutRisk") ||
+                    item.name === "Called" ||
+                    item.name === "Stutter peak" ||
+                    item.name === "Drop-out risk"
                 );
-                const alleleLabel = lineItem.payload.allele ?? label;
-                return t("mixProfiles.ceChart.tooltipStutter", {
-                  allele: String(alleleLabel),
-                  parent: parentMatch[1],
-                  rfu: String(rfu),
-                });
+
+                if (scatterItem) {
+                  // Check if it's a stutter with parent info
+                  if (scatterItem.payload?.source) {
+                    const parentMatch =
+                      scatterItem.payload.source.match(/parent:([\d.]+)/);
+                    if (parentMatch) {
+                      const rfu = Math.round(scatterItem.payload.rfu ?? 0);
+                      const alleleLabel = scatterItem.payload.allele ?? label;
+                      return t("mixProfiles.ceChart.tooltipStutter", {
+                        allele: String(alleleLabel),
+                        parent: parentMatch[1],
+                        rfu: String(rfu),
+                      });
+                    }
+                  }
+
+                  return t("mixProfiles.ceChart.tooltipAlleleMarker", {
+                    allele: String(label),
+                    marker: scatterItem.name,
+                  });
+                }
               }
-            }
 
-            // For line series, just show "Allele X"
-            return t("mixProfiles.ceChart.tooltipAllele", { allele: label });
-          }}
-        />
-        <Legend
-          verticalAlign="bottom"
-          wrapperStyle={{ paddingTop: "20px", paddingBottom: "5px" }}
-          content={({ payload }) => {
-            if (!payload || !payload.length) return null;
-            return (
-              <ul
-                className="recharts-default-legend"
-                style={{ padding: 0, margin: 0, textAlign: "center" }}
-              >
-                {payload.map((entry, index) => {
-                  const isCalled =
-                    entry.value === t("mixProfiles.ceChart.legendCalled") ||
-                    entry.value === "Called";
-
-                  return (
-                    <li
-                      key={`legend-item-${index}`}
-                      className={`recharts-legend-item legend-item-${index}`}
-                      style={{ display: "inline-block", marginRight: "10px" }}
-                    >
-                      {isCalled ? (
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill={entry.color || "#22C55E"}
-                          style={{
-                            display: "inline-block",
-                            verticalAlign: "middle",
-                            marginRight: "4px",
-                          }}
-                        >
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                        </svg>
-                      ) : (
-                        <span
-                          className="recharts-legend-icon"
-                          style={{
-                            display: "inline-block",
-                            width: "14px",
-                            height: "14px",
-                            backgroundColor: entry.color,
-                            borderRadius: entry.value?.includes("Stutter peak")
-                              ? "0"
-                              : "50%",
-                            marginRight: "4px",
-                            verticalAlign: "middle",
-                            clipPath: entry.value?.includes("Stutter peak")
-                              ? "polygon(50% 0%, 0% 100%, 100% 100%)"
-                              : undefined,
-                            transform: entry.value?.includes("Stutter peak")
-                              ? "rotate(0deg)"
-                              : undefined,
-                          }}
-                        />
-                      )}
-                      <span className="recharts-legend-item-text">
-                        {entry.value}
-                      </span>
-                    </li>
+              // For line series, check if it's a stutter with parent
+              const lineItem = payload.find(
+                (item: any) =>
+                  item.name === t("mixProfiles.ceChart.legendStutter") ||
+                  item.name === "Stutter (RFU)" ||
+                  item.name?.includes("Stutter")
+              );
+              if (lineItem?.payload?.source) {
+                const parentMatch =
+                  lineItem.payload.source.match(/parent:([\d.]+)/);
+                if (parentMatch) {
+                  const rfu = Math.round(
+                    lineItem.payload.rfu ?? lineItem.value ?? 0
                   );
-                })}
-              </ul>
-            );
-          }}
-          // Legend shows only visible series (controlled by conditional rendering)
-          // Order matches render order:
-          // 1. Baseline noise (if visible)
-          // 2. True alleles / Signal (RFU) - always visible
-          // 3. Stutter (RFU) - always visible
-          // 4. Called (if markers visible and >= ST)
-          // 5. Drop-out risk (if markers visible and AT <= RFU < ST)
-          // 6. Stutter peak (if markers visible and stutter >= AT)
-        />
-      </LineChart>
-    </ResponsiveContainer>
+                  const alleleLabel = lineItem.payload.allele ?? label;
+                  return t("mixProfiles.ceChart.tooltipStutter", {
+                    allele: String(alleleLabel),
+                    parent: parentMatch[1],
+                    rfu: String(rfu),
+                  });
+                }
+              }
+
+              // For line series, just show "Allele X"
+              return t("mixProfiles.ceChart.tooltipAllele", { allele: label });
+            }}
+          />
+          <Legend
+            verticalAlign="bottom"
+            wrapperStyle={{ paddingTop: "20px", paddingBottom: "5px" }}
+            content={({ payload }) => {
+              if (!payload || !payload.length) return null;
+              return (
+                <ul
+                  className="recharts-default-legend"
+                  style={{ padding: 0, margin: 0, textAlign: "center" }}
+                >
+                  {payload.map((entry, index) => {
+                    const isCalled =
+                      entry.value === t("mixProfiles.ceChart.legendCalled") ||
+                      entry.value === "Called";
+
+                    return (
+                      <li
+                        key={`legend-item-${index}`}
+                        className={`recharts-legend-item legend-item-${index}`}
+                        style={{ display: "inline-block", marginRight: "10px" }}
+                      >
+                        {isCalled ? (
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill={entry.color || "#22C55E"}
+                            style={{
+                              display: "inline-block",
+                              verticalAlign: "middle",
+                              marginRight: "4px",
+                            }}
+                          >
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                          </svg>
+                        ) : (
+                          <span
+                            className="recharts-legend-icon"
+                            style={{
+                              display: "inline-block",
+                              width: "14px",
+                              height: "14px",
+                              backgroundColor: entry.color,
+                              borderRadius: entry.value?.includes(
+                                "Stutter peak"
+                              )
+                                ? "0"
+                                : "50%",
+                              marginRight: "4px",
+                              verticalAlign: "middle",
+                              clipPath: entry.value?.includes("Stutter peak")
+                                ? "polygon(50% 0%, 0% 100%, 100% 100%)"
+                                : undefined,
+                              transform: entry.value?.includes("Stutter peak")
+                                ? "rotate(0deg)"
+                                : undefined,
+                            }}
+                          />
+                        )}
+                        <span className="recharts-legend-item-text">
+                          {entry.value}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              );
+            }}
+            // Legend shows only visible series (controlled by conditional rendering)
+            // Order matches render order:
+            // 1. Baseline noise (if visible)
+            // 2. True alleles / Signal (RFU) - always visible
+            // 3. Stutter (RFU) - always visible
+            // 4. Called (if markers visible and >= ST)
+            // 5. Drop-out risk (if markers visible and AT <= RFU < ST)
+            // 6. Stutter peak (if markers visible and stutter >= AT)
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

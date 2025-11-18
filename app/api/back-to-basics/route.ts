@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server"
 import { getContentfulClient, buildIncludesMaps, resolveAuthor, CONTENTFUL_ACCESS_TOKEN } from "@/lib/contentful"
 
-export const dynamic = "force-dynamic" // deja que el proxy de Vercel maneje el cache
+export const dynamic = "auto" // deja que el proxy de Vercel maneje el cache
 // o usa 'auto' y solo confía en los headers de cache abajo
 
 export async function GET(request: Request) {
@@ -16,7 +16,7 @@ export async function GET(request: Request) {
       content_type: "backToBasicsPost",
       order: "-sys.createdAt",
       include: 2,
-      locale,
+      locale: locale === 'en' ? undefined : locale,
       select:
         "sys.id,fields.title,fields.summary,fields.postReadMinutes,fields.keywords,fields.bodyMd,fields.authors,fields.slug",
       access_token: CONTENTFUL_ACCESS_TOKEN,

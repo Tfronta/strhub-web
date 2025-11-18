@@ -1,38 +1,12 @@
 import { BookOpen } from "lucide-react";
 import Link from "next/link";
-import { headers } from "next/headers";
 import {
   ClientBasicsTitle,
   ClientBasicsHero,
+  ClientBackToBasicsGrid,
 } from "./client-components";
-import { BackToBasicsCard } from "@/components/back-to-basics/BackToBasicsCard";
 
-export default async function BasicsPage() {
-  const headersList = headers();
-  const protocol = headersList.get("x-forwarded-proto") ?? "http";
-  const host = headersList.get("host");
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (host ? `${protocol}://${host}` : "http://localhost:3000");
-
-  const res = await fetch(new URL("/api/back-to-basics", baseUrl), {
-    next: { revalidate: 60 },
-  });
-
-  type BackToBasicsPost = {
-    sys: { id: string };
-    fields: {
-      title: string;
-      summary: string;
-      postReadMinutes: number;
-      keywords: string[];
-      slug?: string;
-    };
-  };
-
-  const data = (await res.json()) as { items: BackToBasicsPost[] };
-  const { items: posts } = data;
-
+export default function BasicsPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -66,28 +40,7 @@ export default async function BasicsPage() {
       {/* Articles Grid */}
       <section className="pt-8 pb-16 px-4">
         <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-8">
-            {(() => {
-              // Sort posts to show "Understanding Sequencing File Formats" first and "FASTQ files" second
-              const sortedPosts = [...posts].sort((a, b) => {
-                const firstTitle = "Understanding Sequencing File Formats: An Introductory Guide";
-                const secondTitle = "FASTQ files";
-                
-                // First priority: Understanding Sequencing File Formats
-                if (a.fields.title === firstTitle) return -1;
-                if (b.fields.title === firstTitle) return 1;
-                
-                // Second priority: FASTQ files
-                if (a.fields.title === secondTitle) return -1;
-                if (b.fields.title === secondTitle) return 1;
-                
-                return 0;
-              });
-              return sortedPosts.map((post: BackToBasicsPost) => (
-                <BackToBasicsCard key={post.sys.id} post={post} />
-              ));
-            })()}
-          </div>
+          <ClientBackToBasicsGrid />
         </div>
       </section>
     </div>

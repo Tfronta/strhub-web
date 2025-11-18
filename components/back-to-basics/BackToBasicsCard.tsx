@@ -17,7 +17,7 @@ import {
   ClientReadArticle,
 } from "@/app/basics/client-components";
 
-type BackToBasicsPost = {
+export type BackToBasicsPost = {
   sys: { id: string };
   fields: {
     title: string;

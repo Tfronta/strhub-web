@@ -151,6 +151,7 @@ export function MotifVisualization({
             kitId={selectedKitId as StrKitType}
             motifAllele={motifAlleleToUse}
             pageContent={pageContent}
+            canonicalMotif={markerInfo?.motif}
           />
         )}
       </div>
@@ -193,11 +194,13 @@ function RepresentativeAlleleSequence({
   kitId,
   motifAllele,
   pageContent,
+  canonicalMotif,
 }: {
   markerId: keyof typeof strKitsData;
   kitId: StrKitType;
   motifAllele?: StrKitData;
   pageContent: MotifVisualizationProps["pageContent"];
+  canonicalMotif?: string;
 }) {
   const getMotifTooltip = (block: MotifBlock): string => {
     if (block.note) return block.note;
@@ -225,6 +228,51 @@ function RepresentativeAlleleSequence({
       ?.referenceAllele || "?";
   const sequenceToShow = motifAllele.sequence.trim() || "";
   const sequenceTokens = motifAllele.segments;
+  const inferredCanonicalMotif =
+    canonicalMotif?.toUpperCase().trim() ||
+    sequenceTokens?.find((token) => token.type === "core")?.sequence?.toUpperCase() ||
+    "";
+
+  const getTokenClassName = (kind: string) => {
+    switch (kind) {
+      case "core":
+        return "inline-flex items-center bg-[#6ee7b7]/20 border border-[#6ee7b7]/50 text-teal-700 dark:bg-[#6ee7b7]/30 dark:border-[#6ee7b7]/70 dark:text-[#6ee7b7] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
+      case "interruption":
+      case "insertion":
+        return "inline-flex items-center bg-[#fdba74]/20 border border-[#fdba74]/50 text-[#27272a] dark:bg-[#fdba74]/30 dark:border-[#fdba74]/70 dark:text-[#27272a] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
+      case "nc":
+        return "inline-flex items-center bg-sky-50 border border-sky-200 text-sky-800 dark:bg-sky-900/30 dark:border-sky-700 dark:text-sky-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
+      case "flankingMotifLike":
+        return "inline-flex items-center border border-[#6ee7b7]/60 text-slate-700 dark:text-slate-200 px-1 py-0.5 rounded-lg bg-transparent mx-0.5 text-xs md:text-sm font-mono font-medium";
+      default:
+        return "inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all";
+    }
+  };
+
+  const renderFlankPill = (sequence: string, flankKey: string) => {
+    if (!sequence) return null;
+    const tokens = tokenizeFlankingSequence(sequence, inferredCanonicalMotif);
+    if (!tokens.length) return null;
+
+    return (
+      <span
+        key={flankKey}
+        className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all"
+      >
+        {tokens.map((token, idx) =>
+          token.type === "flankingMotifLike" ? (
+            <span key={`${flankKey}-${idx}`} className={getTokenClassName("flankingMotifLike")}>
+              {token.sequence}
+            </span>
+          ) : (
+            <span key={`${flankKey}-${idx}`} className="whitespace-pre">
+              {token.sequence}
+            </span>
+          )
+        )}
+      </span>
+    );
+  };
 
   return (
     <div className="space-y-3">
@@ -248,33 +296,14 @@ function RepresentativeAlleleSequence({
       )}
       {sequenceTokens && (
         <div className="flex flex-wrap gap-2">
-          <div className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
-            {motifAllele.leftFlank}
-          </div>
-          {sequenceTokens.map((token, idx) => {
-            const getTokenClassName = (kind: string) => {
-              switch (kind) {
-                case "core":
-                  return "inline-flex items-center bg-[#6ee7b7]/20 border border-[#6ee7b7]/50 text-teal-700 dark:bg-[#6ee7b7]/30 dark:border-[#6ee7b7]/70 dark:text-[#6ee7b7] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
-                case "interruption":
-                case "insertion":
-                  return "inline-flex items-center bg-[#fdba74]/20 border border-[#fdba74]/50 text-[#27272a] dark:bg-[#fdba74]/30 dark:border-[#fdba74]/70 dark:text-[#27272a] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
-                case "nc":
-                  return "inline-flex items-center bg-sky-50 border border-sky-200 text-sky-800 dark:bg-sky-900/30 dark:border-sky-700 dark:text-sky-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium";
-                default:
-                  return "inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all";
-              }
-            };
-            return (
-              <span key={idx} className={getTokenClassName(token.type)}>
-                {token.sequence}
-              </span>
-            );
-          })}
+          {renderFlankPill(motifAllele.leftFlank, "left-flank")}
+          {sequenceTokens.map((token, idx) => (
+            <span key={idx} className={getTokenClassName(token.type)}>
+              {token.sequence}
+            </span>
+          ))}
 
-          <div className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
-            {motifAllele.rightFlank}
-          </div>
+          {renderFlankPill(motifAllele.rightFlank, "right-flank")}
         </div>
       )}
       <p className="mt-2 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
@@ -284,4 +313,48 @@ function RepresentativeAlleleSequence({
       </p>
     </div>
   );
+}
+
+type FlankingToken = {
+  sequence: string;
+  type: "flanking" | "flankingMotifLike";
+};
+
+function tokenizeFlankingSequence(sequence: string, canonicalMotif: string): FlankingToken[] {
+  if (!sequence) return [];
+  const motif = canonicalMotif?.toUpperCase();
+  if (!motif) {
+    return [{ sequence, type: "flanking" }];
+  }
+
+  const upperSequence = sequence.toUpperCase();
+  const tokens: FlankingToken[] = [];
+  let cursor = 0;
+
+  while (cursor < sequence.length) {
+    const matchIndex = upperSequence.indexOf(motif, cursor);
+    if (matchIndex === -1) {
+      const tail = sequence.slice(cursor);
+      if (tail) {
+        tokens.push({ sequence: tail, type: "flanking" });
+      }
+      break;
+    }
+
+    if (matchIndex > cursor) {
+      tokens.push({
+        sequence: sequence.slice(cursor, matchIndex),
+        type: "flanking",
+      });
+    }
+
+    tokens.push({
+      sequence: sequence.slice(matchIndex, matchIndex + motif.length),
+      type: "flankingMotifLike",
+    });
+
+    cursor = matchIndex + motif.length;
+  }
+
+  return tokens.filter((token) => token.sequence.length > 0);
 }

@@ -35,6 +35,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -52,6 +58,17 @@ import { markerFrequencies } from "./markerFrequencies";
 import { toolsData, type Tool } from "./toolsData";
 import { LATAMCatalog, type LatamSubpop } from "@/lib/latamCatalog";
 import { cn } from "@/lib/utils";
+
+const POP_SUBPOP_DESCRIPTIONS: Record<string, string> = {
+  AFR: "Central African Republic (Biaka Pygmies), Democratic Republic of the Congo (Mbuti Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria (Yoruba), Senegal (Mandenka), Somalia, and South Africa (Bantu).",
+  NAM: "Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), and Mexico (Pima).",
+  EAS: "Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), and Siberia (Yakut).",
+  SAS: "China (Uygur), Pakistan (Balochi), Pakistan (Brahui), Pakistan (Burusho), Pakistan (Hazara), Pakistan (Kalash), Pakistan (Makrani), Pakistan (Pathan), and Pakistan (Sindhi).",
+  EUR: "France (Basque), France (French), Italy (Bergamo – North Italian), Italy (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands (Orcadian), Russia (Russian), Russia Caucasus (Adygei), Sweden, and U.S. Europeans.",
+  MES: "Algeria (Mzab – Mozabite), Israel (Carmel – Druze), Israel (Central – Palestinian), and Israel (Negev – Bedouin).",
+  OCE: "Bougainville (NAN Melanesian) and New Guinea (Papuan).",
+  LATAM: "",
+};
 
 export default function MarkerPage({ params }: { params: { id: string } }) {
   const { t, language } = useLanguage();
@@ -198,6 +215,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     : "LATAM";
 
   const isXSTR = marker.type === "X-STR" || marker.chromosome === "X";
+  const populationDescription =
+    POP_SUBPOP_DESCRIPTIONS[selectedPopulation] ?? "";
+  const isPopStrDataset = selectedPopulation !== "LATAM";
 
   // Filter tools based on marker compatibility
   const getCompatibleTools = (): Tool[] => {
@@ -801,118 +821,85 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </ResponsiveContainer>
                     </div>
 
-                    {selectedPopulation === "AFR" && (
-                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The African population dataset from pop.STR includes the
-                        following population groups: Central African Republic
-                        (Biaka Pygmies), Democratic Republic of the Congo (Mbuti
-                        Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria
-                        (Yoruba), Senegal (Mandenka), Somalia, and South Africa
-                        (Bantu).
+                    {isPopStrDataset && (
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        These frequencies are derived from the STRs Local dataset of the SP-SMART portal (CESGA), comprising 3,809 genotyped individuals from diverse populations.
                       </p>
                     )}
-                    {selectedPopulation === "NAM" && (
-                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The Native American population dataset from pop.STR
-                        includes the following population groups: Brazil
-                        (Karitiana), Brazil (Surui), Colombia (Colombian),
-                        Dominican Republic, Mexico (Maya), and Mexico (Pima).
-                      </p>
-                    )}
-
-                    {selectedPopulation === "SAS" && (
-                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The Central–South Asian population dataset from pop.STR
-                        includes the following population groups: China (Uygur),
-                        Pakistan (Balochi), Pakistan (Brahui), Pakistan
-                        (Burusho), Pakistan (Hazara), Pakistan (Kalash),
-                        Pakistan (Makrani), Pakistan (Pathan), and Pakistan
-                        (Sindhi).
-                      </p>
-                    )}
-
-                    {selectedPopulation === "MES" && (
-                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The Middle East population dataset from pop.STR includes
-                        the following population groups: Algeria (Mzab –
-                        Mozabite), Israel (Carmel – Druze), Israel (Central –
-                        Palestinian), and Israel (Negev – Bedouin).
-                      </p>
-                    )}
-
-                    {selectedPopulation === "EUR" && (
-                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The European population dataset from pop.STR includes
-                        the following population groups: France (Basque), France
-                        (French), Italy (Bergamo – North Italian), Italy
-                        (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands
-                        (Orcadian), Russia (Russian), Russia Caucasus (Adygei),
-                        Sweden, and U.S. Europeans.
-                      </p>
-                    )}
-
-                    {selectedPopulation === "EAS" && (
-                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        The East Asian population dataset from pop.STR includes
-                        the following population groups: Cambodia (Cambodian),
-                        China (Dai), China (Daur), China (Han), China (Hezhen),
-                        China (Lahu), China (Miaozu), China (Mongola), China
-                        (Naxi), China (Oroqen), China (She), China (Tu), China
-                        (Tujia), China (Xibo), China (Yizu), Japan (Japanese),
-                        and Siberia (Yakut).
-                      </p>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      <span className="font-medium">Population groups included</span>
+                      <br />
+                      {populationDescription}
+                    </p>
+                    {isPopStrDataset && (
+                      <>
+                        {/* TODO: move these dataset notes strings into the i18n translation files (EN/ES/PT) */}
+                        <div className="mt-3 text-sm text-muted-foreground space-y-1">
+                          <p className="font-medium flex items-center gap-2">
+                            <span>⚠️ Dataset notes (important)</span>
+                          </p>
+                          <p>
+                            The allele frequencies shown here come directly from the <span className="font-semibold">STRs Local</span> dataset of <span className="font-semibold">SP-SMART / pop.STR</span>.
+                          </p>
+                          <p>
+                            STRhub does not modify, infer, reconstruct, or reinterpret any component of the STRs Local dataset. All methodological limitations originate exclusively from the structure, metadata availability, and design choices of the <span className="font-semibold">SP-SMART / pop.STR</span> platform.
+                          </p>
+                        </div>
+                        <Accordion type="single" collapsible className="mt-2">
+                          <AccordionItem value="method-note">
+                            <AccordionTrigger className="text-sm font-medium">
+                              Read full methodological note
+                            </AccordionTrigger>
+                            <AccordionContent className="text-sm text-muted-foreground space-y-2">
+                              <p>
+                                All allele frequencies displayed in this section derive directly from the STRs Local dataset of the SP-SMART / pop.STR platform (CESGA). The methodological characteristics and constraints described here are inherent to the original dataset and platform, and do not originate from STRhub’s processing or implementation.
+                              </p>
+                              <p>
+                                In pop.STR, selecting a “kit” acts only as a <span className="font-semibold">locus filter</span>, and does <span className="font-semibold">not</span> reflect the genotyping technology used in the contributing studies. The STRs Local dataset compiles population data generated mainly through <span className="font-semibold">capillary electrophoresis (CE)</span>, not NGS, and SP-SMART does not provide technology-specific metadata at locus level. Therefore, STRhub reproduces the dataset exactly as provided, without reconstruction, harmonization beyond nomenclature, or imputation.
+                              </p>
+                              <p>
+                                Although STRs Local offers harmonized allele frequencies across multiple populations, it does <span className="font-semibold">not</span> constitute a unified global reference panel. pop.STR delivers populations individually, which is suitable for forensic comparison but not for pooled analyses such as PCA, STRUCTURE, or ADMIXTURE. These limitations reflect the design and scope of the SP-SMART / pop.STR platform rather than any STRhub constraint.
+                              </p>
+                              <p className="text-xs">
+                                <span className="font-semibold">Reference</span>
+                                <br />
+                                Amigo J, Phillips C, Lareu MV, Carracedo A. <em>The SNPforID and SP-SMART databases: Resources for forensic population genetics.</em> Forensic Sci Int Genet. 2008;2(3):212–217. Dataset: http://spsmart.cesga.es/
+                              </p>
+                            </AccordionContent>
+                          </AccordionItem>
+                        </Accordion>
+                      </>
                     )}
 
-                    {selectedPopulation === "OCE" && (
-                      <p className="w-full text-xs text-muted-foreground text-left mt-2 py-2">
-                        {t("marker.ocePopulationInfo")}
-                      </p>
-                    )}
-
-                    <div className="space-y-3">
-                      <p className="text-xs text-muted-foreground">
-                        {t("marker.additionalSourceInfo")}
-                      </p>
-                      <div className="flex gap-2">
-                        {!(
-                          selectedTechnology === "NGS" &&
-                          selectedPopulation === "RAO"
-                        ) && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                            className="text-xs"
-                          >
-                            <a
-                              href="http://spsmart.cesga.es/search.php?dataSet=strs_local"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {t("marker.datasetButton")}
-                            </a>
-                          </Button>
-                        )}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          asChild
-                          className="text-xs"
-                        >
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {!(
+                        selectedTechnology === "NGS" &&
+                        selectedPopulation === "RAO"
+                      ) && (
+                        <Button variant="outline" size="sm" asChild className="text-xs">
                           <a
-                            href={
-                              selectedTechnology === "NGS" &&
-                              selectedPopulation === "RAO"
-                                ? "https://www.fsigenetics.com/article/S1872-4973(22)00017-5/abstract"
-                                : "https://pubmed.ncbi.nlm.nih.gov/18847484/"
-                            }
+                            href="http://spsmart.cesga.es/search.php?dataSet=strs_local"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {t("marker.originalPublicationButton")}
+                            {t("marker.datasetButton")}
                           </a>
                         </Button>
-                      </div>
+                      )}
+                      <Button variant="outline" size="sm" asChild className="text-xs">
+                        <a
+                          href={
+                            selectedTechnology === "NGS" &&
+                            selectedPopulation === "RAO"
+                              ? "https://www.fsigenetics.com/article/S1872-4973(22)00017-5/abstract"
+                              : "https://pubmed.ncbi.nlm.nih.gov/18847484/"
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {t("marker.originalPublicationButton")}
+                        </a>
+                      </Button>
                     </div>
 
                     <div className="mt-4">

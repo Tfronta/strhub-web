@@ -58,6 +58,11 @@ import { markerFrequencies } from "./markerFrequencies";
 import { toolsData, type Tool } from "./toolsData";
 import { LATAMCatalog, type LatamSubpop } from "@/lib/latamCatalog";
 import { cn } from "@/lib/utils";
+import strKitsData from "@/data/str_kits.json";
+
+const motifExplorerMarkerIds = new Set(
+  Object.keys(strKitsData).map((marker) => marker.toLowerCase())
+);
 
 const POP_SUBPOP_DESCRIPTION_KEYS: Record<string, string> = {
   AFR: "populationAfr",
@@ -83,6 +88,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
   const markerId = params.id.toLowerCase();
   const marker = markerData[markerId as keyof typeof markerData];
+  const isMarkerInMotifExplorer = motifExplorerMarkerIds.has(markerId);
   const tabValues = ["overview", "frequencies", "variants", "tools"] as const;
   type TabValue = (typeof tabValues)[number];
   const requestedTab = (searchParams?.get("tab") ?? "overview") as string;
@@ -497,6 +503,29 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </div>
                     )}
                   </div>
+                  {isMarkerInMotifExplorer && (
+                    <div className="pt-4 border-t border-border space-y-3">
+                      <div className="space-y-1.5">
+                        <p className="text-xs font-semibold text-foreground">
+                          {t("overview.motifExplorer.title")}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {t("overview.motifExplorer.desc")}
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        className="h-8 px-3 text-xs font-semibold"
+                        asChild
+                      >
+                        <Link
+                          href={`/tools/str-motif-explorer?marker=${marker.name}`}
+                        >
+                          {t("overview.motifExplorer.button")}
+                        </Link>
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 

@@ -356,6 +356,13 @@ export const translations = {
       source: "Source",
       viewInStrbase: "View in STRBase",
     },
+    overview: {
+      motifExplorer: {
+        title: "Explore internal sequence structure",
+        desc: "Understand how canonical motifs, internal variants and flanking regions define the allele.",
+        button: "Open STR Motif Explorer",
+      },
+    },
     // FASTA Generator Page
     fastaGeneratorPage: {
       languageLabel: "Current language",
@@ -1421,6 +1428,13 @@ export const translations = {
       download: "Baixar",
       source: "Fonte",
       viewInStrbase: "Ver no STRBase",
+    },
+    overview: {
+      motifExplorer: {
+        title: "Explorar estrutura interna da sequência",
+        desc: "Entenda como os motivos canônicos, variantes internas e regiões flanqueadoras definem o alelo.",
+        button: "Abrir STR Motif Explorer",
+      },
     },
     fastaGeneratorPage: {
       languageLabel: "Idioma atual",
@@ -2491,6 +2505,13 @@ export const translations = {
       download: "Download",
       source: "Source",
       viewInStrbase: "View in STRBase",
+    },
+    overview: {
+      motifExplorer: {
+        title: "Explorar estructura interna de la secuencia",
+        desc: "Comprende cómo los motivos canónicos, variantes internas y regiones flanqueadoras definen el alelo.",
+        button: "Abrir STR Motif Explorer",
+      },
     },
     // FASTA Generator Page
     fastaGeneratorPage: {

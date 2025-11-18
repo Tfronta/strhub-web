@@ -466,7 +466,7 @@ export const translations = {
       tooltipsShort: {
         repeat: "Canonical repeat that counts toward the allele size.",
         internal: "Internal variant inside the repeat block; does not add repeats.",
-        flanking: "Flanking DNA outside the core repeat block.",
+        flanking: "Flanking region",
         flankingMotifLike:
           "Motif unit in flanking region, excluded from allele calling.",
       },
@@ -1527,7 +1527,7 @@ export const translations = {
       tooltipsShort: {
         repeat: "Repetição canônica que conta para o tamanho do alelo.",
         internal: "Variação interna no bloco repetitivo; não adiciona repetições.",
-        flanking: "DNA flanqueador fora do bloco principal.",
+        flanking: "Região flanqueadora",
         flankingMotifLike:
           "Unidade do motivo na região flanqueadora, excluída da nomenclatura do alelo.",
       },
@@ -2591,7 +2591,7 @@ export const translations = {
       tooltipsShort: {
         repeat: "Repetición canónica que sí cuenta para el tamaño del alelo.",
         internal: "Variación interna dentro del bloque repetitivo; no suma repeticiones.",
-        flanking: "ADN flanqueante fuera del bloque principal.",
+        flanking: "Región flanqueadora",
         flankingMotifLike:
           "Motif en la región flanqueadora, excluida de la nomenclatura del alelo.",
       },

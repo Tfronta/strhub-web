@@ -445,7 +445,7 @@ export const translations = {
         interruption: "Interruption / internal variant",
         other: "Other / schematic element",
         flank: "Flanking region",
-        flankingMotifLike: "Motif-like copy in flanking region",
+        flankingMotifLike: "Motif unit in flanking region, excluded from allele calling.",
       },
       summary: {
         caption:
@@ -1506,7 +1506,8 @@ export const translations = {
         interruption: "Interrupção / variante interna",
         other: "Outro / elemento esquemático",
         flank: "Região flanqueadora",
-        flankingMotifLike: "Cópia de motivo no flanco",
+        flankingMotifLike:
+          "Unidade do motivo na região flanqueadora, excluída da nomenclatura do alelo.",
       },
       summary: {
         caption:
@@ -2570,7 +2571,8 @@ export const translations = {
         interruption: "Interrupción / variante interna",
         other: "Otro / elemento esquemático",
         flank: "Región flanqueadora",
-        flankingMotifLike: "Copia tipo motivo en el flanco",
+        flankingMotifLike:
+          "Motif en la región flanqueadora, excluido de la nomenclatura del alelo.",
       },
       summary: {
         caption:
@@ -2593,7 +2595,7 @@ export const translations = {
         internal: "Variación interna dentro del bloque repetitivo; no suma repeticiones.",
         flanking: "Región flanqueadora",
         flankingMotifLike:
-          "Motif en la región flanqueadora, excluida de la nomenclatura del alelo.",
+          "Motif en la región flanqueadora, excluido de la nomenclatura del alelo.",
       },
       tooltipsLong: {
         repeat:
@@ -2603,7 +2605,7 @@ export const translations = {
         flanking:
           "Las regiones flanqueadoras rodean el locus STR y estabilizan el ensayo, pero no se contabilizan dentro del tamaño del alelo.",
         flankingMotifLike:
-          "Motif en la región flanqueadora, excluida de la nomenclatura del alelo.",
+          "Motif en la región flanqueadora, excluido de la nomenclatura del alelo.",
       },
     },
     // STRBase Integration

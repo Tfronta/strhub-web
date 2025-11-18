@@ -12,7 +12,7 @@ import type { MotifBlock } from "../types";
 import { StrKitData, StrKitType } from "../utils/motifData";
 
 const FLANKING_MOTIF_CLASS =
-  "inline-flex items-center border border-neutral-400 text-slate-700 dark:text-slate-200 px-1 py-0.5 rounded-lg bg-transparent text-xs md:text-sm font-mono font-medium";
+  "inline-flex items-center border border-[#1e293b] text-slate-700 dark:text-slate-200 px-1 py-0.5 rounded-lg bg-transparent text-xs md:text-sm font-mono font-medium";
 
 type MotifVisualizationProps = {
   markerId: keyof typeof strKitsData;
@@ -439,11 +439,6 @@ function RepresentativeAlleleSequence({
           Representative internal sequence structure of allele {alleleLabel} (
           {kitId})
         </div>
-        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-          Full allele sequence for this kit. Flanking regions are shown in grey,
-          canonical repeat units in green, internal variants in orange, and
-          motif-like copies that do not count toward the allele size in blue.
-        </p>
       </div>
       {sequenceToShow && (
         <div className="mt-2 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 px-3 py-2">

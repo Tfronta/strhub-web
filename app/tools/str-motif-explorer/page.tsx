@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Grid3x3, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -173,9 +174,30 @@ export default function MotifExplorerPage() {
                     {pageContent.help.general}
                   </p>
                   {pageContent.scientificNote && (
-                    <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
-                      {pageContent.scientificNote}
-                    </p>
+                    <>
+                      <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
+                        {pageContent.scientificNote}
+                      </p>
+                      <div className="mt-3 flex items-center justify-between gap-2 text-xs text-muted-foreground">
+                        <span className="italic">
+                          {pageContent.sourceLabel}: STRidER
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 px-3 text-xs"
+                          asChild
+                        >
+                          <a
+                            href="https://www.isfg.org/files/db9864824b44997f1014a62a0321f0d25ef6cf98.bodner2016_strider.pdf"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {pageContent.sourceButtonLabel}
+                          </a>
+                        </Button>
+                      </div>
+                    </>
                   )}
                 </div>
               </CardContent>

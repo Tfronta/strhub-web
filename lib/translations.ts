@@ -437,6 +437,8 @@ export const translations = {
       },
       scientificNote:
         "Scientific note: Only the uninterrupted canonical repeat block contributes to the allele designation. Motif-like copies in the flanks or interruptions are visual cues and do not change the allele size.",
+      sourceLabel: "Source",
+      sourceButtonLabel: "Open original publication",
       labels: {
         canonicalPattern: "Canonical repeat pattern:",
       },
@@ -1498,6 +1500,8 @@ export const translations = {
       },
       scientificNote:
         "Nota científica: Apenas o bloco contínuo de repetições canônicas contribui para a designação do alelo. Cópias semelhantes ao motivo nos flancos ou interrupções são indicativos visuais e não alteram o tamanho do alelo.",
+      sourceLabel: "Fonte",
+      sourceButtonLabel: "Abrir publicação original",
       labels: {
         canonicalPattern: "Padrão repetitivo canônico:",
       },
@@ -2563,6 +2567,8 @@ export const translations = {
       },
       scientificNote:
         "Nota científica: Solo el bloque continuo de repeticiones canónicas contribuye a la designación del alelo. Las copias similares al motivo en los flancos o las interrupciones son indicios visuales y no modifican el tamaño del alelo.",
+      sourceLabel: "Fuente",
+      sourceButtonLabel: "Abrir publicación original",
       labels: {
         canonicalPattern: "Patrón repetitivo canónico:",
       },

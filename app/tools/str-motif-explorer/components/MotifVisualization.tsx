@@ -12,7 +12,7 @@ import type { MotifBlock } from "../types";
 import { StrKitData, StrKitType } from "../utils/motifData";
 
 const FLANKING_MOTIF_CLASS =
-  "inline-flex items-center border border-[#6ee7b7]/60 text-slate-700 dark:text-slate-200 px-1 py-0.5 rounded-lg bg-transparent text-xs md:text-sm font-mono font-medium";
+  "inline-flex items-center border border-neutral-400 text-slate-700 dark:text-slate-200 px-1 py-0.5 rounded-lg bg-transparent text-xs md:text-sm font-mono font-medium";
 
 type MotifVisualizationProps = {
   markerId: keyof typeof strKitsData;
@@ -241,9 +241,7 @@ export function MotifVisualization({
                   </span>
                 </div>
               </TooltipTrigger>
-              <TooltipContent sideOffset={8}>
-                {item.tooltip}
-              </TooltipContent>
+              <TooltipContent sideOffset={8}>{item.tooltip}</TooltipContent>
             </Tooltip>
           ))}
         </div>
@@ -296,7 +294,9 @@ function RepresentativeAlleleSequence({
   const sequenceTokens = motifAllele.segments;
   const inferredCanonicalMotif =
     canonicalMotif?.toUpperCase().trim() ||
-    sequenceTokens?.find((token) => token.type === "core")?.sequence?.toUpperCase() ||
+    sequenceTokens
+      ?.find((token) => token.type === "core")
+      ?.sequence?.toUpperCase() ||
     "";
   const getTokenClassName = (kind: string) => {
     switch (kind) {
@@ -319,9 +319,7 @@ function RepresentativeAlleleSequence({
     switch (kind) {
       case "core":
         return (
-          shortTooltips?.repeat ||
-          pageContent.legend.repeat ||
-          "Repeat unit"
+          shortTooltips?.repeat || pageContent.legend.repeat || "Repeat unit"
         );
       case "interruption":
       case "insertion":
@@ -375,9 +373,7 @@ function RepresentativeAlleleSequence({
             {sequence}
           </span>
         </TooltipTrigger>
-        <TooltipContent sideOffset={8}>
-          {getShortTooltip(kind)}
-        </TooltipContent>
+        <TooltipContent sideOffset={8}>{getShortTooltip(kind)}</TooltipContent>
       </Tooltip>
     );
   };
@@ -392,18 +388,18 @@ function RepresentativeAlleleSequence({
         <TooltipTrigger asChild>
           <span className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
             {tokens.map((token, idx) =>
-              token.type === "flankingMotifLike"
-                ? renderTokenWithTooltip(
-                    token.sequence,
-                    "flankingMotifLike",
-                    `${flankKey}-${idx}`,
-                    `${FLANKING_MOTIF_CLASS} mx-0.5`
-                  )
-                : (
-                    <span key={`${flankKey}-${idx}`} className="whitespace-pre">
-                      {token.sequence}
-                    </span>
-                  )
+              token.type === "flankingMotifLike" ? (
+                renderTokenWithTooltip(
+                  token.sequence,
+                  "flankingMotifLike",
+                  `${flankKey}-${idx}`,
+                  `${FLANKING_MOTIF_CLASS} mx-0.5`
+                )
+              ) : (
+                <span key={`${flankKey}-${idx}`} className="whitespace-pre">
+                  {token.sequence}
+                </span>
+              )
             )}
           </span>
         </TooltipTrigger>
@@ -471,7 +467,10 @@ type TokenKind =
   | "flanking"
   | "flankingMotifLike";
 
-function tokenizeFlankingSequence(sequence: string, canonicalMotif: string): FlankingToken[] {
+function tokenizeFlankingSequence(
+  sequence: string,
+  canonicalMotif: string
+): FlankingToken[] {
   if (!sequence) return [];
   const motif = canonicalMotif?.toUpperCase();
   if (!motif) {

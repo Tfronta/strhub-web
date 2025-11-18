@@ -466,7 +466,8 @@ export const translations = {
         repeat: "Canonical repeat that counts toward the allele size.",
         internal: "Internal variant inside the repeat block; does not add repeats.",
         flanking: "Flanking DNA outside the core repeat block.",
-        flankingMotifLike: "Motif-like copy inside the flank; highlighted for context only.",
+        flankingMotifLike:
+          "Motif unit in flanking region, excluded from allele calling.",
       },
       tooltipsLong: {
         repeat:
@@ -476,7 +477,7 @@ export const translations = {
         flanking:
           "Flanking regions are upstream or downstream DNA that frame the STR locus. They stabilize the assay but are not counted toward the allele.",
         flankingMotifLike:
-          "Motif-like copies inside the flanks resemble the canonical repeat but lie outside the counted block. They are highlighted with an outline only to show nearby motif echoes.",
+          "Motif unit in flanking region, excluded from allele calling.",
       },
     },
     // STRBase Integration
@@ -1525,7 +1526,8 @@ export const translations = {
         repeat: "Repetição canônica que conta para o tamanho do alelo.",
         internal: "Variação interna no bloco repetitivo; não adiciona repetições.",
         flanking: "DNA flanqueador fora do bloco principal.",
-        flankingMotifLike: "Cópia semelhante ao motivo no flanco; destacada apenas para contexto.",
+        flankingMotifLike:
+          "Unidade do motivo na região flanqueadora, excluída da nomenclatura do alelo.",
       },
       tooltipsLong: {
         repeat:
@@ -1535,7 +1537,7 @@ export const translations = {
         flanking:
           "As regiões flanqueadoras delimitam o lócus STR. Elas ajudam no desenho do ensaio, porém não são contabilizadas no tamanho do alelo.",
         flankingMotifLike:
-          "Cópias semelhantes ao motivo nos flancos lembram o motivo canônico, mas estão fora do bloco contado. São mostradas apenas com contorno para indicar ecos do motivo.",
+          "Unidade do motivo na região flanqueadora, excluída da nomenclatura do alelo.",
       },
     },
     // Community Hub
@@ -2587,7 +2589,8 @@ export const translations = {
         repeat: "Repetición canónica que sí cuenta para el tamaño del alelo.",
         internal: "Variación interna dentro del bloque repetitivo; no suma repeticiones.",
         flanking: "ADN flanqueante fuera del bloque principal.",
-        flankingMotifLike: "Copia parecida al motivo dentro del flanco; solo referencia visual.",
+        flankingMotifLike:
+          "Motif en la región flanqueadora, excluida de la nomenclatura del alelo.",
       },
       tooltipsLong: {
         repeat:
@@ -2597,7 +2600,7 @@ export const translations = {
         flanking:
           "Las regiones flanqueadoras rodean el locus STR y estabilizan el ensayo, pero no se contabilizan dentro del tamaño del alelo.",
         flankingMotifLike:
-          "Las copias parecidas al motivo dentro de los flancos imitan el motivo canónico, aunque están fuera del bloque contado. Se resaltan solo con contorno para mostrar ecos del motivo.",
+          "Motif en la región flanqueadora, excluida de la nomenclatura del alelo.",
       },
     },
     // STRBase Integration

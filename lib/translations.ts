@@ -454,6 +454,7 @@ export const translations = {
       explanation: {
         generic: "",
       },
+      sequenceInterpretationTitle: "How to interpret the sequence above?",
       sequenceExample: {
         tooltip: {
           repeat: "Repeat motif (occurrence of the canonical motif; see note below)",
@@ -1514,6 +1515,7 @@ export const translations = {
       explanation: {
         generic: "",
       },
+      sequenceInterpretationTitle: "Como interpretar a sequência acima?",
       sequenceExample: {
         tooltip: {
           repeat: "Motivo repetitivo (ocorrência do motivo canônico; ver nota abaixo)",
@@ -2577,6 +2579,7 @@ export const translations = {
       explanation: {
         generic: "",
       },
+      sequenceInterpretationTitle: "Cómo interpretar la secuencia de arriba?",
       sequenceExample: {
         tooltip: {
           repeat: "Motivo repetitivo (ocurrencia del motivo canónico; ver nota abajo)",

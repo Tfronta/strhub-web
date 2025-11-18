@@ -33,6 +33,7 @@ type MotifVisualizationProps = {
     explanation: {
       generic: string;
     };
+    sequenceInterpretationTitle?: string;
     scientificNote?: string;
     summary?: {
       caption: string;
@@ -94,7 +95,9 @@ export function MotifVisualization({
       )
     : [];
 
-  const legendTooltips = pageContent.tooltipsLong || {};
+  const legendTooltips: Partial<
+    NonNullable<MotifVisualizationProps["pageContent"]["tooltipsLong"]>
+  > = pageContent.tooltipsLong || {};
   const legendItems = [
     {
       key: "repeat",
@@ -167,6 +170,9 @@ export function MotifVisualization({
                 Structure
               </p>
               <div className="break-words font-mono text-sm flex flex-wrap gap-1 items-center">
+                <span className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
+                  flank
+                </span>
                 {marker.segments.map((seg, idx) => (
                   <span
                     key={idx}
@@ -179,6 +185,9 @@ export function MotifVisualization({
                     {seg.sequence}
                   </span>
                 ))}
+                <span className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
+                  flank
+                </span>
               </div>
             </div>
           );
@@ -189,8 +198,21 @@ export function MotifVisualization({
               <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
                 Structure
               </p>
-              <div className="break-words font-mono text-sm">
-                flank {repeatChips.join("")} flank
+              <div className="break-words font-mono text-sm flex flex-wrap gap-1 items-center">
+                <span className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
+                  flank
+                </span>
+                {repeatChips.map((motif, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center bg-[#6ee7b7]/20 border border-[#6ee7b7]/50 text-teal-700 dark:bg-[#6ee7b7]/30 dark:border-[#6ee7b7]/70 dark:text-[#6ee7b7] px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium"
+                  >
+                    {motif}
+                  </span>
+                ))}
+                <span className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
+                  flank
+                </span>
               </div>
             </div>
           );
@@ -431,17 +453,23 @@ function RepresentativeAlleleSequence({
         </div>
       )}
       {sequenceTokens && (
-        <div className="flex flex-wrap gap-2">
-          {renderFlankPill(motifAllele.leftFlank, "left-flank")}
-          {sequenceTokens.map((token, idx) =>
-            renderTokenWithTooltip(
-              token.sequence,
-              (token.type as TokenKind) || "core",
-              `core-${idx}`
-            )
+        <div className="mt-3 space-y-2">
+          {pageContent.sequenceInterpretationTitle && (
+            <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+              {pageContent.sequenceInterpretationTitle}
+            </div>
           )}
-
-          {renderFlankPill(motifAllele.rightFlank, "right-flank")}
+          <div className="flex flex-wrap gap-2">
+            {renderFlankPill(motifAllele.leftFlank, "left-flank")}
+            {sequenceTokens.map((token, idx) =>
+              renderTokenWithTooltip(
+                token.sequence,
+                (token.type as TokenKind) || "core",
+                `core-${idx}`
+              )
+            )}
+            {renderFlankPill(motifAllele.rightFlank, "right-flank")}
+          </div>
         </div>
       )}
       <p className="mt-2 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">

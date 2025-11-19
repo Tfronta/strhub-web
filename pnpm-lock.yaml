@@ -143,6 +143,9 @@ importers:
       geist:
         specifier: ^1.3.1
         version: 1.5.1(next@14.2.25(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+      igv:
+        specifier: ^3.6.0
+        version: 3.6.0
       input-otp:
         specifier: 1.4.1
         version: 1.4.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1904,6 +1907,9 @@ packages:
 
   html-void-elements@3.0.0:
     resolution: {integrity: sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==}
+
+  igv@3.6.0:
+    resolution: {integrity: sha512-YRUQ5ULU2GKXusfNzD+tOsyGu2dahl8ClhirA3eTK8MG5/2s53hrVKCN1QXaifWVXytW+5JfHrAl1PnS4SVxUA==}
 
   immer@10.2.0:
     resolution: {integrity: sha512-d/+XTN3zfODyjr89gM3mPq1WNX2B8pYsu7eORitdwyA2sBubnTl3laYlBk4sXY5FUa5qTZGBDPJICVbvqzjlbw==}
@@ -4326,6 +4332,8 @@ snapshots:
   html-url-attributes@3.0.1: {}
 
   html-void-elements@3.0.0: {}
+
+  igv@3.6.0: {}
 
   immer@10.2.0: {}
 

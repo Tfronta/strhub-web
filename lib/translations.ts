@@ -951,9 +951,11 @@ export const translations = {
     },
     // Mix Profiles
     mixProfiles: {
-      title: "Mix Profiles",
+      title: "DNA Mixture Simulator",
       subtitle: "beta",
       description: "Using demo data — you can load your own samples when available.",
+      simulatorDescription:
+        "This simulator shows how two or three DNA profiles behave when mixed, in both capillary electrophoresis (CE) and NGS. It helps users understand how peak heights shift, how stutter artifacts appear, and how minor alleles can become hidden or confused with noise, illustrating the real complexity of interpreting mixed profiles in forensic genetics.",
       controls: {
         locus: "Locus",
         sampleA: "Sample A",
@@ -1059,7 +1061,7 @@ export const translations = {
           ratio: "Mixture ratio ≥ 80/20",
           degradation: "Degradation k: 0.015–0.030",
           stutter: "Stutter level (×): 1.5–2.0 (for didactic purposes)",
-          loci: "Prefer loci where contributors show n / (n−1) allele patterns",
+          loci: "Prefer loci where the contributors differ by one repeat unit (e.g., 10 vs 9).",
         },
         notes: {
           title: "5. Practical notes",
@@ -2027,9 +2029,11 @@ export const translations = {
     },
     // Mix Profiles
     mixProfiles: {
-      title: "Perfis de Misturas",
+      title: "Simulador de Misturas de DNA",
       subtitle: "beta",
       description: "Usando dados de demonstração — você pode carregar suas próprias amostras quando disponível.",
+      simulatorDescription:
+        "Este simulador permite visualizar como dois ou três perfis de DNA se comportam quando são misturados, tanto na eletroforese capilar (CE) quanto no NGS. Ele ajuda a compreender como as alturas dos picos mudam, como surgem os stutters e como alelos minoritários podem ficar ocultos ou confundidos com ruído, mostrando a complexidade real da interpretação de perfis mistos na genética forense.",
       controls: {
         locus: "Locus",
         sampleA: "Amostra A",
@@ -2135,7 +2139,7 @@ export const translations = {
           ratio: "Proporção de mistura ≥ 80/20",
           degradation: "Degradação k: 0,015–0,030",
           stutter: "Nível de stutter (×): 1,5–2,0 (para fins didáticos)",
-          loci: "Prefira loci onde os contribuidores mostram padrões alélicos n / (n−1)",
+          loci: "Preferentemente, loci em que os contribuidores diferem por apenas uma unidade de repetição (por exemplo, 10 vs 9).",
         },
         notes: {
           title: "5. Notas práticas",
@@ -3104,9 +3108,11 @@ export const translations = {
     },
     // Mix Profiles
     mixProfiles: {
-      title: "Perfiles de Mezclas",
+      title: "Simulador de Mezclas de ADN",
       subtitle: "beta",
       description: "Usando datos de demostración — puede cargar sus propias muestras cuando estén disponibles.",
+      simulatorDescription:
+        "Este simulador permite visualizar cómo se comportan dos o tres perfiles de ADN cuando se mezclan, tanto en electroforesis capilar (CE) como en NGS. Ayuda a comprender cómo cambian las alturas de pico, cómo aparecen los stutters y cómo los alelos minoritarios pueden quedar ocultos o confundirse con ruido, mostrando la complejidad real de interpretar perfiles mixtos en genética forense.",
       controls: {
         locus: "Locus",
         sampleA: "Muestra A",
@@ -3212,7 +3218,7 @@ export const translations = {
           ratio: "Proporción de mezcla ≥ 80/20",
           degradation: "Degradación k: 0,015–0,030",
           stutter: "Nivel de stutter (×): 1,5–2,0 (para fines didácticos)",
-          loci: "Prefiera loci donde los contribuidores muestran patrones alélicos n / (n−1)",
+          loci: "Preferentemente, loci en los que los contribuyentes difieren por una sola unidad de repetición (por ejemplo, 10 vs 9).",
         },
         notes: {
           title: "5. Notas prácticas",

@@ -60,12 +60,11 @@ export default function NGSChart({
 
   if (!bars?.length) return <div className="h-[320px]" />;
 
-  const alleleValues = [...bars.map((b) => b.allele)].sort((a, b) => a - b);
-  const minX = Math.min(...alleleValues);
-  const maxX = Math.max(...alleleValues);
-  const maxY = Math.max(...bars.map((b) => b.coverage));
-  const yPadding = Math.max(10, Math.round(maxY * 0.25));
-
+  const chartBars = bars.map((bar) => ({
+    ...bar,
+    alleleLabel: String(bar.allele),
+  }));
+  const chartKey = chartBars.map((bar) => `${bar.allele}-${bar.coverage}`).join('|');
   const fallback = getChartColors()[0]; // por si falla la var CSS
   const themeColor = resolveThemeColor(fallback);
 
@@ -154,23 +153,21 @@ export default function NGSChart({
 
       {/* Barras */}
       <div className="w-full h-[320px]">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" key={chartKey}>
           <BarChart
-            data={bars}
+            data={chartBars}
             margin={{ top: 10, right: 16, bottom: 16, left: 8 }}
             barCategoryGap="25%"
           >
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
             <XAxis
-              dataKey="allele"
-              type="number"
-              domain={[minX - 0.4, maxX + 0.4]} // padding para que no se corten
-              ticks={alleleValues}
-              allowDecimals={false}
+              dataKey="alleleLabel"
+              type="category"
+              allowDuplicatedCategory={false}
               label={{ value: 'Allele', position: 'insideBottom', offset: -8 }}
             />
             <YAxis
-              domain={[0, maxY + yPadding]}
+              domain={['auto', 'auto']}
               label={{
                 value: 'Coverage',           // ← como pediste
                 angle: -90,
@@ -190,7 +187,7 @@ export default function NGSChart({
               stroke={themeColor}
               radius={[6, 6, 0, 0]}
             >
-              {bars.map((_, idx) => (
+              {chartBars.map((_, idx) => (
                 <Cell key={idx} fill={themeColor} stroke={themeColor} />
               ))}
             </Bar>

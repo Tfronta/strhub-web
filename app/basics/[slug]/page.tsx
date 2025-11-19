@@ -17,7 +17,10 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
     async function fetchPost() {
       try {
         const res = await fetch(
-          "/api/back-to-basics/" + params.slug + "?locale=" + language
+          "/api/back-to-basics/" +
+            params.slug +
+            "?locale=" +
+            (language === "en" ? "" : language)
         );
         const { item } = await res.json();
         setPost(item);

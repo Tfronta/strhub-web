@@ -238,10 +238,6 @@ importers:
       typescript:
         specifier: ^5
         version: 5.9.3
-    optionalDependencies:
-      lightningcss-darwin-arm64:
-        specifier: ^1.30.2
-        version: 1.30.2
 
 packages:
 

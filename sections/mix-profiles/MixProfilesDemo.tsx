@@ -42,7 +42,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Check, ChevronsUpDown, Info } from "lucide-react";
+import { Activity, Check, ChevronsUpDown, Info, Layers, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
 import { Button } from "@/components/ui/button";
@@ -511,6 +511,10 @@ export default function MixProfilesDemo({ onPresetSelect }: MixProfilesDemoProps
     onPresetSelect?.(preset);
   };
 
+  const stutterMinorTooltip = t("mixtures.tooltips.stutterMinor");
+  const lowMinorTooltip = t("mixtures.tooltips.lowMinor");
+  const overlapTooltip = t("mixtures.tooltips.overlap");
+
   return (
     <div className="space-y-4">
       {/* PANEL SUPERIOR: Locus + Contribuidores + Controles */}
@@ -920,33 +924,57 @@ export default function MixProfilesDemo({ onPresetSelect }: MixProfilesDemoProps
                   </Tooltip>
                 </label>
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => handlePresetSelect("stutterMinor")}
-                className="w-full min-h-[56px]"
-              >
-                {t("mixtures.presets.stutterMinor")}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => handlePresetSelect("lowMinor")}
-                className="w-full min-h-[56px]"
-              >
-                {t("mixtures.presets.dropout")}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => handlePresetSelect("overlap")}
-                className="w-full min-h-[56px]"
-              >
-                {t("mixtures.presets.overlap")}
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePresetSelect("stutterMinor")}
+                    className="w-full min-h-[56px] justify-start"
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" aria-hidden="true" />
+                    {t("mixtures.presets.stutterMinor")}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top" align="center">
+                  {stutterMinorTooltip}
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePresetSelect("lowMinor")}
+                    className="w-full min-h-[56px] justify-start"
+                  >
+                    <Activity className="mr-2 h-4 w-4" aria-hidden="true" />
+                    {t("mixtures.presets.dropout")}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top" align="center">
+                  {lowMinorTooltip}
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePresetSelect("overlap")}
+                    className="w-full min-h-[56px] justify-start"
+                  >
+                    <Layers className="mr-2 h-4 w-4" aria-hidden="true" />
+                    {t("mixtures.presets.overlap")}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top" align="center">
+                  {overlapTooltip}
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
         </div>

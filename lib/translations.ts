@@ -1078,6 +1078,14 @@ export const translations = {
         dropout: "Low minor allele",
         overlap: "Allele overlap",
       },
+      tooltips: {
+        stutterMinor:
+          "Shows a case where a stutter peak has similar height to a minor allele, making the small peak ambiguous.",
+        lowMinor:
+          "Shows a minor contributor allele very close to the detection threshold.",
+        overlap:
+          "Shows two contributors sharing one allele, creating a combined high peak in the middle.",
+      },
     },
   },
   pt: {
@@ -2162,6 +2170,14 @@ export const translations = {
         stutterMinor: "Stutter ≈ minoritário",
         dropout: "Alelo minoritário baixo",
         overlap: "Alelos sobrepostos",
+      },
+      tooltips: {
+        stutterMinor:
+          "Mostra um caso em que o pico de stutter tem altura semelhante a um alelo minoritário, tornando ambíguo o pico pequeno.",
+        lowMinor:
+          "Mostra um alelo do contribuidor minoritário muito próximo ao limite de detecção.",
+        overlap:
+          "Mostra dois contribuintes que compartilham um alelo, gerando um pico combinado mais alto no centro.",
       },
     },
   },
@@ -3248,6 +3264,14 @@ export const translations = {
         stutterMinor: "Stutter ≈ minoritario",
         dropout: "Alelo minoritario bajo",
         overlap: "Alelos solapados",
+      },
+      tooltips: {
+        stutterMinor:
+          "Muestra un caso donde el pico de stutter tiene una altura similar a un alelo minoritario, volviendo ambiguo el pico pequeño.",
+        lowMinor:
+          "Muestra un alelo del contribuidor minoritario muy cercano al umbral de detección.",
+        overlap:
+          "Muestra dos contribuidores que comparten un alelo, generando un pico combinado más alto en el centro.",
       },
     },
   },

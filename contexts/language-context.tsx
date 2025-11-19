@@ -3,8 +3,8 @@
 import {
   createContext,
   useContext,
-  useState,
   useEffect,
+  useState,
   type ReactNode,
 } from "react";
 import {
@@ -16,6 +16,8 @@ import {
 const LANGUAGE_STORAGE_KEY = "strhub-language";
 const LANGUAGE_COOKIE_NAME = "strhub-language";
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
+
+const supportedLanguages: Language[] = ["en", "es", "pt"];
 
 const readLanguageCookie = (): Language | null => {
   if (typeof document === "undefined") {
@@ -35,7 +37,21 @@ const readLanguageCookie = (): Language | null => {
     return null;
   }
 
-  return decodeURIComponent(value) as Language;
+  const decoded = decodeURIComponent(value) as Language;
+  return supportedLanguages.includes(decoded) ? decoded : null;
+};
+
+const getStoredLanguage = (): Language | null => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language | null;
+  if (stored && supportedLanguages.includes(stored)) {
+    return stored;
+  }
+
+  return readLanguageCookie();
 };
 
 const persistLanguageCookie = (value: Language) => {
@@ -58,41 +74,44 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
   undefined
 );
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>("en");
+interface LanguageProviderProps {
+  children: ReactNode;
+  initialLanguage?: Language | null;
+}
+
+export function LanguageProvider({
+  children,
+  initialLanguage,
+}: LanguageProviderProps) {
+  const [language, setLanguageState] = useState<Language>(() => {
+    if (initialLanguage && supportedLanguages.includes(initialLanguage)) {
+      return initialLanguage;
+    }
+    return getStoredLanguage() ?? "en";
+  });
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+    }
     persistLanguageCookie(lang);
   };
 
-  // Load language from localStorage on mount
   useEffect(() => {
-    const savedLanguage = localStorage.getItem(
-      LANGUAGE_STORAGE_KEY
-    ) as Language | null;
-    const cookieLanguage = readLanguageCookie();
-    const initialLanguage = savedLanguage ?? cookieLanguage;
-
-    if (initialLanguage && translations[initialLanguage]) {
-      setLanguageState(initialLanguage);
+    const storedLanguage = getStoredLanguage();
+    if (storedLanguage && storedLanguage !== language) {
+      setLanguageState(storedLanguage);
     }
+    // We intentionally run this only once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Save language to localStorage when it changes
-  // useEffect(() => {
-  //   localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
-  //   persistLanguageCookie(language);
-  // }, [language]);
-
-  // Translation function with parameter substitution
   const t = (key: string, params?: Record<string, string>): string => {
     const translation = getNestedTranslation(translations[language], key);
 
     if (!params) return translation;
 
-    // Replace parameters in the translation
     return Object.entries(params).reduce(
       (text, [param, value]) => text.replace(`{${param}}`, value),
       translation

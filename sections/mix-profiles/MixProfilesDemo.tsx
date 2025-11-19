@@ -45,6 +45,7 @@ import {
 import { Check, ChevronsUpDown, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
+import { Button } from "@/components/ui/button";
 
 /* ------------------------ helpers ------------------------ */
 function parseNum(x: string | number): number {
@@ -115,6 +116,12 @@ type ContributorState = {
   label: "A" | "B" | "C";
   sampleId: SampleId | null;
   proportion: number;
+};
+
+export type MixturePresetKey = "stutterMinor" | "dropout" | "overlap";
+
+type MixProfilesDemoProps = {
+  onPresetSelect?: (preset: MixturePresetKey) => void;
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -201,7 +208,7 @@ function normalizeContributors(
 }
 
 /* ------------------------ componente ------------------------ */
-export default function MixProfilesDemo() {
+export default function MixProfilesDemo({ onPresetSelect }: MixProfilesDemoProps = {}) {
   const { t } = useLanguage();
 
   // Controles de simulación - defaults para mostrar picos coherentes
@@ -398,6 +405,11 @@ export default function MixProfilesDemo() {
   }, [contributors, selectedMarker]);
 
   /* ------------------------ render ------------------------ */
+  const handlePresetClick = (preset: MixturePresetKey) => {
+    console.log("Mixture preset selected:", preset);
+    onPresetSelect?.(preset);
+  };
+
   return (
     <div className="space-y-4">
       {/* PANEL SUPERIOR: Locus + Contribuidores + Controles */}
@@ -782,29 +794,58 @@ export default function MixProfilesDemo() {
               </div>
             </div>
 
-            {/* Y-axis scale toggle */}
-            <div className="mt-4 flex items-center gap-2 rounded-lg border p-3">
-              <Switch
-                id="y-axis-scale"
-                checked={useFixedScale}
-                onCheckedChange={setUseFixedScale}
-              />
-              <label
-                htmlFor="y-axis-scale"
-                className="text-sm font-medium cursor-pointer flex items-center gap-1"
+            {/* Y-axis scale toggle + presets */}
+            <div className="mt-4 grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="flex h-full items-center gap-2 rounded-lg border p-3">
+                <Switch
+                  id="y-axis-scale"
+                  checked={useFixedScale}
+                  onCheckedChange={setUseFixedScale}
+                />
+                <label
+                  htmlFor="y-axis-scale"
+                  className="text-sm font-medium cursor-pointer flex items-center gap-1"
+                >
+                  {useFixedScale
+                    ? t("mixProfiles.parameters.fixedScale")
+                    : t("mixProfiles.parameters.autoScale")}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs whitespace-pre-line">
+                      <p>{t("mixProfiles.parameters.autoScaleTooltip")}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </label>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => handlePresetClick("stutterMinor")}
+                className="w-full min-h-[56px]"
               >
-                {useFixedScale
-                  ? t("mixProfiles.parameters.fixedScale")
-                  : t("mixProfiles.parameters.autoScale")}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs whitespace-pre-line">
-                    <p>{t("mixProfiles.parameters.autoScaleTooltip")}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </label>
+                {t("mixtures.presets.stutterMinor")}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => handlePresetClick("dropout")}
+                className="w-full min-h-[56px]"
+              >
+                {t("mixtures.presets.dropout")}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => handlePresetClick("overlap")}
+                className="w-full min-h-[56px]"
+              >
+                {t("mixtures.presets.overlap")}
+              </Button>
             </div>
           </div>
         </div>

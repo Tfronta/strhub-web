@@ -1072,6 +1072,13 @@ export const translations = {
         },
       },
     },
+    mixtures: {
+      presets: {
+        stutterMinor: "Stutter ≈ minor",
+        dropout: "Low minor allele",
+        overlap: "Allele overlap",
+      },
+    },
   },
   pt: {
     // Navigation
@@ -2148,6 +2155,13 @@ export const translations = {
           stutter: "Stutter é mais visível quando o contribuidor principal domina.",
           notAllLoci: "Nem todos os loci exibem esses efeitos igualmente.",
         },
+      },
+    },
+    mixtures: {
+      presets: {
+        stutterMinor: "Stutter ≈ minoritário",
+        dropout: "Alelo minoritário baixo",
+        overlap: "Alelos sobrepostos",
       },
     },
   },
@@ -3227,6 +3241,13 @@ export const translations = {
           stutter: "El stutter es más visible cuando el contribuidor principal domina.",
           notAllLoci: "No todos los loci exhiben estos efectos por igual.",
         },
+      },
+    },
+    mixtures: {
+      presets: {
+        stutterMinor: "Stutter ≈ minoritario",
+        dropout: "Alelo minoritario bajo",
+        overlap: "Alelos solapados",
       },
     },
   },

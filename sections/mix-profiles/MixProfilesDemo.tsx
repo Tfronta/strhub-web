@@ -118,7 +118,59 @@ type ContributorState = {
   proportion: number;
 };
 
-export type MixturePresetKey = "stutterMinor" | "dropout" | "overlap";
+export type MixturePresetKey = "stutterMinor" | "lowMinor" | "overlap";
+
+type MixturePresetConfig = {
+  locus: string;
+  contributorA: string | null;
+  contributorB: string | null;
+  contributorC: string | null;
+  mixture: { A: number; B: number; C: number };
+  AT: number;
+  ST: number;
+  degradationK: number;
+  noiseBase: number;
+  stutterLevel: number;
+};
+
+const MIXTURE_PRESETS: Record<MixturePresetKey, MixturePresetConfig> = {
+  stutterMinor: {
+    locus: "D5S818",
+    contributorA: "HG00145",
+    contributorB: "HG00097",
+    contributorC: null,
+    mixture: { A: 80, B: 20, C: 0 },
+    AT: 80,
+    ST: 170,
+    degradationK: 0.015,
+    noiseBase: 25,
+    stutterLevel: 2.0,
+  },
+  lowMinor: {
+    locus: "CSF1PO",
+    contributorA: "HG02944",
+    contributorB: "HG00372",
+    contributorC: null,
+    mixture: { A: 80, B: 20, C: 0 },
+    AT: 80,
+    ST: 170,
+    degradationK: 0.015,
+    noiseBase: 25,
+    stutterLevel: 2.0,
+  },
+  overlap: {
+    locus: "D10S1248",
+    contributorA: "HG00145",
+    contributorB: "HG02944",
+    contributorC: null,
+    mixture: { A: 50, B: 50, C: 0 },
+    AT: 80,
+    ST: 160,
+    degradationK: 0.01,
+    noiseBase: 25,
+    stutterLevel: 1.2,
+  },
+};
 
 type MixProfilesDemoProps = {
   onPresetSelect?: (preset: MixturePresetKey) => void;
@@ -240,6 +292,55 @@ export default function MixProfilesDemo({ onPresetSelect }: MixProfilesDemoProps
   });
 
   useEffect(() => setContributors((prev) => normalizeContributors(prev)), []);
+
+  const applyPreset = (presetKey: MixturePresetKey) => {
+    const preset = MIXTURE_PRESETS[presetKey];
+    if (!preset) return;
+
+    setSelectedMarker(preset.locus as LocusId);
+
+    const toSampleId = (value: string | null): SampleId | null =>
+      value ? (value as SampleId) : null;
+
+    setContributors((prev) =>
+      normalizeContributors(
+        prev.map((contributor) => {
+          if (contributor.label === "A") {
+            const sampleId = toSampleId(preset.contributorA);
+            return {
+              ...contributor,
+              sampleId,
+              proportion: sampleId ? preset.mixture.A : 0,
+            };
+          }
+          if (contributor.label === "B") {
+            const sampleId = toSampleId(preset.contributorB);
+            return {
+              ...contributor,
+              sampleId,
+              proportion: sampleId ? preset.mixture.B : 0,
+            };
+          }
+          if (contributor.label === "C") {
+            const sampleId = toSampleId(preset.contributorC);
+            return {
+              ...contributor,
+              sampleId,
+              proportion: sampleId ? preset.mixture.C : 0,
+            };
+          }
+          return contributor;
+        })
+      )
+    );
+
+    setAT(preset.AT);
+    setIT(preset.ST);
+    setKDeg(preset.degradationK);
+    setNoise(preset.noiseBase);
+    setStutterScale(preset.stutterLevel);
+    setUseFixedScale(true);
+  };
 
   const handleSampleChange = (
     label: "A" | "B" | "C",
@@ -405,8 +506,8 @@ export default function MixProfilesDemo({ onPresetSelect }: MixProfilesDemoProps
   }, [contributors, selectedMarker]);
 
   /* ------------------------ render ------------------------ */
-  const handlePresetClick = (preset: MixturePresetKey) => {
-    console.log("Mixture preset selected:", preset);
+  const handlePresetSelect = (preset: MixturePresetKey) => {
+    applyPreset(preset);
     onPresetSelect?.(preset);
   };
 
@@ -823,7 +924,7 @@ export default function MixProfilesDemo({ onPresetSelect }: MixProfilesDemoProps
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => handlePresetClick("stutterMinor")}
+                onClick={() => handlePresetSelect("stutterMinor")}
                 className="w-full min-h-[56px]"
               >
                 {t("mixtures.presets.stutterMinor")}
@@ -832,7 +933,7 @@ export default function MixProfilesDemo({ onPresetSelect }: MixProfilesDemoProps
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => handlePresetClick("dropout")}
+                onClick={() => handlePresetSelect("lowMinor")}
                 className="w-full min-h-[56px]"
               >
                 {t("mixtures.presets.dropout")}
@@ -841,7 +942,7 @@ export default function MixProfilesDemo({ onPresetSelect }: MixProfilesDemoProps
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => handlePresetClick("overlap")}
+                onClick={() => handlePresetSelect("overlap")}
                 className="w-full min-h-[56px]"
               >
                 {t("mixtures.presets.overlap")}

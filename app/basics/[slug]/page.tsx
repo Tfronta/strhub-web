@@ -1,37 +1,45 @@
-"use client"
-import { ArrowLeft, BookOpen, User, Clock } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import MarkdownArticle from "@/components/MarkdownArticle"
-import { useEffect, useState } from "react"
+"use client";
+import { ArrowLeft, BookOpen, User, Clock } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import MarkdownArticle from "@/components/MarkdownArticle";
+import { useEffect, useState } from "react";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function ArticlePage({ params }: { params: { slug: string } }) {
-  const [post, setPost] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { language } = useLanguage();
 
   useEffect(() => {
     async function fetchPost() {
       try {
-        const res = await fetch("/api/back-to-basics/" + params.slug)
-        const { item } = await res.json()
-        setPost(item)
+        const res = await fetch(
+          "/api/back-to-basics/" + params.slug + "?locale=" + language
+        );
+        const { item } = await res.json();
+        setPost(item);
       } catch (error) {
-        console.error("Error fetching post:", error)
+        console.error("Error fetching post:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
-    fetchPost()
-  }, [params.slug])
+    fetchPost();
+  }, [params.slug]);
 
   if (loading) {
-    return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        Loading...
+      </div>
+    );
   }
 
   if (!post) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -39,7 +47,10 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/basics" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+          <Link
+            href="/basics"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+          >
             <ArrowLeft className="h-4 w-4" />
             Back to Articles
           </Link>
@@ -58,8 +69,12 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
       <article className="container mx-auto px-4 py-12 max-w-4xl">
         {/* Article Header */}
         <header className="mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-balance">{post.fields.title}</h1>
-          <p className="text-xl text-muted-foreground mb-6 text-pretty">{post.fields.summary}</p>
+          <h1 className="text-4xl font-bold mb-4 text-balance">
+            {post.fields.title}
+          </h1>
+          <p className="text-xl text-muted-foreground mb-6 text-pretty">
+            {post.fields.summary}
+          </p>
 
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             {post.fields.authors && post.fields.authors.length > 0 && (
@@ -90,12 +105,15 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
         {/* Navigation */}
         <div className="mt-12 flex justify-between">
           <Link href="/basics">
-            <Badge variant="outline" className="hover:bg-primary hover:text-primary-foreground transition-colors">
+            <Badge
+              variant="outline"
+              className="hover:bg-primary hover:text-primary-foreground transition-colors"
+            >
               Back to Articles
             </Badge>
           </Link>
         </div>
       </article>
     </div>
-  )
+  );
 }

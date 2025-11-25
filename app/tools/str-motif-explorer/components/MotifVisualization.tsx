@@ -12,7 +12,7 @@ import type { MotifBlock } from "../types";
 import { StrKitData, StrKitType } from "../utils/motifData";
 
 const FLANKING_MOTIF_CLASS =
-  "inline-flex items-center border border-[#1e293b] text-slate-700 dark:text-slate-200 px-1 py-0.5 rounded-lg bg-transparent text-xs md:text-sm font-mono font-medium";
+  "inline-flex shrink-0 items-center border border-[#1e293b] text-slate-700 dark:text-slate-200 px-1 py-0.5 rounded-lg bg-transparent text-xs md:text-sm font-mono font-medium";
 
 type MotifVisualizationProps = {
   markerId: keyof typeof strKitsData;
@@ -408,7 +408,7 @@ function RepresentativeAlleleSequence({
     return (
       <Tooltip key={flankKey}>
         <TooltipTrigger asChild>
-          <span className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
+          <span className="inline-flex flex-wrap items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
             {tokens.map((token, idx) =>
               token.type === "flankingMotifLike" ? (
                 renderTokenWithTooltip(

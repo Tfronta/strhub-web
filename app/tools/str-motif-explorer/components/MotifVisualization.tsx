@@ -14,6 +14,17 @@ import { StrKitData, StrKitType } from "../utils/motifData";
 const FLANKING_MOTIF_CLASS =
   "inline-flex shrink-0 items-center border border-[#1e293b] text-slate-700 dark:text-slate-200 px-1 py-0.5 rounded-lg bg-transparent text-xs md:text-sm font-mono font-medium";
 
+const formatTemplate = (
+  template?: string,
+  params: Record<string, string> = {}
+) => {
+  if (!template) return "";
+  return Object.entries(params).reduce(
+    (acc, [key, value]) => acc.replace(`{${key}}`, value),
+    template
+  );
+};
+
 type MotifVisualizationProps = {
   markerId: keyof typeof strKitsData;
   marker: StrKitData;
@@ -58,6 +69,16 @@ type MotifVisualizationProps = {
       flanking: string;
       flankingMotifLike: string;
     };
+    sequenceSection?: {
+      representativeTitle?: string;
+      note?: string;
+      structureLabel?: string;
+      flankLabel?: string;
+      legendTitle?: string;
+    };
+    states?: {
+      noSequence?: string;
+    };
   };
 };
 
@@ -77,12 +98,17 @@ export function MotifVisualization({
   // const effectiveMotifAllele = marker;
   // Use effectiveMotifAllele instead of motifAllele throughout
   const motifAlleleToUse = marker;
+  const sequenceSection = pageContent.sequenceSection ?? {};
+  const structureLabel = sequenceSection.structureLabel ?? "Structure";
+  const flankLabel = sequenceSection.flankLabel ?? "flank";
+  const legendTitle = sequenceSection.legendTitle ?? "Legend:";
 
   if (!marker.segments || marker.segments.length === 0) {
     return (
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          Sequence highlight mode is not available for this marker.
+          {pageContent.states?.noSequence ??
+            "Sequence highlight mode is not available for this marker."}
         </p>
       </div>
     );
@@ -167,11 +193,11 @@ export function MotifVisualization({
           return (
             <div className="mt-4">
               <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                Structure
+                {structureLabel}
               </p>
               <div className="break-words font-mono text-sm flex flex-wrap gap-1 items-center">
                 <span className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
-                  flank
+                  {flankLabel}
                 </span>
                 {marker.segments.map((seg, idx) => (
                   <span
@@ -186,7 +212,7 @@ export function MotifVisualization({
                   </span>
                 ))}
                 <span className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
-                  flank
+                  {flankLabel}
                 </span>
               </div>
             </div>
@@ -196,11 +222,11 @@ export function MotifVisualization({
           return (
             <div className="mt-4">
               <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                Structure
+                {structureLabel}
               </p>
               <div className="break-words font-mono text-sm flex flex-wrap gap-1 items-center">
                 <span className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
-                  flank
+                  {flankLabel}
                 </span>
                 {repeatChips.map((motif, idx) => (
                   <span
@@ -211,7 +237,7 @@ export function MotifVisualization({
                   </span>
                 ))}
                 <span className="inline-flex items-center bg-zinc-300 border border-slate-200 text-slate-700 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-xs md:text-sm font-mono font-medium break-all">
-                  flank
+                  {flankLabel}
                 </span>
               </div>
             </div>
@@ -250,7 +276,7 @@ export function MotifVisualization({
       {/* Legend */}
       <div className="mt-6 pt-4 border-t">
         <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">
-          Legend:
+          {legendTitle}
         </p>
         <div className="flex flex-wrap gap-4 text-sm">
           {legendItems.map((item) => (
@@ -314,6 +340,16 @@ function RepresentativeAlleleSequence({
       ?.referenceAllele || "?";
   const sequenceToShow = motifAllele.sequence.trim() || "";
   const sequenceTokens = motifAllele.segments;
+  const sequenceSection = pageContent.sequenceSection ?? {};
+  const representativeTitle =
+    formatTemplate(sequenceSection.representativeTitle, {
+      allele: String(alleleLabel),
+      kit: String(kitId),
+    }) ||
+    `Representative internal sequence structure of allele ${alleleLabel} (${kitId})`;
+  const noteText =
+    sequenceSection.note ??
+    "Note: Only the core continuous repeat block contributes to the allele designation. Additional motif-like copies outside this block are not counted in the allele size.";
   const inferredCanonicalMotif =
     canonicalMotif?.toUpperCase().trim() ||
     sequenceTokens
@@ -436,8 +472,7 @@ function RepresentativeAlleleSequence({
     <div className="space-y-3">
       <div>
         <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-          Representative internal sequence structure of allele {alleleLabel} (
-          {kitId})
+          {representativeTitle}
         </div>
       </div>
       {sequenceToShow && (
@@ -468,9 +503,7 @@ function RepresentativeAlleleSequence({
         </div>
       )}
       <p className="mt-2 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-        Note: Only the core continuous repeat block contributes to the allele
-        designation. Additional motif-like copies outside this block are not
-        counted in the allele size.
+        {noteText}
       </p>
     </div>
   );

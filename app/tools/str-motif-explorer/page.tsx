@@ -59,6 +59,24 @@ export default function MotifExplorerPage() {
     selectedKitId as keyof typeof selectedMarker
   ] as StrKitData | undefined;
 
+  const formatTemplate = (
+    template?: string,
+    params: Record<string, string> = {}
+  ) => {
+    if (!template) return "";
+    return Object.entries(params).reduce(
+      (acc, [key, value]) => acc.replace(`{${key}}`, value),
+      template
+    );
+  };
+
+  const configurationContent = pageContent.cards?.configuration;
+  const visualizationContent = pageContent.cards?.visualization;
+  const visualizationTitle =
+    formatTemplate(visualizationContent?.title, {
+      marker: selectedMarkerId,
+    }) || `Exploring the structure of ${selectedMarkerId}`;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/40">
       {/* Header */}
@@ -106,7 +124,7 @@ export default function MotifExplorerPage() {
               <CardHeader className="space-y-1.5 pb-4">
                 <CardTitle className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
                   <Settings className="h-5 w-5" />
-                  Configuration
+                  {configurationContent?.title ?? "Configuration"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6 pt-0">
@@ -124,7 +142,12 @@ export default function MotifExplorerPage() {
                     }
                   >
                     <SelectTrigger className="h-11 text-base">
-                      <SelectValue placeholder="Select a marker" />
+                      <SelectValue
+                        placeholder={
+                          configurationContent?.markerPlaceholder ??
+                          "Select a marker"
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {Object.keys(strKitsData).map((marker) => (
@@ -143,7 +166,8 @@ export default function MotifExplorerPage() {
                 {kitsForMarker.length > 0 && (
                   <div className="space-y-2">
                     <Label className="text-base font-semibold text-foreground">
-                      Kit / reference sequence
+                      {configurationContent?.kitLabel ??
+                        "Kit / reference sequence"}
                     </Label>
                     <Select
                       value={selectedKitId || ""}
@@ -152,7 +176,12 @@ export default function MotifExplorerPage() {
                       }
                     >
                       <SelectTrigger className="h-11 text-base">
-                        <SelectValue placeholder="Select a kit" />
+                        <SelectValue
+                          placeholder={
+                            configurationContent?.kitPlaceholder ??
+                            "Select a kit"
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {kitsForMarker.map((kit) => (
@@ -207,7 +236,7 @@ export default function MotifExplorerPage() {
             <Card className="border-0 bg-card/70 backdrop-blur-sm shadow-lg">
               <CardHeader className="space-y-1.5 pb-2">
                 <CardTitle className="text-2xl font-semibold tracking-tight">
-                  Exploring the structure of {selectedMarkerId}
+                  {visualizationTitle}
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
@@ -223,7 +252,10 @@ export default function MotifExplorerPage() {
                 ) : (
                   <div className="text-center py-12 text-base text-muted-foreground">
                     <Grid3x3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Please select a marker from the configuration panel</p>
+                    <p>
+                      {configurationContent?.emptyState ??
+                        "Please select a marker from the configuration panel."}
+                    </p>
                   </div>
                 )}
               </CardContent>

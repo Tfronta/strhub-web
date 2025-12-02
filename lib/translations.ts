@@ -438,6 +438,21 @@ export const translations = {
           text: "Motif description",
         },
       },
+      cards: {
+        configuration: {
+          title: "Configuration",
+          kitLabel: "Kit / reference sequence",
+          markerPlaceholder: "Select a marker",
+          kitPlaceholder: "Select a kit",
+          emptyState: "Please select a marker from the configuration panel.",
+        },
+        visualization: {
+          title: "Exploring the structure of {marker}",
+        },
+      },
+      states: {
+        noSequence: "Sequence highlight mode is not available for this marker.",
+      },
       help: {
         general:
           "Displays the full STR allele sequence with flanking regions, repeat units, and internal variants highlighted.",
@@ -471,6 +486,15 @@ export const translations = {
           interruption: "Interruption / internal variant inside the repeat region",
         },
         note: "Note: Not every occurrence of the repeat motif is counted for the allele size. Only the core repeat block defined by the motif structure contributes to the allele designation.",
+      },
+      sequenceSection: {
+        representativeTitle:
+          "Representative internal sequence structure of allele {allele} ({kit})",
+        note:
+          "Note: Only the core continuous repeat block contributes to the allele designation. Additional motif-like copies outside this block are not counted in the allele size.",
+        structureLabel: "Structure",
+        flankLabel: "flank",
+        legendTitle: "Legend:",
       },
       tooltipsShort: {
         repeat: "Canonical repeat that counts toward the allele size.",
@@ -1528,6 +1552,21 @@ export const translations = {
           text: "Descrição do motivo",
         },
       },
+      cards: {
+        configuration: {
+          title: "Configuração",
+          kitLabel: "Kit / sequência de referência",
+          markerPlaceholder: "Selecione um marcador",
+          kitPlaceholder: "Selecione um kit",
+          emptyState: "Selecione um marcador no painel de configuração.",
+        },
+        visualization: {
+          title: "Explorando a estrutura de {marker}",
+        },
+      },
+      states: {
+        noSequence: "O modo de destaque de sequência não está disponível para este marcador.",
+      },
       help: {
         general:
           "Exibe a sequência completa do alelo STR com flancos, unidades repetitivas e variantes internas destacadas.",
@@ -1562,6 +1601,15 @@ export const translations = {
           interruption: "Interrupção / variante interna dentro da região repetitiva",
         },
         note: "Observação: nem toda ocorrência do motivo repetitivo é contabilizada para o tamanho do alelo. Apenas o bloco repetitivo central definido pela estrutura do motivo contribui para a designação do alelo.",
+      },
+      sequenceSection: {
+        representativeTitle:
+          "Estrutura interna representativa do alelo {allele} ({kit})",
+        note:
+          "Observação: Apenas o bloco contínuo de repetições canônicas contribui para a designação do alelo. Cópias semelhantes ao motivo fora desse bloco não são contabilizadas no tamanho do alelo.",
+        structureLabel: "Estrutura",
+        flankLabel: "flanco",
+        legendTitle: "Legenda:",
       },
       tooltipsShort: {
         repeat: "Repetição canônica que conta para o tamanho do alelo.",
@@ -2622,6 +2670,21 @@ export const translations = {
           text: "Descripción del motivo",
         },
       },
+      cards: {
+        configuration: {
+          title: "Configuración",
+          kitLabel: "Kit / secuencia de referencia",
+          markerPlaceholder: "Seleccione un marcador",
+          kitPlaceholder: "Seleccione un kit",
+          emptyState: "Seleccione un marcador en el panel de configuración.",
+        },
+        visualization: {
+          title: "Explorando la estructura de {marker}",
+        },
+      },
+      states: {
+        noSequence: "El modo de resaltado de secuencia no está disponible para este marcador.",
+      },
       help: {
         general:
           "Muestra la secuencia completa del alelo STR con flancos, unidades repetitivas y variantes internas destacadas.",
@@ -2648,7 +2711,7 @@ export const translations = {
       explanation: {
         generic: "",
       },
-      sequenceInterpretationTitle: "Cómo interpretar la secuencia de arriba?",
+      sequenceInterpretationTitle: "¿Cómo interpretar la secuencia de arriba?",
       sequenceExample: {
         tooltip: {
           repeat: "Motivo repetitivo (ocurrencia del motivo canónico; ver nota abajo)",
@@ -2656,6 +2719,15 @@ export const translations = {
           interruption: "Interrupción / variante interna dentro de la región repetitiva",
         },
         note: "Nota: no todas las apariciones del motivo repetitivo se cuentan para el tamaño del alelo. Solo el bloque repetitivo central definido por la estructura del motivo contribuye a la designación del alelo.",
+      },
+      sequenceSection: {
+        representativeTitle:
+          "Estructura interna representativa del alelo {allele} ({kit})",
+        note:
+          "Nota: Solo el bloque repetitivo continuo del motivo contribuye a la designación del alelo. Las copias similares al motivo fuera de este bloque no se cuentan en el tamaño del alelo.",
+        structureLabel: "Estructura",
+        flankLabel: "flanco",
+        legendTitle: "Leyenda:",
       },
       tooltipsShort: {
         repeat: "Repetición canónica que sí cuenta para el tamaño del alelo.",

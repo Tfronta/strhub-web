@@ -22,6 +22,49 @@ import { MotifVisualization } from "./components/MotifVisualization";
 import { markerRefs } from "@/lib/markerRefs-from-data";
 import strKitsData from "@/data/str_kits.json";
 
+type GenericRecord = Record<string, unknown>;
+
+const mergeDeep = (
+  base: GenericRecord,
+  override?: GenericRecord
+): GenericRecord => {
+  if (!override) {
+    return { ...base };
+  }
+
+  const result: GenericRecord = { ...base };
+
+  Object.keys(override).forEach((key) => {
+    const overrideValue = override[key];
+    if (overrideValue === undefined) {
+      return;
+    }
+
+    const baseValue = base[key];
+    const isBaseObject =
+      baseValue &&
+      typeof baseValue === "object" &&
+      !Array.isArray(baseValue);
+    const isOverrideObject =
+      overrideValue &&
+      typeof overrideValue === "object" &&
+      !Array.isArray(overrideValue);
+
+    if (isBaseObject && isOverrideObject) {
+      result[key] = mergeDeep(
+        baseValue as GenericRecord,
+        overrideValue as GenericRecord
+      );
+    } else if (!isBaseObject && isOverrideObject) {
+      result[key] = mergeDeep({}, overrideValue as GenericRecord);
+    } else {
+      result[key] = overrideValue;
+    }
+  });
+
+  return result;
+};
+
 export default function MotifExplorerPage() {
   const [selectedMarkerId, setSelectedMarkerId] =
     useState<keyof typeof strKitsData>("CSF1PO");
@@ -29,7 +72,11 @@ export default function MotifExplorerPage() {
   const { language } = useLanguage();
   const languageContent = translations[language] as (typeof translations)["en"];
   const defaultPageContent = translations.en.motifExplorerPage;
-  const pageContent = languageContent?.motifExplorerPage ?? defaultPageContent;
+  const localizedContent = languageContent?.motifExplorerPage;
+  const pageContent = mergeDeep(
+    defaultPageContent as GenericRecord,
+    localizedContent as GenericRecord | undefined
+  ) as typeof defaultPageContent;
 
   const selectedMarker = strKitsData[selectedMarkerId];
 
@@ -70,8 +117,13 @@ export default function MotifExplorerPage() {
     );
   };
 
-  const configurationContent = pageContent.cards?.configuration;
-  const visualizationContent = pageContent.cards?.visualization;
+  const configurationContent =
+    pageContent.cards?.configuration ??
+    defaultPageContent.cards?.configuration;
+  const visualizationContent =
+    pageContent.cards?.visualization ??
+    defaultPageContent.cards?.visualization;
+  const headerContent = pageContent.header ?? defaultPageContent.header;
   const visualizationTitle =
     formatTemplate(visualizationContent?.title, {
       marker: selectedMarkerId,
@@ -95,7 +147,9 @@ export default function MotifExplorerPage() {
               href="/"
               className="text-sm font-medium hover:text-primary transition-colors"
             >
-              ← Back to STRhub
+              {headerContent?.backLink ??
+                defaultPageContent.header?.backLink ??
+                "← Back to STRhub"}
             </Link>
             <div className="flex items-center gap-2">
               <LanguageToggle />
@@ -124,7 +178,9 @@ export default function MotifExplorerPage() {
               <CardHeader className="space-y-1.5 pb-4">
                 <CardTitle className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
                   <Settings className="h-5 w-5" />
-                  {configurationContent?.title ?? "Configuration"}
+                  {configurationContent?.title ??
+                    defaultPageContent.cards?.configuration?.title ??
+                    "Configuration"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6 pt-0">
@@ -133,7 +189,9 @@ export default function MotifExplorerPage() {
                     htmlFor="marker-select"
                     className="text-base font-semibold text-foreground"
                   >
-                    {pageContent.fields.marker.label}
+                    {pageContent.fields?.marker?.label ??
+                      defaultPageContent.fields?.marker?.label ??
+                      "STR Marker"}
                   </Label>
                   <Select
                     value={selectedMarkerId}
@@ -145,6 +203,8 @@ export default function MotifExplorerPage() {
                       <SelectValue
                         placeholder={
                           configurationContent?.markerPlaceholder ??
+                          defaultPageContent.cards?.configuration
+                            ?.markerPlaceholder ??
                           "Select a marker"
                         }
                       />
@@ -167,6 +227,7 @@ export default function MotifExplorerPage() {
                   <div className="space-y-2">
                     <Label className="text-base font-semibold text-foreground">
                       {configurationContent?.kitLabel ??
+                        defaultPageContent.cards?.configuration?.kitLabel ??
                         "Kit / reference sequence"}
                     </Label>
                     <Select
@@ -177,10 +238,12 @@ export default function MotifExplorerPage() {
                     >
                       <SelectTrigger className="h-11 text-base">
                         <SelectValue
-                          placeholder={
-                            configurationContent?.kitPlaceholder ??
-                            "Select a kit"
-                          }
+                        placeholder={
+                          configurationContent?.kitPlaceholder ??
+                          defaultPageContent.cards?.configuration
+                            ?.kitPlaceholder ??
+                          "Select a kit"
+                        }
                         />
                       </SelectTrigger>
                       <SelectContent>
@@ -254,6 +317,7 @@ export default function MotifExplorerPage() {
                     <Grid3x3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>
                       {configurationContent?.emptyState ??
+                        defaultPageContent.cards?.configuration?.emptyState ??
                         "Please select a marker from the configuration panel."}
                     </p>
                   </div>

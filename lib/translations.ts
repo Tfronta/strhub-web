@@ -428,6 +428,9 @@ export const translations = {
     motifExplorerPage: {
       title: "STR Motif Explorer",
       subtitle: "Visualize canonical STR repeat motifs and interruptions for selected markers.",
+      header: {
+        backLink: "← Back to STRhub",
+      },
       fields: {
         marker: {
           label: "STR Marker",
@@ -1542,6 +1545,9 @@ export const translations = {
     motifExplorerPage: {
       title: "Explorador de Motivos STR",
       subtitle: "Visualize motivos repetitivos STR canônicos e interrupções para marcadores selecionados.",
+      header: {
+        backLink: "← Voltar ao STRhub",
+      },
       fields: {
         marker: {
           label: "Marcador STR",
@@ -2660,6 +2666,9 @@ export const translations = {
     motifExplorerPage: {
       title: "Explorador de Motivos STR",
       subtitle: "Visualice motivos repetitivos STR canónicos e interrupciones para marcadores seleccionados.",
+      header: {
+        backLink: "← Volver a STRhub",
+      },
       fields: {
         marker: {
           label: "Marcador STR",

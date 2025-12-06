@@ -75,9 +75,15 @@ export default function NGSChart({
         <table className="w-full text-sm">
           <thead className="bg-muted/40">
             <tr>
-              <th className="px-3 py-2 text-center">Allele</th>
-              <th className="px-3 py-2 text-center">Coverage (reads)</th>
-              <th className="px-3 py-2 text-left">Repeat Sequence</th>
+              <th className="px-3 py-2 text-center">
+                {t("mixProfiles.ngs.tableAllele")}
+              </th>
+              <th className="px-3 py-2 text-center">
+                {t("mixProfiles.ngs.tableCoverage")}
+              </th>
+              <th className="px-3 py-2 text-left">
+                {t("mixProfiles.ngs.tableRepeatSequence")}
+              </th>
               <th className="px-3 py-2 text-left">
                 <div className="flex items-center gap-1">
                   {t("mixProfiles.ngs.fullSequenceColumnLabel")}
@@ -164,12 +170,16 @@ export default function NGSChart({
               dataKey="alleleLabel"
               type="category"
               allowDuplicatedCategory={false}
-              label={{ value: 'Allele', position: 'insideBottom', offset: -8 }}
+              label={{
+                value: t("mixProfiles.ngs.axisLabelAllele"),
+                position: 'insideBottom',
+                offset: -8,
+              }}
             />
             <YAxis
               domain={['auto', 'auto']}
               label={{
-                value: 'Coverage',           // ← como pediste
+                value: t("mixProfiles.ngs.axisLabelCoverage"),
                 angle: -90,
                 position: 'insideLeft',
                 style: { textAnchor: 'middle' },

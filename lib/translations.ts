@@ -128,6 +128,11 @@ export const translations = {
       viewAll: "View All Markers",
       getStarted: "Get Started",
       learnMore: "Learn More",
+      footer: {
+        mission:
+          "© 2024 STRhub. Advancing genetic research through collaborative science.",
+        community: "Built for the global research community",
+      },
     },
     // Catalog
     catalog: {
@@ -1008,6 +1013,11 @@ export const translations = {
       ngs: {
         disclaimer:
           "Genotypes come from 1000 Genomes samples. The NGS sequences shown are representative haplotypes for each allele, not necessarily the exact sequence of this individual.",
+        tableAllele: "Allele",
+        tableCoverage: "Coverage (reads)",
+        tableRepeatSequence: "Repeat Sequence",
+        axisLabelAllele: "Allele",
+        axisLabelCoverage: "Coverage",
         fullSequenceColumnLabel: "Full Sequence",
         fullSequenceTooltipAria: "Explanation about full amplicon sequence",
         fullSequenceNote:
@@ -1245,6 +1255,11 @@ export const translations = {
       viewAll: "Ver Todos os Marcadores",
       getStarted: "Começar",
       learnMore: "Saiba Mais",
+      footer: {
+        mission:
+          "© 2024 STRhub. Avançando a pesquisa genética por meio da ciência colaborativa.",
+        community: "Criado para a comunidade global de pesquisa",
+      },
     },
     // Catalog
     catalog: {
@@ -2108,7 +2123,7 @@ export const translations = {
         sampleA: "Amostra A",
         sampleB: "Amostra B",
         ratioA: "Proporção A",
-        contributor: "Contribuidor {label}",
+        contributor: "Contribuyente {label}",
         searchSample: "Buscar amostra {label}...",
         noSampleFound: "Nenhuma amostra encontrada.",
       },
@@ -2128,6 +2143,11 @@ export const translations = {
       ngs: {
         disclaimer:
           "Os genótipos vêm de amostras do Projeto 1000 Genomes. As sequências NGS mostradas são haplótipos representativos para cada alelo, não necessariamente a sequência exata deste indivíduo.",
+        tableAllele: "Alelo",
+        tableCoverage: "Cobertura (leituras)",
+        tableRepeatSequence: "Sequência de Repetição",
+        axisLabelAllele: "Alelo",
+        axisLabelCoverage: "Cobertura",
         fullSequenceColumnLabel: "Sequência completa",
         fullSequenceTooltipAria: "Explicação sobre a sequência completa do amplicon",
         fullSequenceNote:
@@ -2366,6 +2386,11 @@ export const translations = {
       viewAll: "Ver Todos los Marcadores",
       getStarted: "Comenzar",
       learnMore: "Saber Más",
+      footer: {
+        mission:
+          "© 2024 STRhub. Impulsando la investigación genética mediante ciencia colaborativa.",
+        community: "Creado para la comunidad global de investigación",
+      },
     },
     // Catalog
     catalog: {
@@ -3229,7 +3254,7 @@ export const translations = {
         sampleA: "Muestra A",
         sampleB: "Muestra B",
         ratioA: "Proporción A",
-        contributor: "Contribuidor {label}",
+        contributor: "Contribuyente {label}",
         searchSample: "Buscar muestra {label}...",
         noSampleFound: "No se encontró muestra.",
       },
@@ -3249,6 +3274,11 @@ export const translations = {
       ngs: {
         disclaimer:
           "Los genotipos provienen de muestras del Proyecto 1000 Genomas. Las secuencias NGS mostradas son haplotipos representativos para cada alelo, no necesariamente la secuencia exacta de este individuo.",
+        tableAllele: "Alelo",
+        tableCoverage: "Cobertura (lecturas)",
+        tableRepeatSequence: "Secuencia de Repetición",
+        axisLabelAllele: "Alelo",
+        axisLabelCoverage: "Cobertura",
         fullSequenceColumnLabel: "Secuencia completa",
         fullSequenceTooltipAria: "Explicación sobre la secuencia completa del amplicón",
         fullSequenceNote:
@@ -3325,7 +3355,7 @@ export const translations = {
           d2s1338: "D2S1338",
         },
         simulation: {
-          title: "4. Cómo simular \"stutter del contribuidor principal similar al contribuidor menor\"",
+          title: "4. Cómo simular \"stutter del contribuyente principal similar al contribuyente menor\"",
           ratio: "Proporción de mezcla ≥ 80/20",
           degradation: "Degradación k: 0,015–0,030",
           stutter: "Nivel de stutter (×): 1,5–2,0 (para fines didácticos)",
@@ -3334,8 +3364,8 @@ export const translations = {
         notes: {
           title: "5. Notas prácticas",
           longerAlleles: "Los alelos más largos pierden señal antes cuando se degradan.",
-          minorContributors: "Los contribuidores menores caen en RFU antes bajo degradación.",
-          stutter: "El stutter es más visible cuando el contribuidor principal domina.",
+          minorContributors: "Los contribuyentes menores caen en RFU antes bajo degradación.",
+          stutter: "El stutter es más visible cuando el contribuyente principal domina.",
           notAllLoci: "No todos los loci exhiben estos efectos por igual.",
         },
       },
@@ -3350,9 +3380,9 @@ export const translations = {
         stutterMinor:
           "Muestra un caso donde el pico de stutter tiene una altura similar a un alelo minoritario, volviendo ambiguo el pico pequeño.",
         lowMinor:
-          "Muestra un alelo del contribuidor minoritario muy cercano al umbral de detección.",
+          "Muestra un alelo del contribuyente minoritario muy cercano al umbral de detección.",
         overlap:
-          "Muestra dos contribuidores que comparten un alelo, generando un pico combinado más alto en el centro.",
+          "Muestra dos contribuyentes que comparten un alelo, generando un pico combinado más alto en el centro.",
       },
     },
   },

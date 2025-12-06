@@ -392,12 +392,9 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t py-8 px-4 bg-card/50">
         <div className="container mx-auto text-center">
-          <p className="text-muted-foreground mb-2">
-            © 2024 STRhub. Advancing genetic research through collaborative
-            science.
-          </p>
+          <p className="text-muted-foreground mb-2">{t("home.footer.mission")}</p>
           <p className="text-sm text-muted-foreground">
-            Built for the global research community
+            {t("home.footer.community")}
           </p>
         </div>
       </footer>

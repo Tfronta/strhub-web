@@ -131,8 +131,7 @@ export const translations = {
       getStarted: "Get Started",
       learnMore: "Learn More",
       footer: {
-        mission:
-          "© 2024 STRhub. Advancing genetic research through collaborative science.",
+        mission: "Advancing genetic research through collaborative science.",
         community: "Built for the global research community",
       },
     },
@@ -1262,7 +1261,7 @@ export const translations = {
       learnMore: "Saiba Mais",
       footer: {
         mission:
-          "© 2024 STRhub. Avançando a pesquisa genética por meio da ciência colaborativa.",
+          "Impulsionando a pesquisa genética por meio de ciência colaborativa.",
         community: "Criado para a comunidade global de pesquisa",
       },
     },
@@ -2396,7 +2395,7 @@ export const translations = {
       learnMore: "Saber Más",
       footer: {
         mission:
-          "© 2024 STRhub. Impulsando la investigación genética mediante ciencia colaborativa.",
+          "Impulsando la investigación genética mediante ciencia colaborativa.",
         community: "Creado para la comunidad global de investigación",
       },
     },

@@ -65,7 +65,8 @@ export const translations = {
         },
         tools: {
           title: "Tools & Pipelines",
-          description: "HipSTR, STRspy, GangSTR tutorials, Nextflow workflows, and Colab examples",
+          description:
+            "Tools and analysis workflows for STR marker genotyping and evaluation.",
         },
         fastaGenerator: {
           title: "FASTA Generator",
@@ -1194,7 +1195,8 @@ export const translations = {
         },
         tools: {
           title: "Ferramentas e Pipelines",
-          description: "Tutoriais HipSTR, STRspy, GangSTR, fluxos de trabalho Nextflow e exemplos Colab",
+          description:
+            "Ferramentas e fluxos de análise para genotipagem e avaliação de marcadores STR.",
         },
         fastaGenerator: {
           title: "Gerador FASTA",
@@ -2326,7 +2328,8 @@ export const translations = {
         },
         tools: {
           title: "Herramientas y Pipelines",
-          description: "Tutoriales HipSTR, STRspy, GangSTR, flujos de trabajo Nextflow y ejemplos Colab",
+          description:
+            "Herramientas y flujos de análisis para el genotipado y evaluación de marcadores STRs.",
         },
         fastaGenerator: {
           title: "Generador FASTA",

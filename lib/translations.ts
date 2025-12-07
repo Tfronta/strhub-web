@@ -56,7 +56,8 @@ export const translations = {
         },
         catalog: {
           title: "Catalog",
-          description: "Browse CODIS core, non-core, X-STRs, Y-STRs with detailed classifications",
+          description:
+            "Browse STR markers with complete genomic context, population data, allele frequencies, variant structures and advanced analysis features.",
         },
         mixProfiles: {
           title: "Mix Profiles",
@@ -138,8 +139,9 @@ export const translations = {
     catalog: {
       title: "STR Marker Catalog",
       description:
-        "Comprehensive database of Short Tandem Repeat markers including CODIS core, non-core, autosomal, X-STRs, and Y-STRs",
-      subtitle: "This catalog compiles STR data from NIST STRBase, pop.STR, and open-access peer-reviewed population studies.",
+        "Comprehensive database of STR markers, including those that make up CODIS, other autosomal markers, X-STRs and Y-STRs.",
+      subtitle:
+        "The collection includes STR data from STRbase, STRidER, and pop.STR, as well as peer-reviewed open dataset population studies.",
       searchPlaceholder: "Search markers by name or description...",
       filterByCategory: "Filter by Category",
       allCategories: "All Categories",
@@ -1183,7 +1185,8 @@ export const translations = {
         },
         catalog: {
           title: "Catálogo",
-          description: "Navegue por CODIS core, não-core, X-STRs, Y-STRs com classificações detalhadas",
+          description:
+            "Explore marcadores STR com contexto genômico completo, dados populacionais, frequências alélicas, estruturas variantes e recursos avançados de análise.",
         },
         mixProfiles: {
           title: "Perfis de Misturas",
@@ -1265,8 +1268,9 @@ export const translations = {
     catalog: {
       title: "Catálogo de Marcadores STR",
       description:
-        "Banco de dados abrangente de marcadores de Repetições Curtas em Tándem incluindo CODIS core, não-core, autossômicos, X-STRs e Y-STRs",
-      subtitle: "Este catálogo reúne dados de STR provenientes do NIST STRBase, pop.STR e estudos populacionais de acesso aberto revisados por pares.",
+        "Banco de dados completo de marcadores STR, incluindo aqueles que compõem o CODIS, outros marcadores autossômicos, STRs do cromossomo X e STRs do cromossomo Y.",
+      subtitle:
+        "Este catálogo reúne dados STR de STRbase, STRidER, pop.STR e estudos populacionais de dados abertos corrigidos por pares.",
       searchPlaceholder: "Buscar marcadores por nome ou descrição...",
       filterByCategory: "Filtrar por Categoria",
       allCategories: "Todas as Categorias",
@@ -2313,7 +2317,8 @@ export const translations = {
         },
         catalog: {
           title: "Catálogo",
-          description: "Navegue por CODIS core, no-core, X-STRs, Y-STRs con clasificaciones detalladas",
+          description:
+            "Explora marcadores STR con contexto genómico completo, datos poblacionales, frecuencias alélicas, estructuras variantes y herramientas avanzadas de análisis.",
         },
         mixProfiles: {
           title: "Perfiles de Mezclas",
@@ -2396,8 +2401,9 @@ export const translations = {
     catalog: {
       title: "Catálogo de Marcadores STR",
       description:
-        "Base de datos integral de marcadores de Repeticiones Cortas en Tándem incluyendo CODIS core, no-core, autosómicos, X-STRs y Y-STRs",
-      subtitle: "Este catálogo reúne datos STR provenientes de NIST STRBase, pop.STR y estudios poblacionales de acceso abierto revisados por pares.",
+        "Base de datos integral de marcadores STRs, incluyendo los que componen el CODIS, otros autosómicos, X-STRs e Y-STRs.",
+      subtitle:
+        "Este catálogo reúne datos de STR provenientes de STRbase, STRidER, pop.STR y estudios poblacionales de datos abiertos corregidos por pares.",
       searchPlaceholder: "Buscar marcadores por nombre o descripción...",
       filterByCategory: "Filtrar por Categoría",
       allCategories: "Todas las Categorías",

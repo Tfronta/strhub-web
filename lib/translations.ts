@@ -981,7 +981,7 @@ export const translations = {
         },
         strSequencingProject: {
           description:
-            "Collection of STR sequences used as a reference for forensic validation and comparison.",
+            "Consortium hosted by NIST dedicated to comprehensive characterization of benchmark human genomes.",
         },
         gnomad: {
           description:
@@ -997,7 +997,7 @@ export const translations = {
             "New genomic reference with multiple haplotypes, addressing limitations of GRCh38.",
         },
         strider: { description: "Validated, standardized database of forensic STR alleles." },
-        strbase: { description: "Classic resource on STR loci maintained by NIST." },
+        strbase: { description: "Classic resource on STR loci maintained by the NIST (National Institute of Standards and Technology)." },
       },
     },
     // Mix Profiles
@@ -2131,7 +2131,7 @@ export const translations = {
         },
         strSequencingProject: {
           description:
-            "Coleção de sequências STR usada como referência para validação e comparação forense.",
+            "Consórcio sediado pelo NIST dedicado à caracterização abrangente de genomas humanos de referência.",
         },
         gnomad: {
           description:
@@ -2147,7 +2147,7 @@ export const translations = {
             "Nova referência genômica com múltiplos haplótipos, abordando limitações do GRCh38.",
         },
         strider: { description: "Base validada e padronizada de alelos STR forenses." },
-        strbase: { description: "Recurso clássico sobre loci STR mantido pelo NIST." },
+        strbase: { description: "Recurso clássico sobre loci STR mantido pelo NIST (National Institute of Standards and Technology)." },
       },
     },
     // Mix Profiles
@@ -3282,7 +3282,7 @@ export const translations = {
         },
         strSequencingProject: {
           description:
-            "Colección de secuencias de STRs utilizada como referencia para validación y comparación forense.",
+            "Consorcio organizado por el NIST dedicado a la caracterización integral de genomas humanos de referencia.",
         },
         gnomad: {
           description:
@@ -3298,7 +3298,7 @@ export const translations = {
             "Nueva referencia genómica con múltiples haplotipos, que aborda las limitaciones de GRCh38.",
         },
         strider: { description: "Base validada y estandarizada de alelos STR forenses." },
-        strbase: { description: "Recurso clásico sobre loci STR, mantenido por NIST." },
+        strbase: { description: "Recurso clásico sobre loci STR, mantenido por el NIST (National Institute of Standards and Technology)" },
       },
     },
     // Mix Profiles

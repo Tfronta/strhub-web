@@ -41,10 +41,22 @@ export default function ProjectsPage() {
       icon: Globe2,
     },
     {
-      title: "The STR Sequencing Project (NIST)",
-      descriptionKey: "projects.static.strSequencingProject.description",
-      url: "https://strbase.nist.gov/strseq.htm",
+      title: "STRBase (NIST)",
+      descriptionKey: "projects.static.strbase.description",
+      url: "https://strbase.nist.gov/",
       icon: Database,
+    },
+    {
+      title: "STRidER (STRs for Identity ENFSI Reference Database)",
+      descriptionKey: "projects.static.strider.description",
+      url: "https://strider.online/",
+      icon: Database,
+    },
+    {
+      title: "Simons Genome Diversity Project (SGDP)",
+      descriptionKey: "projects.static.sgdp.description",
+      url: "https://www.simonsfoundation.org/simons-genome-diversity-project/",
+      icon: Globe2,
     },
     {
       title: "gnomAD (Genome Aggregation Database)",
@@ -53,10 +65,10 @@ export default function ProjectsPage() {
       icon: Database,
     },
     {
-      title: "Simons Genome Diversity Project (SGDP)",
-      descriptionKey: "projects.static.sgdp.description",
-      url: "https://www.simonsfoundation.org/simons-genome-diversity-project/",
-      icon: Globe2,
+      title: "Genome in a Bottle",
+      descriptionKey: "projects.static.strSequencingProject.description",
+      url: "https://www.nist.gov/programs-projects/genome-bottle",
+      icon: Database,
     },
     {
       title: "All of Us (NIH, USA)",
@@ -68,18 +80,6 @@ export default function ProjectsPage() {
       title: "Human Pangenome Project",
       descriptionKey: "projects.static.humanPangenome.description",
       url: "https://humanpangenome.org/",
-      icon: Database,
-    },
-    {
-      title: "STRidER (STRs for Identity ENFSI Reference Database)",
-      descriptionKey: "projects.static.strider.description",
-      url: "https://strider.online/",
-      icon: Database,
-    },
-    {
-      title: "STRBase (NIST)",
-      descriptionKey: "projects.static.strbase.description",
-      url: "https://strbase.nist.gov/",
       icon: Database,
     },
   ];
@@ -141,7 +141,7 @@ export default function ProjectsPage() {
               {adminProjects.map((project) => (
                 <Card
                   key={project.id}
-                  className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50"
+                  className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 h-[258px]"
                 >
                   <CardHeader>
                     <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
@@ -181,7 +181,7 @@ export default function ProjectsPage() {
               return (
                 <Card
                   key={index}
-                  className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50"
+                  className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 h-[258px]"
                 >
                   <CardHeader>
                     <div

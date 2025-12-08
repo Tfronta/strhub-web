@@ -181,9 +181,9 @@ export default function ProjectsPage() {
               return (
                 <Card
                   key={index}
-                  className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 h-[258px]"
+                  className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 flex flex-col h-full min-h-[250px]"
                 >
-                  <CardHeader>
+                  <CardHeader className="flex flex-col flex-1">
                     <div
                       className={`w-12 h-12 bg-gradient-to-br ${gradient} rounded-lg flex items-center justify-center mb-4`}
                     >
@@ -193,7 +193,7 @@ export default function ProjectsPage() {
                     <CardDescription className="mb-4">
                       {t(project.descriptionKey as string)}
                     </CardDescription>
-                    <Button asChild className="w-full">
+                    <Button asChild className="w-full mt-auto">
                       <a
                         href={project.url}
                         target="_blank"

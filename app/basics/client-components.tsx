@@ -8,18 +8,6 @@ import {
 } from "@/components/back-to-basics/BackToBasicsCard";
 import { Button } from "@/components/ui/button";
 
-export function ClientBasicsTitle() {
-  const { t } = useLanguage();
-  return (
-    <>
-      <h1 className="text-3xl font-bold tracking-tight">{t("basics.title")}</h1>
-      <p className="text-lg text-muted-foreground text-pretty">
-        {t("basics.description")}
-      </p>
-    </>
-  );
-}
-
 export function ClientReadTime() {
   const { t } = useLanguage();
   return <>{t("basics.readTime")}</>;

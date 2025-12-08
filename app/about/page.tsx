@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
+import { PageTitle } from "@/components/page-title";
 
 export default function AboutPage() {
   const { language, t } = useLanguage();
@@ -49,9 +50,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 md:px-0 py-8 space-y-6">
-        <h1 className="text-3xl font-bold tracking-tight mb-4">
-          {t("about.title")}
-        </h1>
+        <PageTitle title={t("about.title")} />
         <div className="space-y-8">
           {/* First row: Mission and Team */}
           <div className="grid lg:grid-cols-2 gap-8">

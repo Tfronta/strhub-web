@@ -3,6 +3,7 @@
 import { useLanguage } from "@/contexts/language-context";
 import MixProfilesDemo from "@/sections/mix-profiles/MixProfilesDemo";
 import { HelpCircle } from "lucide-react";
+import { PageTitle } from "@/components/page-title";
 import {
   Popover,
   PopoverContent,
@@ -16,9 +17,7 @@ export default function Page() {
       <main className="container mx-auto px-4 md:px-0 py-8 space-y-6">
         <div className="mb-3 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h1 className="text-3xl font-bold tracking-tight">
-              {t("mixProfiles.title")}
-            </h1>
+            <PageTitle title={t("mixProfiles.title")} />
             <Popover>
               <PopoverTrigger asChild>
                 <button

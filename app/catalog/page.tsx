@@ -24,6 +24,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/contexts/language-context"; // Fixed import path to use correct location
+import { PageTitle } from "@/components/page-title";
 
 export const markers = [
   // CODIS Core STRs
@@ -1245,12 +1246,16 @@ export default function CatalogPage() {
       <div className="container mx-auto px-4 md:px-0 py-8">
         {/* Page Header */}
         <div className="text-left mb-12">
-          <h1 className="text-3xl font-bold mb-4">{t("catalog.title")}</h1>
-          <p className="text-lg text-muted-foreground">
-            {t("catalog.description")}
-            <br />
-            <span className="text-sm">{t("catalog.subtitle")}</span>
-          </p>
+          <PageTitle
+            title={t("catalog.title")}
+            description={
+              <>
+                {t("catalog.description")}
+                <br />
+                <span className="text-sm">{t("catalog.subtitle")}</span>
+              </>
+            }
+          />
         </div>
 
         {/* Category Cards */}

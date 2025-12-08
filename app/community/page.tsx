@@ -31,6 +31,7 @@ import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
 import { backToBasicsArticles } from "@/lib/content/backToBasics";
 import { BackToBasicsCard } from "@/components/back-to-basics/BackToBasicsCard";
+import { PageTitle } from "@/components/page-title";
 
 interface BlogPost {
   id: string;
@@ -112,10 +113,10 @@ export default function BlogPage() {
       <main className="container mx-auto px-4 md:px-0 py-8 space-y-6">
         {/* Hero Section */}
         <section className="border-b border-border pb-4">
-          <h1 className="text-3xl font-bold tracking-tight">{t("nav.blog")}</h1>
-          <p className="mt-3 text-lg text-muted-foreground">
-            {t("communityHub.hero.subtitle")}
-          </p>
+          <PageTitle
+            title={t("nav.blog")}
+            description={t("communityHub.hero.subtitle")}
+          />
           <div className="mt-5">
             <Button
               size="lg"

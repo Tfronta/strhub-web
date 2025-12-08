@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/language-context";
 import Link from "next/link";
+import { PageTitle } from "@/components/page-title";
 
 interface Project {
   id: string;
@@ -123,12 +124,10 @@ export default function ProjectsPage() {
       {/* Hero Section */}
       <section className="relative py-8 px-4 overflow-hidden">
         <div className="container mx-auto relative z-10">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">
-            {t("projects.title")}
-          </h1>
-          <p className="text-lg text-muted-foreground text-pretty">
-            {t("projects.heroDescription")}
-          </p>
+          <PageTitle
+            title={t("projects.title")}
+            description={t("projects.heroDescription")}
+          />
         </div>
       </section>
 

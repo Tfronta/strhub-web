@@ -990,7 +990,7 @@ export const translations = {
         sgdp: { description: ">300 whole genomes from underrepresented populations." },
         allOfUs: {
           description:
-            "Large-scale multi-omic and clinical dataset from one million participants in the U.S.",
+            "Curated global database of Y-STR haplotypes for forensic comparison, ancestry inference and population studies.",
         },
         humanPangenome: {
           description:
@@ -2140,7 +2140,7 @@ export const translations = {
         sgdp: { description: ">300 genomas completos de populações sub-representadas." },
         allOfUs: {
           description:
-            "Conjunto de dados multi-ômicos e clínicos em grande escala de um milhão de participantes nos EUA.",
+            "Banco global curado de haplótipos Y-STR para comparação forense, inferência de linhagem paterna e estudos populacionais.",
         },
         humanPangenome: {
           description:
@@ -3291,7 +3291,7 @@ export const translations = {
         sgdp: { description: ">300 genomas completos de poblaciones poco representadas." },
         allOfUs: {
           description:
-            "Proyecto masivo de datos multi-ómicos y clínicos de un millón de personas en EE.UU.",
+            "Base mundial curada de haplotipos Y-STR para comparación forense, inferencia de linaje paterno y estudios poblacionales.",
         },
         humanPangenome: {
           description:

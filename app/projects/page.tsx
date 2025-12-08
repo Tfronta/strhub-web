@@ -71,9 +71,9 @@ export default function ProjectsPage() {
       icon: Database,
     },
     {
-      title: "All of Us (NIH, USA)",
+      title: "YHRD (Y-Chromosome Haplotype Reference Database)",
       descriptionKey: "projects.static.allOfUs.description",
-      url: "https://allofus.nih.gov/",
+      url: "https://yhrd.org",
       icon: Users,
     },
     {

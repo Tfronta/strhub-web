@@ -144,7 +144,7 @@ export default function ProjectsPage() {
                   className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 h-[258px]"
                 >
                   <CardHeader>
-                    <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
+                    <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                       <Database className="h-6 w-6 text-primary-foreground" />
                     </div>
                     <CardTitle>{project.title}</CardTitle>
@@ -168,15 +168,6 @@ export default function ProjectsPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {staticProjects.map((project, index) => {
               const IconComponent = project.icon;
-              const gradients = [
-                "from-primary to-accent",
-                "from-secondary to-primary",
-                "from-accent to-secondary",
-                "from-primary to-secondary",
-                "from-accent to-primary",
-                "from-secondary to-accent",
-              ];
-              const gradient = gradients[index % gradients.length];
 
               return (
                 <Card
@@ -184,9 +175,7 @@ export default function ProjectsPage() {
                   className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 flex flex-col h-full min-h-[250px]"
                 >
                   <CardHeader className="flex flex-col flex-1">
-                    <div
-                      className={`w-12 h-12 bg-gradient-to-br ${gradient} rounded-lg flex items-center justify-center mb-4`}
-                    >
+                    <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                       <IconComponent className="h-6 w-6 text-primary-foreground" />
                     </div>
                     <CardTitle>{project.title}</CardTitle>

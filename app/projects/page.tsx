@@ -214,7 +214,7 @@ export default function ProjectsPage() {
       <footer className="border-t py-8 px-4 bg-card/50">
         <div className="container mx-auto text-center">
           <p className="text-muted-foreground mb-2">
-            © 2024 STRhub. Advancing genetic research through collaborative
+            © 2025 STRhub. Advancing genetic research through collaborative
             science.
           </p>
           <p className="text-sm text-muted-foreground">

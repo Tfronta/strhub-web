@@ -12,9 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageToggle } from "@/components/language-toggle";
-import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
 import { StrKitData, StrKitType } from "./utils/motifData";
@@ -42,9 +39,7 @@ const mergeDeep = (
 
     const baseValue = base[key];
     const isBaseObject =
-      baseValue &&
-      typeof baseValue === "object" &&
-      !Array.isArray(baseValue);
+      baseValue && typeof baseValue === "object" && !Array.isArray(baseValue);
     const isOverrideObject =
       overrideValue &&
       typeof overrideValue === "object" &&
@@ -118,11 +113,9 @@ export default function MotifExplorerPage() {
   };
 
   const configurationContent =
-    pageContent.cards?.configuration ??
-    defaultPageContent.cards?.configuration;
+    pageContent.cards?.configuration ?? defaultPageContent.cards?.configuration;
   const visualizationContent =
-    pageContent.cards?.visualization ??
-    defaultPageContent.cards?.visualization;
+    pageContent.cards?.visualization ?? defaultPageContent.cards?.visualization;
   const headerContent = pageContent.header ?? defaultPageContent.header;
   const visualizationTitle =
     formatTemplate(visualizationContent?.title, {
@@ -131,43 +124,23 @@ export default function MotifExplorerPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/40">
-      {/* Header */}
-      <header className="border-b bg-card/60 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-              <Grid3x3 className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {pageContent.title}
-            </h1>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="text-sm font-medium hover:text-primary transition-colors"
-            >
-              {headerContent?.backLink ??
-                defaultPageContent.header?.backLink ??
-                "← Back to STRhub"}
-            </Link>
-            <div className="flex items-center gap-2">
-              <LanguageToggle />
-              <ThemeToggle />
-            </div>
+      <section className="px-4 pt-12">
+        <div className="container mx-auto flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+            <Grid3x3 className="h-5 w-5 text-primary-foreground" />
           </div>
+          <span className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            {pageContent.title}
+          </span>
         </div>
-      </header>
+      </section>
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
           {/* Page Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-extrabold mb-3 tracking-tight">
-              {pageContent.title}
-            </h1>
-            <p className="text-base text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto text-lg">
               {pageContent.subtitle}
             </p>
           </div>
@@ -238,12 +211,12 @@ export default function MotifExplorerPage() {
                     >
                       <SelectTrigger className="h-11 text-base">
                         <SelectValue
-                        placeholder={
-                          configurationContent?.kitPlaceholder ??
-                          defaultPageContent.cards?.configuration
-                            ?.kitPlaceholder ??
-                          "Select a kit"
-                        }
+                          placeholder={
+                            configurationContent?.kitPlaceholder ??
+                            defaultPageContent.cards?.configuration
+                              ?.kitPlaceholder ??
+                            "Select a kit"
+                          }
                         />
                       </SelectTrigger>
                       <SelectContent>

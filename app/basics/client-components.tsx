@@ -10,15 +10,10 @@ import { Button } from "@/components/ui/button";
 
 export function ClientBasicsTitle() {
   const { t } = useLanguage();
-  return <>{t("basics.title")}</>;
-}
-
-export function ClientBasicsHero() {
-  const { t } = useLanguage();
   return (
     <>
-      <h2 className="text-4xl font-bold mb-6">{t("basics.subtitle")}</h2>
-      <p className="text-xl text-muted-foreground text-pretty">
+      <h1 className="text-3xl font-bold tracking-tight">{t("basics.title")}</h1>
+      <p className="text-lg text-muted-foreground text-pretty">
         {t("basics.description")}
       </p>
     </>

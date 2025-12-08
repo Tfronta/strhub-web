@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
@@ -49,30 +48,10 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-              <Heart className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {t("about.title")}
-            </h1>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="text-sm font-medium hover:text-primary transition-colors"
-            >
-              ← Back to STRhub
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      {/* Content */}
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 md:px-0 py-8 space-y-6">
+        <h1 className="text-3xl font-bold tracking-tight mb-4">
+          {t("about.title")}
+        </h1>
         <div className="space-y-8">
           {/* First row: Mission and Team */}
           <div className="grid lg:grid-cols-2 gap-8">
@@ -136,7 +115,10 @@ export default function AboutPage() {
             </Card>
 
             {/* Contact */}
-            <Card id="contact" className="border-0 bg-gradient-to-br from-card to-card/50">
+            <Card
+              id="contact"
+              className="border-0 bg-gradient-to-br from-card to-card/50"
+            >
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4">
                   <Mail className="h-6 w-6 text-primary-foreground" />

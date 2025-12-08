@@ -4,7 +4,14 @@ import type React from "react";
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Search, Database, Wrench, FileText, Globe, Filter } from "lucide-react";
+import {
+  Search,
+  Database,
+  Wrench,
+  FileText,
+  Globe,
+  Filter,
+} from "lucide-react";
 import {
   Card,
   CardDescription,
@@ -14,11 +21,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageToggle } from "@/components/language-toggle";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
-import { performSearch, getTotalResults, type SearchResultsByType } from "@/lib/search";
+import {
+  performSearch,
+  getTotalResults,
+  type SearchResultsByType,
+} from "@/lib/search";
 
 function SearchResults() {
   const searchParams = useSearchParams();
@@ -60,7 +69,7 @@ function SearchResults() {
   const totalResults = getTotalResults(results);
 
   const renderResultCard = (
-    item: typeof results.markers[0],
+    item: (typeof results.markers)[0],
     icon: React.ReactNode
   ) => (
     <Link key={item.id} href={item.href}>
@@ -90,11 +99,7 @@ function SearchResults() {
           {item.tags && item.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
               {item.tags.slice(0, 3).map((tag, idx) => (
-                <Badge
-                  key={idx}
-                  variant="outline"
-                  className="text-xs"
-                >
+                <Badge key={idx} variant="outline" className="text-xs">
                   {tag}
                 </Badge>
               ))}
@@ -107,32 +112,21 @@ function SearchResults() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-              <Database className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              STRhub
-            </h1>
-          </Link>
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-
       <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+            <Search className="h-5 w-5 text-primary-foreground" />
+          </div>
+          <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+            {t("nav.search")}
+          </span>
+        </div>
         {/* Search Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">{t("search.title")}</h1>
+        <div className="mb-8 space-y-2">
           {query && (
             <p className="text-lg text-muted-foreground">
-              {t("search.resultsFor")}{" "}
-              "<span className="font-semibold">{query}</span>"
+              {t("search.resultsFor")} "
+              <span className="font-semibold">{query}</span>"
             </p>
           )}
         </div>
@@ -174,7 +168,10 @@ function SearchResults() {
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {results.markers.map((marker) =>
-                    renderResultCard(marker, <Database className="h-5 w-5 text-primary" />)
+                    renderResultCard(
+                      marker,
+                      <Database className="h-5 w-5 text-primary" />
+                    )
                   )}
                 </div>
               </section>
@@ -185,11 +182,15 @@ function SearchResults() {
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                   <Database className="h-5 w-5" />
-                  {t("search.types.markerSections")} ({results.markerSections.length})
+                  {t("search.types.markerSections")} (
+                  {results.markerSections.length})
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {results.markerSections.map((section) =>
-                    renderResultCard(section, <Database className="h-5 w-5 text-primary" />)
+                    renderResultCard(
+                      section,
+                      <Database className="h-5 w-5 text-primary" />
+                    )
                   )}
                 </div>
               </section>
@@ -204,7 +205,10 @@ function SearchResults() {
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {results.tools.map((tool) =>
-                    renderResultCard(tool, <Wrench className="h-5 w-5 text-primary" />)
+                    renderResultCard(
+                      tool,
+                      <Wrench className="h-5 w-5 text-primary" />
+                    )
                   )}
                 </div>
               </section>
@@ -219,7 +223,10 @@ function SearchResults() {
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {results.blog.map((article) =>
-                    renderResultCard(article, <FileText className="h-5 w-5 text-primary" />)
+                    renderResultCard(
+                      article,
+                      <FileText className="h-5 w-5 text-primary" />
+                    )
                   )}
                 </div>
               </section>
@@ -234,7 +241,10 @@ function SearchResults() {
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {results.page.map((page) =>
-                    renderResultCard(page, <Globe className="h-5 w-5 text-primary" />)
+                    renderResultCard(
+                      page,
+                      <Globe className="h-5 w-5 text-primary" />
+                    )
                   )}
                 </div>
               </section>
@@ -247,8 +257,8 @@ function SearchResults() {
               {t("search.noResults")}
             </h3>
             <p className="text-muted-foreground mb-4">
-              {t("search.noResultsDescription")}{" "}
-              "<span className="font-semibold">{query}</span>"
+              {t("search.noResultsDescription")} "
+              <span className="font-semibold">{query}</span>"
             </p>
             <div className="space-y-2 text-sm text-muted-foreground mb-6">
               <p>{t("search.trySearching")}</p>

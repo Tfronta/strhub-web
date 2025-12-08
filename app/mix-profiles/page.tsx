@@ -1,11 +1,8 @@
 // app/mix-profiles/page.tsx
 "use client";
-import { LanguageToggle } from "@/components/language-toggle";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { useLanguage } from "@/contexts/language-context";
 import MixProfilesDemo from "@/sections/mix-profiles/MixProfilesDemo";
-import { ArrowLeft, HelpCircle } from "lucide-react";
-import Link from "next/link";
+import { HelpCircle } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -16,26 +13,12 @@ export default function Page() {
   const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {t("nav.home")}
-          </Link>
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 md:px-0 py-8 space-y-6">
         <div className="mb-3 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h1 className="text-2xl font-semibold">{t("mixProfiles.title")}</h1>
+            <h1 className="text-3xl font-bold tracking-tight">
+              {t("mixProfiles.title")}
+            </h1>
             <Popover>
               <PopoverTrigger asChild>
                 <button
@@ -111,18 +94,18 @@ export default function Page() {
                     <h4 className="font-semibold mb-1">
                       {t("mixProfiles.quickGuide.notes.title")}
                     </h4>
-                      <ul className="list-disc pl-4 space-y-1">
-                        <li>{t("mixProfiles.quickGuide.notes.longerAlleles")}</li>
-                        <li>
-                          {t("mixProfiles.quickGuide.notes.minorContributors")}
-                        </li>
-                        <li>{t("mixProfiles.quickGuide.notes.stutter")}</li>
-                        <li>{t("mixProfiles.quickGuide.notes.notAllLoci")}</li>
-                      </ul>
-                    </div>
+                    <ul className="list-disc pl-4 space-y-1">
+                      <li>{t("mixProfiles.quickGuide.notes.longerAlleles")}</li>
+                      <li>
+                        {t("mixProfiles.quickGuide.notes.minorContributors")}
+                      </li>
+                      <li>{t("mixProfiles.quickGuide.notes.stutter")}</li>
+                      <li>{t("mixProfiles.quickGuide.notes.notAllLoci")}</li>
+                    </ul>
                   </div>
-                </PopoverContent>
-              </Popover>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
           <p className="w-full max-w-none break-words text-base text-muted-foreground">
             {t("mixProfiles.simulatorDescription")}

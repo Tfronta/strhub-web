@@ -25,8 +25,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageToggle } from "@/components/language-toggle";
 import { useLanguage } from "@/contexts/language-context";
 import Link from "next/link";
 import { useState } from "react";
@@ -46,79 +44,13 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-              <Database className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <Link href="/">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                {t("home.title")}
-              </h1>
-            </Link>
-          </div>
-
-          <nav className="hidden md:flex items-center gap-6">
-            <Link
-              href="/basics"
-              className="text-base font-medium hover:text-primary transition-colors"
-            >
-              {t("nav.basics")}
-            </Link>
-            <Link
-              href="/catalog"
-              className="text-base font-medium hover:text-primary transition-colors"
-            >
-              {t("nav.catalog")}
-            </Link>
-            <Link
-              href="/community"
-              className="text-base font-medium hover:text-primary transition-colors"
-            >
-              {t("nav.blog")}
-            </Link>
-            <Link
-              href="/tools"
-              className="text-base font-medium hover:text-primary transition-colors"
-            >
-              {t("nav.tools")}
-            </Link>
-            <Link
-              href="/mix-profiles"
-              className="text-base font-medium hover:text-primary transition-colors"
-            >
-              {t("nav.mixProfiles")}
-            </Link>
-            <Link
-              href="/projects"
-              className="text-base font-medium hover:text-primary transition-colors"
-            >
-              {t("nav.projects")}
-            </Link>
-            <Link
-              href="/about"
-              className="text-base font-medium hover:text-primary transition-colors"
-            >
-              {t("nav.about")}
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section className="relative py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10" />
         <div className="container mx-auto text-center relative z-10">
           <h2 className="text-5xl font-bold mb-6 text-balance">
             {t("home.subtitle")}{" "}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r dark:to-primary from-primary to-accent bg-clip-text text-transparent">
               Short Tandem Repeats
             </span>
           </h2>
@@ -392,7 +324,9 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t py-8 px-4 bg-card/50">
         <div className="container mx-auto text-center">
-          <p className="text-muted-foreground mb-2">{t("home.footer.mission")}</p>
+          <p className="text-muted-foreground mb-2">
+            {t("home.footer.mission")}
+          </p>
           <p className="text-sm text-muted-foreground">
             {t("home.footer.community")}
           </p>

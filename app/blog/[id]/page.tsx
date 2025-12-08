@@ -1,66 +1,68 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useParams, useRouter } from "next/navigation"
-import { Calendar, ArrowLeft } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { MarkdownRenderer } from "@/components/markdown-renderer"
-import Link from "next/link"
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { Calendar, ArrowLeft } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { MarkdownRenderer } from "@/components/markdown-renderer";
+import Link from "next/link";
 
 interface BlogPost {
-  id: string
-  title: string
-  content: string
-  category: "Blog" | "Projects" | "Educational"
-  date: string
-  published: boolean
+  id: string;
+  title: string;
+  content: string;
+  category: "Blog" | "Projects" | "Educational";
+  date: string;
+  published: boolean;
 }
 
 export default function BlogPostPage() {
-  const params = useParams()
-  const router = useRouter()
-  const [post, setPost] = useState<BlogPost | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const params = useParams();
+  const router = useRouter();
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (params.id) {
-      loadPost(params.id as string)
+      loadPost(params.id as string);
     }
-  }, [params.id])
+  }, [params.id]);
 
   const loadPost = async (id: string) => {
     try {
-      const response = await fetch("/api/content")
+      const response = await fetch("/api/content");
       if (response.ok) {
-        const data = await response.json()
-        const foundPost = data.entries.find((entry: BlogPost) => entry.id === id)
-        setPost(foundPost || null)
+        const data = await response.json();
+        const foundPost = data.entries.find(
+          (entry: BlogPost) => entry.id === id
+        );
+        setPost(foundPost || null);
       }
     } catch (error) {
-      console.error("Failed to load post:", error)
+      console.error("Failed to load post:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
-    })
-  }
+    });
+  };
 
   const getCategoryBadge = (category: string) => {
     const categoryMap: Record<string, string> = {
       Blog: "Tutorial",
       Projects: "Research",
       Educational: "Community",
-    }
-    return categoryMap[category] || category
-  }
+    };
+    return categoryMap[category] || category;
+  };
 
   if (isLoading) {
     return (
@@ -70,7 +72,7 @@ export default function BlogPostPage() {
           <p className="text-muted-foreground">Loading post...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (!post) {
@@ -78,7 +80,9 @@ export default function BlogPostPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Post Not Found</h1>
-          <p className="text-muted-foreground mb-6">The blog post you're looking for doesn't exist.</p>
+          <p className="text-muted-foreground mb-6">
+            The blog post you're looking for doesn't exist.
+          </p>
           <Link href="/community">
             <Button>
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -87,24 +91,20 @@ export default function BlogPostPage() {
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <Link href="/community">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Blog
-            </Button>
-          </Link>
-        </div>
-      </header>
+      <div className="container mx-auto px-4 pt-6">
+        <Link href="/community">
+          <Button variant="ghost" size="sm">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Blog
+          </Button>
+        </Link>
+      </div>
 
-      {/* Article */}
       <article className="container mx-auto px-4 py-12 max-w-4xl">
         {/* Article Header */}
         <header className="mb-12">
@@ -133,12 +133,15 @@ export default function BlogPostPage() {
         {/* Navigation */}
         <div className="mt-12 flex justify-between">
           <Link href="/community">
-            <Badge variant="outline" className="hover:bg-primary hover:text-primary-foreground transition-colors">
+            <Badge
+              variant="outline"
+              className="hover:bg-primary hover:text-primary-foreground transition-colors"
+            >
               ← Back to Blog
             </Badge>
           </Link>
         </div>
       </article>
     </div>
-  )
+  );
 }

@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft, BookOpen, User, Clock } from "lucide-react";
+import { ArrowLeft, User, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -47,35 +47,24 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link
-            href="/basics"
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Articles
-          </Link>
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-              <BookOpen className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              STRhub
-            </span>
-          </Link>
-        </div>
-      </header>
+      <div className="container mx-auto px-4 md:px-0 pt-8">
+        <Link
+          href="/basics"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Articles
+        </Link>
+      </div>
 
       {/* Article Content */}
-      <article className="container mx-auto px-4 py-12 max-w-4xl">
+      <article className="container mx-auto px-4 md:px-0 py-6 space-y-6">
         {/* Article Header */}
-        <header className="mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-balance">
+        <header className="mb-6">
+          <h1 className="text-3xl font-bold mb-4 text-balance">
             {post.fields.title}
           </h1>
-          <p className="text-xl text-muted-foreground mb-6 text-pretty">
+          <p className="text-lg text-muted-foreground mb-6 text-pretty">
             {post.fields.summary}
           </p>
 
@@ -100,7 +89,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
 
         {/* Article Body */}
         <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-          <CardContent className="p-8">
+          <CardContent>
             <MarkdownArticle markdown={post.fields.bodyMd || ""} />
           </CardContent>
         </Card>

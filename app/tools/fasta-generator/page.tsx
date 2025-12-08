@@ -21,8 +21,6 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageToggle } from "@/components/language-toggle";
 import Link from "next/link";
 import { parseAlleles, type ExportType } from "@/lib/fasta-export";
 import { generateContentFromSlice } from "@/lib/fasta-export-from-slice";
@@ -154,41 +152,14 @@ export default function FastaGeneratorPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/40">
-      {/* Header */}
-      <header className="border-b bg-card/60 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-              <FileText className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {pageContent.title}
-            </h1>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="text-sm font-medium hover:text-primary transition-colors"
-            >
-              ← Back to STRhub
-            </Link>
-            <div className="flex items-center gap-2">
-              <LanguageToggle />
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-5xl mx-auto">
+      <div className="container mx-auto px-4 md:px-0 py-8 space-y-6">
+        <div>
           {/* Page Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-extrabold mb-3 tracking-tight">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold mb-2 tracking-tight">
               {pageContent.title}
             </h1>
-            <p className="text-base text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground text-pretty">
               {pageContent.subtitle}
             </p>
           </div>

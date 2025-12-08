@@ -20,8 +20,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageToggle } from "@/components/language-toggle";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -128,21 +126,15 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   if (!marker) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="border-b">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <Link
-              href="/catalog"
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              {t("marker.backToCatalog")}
-            </Link>
-            <div className="flex items-center gap-2">
-              <LanguageToggle />
-              <ThemeToggle />
-            </div>
-          </div>
-        </header>
+        <div className="container mx-auto px-4 py-6">
+          <Link
+            href="/catalog"
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            {t("marker.backToCatalog")}
+          </Link>
+        </div>
       </div>
     );
   }
@@ -351,23 +343,16 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <main className="container mx-auto px-4 py-6">
+        <div className="mb-4">
           <Link
             href="/catalog"
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             {t("marker.backToCatalog")}
           </Link>
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <ThemeToggle />
-          </div>
         </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-6">
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-2">
             <h1 className="text-2xl font-semibold text-foreground">
@@ -874,8 +859,12 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               {t("marker.frequencies.datasetNotes.title")}
                             </span>
                           </p>
-                          <p>{t("marker.frequencies.datasetNotes.shortLine1")}</p>
-                          <p>{t("marker.frequencies.datasetNotes.shortLine2")}</p>
+                          <p>
+                            {t("marker.frequencies.datasetNotes.shortLine1")}
+                          </p>
+                          <p>
+                            {t("marker.frequencies.datasetNotes.shortLine2")}
+                          </p>
                         </div>
                         <Accordion type="single" collapsible className="mt-2">
                           <AccordionItem value="method-note">
@@ -885,9 +874,15 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               )}
                             </AccordionTrigger>
                             <AccordionContent className="text-sm text-muted-foreground space-y-2">
-                              <p>{t("marker.frequencies.datasetNotes.full1")}</p>
-                              <p>{t("marker.frequencies.datasetNotes.full2")}</p>
-                              <p>{t("marker.frequencies.datasetNotes.full3")}</p>
+                              <p>
+                                {t("marker.frequencies.datasetNotes.full1")}
+                              </p>
+                              <p>
+                                {t("marker.frequencies.datasetNotes.full2")}
+                              </p>
+                              <p>
+                                {t("marker.frequencies.datasetNotes.full3")}
+                              </p>
                               <p className="text-xs">
                                 <span className="font-semibold">
                                   {t(
@@ -895,7 +890,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                   )}
                                 </span>
                                 <br />
-                                {t("marker.frequencies.datasetNotes.referenceText")}
+                                {t(
+                                  "marker.frequencies.datasetNotes.referenceText"
+                                )}
                               </p>
                             </AccordionContent>
                           </AccordionItem>
@@ -908,7 +905,12 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         selectedTechnology === "NGS" &&
                         selectedPopulation === "RAO"
                       ) && (
-                        <Button variant="outline" size="sm" asChild className="text-xs">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                          className="text-xs"
+                        >
                           <a
                             href="http://spsmart.cesga.es/search.php?dataSet=strs_local"
                             target="_blank"
@@ -918,7 +920,12 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           </a>
                         </Button>
                       )}
-                      <Button variant="outline" size="sm" asChild className="text-xs">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        asChild
+                        className="text-xs"
+                      >
                         <a
                           href={
                             selectedTechnology === "NGS" &&

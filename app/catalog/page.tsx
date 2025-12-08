@@ -1,20 +1,29 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Search, Database, ExternalLink } from "lucide-react"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageToggle } from "@/components/language-toggle"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Checkbox } from "@/components/ui/checkbox"
-import { useLanguage } from "@/contexts/language-context" // Fixed import path to use correct location
+import { useState } from "react";
+import { Search, Database, ExternalLink } from "lucide-react";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useLanguage } from "@/contexts/language-context"; // Fixed import path to use correct location
 
 export const markers = [
   // CODIS Core STRs
@@ -1130,110 +1139,113 @@ export const markers = [
     nistVerified: true,
     strbaseUrl: "https://strbase.nist.gov/str_YGATAH4.htm",
   },
-]
+];
 
-const categories = ["All", "CODIS Core", "Other Autosomal", "X-STR", "Y-STR"]
+const categories = ["All", "CODIS Core", "Other Autosomal", "X-STR", "Y-STR"];
 
 const chromosomes = [
   "All",
   ...Array.from(new Set(markers.map((m) => m.chromosome))).sort((a, b) => {
-    if (a === "X") return 1
-    if (a === "Y") return 2
-    if (b === "X") return -1
-    if (b === "Y") return -2
-    return Number.parseInt(a) - Number.parseInt(b)
+    if (a === "X") return 1;
+    if (a === "Y") return 2;
+    if (b === "X") return -1;
+    if (b === "Y") return -2;
+    return Number.parseInt(a) - Number.parseInt(b);
   }),
-]
+];
 
-const repeatTypes = ["All", "Tetranucleotide", "Complex", "Trinucleotide", "Pentanucleotide", "Hexanucleotide"]
+const repeatTypes = [
+  "All",
+  "Tetranucleotide",
+  "Complex",
+  "Trinucleotide",
+  "Pentanucleotide",
+  "Hexanucleotide",
+];
 
 export default function CatalogPage() {
-  const { t } = useLanguage()
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("All")
-  const [selectedChromosome, setSelectedChromosome] = useState("All")
-  const [selectedRepeatType, setSelectedRepeatType] = useState("All")
-  const [sortBy, setSortBy] = useState("name") // Added sortBy state
-  const [showNistOnly, setShowNistOnly] = useState(false)
-  const router = useRouter()
+  const { t } = useLanguage();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedChromosome, setSelectedChromosome] = useState("All");
+  const [selectedRepeatType, setSelectedRepeatType] = useState("All");
+  const [sortBy, setSortBy] = useState("name"); // Added sortBy state
+  const [showNistOnly, setShowNistOnly] = useState(false);
+  const router = useRouter();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (searchTerm.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`)
+      router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
     }
-  }
+  };
 
   const filteredMarkers = markers.filter((marker) => {
     const matchesSearch =
       marker.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      marker.fullName.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === "All" || marker.category === selectedCategory
-    const matchesChromosome = selectedChromosome === "All" || marker.chromosome === selectedChromosome
-    const matchesRepeatType = selectedRepeatType === "All" || marker.type === selectedRepeatType
-    const matchesNist = !showNistOnly || marker.nistVerified
+      marker.fullName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "All" || marker.category === selectedCategory;
+    const matchesChromosome =
+      selectedChromosome === "All" || marker.chromosome === selectedChromosome;
+    const matchesRepeatType =
+      selectedRepeatType === "All" || marker.type === selectedRepeatType;
+    const matchesNist = !showNistOnly || marker.nistVerified;
 
-    return matchesSearch && matchesCategory && matchesChromosome && matchesRepeatType && matchesNist
-  })
+    return (
+      matchesSearch &&
+      matchesCategory &&
+      matchesChromosome &&
+      matchesRepeatType &&
+      matchesNist
+    );
+  });
 
   // Sort markers based on sortBy state
   const sortedMarkers = [...filteredMarkers].sort((a, b) => {
     if (sortBy === "name") {
-      return a.name.localeCompare(b.name)
+      return a.name.localeCompare(b.name);
     } else if (sortBy === "chromosome") {
-      const chrA = a.chromosome === "X" ? 23 : a.chromosome === "Y" ? 24 : Number.parseInt(a.chromosome)
-      const chrB = b.chromosome === "X" ? 23 : b.chromosome === "Y" ? 24 : Number.parseInt(b.chromosome)
-      return chrA - chrB
+      const chrA =
+        a.chromosome === "X"
+          ? 23
+          : a.chromosome === "Y"
+          ? 24
+          : Number.parseInt(a.chromosome);
+      const chrB =
+        b.chromosome === "X"
+          ? 23
+          : b.chromosome === "Y"
+          ? 24
+          : Number.parseInt(b.chromosome);
+      return chrA - chrB;
     } else if (sortBy === "category") {
-      return a.category.localeCompare(b.category)
+      return a.category.localeCompare(b.category);
     }
-    return 0
-  })
+    return 0;
+  });
 
   const getCategoryColor = (category: string) => {
     switch (category) {
       case "CODIS Core":
-        return "bg-primary/10 text-primary border-primary/20"
+        return "bg-primary/10 text-primary border-primary/20";
       case "Other Autosomal":
-        return "bg-green-500/10 text-green-600 border-green-500/20"
+        return "bg-green-500/10 text-green-600 border-green-500/20";
       case "Y-STR":
-        return "bg-blue-500/10 text-blue-600 border-blue-500/20"
+        return "bg-blue-500/10 text-blue-600 border-blue-500/20";
       case "X-STR":
-        return "bg-purple-500/10 text-purple-600 border-purple-500/20"
+        return "bg-purple-500/10 text-purple-600 border-purple-500/20";
       default:
-        return "bg-muted text-muted-foreground"
+        return "bg-muted text-muted-foreground";
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-              <Database className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {t("nav.catalog")}
-            </h1>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
-              ← {t("common.backToHome")}
-            </Link>
-            <div className="flex items-center gap-2">
-              <LanguageToggle />
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 md:px-0 py-8">
         {/* Page Header */}
         <div className="text-left mb-12">
-          <h1 className="text-4xl font-bold mb-4">{t("catalog.title")}</h1>
+          <h1 className="text-3xl font-bold mb-4">{t("catalog.title")}</h1>
           <p className="text-lg text-muted-foreground">
             {t("catalog.description")}
             <br />
@@ -1248,7 +1260,10 @@ export default function CatalogPage() {
             onClick={() => setSelectedCategory("CODIS Core")}
           >
             <CardHeader className="pb-3">
-              <div className="text-lg font-semibold text-blue-900 dark:text-blue-100" style={{ color: "#1e3a8a" }}>
+              <div
+                className="text-lg font-semibold text-blue-900 dark:text-blue-100"
+                style={{ color: "#1e3a8a" }}
+              >
                 {t("catalog.categories.CODIS Core")}
               </div>
               <CardDescription className="text-2xl font-bold text-foreground mt-2">
@@ -1312,19 +1327,35 @@ export default function CatalogPage() {
               </form>
             </div>
             <div className="flex gap-2 flex-wrap">
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <Select
+                value={selectedCategory}
+                onValueChange={setSelectedCategory}
+              >
                 <SelectTrigger className="w-full md:w-48">
                   <SelectValue placeholder={t("catalog.filterByCategory")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="All">{t("catalog.allCategories")}</SelectItem>
-                  <SelectItem value="CODIS Core">{t("catalog.categories.CODIS Core")}</SelectItem>
-                  <SelectItem value="Other Autosomal">{t("catalog.categories.Autosomal")}</SelectItem>
-                  <SelectItem value="Y-STR">{t("catalog.categories.Y-STR")}</SelectItem>
-                  <SelectItem value="X-STR">{t("catalog.categories.X-STR")}</SelectItem>
+                  <SelectItem value="All">
+                    {t("catalog.allCategories")}
+                  </SelectItem>
+                  <SelectItem value="CODIS Core">
+                    {t("catalog.categories.CODIS Core")}
+                  </SelectItem>
+                  <SelectItem value="Other Autosomal">
+                    {t("catalog.categories.Autosomal")}
+                  </SelectItem>
+                  <SelectItem value="Y-STR">
+                    {t("catalog.categories.Y-STR")}
+                  </SelectItem>
+                  <SelectItem value="X-STR">
+                    {t("catalog.categories.X-STR")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={selectedChromosome} onValueChange={setSelectedChromosome}>
+              <Select
+                value={selectedChromosome}
+                onValueChange={setSelectedChromosome}
+              >
                 <SelectTrigger className="w-32">
                   <SelectValue placeholder="Chr" />
                 </SelectTrigger>
@@ -1336,7 +1367,10 @@ export default function CatalogPage() {
                   ))}
                 </SelectContent>
               </Select>
-              <Select value={selectedRepeatType} onValueChange={setSelectedRepeatType}>
+              <Select
+                value={selectedRepeatType}
+                onValueChange={setSelectedRepeatType}
+              >
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder={t("catalog.repeatType")} />
                 </SelectTrigger>
@@ -1353,13 +1387,23 @@ export default function CatalogPage() {
                   <SelectValue placeholder={t("catalog.sortBy")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="name">{t("catalog.sortOptions.name")}</SelectItem>
-                  <SelectItem value="chromosome">{t("catalog.sortOptions.chromosome")}</SelectItem>
-                  <SelectItem value="category">{t("catalog.sortOptions.category")}</SelectItem>
+                  <SelectItem value="name">
+                    {t("catalog.sortOptions.name")}
+                  </SelectItem>
+                  <SelectItem value="chromosome">
+                    {t("catalog.sortOptions.chromosome")}
+                  </SelectItem>
+                  <SelectItem value="category">
+                    {t("catalog.sortOptions.category")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <div className="flex items-center space-x-2">
-                <Checkbox id="nist-only" checked={showNistOnly} onCheckedChange={setShowNistOnly} />
+                <Checkbox
+                  id="nist-only"
+                  checked={showNistOnly}
+                  onCheckedChange={setShowNistOnly}
+                />
                 <label
                   htmlFor="nist-only"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -1374,8 +1418,8 @@ export default function CatalogPage() {
         {/* Results Summary */}
         <div className="mb-6">
           <div className="text-sm text-muted-foreground">
-            {t("catalog.showing")} {filteredMarkers.length} {t("catalog.of")} {markers.length}{" "}
-            {t("catalog.markersFound")}
+            {t("catalog.showing")} {filteredMarkers.length} {t("catalog.of")}{" "}
+            {markers.length} {t("catalog.markersFound")}
             {showNistOnly && ` (${t("catalog.nistVerifiedOnly")})`}
           </div>
         </div>
@@ -1383,38 +1427,42 @@ export default function CatalogPage() {
         {/* Markers Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedMarkers.map((marker) => {
-            const detailPath = `/marker/${marker.id}`
+            const detailPath = `/marker/${marker.id}`;
 
             const handleCardClick = () => {
-              router.push(detailPath)
-            }
+              router.push(detailPath);
+            };
 
-            const handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+            const handleCardKeyDown = (
+              event: React.KeyboardEvent<HTMLDivElement>
+            ) => {
               if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault()
-                handleCardClick()
+                event.preventDefault();
+                handleCardClick();
               }
-            }
+            };
 
             const handleTabClick = (
-              event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>,
+              event:
+                | React.MouseEvent<HTMLElement>
+                | React.KeyboardEvent<HTMLElement>,
               tab: string
             ) => {
-              event.stopPropagation()
+              event.stopPropagation();
               if ("preventDefault" in event) {
-                event.preventDefault()
+                event.preventDefault();
               }
-              router.push(`${detailPath}?tab=${tab}`)
-            }
+              router.push(`${detailPath}?tab=${tab}`);
+            };
 
             const handleTabKeyDown = (
               event: React.KeyboardEvent<HTMLElement>,
               tab: string
             ) => {
               if (event.key === "Enter" || event.key === " ") {
-                handleTabClick(event, tab)
+                handleTabClick(event, tab);
               }
-            }
+            };
 
             return (
               <div
@@ -1426,76 +1474,99 @@ export default function CatalogPage() {
                 className="focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
               >
                 <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 hover:from-primary/5 hover:to-accent/5 cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                        {marker.name}
-                      </CardTitle>
-                      <CardDescription className="font-medium">{marker.fullName}</CardDescription>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <Badge variant="secondary" className={getCategoryColor(marker.category)}>
-                        {marker.category === "CODIS Core"
-                          ? t("catalog.categories.CODIS Core")
-                          : marker.category === "Other Autosomal"
+                  <CardHeader>
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                          {marker.name}
+                        </CardTitle>
+                        <CardDescription className="font-medium">
+                          {marker.fullName}
+                        </CardDescription>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <Badge
+                          variant="secondary"
+                          className={getCategoryColor(marker.category)}
+                        >
+                          {marker.category === "CODIS Core"
+                            ? t("catalog.categories.CODIS Core")
+                            : marker.category === "Other Autosomal"
                             ? t("catalog.categories.Autosomal")
                             : marker.category === "Y-STR"
-                              ? t("catalog.categories.Y-STR")
-                              : marker.category === "X-STR"
-                                ? t("catalog.categories.X-STR")
-                                : marker.category}
-                      </Badge>
-                      {marker.nistVerified && (
-                        <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
-                          NIST
+                            ? t("catalog.categories.Y-STR")
+                            : marker.category === "X-STR"
+                            ? t("catalog.categories.X-STR")
+                            : marker.category}
                         </Badge>
-                      )}
+                        {marker.nistVerified && (
+                          <Badge
+                            variant="outline"
+                            className="text-xs bg-green-50 text-green-700 border-green-200"
+                          >
+                            NIST
+                          </Badge>
+                        )}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t("catalog.chromosome")}:</span>
-                      <span className="font-medium">{marker.chromosome}</span>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">
+                          {t("catalog.chromosome")}:
+                        </span>
+                        <span className="font-medium">{marker.chromosome}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">
+                          {t("catalog.motif")}:
+                        </span>
+                        <span className="font-mono font-medium">
+                          {marker.motif}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">
+                          {t("marker.type")}:
+                        </span>
+                        <span className="font-medium">{marker.type}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">
+                          {t("catalog.alleles")}:
+                        </span>
+                        <span className="font-medium">{marker.alleles}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t("catalog.motif")}:</span>
-                      <span className="font-mono font-medium">{marker.motif}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t("marker.type")}:</span>
-                      <span className="font-medium">{marker.type}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t("catalog.alleles")}:</span>
-                      <span className="font-medium">{marker.alleles}</span>
-                    </div>
-                  </div>
 
-                  <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t">
-                    {[
-                      { tab: "frequencies", label: t("marker.tabs.frequencies") },
-                      { tab: "variants", label: t("marker.variantAlleles") },
-                      { tab: "tools", label: t("marker.tabs.tools") },
-                    ].map((item) => (
-                      <Badge
-                        key={item.tab}
-                        role="button"
-                        tabIndex={0}
-                        variant="outline"
-                        className="cursor-pointer border-primary/30 text-primary hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                        onClick={(event) => handleTabClick(event, item.tab)}
-                        onKeyDown={(event) => handleTabKeyDown(event, item.tab)}
-                      >
-                        {item.label}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardHeader>
-              </Card>
+                    <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t">
+                      {[
+                        {
+                          tab: "frequencies",
+                          label: t("marker.tabs.frequencies"),
+                        },
+                        { tab: "variants", label: t("marker.variantAlleles") },
+                        { tab: "tools", label: t("marker.tabs.tools") },
+                      ].map((item) => (
+                        <Badge
+                          key={item.tab}
+                          role="button"
+                          tabIndex={0}
+                          variant="outline"
+                          className="cursor-pointer border-primary/30 text-primary hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                          onClick={(event) => handleTabClick(event, item.tab)}
+                          onKeyDown={(event) =>
+                            handleTabKeyDown(event, item.tab)
+                          }
+                        >
+                          {item.label}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardHeader>
+                </Card>
               </div>
-            )
+            );
           })}
         </div>
 
@@ -1503,24 +1574,40 @@ export default function CatalogPage() {
         {filteredMarkers.length === 0 && (
           <div className="text-center py-12">
             <Database className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{t("common.notFound")}</h3>
-            <p className="text-muted-foreground">Try adjusting your search terms or filters</p>
+            <h3 className="text-lg font-semibold mb-2">
+              {t("common.notFound")}
+            </h3>
+            <p className="text-muted-foreground">
+              Try adjusting your search terms or filters
+            </p>
           </div>
         )}
 
         {/* Data Integration Footer */}
         <div className="mt-12 p-6 bg-muted/30 rounded-lg">
-          <h3 className="text-lg font-semibold mb-2">{t("catalog.dataIntegration")}</h3>
-          <p className="text-sm text-muted-foreground mb-4">{t("catalog.dataIntegrationDescription")}</p>
+          <h3 className="text-lg font-semibold mb-2">
+            {t("catalog.dataIntegration")}
+          </h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            {t("catalog.dataIntegrationDescription")}
+          </p>
           <div className="flex gap-3">
             <Button variant="outline" asChild>
-              <Link href="https://strbase.nist.gov/" target="_blank" rel="noreferrer">
+              <Link
+                href="https://strbase.nist.gov/"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 {t("catalog.visitStrbase")}
               </Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link href="http://spsmart.cesga.es/search.php?dataSet=strs_local&mapPopulation" target="_blank" rel="noreferrer">
+              <Link
+                href="http://spsmart.cesga.es/search.php?dataSet=strs_local&mapPopulation"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 {t("catalog.visitPopStr")}
               </Link>
@@ -1529,5 +1616,5 @@ export default function CatalogPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

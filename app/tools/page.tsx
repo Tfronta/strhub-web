@@ -126,35 +126,14 @@ export default function ToolsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-              <Wrench className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {t("tools.title")}
-            </h1>
-          </Link>
-          <Link
-            href="/"
-            className="text-sm font-medium hover:text-primary transition-colors"
-          >
-            {t("tools.header.backToStrhub")}
-          </Link>
-        </div>
-      </header>
-
       {/* Hero Section */}
-      <section className="pt-16 pb-8 px-4">
+      <section className="py-8 px-4">
         <div className="container mx-auto text-left">
-          <h2 className="text-4xl font-bold mb-6">{t("tools.hero.title")}</h2>
-          <p className="text-xl text-muted-foreground text-pretty mb-4">
-            {t("tools.hero.description")}
-          </p>
-          <p className="text-sm text-muted-foreground text-pretty mb-4">
-            {t("tools.hero.disclaimer")}
+          <h1 className="text-3xl font-bold mb-2 tracking-tight">
+            {t("tools.title")}
+          </h1>
+          <p className="text-lg text-muted-foreground text-pretty mb-4">
+            {t("tools.description")}
           </p>
           <Button
             variant="outline"

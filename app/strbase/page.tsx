@@ -1,15 +1,27 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Database, ExternalLink, CheckCircle, BarChart3, FileText, Download, Search, Info } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageToggle } from "@/components/language-toggle"
-import Link from "next/link"
+import { useState } from "react";
+import {
+  Database,
+  ExternalLink,
+  CheckCircle,
+  BarChart3,
+  FileText,
+  Download,
+  Search,
+  Info,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 const strbaseStats = {
   totalMarkers: 47,
@@ -22,12 +34,13 @@ const strbaseStats = {
   totalAlleles: 1247,
   lastUpdated: "2024-01-15",
   dataVersion: "v2.1.0",
-}
+};
 
 const integrationFeatures = [
   {
     title: "Population Frequency Data",
-    description: "Complete allele frequency distributions for AFR, NAM, EAS, SAS, and EUR populations",
+    description:
+      "Complete allele frequency distributions for AFR, NAM, EAS, SAS, and EUR populations",
     icon: BarChart3,
     status: "active",
     coverage: "100%",
@@ -60,7 +73,7 @@ const integrationFeatures = [
     status: "active",
     coverage: "100%",
   },
-]
+];
 
 const recentUpdates = [
   {
@@ -84,58 +97,52 @@ const recentUpdates = [
   {
     date: "2023-12-20",
     type: "X-STR Expansion",
-    description: "Added comprehensive X-STR marker set with linkage information",
+    description:
+      "Added comprehensive X-STR marker set with linkage information",
     markers: ["DXS7423", "DXS10103", "HPRTB"],
   },
-]
+];
 
 export default function STRBasePage() {
-  const [activeTab, setActiveTab] = useState("overview")
-  const [searchTerm, setSearchTerm] = useState("")
+  const [activeTab, setActiveTab] = useState("overview");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const filteredUpdates = recentUpdates.filter(
     (update) =>
       update.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      update.markers.some((marker) => marker.toLowerCase().includes(searchTerm.toLowerCase())),
-  )
+      update.markers.some((marker) =>
+        marker.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+  );
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-              <Database className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              STRBase Integration
-            </h1>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
-              ← Back to STRhub
-            </Link>
-            <div className="flex items-center gap-2">
-              <LanguageToggle />
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
-      </header>
-
       <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+            <Database className="h-5 w-5 text-primary-foreground" />
+          </div>
+          <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+            STRBase integration
+          </span>
+        </div>
         {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h1 className="text-4xl font-bold mb-2">NIST STRBase Integration</h1>
+              <p className="text-2xl font-bold mb-2">
+                NIST STRBase Integration
+              </p>
               <p className="text-lg text-muted-foreground">
-                Comprehensive integration with the NIST STRBase database for authoritative STR marker data
+                Comprehensive integration with the NIST STRBase database for
+                authoritative STR marker data
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+              <Badge
+                variant="outline"
+                className="bg-green-50 text-green-700 border-green-200"
+              >
                 <CheckCircle className="h-3 w-3 mr-1" />
                 Connected
               </Badge>
@@ -156,48 +163,77 @@ export default function STRBasePage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           <Card className="border-0 bg-gradient-to-br from-primary/20 to-primary/10">
             <CardHeader className="pb-3">
-              <h3 className="text-lg font-semibold" style={{ color: "#1f2937" }}>
+              <h3
+                className="text-lg font-semibold"
+                style={{ color: "#1f2937" }}
+              >
                 CODIS Core
               </h3>
-              <CardDescription className="text-2xl font-bold text-primary">{strbaseStats.codisCore}</CardDescription>
+              <CardDescription className="text-2xl font-bold text-primary">
+                {strbaseStats.codisCore}
+              </CardDescription>
             </CardHeader>
           </Card>
           <Card className="border-0 bg-gradient-to-br from-secondary/20 to-secondary/10">
             <CardHeader className="pb-3">
-              <h3 className="text-lg font-semibold" style={{ color: "#1f2937" }}>
+              <h3
+                className="text-lg font-semibold"
+                style={{ color: "#1f2937" }}
+              >
                 Non-Core
               </h3>
-              <CardDescription className="text-2xl font-bold text-secondary">{strbaseStats.nonCore}</CardDescription>
+              <CardDescription className="text-2xl font-bold text-secondary">
+                {strbaseStats.nonCore}
+              </CardDescription>
             </CardHeader>
           </Card>
           <Card className="border-0 bg-gradient-to-br from-green-500/20 to-green-500/10">
             <CardHeader className="pb-3">
-              <h3 className="text-lg font-semibold" style={{ color: "#1f2937" }}>
+              <h3
+                className="text-lg font-semibold"
+                style={{ color: "#1f2937" }}
+              >
                 Autosomal
               </h3>
-              <CardDescription className="text-2xl font-bold text-green-600">{strbaseStats.autosomal}</CardDescription>
+              <CardDescription className="text-2xl font-bold text-green-600">
+                {strbaseStats.autosomal}
+              </CardDescription>
             </CardHeader>
           </Card>
           <Card className="border-0 bg-gradient-to-br from-blue-500/20 to-blue-500/10">
             <CardHeader className="pb-3">
-              <h3 className="text-lg font-semibold" style={{ color: "#1f2937" }}>
+              <h3
+                className="text-lg font-semibold"
+                style={{ color: "#1f2937" }}
+              >
                 Y-STRs
               </h3>
-              <CardDescription className="text-2xl font-bold text-blue-600">{strbaseStats.yStr}</CardDescription>
+              <CardDescription className="text-2xl font-bold text-blue-600">
+                {strbaseStats.yStr}
+              </CardDescription>
             </CardHeader>
           </Card>
           <Card className="border-0 bg-gradient-to-br from-purple-500/20 to-purple-500/10">
             <CardHeader className="pb-3">
-              <h3 className="text-lg font-semibold" style={{ color: "#1f2937" }}>
+              <h3
+                className="text-lg font-semibold"
+                style={{ color: "#1f2937" }}
+              >
                 X-STRs
               </h3>
-              <CardDescription className="text-2xl font-bold text-purple-600">{strbaseStats.xStr}</CardDescription>
+              <CardDescription className="text-2xl font-bold text-purple-600">
+                {strbaseStats.xStr}
+              </CardDescription>
             </CardHeader>
           </Card>
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="features">Features</TabsTrigger>
@@ -213,26 +249,39 @@ export default function STRBasePage() {
                     <Database className="h-5 w-5" />
                     Integration Status
                   </h3>
-                  <CardDescription>Current connection and data synchronization status</CardDescription>
+                  <CardDescription>
+                    Current connection and data synchronization status
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Connection Status</span>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                    <span className="text-sm font-medium">
+                      Connection Status
+                    </span>
+                    <Badge
+                      variant="outline"
+                      className="bg-green-50 text-green-700 border-green-200"
+                    >
                       <CheckCircle className="h-3 w-3 mr-1" />
                       Active
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Data Freshness</span>
-                    <span className="text-sm text-muted-foreground">Updated daily</span>
+                    <span className="text-sm text-muted-foreground">
+                      Updated daily
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Coverage</span>
-                    <span className="text-sm font-medium">100% of available markers</span>
+                    <span className="text-sm font-medium">
+                      100% of available markers
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Population Groups</span>
+                    <span className="text-sm font-medium">
+                      Population Groups
+                    </span>
                     <span className="text-sm font-medium">
                       {strbaseStats.populationGroups} (AFR, NAM, EAS, SAS, EUR)
                     </span>
@@ -246,30 +295,48 @@ export default function STRBasePage() {
                     <Info className="h-5 w-5" />
                     About STRBase
                   </h3>
-                  <CardDescription>NIST Short Tandem Repeat DNA Internet Database</CardDescription>
+                  <CardDescription>
+                    NIST Short Tandem Repeat DNA Internet Database
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    STRBase is a comprehensive database maintained by the National Institute of Standards and Technology
-                    (NIST) that provides population data, sequence information, and other details for short tandem
-                    repeat (STR) loci used in human identity testing.
+                    STRBase is a comprehensive database maintained by the
+                    National Institute of Standards and Technology (NIST) that
+                    provides population data, sequence information, and other
+                    details for short tandem repeat (STR) loci used in human
+                    identity testing.
                   </p>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Maintained by:</span>
+                      <span className="text-muted-foreground">
+                        Maintained by:
+                      </span>
                       <span className="font-medium">NIST</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Primary use:</span>
+                      <span className="text-muted-foreground">
+                        Primary use:
+                      </span>
                       <span className="font-medium">Human identification</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Data types:</span>
-                      <span className="font-medium">Population frequencies, sequences</span>
+                      <span className="font-medium">
+                        Population frequencies, sequences
+                      </span>
                     </div>
                   </div>
-                  <Button variant="outline" className="w-full bg-transparent" asChild>
-                    <Link href="https://strbase.nist.gov/" target="_blank" rel="noopener noreferrer">
+                  <Button
+                    variant="outline"
+                    className="w-full bg-transparent"
+                    asChild
+                  >
+                    <Link
+                      href="https://strbase.nist.gov/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <ExternalLink className="h-4 w-4 mr-2" />
                       Visit STRBase
                     </Link>
@@ -281,7 +348,9 @@ export default function STRBasePage() {
             <Card>
               <CardHeader>
                 <h3>Data Quality & Verification</h3>
-                <CardDescription>How we ensure data accuracy and reliability</CardDescription>
+                <CardDescription>
+                  How we ensure data accuracy and reliability
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-3 gap-6">
@@ -289,9 +358,12 @@ export default function STRBasePage() {
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-3">
                       <CheckCircle className="h-6 w-6 text-primary" />
                     </div>
-                    <h4 className="font-semibold mb-2">Automated Verification</h4>
+                    <h4 className="font-semibold mb-2">
+                      Automated Verification
+                    </h4>
                     <p className="text-sm text-muted-foreground">
-                      All marker data is automatically cross-referenced with official STRBase records
+                      All marker data is automatically cross-referenced with
+                      official STRBase records
                     </p>
                   </div>
                   <div className="text-center">
@@ -300,7 +372,8 @@ export default function STRBasePage() {
                     </div>
                     <h4 className="font-semibold mb-2">Regular Updates</h4>
                     <p className="text-sm text-muted-foreground">
-                      Daily synchronization ensures the latest STRBase data is always available
+                      Daily synchronization ensures the latest STRBase data is
+                      always available
                     </p>
                   </div>
                   <div className="text-center">
@@ -309,7 +382,8 @@ export default function STRBasePage() {
                     </div>
                     <h4 className="font-semibold mb-2">Data Integrity</h4>
                     <p className="text-sm text-muted-foreground">
-                      Comprehensive validation checks maintain data quality and consistency
+                      Comprehensive validation checks maintain data quality and
+                      consistency
                     </p>
                   </div>
                 </div>
@@ -329,14 +403,25 @@ export default function STRBasePage() {
                         </div>
                         <div>
                           <h3 className="text-lg">{feature.title}</h3>
-                          <CardDescription>{feature.description}</CardDescription>
+                          <CardDescription>
+                            {feature.description}
+                          </CardDescription>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        <Badge
+                          variant="outline"
+                          className="bg-green-50 text-green-700 border-green-200"
+                        >
                           {feature.coverage}
                         </Badge>
-                        <Badge variant={feature.status === "active" ? "default" : "secondary"}>
+                        <Badge
+                          variant={
+                            feature.status === "active"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
                           {feature.status === "active" ? "Active" : "Inactive"}
                         </Badge>
                       </div>
@@ -353,7 +438,9 @@ export default function STRBasePage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3>Recent Updates</h3>
-                    <CardDescription>Latest changes and additions to the STRBase integration</CardDescription>
+                    <CardDescription>
+                      Latest changes and additions to the STRBase integration
+                    </CardDescription>
                   </div>
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -376,14 +463,20 @@ export default function STRBasePage() {
                             <Badge variant="outline" className="text-xs">
                               {update.type}
                             </Badge>
-                            <span className="text-sm text-muted-foreground">{update.date}</span>
+                            <span className="text-sm text-muted-foreground">
+                              {update.date}
+                            </span>
                           </div>
                           <p className="font-medium">{update.description}</p>
                         </div>
                       </div>
                       <div className="flex flex-wrap gap-1 mt-3">
                         {update.markers.map((marker, markerIndex) => (
-                          <Badge key={markerIndex} variant="secondary" className="text-xs">
+                          <Badge
+                            key={markerIndex}
+                            variant="secondary"
+                            className="text-xs"
+                          >
                             {marker}
                           </Badge>
                         ))}
@@ -400,7 +493,8 @@ export default function STRBasePage() {
               <CardHeader>
                 <h3>STRBase API Access</h3>
                 <CardDescription>
-                  Programmatic access to STRBase-integrated data for research and development
+                  Programmatic access to STRBase-integrated data for research
+                  and development
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -412,28 +506,36 @@ export default function STRBasePage() {
                         GET
                       </Badge>
                       <code>/api/strbase/markers</code>
-                      <span className="text-muted-foreground">- List all markers</span>
+                      <span className="text-muted-foreground">
+                        - List all markers
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">
                         GET
                       </Badge>
                       <code>/api/strbase/markers/{`{id}`}</code>
-                      <span className="text-muted-foreground">- Get marker details</span>
+                      <span className="text-muted-foreground">
+                        - Get marker details
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">
                         GET
                       </Badge>
                       <code>/api/strbase/frequencies/{`{id}`}</code>
-                      <span className="text-muted-foreground">- Get population frequencies</span>
+                      <span className="text-muted-foreground">
+                        - Get population frequencies
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">
                         GET
                       </Badge>
                       <code>/api/strbase/populations</code>
-                      <span className="text-muted-foreground">- List population groups</span>
+                      <span className="text-muted-foreground">
+                        - List population groups
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -476,5 +578,5 @@ export default function STRBasePage() {
         </Tabs>
       </div>
     </div>
-  )
+  );
 }

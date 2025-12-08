@@ -109,34 +109,11 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-              <Users className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {t("nav.blog")}
-            </h1>
-          </Link>
-          <Link
-            href="/"
-            className="text-sm font-medium hover:text-primary transition-colors"
-          >
-            ← {t("common.backToHome")}
-          </Link>
-        </div>
-      </header>
-
-      {/* Main Content Container */}
-      <main className="mx-auto w-full max-w-7xl px-6 lg:px-10 pb-16 space-y-6">
+      <main className="container mx-auto px-4 md:px-0 py-8 space-y-6">
         {/* Hero Section */}
-        <section className="pt-4 border-b border-border pb-4">
-          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            {t("communityHub.hero.title")}
-          </h1>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+        <section className="border-b border-border pb-4">
+          <h1 className="text-3xl font-bold tracking-tight">{t("nav.blog")}</h1>
+          <p className="mt-3 text-lg text-muted-foreground">
             {t("communityHub.hero.subtitle")}
           </p>
           <div className="mt-5">

@@ -18,9 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageToggle } from "@/components/language-toggle";
-import Link from "next/link";
 
 export default function IgvViewerPage() {
   const [selectedMarker, setSelectedMarker] = useState("");
@@ -213,36 +210,13 @@ export default function IgvViewerPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-              <Eye className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+      <div className="container mx-auto px-4 md:px-0 py-8 space-y-6">
+        <div>
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold mb-2 tracking-tight">
               IGV Viewer
             </h1>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="text-sm font-medium hover:text-primary transition-colors"
-            >
-              ← Back to STRhub
-            </Link>
-            <div className="flex items-center gap-2">
-              <LanguageToggle />
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="text-center mb-6">
-            <h1 className="text-4xl font-bold mb-2">IGV Viewer</h1>
-            <p className="text-base md:text-lg text-muted-foreground">
+            <p className="text-lg text-muted-foreground text-pretty">
               One-click integration with IGV for genomic visualization and
               analysis.
             </p>

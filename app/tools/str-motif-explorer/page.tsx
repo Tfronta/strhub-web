@@ -126,7 +126,7 @@ export default function MotifExplorerPage() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/40">
       <section className="px-4 pt-12">
         <div className="container mx-auto flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
             <Grid3x3 className="h-5 w-5 text-primary-foreground" />
           </div>
           <span className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">

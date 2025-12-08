@@ -57,7 +57,7 @@ export default function AboutPage() {
             {/* Mission */}
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                   <Target className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle className="text-2xl">{trans.mission}</CardTitle>
@@ -72,8 +72,8 @@ export default function AboutPage() {
             {/* Team */}
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-lg flex items-center justify-center mb-4">
-                  <Users className="h-6 w-6 text-secondary-foreground" />
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                  <Users className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle className="text-2xl">{trans.team}</CardTitle>
               </CardHeader>
@@ -99,7 +99,7 @@ export default function AboutPage() {
             {/* Why This Matters */}
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent to-primary rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                   <Heart className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle className="text-2xl">
@@ -119,7 +119,7 @@ export default function AboutPage() {
               className="border-0 bg-gradient-to-br from-card to-card/50"
             >
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                   <Mail className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle className="text-2xl">{trans.contact}</CardTitle>

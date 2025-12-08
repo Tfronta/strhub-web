@@ -56,11 +56,9 @@ export function BackToBasicsCard({ post }: BackToBasicsCardProps) {
   const slug = post.fields.slug || post.sys.id;
 
   return (
-    <Card
-      className="border-0 bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-shadow flex flex-col h-full"
-    >
+    <Card className="border-0 bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-shadow flex flex-col h-full">
       <CardHeader className="flex-shrink-0 mb-6">
-        <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
+        <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
           <IconComponent className="h-6 w-6 text-primary-foreground" />
         </div>
         <CardTitle className="text-2xl">{post.fields.title}</CardTitle>
@@ -92,4 +90,3 @@ export function BackToBasicsCard({ post }: BackToBasicsCardProps) {
     </Card>
   );
 }
-

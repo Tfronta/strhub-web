@@ -139,7 +139,7 @@ export default function BlogPage() {
           <div className="mt-6 grid gap-6 md:grid-cols-3">
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                   <Share2 className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>
@@ -153,8 +153,8 @@ export default function BlogPage() {
 
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-lg flex items-center justify-center mb-4">
-                  <BookOpen className="h-6 w-6 text-secondary-foreground" />
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                  <BookOpen className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>
                   {t("communityHub.howToJoin.cards.tutorials.title")}
@@ -167,8 +167,8 @@ export default function BlogPage() {
 
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent to-secondary rounded-lg flex items-center justify-center mb-4">
-                  <Handshake className="h-6 w-6 text-accent-foreground" />
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                  <Handshake className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>
                   {t("communityHub.howToJoin.cards.collaborations.title")}
@@ -258,7 +258,7 @@ export default function BlogPage() {
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                   <Database className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>
@@ -272,8 +272,8 @@ export default function BlogPage() {
 
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-lg flex items-center justify-center mb-4">
-                  <FileText className="h-6 w-6 text-secondary-foreground" />
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                  <FileText className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>
                   {t("communityHub.comingSoon.cards.caseStudies.title")}
@@ -286,8 +286,8 @@ export default function BlogPage() {
 
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent to-secondary rounded-lg flex items-center justify-center mb-4">
-                  <Wrench className="h-6 w-6 text-accent-foreground" />
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                  <Wrench className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>
                   {t("communityHub.comingSoon.cards.pipelines.title")}
@@ -304,7 +304,7 @@ export default function BlogPage() {
         <section id="contact" className="border-t border-border pt-12">
           <Card className="border-0 bg-gradient-to-br from-card to-card/50">
             <CardHeader className="pb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4">
+              <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                 <MessageSquare className="h-6 w-6 text-primary-foreground" />
               </div>
               <CardTitle className="text-2xl">

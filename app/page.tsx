@@ -87,7 +87,7 @@ export default function HomePage() {
             <Link href="/basics">
               <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 h-full">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                     <BookOpen className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <CardTitle>{t("home.explore.basics.title")}</CardTitle>
@@ -102,8 +102,8 @@ export default function HomePage() {
             <Link href="/catalog">
               <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 h-full">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-lg flex items-center justify-center mb-4">
-                    <Database className="h-6 w-6 text-secondary-foreground" />
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                    <Database className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <CardTitle>{t("home.explore.catalog.title")}</CardTitle>
                   <CardDescription>
@@ -117,8 +117,8 @@ export default function HomePage() {
             <Link href="/mix-profiles">
               <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 h-full">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent to-primary rounded-lg flex items-center justify-center mb-4">
-                    <Layers className="h-6 w-6 text-accent-foreground" />
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                    <Layers className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <CardTitle>{t("home.explore.mixProfiles.title")}</CardTitle>
                   <CardDescription>
@@ -132,7 +132,7 @@ export default function HomePage() {
             <Link href="/tools">
               <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 h-full">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                     <Wrench className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <CardTitle>{t("home.explore.tools.title")}</CardTitle>
@@ -147,7 +147,7 @@ export default function HomePage() {
             <Link href="/tools/fasta-generator">
               <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 h-full">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                     <FileText className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <CardTitle>
@@ -164,8 +164,8 @@ export default function HomePage() {
             <Link href="/tools/igv-viewer">
               <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 h-full">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent to-primary rounded-lg flex items-center justify-center mb-4">
-                    <Eye className="h-6 w-6 text-accent-foreground" />
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                    <Eye className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <CardTitle>{t("home.explore.igvViewer.title")}</CardTitle>
                   <CardDescription>
@@ -179,8 +179,8 @@ export default function HomePage() {
             <Link href="/projects">
               <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 h-full">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent to-primary rounded-lg flex items-center justify-center mb-4">
-                    <Globe2 className="h-6 w-6 text-accent-foreground" />
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                    <Globe2 className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <CardTitle>{t("home.explore.projects.title")}</CardTitle>
                   <CardDescription>
@@ -194,8 +194,8 @@ export default function HomePage() {
             <Link href="/tools/str-motif-explorer">
               <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 h-full">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent to-secondary rounded-lg flex items-center justify-center mb-4">
-                    <Grid3x3 className="h-6 w-6 text-accent-foreground" />
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                    <Grid3x3 className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <CardTitle>{t("home.explore.motifExplorer.title")}</CardTitle>
                   <CardDescription>
@@ -209,8 +209,8 @@ export default function HomePage() {
             <Link href="/about">
               <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 h-full">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center mb-4">
-                    <Heart className="h-6 w-6 text-secondary-foreground" />
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                    <Heart className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <CardTitle>{t("home.explore.about.title")}</CardTitle>
                   <CardDescription>
@@ -233,7 +233,7 @@ export default function HomePage() {
             {/* 1. Integrated STR Database */}
             <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 h-full">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                   <Database className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>
@@ -248,8 +248,8 @@ export default function HomePage() {
             {/* 2. Visualization Suite */}
             <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 h-full">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-lg flex items-center justify-center mb-4">
-                  <BarChart3 className="h-6 w-6 text-secondary-foreground" />
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                  <BarChart3 className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>
                   {t("home.features.visualizationSuite.title")}
@@ -263,8 +263,8 @@ export default function HomePage() {
             {/* 3. Mixture Simulation Engine */}
             <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 h-full">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent to-secondary rounded-lg flex items-center justify-center mb-4">
-                  <Beaker className="h-6 w-6 text-accent-foreground" />
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                  <Beaker className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>
                   {t("home.features.mixtureSimulation.title")}
@@ -278,7 +278,7 @@ export default function HomePage() {
             {/* 4. FASTA & Metadata Generator */}
             <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 h-full">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
                   <FileText className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>{t("home.features.fastaMetadata.title")}</CardTitle>
@@ -291,8 +291,8 @@ export default function HomePage() {
             {/* 5. Educational Resources */}
             <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 h-full">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent to-primary rounded-lg flex items-center justify-center mb-4">
-                  <BookOpen className="h-6 w-6 text-accent-foreground" />
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                  <BookOpen className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>
                   {t("home.features.educationalResources.title")}
@@ -306,8 +306,8 @@ export default function HomePage() {
             {/* 6. Community & Collaboration */}
             <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 h-full">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center mb-4">
-                  <Users className="h-6 w-6 text-secondary-foreground" />
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                  <Users className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle>
                   {t("home.features.communityCollaboration.title")}

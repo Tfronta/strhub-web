@@ -57,6 +57,7 @@ import { toolsData, type Tool } from "./toolsData";
 import { LATAMCatalog, type LatamSubpop } from "@/lib/latamCatalog";
 import { cn } from "@/lib/utils";
 import strKitsData from "@/data/str_kits.json";
+import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
 
 const motifExplorerMarkerIds = new Set(
   Object.keys(strKitsData).map((marker) => marker.toLowerCase())
@@ -246,6 +247,60 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   };
 
   const availablePopulations = getAvailablePopulations();
+
+  // Compute allele range from all population frequencies
+  const computedAlleleRange = useMemo(() => {
+    if (!marker?.populationFrequencies) {
+      return marker.alleles; // Fallback to hardcoded value
+    }
+
+    // Collect all frequency points from all populations
+    const allFrequencyPoints: Array<{
+      allele: string;
+      frequency: number;
+      population?: string;
+    }> = [];
+
+    // Iterate through all populations in populationFrequencies
+    Object.entries(marker.populationFrequencies).forEach(([pop, entries]) => {
+      if (Array.isArray(entries)) {
+        entries.forEach((entry) => {
+          if (entry && entry.allele && entry.frequency != null) {
+            allFrequencyPoints.push({
+              allele: entry.allele,
+              frequency: entry.frequency,
+              population: pop,
+            });
+          }
+        });
+      }
+    });
+
+    // Also check markerFreqData for additional populations (e.g., RAO for NGS)
+    if (markerFreqData) {
+      Object.entries(markerFreqData).forEach(([key, value]) => {
+        if (
+          key !== "kit" &&
+          key !== "technology" &&
+          Array.isArray(value) &&
+          value.length > 0
+        ) {
+          value.forEach((entry: any) => {
+            if (entry && entry.allele && entry.frequency != null) {
+              allFrequencyPoints.push({
+                allele: entry.allele,
+                frequency: entry.frequency,
+                population: key,
+              });
+            }
+          });
+        }
+      });
+    }
+
+    const computed = computeAlleleRangeFromFrequencies(allFrequencyPoints);
+    return computed || marker.alleles; // Fallback to hardcoded value if computation returns null
+  }, [marker, markerFreqData]);
 
   const isLatamCE =
     selectedPopulation === "LATAM" && selectedTechnology === "CE";
@@ -538,7 +593,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         {t("marker.alleleRange")}
                       </Label>
                       <p className="text-sm font-normal text-foreground">
-                        {marker.alleles}
+                        {computedAlleleRange}
                       </p>
                     </div>
                     {marker.nistReference?.referenceAllele && (

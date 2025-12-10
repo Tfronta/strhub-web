@@ -922,6 +922,7 @@ export const translations = {
         loading: "Loading posts...",
         readMore: "Read More",
         viewAll: "View all Back to Basics posts",
+        noPosts: "No posts available yet.",
       },
       comingSoon: {
         title: "What's coming next",
@@ -1729,6 +1730,7 @@ export const translations = {
         loading: "Carregando publicações...",
         readMore: "Ler Mais",
         viewAll: "Ver todos os artigos do Back to Basics",
+        noPosts: "Nenhum artigo disponível ainda.",
       },
       comingSoon: {
         title: "O que vem por aí",
@@ -2292,6 +2294,17 @@ export const translations = {
         overlap:
           "Mostra dois contribuintes que compartilham um alelo, gerando um pico combinado mais alto no centro.",
       },
+    },
+    // Back to Basics
+    basics: {
+      title: "Fundamentos",
+      subtitle: "Entendendo os Fundamentos",
+      description:
+        "Domine os conceitos essenciais em bioinformática e genética forense. Desde formatos de arquivo até regiões flanqueantes, construa uma base sólida para a análise STR.",
+      readArticle: "Ler Artigo",
+      backToArticles: "← Voltar a Todos os Artigos",
+      readTime: "min de leitura",
+      topicsCovered: "Tópicos:",
     },
     // About
     about: {
@@ -3262,6 +3275,7 @@ export const translations = {
         loading: "Cargando publicaciones...",
         readMore: "Leer Más",
         viewAll: "Ver todos los artículos de Back to Basics",
+        noPosts: "Todavía no hay artículos disponibles.",
       },
       comingSoon: {
         title: "Lo que viene pronto",

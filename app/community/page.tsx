@@ -29,8 +29,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
-import { backToBasicsArticles } from "@/lib/content/backToBasics";
-import { BackToBasicsCard } from "@/components/back-to-basics/BackToBasicsCard";
+import {
+  BackToBasicsCard,
+  type BackToBasicsPost,
+} from "@/components/back-to-basics/BackToBasicsCard";
 import { PageTitle } from "@/components/page-title";
 
 interface BlogPost {
@@ -45,16 +47,8 @@ interface BlogPost {
 export default function BlogPage() {
   const { language, t } = useLanguage();
   const [posts, setPosts] = useState<BlogPost[]>([]);
-
-  // Debug: Verify language and translations
-  useEffect(() => {
-    console.log("Current language:", language);
-    console.log("about.formName:", t("about.formName"));
-    console.log("about.formEmail:", t("about.formEmail"));
-    console.log("about.formSubject:", t("about.formSubject"));
-    console.log("about.formMessage:", t("about.formMessage"));
-    console.log("about.formSend:", t("about.formSend"));
-  }, [language, t]);
+  const [recentPosts, setRecentPosts] = useState<BackToBasicsPost[]>([]);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
@@ -69,6 +63,10 @@ export default function BlogPage() {
     loadPosts();
   }, []);
 
+  useEffect(() => {
+    loadRecentPosts();
+  }, [language]);
+
   const loadPosts = async () => {
     try {
       const response = await fetch("/api/content?category=Educational");
@@ -80,6 +78,28 @@ export default function BlogPage() {
       console.error("Failed to load blog posts:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadRecentPosts = async () => {
+    setIsLoadingPosts(true);
+    try {
+      const response = await fetch(`/api/back-to-basics?locale=${language}`);
+      if (response.ok) {
+        const data = await response.json();
+        const allPosts: BackToBasicsPost[] = data.items || [];
+
+        // Show the most recent posts (limit to 2-4 posts)
+        // Posts are already ordered by -sys.createdAt from the API
+        const recentPosts = allPosts.slice(0, 4);
+
+        setRecentPosts(recentPosts);
+      }
+    } catch (error) {
+      console.error("Failed to load recent posts:", error);
+      setRecentPosts([]);
+    } finally {
+      setIsLoadingPosts(false);
     }
   };
 
@@ -232,29 +252,25 @@ export default function BlogPage() {
             {t("communityHub.recentPosts.subtitle")}
           </p>
 
-          {(() => {
-            const targetTitles = [
-              "Understanding Sequencing File Formats: An Introductory Guide",
-              "FASTQ files",
-            ];
-            const orderedRecentCommunityPosts = targetTitles
-              .map((title) =>
-                backToBasicsArticles.find((post) => post.fields.title === title)
-              )
-              .filter(Boolean);
-
-            return orderedRecentCommunityPosts.length > 0 ? (
-              <div className="grid lg:grid-cols-2 gap-8">
-                {orderedRecentCommunityPosts.map((post) => (
-                  <BackToBasicsCard key={post.sys.id} post={post} />
-                ))}
-              </div>
-            ) : (
-              <div className="py-8">
-                <p className="text-muted-foreground">No posts available yet.</p>
-              </div>
-            );
-          })()}
+          {isLoadingPosts ? (
+            <div className="py-8">
+              <p className="text-muted-foreground">
+                {t("communityHub.recentPosts.loading")}
+              </p>
+            </div>
+          ) : recentPosts.length > 0 ? (
+            <div className="grid lg:grid-cols-2 gap-8">
+              {recentPosts.map((post) => (
+                <BackToBasicsCard key={post.sys.id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <div className="py-8">
+              <p className="text-muted-foreground">
+                {t("communityHub.recentPosts.noPosts")}
+              </p>
+            </div>
+          )}
         </section>
 
         {/* Coming Soon */}

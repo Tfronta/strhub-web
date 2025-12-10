@@ -67,7 +67,6 @@ export const toolsData: Tool[] = [
     compatibility: {
       status: "maintained",
       maintenance: "community-maintained",
-      maintainer: "Tamara Frontanilla (STRhub Project)",
       license: "MIT",
       last_release: "v0.8.7",
     },

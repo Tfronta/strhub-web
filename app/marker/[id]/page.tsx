@@ -87,6 +87,52 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   const markerId = params.id.toLowerCase();
   const marker = markerData[markerId as keyof typeof markerData];
   const isMarkerInMotifExplorer = motifExplorerMarkerIds.has(markerId);
+
+  // Helper function to translate marker descriptions
+  const getTranslatedDescription = (description: string): string => {
+    // Pattern: "{MARKER} is an STR locus on chromosome {NUMBER}."
+    const pattern =
+      /^(.+?)\s+is\s+an\s+STR\s+locus\s+on\s+chromosome\s+(\d+|[XY])\.$/i;
+    const match = description.match(pattern);
+
+    if (match) {
+      const markerName = match[1];
+      const chromosome = match[2];
+      return t("marker.descriptionPattern", { marker: markerName, chromosome });
+    }
+
+    // If pattern doesn't match, return original description
+    return description;
+  };
+
+  // Helper function to translate tool-specific texts
+  const translateToolText = (
+    toolId: string,
+    field: "interfaces" | "limitations" | "notes" | "config",
+    key?: string,
+    originalText?: string
+  ): string => {
+    // Build translation key based on field type
+    let translationKey = `marker.tools.${toolId}.${field}`;
+
+    // For interfaces, add the interface key and "description"
+    if (field === "interfaces" && key) {
+      translationKey += `.${key}.description`;
+    } else if (key) {
+      // For other fields, just add the key
+      translationKey += `.${key}`;
+    }
+
+    const translation = t(translationKey);
+
+    // If translation exists and is different from the key, use it
+    if (translation && translation !== translationKey) {
+      return translation;
+    }
+
+    // Fallback to original text if provided
+    return originalText || translation;
+  };
   const tabValues = ["overview", "frequencies", "variants", "tools"] as const;
   type TabValue = (typeof tabValues)[number];
   const requestedTab = (searchParams?.get("tab") ?? "overview") as string;
@@ -369,7 +415,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
             {marker.fullName}
           </p>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            {marker.description}
+            {getTranslatedDescription(marker.description)}
           </p>
         </div>
 
@@ -781,7 +827,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     {availableTechnologies.length > 0 && (
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-normal text-muted-foreground">
-                          Technology:
+                          {t("marker.technology")}:
                         </span>
                         <div className="flex gap-2">
                           {availableTechnologies.map((tech) => (
@@ -1322,7 +1368,12 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                   <span className="font-medium">
                                     {t("marker.targetFileFormat")}:
                                   </span>{" "}
-                                  {tool.config.target_file_format}
+                                  {translateToolText(
+                                    tool.id,
+                                    "config",
+                                    "targetFileFormat",
+                                    tool.config.target_file_format
+                                  )}
                                 </div>
                                 {tool.config.flanking_bp_recommended && (
                                   <div>
@@ -1440,7 +1491,29 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                       </Button>
                                     </div>
                                     <p className="text-xs text-muted-foreground">
-                                      {iface.description}
+                                      {(() => {
+                                        // Convert interface name to translation key format
+                                        // "HipSTR-UI" -> "hipstrUi"
+                                        const key = iface.name
+                                          .replace(/[-\s]+/g, "")
+                                          .replace(/^([a-z])/i, (m) =>
+                                            m.toLowerCase()
+                                          )
+                                          .replace(/([A-Z])/g, (m) =>
+                                            m.toLowerCase()
+                                          );
+                                        // For HipSTR-UI, the key should be "hipstrUi"
+                                        const interfaceKey =
+                                          iface.name === "HipSTR-UI"
+                                            ? "hipstrUi"
+                                            : key;
+                                        return translateToolText(
+                                          tool.id,
+                                          "interfaces",
+                                          interfaceKey,
+                                          iface.description
+                                        );
+                                      })()}
                                     </p>
                                   </div>
                                 ))}
@@ -1454,9 +1527,82 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 {t("marker.limitations")}:
                               </span>
                               <ul className="list-disc list-inside space-y-1 text-xs text-muted-foreground">
-                                {tool.limitations.map((limitation, idx) => (
-                                  <li key={idx}>{limitation}</li>
-                                ))}
+                                {tool.limitations.map((limitation, idx) => {
+                                  // Map limitation text to translation key
+                                  let translationKey = "";
+                                  if (
+                                    limitation.includes(
+                                      "Requires aligned BAM/CRAM"
+                                    )
+                                  ) {
+                                    translationKey = "requiresAligned";
+                                  } else if (
+                                    limitation.includes(
+                                      "Designed for Illumina"
+                                    ) &&
+                                    limitation.includes("not compatible")
+                                  ) {
+                                    translationKey = "illuminaOnly";
+                                  } else if (
+                                    limitation.includes(
+                                      "Optimized for Illumina"
+                                    )
+                                  ) {
+                                    translationKey = "illuminaOnly";
+                                  } else if (
+                                    limitation.includes(
+                                      "Requires BAM/CRAM alignment"
+                                    )
+                                  ) {
+                                    translationKey = "requiresBamBed";
+                                  } else if (
+                                    limitation.includes("Optimized for ONT")
+                                  ) {
+                                    translationKey = "ontOptimized";
+                                  } else if (
+                                    limitation.includes(
+                                      "Not designed for whole-genome"
+                                    )
+                                  ) {
+                                    translationKey = "notWgs";
+                                  } else if (
+                                    limitation.includes(
+                                      "Designed for Illumina data"
+                                    ) &&
+                                    limitation.includes("panel configuration")
+                                  ) {
+                                    translationKey = "illuminaData";
+                                  } else if (
+                                    limitation.includes(
+                                      "Does not perform read alignment"
+                                    )
+                                  ) {
+                                    translationKey = "noAlignment";
+                                  } else if (
+                                    limitation.includes(
+                                      "Designed for forensic NGS"
+                                    )
+                                  ) {
+                                    translationKey = "forensicNgs";
+                                  } else if (
+                                    limitation.includes(
+                                      "Web interface inactive"
+                                    )
+                                  ) {
+                                    translationKey = "webInterfaceInactive";
+                                  }
+
+                                  const translated = translationKey
+                                    ? translateToolText(
+                                        tool.id,
+                                        "limitations",
+                                        translationKey,
+                                        limitation
+                                      )
+                                    : limitation;
+
+                                  return <li key={idx}>{translated}</li>;
+                                })}
                               </ul>
                             </div>
                           )}
@@ -1542,7 +1688,12 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 {t("marker.notes")}:
                               </span>
                               <p className="text-xs text-muted-foreground leading-relaxed">
-                                {tool.notes}
+                                {translateToolText(
+                                  tool.id,
+                                  "notes",
+                                  undefined,
+                                  tool.notes
+                                )}
                               </p>
                             </div>
                           )}

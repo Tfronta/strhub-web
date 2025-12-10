@@ -301,6 +301,7 @@ export const translations = {
       originalPublication: "Original Publication",
       githubRepository: "GitHub Repository",
       technology: "Technology",
+      descriptionPattern: "{marker} is an STR locus on chromosome {chromosome}.",
       inputFormat: "Input Format",
       outputFormat: "Output Format",
       nativePanels: "Original bed file",
@@ -364,6 +365,69 @@ export const translations = {
       source: "Source",
       viewInStrbase: "View in STRBase",
       descriptionTemplate: "{marker} is an STR locus on chromosome {chromosome}.",
+      tools: {
+        hipstr: {
+          interfaces: {
+            hipstrUi: {
+              description:
+                "Web interface developed and maintained by STRhub for running, visualizing, and exploring HipSTR results interactively.",
+            },
+          },
+          limitations: {
+            requiresAligned:
+              "Requires aligned BAM/CRAM files and performs internal realignment (FASTQ not supported).",
+            illuminaOnly:
+              "Designed for Illumina short-read data; not compatible with ONT or PacBio.",
+          },
+          notes:
+            "Actively maintained by Tamara Frontanilla as part of the STRhub project. HipSTR-UI enables interactive execution, allele visualization, and population data integration for forensic and research workflows.",
+        },
+        gangstr: {
+          limitations: {
+            illuminaOnly:
+              "Optimized for Illumina short-read data; not compatible with ONT or PacBio.",
+            requiresBamBed:
+              "Requires BAM/CRAM alignment and BED file with defined loci.",
+          },
+          notes:
+            "GangSTR is integrated into the STRhub catalog for benchmarking and cross-platform comparison. It supports locus-based analysis of STR repeat expansions and is widely used for population-scale Illumina datasets.",
+        },
+        strspy: {
+          config: {
+            targetFileFormat:
+              "BED or JSON: STR locus definitions and flanking sequences",
+          },
+          limitations: {
+            ontOptimized:
+              "Optimized for ONT forensic STR panels; requires reference file of loci.",
+            notWgs: "Not designed for whole-genome (WGS) applications.",
+          },
+          notes:
+            "STRspy is integrated into the STRhub ecosystem for forensic and population STR analysis using Oxford Nanopore data. Its modular design allows visualization, benchmarking, and cross-compatibility with HipSTR-UI datasets.",
+        },
+        straitrazor: {
+          config: {
+            targetFileFormat: "CSV or predefined STRaitRazor panel",
+          },
+          limitations: {
+            illuminaData: "Designed for Illumina data; requires panel configuration.",
+            noAlignment:
+              "Does not perform read alignment; motif matching is direct.",
+          },
+          notes:
+            "STRait Razor is included in the STRhub ecosystem for integration with Illumina-based forensic pipelines. Its lightweight motif-matching algorithm makes it suitable for teaching and training purposes in STR interpretation.",
+        },
+        toastr: {
+          limitations: {
+            forensicNgs:
+              "Designed for forensic NGS STR analysis; requires STRaitRazor reference panel.",
+            webInterfaceInactive:
+              "Web interface inactive on some legacy servers.",
+          },
+          notes:
+            "ToaSTR (also known as STRaitRazor-NGS) extends STRaitRazor functionality for Illumina data analysis. Integrated into STRhub for historical comparison and reference validation in forensic genomics workflows.",
+        },
+      },
       repeatTypes: {
         tetranucleotide: "Tetranucleotide",
         trinucleotide: "Trinucleotide",
@@ -1449,6 +1513,7 @@ export const translations = {
       originalPublication: "Publicação Original",
       githubRepository: "Repositório GitHub",
       technology: "Tecnologia",
+      descriptionPattern: "{marker} é um lócus STR no cromossomo {chromosome}.",
       inputFormat: "Formato de Entrada",
       outputFormat: "Formato de Saída",
       nativePanels: "Arquivo bed original",
@@ -1512,6 +1577,69 @@ export const translations = {
       source: "Fonte",
       viewInStrbase: "Ver no STRBase",
       descriptionTemplate: "{marker} é um locus STR no cromossomo {chromosome}.",
+      tools: {
+        hipstr: {
+          interfaces: {
+            hipstrUi: {
+              description:
+                "Interface web desenvolvida e mantida pelo STRhub para executar, visualizar e explorar resultados do HipSTR de forma interativa.",
+            },
+          },
+          limitations: {
+            requiresAligned:
+              "Requer arquivos BAM/CRAM alinhados e realiza realinhamento interno (FASTQ não suportado).",
+            illuminaOnly:
+              "Projetado para dados de leitura curta Illumina; não compatível com ONT ou PacBio.",
+          },
+          notes:
+            "Mantido ativamente por Tamara Frontanilla como parte do projeto STRhub. O HipSTR-UI permite execução interativa, visualização de alelos e integração de dados populacionais para fluxos de trabalho forenses e de pesquisa.",
+        },
+        gangstr: {
+          limitations: {
+            illuminaOnly:
+              "Otimizado para dados de leitura curta Illumina; não compatível com ONT ou PacBio.",
+            requiresBamBed:
+              "Requer alinhamento BAM/CRAM e arquivo BED com lóci definidos.",
+          },
+          notes:
+            "GangSTR está integrado ao catálogo STRhub para benchmarking e comparação entre plataformas. Suporta análise baseada em lócus de expansões de repetições STR e é amplamente usado para conjuntos de dados Illumina em escala populacional.",
+        },
+        strspy: {
+          config: {
+            targetFileFormat:
+              "BED ou JSON: definições de lócus STR e sequências flanqueadoras",
+          },
+          limitations: {
+            ontOptimized:
+              "Otimizado para painéis STR forenses ONT; requer arquivo de referência de lóci.",
+            notWgs: "Não projetado para aplicações de genoma completo (WGS).",
+          },
+          notes:
+            "STRspy está integrado ao ecossistema STRhub para análise STR forense e populacional usando dados Oxford Nanopore. Seu design modular permite visualização, benchmarking e compatibilidade cruzada com conjuntos de dados HipSTR-UI.",
+        },
+        straitrazor: {
+          config: {
+            targetFileFormat: "CSV ou painel STRaitRazor predefinido",
+          },
+          limitations: {
+            illuminaData: "Projetado para dados Illumina; requer configuração de painel.",
+            noAlignment:
+              "Não realiza alinhamento de leituras; correspondência de motivo é direta.",
+          },
+          notes:
+            "STRait Razor está incluído no ecossistema STRhub para integração com pipelines forenses baseados em Illumina. Seu algoritmo leve de correspondência de motivos o torna adequado para fins de ensino e treinamento na interpretação de STR.",
+        },
+        toastr: {
+          limitations: {
+            forensicNgs:
+              "Projetado para análise STR forense NGS; requer painel de referência STRaitRazor.",
+            webInterfaceInactive:
+              "Interface web inativa em alguns servidores legados.",
+          },
+          notes:
+            "ToaSTR (também conhecido como STRaitRazor-NGS) estende a funcionalidade STRaitRazor para análise de dados Illumina. Integrado ao STRhub para comparação histórica e validação de referência em fluxos de trabalho de genômica forense.",
+        },
+      },
       repeatTypes: {
         tetranucleotide: "Tetranucleotídeo",
         trinucleotide: "Trinucleotídeo",
@@ -2651,6 +2779,7 @@ export const translations = {
       originalPublication: "Publicación Original",
       githubRepository: "Repositorio GitHub",
       technology: "Tecnología",
+      descriptionPattern: "{marker} es un locus STR en el cromosoma {chromosome}.",
       inputFormat: "Formato de Entrada",
       outputFormat: "Formato de Salida",
       nativePanels: "Archivo bed original",
@@ -2714,6 +2843,69 @@ export const translations = {
       source: "Fuente",
       viewInStrbase: "Ver en STRBase",
       descriptionTemplate: "{marker} es un locus STR en el cromosoma {chromosome}.",
+      tools: {
+        hipstr: {
+          interfaces: {
+            hipstrUi: {
+              description:
+                "Interfaz web desarrollada y mantenida por STRhub para ejecutar, visualizar y explorar resultados de HipSTR de forma interactiva.",
+            },
+          },
+          limitations: {
+            requiresAligned:
+              "Requiere archivos BAM/CRAM alineados y realiza realineamiento interno (FASTQ no soportado).",
+            illuminaOnly:
+              "Diseñado para datos de lectura corta Illumina; no compatible con ONT o PacBio.",
+          },
+          notes:
+            "Mantenido activamente por Tamara Frontanilla como parte del proyecto STRhub. HipSTR-UI permite ejecución interactiva, visualización de alelos e integración de datos poblacionales para flujos de trabajo forenses y de investigación.",
+        },
+        gangstr: {
+          limitations: {
+            illuminaOnly:
+              "Optimizado para datos de lectura corta Illumina; no compatible con ONT o PacBio.",
+            requiresBamBed:
+              "Requiere alineamiento BAM/CRAM y archivo BED con loci definidos.",
+          },
+          notes:
+            "GangSTR está integrado en el catálogo STRhub para benchmarking y comparación entre plataformas. Soporta análisis basado en loci de expansiones de repeticiones STR y es ampliamente utilizado para conjuntos de datos Illumina a escala poblacional.",
+        },
+        strspy: {
+          config: {
+            targetFileFormat:
+              "BED o JSON: definiciones de locus STR y secuencias flanqueadoras",
+          },
+          limitations: {
+            ontOptimized:
+              "Optimizado para paneles STR forenses ONT; requiere archivo de referencia de loci.",
+            notWgs: "No diseñado para aplicaciones de genoma completo (WGS).",
+          },
+          notes:
+            "STRspy está integrado en el ecosistema STRhub para análisis STR forense y poblacional utilizando datos Oxford Nanopore. Su diseño modular permite visualización, benchmarking y compatibilidad cruzada con conjuntos de datos HipSTR-UI.",
+        },
+        straitrazor: {
+          config: {
+            targetFileFormat: "CSV o panel STRaitRazor predefinido",
+          },
+          limitations: {
+            illuminaData: "Diseñado para datos Illumina; requiere configuración de panel.",
+            noAlignment:
+              "No realiza alineamiento de lecturas; la coincidencia de motivo es directa.",
+          },
+          notes:
+            "STRait Razor está incluido en el ecosistema STRhub para integración con pipelines forenses basados en Illumina. Su algoritmo ligero de coincidencia de motivos lo hace adecuado para fines de enseñanza y capacitación en interpretación de STR.",
+        },
+        toastr: {
+          limitations: {
+            forensicNgs:
+              "Diseñado para análisis STR forense NGS; requiere panel de referencia STRaitRazor.",
+            webInterfaceInactive:
+              "Interfaz web inactiva en algunos servidores heredados.",
+          },
+          notes:
+            "ToaSTR (también conocido como STRaitRazor-NGS) extiende la funcionalidad STRaitRazor para análisis de datos Illumina. Integrado en STRhub para comparación histórica y validación de referencia en flujos de trabajo de genómica forense.",
+        },
+      },
       repeatTypes: {
         tetranucleotide: "Tetranucleótido",
         trinucleotide: "Trinucleótido",

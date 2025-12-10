@@ -2293,6 +2293,45 @@ export const translations = {
           "Mostra dois contribuintes que compartilham um alelo, gerando um pico combinado mais alto no centro.",
       },
     },
+    // About
+    about: {
+      title: "Sobre o STRhub",
+      subtitle: "Avançando Pesquisa e Educação em STR",
+      mission: "Nossa Missão",
+      missionText:
+        "O STRhub é dedicado ao avanço da genética forense e populacional através de acesso aberto, colaboração e educação. Fornecemos ferramentas confiáveis, conjuntos de dados curados e recursos de aprendizado para tornar a análise STR acessível para pesquisadores, estudantes e laboratórios em todo o mundo. Nosso objetivo é incentivar uma comunidade global onde conhecimento, tecnologia e colaboração se unem para fortalecer a ciência em todos os lugares.",
+      team: "Nossa Equipe",
+      teamText:
+        "Somos uma equipe multidisciplinar de pesquisadores, bioinformáticos e cientistas forenses comprometidos em tornar a análise STR mais acessível e padronizada.",
+      teamText2:
+        "O projeto é liderado pela Dra. Tamara Frontanilla, pesquisadora em genética forense e bioinformática, com ampla experiência em genética populacional, tecnologias de sequenciamento e educação.",
+      whyThisMatters: "Por que isso importa",
+      whyThisMattersText:
+        "Porque a genética é mais que dados. Por trás de cada dado há pessoas, história e diversidade. Cada STR conta uma pequena parte de quem somos. Ao abrir o acesso à informação e conectar pesquisadores de diferentes lugares, tornamos a ciência mais inclusiva, justa e real. Juntos, podemos ir mais longe e fazer do conhecimento algo que verdadeiramente pertence a todos.",
+      contact: "Entre em contato",
+      contactText: "Tem perguntas ou sugestões? Adoraríamos ouvir você.",
+      contactDescription:
+        "Envie-nos uma mensagem e responderemos em breve. Para problemas técnicos ou solicitações de recursos, entre em contato conosco no GitHub. Incentivamos contribuições da comunidade global.",
+      formName: "Nome",
+      formNamePlaceholder: "Seu nome",
+      formEmail: "E-mail",
+      formEmailPlaceholder: "seu.email@exemplo.com",
+      formSubject: "Assunto",
+      formSubjectPlaceholder: "Sobre o que você gostaria de falar?",
+      formMessage: "Mensagem",
+      formMessagePlaceholder:
+        "Conte sobre sua pesquisa, ideias de colaboração ou funcionalidades que você gostaria de ver no STRhub...",
+      formSend: "Enviar mensagem",
+      email: "Email",
+      github: "GitHub",
+      twitter: "Twitter",
+      collaboration: "Colaboração",
+      collaborationText:
+        "O STRhub é um projeto de código aberto. Damos as boas-vindas a contribuições de pesquisadores, desenvolvedores e instituições de todo o mundo.",
+      contribute: "Contribuir",
+      documentation: "Documentação",
+      support: "Suporte",
+    },
   },
   es: {
     // Navigation
@@ -3247,7 +3286,7 @@ export const translations = {
         intro:
           "¿Tenés ideas, preguntas o propuestas de colaboración? Contanos cómo STRhub podría apoyar tu trabajo o qué te gustaría ver en esta comunidad.",
         messagePlaceholder:
-          "Contanos sobre tu investigación, ideas de colaboración o funciones que te gustaría ver en STRhub...",
+          "Cuéntame sobre tu investigación, ideas de colaboración o funcionalidades que te gustaría ver en STRhub…",
       },
     },
     // Common

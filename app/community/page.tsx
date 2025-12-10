@@ -43,8 +43,18 @@ interface BlogPost {
 }
 
 export default function BlogPage() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const [posts, setPosts] = useState<BlogPost[]>([]);
+
+  // Debug: Verify language and translations
+  useEffect(() => {
+    console.log("Current language:", language);
+    console.log("about.formName:", t("about.formName"));
+    console.log("about.formEmail:", t("about.formEmail"));
+    console.log("about.formSubject:", t("about.formSubject"));
+    console.log("about.formMessage:", t("about.formMessage"));
+    console.log("about.formSend:", t("about.formSend"));
+  }, [language, t]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: "",

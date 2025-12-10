@@ -164,6 +164,7 @@ export const translations = {
       viewDetails: "View Details",
       chromosome: "Chr",
       motif: "Motif",
+      complex: "Complex",
       alleles: "Alleles",
       repeatType: "Repeat Type",
       nistVerifiedOnly: "NIST Verified Only",
@@ -173,6 +174,10 @@ export const translations = {
         "This catalog compiles STR data from NIST STRBase, pop.STR, and open-access peer-reviewed population studies, providing a unified, high-resolution reference for allele structures, sequence variants, and population frequency profiles.",
       visitStrbase: "Visit NIST STRBase",
       visitPopStr: "Visit pop.STR",
+      card: {
+        description: "DNA Segment on Chromosome {chromosome}",
+        alleleRangeLabel: "Allele Range",
+      },
     },
     // Marker Details
     marker: {
@@ -1376,6 +1381,7 @@ export const translations = {
       viewDetails: "Ver Detalhes",
       chromosome: "Crom",
       motif: "Motivo",
+      complex: "Complexo",
       alleles: "Alelos",
       repeatType: "Tipo de Repetição",
       nistVerifiedOnly: "Apenas Verificados NIST",
@@ -1385,6 +1391,10 @@ export const translations = {
         "Este catálogo reúne dados de STR provenientes do NIST STRBase, pop.STR e estudos populacionais de acesso aberto revisados por pares, oferecendo uma referência unificada e de alta resolução sobre estruturas alélicas, variantes de sequência e perfis de frequências populacionais.",
       visitStrbase: "Visitar NIST STRBase",
       visitPopStr: "Visitar pop.STR",
+      card: {
+        description: "Segmento de DNA no cromossomo {chromosome}",
+        alleleRangeLabel: "Faixa de Alelos",
+      },
     },
     // Marker Details
     marker: {
@@ -2642,6 +2652,7 @@ export const translations = {
       viewDetails: "Ver Detalles",
       chromosome: "Crom",
       motif: "Motivo",
+      complex: "Complejo",
       alleles: "Alelos",
       repeatType: "Tipo de Repetición",
       nistVerifiedOnly: "Solo Verificados NIST",
@@ -2651,6 +2662,10 @@ export const translations = {
         "Este catálogo reúne datos STR provenientes de NIST STRBase, pop.STR y estudios poblacionales de acceso abierto revisados por pares, ofreciendo una referencia unificada y de alta resolución sobre estructuras alélicas, variantes de secuencia y perfiles de frecuencias poblacionales.",
       visitStrbase: "Visitar NIST STRBase",
       visitPopStr: "Visitar pop.STR",
+      card: {
+        description: "Segmento de ADN en el cromosoma {chromosome}",
+        alleleRangeLabel: "Rango de Alelos",
+      },
     },
     // Marker Details
     marker: {

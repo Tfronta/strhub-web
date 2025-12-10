@@ -109,7 +109,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   // Helper function to translate marker type
   const getTranslatedType = (type: string): string => {
     // Convert type to lowercase key format (e.g., "Tetranucleotide" -> "tetranucleotide")
-    const typeKey = type.toLowerCase();
+    const typeKey = type?.toLowerCase() ?? "";
 
     // Try to get translation from repeatTypes
     const translationKey = `marker.repeatTypes.${typeKey}`;
@@ -250,8 +250,11 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
   // Compute allele range from all population frequencies
   const computedAlleleRange = useMemo(() => {
-    if (!marker?.populationFrequencies) {
-      return marker.alleles; // Fallback to hardcoded value
+    if (
+      !marker?.populationFrequencies ||
+      !Object.values(marker.populationFrequencies).flat().length
+    ) {
+      return "";
     }
 
     // Collect all frequency points from all populations

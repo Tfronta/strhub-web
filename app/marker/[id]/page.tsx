@@ -105,6 +105,24 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     return description;
   };
 
+  // Helper function to translate marker type
+  const getTranslatedType = (type: string): string => {
+    // Convert type to lowercase key format (e.g., "Tetranucleotide" -> "tetranucleotide")
+    const typeKey = type.toLowerCase();
+
+    // Try to get translation from repeatTypes
+    const translationKey = `marker.repeatTypes.${typeKey}`;
+    const translation = t(translationKey);
+
+    // If translation exists and is different from the key, use it
+    if (translation && translation !== translationKey) {
+      return translation;
+    }
+
+    // Fallback to original type if no translation found
+    return type;
+  };
+
   // Helper function to translate tool-specific texts
   const translateToolText = (
     toolId: string,
@@ -473,7 +491,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     {marker.cytogeneticLocation && (
                       <div className="space-y-1">
                         <Label className="text-xs font-normal text-muted-foreground">
-                          Cytogenetic Location
+                          {t("marker.cytogeneticLocation")}
                         </Label>
                         <p className="text-sm font-normal text-foreground">
                           {marker.cytogeneticLocation}
@@ -493,7 +511,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         {t("marker.type")}
                       </Label>
                       <p className="text-sm font-normal text-foreground">
-                        {marker.type}
+                        {getTranslatedType(marker.type)}
                       </p>
                     </div>
                     {marker.alternativeMotifs &&
@@ -579,7 +597,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                             <Label className="text-xs font-normal text-muted-foreground">
                               {t("marker.position")}
                             </Label>
-                            <p className="text-sm font-normal font-mono text-foreground break-all">
+                            <p className="text-sm font-normal text-foreground break-all">
                               {marker.position}
                             </p>
                           </div>
@@ -604,7 +622,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               <Label className="text-xs font-normal text-muted-foreground">
                                 {t("marker.position")}
                               </Label>
-                              <p className="text-sm font-normal font-mono text-foreground break-all">
+                              <p className="text-sm font-normal text-foreground break-all">
                                 {marker.coordinates.grch37.start.toLocaleString()}
                                 -
                                 {marker.coordinates.grch37.end.toLocaleString()}

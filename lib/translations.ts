@@ -2292,7 +2292,7 @@ export const translations = {
         sampleA: "Amostra A",
         sampleB: "Amostra B",
         ratioA: "Proporção A",
-        contributor: "Contribuyente {label}",
+        contributor: "Contribuinte {label}",
         searchSample: "Buscar amostra {label}...",
         noSampleFound: "Nenhuma amostra encontrada.",
       },

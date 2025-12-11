@@ -1,17 +1,17 @@
 // Enhanced marker data with NIST STRBase integration
-import { markerFrequencies, type Pop, type AlleleEntry } from "../app/marker/[id]/markerFrequencies"
+import { markerFrequenciesCE, type CEPop, type AlleleEntry } from "@/app/marker/[id]/markerFrequencies"
 
 // === NUEVO: helpers para mapear el id del marcador a la clave del objeto ===
 const key = (s: string) => s.toLowerCase().replace(/\s+/g, "_").replace(/-/g, "_")
 
-const pf = (markerId: string): Record<Pop, AlleleEntry[]> => ({
-  AFR: markerFrequencies[markerId]?.AFR ?? [],
-  NAM: markerFrequencies[markerId]?.NAM ?? [],
-  EAS: markerFrequencies[markerId]?.EAS ?? [],
-  SAS: markerFrequencies[markerId]?.SAS ?? [],
-  EUR: markerFrequencies[markerId]?.EUR ?? [],
-  MES: markerFrequencies[markerId]?.MES ?? [],
-  OCE: markerFrequencies[markerId]?.OCE ?? [],
+const pf = (markerId: string): Record<CEPop, AlleleEntry[]> => ({
+  AFR: markerFrequenciesCE[markerId]?.AFR ?? [],
+  NAM: markerFrequenciesCE[markerId]?.NAM ?? [],
+  EAS: markerFrequenciesCE[markerId]?.EAS ?? [],
+  SAS: markerFrequenciesCE[markerId]?.SAS ?? [],
+  EUR: markerFrequenciesCE[markerId]?.EUR ?? [],
+  MES: markerFrequenciesCE[markerId]?.MES ?? [],
+  OCE: markerFrequenciesCE[markerId]?.OCE ?? [],
 });
 
 export const markerData = {
@@ -18548,4 +18548,3 @@ export const markerData = {
 } as const
 
 export type MarkerData = typeof markerData
-export type MarkerEntry = typeof markerData[keyof typeof markerData]

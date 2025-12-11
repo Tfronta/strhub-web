@@ -50,9 +50,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { markerData } from "../../../lib/markerData";
+import { markerData } from "@/lib/markerData";
 import { useLanguage } from "@/contexts/language-context";
-import { markerFrequencies } from "./markerFrequencies";
+import { markerFrequenciesCE, markerFrequenciesNGS } from "./markerFrequencies";
 import { toolsData, type Tool } from "./toolsData";
 import { LATAMCatalog, type LatamSubpop } from "@/lib/latamCatalog";
 import { getDatasetConfig } from "./datasetConfig";
@@ -205,21 +205,15 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     );
   }
 
-  const markerFreqData =
-    markerFrequencies[markerId as keyof typeof markerFrequencies];
+  const markerFreqDataCE =
+    markerFrequenciesCE[markerId as keyof typeof markerFrequenciesCE];
+  const markerFreqDataNGS =
+    markerFrequenciesNGS[markerId as keyof typeof markerFrequenciesNGS];
 
-  // Check if NGS data exists (RAO)
-  const hasNGS = markerFreqData?.RAO !== undefined;
-  const hasCE =
-    markerFreqData?.technology === "CE" ||
-    (markerFreqData &&
-      Object.keys(markerFreqData).some(
-        (k) =>
-          k !== "kit" &&
-          k !== "technology" &&
-          k !== "RAO" &&
-          Array.isArray(markerFreqData[k as keyof typeof markerFreqData])
-      ));
+  // Check if NGS data exists
+  const hasNGS = markerFreqDataNGS !== undefined;
+  // Check if CE data exists
+  const hasCE = markerFreqDataCE !== undefined;
 
   // Build available technologies list
   const availableTechnologies: string[] = [];
@@ -227,16 +221,16 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   if (hasNGS) availableTechnologies.push("NGS");
 
   const currentTechInfo =
-    markerFreqData?.technology === selectedTechnology
-      ? { technology: markerFreqData.technology, kit: markerFreqData.kit }
-      : selectedTechnology === "NGS" && hasNGS
-      ? { technology: "NGS", kit: "HaloPlex Target Enrichment System" }
+    selectedTechnology === "CE" && markerFreqDataCE
+      ? { technology: markerFreqDataCE.technology, kit: markerFreqDataCE.kit }
+      : selectedTechnology === "NGS" && markerFreqDataNGS
+      ? { technology: markerFreqDataNGS.technology, kit: markerFreqDataNGS.kit }
       : null;
 
   // Compute available populations based on technology
   const getAvailablePopulations = (): string[] => {
     if (selectedTechnology === "NGS") {
-      // For NGS, check markerFrequencies for RAO
+      // For NGS, check markerFrequenciesNGS for RAO
       if (hasNGS) {
         return ["RAO"];
       }
@@ -280,9 +274,29 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
       }
     });
 
-    // Also check markerFreqData for additional populations (e.g., RAO for NGS)
-    if (markerFreqData) {
-      Object.entries(markerFreqData).forEach(([key, value]) => {
+    // Also check markerFreqDataCE and markerFreqDataNGS for additional populations
+    if (markerFreqDataCE) {
+      Object.entries(markerFreqDataCE).forEach(([key, value]) => {
+        if (
+          key !== "kit" &&
+          key !== "technology" &&
+          Array.isArray(value) &&
+          value.length > 0
+        ) {
+          value.forEach((entry: any) => {
+            if (entry && entry.allele && entry.frequency != null) {
+              allFrequencyPoints.push({
+                allele: entry.allele,
+                frequency: entry.frequency,
+                population: key,
+              });
+            }
+          });
+        }
+      });
+    }
+    if (markerFreqDataNGS) {
+      Object.entries(markerFreqDataNGS).forEach(([key, value]) => {
         if (
           key !== "kit" &&
           key !== "technology" &&
@@ -304,7 +318,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
     const computed = computeAlleleRangeFromFrequencies(allFrequencyPoints);
     return computed || marker.alleles; // Fallback to hardcoded value if computation returns null
-  }, [marker, markerFreqData]);
+  }, [marker, markerFreqDataCE, markerFreqDataNGS]);
 
   const isLatamCE =
     selectedPopulation === "LATAM" && selectedTechnology === "CE";
@@ -351,7 +365,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
   // Filter tools based on marker compatibility
   const getCompatibleTools = (): Tool[] => {
-    const markerTech = markerFreqData?.technology;
+    // Determine technology from available data
+    const markerTech =
+      markerFreqDataCE?.technology || markerFreqDataNGS?.technology;
     if (!markerTech) return [];
 
     // Map marker technology to tool technology
@@ -430,10 +446,10 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
       citationText = "PubMed ID 40253804";
     }
   } else {
-    // Use markerFrequencies for NGS technology (RAO)
-    if (selectedTechnology === "NGS" && markerFreqData) {
-      const populationData = markerFreqData[
-        selectedPopulation as keyof typeof markerFreqData
+    // Use markerFrequenciesNGS for NGS technology (RAO)
+    if (selectedTechnology === "NGS" && markerFreqDataNGS) {
+      const populationData = markerFreqDataNGS[
+        selectedPopulation as keyof typeof markerFreqDataNGS
       ] as any[];
       if (populationData && Array.isArray(populationData)) {
         chartData = populationData.map((item) => ({

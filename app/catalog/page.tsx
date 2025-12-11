@@ -26,7 +26,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/contexts/language-context"; // Fixed import path to use correct location
 import { PageTitle } from "@/components/page-title";
 import { markerData } from "@/lib/markerData";
-import { markerFrequencies } from "@/app/marker/[id]/markerFrequencies";
+import { markerFrequenciesCE } from "@/app/marker/[id]/markerFrequencies";
 import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
 
 // Helper function to normalize category names
@@ -118,7 +118,7 @@ function computeAlleleRangeForMarker(
   });
 
   // Also check markerFrequencies for additional populations (e.g., RAO for NGS)
-  const markerFreqData = markerFrequencies[markerIdLower];
+  const markerFreqData = markerFrequenciesCE[markerIdLower];
   if (markerFreqData) {
     Object.entries(markerFreqData).forEach(([key, value]) => {
       if (

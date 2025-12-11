@@ -230,9 +230,24 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   // Compute available populations based on technology
   const getAvailablePopulations = (): string[] => {
     if (selectedTechnology === "NGS") {
-      // For NGS, check markerFrequenciesNGS for RAO
-      if (hasNGS) {
-        return ["RAO"];
+      // For NGS, check markerFrequenciesNGS for all available populations
+      if (hasNGS && markerFreqDataNGS) {
+        const availablePops: string[] = [];
+        // Check which populations exist in the NGS data (excluding kit and technology keys)
+        Object.keys(markerFreqDataNGS).forEach((key) => {
+          if (
+            key !== "kit" &&
+            key !== "technology" &&
+            markerFreqDataNGS[key as keyof typeof markerFreqDataNGS]
+          ) {
+            const popData =
+              markerFreqDataNGS[key as keyof typeof markerFreqDataNGS];
+            if (Array.isArray(popData) && popData.length > 0) {
+              availablePops.push(key);
+            }
+          }
+        });
+        return availablePops.length > 0 ? availablePops : [];
       }
       return [];
     } else {
@@ -446,7 +461,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
       citationText = "PubMed ID 40253804";
     }
   } else {
-    // Use markerFrequenciesNGS for NGS technology (RAO)
+    // Use markerFrequenciesNGS for NGS technology (all populations)
     if (selectedTechnology === "NGS" && markerFreqDataNGS) {
       const populationData = markerFreqDataNGS[
         selectedPopulation as keyof typeof markerFreqDataNGS
@@ -943,9 +958,34 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               size="sm"
                               onClick={() => {
                                 setSelectedTechnology(tech);
-                                // Auto-select RAO when switching to NGS
-                                if (tech === "NGS" && hasNGS) {
-                                  setSelectedPopulation("RAO");
+                                // Auto-select appropriate population when switching technology
+                                if (
+                                  tech === "NGS" &&
+                                  hasNGS &&
+                                  markerFreqDataNGS
+                                ) {
+                                  // Prefer RAO if available, otherwise use first available population
+                                  const ngsPops = Object.keys(
+                                    markerFreqDataNGS
+                                  ).filter(
+                                    (key) =>
+                                      key !== "kit" &&
+                                      key !== "technology" &&
+                                      Array.isArray(
+                                        markerFreqDataNGS[
+                                          key as keyof typeof markerFreqDataNGS
+                                        ]
+                                      ) &&
+                                      (
+                                        markerFreqDataNGS[
+                                          key as keyof typeof markerFreqDataNGS
+                                        ] as any[]
+                                      ).length > 0
+                                  );
+                                  const defaultPop = ngsPops.includes("RAO")
+                                    ? "RAO"
+                                    : ngsPops[0] || "RAO";
+                                  setSelectedPopulation(defaultPop);
                                 } else if (tech === "CE") {
                                   setSelectedPopulation("AFR");
                                 }

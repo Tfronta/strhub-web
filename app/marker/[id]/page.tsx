@@ -486,6 +486,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     }
   }
 
+  // Filter out alleles with frequency <= 0.000 to improve chart readability
+  chartData = chartData.filter((item) => item.frequency > 0.0);
+
   return (
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-6">

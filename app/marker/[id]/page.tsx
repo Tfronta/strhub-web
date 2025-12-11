@@ -55,6 +55,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { markerFrequencies } from "./markerFrequencies";
 import { toolsData, type Tool } from "./toolsData";
 import { LATAMCatalog, type LatamSubpop } from "@/lib/latamCatalog";
+import { getDatasetConfig } from "./datasetConfig";
 import { cn } from "@/lib/utils";
 import strKitsData from "@/data/str_kits.json";
 import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
@@ -341,6 +342,12 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     ? t(`marker.frequencies.datasetNotes.${populationDescriptionKey}`)
     : "";
   const isPopStrDataset = selectedPopulation !== "LATAM";
+
+  // Get current dataset configuration
+  const currentDataset = getDatasetConfig(selectedPopulation);
+  const datasetDescription = currentDataset?.metadata?.descriptionKey
+    ? t(`marker.frequencies.${currentDataset.metadata.descriptionKey}`)
+    : null;
 
   // Filter tools based on marker compatibility
   const getCompatibleTools = (): Tool[] => {
@@ -960,19 +967,30 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </ResponsiveContainer>
                     </div>
 
-                    {isPopStrDataset && (
+                    {/* Show dataset-specific description if available, otherwise show generic description */}
+                    {datasetDescription ? (
                       <p className="mt-2 text-sm text-muted-foreground">
-                        {t("marker.frequencies.datasetNotes.provenance")}
+                        {datasetDescription}
                       </p>
+                    ) : (
+                      <>
+                        {isPopStrDataset && (
+                          <p className="mt-2 text-sm text-muted-foreground">
+                            {t("marker.frequencies.datasetNotes.provenance")}
+                          </p>
+                        )}
+                        <p className="mt-2 text-sm text-muted-foreground">
+                          <span className="font-medium">
+                            {t(
+                              "marker.frequencies.datasetNotes.populationLabel"
+                            )}
+                          </span>
+                          <br />
+                          {populationDescription}
+                        </p>
+                      </>
                     )}
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      <span className="font-medium">
-                        {t("marker.frequencies.datasetNotes.populationLabel")}
-                      </span>
-                      <br />
-                      {populationDescription}
-                    </p>
-                    {isPopStrDataset && (
+                    {isPopStrDataset && !datasetDescription && (
                       <>
                         {/* TODO: move these dataset notes strings into the i18n translation files (EN/ES/PT) */}
                         <div className="mt-3 text-sm text-muted-foreground space-y-1">
@@ -1023,10 +1041,8 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     )}
 
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {!(
-                        selectedTechnology === "NGS" &&
-                        selectedPopulation === "RAO"
-                      ) && (
+                      {/* Show dataset button only if no external URL is configured */}
+                      {!currentDataset?.metadata?.externalUrl && (
                         <Button
                           variant="outline"
                           size="sm"
@@ -1042,25 +1058,38 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           </a>
                         </Button>
                       )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                        className="text-xs"
-                      >
-                        <a
-                          href={
-                            selectedTechnology === "NGS" &&
-                            selectedPopulation === "RAO"
-                              ? "https://www.fsigenetics.com/article/S1872-4973(22)00017-5/abstract"
-                              : "https://pubmed.ncbi.nlm.nih.gov/18847484/"
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
+                      {/* Show external URL button if metadata provides one, otherwise show default publication button */}
+                      {currentDataset?.metadata?.externalUrl ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                          className="text-xs"
                         >
-                          {t("marker.originalPublicationButton")}
-                        </a>
-                      </Button>
+                          <a
+                            href={currentDataset.metadata.externalUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {t("marker.frequencies.openOriginalPaperButton")}
+                          </a>
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                          className="text-xs"
+                        >
+                          <a
+                            href="https://pubmed.ncbi.nlm.nih.gov/18847484/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {t("marker.originalPublicationButton")}
+                          </a>
+                        </Button>
+                      )}
                     </div>
 
                     <div className="mt-4">

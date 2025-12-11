@@ -1286,9 +1286,20 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground text-center py-8">
-                    {t("common.notFound")}
-                  </p>
+                  <div className="flex flex-col items-center gap-3 py-8">
+                    <p className="text-sm text-muted-foreground text-center">
+                      {t("marker.noVariantsForMarker")}
+                    </p>
+                    <Button
+                      variant="default"
+                      className="h-8 text-xs font-normal rounded-sm px-4"
+                      asChild
+                    >
+                      <Link href="/community#contact">
+                        {t("marker.addNewVariant")}
+                      </Link>
+                    </Button>
+                  </div>
                 )}
               </CardContent>
             </Card>

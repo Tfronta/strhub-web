@@ -935,20 +935,31 @@ export const translations = {
       title: "About STRhub",
       subtitle: "Advancing STR Research & Education",
       mission: "Our Mission",
-      missionText:
-        "STRhub is dedicated to advancing forensic and population genetics through open access, collaboration, and education. We provide reliable tools, curated datasets, and learning resources to make STR analysis accessible to researchers, students, and laboratories worldwide. Our goal is to encourage a global community where knowledge, technology and collaboration come together to strengthen science everywhere.",
+      missionP1:
+        "STRhub is an open-access, interactive platform designed to explore, visualize, and understand Short Tandem Repeat (STR) data across forensic and population genetics contexts.",
+      missionP2:
+        "The project aims to bridge analytical technologies, interpretation frameworks, and educational gaps by integrating STR information derived from both capillary electrophoresis (CE) and next-generation sequencing (NGS). STRhub provides reliable tools, curated datasets, and learning resources that support researchers, students, and laboratories worldwide in navigating the complexity of STR analysis.",
+      missionP3:
+        "Our goal is to foster a global, collaborative environment where knowledge, technology, and transparency come together to strengthen forensic genetics research and education.",
       team: "Our Team",
-      teamText:
-        "We are a multidisciplinary team of researchers, bioinformaticians, and forensic scientists committed to making STR analysis more accessible and standardized.",
-      teamText2:
-        "The project is led by Dr. Tamara Frontanilla, researcher in forensic genetics and bioinformatics, with extensive experience in population genetics, sequencing technologies, and education.",
+      teamP1:
+        "STRhub is developed and led by Dr. Tamara Frontanilla and is academically supported by the Laboratory of Forensic Genetics and Population Genetics (LPFG), University of São Paulo (USP), under the supervision of Dr. Celso Teixeira Mendes Junior.",
+      teamP2:
+        "The project is developed by a multidisciplinary team of researchers, bioinformaticians, and forensic scientists, and is shaped by hands-on experience with real STR datasets, laboratory workflows, and interpretative challenges. STRhub is built to reflect the needs of the forensic and population genetics community, emphasizing clarity, methodological rigor, and accessibility.",
+      teamGithub: "GitHub profile: Tamara Frontanilla",
       whyThisMatters: "Why This Matters",
-      whyThisMattersText:
-        "Because genetics is more than data. Behind each data there are people, history, and diversity. Each STR tells a small part of who we are. By opening access to information and connecting researchers from different places, we make science more inclusive, fair and real. Together, we can go further and make knowledge something that truly belongs to everyone.",
+      whyP1:
+        "Genetics is more than data. Behind every STR profile there are people, histories, and populations shaped by migration, diversity, and evolution.",
+      whyP2:
+        "As forensic genetics evolves toward sequencing-based approaches, the gap between traditional CE profiles and sequence-derived STR data continues to grow. STRhub addresses this challenge by connecting technologies, interpretations, and educational perspectives, helping users understand not only what the data show, but how and why those results arise.",
+      whyP3:
+        "By providing open access to tools and datasets, and by emphasizing interpretability and transparency, STRhub contributes to more inclusive, reproducible, and meaningful genetic research.",
       contact: "Contact Us",
-      contactText: "Have questions or suggestions? We'd love to hear from you.",
-      contactDescription:
-        "Send us a message and we'll get back to you soon. For technical issues or feature requests, connect with us on GitHub. We encourage contributions from the global community.",
+      contactP1: "Have questions, ideas, or suggestions?",
+      contactP2:
+        "Whether you are working on forensic casework, population studies, teaching, or tool development, we'd love to hear from you.",
+      contactP3:
+        "For technical issues or feature requests, please reach out via GitHub. Contributions from the global community are welcome.",
       formName: "Name",
       formNamePlaceholder: "Your name",
       formEmail: "Email",
@@ -2236,45 +2247,6 @@ export const translations = {
       readMore: "Leer Más",
       publishedOn: "Publicado el",
     },
-    // About
-    about: {
-      title: "Acerca de STRhub",
-      subtitle: "Avanzando Investigación y Educación en STR",
-      mission: "Nuestra Misión",
-      missionText:
-        "STRhub se dedica al avance de la genética forense y poblacional a través del acceso abierto, la colaboración y la educación. Proporcionamos herramientas confiables, conjuntos de datos curados y recursos de aprendizaje para hacer que el análisis STR sea accesible para investigadores, estudiantes y laboratorios de todo el mundo. Nuestro objetivo es fomentar una comunidad global donde el conocimiento, la tecnología y la colaboración se unan para fortalecer la ciencia en todas partes.",
-      team: "Nuestro Equipo",
-      teamText:
-        "Somos un equipo multidisciplinario de investigadores, bioinformáticos y científicos forenses comprometidos con hacer el análisis STR más accesible y estandarizado.",
-      teamText2:
-        "El proyecto está dirigido por la Dra. Tamara Frontanilla, investigadora en genética forense y bioinformática, con amplia experiencia en genética poblacional, tecnologías de secuenciación y educación.",
-      whyThisMatters: "Por qué es importante",
-      whyThisMattersText:
-        "Porque la genética es más que datos. Por detrás de cada dato hay personas, historia y diversidad. Cada STR cuenta una parte de quiénes somos. Al abrir el acceso a la información y conectar investigadores de distintos lugares, hacemos la ciencia más inclusiva, justa y real. Juntos podemos ir más lejos y hacer que el conocimiento sea de todos.",
-      contact: "Contáctanos",
-      contactText: "¿Tienes preguntas o sugerencias? Nos encantaría escucharte.",
-      contactDescription:
-        "Envíanos un mensaje y te responderemos pronto. Para problemas técnicos o solicitudes de funciones, contáctanos en GitHub. Fomentamos las contribuciones de la comunidad global.",
-      formName: "Nombre",
-      formNamePlaceholder: "Tu nombre",
-      formEmail: "Correo electrónico",
-      formEmailPlaceholder: "tu.correo@ejemplo.com",
-      formSubject: "Asunto",
-      formSubjectPlaceholder: "¿De qué te gustaría hablar?",
-      formMessage: "Mensaje",
-      formMessagePlaceholder:
-        "Cuéntanos sobre tu investigación, preguntas o ideas de colaboración...",
-      formSend: "Enviar mensaje",
-      email: "Email",
-      github: "GitHub",
-      twitter: "Twitter",
-      collaboration: "Colaboración",
-      collaborationText:
-        "STRhub es un proyecto de código abierto. Damos la bienvenida a contribuciones de investigadores, desarrolladores e instituciones de todo el mundo.",
-      contribute: "Contribuir",
-      documentation: "Documentación",
-      support: "Soporte",
-    },
     // Common
     common: {
       loading: "Cargando...",
@@ -2484,21 +2456,32 @@ export const translations = {
     about: {
       title: "Sobre o STRhub",
       subtitle: "Avançando Pesquisa e Educação em STR",
-      mission: "Nossa Missão",
-      missionText:
-        "O STRhub é dedicado ao avanço da genética forense e populacional através de acesso aberto, colaboração e educação. Fornecemos ferramentas confiáveis, conjuntos de dados curados e recursos de aprendizado para tornar a análise STR acessível para pesquisadores, estudantes e laboratórios em todo o mundo. Nosso objetivo é incentivar uma comunidade global onde conhecimento, tecnologia e colaboração se unem para fortalecer a ciência em todos os lugares.",
-      team: "Nossa Equipe",
-      teamText:
-        "Somos uma equipe multidisciplinar de pesquisadores, bioinformáticos e cientistas forenses comprometidos em tornar a análise STR mais acessível e padronizada.",
-      teamText2:
-        "O projeto é liderado pela Dra. Tamara Frontanilla, pesquisadora em genética forense e bioinformática, com ampla experiência em genética populacional, tecnologias de sequenciamento e educação.",
+      mission: "Nossa missão",
+      missionP1:
+        "O STRhub é uma plataforma interativa e de acesso aberto desenvolvida para explorar, visualizar e compreender dados de Short Tandem Repeats (STRs) em contextos de genética forense e genética de populações.",
+      missionP2:
+        "O projeto tem como objetivo conectar tecnologias analíticas, estruturas de interpretação e necessidades educacionais por meio da integração de informações STR derivadas tanto da eletroforese capilar (CE) quanto do sequenciamento de nova geração (NGS). O STRhub oferece ferramentas confiáveis, conjuntos de dados curados e recursos educacionais que apoiam pesquisadores, estudantes e laboratórios em todo o mundo na interpretação da complexidade da análise de STRs.",
+      missionP3:
+        "Nosso objetivo é promover um ambiente global e colaborativo onde conhecimento, tecnologia e transparência se unam para fortalecer a pesquisa e a educação em genética forense.",
+      team: "Nossa equipe",
+      teamP1:
+        "O STRhub é um projeto desenvolvido e liderado pela Dra. Tamara Frontanilla e conta com apoio acadêmico do Laboratório de Genética Forense e Genética de Populações (LPFG), Universidade de São Paulo (USP), sob a supervisão do Dr. Celso Teixeira Mendes Junior.",
+      teamP2:
+        "O projeto é desenvolvido por uma equipe multidisciplinar de pesquisadores, bioinformatas e cientistas forenses, e é moldado pela experiência prática com conjuntos de dados STR reais, rotinas laboratoriais e desafios interpretativos. O STRhub foi construído para refletir as necessidades da comunidade forense e de genética de populações, com ênfase em clareza, rigor metodológico e acessibilidade.",
+      teamGithub: "Perfil no GitHub: Tamara Frontanilla",
       whyThisMatters: "Por que isso importa",
-      whyThisMattersText:
-        "Porque a genética é mais que dados. Por trás de cada dado há pessoas, história e diversidade. Cada STR conta uma pequena parte de quem somos. Ao abrir o acesso à informação e conectar pesquisadores de diferentes lugares, tornamos a ciência mais inclusiva, justa e real. Juntos, podemos ir mais longe e fazer do conhecimento algo que verdadeiramente pertence a todos.",
-      contact: "Entre em contato",
-      contactText: "Tem perguntas ou sugestões? Adoraríamos ouvir você.",
-      contactDescription:
-        "Envie-nos uma mensagem e responderemos em breve. Para problemas técnicos ou solicitações de recursos, entre em contato conosco no GitHub. Incentivamos contribuições da comunidade global.",
+      whyP1:
+        "A genética é mais do que dados. Por trás de cada perfil STR existem pessoas, histórias e populações moldadas pela migração, diversidade e evolução.",
+      whyP2:
+        "À medida que a genética forense avança em direção a abordagens baseadas em sequenciamento, a lacuna entre os perfis tradicionais obtidos por CE e os dados STR derivados de NGS continua a crescer. O STRhub enfrenta esse desafio ao conectar tecnologias, interpretações e perspectivas educacionais, ajudando a compreender não apenas o que os dados mostram, mas como e por que esses resultados são gerados.",
+      whyP3:
+        "Ao oferecer acesso aberto a ferramentas e conjuntos de dados, e ao enfatizar interpretabilidade e transparência, o STRhub contribui para uma pesquisa genética mais inclusiva, reprodutível e significativa.",
+      contact: "Contato",
+      contactP1: "Tem perguntas, ideias ou sugestões?",
+      contactP2:
+        "Se você trabalha com genética forense, estudos populacionais, ensino ou desenvolvimento de ferramentas, teremos prazer em ouvir você.",
+      contactP3:
+        "Para questões técnicas ou solicitações de novas funcionalidades, entre em contato via GitHub. Contribuições da comunidade global são muito bem-vindas.",
       formName: "Nome",
       formNamePlaceholder: "Seu nome",
       formEmail: "E-mail",
@@ -3461,21 +3444,32 @@ export const translations = {
     about: {
       title: "Acerca de STRhub",
       subtitle: "Avanzando Investigación y Educación en STR",
-      mission: "Nuestra Misión",
-      missionText:
-        "STRhub se dedica al avance de la genética forense y poblacional a través del acceso abierto, la colaboración y la educación. Proporcionamos herramientas confiables, conjuntos de datos curados y recursos de aprendizaje para hacer que el análisis STR sea accesible para investigadores, estudiantes y laboratorios de todo el mundo. Nuestro objetivo es fomentar una comunidad global donde el conocimiento, la tecnología y la colaboración se unan para fortalecer la ciencia en todas partes.",
-      team: "Nuestro Equipo",
-      teamText:
-        "Somos un equipo multidisciplinario de investigadores, bioinformáticos y científicos forenses comprometidos con hacer el análisis STR más accesible y estandarizado.",
-      teamText2:
-        "El proyecto está dirigido por la Dra. Tamara Frontanilla, investigadora en genética forense y bioinformática, con amplia experiencia en genética poblacional, tecnologías de secuenciación y educación.",
-      whyThisMatters: "Por qué es importante",
-      whyThisMattersText:
-        "Porque la genética es más que datos. Por detrás de cada dato hay personas, historia y diversidad. Cada STR cuenta una parte de quiénes somos. Al abrir el acceso a la información y conectar investigadores de distintos lugares, hacemos la ciencia más inclusiva, justa y real. Juntos podemos ir más lejos y hacer que el conocimiento sea de todos.",
-      contact: "Contáctanos",
-      contactText: "¿Tienes preguntas o sugerencias? Nos encantaría escucharte.",
-      contactDescription:
-        "Envíanos un mensaje y te responderemos pronto. Para problemas técnicos o solicitudes de funciones, contáctanos en GitHub. Fomentamos las contribuciones de la comunidad global.",
+      mission: "Nuestra misión",
+      missionP1:
+        "STRhub es una plataforma interactiva y de acceso abierto diseñada para explorar, visualizar y comprender datos de Short Tandem Repeats (STRs) en contextos de genética forense y genética de poblaciones.",
+      missionP2:
+        "El proyecto tiene como objetivo conectar tecnologías analíticas, marcos de interpretación y necesidades educativas mediante la integración de información STR derivada tanto de electroforesis capilar (CE) como de secuenciación de nueva generación (NGS). STRhub ofrece herramientas confiables, conjuntos de datos curados y recursos de aprendizaje que apoyan a investigadores, estudiantes y laboratorios de todo el mundo en la interpretación de la complejidad del análisis de STRs.",
+      missionP3:
+        "Nuestro objetivo es fomentar un entorno global y colaborativo donde el conocimiento, la tecnología y la transparencia se integren para fortalecer la investigación y la educación en genética forense.",
+      team: "Nuestro equipo",
+      teamP1:
+        "STRhub es un proyecto desarrollado y liderado por la Dra. Tamara Frontanilla y cuenta con el respaldo académico del Laboratorio de Genética Forense y Genética de Poblaciones (LPFG), Universidad de São Paulo (USP), bajo la supervisión del Dr. Celso Teixeira Mendes Junior.",
+      teamP2:
+        "El proyecto es desarrollado por un equipo multidisciplinario de investigadores, bioinformáticos y científicos forenses, y se nutre de la experiencia directa con conjuntos de datos STR reales, flujos de trabajo de laboratorio y desafíos interpretativos. STRhub está construido para reflejar las necesidades de la comunidad forense y de genética de poblaciones, priorizando la claridad, el rigor metodológico y la accesibilidad.",
+      teamGithub: "Perfil de GitHub: Tamara Frontanilla",
+      whyThisMatters: "Por qué esto importa",
+      whyP1:
+        "La genética es más que datos. Detrás de cada perfil STR hay personas, historias y poblaciones moldeadas por la migración, la diversidad y la evolución.",
+      whyP2:
+        "A medida que la genética forense avanza hacia enfoques basados en secuenciación, la brecha entre los perfiles tradicionales obtenidos por CE y los datos STR derivados de NGS continúa ampliándose. STRhub aborda este desafío conectando tecnologías, interpretaciones y perspectivas educativas, ayudando a comprender no solo qué muestran los datos, sino cómo y por qué se obtienen esos resultados.",
+      whyP3:
+        "Al proporcionar acceso abierto a herramientas y conjuntos de datos, y al enfatizar la interpretabilidad y la transparencia, STRhub contribuye a una investigación genética más inclusiva, reproducible y significativa.",
+      contact: "Contacto",
+      contactP1: "¿Tenés preguntas, ideas o sugerencias?",
+      contactP2:
+        "Ya sea que trabajes en genética forense, estudios poblacionales, docencia o desarrollo de herramientas, nos encantaría escucharte.",
+      contactP3:
+        "Para problemas técnicos o solicitudes de nuevas funcionalidades, podés contactarnos a través de GitHub. Las contribuciones de la comunidad global son bienvenidas.",
       formName: "Nombre",
       formNamePlaceholder: "Tu nombre",
       formEmail: "Correo electrónico",

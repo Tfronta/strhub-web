@@ -1,20 +1,11 @@
 "use client";
 
 import type React from "react";
-import { Mail, Heart, Users, Target, Send } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Mail, Heart, Users, Target } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useLanguage } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
 import { PageTitle } from "@/components/page-title";
@@ -22,14 +13,8 @@ import { PageTitle } from "@/components/page-title";
 export default function AboutPage() {
   const { language, t } = useLanguage();
   const trans = translations[language].about;
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
 
-  // Scroll to contact form if hash is present
+  // Scroll to contact section if hash is present
   useEffect(() => {
     if (window.location.hash === "#contact") {
       const contactElement = document.getElementById("contact");
@@ -40,12 +25,6 @@ export default function AboutPage() {
       }
     }
   }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -62,9 +41,15 @@ export default function AboutPage() {
                 </div>
                 <CardTitle className="text-2xl">{trans.mission}</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
                 <p className="text-muted-foreground leading-relaxed">
-                  {trans.missionText}
+                  {trans.missionP1}
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {trans.missionP2}
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {trans.missionP3}
                 </p>
               </CardContent>
             </Card>
@@ -79,16 +64,13 @@ export default function AboutPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground leading-relaxed">
-                  {trans.teamText}
+                  {trans.teamP1}
                 </p>
                 <p className="text-muted-foreground leading-relaxed">
-                  {trans.teamText2}
+                  {trans.teamP2}
                 </p>
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary">GitHub profile:</Badge>
-                  <Button variant="link" size="sm" className="p-0 h-auto">
-                    Tamara Frontanilla
-                  </Button>
+                  <Badge variant="secondary">{trans.teamGithub}</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -106,9 +88,15 @@ export default function AboutPage() {
                   {trans.whyThisMatters}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
                 <p className="text-muted-foreground leading-relaxed">
-                  {trans.whyThisMattersText}
+                  {trans.whyP1}
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {trans.whyP2}
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {trans.whyP3}
                 </p>
               </CardContent>
             </Card>
@@ -123,69 +111,17 @@ export default function AboutPage() {
                   <Mail className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <CardTitle className="text-2xl">{trans.contact}</CardTitle>
-                <CardDescription className="mt-2">
-                  {trans.contactDescription}
-                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">{trans.formName}</Label>
-                      <Input
-                        id="name"
-                        placeholder={trans.formNamePlaceholder}
-                        value={formData.name}
-                        onChange={(e) =>
-                          setFormData({ ...formData, name: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">{trans.formEmail}</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder={trans.formEmailPlaceholder}
-                        value={formData.email}
-                        onChange={(e) =>
-                          setFormData({ ...formData, email: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="subject">{trans.formSubject}</Label>
-                    <Input
-                      id="subject"
-                      placeholder={trans.formSubjectPlaceholder}
-                      value={formData.subject}
-                      onChange={(e) =>
-                        setFormData({ ...formData, subject: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="message">{trans.formMessage}</Label>
-                    <Textarea
-                      id="message"
-                      placeholder={trans.formMessagePlaceholder}
-                      rows={5}
-                      value={formData.message}
-                      onChange={(e) =>
-                        setFormData({ ...formData, message: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-                  <Button type="submit" className="w-full">
-                    <Send className="h-4 w-4 mr-2" />
-                    {trans.formSend}
-                  </Button>
-                </form>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground leading-relaxed">
+                  {trans.contactP1}
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {trans.contactP2}
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {trans.contactP3}
+                </p>
               </CardContent>
             </Card>
           </div>

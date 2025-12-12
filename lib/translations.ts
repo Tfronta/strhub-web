@@ -291,6 +291,18 @@ export const translations = {
         },
         ngsDatasetDescription_raoValleSilva2022:
           "These allele frequencies originate from a next-generation sequencing study carried out in a Brazilian population sample from Ribeirão Preto, São Paulo, Brazil (Valle-Silva et al., 2022). The dataset corresponds to the consensus STR genotypes obtained across HipSTR, STRait Razor and toaSTR. In STRhub, the RAO label refers specifically to this Ribeirão Preto NGS dataset. Reference: Valle-Silva G, Frontanilla TS, Ayala J, Donadi EA, Simões AL, Castelli EC, Mendes-Junior CT. Forensic Sci Int Genet. 2022;58:102676. doi:10.1016/j.fsigen.2022.102676.",
+        ngs1000G: {
+          intro:
+            "These allele frequencies are derived from a next-generation sequencing (NGS) study published in 2022, based on 2,504 individuals belonging to 26 populations analyzed by the 1000 Genomes Project Consortium.",
+          populationGroupsLabel: "Population groups included",
+          datasetNotesTitle: "⚠️ Dataset notes (important)",
+          datasetNotesParagraph1:
+            "In this study, STR alleles were genotyped from high-coverage whole-genome sequencing data using the HipSTR software. All data are publicly available as part of the published dataset.",
+          datasetNotesParagraph2:
+            "STRhub does not modify, infer, reconstruct, or reinterpret any component of the original STR dataset. All methodological limitations arise exclusively from the original study design, metadata availability, and the framework from which these data were derived.",
+          originalDatasetButton: "Original dataset",
+          originalPublicationButton: "Original publication",
+        },
         openOriginalPaperButton: "Open original paper",
         latam: {
           selectorHint: "Select a LATAM population for this marker.",
@@ -372,6 +384,7 @@ export const translations = {
         "No data available. Population frequencies for this locus are being curated.",
       contributeDataCta: "Contribute data",
       download: "Download",
+      downloadCSV: "Download CSV",
       source: "Source",
       viewInStrbase: "View in STRBase",
       descriptionTemplate: "{marker} is an STR locus on chromosome {chromosome}.",
@@ -1513,6 +1526,18 @@ export const translations = {
         },
         ngsDatasetDescription_raoValleSilva2022:
           "Estas frequências alélicas vêm de um estudo de sequenciamento de nova geração realizado em uma amostra populacional de Ribeirão Preto, São Paulo, Brasil (Valle-Silva et al., 2022). O conjunto de dados corresponde aos genótipos consenso obtidos entre HipSTR, STRait Razor e toaSTR. No STRhub, o rótulo RAO refere-se especificamente a este conjunto de dados NGS de Ribeirão Preto. Referência: Valle-Silva G, Frontanilla TS, Ayala J, Donadi EA, Simões AL, Castelli EC, Mendes-Junior CT. Forensic Sci Int Genet. 2022;58:102676. doi:10.1016/j.fsigen.2022.102676.",
+        ngs1000G: {
+          intro:
+            "Essas frequências alélicas são derivadas de um estudo de sequenciamento de nova geração (NGS) publicado em 2022, baseado em 2.504 indivíduos pertencentes a 26 populações analisadas pelo Consórcio do Projeto 1000 Genomas.",
+          populationGroupsLabel: "Populações incluídas",
+          datasetNotesTitle: "⚠️ Notas do conjunto de dados (importante)",
+          datasetNotesParagraph1:
+            "Neste estudo, os alelos de STR foram genotipados a partir de dados de sequenciamento do genoma completo com alta cobertura usando o software HipSTR. Todos os dados estão publicamente disponíveis como parte do conjunto de dados publicado.",
+          datasetNotesParagraph2:
+            "O STRhub não modifica, infere, reconstrói ou reinterpreta qualquer componente do conjunto de dados original de STR. Todas as limitações metodológicas decorrem exclusivamente do desenho do estudo original, da disponibilidade de metadados e do framework do qual esses dados foram derivados.",
+          originalDatasetButton: "Dataset original",
+          originalPublicationButton: "Publicação original",
+        },
         openOriginalPaperButton: "Abrir artigo original",
         latam: {
           selectorHint: "Selecione uma população LATAM para este marcador.",
@@ -1594,6 +1619,7 @@ export const translations = {
         "Nenhum dado disponível. As frequências populacionais para este locus estão sendo curadas.",
       contributeDataCta: "Contribuir com dados",
       download: "Baixar",
+      downloadCSV: "Baixar CSV",
       source: "Fonte",
       viewInStrbase: "Ver no STRBase",
       descriptionTemplate: "{marker} é um locus STR no cromossomo {chromosome}.",
@@ -2789,6 +2815,18 @@ export const translations = {
         },
         ngsDatasetDescription_raoValleSilva2022:
           "Estas frecuencias alélicas provienen de un estudio de secuenciación de nueva generación realizado en una muestra poblacional de Ribeirão Preto, São Paulo, Brasil (Valle-Silva et al., 2022). El conjunto de datos corresponde a los genotipos consenso obtenidos entre HipSTR, STRait Razor y toaSTR. En STRhub, la etiqueta RAO se refiere específicamente a este conjunto de datos NGS de Ribeirão Preto. Referencia: Valle-Silva G, Frontanilla TS, Ayala J, Donadi EA, Simões AL, Castelli EC, Mendes-Junior CT. Forensic Sci Int Genet. 2022;58:102676. doi:10.1016/j.fsigen.2022.102676.",
+        ngs1000G: {
+          intro:
+            "Estas frecuencias alélicas se derivan de un estudio de secuenciación de nueva generación (NGS) publicado en 2022, basado en 2.504 individuos pertenecientes a 26 poblaciones analizadas por el Consorcio del Proyecto 1000 Genomas.",
+          populationGroupsLabel: "Poblaciones incluidas",
+          datasetNotesTitle: "⚠️ Notas del conjunto de datos (importante)",
+          datasetNotesParagraph1:
+            "En este estudio, los alelos STR se genotiparon a partir de datos de secuenciación de genoma completo de alta cobertura utilizando el software HipSTR. Todos los datos están disponibles públicamente como parte del conjunto de datos publicado.",
+          datasetNotesParagraph2:
+            "STRhub no modifica, infiere, reconstruye ni reinterpreta ningún componente del conjunto de datos original de STR. Todas las limitaciones metodológicas surgen exclusivamente del diseño original del estudio, de la disponibilidad de metadatos y del framework del cual se derivaron estos datos.",
+          originalDatasetButton: "Dataset original",
+          originalPublicationButton: "Publicación original",
+        },
         openOriginalPaperButton: "Abrir artículo original",
         latam: {
           selectorHint: "Selecciona una población LATAM para este marcador.",
@@ -2870,6 +2908,7 @@ export const translations = {
         "No hay datos disponibles. Las frecuencias poblacionales para este locus están siendo curadas.",
       contributeDataCta: "Contribuir datos",
       download: "Descargar",
+      downloadCSV: "Descargar CSV",
       source: "Fuente",
       viewInStrbase: "Ver en STRBase",
       descriptionTemplate: "{marker} es un locus STR en el cromosoma {chromosome}.",

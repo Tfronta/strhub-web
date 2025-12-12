@@ -75,6 +75,22 @@ const POP_SUBPOP_DESCRIPTION_KEYS: Record<string, string> = {
   LATAM: "populationLatam",
 };
 
+// NGS 1000 Genomes dataset population groups
+const NGS_1000G_POPULATION_GROUPS: Record<string, string> = {
+  AFR: "Esan in Nigeria, Gambian in Western Divisions in the Gambia, Luhya in Webuye, Kenya, Mende in Sierra Leone, Yoruba in Ibadan, Nigeria.",
+  EAS: "Chinese Dai in Xishuangbanna, China, Han Chinese in Beijing, China, Southern Han Chinese, Japanese in Tokyo, Japan, Kinh in Ho Chi Minh City, Vietnam.",
+  EUR: "Utah Residents (CEPH) with Northern and Western European ancestry, Finnish in Finland, British in England and Scotland, Iberian population in Spain, Toscani in Italia.",
+  NAM: "African Caribbeans in Barbados, Americans of African ancestry in Southwest USA, Colombians from Medellín, Colombia, Mexican ancestry from Los Angeles, USA, Peruvians from Lima, Peru, Puerto Ricans from Puerto Rico.",
+  SAS: "Bengali from Bangladesh, Gujarati Indian from Houston, Texas, Indian Telugu from the UK, Punjabi from Lahore, Pakistan, Sri Lankan Tamil from the UK.",
+};
+
+// NGS 1000 Genomes dataset links
+const NGS_1000G_DATASET_LINKS = {
+  datasetUrl: "https://www.internationalgenome.org/category/phase-3/",
+  publicationUrl:
+    "https://www.mdpi.com/2073-4425/13/12/2205#app1-genes-13-02205",
+};
+
 export default function MarkerPage({ params }: { params: { id: string } }) {
   const { t, language } = useLanguage();
   const [selectedPopulation, setSelectedPopulation] = useState<string>("AFR");
@@ -1027,128 +1043,269 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     </div>
 
                     {/* Show dataset-specific description if available, otherwise show generic description */}
-                    {datasetDescription ? (
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {datasetDescription}
-                      </p>
-                    ) : (
-                      <>
-                        {isPopStrDataset && (
+                    {(() => {
+                      // Check if this is NGS 1000G dataset (AFR/EUR/NAM/EAS/SAS, but not RAO)
+                      const isNGS1000G =
+                        selectedTechnology === "NGS" &&
+                        selectedPopulation !== "RAO" &&
+                        ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
+                          selectedPopulation
+                        ) &&
+                        NGS_1000G_POPULATION_GROUPS[selectedPopulation];
+
+                      // Show RAO description if it exists (unchanged)
+                      if (datasetDescription && selectedPopulation === "RAO") {
+                        return (
                           <p className="mt-2 text-sm text-muted-foreground">
-                            {t("marker.frequencies.datasetNotes.provenance")}
+                            {datasetDescription}
                           </p>
-                        )}
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          <span className="font-medium">
-                            {t(
-                              "marker.frequencies.datasetNotes.populationLabel"
-                            )}
-                          </span>
-                          <br />
-                          {populationDescription}
-                        </p>
-                      </>
-                    )}
-                    {isPopStrDataset && !datasetDescription && (
-                      <>
-                        {/* TODO: move these dataset notes strings into the i18n translation files (EN/ES/PT) */}
-                        <div className="mt-3 text-sm text-muted-foreground space-y-1">
-                          <p className="font-medium flex items-center gap-2">
-                            <span>
-                              {t("marker.frequencies.datasetNotes.title")}
-                            </span>
-                          </p>
-                          <p>
-                            {t("marker.frequencies.datasetNotes.shortLine1")}
-                          </p>
-                          <p>
-                            {t("marker.frequencies.datasetNotes.shortLine2")}
-                          </p>
-                        </div>
-                        <Accordion type="single" collapsible className="mt-2">
-                          <AccordionItem value="method-note">
-                            <AccordionTrigger className="text-sm font-medium">
-                              {t(
-                                "marker.frequencies.datasetNotes.accordionTrigger"
-                              )}
-                            </AccordionTrigger>
-                            <AccordionContent className="text-sm text-muted-foreground space-y-2">
-                              <p>
-                                {t("marker.frequencies.datasetNotes.full1")}
-                              </p>
-                              <p>
-                                {t("marker.frequencies.datasetNotes.full2")}
-                              </p>
-                              <p>
-                                {t("marker.frequencies.datasetNotes.full3")}
-                              </p>
-                              <p className="text-xs">
-                                <span className="font-semibold">
+                        );
+                      }
+
+                      // Show NGS 1000G description for AFR/EUR/NAM/EAS/SAS
+                      if (isNGS1000G) {
+                        return (
+                          <div className="mt-2 space-y-3 text-sm text-muted-foreground">
+                            <p>{t("marker.frequencies.ngs1000G.intro")}</p>
+                            <p>
+                              <span className="font-medium">
+                                {t(
+                                  "marker.frequencies.ngs1000G.populationGroupsLabel"
+                                )}
+                              </span>
+                              <br />
+                              {NGS_1000G_POPULATION_GROUPS[selectedPopulation]}
+                            </p>
+                            <div className="space-y-1">
+                              <p className="font-medium flex items-center gap-2">
+                                <span>
                                   {t(
-                                    "marker.frequencies.datasetNotes.referenceLabel"
+                                    "marker.frequencies.ngs1000G.datasetNotesTitle"
                                   )}
                                 </span>
-                                <br />
+                              </p>
+                              <p>
                                 {t(
-                                  "marker.frequencies.datasetNotes.referenceText"
+                                  "marker.frequencies.ngs1000G.datasetNotesParagraph1"
                                 )}
                               </p>
-                            </AccordionContent>
-                          </AccordionItem>
-                        </Accordion>
-                      </>
-                    )}
+                              <p>
+                                {t(
+                                  "marker.frequencies.ngs1000G.datasetNotesParagraph2"
+                                )}
+                              </p>
+                            </div>
+                            <p className="text-xs">
+                              <span className="font-semibold">
+                                {t(
+                                  "marker.frequencies.datasetNotes.referenceLabel"
+                                )}
+                                :
+                              </span>
+                              <br />
+                              Frontanilla TS et al. Open-Access Worldwide
+                              Population STR Database Constructed Using
+                              High-Coverage Whole-Genome Sequencing Data from
+                              the 1000 Genomes Project. Genes. 2022;13(12):2205.
+                              <br />
+                              https://doi.org/10.3390/genes13122205
+                            </p>
+                          </div>
+                        );
+                      }
+
+                      // Show RAO description if it exists (for any other case)
+                      if (datasetDescription) {
+                        return (
+                          <p className="mt-2 text-sm text-muted-foreground">
+                            {datasetDescription}
+                          </p>
+                        );
+                      }
+
+                      // Default: show generic pop.STR description
+                      return (
+                        <>
+                          {isPopStrDataset && (
+                            <p className="mt-2 text-sm text-muted-foreground">
+                              {t("marker.frequencies.datasetNotes.provenance")}
+                            </p>
+                          )}
+                          <p className="mt-2 text-sm text-muted-foreground">
+                            <span className="font-medium">
+                              {t(
+                                "marker.frequencies.datasetNotes.populationLabel"
+                              )}
+                            </span>
+                            <br />
+                            {populationDescription}
+                          </p>
+                        </>
+                      );
+                    })()}
+                    {isPopStrDataset &&
+                      !datasetDescription &&
+                      !(
+                        selectedTechnology === "NGS" &&
+                        selectedPopulation !== "RAO" &&
+                        ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
+                          selectedPopulation
+                        )
+                      ) && (
+                        <>
+                          {/* TODO: move these dataset notes strings into the i18n translation files (EN/ES/PT) */}
+                          <div className="mt-3 text-sm text-muted-foreground space-y-1">
+                            <p className="font-medium flex items-center gap-2">
+                              <span>
+                                {t("marker.frequencies.datasetNotes.title")}
+                              </span>
+                            </p>
+                            <p>
+                              {t("marker.frequencies.datasetNotes.shortLine1")}
+                            </p>
+                            <p>
+                              {t("marker.frequencies.datasetNotes.shortLine2")}
+                            </p>
+                          </div>
+                          <Accordion type="single" collapsible className="mt-2">
+                            <AccordionItem value="method-note">
+                              <AccordionTrigger className="text-sm font-medium">
+                                {t(
+                                  "marker.frequencies.datasetNotes.accordionTrigger"
+                                )}
+                              </AccordionTrigger>
+                              <AccordionContent className="text-sm text-muted-foreground space-y-2">
+                                <p>
+                                  {t("marker.frequencies.datasetNotes.full1")}
+                                </p>
+                                <p>
+                                  {t("marker.frequencies.datasetNotes.full2")}
+                                </p>
+                                <p>
+                                  {t("marker.frequencies.datasetNotes.full3")}
+                                </p>
+                                <p className="text-xs">
+                                  <span className="font-semibold">
+                                    {t(
+                                      "marker.frequencies.datasetNotes.referenceLabel"
+                                    )}
+                                  </span>
+                                  <br />
+                                  {t(
+                                    "marker.frequencies.datasetNotes.referenceText"
+                                  )}
+                                </p>
+                              </AccordionContent>
+                            </AccordionItem>
+                          </Accordion>
+                        </>
+                      )}
 
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {/* Show dataset button only if no external URL is configured */}
-                      {!currentDataset?.metadata?.externalUrl && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          asChild
-                          className="text-xs"
-                        >
-                          <a
-                            href="http://spsmart.cesga.es/search.php?dataSet=strs_local"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                      {(() => {
+                        // Check if this is NGS 1000G dataset (AFR/EUR/NAM/EAS/SAS, but not RAO)
+                        const isNGS1000G =
+                          selectedTechnology === "NGS" &&
+                          selectedPopulation !== "RAO" &&
+                          ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
+                            selectedPopulation
+                          );
+
+                        // NGS 1000G: Show both "Original dataset" and "Original publication" buttons
+                        if (isNGS1000G) {
+                          return (
+                            <>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                asChild
+                                className="text-xs"
+                              >
+                                <a
+                                  href={NGS_1000G_DATASET_LINKS.datasetUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {t(
+                                    "marker.frequencies.ngs1000G.originalDatasetButton"
+                                  )}
+                                </a>
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                asChild
+                                className="text-xs"
+                              >
+                                <a
+                                  href={NGS_1000G_DATASET_LINKS.publicationUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {t(
+                                    "marker.frequencies.ngs1000G.originalPublicationButton"
+                                  )}
+                                </a>
+                              </Button>
+                            </>
+                          );
+                        }
+
+                        // RAO and other datasets: Use existing logic (unchanged)
+                        // Show dataset button only if no external URL is configured
+                        if (!currentDataset?.metadata?.externalUrl) {
+                          return (
+                            <>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                asChild
+                                className="text-xs"
+                              >
+                                <a
+                                  href="http://spsmart.cesga.es/search.php?dataSet=strs_local"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {t("marker.datasetButton")}
+                                </a>
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                asChild
+                                className="text-xs"
+                              >
+                                <a
+                                  href="https://pubmed.ncbi.nlm.nih.gov/18847484/"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {t("marker.originalPublicationButton")}
+                                </a>
+                              </Button>
+                            </>
+                          );
+                        }
+
+                        // Show external URL button if metadata provides one (e.g., RAO)
+                        return (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="text-xs"
                           >
-                            {t("marker.datasetButton")}
-                          </a>
-                        </Button>
-                      )}
-                      {/* Show external URL button if metadata provides one, otherwise show default publication button */}
-                      {currentDataset?.metadata?.externalUrl ? (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          asChild
-                          className="text-xs"
-                        >
-                          <a
-                            href={currentDataset.metadata.externalUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {t("marker.frequencies.openOriginalPaperButton")}
-                          </a>
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          asChild
-                          className="text-xs"
-                        >
-                          <a
-                            href="https://pubmed.ncbi.nlm.nih.gov/18847484/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {t("marker.originalPublicationButton")}
-                          </a>
-                        </Button>
-                      )}
+                            <a
+                              href={currentDataset.metadata.externalUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {t("marker.frequencies.openOriginalPaperButton")}
+                            </a>
+                          </Button>
+                        );
+                      })()}
                     </div>
 
                     <div className="mt-4">
@@ -1185,7 +1342,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           }}
                         >
                           <Download className="h-3 w-3 mr-1" />
-                          Download CSV
+                          {t("marker.downloadCSV")}
                         </Button>
                       </div>
 

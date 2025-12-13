@@ -266,18 +266,14 @@ export default function DatasetsPage() {
     } else if (selectedDataset === "1000G" || selectedDataset === "RAO") {
       availableMarkers.forEach((marker) => {
         const markerFreqData =
-          markerFrequenciesNGS[
-            marker.id as keyof typeof markerFrequenciesNGS
-          ];
+          markerFrequenciesNGS[marker.id as keyof typeof markerFrequenciesNGS];
         if (!markerFreqData) return;
 
         Array.from(selectedPopulations).forEach((displayPop) => {
           let internalPop: NGSPop | null = null;
 
           if (selectedDataset === "1000G" && currentDataset?.internalPopMap) {
-            internalPop = currentDataset.internalPopMap[
-              displayPop
-            ] as NGSPop;
+            internalPop = currentDataset.internalPopMap[displayPop] as NGSPop;
           } else if (selectedDataset === "RAO" && displayPop === "RAO") {
             internalPop = "RAO";
           }
@@ -317,21 +313,18 @@ export default function DatasetsPage() {
     return [];
   };
 
-  const frequencyData = useMemo(() => getFrequencyData(), [
-    selectedDataset,
-    selectedPopulations,
-    availableMarkers,
-    currentDataset,
-  ]);
+  const frequencyData = useMemo(
+    () => getFrequencyData(),
+    [selectedDataset, selectedPopulations, availableMarkers, currentDataset]
+  );
 
-  const genotypeData = useMemo(() => getGenotypeData(), [
-    selectedDataset,
-    selectedPopulations,
-  ]);
+  const genotypeData = useMemo(
+    () => getGenotypeData(),
+    [selectedDataset, selectedPopulations]
+  );
 
   const hasGenotypeData = genotypeData.length > 0;
-  const tableData =
-    viewType === "frequencies" ? frequencyData : genotypeData;
+  const tableData = viewType === "frequencies" ? frequencyData : genotypeData;
 
   // Get unique loci for filter
   const uniqueLoci = useMemo(() => {
@@ -376,12 +369,19 @@ export default function DatasetsPage() {
     const populations = Array.from(selectedPopulations).sort();
 
     filteredTableData.forEach((row) => {
-      const key = `${row.locus}::${viewType === "frequencies" ? (row as FrequencyRow).allele : (row as GenotypeRow).genotype}`;
+      const key = `${row.locus}::${
+        viewType === "frequencies"
+          ? (row as FrequencyRow).allele
+          : (row as GenotypeRow).genotype
+      }`;
 
       if (!pivotMap.has(key)) {
         pivotMap.set(key, {
           locus: row.locus,
-          allele: viewType === "frequencies" ? (row as FrequencyRow).allele : (row as GenotypeRow).genotype,
+          allele:
+            viewType === "frequencies"
+              ? (row as FrequencyRow).allele
+              : (row as GenotypeRow).genotype,
         });
         // Initialize all population columns with "—"
         populations.forEach((pop) => {
@@ -394,18 +394,19 @@ export default function DatasetsPage() {
         pivotRow[row.population] = (row as FrequencyRow).frequency;
       } else {
         const genotypeRow = row as GenotypeRow;
-        pivotRow[row.population] = genotypeRow.frequency ?? genotypeRow.count ?? "—";
+        pivotRow[row.population] =
+          genotypeRow.frequency ?? genotypeRow.count ?? "—";
       }
     });
 
     // Convert to array and sort
     const pivotRows = Array.from(pivotMap.values());
-    
+
     // Sort by locus (A-Z), then by allele (numeric)
     pivotRows.sort((a, b) => {
       const locusCompare = a.locus.localeCompare(b.locus);
       if (locusCompare !== 0) return locusCompare;
-      
+
       // Numeric sort for alleles
       const alleleA = Number.parseFloat(a.allele);
       const alleleB = Number.parseFloat(b.allele);
@@ -452,11 +453,7 @@ export default function DatasetsPage() {
 
   // Handle generate table
   const handleGenerateTable = () => {
-    if (
-      dataType &&
-      selectedDataset &&
-      selectedPopulations.size > 0
-    ) {
+    if (dataType && selectedDataset && selectedPopulations.size > 0) {
       setTableGenerated(true);
     }
   };
@@ -482,7 +479,9 @@ export default function DatasetsPage() {
 
     XLSX.writeFile(
       wb,
-      `datasets_${selectedDataset}_${viewType}_${Array.from(selectedPopulations).join("-")}.xlsx`
+      `datasets_${selectedDataset}_${viewType}_${Array.from(
+        selectedPopulations
+      ).join("-")}.xlsx`
     );
   };
 
@@ -503,7 +502,9 @@ export default function DatasetsPage() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `datasets_${selectedDataset}_${viewType}_${Array.from(selectedPopulations).join("-")}.csv`;
+    a.download = `datasets_${selectedDataset}_${viewType}_${Array.from(
+      selectedPopulations
+    ).join("-")}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -530,7 +531,9 @@ export default function DatasetsPage() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `datasets_${selectedDataset}_${viewType}_${Array.from(selectedPopulations).join("-")}.json`;
+    a.download = `datasets_${selectedDataset}_${viewType}_${Array.from(
+      selectedPopulations
+    ).join("-")}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -718,12 +721,7 @@ export default function DatasetsPage() {
                 </div>
               )}
               {currentDataset.publicationUrl && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  className="text-xs"
-                >
+                <Button variant="outline" size="sm" asChild className="text-xs">
                   <a
                     href={currentDataset.publicationUrl}
                     target="_blank"
@@ -806,9 +804,12 @@ export default function DatasetsPage() {
                     <Label className="text-xs font-medium text-muted-foreground">
                       Filters:
                     </Label>
-                    
+
                     {/* Locus Filter */}
-                    <Popover open={locusPopoverOpen} onOpenChange={setLocusPopoverOpen}>
+                    <Popover
+                      open={locusPopoverOpen}
+                      onOpenChange={setLocusPopoverOpen}
+                    >
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
@@ -888,147 +889,141 @@ export default function DatasetsPage() {
 
             {/* Pivot Table */}
             {pivotTableData.length > 0 ? (
-              <Card className="mb-6 border rounded-md shadow-none bg-card">
-                <CardContent className="px-0 py-4">
-                  <div className="border border-border rounded-md overflow-hidden bg-white">
-                    {selectedPopulations.size === 1 ? (
-                      <div className="w-full max-h-[600px] overflow-y-auto">
-                        <Table className="table-fixed w-full">
-                            <colgroup>
-                              <col style={{ width: "200px" }} />
-                              <col style={{ width: "140px" }} />
-                              {Array.from(selectedPopulations)
-                                .sort()
-                                .map((_, idx) => (
-                                  <col key={idx} style={{ width: "240px" }} />
-                                ))}
-                            </colgroup>
-                            <TableHeader className="bg-white sticky top-0 border-b z-10">
-                              <TableRow className="border-b">
-                                <TableHead className="text-xs font-semibold text-foreground bg-white sticky left-0 z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[200px]">
-                                  {t("datasets.locus")}
-                                </TableHead>
-                                <TableHead className="text-xs font-semibold text-foreground bg-white sticky left-[200px] z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[140px] text-center">
-                                  {viewType === "frequencies"
-                                    ? t("datasets.allele")
-                                    : t("datasets.genotype")}
-                                </TableHead>
-                                {Array.from(selectedPopulations)
-                                  .sort()
-                                  .map((pop) => (
-                                    <TableHead
-                                      key={pop}
-                                      className="text-xs font-semibold text-foreground text-center bg-white w-[240px]"
-                                    >
-                                      {pop}
-                                    </TableHead>
-                                  ))}
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {pivotTableData.map((row, idx) => (
-                                <TableRow
-                                  key={idx}
-                                  className="border-b bg-white hover:bg-gray-50"
-                                >
-                                  <TableCell className="text-xs font-mono text-foreground bg-white sticky left-0 z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[200px]">
-                                    {row.locus}
+              <div className="mb-6">
+                {selectedPopulations.size === 1 ? (
+                  <div className="relative w-full overflow-x-auto overflow-y-auto max-h-[70vh] rounded-md border border-border">
+                    <table className="table-fixed w-full caption-bottom text-sm">
+                      <colgroup>
+                        <col style={{ width: "200px" }} />
+                        <col style={{ width: "140px" }} />
+                        {Array.from(selectedPopulations)
+                          .sort()
+                          .map((_, idx) => (
+                            <col key={idx} style={{ width: "240px" }} />
+                          ))}
+                      </colgroup>
+                      <TableHeader>
+                        <TableRow className="border-b">
+                          <TableHead className="text-xs font-semibold text-foreground bg-muted sticky top-0 left-0 z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] shadow-sm w-[200px] py-3">
+                            {t("datasets.locus")}
+                          </TableHead>
+                          <TableHead className="text-xs font-semibold text-foreground bg-muted sticky top-0 left-[200px] z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] shadow-sm w-[140px] text-center py-3">
+                            {viewType === "frequencies"
+                              ? t("datasets.allele")
+                              : t("datasets.genotype")}
+                          </TableHead>
+                          {Array.from(selectedPopulations)
+                            .sort()
+                            .map((pop) => (
+                              <TableHead
+                                key={pop}
+                                className="text-xs font-semibold text-foreground text-center bg-muted sticky top-0 z-30 shadow-sm w-[240px] py-3"
+                              >
+                                {pop}
+                              </TableHead>
+                            ))}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {pivotTableData.map((row, idx) => (
+                          <TableRow
+                            key={idx}
+                            className="border-b bg-white hover:bg-gray-50"
+                          >
+                            <TableCell className="text-xs font-mono text-foreground bg-white sticky left-0 z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[200px]">
+                              {row.locus}
+                            </TableCell>
+                            <TableCell className="text-xs font-mono text-foreground bg-white sticky left-[200px] z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[140px] text-center">
+                              {row.allele}
+                            </TableCell>
+                            {Array.from(selectedPopulations)
+                              .sort()
+                              .map((pop) => {
+                                const value = row[pop];
+                                return (
+                                  <TableCell
+                                    key={pop}
+                                    className="text-xs text-center text-foreground bg-white w-[240px]"
+                                  >
+                                    {typeof value === "number"
+                                      ? value.toFixed(6)
+                                      : value}
                                   </TableCell>
-                                  <TableCell className="text-xs font-mono text-foreground bg-white sticky left-[200px] z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[140px] text-center">
-                                    {row.allele}
-                                  </TableCell>
-                                  {Array.from(selectedPopulations)
-                                    .sort()
-                                    .map((pop) => {
-                                      const value = row[pop];
-                                      return (
-                                        <TableCell
-                                          key={pop}
-                                          className="text-xs text-center text-foreground bg-white w-[240px]"
-                                        >
-                                          {typeof value === "number"
-                                            ? value.toFixed(6)
-                                            : value}
-                                        </TableCell>
-                                      );
-                                    })}
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                      </div>
-                    ) : (
-                      <div className="overflow-x-auto">
-                        <div className="max-h-[600px] overflow-y-auto">
-                          <Table className="table-fixed w-auto">
-                            <colgroup>
-                              <col style={{ width: "180px" }} />
-                              <col style={{ width: "120px" }} />
-                              {Array.from(selectedPopulations)
-                                .sort()
-                                .map((_, idx) => (
-                                  <col key={idx} style={{ width: "140px" }} />
-                                ))}
-                            </colgroup>
-                            <TableHeader className="bg-white sticky top-0 border-b z-10">
-                              <TableRow className="border-b">
-                                <TableHead className="text-xs font-semibold text-foreground bg-white sticky left-0 z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[180px]">
-                                  {t("datasets.locus")}
-                                </TableHead>
-                                <TableHead className="text-xs font-semibold text-foreground bg-white sticky left-[180px] z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[120px] text-center">
-                                  {viewType === "frequencies"
-                                    ? t("datasets.allele")
-                                    : t("datasets.genotype")}
-                                </TableHead>
-                                {Array.from(selectedPopulations)
-                                  .sort()
-                                  .map((pop) => (
-                                    <TableHead
-                                      key={pop}
-                                      className="text-xs font-semibold text-foreground text-center bg-white w-[140px]"
-                                    >
-                                      {pop}
-                                    </TableHead>
-                                  ))}
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {pivotTableData.map((row, idx) => (
-                                <TableRow
-                                  key={idx}
-                                  className="border-b bg-white hover:bg-gray-50"
-                                >
-                                  <TableCell className="text-xs font-mono text-foreground bg-white sticky left-0 z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[180px]">
-                                    {row.locus}
-                                  </TableCell>
-                                  <TableCell className="text-xs font-mono text-foreground bg-white sticky left-[180px] z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[120px] text-center">
-                                    {row.allele}
-                                  </TableCell>
-                                  {Array.from(selectedPopulations)
-                                    .sort()
-                                    .map((pop) => {
-                                      const value = row[pop];
-                                      return (
-                                        <TableCell
-                                          key={pop}
-                                          className="text-xs text-center text-foreground bg-white w-[140px]"
-                                        >
-                                          {typeof value === "number"
-                                            ? value.toFixed(6)
-                                            : value}
-                                        </TableCell>
-                                      );
-                                    })}
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </div>
-                      </div>
-                    )}
+                                );
+                              })}
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </table>
                   </div>
-                </CardContent>
-              </Card>
+                ) : (
+                  <div className="relative w-full overflow-x-auto overflow-y-auto max-h-[70vh] rounded-md border border-border">
+                    <table className="table-fixed w-auto caption-bottom text-sm">
+                      <colgroup>
+                        <col style={{ width: "180px" }} />
+                        <col style={{ width: "120px" }} />
+                        {Array.from(selectedPopulations)
+                          .sort()
+                          .map((_, idx) => (
+                            <col key={idx} style={{ width: "140px" }} />
+                          ))}
+                      </colgroup>
+                      <TableHeader>
+                        <TableRow className="border-b">
+                          <TableHead className="text-xs font-semibold text-foreground bg-muted sticky top-0 left-0 z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] shadow-sm w-[180px] py-3">
+                            {t("datasets.locus")}
+                          </TableHead>
+                          <TableHead className="text-xs font-semibold text-foreground bg-muted sticky top-0 left-[180px] z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] shadow-sm w-[120px] text-center py-3">
+                            {viewType === "frequencies"
+                              ? t("datasets.allele")
+                              : t("datasets.genotype")}
+                          </TableHead>
+                          {Array.from(selectedPopulations)
+                            .sort()
+                            .map((pop) => (
+                              <TableHead
+                                key={pop}
+                                className="text-xs font-semibold text-foreground text-center bg-muted sticky top-0 z-30 shadow-sm w-[140px] py-3"
+                              >
+                                {pop}
+                              </TableHead>
+                            ))}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {pivotTableData.map((row, idx) => (
+                          <TableRow
+                            key={idx}
+                            className="border-b bg-white hover:bg-gray-50"
+                          >
+                            <TableCell className="text-xs font-mono text-foreground bg-white sticky left-0 z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[180px]">
+                              {row.locus}
+                            </TableCell>
+                            <TableCell className="text-xs font-mono text-foreground bg-white sticky left-[180px] z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[120px] text-center">
+                              {row.allele}
+                            </TableCell>
+                            {Array.from(selectedPopulations)
+                              .sort()
+                              .map((pop) => {
+                                const value = row[pop];
+                                return (
+                                  <TableCell
+                                    key={pop}
+                                    className="text-xs text-center text-foreground bg-white w-[140px]"
+                                  >
+                                    {typeof value === "number"
+                                      ? value.toFixed(6)
+                                      : value}
+                                  </TableCell>
+                                );
+                              })}
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </table>
+                  </div>
+                )}
+              </div>
             ) : filteredTableData.length === 0 && tableData.length > 0 ? (
               <Card className="mb-6 border rounded-md shadow-none bg-card">
                 <CardContent className="p-8 text-center">
@@ -1066,4 +1061,3 @@ export default function DatasetsPage() {
     </div>
   );
 }
-

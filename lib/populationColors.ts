@@ -7,15 +7,14 @@
 
 // Map population codes to CSS variable names from the design system
 const POPULATION_COLOR_VARS: Record<string, string> = {
-  AFR: "--chart-1",
-  EUR: "--chart-2",
-  EAS: "--chart-3",
-  SAS: "--chart-4",
-  NAM: "--chart-5",
-  AMR: "--chart-5", // AMR maps to NAM (same internal code)
-  MES: "--primary",
-  OCE: "--secondary",
-  RAO: "--accent", // RAO uses accent color
+  AFR: "#E89AAE", // rose más definido (antes #F2B6C6)
+  EAS: "#9FD3AE", // mint green con más peso
+  EUR: "#9EBFEA", // blue más visible
+  MES: "#EBD37A", // warm yellow menos lavado
+  NAM: "#AEB8C4", // slate con contraste real
+  AMR: "#AEB8C4", // alias
+  OCE: "#C3A8E8", // lavender con cuerpo
+  SAS: "#9FD6E8", // cyan más presente
 };
 
 /**
@@ -59,7 +58,7 @@ function resolveThemeColor(varName: string, fallback: string): string {
 export function getPopulationColor(pop: string): string {
   const varName = POPULATION_COLOR_VARS[pop] || "--muted-foreground";
   const fallback = "#888888"; // Gray fallback
-  return resolveThemeColor(varName, fallback);
+  return varName.startsWith("--color-") ? resolveThemeColor(varName, fallback) : varName;
 }
 
 /**

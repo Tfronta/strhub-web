@@ -83,7 +83,9 @@ const MAX_POPULATIONS_FOR_CHART = 7;
 export default function GlobalFrequenciesPage() {
   const { t, language } = useLanguage();
   const [selectedDataset, setSelectedDataset] = useState<DatasetId>("CE");
-  const [selectedPopulations, setSelectedPopulations] = useState<Set<string>>(new Set());
+  const [selectedPopulations, setSelectedPopulations] = useState<Set<string>>(
+    new Set()
+  );
   const [selectedMarker, setSelectedMarker] = useState<string>("");
   const [markerSearchQuery, setMarkerSearchQuery] = useState("");
   const [markerPopoverOpen, setMarkerPopoverOpen] = useState(false);
@@ -144,14 +146,17 @@ export default function GlobalFrequenciesPage() {
       });
     } else if (selectedDataset === "1000G" || selectedDataset === "RAO") {
       Object.keys(markerFrequenciesNGS).forEach((markerId) => {
-        const markerFreqData = markerFrequenciesNGS[markerId as keyof typeof markerFrequenciesNGS];
+        const markerFreqData =
+          markerFrequenciesNGS[markerId as keyof typeof markerFrequenciesNGS];
         if (!markerFreqData) return;
 
         // Check if marker has data for the selected dataset
         if (selectedDataset === "1000G") {
           // Check if marker has any 1000G populations (AFR, EUR, NAM, EAS, SAS)
           const has1000GData = ["AFR", "EUR", "NAM", "EAS", "SAS"].some(
-            (pop) => markerFreqData[pop as NGSPop] && Array.isArray(markerFreqData[pop as NGSPop])
+            (pop) =>
+              markerFreqData[pop as NGSPop] &&
+              Array.isArray(markerFreqData[pop as NGSPop])
           );
           if (has1000GData) {
             const markerInfo = markerData[markerId as keyof typeof markerData];
@@ -195,7 +200,10 @@ export default function GlobalFrequenciesPage() {
   useEffect(() => {
     if (availableMarkers.length > 0 && !selectedMarker) {
       setSelectedMarker(availableMarkers[0].id);
-    } else if (availableMarkers.length > 0 && !availableMarkers.find((m) => m.id === selectedMarker)) {
+    } else if (
+      availableMarkers.length > 0 &&
+      !availableMarkers.find((m) => m.id === selectedMarker)
+    ) {
       setSelectedMarker(availableMarkers[0].id);
     }
   }, [availableMarkers, selectedMarker]);
@@ -227,7 +235,8 @@ export default function GlobalFrequenciesPage() {
     if (!selectedMarker) return result;
 
     if (selectedDataset === "CE") {
-      const markerFreqData = markerFrequenciesCE[selectedMarker as keyof typeof markerFrequenciesCE];
+      const markerFreqData =
+        markerFrequenciesCE[selectedMarker as keyof typeof markerFrequenciesCE];
       if (!markerFreqData) return result;
 
       Array.from(selectedPopulations).forEach((pop) => {
@@ -242,12 +251,15 @@ export default function GlobalFrequenciesPage() {
         }
       });
     } else if (selectedDataset === "1000G" || selectedDataset === "RAO") {
-      const markerFreqData = markerFrequenciesNGS[selectedMarker as keyof typeof markerFrequenciesNGS];
+      const markerFreqData =
+        markerFrequenciesNGS[
+          selectedMarker as keyof typeof markerFrequenciesNGS
+        ];
       if (!markerFreqData) return result;
 
       Array.from(selectedPopulations).forEach((displayPop) => {
         let internalPop: NGSPop | null = null;
-        
+
         if (selectedDataset === "1000G" && currentDataset.internalPopMap) {
           internalPop = currentDataset.internalPopMap[displayPop] as NGSPop;
         } else if (selectedDataset === "RAO" && displayPop === "RAO") {
@@ -275,7 +287,7 @@ export default function GlobalFrequenciesPage() {
   const chartData = useMemo(() => {
     const freqData = getFrequencyData();
     const allAlleles = new Set<string>();
-    
+
     // Collect all alleles
     Object.values(freqData).forEach((popFreqs) => {
       Object.keys(popFreqs).forEach((allele) => allAlleles.add(allele));
@@ -320,16 +332,21 @@ export default function GlobalFrequenciesPage() {
 
   const freqData = getFrequencyData();
   const selectedPopulationsArray = Array.from(selectedPopulations).sort();
-  const selectedMarkerInfo = availableMarkers.find((m) => m.id === selectedMarker);
-  const tooManyPopulations = selectedPopulations.size > MAX_POPULATIONS_FOR_CHART;
+  const selectedMarkerInfo = availableMarkers.find(
+    (m) => m.id === selectedMarker
+  );
+  const tooManyPopulations =
+    selectedPopulations.size > MAX_POPULATIONS_FOR_CHART;
   const chartPopulations = tooManyPopulations
     ? Array.from(selectedPopulations).slice(0, MAX_POPULATIONS_FOR_CHART)
     : selectedPopulationsArray;
 
   // Download CSV
   const handleDownloadCSV = () => {
-    const rows: string[][] = [["dataset", "technology", "population", "marker", "allele", "frequency"]];
-    
+    const rows: string[][] = [
+      ["dataset", "technology", "population", "marker", "allele", "frequency"],
+    ];
+
     Array.from(selectedPopulations).forEach((pop) => {
       const popFreqs = freqData[pop] || {};
       Object.entries(popFreqs).forEach(([allele, frequency]) => {
@@ -349,7 +366,9 @@ export default function GlobalFrequenciesPage() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `global-frequencies_${selectedDataset}_${selectedMarker}_${selectedPopulationsArray.join("-")}.csv`;
+    a.download = `global-frequencies_${selectedDataset}_${selectedMarker}_${selectedPopulationsArray.join(
+      "-"
+    )}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -374,7 +393,9 @@ export default function GlobalFrequenciesPage() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `global-frequencies_${selectedDataset}_${selectedMarker}_${selectedPopulationsArray.join("-")}.json`;
+    a.download = `global-frequencies_${selectedDataset}_${selectedMarker}_${selectedPopulationsArray.join(
+      "-"
+    )}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -426,10 +447,10 @@ export default function GlobalFrequenciesPage() {
             {t("globalFrequencies.title")}
           </h1>
           <p className="text-base text-muted-foreground mb-3">
-            {t("globalFrequencies.subtitle")}
+            {t("globalFrequencies.heroLine")}
           </p>
           <p className="text-sm text-muted-foreground max-w-4xl leading-relaxed">
-            {t("globalFrequencies.explanation")}
+            {t("globalFrequencies.comparabilityNote")}
           </p>
         </div>
 
@@ -523,7 +544,10 @@ export default function GlobalFrequenciesPage() {
               <Label className="text-sm font-medium">
                 {t("globalFrequencies.selectMarker")}:
               </Label>
-              <Popover open={markerPopoverOpen} onOpenChange={setMarkerPopoverOpen}>
+              <Popover
+                open={markerPopoverOpen}
+                onOpenChange={setMarkerPopoverOpen}
+              >
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -615,7 +639,9 @@ export default function GlobalFrequenciesPage() {
                       <h4 className="text-sm font-semibold text-foreground mb-1">
                         {t("globalFrequencies.comparability")}
                       </h4>
-                      <p className="text-amber-600 dark:text-amber-500">{datasetInfo.comparability}</p>
+                      <p className="text-amber-600 dark:text-amber-500">
+                        {datasetInfo.comparability}
+                      </p>
                     </div>
                     {datasetInfo.externalUrl && (
                       <Button
@@ -648,7 +674,8 @@ export default function GlobalFrequenciesPage() {
             <Card className="mb-6 border rounded-md shadow-none bg-card">
               <CardHeader className="pb-3 px-4">
                 <CardTitle className="text-sm font-semibold text-foreground">
-                  {t("globalFrequencies.frequencyChart")} - {selectedMarkerInfo?.name || selectedMarker}
+                  {t("globalFrequencies.frequencyChart")} -{" "}
+                  {selectedMarkerInfo?.name || selectedMarker}
                 </CardTitle>
                 {tooManyPopulations && (
                   <CardDescription className="text-xs text-amber-600 dark:text-amber-500 mt-2">
@@ -665,10 +692,7 @@ export default function GlobalFrequenciesPage() {
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={chartData}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis
-                          dataKey="allele"
-                          tick={{ fontSize: 12 }}
-                        />
+                        <XAxis dataKey="allele" tick={{ fontSize: 12 }} />
                         <YAxis tick={{ fontSize: 12 }} />
                         <Tooltip />
                         <Legend />
@@ -677,6 +701,7 @@ export default function GlobalFrequenciesPage() {
                             key={pop}
                             dataKey={pop}
                             fill={getPopulationColor(pop)}
+                            fillOpacity={1}
                           />
                         ))}
                       </BarChart>
@@ -694,7 +719,8 @@ export default function GlobalFrequenciesPage() {
             <Card className="mb-6 border rounded-md shadow-none bg-card">
               <CardHeader className="pb-3 px-4">
                 <CardTitle className="text-sm font-semibold text-foreground">
-                  {t("globalFrequencies.frequencyTable")} - {selectedMarkerInfo?.name || selectedMarker}
+                  {t("globalFrequencies.frequencyTable")} -{" "}
+                  {selectedMarkerInfo?.name || selectedMarker}
                 </CardTitle>
               </CardHeader>
               <CardContent className="px-4">
@@ -749,19 +775,11 @@ export default function GlobalFrequenciesPage() {
 
             {/* Export Buttons */}
             <div className="flex gap-2 mb-6">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDownloadCSV}
-              >
+              <Button variant="outline" size="sm" onClick={handleDownloadCSV}>
                 <Download className="h-4 w-4 mr-2" />
                 {t("globalFrequencies.downloadCSV")}
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDownloadJSON}
-              >
+              <Button variant="outline" size="sm" onClick={handleDownloadJSON}>
                 <Download className="h-4 w-4 mr-2" />
                 {t("globalFrequencies.downloadJSON")}
               </Button>

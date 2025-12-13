@@ -9,7 +9,7 @@ import { useLanguage } from "@/contexts/language-context";
 const navItems = [
   { href: "/basics", labelKey: "nav.basics" },
   { href: "/catalog", labelKey: "nav.catalog" },
-  { href: "/global-frequencies", labelKey: "nav.globalFrequencies" },
+  { href: "/datasets", labelKey: "nav.datasets" },
   { href: "/community", labelKey: "nav.blog" },
   { href: "/tools", labelKey: "nav.tools" },
   { href: "/mix-profiles", labelKey: "nav.mixProfiles" },

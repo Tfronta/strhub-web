@@ -52,6 +52,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useLanguage } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 import {
   markerFrequenciesCE,
   markerFrequenciesNGS,
@@ -95,7 +96,7 @@ interface GenotypeRow {
 }
 
 export default function DatasetsPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [dataType, setDataType] = useState<DataType | "">("");
   const [selectedDataset, setSelectedDataset] = useState<DatasetId | "">("");
   const [selectedPopulations, setSelectedPopulations] = useState<Set<string>>(
@@ -543,6 +544,49 @@ export default function DatasetsPage() {
   const canGenerateTable =
     dataType && selectedDataset && selectedPopulations.size > 0;
 
+  // Dataset-to-translation mapping
+  type TranslationType = (typeof translations)[typeof language];
+  const datasetI18nMap = {
+    popstrCE: (t: TranslationType) => t.globalFrequencies.datasets.popstrCE,
+    g1k: (t: TranslationType) => t.globalFrequencies.datasets.g1k,
+    rao: (t: TranslationType) => t.globalFrequencies.datasets.rao,
+  } as const;
+
+  // Normalize dataset ID to translation key
+  const normalizeDatasetId = (
+    datasetId: DatasetId
+  ): keyof typeof datasetI18nMap | null => {
+    if (datasetId === "CE") return "popstrCE";
+    if (datasetId === "1000G") return "g1k";
+    if (datasetId === "RAO") return "rao";
+    return null;
+  };
+
+  // Get dataset information from translations
+  const getDatasetInfo = () => {
+    if (!selectedDataset) return null;
+    const datasetKey = normalizeDatasetId(selectedDataset);
+    if (!datasetKey) return null;
+
+    const t = translations[language];
+    const getDatasetNode = datasetI18nMap[datasetKey];
+    const datasetInfo = getDatasetNode(t);
+
+    return (
+      (datasetInfo as
+        | {
+            name?: string;
+            source?: string;
+            keyNotes?: Record<string, string>;
+            populationGroups?: string;
+            comparability?: string;
+          }
+        | undefined) || null
+    );
+  };
+
+  const datasetInfo = getDatasetInfo();
+
   return (
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-6 max-w-7xl">
@@ -680,7 +724,7 @@ export default function DatasetsPage() {
         </Card>
 
         {/* Dataset Info */}
-        {currentDataset && (
+        {currentDataset && datasetInfo && (
           <Card className="mb-6 border rounded-md shadow-none bg-card">
             <CardHeader className="pb-3 px-4">
               <div className="flex items-center gap-2">
@@ -694,32 +738,71 @@ export default function DatasetsPage() {
               </div>
             </CardHeader>
             <CardContent className="px-4 space-y-3 text-sm">
-              <div>
-                <h4 className="text-sm font-semibold text-foreground mb-1">
-                  {t("datasets.datasetName")}
-                </h4>
-                <p className="text-muted-foreground">{currentDataset.name}</p>
-              </div>
-              {currentDataset.description && (
+              {/* Dataset Name */}
+              {datasetInfo.name && (
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground mb-1">
+                    {t("datasets.datasetName")}
+                  </h4>
+                  <p className="text-muted-foreground">{datasetInfo.name}</p>
+                </div>
+              )}
+
+              {/* Short Description */}
+              {datasetInfo.source && (
                 <div>
                   <h4 className="text-sm font-semibold text-foreground mb-1">
                     {t("datasets.shortDescription")}
                   </h4>
-                  <p className="text-muted-foreground">
-                    {currentDataset.description}
-                  </p>
+                  <p className="text-muted-foreground">{datasetInfo.source}</p>
                 </div>
               )}
-              {currentDataset.sampleSize && (
+
+              {/* Key Notes */}
+              {datasetInfo.keyNotes &&
+                Object.keys(datasetInfo.keyNotes).length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">
+                      {t("globalFrequencies.keyNotes")}
+                    </h4>
+                    <div className="space-y-2">
+                      {Object.keys(datasetInfo.keyNotes)
+                        .sort((a, b) => Number(a) - Number(b))
+                        .map((key) => (
+                          <p key={key} className="text-muted-foreground">
+                            {datasetInfo.keyNotes![key]}
+                          </p>
+                        ))}
+                    </div>
+                  </div>
+                )}
+
+              {/* Population groups included */}
+              {"populationGroups" in datasetInfo &&
+                datasetInfo.populationGroups && (
+                  <div>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">
+                      {t("globalFrequencies.populationGroupsIncluded")}
+                    </h4>
+                    <p className="text-muted-foreground whitespace-pre-line">
+                      {datasetInfo.populationGroups}
+                    </p>
+                  </div>
+                )}
+
+              {/* Comparability note */}
+              {datasetInfo.comparability && (
                 <div>
                   <h4 className="text-sm font-semibold text-foreground mb-1">
-                    {t("datasets.sampleSize")}
+                    {t("globalFrequencies.comparability")}
                   </h4>
                   <p className="text-muted-foreground">
-                    {currentDataset.sampleSize}
+                    {datasetInfo.comparability}
                   </p>
                 </div>
               )}
+
+              {/* Publication URL (if available from dataset config) */}
               {currentDataset.publicationUrl && (
                 <Button variant="outline" size="sm" asChild className="text-xs">
                   <a

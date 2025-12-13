@@ -133,7 +133,8 @@ export default function DatasetsPage() {
         SAS: "SAS",
       },
       description: t("globalFrequencies.datasets.g1k.source"),
-      publicationUrl: "https://www.internationalgenome.org/category/phase-3/",
+      publicationUrl:
+        "https://www.mdpi.com/2073-4425/13/12/2205#app1-genes-13-02205",
       sampleSize: "2,504",
     },
     RAO: {

@@ -890,139 +890,94 @@ export default function DatasetsPage() {
             {/* Pivot Table */}
             {pivotTableData.length > 0 ? (
               <div className="mb-6">
-                {selectedPopulations.size === 1 ? (
-                  <div className="relative w-full overflow-x-auto overflow-y-auto max-h-[70vh] rounded-md border border-border">
-                    <table className="table-fixed w-full caption-bottom text-sm">
-                      <colgroup>
-                        <col style={{ width: "200px" }} />
-                        <col style={{ width: "140px" }} />
+                <div className="relative w-full overflow-x-auto overflow-y-auto max-h-[70vh] rounded-md border border-border">
+                  <table
+                    className="table-fixed caption-bottom text-sm"
+                    style={{
+                      width: "100%",
+                      minWidth: `max(100%, ${
+                        340 + 150 * selectedPopulations.size
+                      }px)`,
+                    }}
+                  >
+                    <colgroup>
+                      <col style={{ width: "200px" }} />
+                      <col style={{ width: "140px" }} />
+                      {Array.from(selectedPopulations)
+                        .sort()
+                        .map((_, idx) => {
+                          // Calculate equal width for population columns
+                          // Distribute remaining space equally among all population columns
+                          const popCount = selectedPopulations.size;
+                          const totalFixedWidth = 340; // 200px (locus) + 140px (allele)
+                          // Calculate width: remaining space divided by number of populations
+                          // This ensures columns stretch to fill available space when few
+                          // minWidth on table ensures horizontal scroll when many columns
+                          const popWidth = `calc((100% - ${totalFixedWidth}px) / ${popCount})`;
+                          return (
+                            <col
+                              key={idx}
+                              style={{
+                                width: popWidth,
+                              }}
+                            />
+                          );
+                        })}
+                    </colgroup>
+                    <TableHeader>
+                      <TableRow className="border-b">
+                        <TableHead className="text-xs font-semibold text-foreground bg-muted sticky top-0 left-0 z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] shadow-sm py-3">
+                          {t("datasets.locus")}
+                        </TableHead>
+                        <TableHead className="text-xs font-semibold text-foreground bg-muted sticky top-0 left-[200px] z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] shadow-sm text-center py-3">
+                          {viewType === "frequencies"
+                            ? t("datasets.allele")
+                            : t("datasets.genotype")}
+                        </TableHead>
                         {Array.from(selectedPopulations)
                           .sort()
-                          .map((_, idx) => (
-                            <col key={idx} style={{ width: "240px" }} />
+                          .map((pop) => (
+                            <TableHead
+                              key={pop}
+                              className="text-xs font-semibold text-foreground text-center bg-muted sticky top-0 z-30 shadow-sm py-3"
+                            >
+                              {pop}
+                            </TableHead>
                           ))}
-                      </colgroup>
-                      <TableHeader>
-                        <TableRow className="border-b">
-                          <TableHead className="text-xs font-semibold text-foreground bg-muted sticky top-0 left-0 z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] shadow-sm w-[200px] py-3">
-                            {t("datasets.locus")}
-                          </TableHead>
-                          <TableHead className="text-xs font-semibold text-foreground bg-muted sticky top-0 left-[200px] z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] shadow-sm w-[140px] text-center py-3">
-                            {viewType === "frequencies"
-                              ? t("datasets.allele")
-                              : t("datasets.genotype")}
-                          </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {pivotTableData.map((row, idx) => (
+                        <TableRow
+                          key={idx}
+                          className="border-b bg-white hover:bg-gray-50"
+                        >
+                          <TableCell className="text-xs font-mono text-foreground bg-white sticky left-0 z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
+                            {row.locus}
+                          </TableCell>
+                          <TableCell className="text-xs font-mono text-foreground bg-white sticky left-[200px] z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] text-center">
+                            {row.allele}
+                          </TableCell>
                           {Array.from(selectedPopulations)
                             .sort()
-                            .map((pop) => (
-                              <TableHead
-                                key={pop}
-                                className="text-xs font-semibold text-foreground text-center bg-muted sticky top-0 z-30 shadow-sm w-[240px] py-3"
-                              >
-                                {pop}
-                              </TableHead>
-                            ))}
+                            .map((pop) => {
+                              const value = row[pop];
+                              return (
+                                <TableCell
+                                  key={pop}
+                                  className="text-xs text-center text-foreground bg-white"
+                                >
+                                  {typeof value === "number"
+                                    ? value.toFixed(6)
+                                    : value}
+                                </TableCell>
+                              );
+                            })}
                         </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {pivotTableData.map((row, idx) => (
-                          <TableRow
-                            key={idx}
-                            className="border-b bg-white hover:bg-gray-50"
-                          >
-                            <TableCell className="text-xs font-mono text-foreground bg-white sticky left-0 z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[200px]">
-                              {row.locus}
-                            </TableCell>
-                            <TableCell className="text-xs font-mono text-foreground bg-white sticky left-[200px] z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[140px] text-center">
-                              {row.allele}
-                            </TableCell>
-                            {Array.from(selectedPopulations)
-                              .sort()
-                              .map((pop) => {
-                                const value = row[pop];
-                                return (
-                                  <TableCell
-                                    key={pop}
-                                    className="text-xs text-center text-foreground bg-white w-[240px]"
-                                  >
-                                    {typeof value === "number"
-                                      ? value.toFixed(6)
-                                      : value}
-                                  </TableCell>
-                                );
-                              })}
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="relative w-full overflow-x-auto overflow-y-auto max-h-[70vh] rounded-md border border-border">
-                    <table className="table-fixed w-auto caption-bottom text-sm">
-                      <colgroup>
-                        <col style={{ width: "180px" }} />
-                        <col style={{ width: "120px" }} />
-                        {Array.from(selectedPopulations)
-                          .sort()
-                          .map((_, idx) => (
-                            <col key={idx} style={{ width: "140px" }} />
-                          ))}
-                      </colgroup>
-                      <TableHeader>
-                        <TableRow className="border-b">
-                          <TableHead className="text-xs font-semibold text-foreground bg-muted sticky top-0 left-0 z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] shadow-sm w-[180px] py-3">
-                            {t("datasets.locus")}
-                          </TableHead>
-                          <TableHead className="text-xs font-semibold text-foreground bg-muted sticky top-0 left-[180px] z-30 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] shadow-sm w-[120px] text-center py-3">
-                            {viewType === "frequencies"
-                              ? t("datasets.allele")
-                              : t("datasets.genotype")}
-                          </TableHead>
-                          {Array.from(selectedPopulations)
-                            .sort()
-                            .map((pop) => (
-                              <TableHead
-                                key={pop}
-                                className="text-xs font-semibold text-foreground text-center bg-muted sticky top-0 z-30 shadow-sm w-[140px] py-3"
-                              >
-                                {pop}
-                              </TableHead>
-                            ))}
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {pivotTableData.map((row, idx) => (
-                          <TableRow
-                            key={idx}
-                            className="border-b bg-white hover:bg-gray-50"
-                          >
-                            <TableCell className="text-xs font-mono text-foreground bg-white sticky left-0 z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[180px]">
-                              {row.locus}
-                            </TableCell>
-                            <TableCell className="text-xs font-mono text-foreground bg-white sticky left-[180px] z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] w-[120px] text-center">
-                              {row.allele}
-                            </TableCell>
-                            {Array.from(selectedPopulations)
-                              .sort()
-                              .map((pop) => {
-                                const value = row[pop];
-                                return (
-                                  <TableCell
-                                    key={pop}
-                                    className="text-xs text-center text-foreground bg-white w-[140px]"
-                                  >
-                                    {typeof value === "number"
-                                      ? value.toFixed(6)
-                                      : value}
-                                  </TableCell>
-                                );
-                              })}
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </table>
-                  </div>
-                )}
+                      ))}
+                    </TableBody>
+                  </table>
+                </div>
               </div>
             ) : filteredTableData.length === 0 && tableData.length > 0 ? (
               <Card className="mb-6 border rounded-md shadow-none bg-card">

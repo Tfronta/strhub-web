@@ -462,9 +462,10 @@ export default function DatasetsPage() {
 
   // Download Excel
   const handleDownloadExcel = () => {
-    if (tableData.length === 0) return;
+    if (pivotTableData.length === 0) return;
 
-    const ws = XLSX.utils.json_to_sheet(tableData);
+    // Use pivot table data where each population is a column
+    const ws = XLSX.utils.json_to_sheet(pivotTableData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Data");
 
@@ -489,13 +490,23 @@ export default function DatasetsPage() {
 
   // Download CSV
   const handleDownloadCSV = () => {
-    if (tableData.length === 0) return;
+    if (pivotTableData.length === 0) return;
 
-    const headers = Object.keys(tableData[0]);
+    // Use pivot table data where each population is a column
+    const headers = Object.keys(pivotTableData[0]);
     const rows = [
       headers.join(","),
-      ...tableData.map((row) =>
-        headers.map((h) => JSON.stringify(row[h as keyof typeof row])).join(",")
+      ...pivotTableData.map((row) =>
+        headers
+          .map((h) => {
+            const value = row[h as keyof typeof row];
+            // Format numbers appropriately, keep strings as-is
+            if (typeof value === "number") {
+              return value.toFixed(6);
+            }
+            return JSON.stringify(value);
+          })
+          .join(",")
       ),
     ];
 

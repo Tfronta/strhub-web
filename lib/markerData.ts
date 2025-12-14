@@ -15409,38 +15409,6 @@ export const markerData = {
     },
     "populationFrequencies": pf(key("dyf387s1"))
   },
-  "dyf387s1fragment12": {
-    "name": "DYF387S1fragment12",
-    "fullName": "DYF387S1fragment12",
-    "chromosome": "Y",
-    "cytogeneticLocation": null,
-    "position": null,
-    "motif": "A[5]AAGA[2]AAGG[1]TAGG[1]AAGG[3]AAGA[2]AAGG[1]AAGA[2]AAGG[n]AAGA[n]A[3]",
-    "alternativeMotifs": null,
-    "type": null,
-    "alleles": null,
-    "category": "Y-Chromosome STRs",
-    "description": "DYF387S1fragment12 is an STR locus on chromosome Y.",
-    "coordinates": {
-      "build": "GRCh38",
-      "start": null,
-      "end": null,
-      "strand": "+",
-      "grch37": {
-        "start": null,
-        "end": null
-      }
-    },
-    "sequences": [],
-    "nistReference": {
-      "url": "https://strbase.nist.gov/str_DYF387S1fragment12.htm",
-      "variantTable": "https://strbase.nist.gov/Human/VariantalleleTable/DYF387S1fragment12",
-      "referenceAllele": null,
-      "lastUpdated": null,
-      "commonAlleles": []
-    },
-    "populationFrequencies": pf(key("dyf387s1fragment12"))
-  },
   "dyf395s1ab": {
     "name": "DYF395S1ab",
     "fullName": "DYF395S1ab",

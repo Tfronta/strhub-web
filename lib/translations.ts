@@ -1076,6 +1076,10 @@ export const translations = {
       formMessagePlaceholder:
         "Tell us about your research, questions, or collaboration ideas...",
       formSend: "Send Message",
+      formSending: "Sending...",
+      formSuccess: "Message sent!",
+      formSuccessDescription:
+        "Thank you for contacting us. We'll get back to you soon.",
       email: "Email",
       github: "GitHub",
       twitter: "Twitter",
@@ -2693,6 +2697,10 @@ export const translations = {
       formMessagePlaceholder:
         "Conte sobre sua pesquisa, ideias de colaboração ou funcionalidades que você gostaria de ver no STRhub...",
       formSend: "Enviar mensagem",
+      formSending: "Enviando...",
+      formSuccess: "Mensagem enviada!",
+      formSuccessDescription:
+        "Obrigado por entrar em contato. Entraremos em contato em breve.",
       email: "Email",
       github: "GitHub",
       twitter: "Twitter",
@@ -3787,6 +3795,10 @@ export const translations = {
       formMessagePlaceholder:
         "Cuéntanos sobre tu investigación, preguntas o ideas de colaboración...",
       formSend: "Enviar mensaje",
+      formSending: "Enviando...",
+      formSuccess: "¡Mensaje enviado!",
+      formSuccessDescription:
+        "Gracias por contactarnos. Nos pondremos en contacto pronto.",
       email: "Email",
       github: "GitHub",
       twitter: "Twitter",

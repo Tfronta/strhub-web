@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/contexts/language-context";
 import type { Language } from "@/lib/translations";
 import { Suspense } from "react";
 import { GlobalHeader } from "@/components/global-header";
+import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 const inter = Inter({
@@ -44,6 +45,7 @@ export default function RootLayout({
               <div className="min-h-screen bg-background flex flex-col">
                 <GlobalHeader />
                 <main className="flex-1">{children}</main>
+                <Toaster />
               </div>
             </LanguageProvider>
           </ThemeProvider>

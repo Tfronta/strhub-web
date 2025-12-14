@@ -131,6 +131,9 @@ importers:
       contentful:
         specifier: latest
         version: 11.8.9
+      contentful-management:
+        specifier: ^11.66.0
+        version: 11.66.0
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
@@ -1646,6 +1649,10 @@ packages:
   comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
 
+  contentful-management@11.66.0:
+    resolution: {integrity: sha512-rMI8LnNljyOBnREIT9V5MDLtxlPctO7dYwIszNZuHdBvd5C10CM8apglCrm87nFTuRGpbJ0q+y7cv/c8IQyfZw==}
+    engines: {node: '>=18'}
+
   contentful-resolve-response@1.9.4:
     resolution: {integrity: sha512-8qu2dM2IMoVQhBhp81BVGB9ISantPmPTZ3EELGxuM8e/t+jSe+xmsVk5yHE+a9AYMBKSwgupBnkjGZE4RzFowQ==}
     engines: {node: '>=4.7.2'}
@@ -1885,6 +1892,10 @@ packages:
   get-proto@1.0.1:
     resolution: {integrity: sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g==}
     engines: {node: '>= 0.4'}
+
+  globals@15.15.0:
+    resolution: {integrity: sha512-7ACyT3wmyp3I61S4fG682L0VA2RGD9otkqGJIwNUMF1SWUombIIk+af1unuDYgMm082aHYwD+mzJvv9Iu8dsgg==}
+    engines: {node: '>=18'}
 
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
@@ -4076,6 +4087,16 @@ snapshots:
 
   comma-separated-tokens@2.0.3: {}
 
+  contentful-management@11.66.0:
+    dependencies:
+      '@contentful/rich-text-types': 16.8.5
+      axios: 1.13.1
+      contentful-sdk-core: 9.2.1
+      fast-copy: 3.0.2
+      globals: 15.15.0
+    transitivePeerDependencies:
+      - debug
+
   contentful-resolve-response@1.9.4:
     dependencies:
       fast-copy: 3.0.2
@@ -4295,6 +4316,8 @@ snapshots:
     dependencies:
       dunder-proto: 1.0.1
       es-object-atoms: 1.1.1
+
+  globals@15.15.0: {}
 
   gopd@1.2.0: {}
 

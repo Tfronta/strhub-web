@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
 import {
@@ -34,6 +35,7 @@ import {
   type BackToBasicsPost,
 } from "@/components/back-to-basics/BackToBasicsCard";
 import { PageTitle } from "@/components/page-title";
+import { useToast } from "@/hooks/use-toast";
 
 interface BlogPost {
   id: string;
@@ -46,10 +48,13 @@ interface BlogPost {
 
 export default function BlogPage() {
   const { language, t } = useLanguage();
+  const { toast } = useToast();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [recentPosts, setRecentPosts] = useState<BackToBasicsPost[]>([]);
   const [isLoadingPosts, setIsLoadingPosts] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -132,10 +137,45 @@ export default function BlogPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission - you can implement this based on your backend
-    console.log("Form submitted:", formData);
-    // Reset form
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setIsSubmitting(true);
+    setFormError(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Set form error to display in the form
+        setFormError(data.error || "Failed to send message");
+        return;
+      }
+
+      // Success
+      toast({
+        title: t("about.formSuccess") || "Message sent!",
+        description:
+          t("about.formSuccessDescription") ||
+          "Thank you for contacting us. We'll get back to you soon.",
+      });
+
+      // Reset form and clear errors
+      setFormData({ name: "", email: "", subject: "", message: "" });
+      setFormError(null);
+    } catch (error: any) {
+      // Network or other errors
+      setFormError(
+        error.message || "Failed to send message. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -341,7 +381,7 @@ export default function BlogPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-0">
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">{t("about.formName")}</Label>
@@ -353,6 +393,7 @@ export default function BlogPage() {
                         setFormData({ ...formData, name: e.target.value })
                       }
                       required
+                      disabled={isSubmitting}
                     />
                   </div>
                   <div className="space-y-2">
@@ -366,6 +407,7 @@ export default function BlogPage() {
                         setFormData({ ...formData, email: e.target.value })
                       }
                       required
+                      disabled={isSubmitting}
                     />
                   </div>
                 </div>
@@ -379,6 +421,7 @@ export default function BlogPage() {
                       setFormData({ ...formData, subject: e.target.value })
                     }
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
                 <div className="space-y-2">
@@ -392,10 +435,22 @@ export default function BlogPage() {
                       setFormData({ ...formData, message: e.target.value })
                     }
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
-                <Button type="submit" className="w-full">
-                  {t("about.formSend")}
+                {formError && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{formError}</AlertDescription>
+                  </Alert>
+                )}
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting
+                    ? t("about.formSending") || "Sending..."
+                    : t("about.formSend")}
                 </Button>
               </form>
             </CardContent>

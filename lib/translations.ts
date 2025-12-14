@@ -1137,8 +1137,8 @@ export const translations = {
         intro: "We're working on new resources and tools that will gradually appear in this hub.",
         cards: {
           structureBrowser: {
-            title: "STR structure browser",
-            body: "Interactive views to explore repeat structures, flanking regions, and internal variants for different markers.",
+            title: "LATAM Catalog",
+            body: "Curated allele frequency catalog of Latin American populations.",
           },
           caseStudies: {
             title: "Case studies from labs",
@@ -2138,8 +2138,8 @@ export const translations = {
         intro: "Estamos desenvolvendo novos recursos e ferramentas que vão aparecer neste hub aos poucos.",
         cards: {
           structureBrowser: {
-            title: "Navegador de estruturas STR",
-            body: "Vistas interativas para explorar estruturas repetitivas, regiões flanqueadoras e variantes internas de diferentes marcadores.",
+            title: "Catálogo LATAM",
+            body: "Catálogo curado de frequências alélicas de populações latino-americanas.",
           },
           caseStudies: {
             title: "Estudos de caso de laboratórios",
@@ -3856,8 +3856,8 @@ export const translations = {
         intro: "Estamos trabajando en nuevos recursos y herramientas que se irán sumando a este hub.",
         cards: {
           structureBrowser: {
-            title: "Explorador de estructuras STR",
-            body: "Vistas interactivas para explorar estructuras repetitivas, regiones flanqueadoras y variantes internas de distintos marcadores.",
+            title: "Catálogo LATAM",
+            body: "Catálogo curado de frecuencias alélicas de poblaciones latinoamericanas.",
           },
           caseStudies: {
             title: "Estudios de caso desde laboratorios",

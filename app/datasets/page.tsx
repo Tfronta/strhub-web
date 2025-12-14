@@ -44,6 +44,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Command,
   CommandEmpty,
   CommandGroup,
@@ -109,6 +116,7 @@ export default function DatasetsPage() {
   const [locusFilter, setLocusFilter] = useState<string>("");
   const [alleleFilter, setAlleleFilter] = useState<string>("");
   const [locusPopoverOpen, setLocusPopoverOpen] = useState(false);
+  const [datasetInfoDialogOpen, setDatasetInfoDialogOpen] = useState(false);
 
   // Dataset configurations
   const datasetConfigs: Record<DatasetId, DatasetConfig> = {
@@ -610,7 +618,7 @@ export default function DatasetsPage() {
           <p className="text-base text-muted-foreground mb-3">
             {t("datasets.description")}
           </p>
-          <p className="text-sm text-muted-foreground max-w-4xl leading-relaxed mb-2">
+          <p className="text-sm text-muted-foreground leading-relaxed mb-2">
             {t("datasets.description2")}
           </p>
           <p className="text-sm text-muted-foreground max-w-4xl leading-relaxed">
@@ -668,6 +676,124 @@ export default function DatasetsPage() {
                     ))}
                   </SelectContent>
                 </Select>
+                {currentDataset && datasetInfo && (
+                  <Dialog
+                    open={datasetInfoDialogOpen}
+                    onOpenChange={setDatasetInfoDialogOpen}
+                  >
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="text-xs">
+                        {t("datasets.viewDatasetInformation")}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <div className="flex items-center gap-2">
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                          <DialogTitle className="text-sm font-semibold text-foreground">
+                            {t("datasets.datasetInfo")}
+                          </DialogTitle>
+                          <Badge variant="secondary" className="ml-2 text-xs">
+                            {currentDataset.technology}
+                          </Badge>
+                        </div>
+                      </DialogHeader>
+                      <div className="space-y-3 text-sm">
+                        {/* Dataset Name */}
+                        {datasetInfo.name && (
+                          <div>
+                            <h4 className="text-sm font-semibold text-foreground mb-1">
+                              {t("datasets.datasetName")}
+                            </h4>
+                            <p className="text-muted-foreground">
+                              {datasetInfo.name}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Short Description */}
+                        {datasetInfo.source && (
+                          <div>
+                            <h4 className="text-sm font-semibold text-foreground mb-1">
+                              {t("datasets.shortDescription")}
+                            </h4>
+                            <p className="text-muted-foreground">
+                              {datasetInfo.source}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Key Notes */}
+                        {datasetInfo.keyNotes &&
+                          Object.keys(datasetInfo.keyNotes).length > 0 && (
+                            <div>
+                              <h4 className="text-sm font-semibold text-foreground mb-1">
+                                {t("globalFrequencies.keyNotes")}
+                              </h4>
+                              <div className="space-y-2">
+                                {Object.keys(datasetInfo.keyNotes)
+                                  .sort((a, b) => Number(a) - Number(b))
+                                  .map((key) => (
+                                    <p
+                                      key={key}
+                                      className="text-muted-foreground"
+                                    >
+                                      {datasetInfo.keyNotes![key]}
+                                    </p>
+                                  ))}
+                              </div>
+                            </div>
+                          )}
+
+                        {/* Population groups included */}
+                        {"populationGroups" in datasetInfo &&
+                          datasetInfo.populationGroups && (
+                            <div>
+                              <h4 className="text-sm font-semibold text-foreground mb-1">
+                                {t(
+                                  "globalFrequencies.populationGroupsIncluded"
+                                )}
+                              </h4>
+                              <p className="text-muted-foreground whitespace-pre-line">
+                                {datasetInfo.populationGroups}
+                              </p>
+                            </div>
+                          )}
+
+                        {/* Comparability note */}
+                        {datasetInfo.comparability && (
+                          <div>
+                            <h4 className="text-sm font-semibold text-foreground mb-1">
+                              {t("globalFrequencies.comparability")}
+                            </h4>
+                            <p className="text-muted-foreground">
+                              {datasetInfo.comparability}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Publication URL (if available from dataset config) */}
+                        {currentDataset.publicationUrl && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="text-xs"
+                          >
+                            <a
+                              href={currentDataset.publicationUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <ExternalLink className="h-3 w-3 mr-2" />
+                              {t("datasets.viewPublication")}
+                            </a>
+                          </Button>
+                        )}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </div>
             )}
 
@@ -734,102 +860,6 @@ export default function DatasetsPage() {
             )}
           </CardContent>
         </Card>
-
-        {/* Dataset Info */}
-        {currentDataset && datasetInfo && (
-          <Card className="mb-6 border rounded-md shadow-none bg-card">
-            <CardHeader className="pb-3 px-4">
-              <div className="flex items-center gap-2">
-                <Info className="h-4 w-4 text-muted-foreground" />
-                <CardTitle className="text-sm font-semibold text-foreground">
-                  {t("datasets.datasetInfo")}
-                </CardTitle>
-                <Badge variant="secondary" className="ml-2 text-xs">
-                  {currentDataset.technology}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="px-4 space-y-3 text-sm">
-              {/* Dataset Name */}
-              {datasetInfo.name && (
-                <div>
-                  <h4 className="text-sm font-semibold text-foreground mb-1">
-                    {t("datasets.datasetName")}
-                  </h4>
-                  <p className="text-muted-foreground">{datasetInfo.name}</p>
-                </div>
-              )}
-
-              {/* Short Description */}
-              {datasetInfo.source && (
-                <div>
-                  <h4 className="text-sm font-semibold text-foreground mb-1">
-                    {t("datasets.shortDescription")}
-                  </h4>
-                  <p className="text-muted-foreground">{datasetInfo.source}</p>
-                </div>
-              )}
-
-              {/* Key Notes */}
-              {datasetInfo.keyNotes &&
-                Object.keys(datasetInfo.keyNotes).length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-semibold text-foreground mb-1">
-                      {t("globalFrequencies.keyNotes")}
-                    </h4>
-                    <div className="space-y-2">
-                      {Object.keys(datasetInfo.keyNotes)
-                        .sort((a, b) => Number(a) - Number(b))
-                        .map((key) => (
-                          <p key={key} className="text-muted-foreground">
-                            {datasetInfo.keyNotes![key]}
-                          </p>
-                        ))}
-                    </div>
-                  </div>
-                )}
-
-              {/* Population groups included */}
-              {"populationGroups" in datasetInfo &&
-                datasetInfo.populationGroups && (
-                  <div>
-                    <h4 className="text-sm font-semibold text-foreground mb-1">
-                      {t("globalFrequencies.populationGroupsIncluded")}
-                    </h4>
-                    <p className="text-muted-foreground whitespace-pre-line">
-                      {datasetInfo.populationGroups}
-                    </p>
-                  </div>
-                )}
-
-              {/* Comparability note */}
-              {datasetInfo.comparability && (
-                <div>
-                  <h4 className="text-sm font-semibold text-foreground mb-1">
-                    {t("globalFrequencies.comparability")}
-                  </h4>
-                  <p className="text-muted-foreground">
-                    {datasetInfo.comparability}
-                  </p>
-                </div>
-              )}
-
-              {/* Publication URL (if available from dataset config) */}
-              {currentDataset.publicationUrl && (
-                <Button variant="outline" size="sm" asChild className="text-xs">
-                  <a
-                    href={currentDataset.publicationUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <ExternalLink className="h-3 w-3 mr-2" />
-                    {t("datasets.viewPublication")}
-                  </a>
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        )}
 
         {/* Table Output */}
         {tableGenerated && canGenerateTable && (

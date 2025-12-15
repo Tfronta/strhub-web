@@ -1075,12 +1075,12 @@ export default function DatasetsPage() {
                       {pivotTableData.map((row, idx) => (
                         <TableRow
                           key={idx}
-                          className="border-b bg-white hover:bg-gray-50"
+                          className="border-b bg-background hover:bg-muted/50"
                         >
-                          <TableCell className="text-xs font-mono text-foreground bg-white sticky left-0 z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
+                          <TableCell className="text-xs font-mono text-foreground bg-background sticky left-0 z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
                             {row.locus}
                           </TableCell>
-                          <TableCell className="text-xs font-mono text-foreground bg-white sticky left-[200px] z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] text-center">
+                          <TableCell className="text-xs font-mono text-foreground bg-background sticky left-[200px] z-20 border-r shadow-[2px_0_4px_rgba(0,0,0,0.05)] text-center">
                             {row.allele}
                           </TableCell>
                           {Array.from(selectedPopulations)
@@ -1090,7 +1090,7 @@ export default function DatasetsPage() {
                               return (
                                 <TableCell
                                   key={pop}
-                                  className="text-xs text-center text-foreground bg-white"
+                                  className="text-xs text-center text-foreground bg-background"
                                 >
                                   {typeof value === "number"
                                     ? value.toFixed(6)

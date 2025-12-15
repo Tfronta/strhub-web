@@ -295,10 +295,7 @@ export default function CatalogPage() {
             onClick={() => setSelectedCategory("CODIS Core")}
           >
             <CardHeader className="pb-3">
-              <div
-                className="text-lg font-semibold text-blue-900 dark:text-blue-100"
-                style={{ color: "#1e3a8a" }}
-              >
+              <div className="text-lg font-semibold text-blue-900 dark:text-blue-100">
                 {t("catalog.categories.CODIS Core")}
               </div>
               <CardDescription className="text-2xl font-bold text-foreground mt-2">

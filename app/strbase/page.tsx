@@ -161,12 +161,12 @@ export default function STRBasePage() {
 
         {/* Integration Status Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-          <Card className="border-0 bg-gradient-to-br from-primary/20 to-primary/10">
+          <Card
+            className="border-0"
+            style={{ background: "var(--tile-codis)" }}
+          >
             <CardHeader className="pb-3">
-              <h3
-                className="text-lg font-semibold"
-                style={{ color: "#1f2937" }}
-              >
+              <h3 className="text-lg font-semibold text-[#1f2937] dark:text-foreground">
                 CODIS Core
               </h3>
               <CardDescription className="text-2xl font-bold text-primary">
@@ -174,12 +174,12 @@ export default function STRBasePage() {
               </CardDescription>
             </CardHeader>
           </Card>
-          <Card className="border-0 bg-gradient-to-br from-secondary/20 to-secondary/10">
+          <Card
+            className="border-0"
+            style={{ background: "var(--tile-noncore)" }}
+          >
             <CardHeader className="pb-3">
-              <h3
-                className="text-lg font-semibold"
-                style={{ color: "#1f2937" }}
-              >
+              <h3 className="text-lg font-semibold text-[#1f2937] dark:text-foreground">
                 Non-Core
               </h3>
               <CardDescription className="text-2xl font-bold text-secondary">
@@ -187,41 +187,32 @@ export default function STRBasePage() {
               </CardDescription>
             </CardHeader>
           </Card>
-          <Card className="border-0 bg-gradient-to-br from-green-500/20 to-green-500/10">
+          <Card className="border-0" style={{ background: "var(--tile-auto)" }}>
             <CardHeader className="pb-3">
-              <h3
-                className="text-lg font-semibold"
-                style={{ color: "#1f2937" }}
-              >
+              <h3 className="text-lg font-semibold text-[#1f2937] dark:text-foreground">
                 Autosomal
               </h3>
-              <CardDescription className="text-2xl font-bold text-green-600">
+              <CardDescription className="text-2xl font-bold text-green-600 dark:text-foreground">
                 {strbaseStats.autosomal}
               </CardDescription>
             </CardHeader>
           </Card>
-          <Card className="border-0 bg-gradient-to-br from-blue-500/20 to-blue-500/10">
+          <Card className="border-0" style={{ background: "var(--tile-y)" }}>
             <CardHeader className="pb-3">
-              <h3
-                className="text-lg font-semibold"
-                style={{ color: "#1f2937" }}
-              >
+              <h3 className="text-lg font-semibold text-[#1f2937] dark:text-foreground">
                 Y-STRs
               </h3>
-              <CardDescription className="text-2xl font-bold text-blue-600">
+              <CardDescription className="text-2xl font-bold text-blue-600 dark:text-foreground">
                 {strbaseStats.yStr}
               </CardDescription>
             </CardHeader>
           </Card>
-          <Card className="border-0 bg-gradient-to-br from-purple-500/20 to-purple-500/10">
+          <Card className="border-0" style={{ background: "var(--tile-x)" }}>
             <CardHeader className="pb-3">
-              <h3
-                className="text-lg font-semibold"
-                style={{ color: "#1f2937" }}
-              >
+              <h3 className="text-lg font-semibold text-[#1f2937] dark:text-foreground">
                 X-STRs
               </h3>
-              <CardDescription className="text-2xl font-bold text-purple-600">
+              <CardDescription className="text-2xl font-bold text-purple-600 dark:text-foreground">
                 {strbaseStats.xStr}
               </CardDescription>
             </CardHeader>

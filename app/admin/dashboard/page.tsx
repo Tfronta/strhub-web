@@ -275,9 +275,7 @@ export default function AdminDashboard() {
             <Database className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              STRhub Admin
-            </h1>
+            <h1 className="text-xl font-bold text-gradient">STRhub Admin</h1>
             <p className="text-sm text-muted-foreground">
               Content Management System
             </p>

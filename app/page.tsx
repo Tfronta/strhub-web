@@ -50,9 +50,7 @@ export default function HomePage() {
         <div className="container mx-auto text-center relative z-10">
           <h2 className="text-5xl font-bold mb-6 text-balance">
             {t("home.subtitle")}{" "}
-            <span className="bg-gradient-to-r dark:to-primary from-primary to-accent bg-clip-text text-transparent">
-              Short Tandem Repeats
-            </span>
+            <span className="text-gradient">Short Tandem Repeats</span>
           </h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-pretty">
             {t("home.description")}

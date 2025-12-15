@@ -499,7 +499,7 @@ export default function CatalogPage() {
                   <CardHeader>
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                        <CardTitle className="text-2xl font-bold text-gradient">
                           {marker.name}
                         </CardTitle>
                         <CardDescription className="font-medium">

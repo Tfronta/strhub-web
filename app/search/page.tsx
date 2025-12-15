@@ -79,7 +79,7 @@ function SearchResults() {
             <div className="flex items-start gap-3 flex-1">
               <div className="mt-1">{icon}</div>
               <div className="flex-1">
-                <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                <CardTitle className="text-xl font-bold text-gradient">
                   {item.title}
                 </CardTitle>
                 <CardDescription className="mt-1 line-clamp-2">

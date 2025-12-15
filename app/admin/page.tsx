@@ -63,9 +63,7 @@ export default function AdminLogin() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <Database className="h-5 w-5 text-primary-foreground" />
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              STRhub
-            </h1>
+            <h1 className="text-2xl font-bold text-gradient">STRhub</h1>
           </Link>
           <h2 className="text-xl font-semibold text-foreground">Admin Login</h2>
           <p className="text-muted-foreground">

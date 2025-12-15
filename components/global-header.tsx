@@ -27,7 +27,7 @@ export function GlobalHeader() {
           <div className="w-8 h-8 dark:to-primary bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
             <Database className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-2xl font-bold dark:to-primary bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <span className="text-2xl font-bold text-gradient">
             {t("home.title")}
           </span>
         </Link>

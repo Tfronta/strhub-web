@@ -4,8 +4,8 @@ import type React from "react";
 import { Mail, Heart, Users, Target } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useEffect } from "react";
+import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
 import { PageTitle } from "@/components/page-title";
@@ -64,14 +64,27 @@ export default function AboutPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground leading-relaxed">
-                  {trans.teamP1}
+                  {trans.teamP1.split("**").map((part, index) => 
+                    index % 2 === 1 ? (
+                      <strong key={index}>{part}</strong>
+                    ) : (
+                      <span key={index}>{part}</span>
+                    )
+                  )}
                 </p>
                 <p className="text-muted-foreground leading-relaxed">
                   {trans.teamP2}
                 </p>
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary">{trans.teamGithub}</Badge>
-                </div>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  <a
+                    href="https://orcid.org/0000-0002-6873-7813"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    {trans.teamP3}
+                  </a>
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -122,6 +135,13 @@ export default function AboutPage() {
                 <p className="text-muted-foreground leading-relaxed">
                   {trans.contactP3}
                 </p>
+                <div className="pt-2">
+                  <Button asChild>
+                    <Link href="https://www.strhub.app/community#contact">
+                      {trans.contactButton}
+                    </Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>

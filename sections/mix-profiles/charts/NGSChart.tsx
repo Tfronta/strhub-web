@@ -1,5 +1,5 @@
 // app/sections/mix-profiles/charts/NGSChart.tsx
-'use client';
+"use client";
 
 import {
   Bar,
@@ -11,17 +11,17 @@ import {
   CartesianGrid,
   ReferenceLine,
   Cell,
-} from 'recharts';
-import type { NGSChartBar, NGSRow } from '../utils/simulate';
-import { getChartColors } from '../data';
-import { useLanguage } from '@/contexts/language-context';
+} from "recharts";
+import type { NGSChartBar, NGSRow } from "../utils/simulate";
+import { getChartColors } from "../data";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Tooltip as UITooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { Info } from 'lucide-react';
+} from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 
 type Props = {
   bars: NGSChartBar[];
@@ -32,18 +32,27 @@ type Props = {
 
 // Resuelve una CSS var a color real (rgb/hex). Intenta varias vars por si una no existe.
 function resolveThemeColor(fallback: string): string {
-  if (typeof window === 'undefined') return fallback;
+  if (typeof window === "undefined") return fallback;
 
-  const varsToTry = ['--chart-2', '--chart-1', '--color-chart-2', '--color-chart-1'];
+  const varsToTry = [
+    "--chart-2",
+    "--chart-1",
+    "--color-chart-2",
+    "--color-chart-1",
+  ];
   for (const v of varsToTry) {
-    const probe = document.createElement('span');
-    probe.style.position = 'absolute';
-    probe.style.visibility = 'hidden';
+    const probe = document.createElement("span");
+    probe.style.position = "absolute";
+    probe.style.visibility = "hidden";
     probe.style.color = `var(${v})`;
     document.body.appendChild(probe);
     const resolved = getComputedStyle(probe).color; // ej: rgb(5, 150, 105)
     probe.remove();
-    if (resolved && resolved !== 'rgba(0, 0, 0, 0)' && resolved !== 'rgb(0, 0, 0)') {
+    if (
+      resolved &&
+      resolved !== "rgba(0, 0, 0, 0)" &&
+      resolved !== "rgb(0, 0, 0)"
+    ) {
       return resolved;
     }
   }
@@ -64,7 +73,9 @@ export default function NGSChart({
     ...bar,
     alleleLabel: String(bar.allele),
   }));
-  const chartKey = chartBars.map((bar) => `${bar.allele}-${bar.coverage}`).join('|');
+  const chartKey = chartBars
+    .map((bar) => `${bar.allele}-${bar.coverage}`)
+    .join("|");
   const fallback = getChartColors()[0]; // por si falla la var CSS
   const themeColor = resolveThemeColor(fallback);
 
@@ -92,7 +103,9 @@ export default function NGSChart({
                       <button
                         type="button"
                         className="inline-flex items-center justify-center rounded-full h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
-                        aria-label={t("mixProfiles.ngs.fullSequenceTooltipAria")}
+                        aria-label={t(
+                          "mixProfiles.ngs.fullSequenceTooltipAria"
+                        )}
                       >
                         <Info className="h-3.5 w-3.5" />
                       </button>
@@ -114,11 +127,13 @@ export default function NGSChart({
                 const aStr = String(a.allele);
                 const bStr = String(b.allele);
                 if (aStr === bStr) {
-                  return (a.fullSequence ?? '').localeCompare(b.fullSequence ?? '');
+                  return (a.fullSequence ?? "").localeCompare(
+                    b.fullSequence ?? ""
+                  );
                 }
                 // Try numeric comparison first
-                const aNum = Number(aStr.replace(/[^\d.]/g, ''));
-                const bNum = Number(bStr.replace(/[^\d.]/g, ''));
+                const aNum = Number(aStr.replace(/[^\d.]/g, ""));
+                const bNum = Number(bStr.replace(/[^\d.]/g, ""));
                 if (!Number.isNaN(aNum) && !Number.isNaN(bNum)) {
                   return aNum - bNum;
                 }
@@ -126,7 +141,10 @@ export default function NGSChart({
                 return aStr.localeCompare(bStr);
               })
               .map((r, i) => (
-                <tr key={r.sequenceId ?? `${r.allele}-${i}`} className="odd:bg-background even:bg-muted/10">
+                <tr
+                  key={r.sequenceId ?? `${r.allele}-${i}`}
+                  className="odd:bg-background even:bg-muted/10"
+                >
                   <td className="px-3 py-2 text-center">
                     {r.allele}
                     {r.isIsoallele ? (
@@ -146,10 +164,10 @@ export default function NGSChart({
                   </td>
                   <td className="px-3 py-2 text-center">{r.coverage}</td>
                   <td className="px-3 py-2 text-left whitespace-pre-wrap break-words">
-                    {r.repeatSequence ?? '—'}
+                    {r.repeatSequence ?? "—"}
                   </td>
                   <td className="px-3 py-2 text-left whitespace-pre-wrap break-words font-mono">
-                    {r.fullSequence ?? '—'}
+                    {r.fullSequence ?? "—"}
                   </td>
                 </tr>
               ))}
@@ -172,22 +190,20 @@ export default function NGSChart({
               allowDuplicatedCategory={false}
               label={{
                 value: t("mixProfiles.ngs.axisLabelAllele"),
-                position: 'insideBottom',
+                position: "insideBottom",
                 offset: -8,
               }}
             />
             <YAxis
-              domain={['auto', 'auto']}
+              domain={["auto", "auto"]}
               label={{
                 value: t("mixProfiles.ngs.axisLabelCoverage"),
                 angle: -90,
-                position: 'insideLeft',
-                style: { textAnchor: 'middle' },
+                position: "insideLeft",
+                style: { textAnchor: "middle" },
               }}
             />
             <Tooltip />
-            <ReferenceLine y={analyticalThreshold} strokeDasharray="6 6" strokeOpacity={0.6} />
-            <ReferenceLine y={interpretationThreshold} strokeDasharray="6 6" strokeOpacity={0.6} />
 
             {/* Forzamos el color de tema, nunca negro */}
             <Bar

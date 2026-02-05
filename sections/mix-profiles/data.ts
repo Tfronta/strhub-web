@@ -650,10 +650,16 @@ type MarkerSequenceEntry = {
   sequence?: string;
 };
 
-// -----------------------------------------------------------------------------
-// Convert CE peaks to simulated NGS rows, using real allele sequences from CATALOG
-// Counts allele copies from contributors' genotypes and selects variants from catalog
-// -----------------------------------------------------------------------------
+/**
+ * CE → NGS pedagogical bridge:
+ * Derives NGS-like allele coverage from CE peak heights (RFU).
+ *
+ * - The CE simulation encodes mixture proportions and degradation in RFU.
+ * - AT/IT are interpretation gates and MUST NOT alter underlying RFU or NGS coverage.
+ * - We allocate a fixed TOTAL_READS per locus and distribute it by RFU proportion.
+ *
+ * This is an educational mapping to support CE→NGS migration (not a wet-lab model).
+ */
 export function cePeaksToNGSRowsWithSeq(
   locusId: string,
   peaks: Peak[],
@@ -662,7 +668,6 @@ export function cePeaksToNGSRowsWithSeq(
   kOverride?: number
 ) {
   const rows: any[] = []
-  const k = typeof kOverride === "number" && Number.isFinite(kOverride) ? kOverride : 1.2
 
   // Compute stutter percentages from peaks
   const computedStutterPct: Record<string, number> = {}
@@ -760,13 +765,54 @@ export function cePeaksToNGSRowsWithSeq(
     }))
   }
 
-  // Build rows: one per variant needed for each allele
-  const alleleToCoverage: Record<string, number> = {}
-  for (const p of peaks) {
-    if (p.kind === "stutter") continue
-    const alleleLabel = String(p.allele)
-    const baseReads = Math.max(1, Math.round(p.rfu * k))
-    alleleToCoverage[alleleLabel] = (alleleToCoverage[alleleLabel] ?? 0) + baseReads
+  // ---------------------------------------------------------------------------
+  // CE → NGS linkage (didactic mapping for forensic migration CE→NGS)
+  //
+  // Forensic principle:
+  // - Mixture proportion and degradation are encoded in the CE signal (RFU) model.
+  // - AT/IT are interpretation thresholds; they must NOT change underlying signal.
+  // - Therefore, NGS "coverage" is derived from TRUE-peak RFU proportions,
+  //   allocating a fixed total reads budget per locus.
+  //
+  // Result:
+  // - Changing AT/IT will not change bar heights (coverage), only what you *flag*.
+  // - Changing mixture/degradation will change RFU → and thus coverage (as expected).
+  // ---------------------------------------------------------------------------
+
+  const TOTAL_READS = 2000; // fixed reads budget per locus (UI/education, not wet-lab)
+
+  const truePeaks = peaks.filter((p) => p.kind === "true");
+  const sumRFU = truePeaks.reduce(
+    (acc, p) => acc + (Number.isFinite(p.rfu) ? Math.max(0, p.rfu) : 0),
+    0
+  );
+
+  const alleleToCoverage: Record<string, number> = {};
+
+  if (sumRFU > 0) {
+    // Allocate reads proportionally to RFU
+    for (const p of truePeaks) {
+      const alleleLabel = String(p.allele);
+      const prop = Math.max(0, p.rfu) / sumRFU;
+      const reads = Math.max(1, Math.round(prop * TOTAL_READS));
+      alleleToCoverage[alleleLabel] = (alleleToCoverage[alleleLabel] ?? 0) + reads;
+    }
+
+    // Optional correction to make total exactly TOTAL_READS
+    const currentTotal = Object.values(alleleToCoverage).reduce((a, b) => a + b, 0);
+    const diff = TOTAL_READS - currentTotal;
+    if (diff !== 0) {
+      const maxKey = Object.entries(alleleToCoverage).sort((a, b) => b[1] - a[1])[0]?.[0];
+      if (maxKey) {
+        alleleToCoverage[maxKey] = Math.max(1, alleleToCoverage[maxKey] + diff);
+      }
+    }
+  } else {
+    // Fallback: if RFU is zero/missing, assign minimal coverage to visible alleles
+    for (const p of truePeaks) {
+      const alleleLabel = String(p.allele);
+      alleleToCoverage[alleleLabel] = (alleleToCoverage[alleleLabel] ?? 0) + 1;
+    }
   }
 
   // Ensure all alleles with coverage are included (fallback for alleles in peaks but not in contributors)

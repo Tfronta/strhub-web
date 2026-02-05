@@ -16,7 +16,7 @@ import {
   getTrueGenotype,
 } from "./data";
 
-import { simulateCE } from "./utils/mix-model";
+import { simulateCECore } from "./utils/mix-model";
 
 import CEChart from "./charts/CEChart";
 import NGSChart from "./charts/NGSChart";
@@ -404,13 +404,11 @@ export default function MixProfilesDemo({
         stutterPeaks: [],
         noisePeaks: [],
       };
-    return simulateCE({
+    return simulateCECore({
       locusId: selectedMarker,
       contributors: activeContributors,
-      dnaInputNg: 0.1, // 0.10 ng (100 pg) - increased for clearer peaks
+      dnaInputNg: 0.1,
       params: {
-        AT,
-        ST: IT,
         kappaRFU: 8000,
         hetCV: 0.15,
         sigmaLN: 0.25,

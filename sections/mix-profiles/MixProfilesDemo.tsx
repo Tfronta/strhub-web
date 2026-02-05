@@ -42,7 +42,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Activity, Check, ChevronsUpDown, Info, Layers, Sparkles } from "lucide-react";
+import {
+  Activity,
+  Check,
+  ChevronsUpDown,
+  Info,
+  Layers,
+  Sparkles,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
 import { Button } from "@/components/ui/button";
@@ -260,7 +267,9 @@ function normalizeContributors(
 }
 
 /* ------------------------ componente ------------------------ */
-export default function MixProfilesDemo({ onPresetSelect }: MixProfilesDemoProps = {}) {
+export default function MixProfilesDemo({
+  onPresetSelect,
+}: MixProfilesDemoProps = {}) {
   const { t } = useLanguage();
 
   // Controles de simulación - defaults para mostrar picos coherentes
@@ -414,7 +423,7 @@ export default function MixProfilesDemo({ onPresetSelect }: MixProfilesDemoProps
         stutterScale,
       },
     });
-  }, [activeContributors, selectedMarker, AT, IT, kDeg, noise, stutterScale]);
+  }, [activeContributors, selectedMarker, kDeg, noise, stutterScale]);
 
   // curvas y marcadores
   // Signal trace: ALL true peaks (not gated by AT) - baseline is visual only, NOT added to signal
@@ -448,11 +457,10 @@ export default function MixProfilesDemo({ onPresetSelect }: MixProfilesDemoProps
       }
     }
 
-    for (const p of ce.peaks || []) {
+    for (const p of ce.stutterPeaks || []) {
       const allele = parseNum(String(p.allele));
       if (Number.isNaN(allele)) continue;
-
-      if (p.kind === "stutter" && p.rfu >= AT) {
+      if (p.rfu >= AT) {
         m.push({ allele, rfu: p.rfu, kind: "stutter" });
       }
     }
@@ -460,11 +468,18 @@ export default function MixProfilesDemo({ onPresetSelect }: MixProfilesDemoProps
     return m.sort((a, b) => a.allele - b.allele);
   })();
 
-  // NGS derivado de CE
+  // NGS derivado de CE (usar picos RAW, no gated por AT/ST)
+  const ceRawPeaks = useMemo(
+    () => [...(ce.allTruePeaks || []), ...(ce.stutterPeaks || [])],
+    [ce.allTruePeaks, ce.stutterPeaks]
+  );
+
   const ngsRows = useMemo(
-    () => cePeaksToNGSRowsWithSeq(selectedMarker, ce.peaks, activeContributors),
-    // 👉 si ce cambia (porque cambia k, AT, ruido...), recalculamos filas
-    [selectedMarker, ce, activeContributors]
+    () =>
+      cePeaksToNGSRowsWithSeq(selectedMarker, ceRawPeaks, activeContributors),
+    // ✅ NGS cambia cuando cambia la mezcla / degradación / stutter / ruido, etc.
+    // ❌ pero NO debería depender de AT/ST (interpretación CE)
+    [selectedMarker, ceRawPeaks, activeContributors]
   );
 
   const ngsBars = useMemo(() => {

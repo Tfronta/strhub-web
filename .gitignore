@@ -1,4 +1,47 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+icon?
+Desktop.ini
+
+# Node
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Editor folders and settings
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Output of build tools
+dist/
+coverage/
+lib-cov/
+*.seed
+*.log
+*.log.*
+
+# Misc
+*.swp
+*.swo
+
+# Test
+test-results/
+
+# Local env files (redundant, but common in recommendations)
+.env
+.env.*
+
 
 # dependencies
 /node_modules

@@ -328,13 +328,18 @@ export function simulateCECore(args: {
     if (!alleles.length) continue;
 
     const dnaEff = dnaInputNg * c.proportion * p.locusEff;
-    const weights = splitByHb(alleles.length, p.hetCV, rand);
     const scaleRFU = p.kappaRFU * dnaEff;
 
-    alleles.forEach((aNum, idx) => {
-      const mean = Math.max(1, scaleRFU * weights[idx]);
-      const baseRFU = lognormal(mean, p.sigmaLN, rand);
+    // Equal weight per allele copy (no inter-allelic imbalance)
+    const nCopies = alleles.length;
+    const perCopyMean = Math.max(1, scaleRFU / nCopies);
 
+    // Single lognormal draw for this contributor+locus
+    // → all allele copies share the same base RFU, so distinct
+    //   heterozygous alleles from the same contributor are equal
+    const baseRFU = lognormal(perCopyMean, p.sigmaLN, rand);
+
+    alleles.forEach((aNum) => {
       const existing =
         baseTruePeaks.get(aNum) ?? { rfu: 0, sources: new Set<string>() };
       existing.rfu += baseRFU;
@@ -539,14 +544,19 @@ export function simulateCECore(args: {
     const stRFU = v.stRFU;
 
     if (trueRFU > 0) {
+      // If a stutter lands on the same position as a true allele,
+      // combine their RFUs into a single peak (as in real CE)
+      const combinedRFU = stRFU > 0 ? trueRFU + stRFU : trueRFU;
       allTruePeaks.push({
         allele: alleleNum,
-        rfu: trueRFU,
+        rfu: combinedRFU,
         kind: "true",
         source: Array.from(v.sources).sort().join("+") || "—",
       } as Peak);
     }
 
+    // Always emit stutter peaks (even when co-located with a true allele)
+    // so the red stutter line is visible for didactic purposes
     if (stRFU > 0) {
       let stutterAllele: number | string = alleleNum;
       if (alleleNum % 1 !== 0) stutterAllele = Math.round(alleleNum * 10) / 10;

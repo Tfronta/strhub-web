@@ -445,6 +445,48 @@ export default function CEChart(props: {
                   itemProps?.payload?.allele ??
                   itemProps?.payload?.label ??
                   "?";
+                const allelePos =
+                  typeof alleleLabel === "number"
+                    ? alleleLabel
+                    : parseFloat(String(alleleLabel));
+
+                // Check if a stutter coincides at this allele position
+                const colocatedStutter =
+                  !Number.isNaN(allelePos) &&
+                  stutterPeaks.find((sp) => {
+                    const spAllele =
+                      typeof sp.allele === "number"
+                        ? sp.allele
+                        : parseFloat(String(sp.allele));
+                    return Math.abs(spAllele - allelePos) < 0.1;
+                  });
+
+                if (colocatedStutter) {
+                  // Find the matching true peak to get exact values
+                  const matchingTruePeak = allTruePeaks.find((tp) => {
+                    const tpAllele =
+                      typeof tp.allele === "number"
+                        ? tp.allele
+                        : parseFloat(String(tp.allele));
+                    return Math.abs(tpAllele - allelePos) < 0.1;
+                  });
+
+                  const stutterRfu = Math.round(colocatedStutter.rfu);
+                  const combinedRfu = matchingTruePeak
+                    ? Math.round(matchingTruePeak.rfu)
+                    : rfu;
+                  const pureAlleleRfu = combinedRfu - stutterRfu;
+
+                  return [
+                    `${combinedRfu} RFU`,
+                    t("mixProfiles.ceChart.tooltipTrueWithStutter", {
+                      label: String(alleleLabel),
+                      trueRfu: String(pureAlleleRfu),
+                      stutterRfu: String(stutterRfu),
+                    }),
+                  ];
+                }
+
                 return [
                   `${rfuStr} RFU`,
                   t("mixProfiles.ceChart.tooltipTrue", {

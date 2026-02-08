@@ -48,6 +48,7 @@ import {
   ChevronsUpDown,
   Info,
   Layers,
+  HelpCircle,
   Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -125,7 +126,7 @@ type ContributorState = {
   proportion: number;
 };
 
-export type MixturePresetKey = "stutterMinor" | "lowMinor" | "overlap";
+export type MixturePresetKey = "stutterMinor" | "stutterAmbiguity" | "lowMinor" | "overlap";
 
 type MixturePresetConfig = {
   locus: string;
@@ -152,6 +153,18 @@ const MIXTURE_PRESETS: Record<MixturePresetKey, MixturePresetConfig> = {
     degradationK: 0.015,
     noiseBase: 25,
     stutterLevel: 2.0,
+  },
+  stutterAmbiguity: {
+    locus: "D13S317",
+    contributorA: "HG00097",   // D13S317 [11, 14]
+    contributorB: "HG00145",   // D13S317 [10, 13] — both alleles at −1 stutter positions
+    contributorC: null,
+    mixture: { A: 90, B: 10, C: 0 },
+    AT: 30,
+    ST: 120,
+    degradationK: 0.005,
+    noiseBase: 15,
+    stutterLevel: 1.8,
   },
   lowMinor: {
     locus: "CSF1PO",
@@ -525,6 +538,7 @@ export default function MixProfilesDemo({
   };
 
   const stutterMinorTooltip = t("mixtures.tooltips.stutterMinor");
+  const stutterAmbiguityTooltip = t("mixtures.tooltips.stutterAmbiguity");
   const lowMinorTooltip = t("mixtures.tooltips.lowMinor");
   const overlapTooltip = t("mixtures.tooltips.overlap");
 
@@ -913,7 +927,7 @@ export default function MixProfilesDemo({
             </div>
 
             {/* Y-axis scale toggle + presets */}
-            <div className="mt-4 grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-4 grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-5">
               <div className="flex h-full items-center gap-2 rounded-lg border p-3">
                 <Switch
                   id="y-axis-scale"
@@ -952,6 +966,23 @@ export default function MixProfilesDemo({
                 </TooltipTrigger>
                 <TooltipContent side="top" align="center">
                   {stutterMinorTooltip}
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePresetSelect("stutterAmbiguity")}
+                    className="w-full min-h-[56px] justify-start"
+                  >
+                    <HelpCircle className="mr-2 h-4 w-4" aria-hidden="true" />
+                    {t("mixtures.presets.stutterAmbiguity")}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top" align="center">
+                  {stutterAmbiguityTooltip}
                 </TooltipContent>
               </Tooltip>
               <Tooltip>

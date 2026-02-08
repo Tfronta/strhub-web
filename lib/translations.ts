@@ -1343,12 +1343,15 @@ export const translations = {
     mixtures: {
       presets: {
         stutterMinor: "Stutter ≈ minor",
+        stutterAmbiguity: "Inconclusive",
         dropout: "Low minor allele",
         overlap: "Allele overlap",
       },
       tooltips: {
         stutterMinor:
           "Shows a case where a stutter peak has similar height to a minor allele, making the small peak ambiguous.",
+        stutterAmbiguity:
+          "CE data alone cannot distinguish stutter from true minor alleles.",
         lowMinor:
           "Shows a minor contributor allele very close to the detection threshold.",
         overlap:
@@ -2638,12 +2641,15 @@ export const translations = {
     mixtures: {
       presets: {
         stutterMinor: "Stutter ≈ minoritário",
+        stutterAmbiguity: "Inconclusivo",
         dropout: "Alelo minoritário baixo",
         overlap: "Alelos sobrepostos",
       },
       tooltips: {
         stutterMinor:
           "Mostra um caso em que o pico de stutter tem altura semelhante a um alelo minoritário, tornando ambíguo o pico pequeno.",
+        stutterAmbiguity:
+          "Dados de CE sozinhos não conseguem distinguir stutter de alelos minoritários verdadeiros.",
         lowMinor:
           "Mostra um alelo do contribuidor minoritário muito próximo ao limite de detecção.",
         overlap:
@@ -4068,12 +4074,15 @@ export const translations = {
     mixtures: {
       presets: {
         stutterMinor: "Stutter ≈ minoritario",
+        stutterAmbiguity: "Inconcluso",
         dropout: "Alelo minoritario bajo",
         overlap: "Alelos solapados",
       },
       tooltips: {
         stutterMinor:
           "Muestra un caso donde el pico de stutter tiene una altura similar a un alelo minoritario, volviendo ambiguo el pico pequeño.",
+        stutterAmbiguity:
+          "Los datos de CE por sí solos no pueden distinguir stutter de alelos minoritarios verdaderos.",
         lowMinor:
           "Muestra un alelo del contribuyente minoritario muy cercano al umbral de detección.",
         overlap:

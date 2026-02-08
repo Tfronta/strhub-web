@@ -361,18 +361,6 @@ export default function CEChart(props: {
               isAnimationActive={false}
             />
           )}
-          {showMarkers && mStutter.length > 0 && (
-            <Scatter
-              name={t("mixProfiles.ceChart.legendStutterPeak")}
-              data={mStutter.map((m) => ({ allele: m.allele, rfu: m.rfu }))}
-              dataKey="rfu"
-              fill="#F59E0B"
-              shape="triangle"
-              r={6}
-              isAnimationActive={false}
-            />
-          )}
-
           {/* Líneas de umbral - solo AT y ST con labels (sin otras líneas) */}
           {analyticalThreshold != null && (
             <ReferenceLine
@@ -542,10 +530,8 @@ export default function CEChart(props: {
                 const scatterItem = payload.find(
                   (item: any) =>
                     item.name === t("mixProfiles.ceChart.legendCalled") ||
-                    item.name === t("mixProfiles.ceChart.legendStutterPeak") ||
                     item.name === t("mixProfiles.ceChart.legendDropoutRisk") ||
                     item.name === "Called" ||
-                    item.name === "Stutter peak" ||
                     item.name === "Drop-out risk"
                 );
 
@@ -642,19 +628,9 @@ export default function CEChart(props: {
                               width: "14px",
                               height: "14px",
                               backgroundColor: entry.color,
-                              borderRadius: entry.value?.includes(
-                                "Stutter peak"
-                              )
-                                ? "0"
-                                : "50%",
+                              borderRadius: "50%",
                               marginRight: "4px",
                               verticalAlign: "middle",
-                              clipPath: entry.value?.includes("Stutter peak")
-                                ? "polygon(50% 0%, 0% 100%, 100% 100%)"
-                                : undefined,
-                              transform: entry.value?.includes("Stutter peak")
-                                ? "rotate(0deg)"
-                                : undefined,
                             }}
                           />
                         )}
@@ -674,7 +650,6 @@ export default function CEChart(props: {
             // 3. Stutter (RFU) - always visible
             // 4. Called (if markers visible and >= ST)
             // 5. Drop-out risk (if markers visible and AT <= RFU < ST)
-            // 6. Stutter peak (if markers visible and stutter >= AT)
           />
         </LineChart>
       </ResponsiveContainer>

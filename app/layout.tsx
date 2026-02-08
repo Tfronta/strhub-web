@@ -8,6 +8,7 @@ import type { Language } from "@/lib/translations";
 import { Suspense } from "react";
 import { GlobalHeader } from "@/components/global-header";
 import { Toaster } from "@/components/ui/toaster";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -39,6 +40,7 @@ export default function RootLayout({
   return (
     <html lang={htmlLanguage} suppressHydrationWarning>
       <body className={`font-sans ${inter.variable}`}>
+        <GoogleAnalytics gaId="G-07HDMGRYM4" />
         <Suspense fallback={null}>
           <ThemeProvider>
             <LanguageProvider initialLanguage={initialLanguage}>

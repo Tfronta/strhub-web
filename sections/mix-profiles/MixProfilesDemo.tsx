@@ -361,7 +361,7 @@ export default function MixProfilesDemo({
     setKDeg(preset.degradationK);
     setNoise(preset.noiseBase);
     setStutterScale(preset.stutterLevel);
-    setUseFixedScale(true);
+    setUseFixedScale(false);
   };
 
   const handleSampleChange = (

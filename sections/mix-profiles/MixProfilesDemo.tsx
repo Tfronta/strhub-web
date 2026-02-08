@@ -75,8 +75,8 @@ function makeCETrace(peaks: Peak[]) {
   const minA = Math.min(...nums) - 1;
   const maxA = Math.max(...nums) + 1;
 
-  const step = 0.02;
-  const sigma = 0.06;
+  const step = 0.01;
+  const sigma = 0.04; // narrower peaks so microvariants (e.g. 14 vs 14.2) stay distinct
 
   const out: { allele: number; rfu: number }[] = [];
   for (let x = minA; x <= maxA; x = +(x + step).toFixed(5)) {
@@ -101,8 +101,8 @@ function makeCETraceByKind(peaks: Peak[], kind: Peak["kind"]) {
     .filter((n) => !Number.isNaN(n));
   const minA = Math.min(...nums) - 1;
   const maxA = Math.max(...nums) + 1;
-  const step = 0.02;
-  const sigma = 0.06;
+  const step = 0.01;
+  const sigma = 0.04; // narrower peaks so microvariants (e.g. 14 vs 14.2) stay distinct
 
   const out: { allele: number; rfu: number }[] = [];
   for (let x = minA; x <= maxA; x = +(x + step).toFixed(5)) {

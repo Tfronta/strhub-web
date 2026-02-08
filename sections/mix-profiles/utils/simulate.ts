@@ -239,8 +239,8 @@ for (const a of sorted) {
 const allKeys = Array.from(AMPLITUDES.keys()).filter(k => Number.isFinite(k));
 const minAllele = Math.min(...allKeys) - 0.4;
 const maxAllele = Math.max(...allKeys) + 0.4;
-const step = 0.02;
-const sigma = 0.07;
+const step = 0.01;
+const sigma = 0.04; // narrower peaks so microvariants (e.g. 14 vs 14.2) stay distinct
 
 const ceSeries: CEPoint[] = [];
 for (let x = minAllele; x <= maxAllele; x += step) {

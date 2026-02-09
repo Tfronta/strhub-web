@@ -143,16 +143,16 @@ type MixturePresetConfig = {
 
 const MIXTURE_PRESETS: Record<MixturePresetKey, MixturePresetConfig> = {
   stutterMinor: {
-    locus: "D5S818",
+    locus: "D7S820",
     contributorA: "HG00145",
-    contributorB: "HG00097",
+    contributorB: "HG02944",
     contributorC: null,
-    mixture: { A: 80, B: 20, C: 0 },
+    mixture: { A: 90, B: 10, C: 0 },
     AT: 80,
     ST: 170,
-    degradationK: 0.015,
+    degradationK: 0.021,
     noiseBase: 25,
-    stutterLevel: 2.0,
+    stutterLevel: 1.9,
   },
   stutterAmbiguity: {
     locus: "D13S317",

@@ -1343,7 +1343,7 @@ export const translations = {
     mixtures: {
       presets: {
         stutterMinor: "Stutter ≈ minor",
-        stutterAmbiguity: "Inconclusive",
+        stutterAmbiguity: "Masked mixture",
         dropout: "Low minor allele",
         overlap: "Allele overlap",
       },
@@ -1351,7 +1351,7 @@ export const translations = {
         stutterMinor:
           "Shows a case where some peaks may represent either stutter or true minor alleles.",
         stutterAmbiguity:
-          "CE data alone cannot distinguish stutter from true minor alleles.",
+          "Shows a case where a mixture may appear single-source at this locus due to stutter masking of minor alleles.",
         lowMinor:
           "Shows a minor contributor allele very close to the detection threshold.",
         overlap:
@@ -2641,7 +2641,7 @@ export const translations = {
     mixtures: {
       presets: {
         stutterMinor: "Stutter ≈ minoritário",
-        stutterAmbiguity: "Inconclusivo",
+        stutterAmbiguity: "Mistura mascarada",
         dropout: "Alelo minoritário baixo",
         overlap: "Alelos sobrepostos",
       },
@@ -2649,7 +2649,7 @@ export const translations = {
         stutterMinor:
           "Mostra um caso em que alguns picos podem representar stutter ou alelos minoritários verdadeiros.",
         stutterAmbiguity:
-          "Dados de CE sozinhos não conseguem distinguir stutter de alelos minoritários verdadeiros.",
+          "Mostra um caso em que uma mistura pode parecer de fonte única neste locus devido ao mascaramento por stutter dos alelos minoritários.",
         lowMinor:
           "Mostra um alelo do contribuidor minoritário muito próximo ao limite de detecção.",
         overlap:
@@ -4074,7 +4074,7 @@ export const translations = {
     mixtures: {
       presets: {
         stutterMinor: "Stutter ≈ minoritario",
-        stutterAmbiguity: "Inconcluso",
+        stutterAmbiguity: "Mezcla enmascarada",
         dropout: "Alelo minoritario bajo",
         overlap: "Alelos solapados",
       },
@@ -4082,7 +4082,7 @@ export const translations = {
         stutterMinor:
           "Muestra un caso donde algunos picos pueden representar stutter o alelos minoritarios verdaderos.",
         stutterAmbiguity:
-          "Los datos de CE por sí solos no pueden distinguir stutter de alelos minoritarios verdaderos.",
+          "Muestra un caso donde una mezcla puede parecer de fuente única en este locus debido al enmascaramiento por stutter de los alelos minoritarios.",
         lowMinor:
           "Muestra un alelo del contribuyente minoritario muy cercano al umbral de detección.",
         overlap:

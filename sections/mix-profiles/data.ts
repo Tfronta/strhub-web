@@ -217,12 +217,19 @@ export type LocusId = string;
 
 export const sampleOptions = Object.keys(SAMPLE_DATABASE) as SampleId[];
 
-export const LOCI_ORDER: LocusId[] = Array.from(
-  new Set(
-    Object.values(SAMPLE_DATABASE)
-      .flatMap((sample) => Object.keys(sample.loci))
-  )
-).sort();
+// Only include loci present in ALL samples so every contributor has data
+export const LOCI_ORDER: LocusId[] = (() => {
+  const samples = Object.values(SAMPLE_DATABASE);
+  if (!samples.length) return [];
+  const allLoci = new Set(samples[0] ? Object.keys(samples[0].loci) : []);
+  for (const sample of samples) {
+    const sampleLoci = new Set(Object.keys(sample.loci));
+    for (const locus of allLoci) {
+      if (!sampleLoci.has(locus)) allLoci.delete(locus);
+    }
+  }
+  return Array.from(allLoci).sort();
+})();
 
 // ----------------------------------------------------
 // Utility: Get true genotype from SAMPLE_DATABASE

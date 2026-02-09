@@ -62,6 +62,43 @@ function parseNum(x: string | number): number {
   return m ? Number(m[0]) : NaN;
 }
 
+/**
+ * Compute the area under each peak in a CE trace using numerical (trapezoidal)
+ * integration.  For each peak center we integrate the trace within ±window
+ * allele units.  Returns a Map from allele position → area.
+ */
+function computePeakAreas(
+  trace: { allele: number; rfu: number }[],
+  peaks: Array<{ allele: number | string; rfu: number }>,
+  window = 0.35
+): Map<number, number> {
+  const areas = new Map<number, number>();
+  if (!trace.length) return areas;
+
+  for (const peak of peaks) {
+    const mu = parseNum(peak.allele);
+    if (Number.isNaN(mu)) continue;
+
+    // Filter trace points within the integration window around the peak
+    const pts = trace.filter(
+      (pt) => pt.allele >= mu - window && pt.allele <= mu + window
+    );
+    if (pts.length < 2) continue;
+
+    // Trapezoidal rule
+    let area = 0;
+    for (let i = 1; i < pts.length; i++) {
+      const dx = pts[i].allele - pts[i - 1].allele;
+      const avgY = (pts[i].rfu + pts[i - 1].rfu) / 2;
+      area += dx * avgY;
+    }
+
+    areas.set(mu, area);
+  }
+
+  return areas;
+}
+
 // electroferograma (suma de gaussianas)
 function makeCETrace(peaks: Peak[]) {
   if (!peaks.length) return [];
@@ -442,6 +479,16 @@ export default function MixProfilesDemo({
 
   // Stutter trace: ALL stutter peaks (not gated by AT) - baseline is visual only, NOT added to signal
   const ceStutterSeries = makeCETraceByKind(ce.stutterPeaks || [], "stutter");
+
+  // Peak areas via numerical integration of the rendered traces
+  const truePeakAreas = useMemo(
+    () => computePeakAreas(ceTrueSeries, ce.allTruePeaks || []),
+    [ceTrueSeries, ce.allTruePeaks]
+  );
+  const stutterPeakAreas = useMemo(
+    () => computePeakAreas(ceStutterSeries, ce.stutterPeaks || []),
+    [ceStutterSeries, ce.stutterPeaks]
+  );
 
   // Markers: correctamente categorizados según los umbrales
   // RFU < AT: sin marcador
@@ -1042,6 +1089,8 @@ export default function MixProfilesDemo({
           allTruePeaks={ce.allTruePeaks || []}
           stutterPeaks={ce.stutterPeaks || []}
           useFixedScale={useFixedScale}
+          truePeakAreas={truePeakAreas}
+          stutterPeakAreas={stutterPeakAreas}
         />
       </div>
 

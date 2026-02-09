@@ -43,6 +43,8 @@ export default function CEChart(props: {
     source?: string;
   }>; // All stutter peaks for tick calculation (source contains parent info)
   useFixedScale?: boolean; // If true, use fixed scale (0-800 RFU), otherwise auto-scale
+  truePeakAreas?: Map<number, number>; // Numerically integrated area per true peak
+  stutterPeakAreas?: Map<number, number>; // Numerically integrated area per stutter peak
 }) {
   const {
     dataTrue,
@@ -57,6 +59,8 @@ export default function CEChart(props: {
     allTruePeaks = [],
     stutterPeaks = [],
     useFixedScale = false,
+    truePeakAreas,
+    stutterPeakAreas,
   } = props;
 
   // Evita medir antes de montar (soluciona width/height -1 en algunos layouts)
@@ -78,7 +82,7 @@ export default function CEChart(props: {
     // Posiciones exactas de los stutters (markers)
     const stutterAlleles = mStutter
       .map((m) =>
-        typeof m.allele === "number" ? m.allele : parseFloat(String(m.allele))
+        typeof m.allele === "number" ? m.allele : parseFloat(String(m.allele)),
       )
       .filter((v) => !Number.isNaN(v));
 
@@ -394,195 +398,210 @@ export default function CEChart(props: {
           )}
 
           <RechartsTooltip
-            formatter={(value: any, name: string, itemProps: any) => {
-              // Round RFU value for all series
-              const rfu = Math.round(value as number);
-              const rfuStr = String(rfu);
+            content={({ active, label }: any) => {
+              if (!active) return null;
 
-              // Check if this is a stutter peak with parent info
-              if (itemProps?.payload?.source) {
-                const parentMatch =
-                  itemProps.payload.source.match(/parent:([\d.]+)/);
-                if (
-                  parentMatch &&
-                  (name === t("mixProfiles.ceChart.legendStutter") ||
-                    name.includes("Stutter"))
-                ) {
-                  // This is a stutter peak - show allele and parent
-                  const alleleLabel =
-                    itemProps?.payload?.allele ??
-                    itemProps?.payload?.label ??
-                    "?";
-                  return [
-                    `${rfuStr} RFU`,
-                    t("mixProfiles.ceChart.tooltipStutter", {
-                      allele: String(alleleLabel),
-                      parent: parentMatch[1],
-                      rfu: rfuStr,
-                    }),
-                  ];
+              const cursorX =
+                typeof label === "number" ? label : parseFloat(String(label));
+              if (Number.isNaN(cursorX)) return null;
+
+              /* ---------- helpers ---------- */
+              const PEAK_WINDOW = 0.4; // ±allele units (≈10σ)
+
+              type PeakHit = {
+                allele: number;
+                rfu: number;
+                dist: number;
+                source?: string;
+              };
+
+              const findNearest = (
+                peaks: Array<{
+                  allele: number | string;
+                  rfu: number;
+                  source?: string;
+                }>,
+                maxDist: number,
+              ): PeakHit | null => {
+                let best: PeakHit | null = null;
+                for (const p of peaks) {
+                  const pos =
+                    typeof p.allele === "number"
+                      ? p.allele
+                      : parseFloat(String(p.allele));
+                  if (Number.isNaN(pos)) continue;
+                  const dist = Math.abs(pos - cursorX);
+                  if (dist <= maxDist && (!best || dist < best.dist)) {
+                    best = {
+                      allele: pos,
+                      rfu: p.rfu,
+                      dist,
+                      source: (p as any).source,
+                    };
+                  }
                 }
-              }
+                return best;
+              };
 
-              // Check if this is a true peak
-              if (
-                name === t("mixProfiles.ceChart.legendTrueAlleles") ||
-                name.includes("Signal")
-              ) {
-                const alleleLabel =
-                  itemProps?.payload?.allele ??
-                  itemProps?.payload?.label ??
-                  "?";
-                const allelePos =
-                  typeof alleleLabel === "number"
-                    ? alleleLabel
-                    : parseFloat(String(alleleLabel));
-
-                // Check if a stutter coincides at this allele position
-                const colocatedStutter =
-                  !Number.isNaN(allelePos) &&
-                  stutterPeaks.find((sp) => {
-                    const spAllele =
-                      typeof sp.allele === "number"
-                        ? sp.allele
-                        : parseFloat(String(sp.allele));
-                    return Math.abs(spAllele - allelePos) < 0.1;
-                  });
-
-                if (colocatedStutter) {
-                  // Find the matching true peak to get exact values
-                  const matchingTruePeak = allTruePeaks.find((tp) => {
-                    const tpAllele =
-                      typeof tp.allele === "number"
-                        ? tp.allele
-                        : parseFloat(String(tp.allele));
-                    return Math.abs(tpAllele - allelePos) < 0.1;
-                  });
-
-                  const stutterRfu = Math.round(colocatedStutter.rfu);
-                  const combinedRfu = matchingTruePeak
-                    ? Math.round(matchingTruePeak.rfu)
-                    : rfu;
-                  const pureAlleleRfu = combinedRfu - stutterRfu;
-
-                  return [
-                    `${combinedRfu} RFU`,
-                    t("mixProfiles.ceChart.tooltipTrueWithStutter", {
-                      label: String(alleleLabel),
-                      trueRfu: String(pureAlleleRfu),
-                      stutterRfu: String(stutterRfu),
-                    }),
-                  ];
-                }
-
-                return [
-                  `${rfuStr} RFU`,
-                  t("mixProfiles.ceChart.tooltipTrue", {
-                    label: String(alleleLabel),
-                    rfu: rfuStr,
-                  }),
-                ];
-              }
-
-              // Check if this is a marker (called or dropout)
-              const isCalled =
-                name === t("mixProfiles.ceChart.legendCalled") ||
-                name === "Called";
-              const isDropout =
-                name === t("mixProfiles.ceChart.legendDropoutRisk") ||
-                name === "Drop-out risk";
-
-              if (isCalled) {
-                return [
-                  `${rfuStr} RFU`,
-                  t("mixProfiles.ceChart.tooltipCalled"),
-                ];
-              }
-              if (isDropout) {
-                return [
-                  `${rfuStr} RFU`,
-                  t("mixProfiles.ceChart.tooltipDropout"),
-                ];
-              }
-
-              // Default: show RFU value
-              return [`${rfuStr} RFU`, name];
-            }}
-            labelFormatter={(label: any, payload: readonly any[]) => {
-              if (!payload || payload.length === 0) {
-                return t("mixProfiles.ceChart.tooltipAllele", {
-                  allele: label,
-                });
-              }
-
-              // Check if this is a scatter point (has actual allele data in payload)
-              // Scatter points have payload.payload.allele matching the label
-              const isScatterPoint = payload.some(
-                (item: any) =>
-                  item.payload &&
-                  typeof item.payload.allele !== "undefined" &&
-                  Math.abs(item.payload.allele - label) < 0.01
-              );
-
-              if (isScatterPoint) {
-                // For scatter points, find the scatter series (not the line series)
-                // Note: name may be localized, so we check against all possible marker names
-                const scatterItem = payload.find(
-                  (item: any) =>
-                    item.name === t("mixProfiles.ceChart.legendCalled") ||
-                    item.name === t("mixProfiles.ceChart.legendDropoutRisk") ||
-                    item.name === "Called" ||
-                    item.name === "Drop-out risk"
-                );
-
-                if (scatterItem) {
-                  // Check if it's a stutter with parent info
-                  if (scatterItem.payload?.source) {
-                    const parentMatch =
-                      scatterItem.payload.source.match(/parent:([\d.]+)/);
-                    if (parentMatch) {
-                      const rfu = Math.round(scatterItem.payload.rfu ?? 0);
-                      const alleleLabel = scatterItem.payload.allele ?? label;
-                      return t("mixProfiles.ceChart.tooltipStutter", {
-                        allele: String(alleleLabel),
-                        parent: parentMatch[1],
-                        rfu: String(rfu),
-                      });
+              const lookupArea = (
+                allelePos: number,
+                areasMap?: Map<number, number>,
+              ): string | null => {
+                if (!areasMap || Number.isNaN(allelePos)) return null;
+                let area = areasMap.get(allelePos);
+                if (area == null) {
+                  for (const [k, v] of areasMap) {
+                    if (Math.abs(k - allelePos) < 0.1) {
+                      area = v;
+                      break;
                     }
                   }
-
-                  return t("mixProfiles.ceChart.tooltipAlleleMarker", {
-                    allele: String(label),
-                    marker: scatterItem.name,
-                  });
                 }
-              }
+                return area != null ? area.toFixed(2) : null;
+              };
 
-              // For line series, check if it's a stutter with parent
-              const lineItem = payload.find(
-                (item: any) =>
-                  item.name === t("mixProfiles.ceChart.legendStutter") ||
-                  item.name === "Stutter (RFU)" ||
-                  item.name?.includes("Stutter")
-              );
-              if (lineItem?.payload?.source) {
-                const parentMatch =
-                  lineItem.payload.source.match(/parent:([\d.]+)/);
-                if (parentMatch) {
-                  const rfu = Math.round(
-                    lineItem.payload.rfu ?? lineItem.value ?? 0
+              const fmtAllele = (v: number) =>
+                v % 1 === 0 ? String(v) : v.toFixed(1);
+
+              /* ---------- find nearest peaks ---------- */
+              const hitTrue = findNearest(allTruePeaks, PEAK_WINDOW);
+              const hitStutter = findNearest(stutterPeaks, PEAK_WINDOW);
+
+              // Nothing near cursor → hide tooltip
+              if (!hitTrue && !hitStutter) return null;
+
+              // Decide which peak the cursor is closest to overall
+              const primaryIsTrue =
+                hitTrue && (!hitStutter || hitTrue.dist <= hitStutter.dist);
+
+              /* ---------- build lines ---------- */
+              const lines: React.ReactNode[] = [];
+
+              if (primaryIsTrue && hitTrue) {
+                const alleleStr = fmtAllele(hitTrue.allele);
+                const rfuMax = Math.round(hitTrue.rfu);
+
+                // Check for colocated stutter at the same allele
+                const colocatedStutter = stutterPeaks.find((sp) => {
+                  const spA =
+                    typeof sp.allele === "number"
+                      ? sp.allele
+                      : parseFloat(String(sp.allele));
+                  return Math.abs(spA - hitTrue.allele) < 0.1;
+                });
+
+                // Header
+                lines.push(
+                  <p key="hdr" className="font-semibold">
+                    {t("mixProfiles.ceChart.tooltipAllele", {
+                      allele: alleleStr,
+                    })}
+                  </p>,
+                );
+
+                // RFU line
+                if (colocatedStutter) {
+                  const stRfu = Math.round(colocatedStutter.rfu);
+                  const pureRfu = rfuMax - stRfu;
+                  lines.push(
+                    <p key="rfu" style={{ color: "#2563EB" }}>
+                      {t("mixProfiles.ceChart.tooltipTrueWithStutter", {
+                        label: alleleStr,
+                        trueRfu: String(pureRfu),
+                        stutterRfu: String(stRfu),
+                      })}
+                      {": "}
+                      {rfuMax} RFU
+                    </p>,
                   );
-                  const alleleLabel = lineItem.payload.allele ?? label;
-                  return t("mixProfiles.ceChart.tooltipStutter", {
-                    allele: String(alleleLabel),
-                    parent: parentMatch[1],
-                    rfu: String(rfu),
-                  });
+                  // Separate stutter line in red
+                  lines.push(
+                    <p key="stutter" style={{ color: "#DC2626" }}>
+                      {t("mixProfiles.ceChart.tooltipStutter", {
+                        allele: alleleStr,
+                        parent: String(hitTrue.allele + 1),
+                        rfu: String(stRfu),
+                      })}
+                    </p>,
+                  );
+                } else {
+                  lines.push(
+                    <p key="rfu" style={{ color: "#2563EB" }}>
+                      {t("mixProfiles.ceChart.tooltipTrue", {
+                        label: alleleStr,
+                        rfu: String(rfuMax),
+                      })}
+                    </p>,
+                  );
+                }
+
+                // Area
+                const areaStr = lookupArea(hitTrue.allele, truePeakAreas);
+                if (areaStr) {
+                  lines.push(
+                    <p key="area" className="text-muted-foreground">
+                      {t("mixProfiles.ceChart.tooltipArea", {
+                        area: areaStr,
+                      })}
+                    </p>,
+                  );
+                }
+
+                // Status (called / dropout)
+                if (rfuMax >= (interpretationThreshold ?? 0)) {
+                  lines.push(
+                    <p key="status" style={{ color: "#15803d" }}>
+                      {t("mixProfiles.ceChart.tooltipCalled")}
+                    </p>,
+                  );
+                } else if (rfuMax >= (analyticalThreshold ?? 0)) {
+                  lines.push(
+                    <p key="status" style={{ color: "#F59E0B" }}>
+                      {t("mixProfiles.ceChart.tooltipDropout")}
+                    </p>,
+                  );
+                }
+              } else if (hitStutter) {
+                const alleleStr = fmtAllele(hitStutter.allele);
+                const rfuMax = Math.round(hitStutter.rfu);
+
+                lines.push(
+                  <p key="hdr" className="font-semibold">
+                    {t("mixProfiles.ceChart.tooltipAllele", {
+                      allele: alleleStr,
+                    })}
+                  </p>,
+                );
+
+                lines.push(
+                  <p key="rfu" style={{ color: "#DC2626" }}>
+                    {t("mixProfiles.ceChart.tooltipStutter", {
+                      allele: alleleStr,
+                      parent: String(hitStutter.allele + 1),
+                      rfu: String(rfuMax),
+                    })}
+                  </p>,
+                );
+
+                const areaStr = lookupArea(hitStutter.allele, stutterPeakAreas);
+                if (areaStr) {
+                  lines.push(
+                    <p key="area" className="text-muted-foreground">
+                      {t("mixProfiles.ceChart.tooltipArea", {
+                        area: areaStr,
+                      })}
+                    </p>,
+                  );
                 }
               }
 
-              // For line series, just show "Allele X"
-              return t("mixProfiles.ceChart.tooltipAllele", { allele: label });
+              if (!lines.length) return null;
+
+              return (
+                <div className="rounded-lg border bg-background px-3 py-2 text-xs shadow-md space-y-0.5">
+                  {lines}
+                </div>
+              );
             }}
           />
           <Legend

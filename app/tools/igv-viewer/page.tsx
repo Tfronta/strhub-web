@@ -26,106 +26,107 @@ export default function IgvViewerPage() {
   const [igvLoaded, setIgvLoaded] = useState(false);
   const igvContainerRef = useRef<HTMLDivElement | null>(null);
 
+  // Coordinates from regions.bed (hg38) with ±500 bp viewing window
   const markers = [
     {
       id: "csf1po",
       name: "CSF1PO",
       chromosome: "5",
-      position: "150073000-150074000",
+      position: "150075824-150076875",
     },
     {
       id: "d10s1248",
       name: "D10S1248",
       chromosome: "10",
-      position: "131389200-131390200",
+      position: "129293744-129294795",
     },
     {
       id: "d12s391",
       name: "D12S391",
       chromosome: "12",
-      position: "12462000-12463000",
+      position: "12296520-12297595",
     },
     {
       id: "d13s317",
       name: "D13S317",
       chromosome: "13",
-      position: "82722000-82723000",
+      position: "82147525-82148568",
     },
     {
       id: "d16s539",
       name: "D16S539",
       chromosome: "16",
-      position: "86386000-86387000",
+      position: "86352202-86353245",
     },
     {
       id: "d18s51",
       name: "D18S51",
       chromosome: "18",
-      position: "60948000-60949000",
+      position: "63281167-63282238",
     },
     {
       id: "d19s433",
       name: "D19S433",
       chromosome: "19",
-      position: "30417000-30418000",
+      position: "29925735-29926798",
     },
     {
       id: "d1s1656",
       name: "D1S1656",
       chromosome: "1",
-      position: "230905000-230906000",
+      position: "230769116-230770183",
     },
     {
       id: "d21s11",
       name: "D21S11",
       chromosome: "21",
-      position: "27333000-27334000",
+      position: "19181473-19182599",
     },
     {
       id: "d2s1338",
       name: "D2S1338",
       chromosome: "2",
-      position: "218705000-218706000",
+      position: "218014359-218015450",
     },
     {
       id: "d2s441",
       name: "D2S441",
       chromosome: "2",
-      position: "68231000-68232000",
+      position: "68011447-68012494",
     },
     {
       id: "d3s1358",
       name: "D3S1358",
       chromosome: "3",
-      position: "45582000-45583000",
+      position: "45540239-45541302",
     },
     {
       id: "d5s818",
       name: "D5S818",
       chromosome: "5",
-      position: "123139000-123140000",
+      position: "123775056-123776099",
     },
     {
       id: "d7s820",
       name: "D7S820",
       chromosome: "7",
-      position: "83789000-83790000",
+      position: "84159726-84160777",
     },
     {
       id: "d8s1179",
       name: "D8S1179",
       chromosome: "8",
-      position: "125907000-125908000",
+      position: "124894365-124895416",
     },
     {
       id: "fga",
       name: "FGA",
       chromosome: "4",
-      position: "155508000-155509000",
+      position: "154587236-154588323",
     },
-    { id: "th01", name: "TH01", chromosome: "11", position: "2192000-2193000" },
-    { id: "tpox", name: "TPOX", chromosome: "2", position: "1493000-1494000" },
-    { id: "vwa", name: "vWA", chromosome: "12", position: "6093000-6094000" },
+    { id: "th01", name: "TH01", chromosome: "11", position: "2170588-2171615" },
+    { id: "tpox", name: "TPOX", chromosome: "2", position: "1489153-1490184" },
+    { id: "vwa", name: "vWA", chromosome: "12", position: "5983477-5984544" },
   ];
 
   const SAMPLES: Record<string, { label: string; bam: string; bai: string }> = {

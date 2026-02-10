@@ -1285,7 +1285,7 @@ export const translations = {
         tooltipArea: "Peak area: {area} (CE-equivalent)",
         infoLabel: "Show stutter modeling note",
         infoText:
-          "Educational simulator: stutter is modeled as a locus-specific fraction of the true peak height (typically ~6–11%, higher for some long loci). These are educational approximations, not validated parameters for any specific kit.",
+          "Educational simulator\n\nStutter is modeled as a locus-specific fraction of the true peak height (typically ~6–11%, higher for some long loci).\n\nPeak area values are reported as CE-equivalent integrated signal, obtained by scaling peak height using a typical CE area/height ratio.\n\nThese are educational approximations, not validated parameters for any specific kit.",
       },
       parameters: {
         at: "AT (RFU)",
@@ -2584,7 +2584,7 @@ export const translations = {
         tooltipArea: "Área do pico: {area} (CE-equivalente)",
         infoLabel: "Mostrar nota sobre o modelo de stutter",
         infoText:
-          "Simulador educacional: o stutter é modelado como uma fração específica de cada locus em relação à altura do pico verdadeiro (tipicamente ~6–11%, maior em alguns loci longos). Esses valores são aproximações educacionais, não parâmetros validados de nenhum kit específico.",
+          "Simulador educacional\n\nO stutter é modelado como uma fração específica de cada locus em relação à altura do pico verdadeiro (tipicamente ~6–11%, maior em alguns loci longos).\n\nOs valores de área do pico são reportados como sinal integrado equivalente a CE, obtidos pela escala da altura do pico usando uma relação típica de área/altura de CE.\n\nEsses valores são aproximações educacionais, não parâmetros validados de nenhum kit específico.",
       },
       parameters: {
         at: "AT (RFU)",
@@ -4018,7 +4018,7 @@ export const translations = {
         tooltipArea: "Área del pico: {area} (CE-equivalente)",
         infoLabel: "Mostrar nota sobre el modelado de stutter",
         infoText:
-          "Simulador educativo: el stutter se modela como una fracción específica de cada locus de la altura del pico verdadero (típicamente ~6–11%, mayor en algunos loci largos). Estos valores son aproximaciones educativas, no parámetros validados de un kit específico.",
+          "Simulador educativo\n\nEl stutter se modela como una fracción específica de cada locus de la altura del pico verdadero (típicamente ~6–11%, mayor en algunos loci largos).\n\nLos valores de área del pico se reportan como señal integrada equivalente a CE, obtenidos escalando la altura del pico usando una relación típica de área/altura de CE.\n\nEstos valores son aproximaciones educativas, no parámetros validados de un kit específico.",
       },
       parameters: {
         at: "AT (RFU)",

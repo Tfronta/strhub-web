@@ -259,7 +259,7 @@ export default function CEChart(props: {
             <Info className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
         </TooltipTrigger>
-        <TooltipContent side="left" align="end" className="max-w-xs text-xs">
+        <TooltipContent side="left" align="end" className="max-w-xs text-xs whitespace-pre-line">
           {t("mixProfiles.ceChart.infoText")}
         </TooltipContent>
       </Tooltip>

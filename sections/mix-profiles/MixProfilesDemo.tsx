@@ -63,37 +63,28 @@ function parseNum(x: string | number): number {
 }
 
 /**
- * Compute the area under each peak in a CE trace using numerical (trapezoidal)
- * integration.  For each peak center we integrate the trace within ±window
- * allele units.  Returns a Map from allele position → area.
+ * Compute CE-equivalent peak area for each peak.
+ *
+ * Because the visual trace uses a very narrow synthetic sigma (0.04 allele
+ * units) to keep microvariants visually distinct, trapezoidal integration of
+ * that trace yields areas ~100× smaller than real CE instruments.
+ *
+ * Real CE instruments report area ≈ height × peak-width-in-time, giving an
+ * area/height ratio of roughly 3.5–5.0 for typical conditions (Butler, 2015).
+ * We apply a constant scale factor so the displayed area matches what a
+ * forensic analyst would expect from a real electropherogram.
  */
+const CE_AREA_HEIGHT_RATIO = 4.25; // typical real-instrument area/height ratio
+
 function computePeakAreas(
-  trace: { allele: number; rfu: number }[],
   peaks: Array<{ allele: number | string; rfu: number }>,
-  window = 0.35
 ): Map<number, number> {
   const areas = new Map<number, number>();
-  if (!trace.length) return areas;
 
   for (const peak of peaks) {
     const mu = parseNum(peak.allele);
     if (Number.isNaN(mu)) continue;
-
-    // Filter trace points within the integration window around the peak
-    const pts = trace.filter(
-      (pt) => pt.allele >= mu - window && pt.allele <= mu + window
-    );
-    if (pts.length < 2) continue;
-
-    // Trapezoidal rule
-    let area = 0;
-    for (let i = 1; i < pts.length; i++) {
-      const dx = pts[i].allele - pts[i - 1].allele;
-      const avgY = (pts[i].rfu + pts[i - 1].rfu) / 2;
-      area += dx * avgY;
-    }
-
-    areas.set(mu, area);
+    areas.set(mu, peak.rfu * CE_AREA_HEIGHT_RATIO);
   }
 
   return areas;
@@ -480,14 +471,14 @@ export default function MixProfilesDemo({
   // Stutter trace: ALL stutter peaks (not gated by AT) - baseline is visual only, NOT added to signal
   const ceStutterSeries = makeCETraceByKind(ce.stutterPeaks || [], "stutter");
 
-  // Peak areas via numerical integration of the rendered traces
+  // Peak areas — CE-equivalent (height × realistic peak-width ratio)
   const truePeakAreas = useMemo(
-    () => computePeakAreas(ceTrueSeries, ce.allTruePeaks || []),
-    [ceTrueSeries, ce.allTruePeaks]
+    () => computePeakAreas(ce.allTruePeaks || []),
+    [ce.allTruePeaks]
   );
   const stutterPeakAreas = useMemo(
-    () => computePeakAreas(ceStutterSeries, ce.stutterPeaks || []),
-    [ceStutterSeries, ce.stutterPeaks]
+    () => computePeakAreas(ce.stutterPeaks || []),
+    [ce.stutterPeaks]
   );
 
   // Markers: correctamente categorizados según los umbrales

@@ -457,7 +457,7 @@ export default function CEChart(props: {
                     }
                   }
                 }
-                return area != null ? area.toFixed(2) : null;
+                return area != null ? String(Math.round(area)) : null;
               };
 
               const fmtAllele = (v: number) =>

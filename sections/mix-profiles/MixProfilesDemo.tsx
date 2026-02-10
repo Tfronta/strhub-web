@@ -50,6 +50,7 @@ import {
   Layers,
   HelpCircle,
   Sparkles,
+  Triangle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
@@ -154,7 +155,7 @@ type ContributorState = {
   proportion: number;
 };
 
-export type MixturePresetKey = "stutterMinor" | "stutterAmbiguity" | "lowMinor" | "overlap";
+export type MixturePresetKey = "stutterMinor" | "stutterAmbiguity" | "lowMinor" | "overlap" | "triallelic";
 
 type MixturePresetConfig = {
   locus: string;
@@ -217,6 +218,18 @@ const MIXTURE_PRESETS: Record<MixturePresetKey, MixturePresetConfig> = {
     degradationK: 0.01,
     noiseBase: 25,
     stutterLevel: 1.2,
+  },
+  triallelic: {
+    locus: "TPOX",
+    contributorA: "SYN_TRI01",   // TPOX [8, 9, 11] — triallelic, single-source
+    contributorB: null,
+    contributorC: null,
+    mixture: { A: 100, B: 0, C: 0 },
+    AT: 50,
+    ST: 150,
+    degradationK: 0.005,
+    noiseBase: 15,
+    stutterLevel: 1.0,
   },
 };
 
@@ -579,6 +592,7 @@ export default function MixProfilesDemo({
   const stutterAmbiguityTooltip = t("mixtures.tooltips.stutterAmbiguity");
   const lowMinorTooltip = t("mixtures.tooltips.lowMinor");
   const overlapTooltip = t("mixtures.tooltips.overlap");
+  const triallelicTooltip = t("mixtures.tooltips.triallelic");
 
   return (
     <div className="space-y-4">
@@ -681,6 +695,7 @@ export default function MixProfilesDemo({
                               ) : genotype ? (
                                 <span className="text-xs font-mono">
                                   {genotype.allele1}, {genotype.allele2}
+                                  {genotype.allele3 != null && `, ${genotype.allele3}`}
                                 </span>
                               ) : (
                                 <Tooltip>
@@ -965,7 +980,7 @@ export default function MixProfilesDemo({
             </div>
 
             {/* Y-axis scale toggle + presets */}
-            <div className="mt-4 grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="mt-4 grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-6">
               <div className="flex h-full items-center gap-2 rounded-lg border p-3">
                 <Switch
                   id="y-axis-scale"
@@ -996,7 +1011,7 @@ export default function MixProfilesDemo({
                     variant="outline"
                     size="sm"
                     onClick={() => handlePresetSelect("stutterMinor")}
-                    className="w-full min-h-[56px] justify-start"
+                    className="w-full min-h-[56px] justify-start whitespace-normal text-left"
                   >
                     <Sparkles className="mr-2 h-4 w-4" aria-hidden="true" />
                     {t("mixtures.presets.stutterMinor")}
@@ -1013,7 +1028,7 @@ export default function MixProfilesDemo({
                     variant="outline"
                     size="sm"
                     onClick={() => handlePresetSelect("stutterAmbiguity")}
-                    className="w-full min-h-[56px] justify-start"
+                    className="w-full min-h-[56px] justify-start whitespace-normal text-left"
                   >
                     <HelpCircle className="mr-2 h-4 w-4" aria-hidden="true" />
                     {t("mixtures.presets.stutterAmbiguity")}
@@ -1030,7 +1045,7 @@ export default function MixProfilesDemo({
                     variant="outline"
                     size="sm"
                     onClick={() => handlePresetSelect("lowMinor")}
-                    className="w-full min-h-[56px] justify-start"
+                    className="w-full min-h-[56px] justify-start whitespace-normal text-left"
                   >
                     <Activity className="mr-2 h-4 w-4" aria-hidden="true" />
                     {t("mixtures.presets.dropout")}
@@ -1047,7 +1062,7 @@ export default function MixProfilesDemo({
                     variant="outline"
                     size="sm"
                     onClick={() => handlePresetSelect("overlap")}
-                    className="w-full min-h-[56px] justify-start"
+                    className="w-full min-h-[56px] justify-start whitespace-normal text-left"
                   >
                     <Layers className="mr-2 h-4 w-4" aria-hidden="true" />
                     {t("mixtures.presets.overlap")}
@@ -1055,6 +1070,23 @@ export default function MixProfilesDemo({
                 </TooltipTrigger>
                 <TooltipContent side="top" align="center">
                   {overlapTooltip}
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePresetSelect("triallelic")}
+                    className="w-full min-h-[56px] justify-start whitespace-normal text-left"
+                  >
+                    <Triangle className="mr-2 h-4 w-4" aria-hidden="true" />
+                    {t("mixtures.presets.triallelic")}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top" align="center">
+                  {triallelicTooltip}
                 </TooltipContent>
               </Tooltip>
             </div>

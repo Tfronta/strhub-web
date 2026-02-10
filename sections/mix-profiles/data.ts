@@ -78,6 +78,35 @@ type SampleProfile = {
 };
 
 export const SAMPLE_DATABASE: Record<string, SampleProfile> = {
+  // Fictitious sample with triallelic patterns at TPOX and TH01.
+  // Not from 1000 Genomes — created for educational demonstration of
+  // triallelic loci, a rare but documented phenomenon in forensic STR analysis.
+  SYN_TRI01: {
+    sampleId: "SYN_TRI01",
+    loci: {
+      CSF1PO: { alleles: [10, 12] },
+      D10S1248: { alleles: [13, 15] },
+      D12S391: { alleles: [18, 21] },
+      D13S317: { alleles: [11, 12] },
+      D16S539: { alleles: [11, 13] },
+      D18S51: { alleles: [14, 17] },
+      D19S433: { alleles: [13, 14] },
+      D1S1656: { alleles: [12, 16] },
+      D22S1045: { alleles: [15, 16] },
+      D2S1338: { alleles: [19, 23] },
+      D2S441: { alleles: [11, 14] },
+      D3S1358: { alleles: [15, 17] },
+      D5S818: { alleles: [11, 13] },
+      D7S820: { alleles: [10, 12] },
+      D8S1179: { alleles: [13, 15] },
+      FGA: { alleles: [21, 23] },
+      PentaD: { alleles: [9, 12] },
+      PentaE: { alleles: [10, 14] },
+      TH01: { alleles: [6, 7, 9.3] },   // Triallelic — 3 alleles at this locus
+      TPOX: { alleles: [8, 9, 11] },     // Triallelic — 3 alleles at this locus
+      vWA: { alleles: [16, 18] },
+    },
+  },
   HG02944: {
     sampleId: "HG02944",
     loci: {
@@ -215,7 +244,12 @@ export const SAMPLE_DATABASE: Record<string, SampleProfile> = {
 export type SampleId = keyof typeof SAMPLE_DATABASE;
 export type LocusId = string;
 
-export const sampleOptions = Object.keys(SAMPLE_DATABASE) as SampleId[];
+// Synthetic/demo-only samples (used by presets but hidden from the contributor dropdown)
+const SYNTHETIC_SAMPLES: ReadonlySet<string> = new Set(["SYN_TRI01"]);
+
+export const sampleOptions = (Object.keys(SAMPLE_DATABASE) as SampleId[]).filter(
+  (id) => !SYNTHETIC_SAMPLES.has(id)
+);
 
 // Only include loci present in ALL samples so every contributor has data
 export const LOCI_ORDER: LocusId[] = (() => {
@@ -238,14 +272,16 @@ export const LOCI_ORDER: LocusId[] = (() => {
  * Retrieves the true genotype for a given sample and locus from SAMPLE_DATABASE.
  * Returns null if no data is available (never synthesizes or infers alleles).
  * 
+ * Supports triallelic loci: when 3 alleles are present, allele3 is populated.
+ * 
  * @param sampleId - The sample ID (e.g., "HG02944")
  * @param locus - The locus name (e.g., "CSF1PO")
- * @returns Object with allele1 and allele2, or null if not found
+ * @returns Object with allele1, allele2, and optional allele3, or null if not found
  */
 export function getTrueGenotype(
   sampleId: SampleId | null,
   locus: LocusId
-): { allele1: string | number; allele2: string | number } | null {
+): { allele1: string | number; allele2: string | number; allele3?: string | number } | null {
   if (!sampleId) {
     return null;
   }
@@ -261,9 +297,18 @@ export function getTrueGenotype(
   }
 
   const alleles = locusData.alleles;
+
+  // Triallelic case: 3 alleles at this locus
+  if (alleles.length >= 3) {
+    return {
+      allele1: alleles[0],
+      allele2: alleles[1],
+      allele3: alleles[2],
+    };
+  }
   
-  // Return both alleles (for homozygotes, both will be the same)
-  if (alleles.length >= 2) {
+  // Standard diploid: return both alleles (for homozygotes, both will be the same)
+  if (alleles.length === 2) {
     return {
       allele1: alleles[0],
       allele2: alleles[1],
@@ -699,11 +744,15 @@ export function cePeaksToNGSRowsWithSeq(
       const genotype = getTrueGenotype(contrib.sampleId, locusId)
       if (!genotype) continue
 
-      // Count both alleles
+      // Count all alleles (supports triallelic loci)
       const a1 = String(genotype.allele1)
       const a2 = String(genotype.allele2)
       alleleCounts[a1] = (alleleCounts[a1] ?? 0) + 1
       alleleCounts[a2] = (alleleCounts[a2] ?? 0) + 1
+      if (genotype.allele3 != null) {
+        const a3 = String(genotype.allele3)
+        alleleCounts[a3] = (alleleCounts[a3] ?? 0) + 1
+      }
     }
   } else {
     // Fallback: count from peaks if no contributors provided

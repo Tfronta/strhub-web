@@ -1293,7 +1293,7 @@ export const translations = {
         degradationK: "Degradation k (per 100 bp)",
         noiseBase: "Noise / Base (RFU)",
         stutterLevel: "Stutter level (×)",
-        autoScale: "Auto-scale Y axis",
+        autoScale: "Auto-scale Y",
         fixedScale: "Fixed forensic scale (0–800 RFU)",
         atTooltip: "Analytical Threshold: Minimum RFU to distinguish a peak from noise.\n\nTypical range: 50–100 RFU.",
         stTooltip: "Stochastic Threshold: RFU level where heterozygote imbalance becomes unlikely.\n\nTypical range: 150–200 RFU.",
@@ -1347,6 +1347,7 @@ export const translations = {
         stutterAmbiguity: "Masked mixture",
         dropout: "Low minor allele",
         overlap: "Allele overlap",
+        triallelic: "Triallelic pattern",
       },
       tooltips: {
         stutterMinor:
@@ -1357,6 +1358,8 @@ export const translations = {
           "Shows a minor contributor allele very close to the detection threshold.",
         overlap:
           "Shows two contributors sharing one allele, creating a combined high peak in the middle.",
+        triallelic:
+          "Synthetic single-source profile with a triallelic locus. May resemble a two-person mixture.",
       },
     },
   },
@@ -2592,7 +2595,7 @@ export const translations = {
         degradationK: "Degradação k (por 100 pb)",
         noiseBase: "Ruído / Base (RFU)",
         stutterLevel: "Nível de stutter (×)",
-        autoScale: "Auto-escala do eixo Y",
+        autoScale: "Auto-escala Y",
         fixedScale: "Escala forense fixa (0–800 RFU)",
         atTooltip: "Limiar Analítico: RFU mínimo para distinguir um pico do ruído.\n\nFaixa típica: 50–100 RFU.",
         stTooltip: "Limiar Estocástico: Nível de RFU onde o desequilíbrio de heterozigoto se torna improvável.\n\nFaixa típica: 150–200 RFU.",
@@ -2646,6 +2649,7 @@ export const translations = {
         stutterAmbiguity: "Mistura mascarada",
         dropout: "Alelo minoritário baixo",
         overlap: "Alelos sobrepostos",
+        triallelic: "Padrão trialélico",
       },
       tooltips: {
         stutterMinor:
@@ -2656,6 +2660,8 @@ export const translations = {
           "Mostra um alelo do contribuidor minoritário muito próximo ao limite de detecção.",
         overlap:
           "Mostra dois contribuintes que compartilham um alelo, gerando um pico combinado mais alto no centro.",
+        triallelic:
+          "Perfil sintético de fonte única com um locus trialélico. Pode se assemelhar a uma mistura de duas pessoas.",
       },
     },
     // Back to Basics
@@ -4026,7 +4032,7 @@ export const translations = {
         degradationK: "Degradación k (por 100 pb)",
         noiseBase: "Ruido / Base (RFU)",
         stutterLevel: "Nivel de stutter (×)",
-        autoScale: "Auto-escala del eje Y",
+        autoScale: "Auto-escala Y",
         fixedScale: "Escala forense fija (0–800 RFU)",
         atTooltip: "Umbral Analítico: RFU mínimo para distinguir un pico del ruido.\n\nRango típico: 50–100 RFU.",
         stTooltip: "Umbral Estocástico: Nivel de RFU donde el desequilibrio de heterocigoto se vuelve improbable.\n\nRango típico: 150–200 RFU.",
@@ -4080,6 +4086,7 @@ export const translations = {
         stutterAmbiguity: "Mezcla enmascarada",
         dropout: "Alelo minoritario bajo",
         overlap: "Alelos solapados",
+        triallelic: "Patrón trialélico",
       },
       tooltips: {
         stutterMinor:
@@ -4090,6 +4097,8 @@ export const translations = {
           "Muestra un alelo del contribuyente minoritario muy cercano al umbral de detección.",
         overlap:
           "Muestra dos contribuyentes que comparten un alelo, generando un pico combinado más alto en el centro.",
+        triallelic:
+          "Perfil sintético de fuente única con un locus trialélico. Puede parecerse a una mezcla de dos personas.",
       },
     },
   },

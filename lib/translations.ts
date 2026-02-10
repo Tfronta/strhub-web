@@ -150,7 +150,7 @@ export const translations = {
       categories: {
         "CODIS Core": "CODIS Core",
         "Non-Core": "Non-Core",
-        Autosomal: "Autosomal",
+        Autosomal: "Autosomal (Non-CODIS)",
         "Y-STR": "Y-STRs",
         "X-STR": "X-STRs",
       },
@@ -1513,7 +1513,7 @@ export const translations = {
       categories: {
         "CODIS Core": "CODIS Core",
         "Non-Core": "Não-Core",
-        Autosomal: "Autossômicos",
+        Autosomal: "Autossômicos (Não-CODIS)",
         "Y-STR": "Y-STRs",
         "X-STR": "X-STRs",
       },
@@ -2880,7 +2880,7 @@ export const translations = {
       categories: {
         "CODIS Core": "CODIS Core",
         "Non-Core": "No-Core",
-        Autosomal: "Autosómicos",
+        Autosomal: "Autosómicos (No-CODIS)",
         "Y-STR": "Y-STRs",
         "X-STR": "X-STRs",
       },

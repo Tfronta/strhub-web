@@ -25,6 +25,38 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
+// ── IGV sample-data URL configuration ─────────────────────────────────
+//
+// BAM/BAI files are hosted on GitHub Releases (tag 0.1).
+// The browser cannot fetch them directly because GitHub does not send
+// the Access-Control-Allow-Origin header (CORS).
+//
+// To work around this, every request is routed through /api/igv-proxy,
+// a same-origin streaming proxy that:
+//   - Forwards the Range header from the browser to GitHub
+//   - Returns the upstream 206 Partial Content status and Content-Range
+//   - Streams the response body (no full-file buffering)
+//
+// This allows IGV.js to perform efficient byte-range reads of BAM/BAI
+// files without downloading them in their entirety.
+// ──────────────────────────────────────────────────────────────────────
+
+const IGV_RELEASES_BASE =
+  "https://github.com/Tfronta/strhub-demo-data/releases/download/0.1";
+
+/** Build the proxied BAM URL for a given sample ID. */
+function getBamUrl(sampleId: string): string {
+  const remote = `${IGV_RELEASES_BASE}/${sampleId}_primary.bam`;
+  return `/api/igv-proxy?url=${encodeURIComponent(remote)}`;
+}
+
+/** Build the proxied BAI (index) URL for a given sample ID. */
+function getBaiUrl(sampleId: string): string {
+  const remote = `${IGV_RELEASES_BASE}/${sampleId}_primary.bam.bai`;
+  return `/api/igv-proxy?url=${encodeURIComponent(remote)}`;
+}
+// ──────────────────────────────────────────────────────────────────────
+
 export default function IgvViewerPage() {
   const { t } = useLanguage();
   const [selectedMarker, setSelectedMarker] = useState("");
@@ -36,22 +68,102 @@ export default function IgvViewerPage() {
 
   // Core repeat coordinates (hg38) — narrow window so bases are visible on launch
   const markers = [
-    { id: "csf1po", name: "CSF1PO", chromosome: "5", position: "150076258-150076440" },
-    { id: "d10s1248", name: "D10S1248", chromosome: "10", position: "129294179-129294359" },
-    { id: "d12s391", name: "D12S391", chromosome: "12", position: "12296951-12297159" },
-    { id: "d13s317", name: "D13S317", chromosome: "13", position: "82147961-82148164" },
-    { id: "d16s539", name: "D16S539", chromosome: "16", position: "86352638-86352809" },
-    { id: "d18s51", name: "D18S51", chromosome: "18", position: "63281603-63281816" },
-    { id: "d19s433", name: "D19S433", chromosome: "19", position: "29926152-29926363" },
-    { id: "d1s1656", name: "D1S1656", chromosome: "1", position: "230769541-230769747" },
-    { id: "d21s11", name: "D21S11", chromosome: "21", position: "19181909-19182165" },
-    { id: "d2s1338", name: "D2S1338", chromosome: "2", position: "218014795-218015014" },
-    { id: "d2s441", name: "D2S441", chromosome: "2", position: "68011883-68012059" },
-    { id: "d3s1358", name: "D3S1358", chromosome: "3", position: "45540673-45540867" },
-    { id: "d5s818", name: "D5S818", chromosome: "5", position: "123775488-123775663" },
-    { id: "d7s820", name: "D7S820", chromosome: "7", position: "84160140-84160341" },
-    { id: "d8s1179", name: "D8S1179", chromosome: "8", position: "124894799-124894982" },
-    { id: "fga", name: "FGA", chromosome: "4", position: "154587669-154587887" },
+    {
+      id: "csf1po",
+      name: "CSF1PO",
+      chromosome: "5",
+      position: "150076258-150076440",
+    },
+    {
+      id: "d10s1248",
+      name: "D10S1248",
+      chromosome: "10",
+      position: "129294179-129294359",
+    },
+    {
+      id: "d12s391",
+      name: "D12S391",
+      chromosome: "12",
+      position: "12296951-12297159",
+    },
+    {
+      id: "d13s317",
+      name: "D13S317",
+      chromosome: "13",
+      position: "82147961-82148164",
+    },
+    {
+      id: "d16s539",
+      name: "D16S539",
+      chromosome: "16",
+      position: "86352638-86352809",
+    },
+    {
+      id: "d18s51",
+      name: "D18S51",
+      chromosome: "18",
+      position: "63281603-63281816",
+    },
+    {
+      id: "d19s433",
+      name: "D19S433",
+      chromosome: "19",
+      position: "29926152-29926363",
+    },
+    {
+      id: "d1s1656",
+      name: "D1S1656",
+      chromosome: "1",
+      position: "230769541-230769747",
+    },
+    {
+      id: "d21s11",
+      name: "D21S11",
+      chromosome: "21",
+      position: "19181909-19182165",
+    },
+    {
+      id: "d2s1338",
+      name: "D2S1338",
+      chromosome: "2",
+      position: "218014795-218015014",
+    },
+    {
+      id: "d2s441",
+      name: "D2S441",
+      chromosome: "2",
+      position: "68011883-68012059",
+    },
+    {
+      id: "d3s1358",
+      name: "D3S1358",
+      chromosome: "3",
+      position: "45540673-45540867",
+    },
+    {
+      id: "d5s818",
+      name: "D5S818",
+      chromosome: "5",
+      position: "123775488-123775663",
+    },
+    {
+      id: "d7s820",
+      name: "D7S820",
+      chromosome: "7",
+      position: "84160140-84160341",
+    },
+    {
+      id: "d8s1179",
+      name: "D8S1179",
+      chromosome: "8",
+      position: "124894799-124894982",
+    },
+    {
+      id: "fga",
+      name: "FGA",
+      chromosome: "4",
+      position: "154587669-154587887",
+    },
     { id: "th01", name: "TH01", chromosome: "11", position: "2171022-2171180" },
     { id: "tpox", name: "TPOX", chromosome: "2", position: "1489587-1489752" },
     { id: "vwa", name: "vWA", chromosome: "12", position: "5983894-5984109" },
@@ -60,28 +172,28 @@ export default function IgvViewerPage() {
   const SAMPLES: Record<string, { label: string; bam: string; bai: string }> = {
     HG00097: {
       label: "HG00097 (1000G)",
-      bam: "https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/data/HG00097_sort.bam",
-      bai: "https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/data/HG00097_sort.bam.bai",
+      bam: getBamUrl("HG00097"),
+      bai: getBaiUrl("HG00097"),
     },
     HG00145: {
       label: "HG00145 (1000G)",
-      bam: "https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/data/HG00145_sort.bam",
-      bai: "https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/data/HG00145_sort.bam.bai",
+      bam: getBamUrl("HG00145"),
+      bai: getBaiUrl("HG00145"),
     },
     HG00263: {
       label: "HG00263 (1000G)",
-      bam: "https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/data/HG00263_sort.bam",
-      bai: "https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/data/HG00263_sort.bam.bai",
+      bam: getBamUrl("HG00263"),
+      bai: getBaiUrl("HG00263"),
     },
     HG00372: {
       label: "HG00372 (1000G)",
-      bam: "https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/data/HG00372_sort.bam",
-      bai: "https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/data/HG00372_sort.bam.bai",
+      bam: getBamUrl("HG00372"),
+      bai: getBaiUrl("HG00372"),
     },
     HG01063: {
       label: "HG01063 (1000G)",
-      bam: "https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/data/HG01063_sort.bam",
-      bai: "https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/data/HG01063_sort.bam.bai",
+      bam: getBamUrl("HG01063"),
+      bai: getBaiUrl("HG01063"),
     },
   };
 
@@ -91,35 +203,44 @@ export default function IgvViewerPage() {
     if (!marker) return;
     const [start, end] = marker.position.split("-");
     const locus = `chr${marker.chromosome}:${start}-${end}`;
+
+    const buildTrackOptions = (
+      bamUrl: string,
+      baiUrl: string,
+      label: string,
+    ): any => ({
+      genome: selectedBuild,
+      locus,
+      showNavigation: true,
+      showRuler: true,
+      tracks: [
+        {
+          name: `${label} — STRhub demo`,
+          type: "alignment",
+          format: "bam",
+          url: bamUrl,
+          indexURL: baiUrl,
+          height: 720,
+          displayMode: "EXPANDED",
+          showAllBases: true,
+          samplingDepth: 0,
+          samplingWindowSize: 0,
+          visibilityWindow: 100000,
+        },
+      ],
+    });
+
     try {
       const mod: any = await import("igv/dist/igv.esm.js");
       const igv = (mod?.default ?? mod) as any;
       try {
         igv.removeAllBrowsers?.();
       } catch {}
+
       const sample = SAMPLES[selectedSample];
-      const options: any = {
-        genome: selectedBuild,
-        locus,
-        showNavigation: true,
-        showRuler: true,
-        tracks: [
-          {
-            name: `${sample.label} — STRhub demo`,
-            type: "alignment",
-            format: "bam",
-            url: sample.bam,
-            indexURL: sample.bai,
-            height: 720,
-            displayMode: "EXPANDED",
-            showAllBases: true,
-            samplingDepth: 0,
-            samplingWindowSize: 0,
-            visibilityWindow: 100000,
-          },
-        ],
-      };
+      const options = buildTrackOptions(sample.bam, sample.bai, sample.label);
       console.log("[IGV] options", options);
+
       await igv.createBrowser(igvContainerRef.current, options);
       setIgvLoaded(true);
     } catch (e) {

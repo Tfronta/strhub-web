@@ -48,11 +48,15 @@ export default function HomePage() {
       <section className="relative py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10" />
         <div className="container mx-auto text-center relative z-10">
-          <h2 className="text-5xl font-bold mb-6 text-balance">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
             {t("home.subtitle")}{" "}
-            <span className="text-gradient">Short Tandem Repeats</span>
+            <span className="text-gradient">Short Tandem Repeats</span>{" "}
+            (STRs)
           </h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-pretty">
+          <p className="text-lg md:text-xl text-muted-foreground/80 mb-2 max-w-3xl mx-auto">
+            {t("home.tagline")}
+          </p>
+          <p className="text-base text-muted-foreground/60 mb-10 max-w-2xl mx-auto">
             {t("home.description")}
           </p>
 

@@ -44,8 +44,9 @@ export const translations = {
     // Homepage
     home: {
       title: "STRhub",
-      subtitle: "Central Hub for STRs",
-      description: "From CE to NGS: an integrated STR platform for forensic genetics and population studies",
+      subtitle: "Central Hub for",
+      tagline: "Open-access platform for forensic STR analysis and visualization",
+      description: "From CE to NGS: integrated tools for forensic genetics and population studies",
       searchPlaceholder: "Search markers, tools, articles...",
       searchButton: "Search Database",
       exploreButton: "Explore Catalog",
@@ -1429,8 +1430,9 @@ export const translations = {
     // Homepage
     home: {
       title: "STRhub",
-      subtitle: "Centro de STRs",
-      description: "De CE para NGS: uma plataforma integral de STR para genética forense e estudos populacionais",
+      subtitle: "Hub Central de",
+      tagline: "Plataforma de acesso aberto para análise e visualização forense de STR",
+      description: "De CE a NGS: ferramentas integradas para genética forense e estudos populacionais",
       searchPlaceholder: "Buscar marcadores, ferramentas, artigos...",
       searchButton: "Buscar no Banco de Dados",
       exploreButton: "Explorar Catálogo",
@@ -2819,8 +2821,9 @@ export const translations = {
     // Homepage
     home: {
       title: "STRhub",
-      subtitle: "Centro de STRs",
-      description: "De CE a NGS: una plataforma integral de STR para genética forense y estudios poblacionales",
+      subtitle: "Hub Central de",
+      tagline: "Plataforma de acceso abierto para el análisis y visualización forense de STR",
+      description: "De CE a NGS: herramientas integradas para genética forense y estudios poblacionales",
       searchPlaceholder: "Buscar marcadores, herramientas, artículos...",
       searchButton: "Buscar en Base de Datos",
       exploreButton: "Explorar Catálogo",

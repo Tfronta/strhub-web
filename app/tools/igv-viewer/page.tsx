@@ -6,7 +6,6 @@ import { useLanguage } from "@/contexts/language-context";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -245,7 +244,7 @@ export default function IgvViewerPage() {
       setIgvLoaded(true);
     } catch (e) {
       console.error("[IGV] error", e);
-      alert("IGV could not load. Check browser console for details.");
+      alert(t("tools.igvViewer.igvErrorAlert"));
     }
   };
 
@@ -264,11 +263,10 @@ export default function IgvViewerPage() {
         <div>
           <div className="mb-6">
             <h1 className="text-3xl font-bold mb-2 tracking-tight">
-              IGV Viewer
+              {t("tools.igvViewer.pageTitle")}
             </h1>
             <p className="text-lg text-muted-foreground text-pretty">
-              One-click integration with IGV for genomic visualization and
-              analysis.
+              {t("tools.igvViewer.pageSubtitle")}
             </p>
           </div>
 
@@ -278,13 +276,13 @@ export default function IgvViewerPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
                 {/* Marker */}
                 <div className="space-y-1">
-                  <Label>STR Marker</Label>
+                  <Label>{t("tools.igvViewer.strMarker")}</Label>
                   <Select
                     value={selectedMarker}
                     onValueChange={setSelectedMarker}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a marker" />
+                      <SelectValue placeholder={t("tools.igvViewer.selectMarker")} />
                     </SelectTrigger>
                     <SelectContent className="max-h-80">
                       {markers.map((m) => (
@@ -298,13 +296,13 @@ export default function IgvViewerPage() {
 
                 {/* Sample */}
                 <div className="space-y-1">
-                  <Label>Sample</Label>
+                  <Label>{t("tools.igvViewer.sample")}</Label>
                   <Select
                     value={selectedSample}
                     onValueChange={setSelectedSample}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a sample" />
+                      <SelectValue placeholder={t("tools.igvViewer.selectSample")} />
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(SAMPLES).map(([k, v]) => (
@@ -326,14 +324,14 @@ export default function IgvViewerPage() {
                     >
                       <path d="M8 5v14l11-7z" />
                     </svg>
-                    Launch IGV Viewer
+                    {t("tools.igvViewer.launchIgv")}
                   </Button>
                   <Button
                     onClick={openInUCSC}
                     variant="outline"
                     className="w-full"
                   >
-                    Open in UCSC Browser
+                    {t("tools.igvViewer.openUcsc")}
                   </Button>
                 </div>
               </div>
@@ -426,10 +424,7 @@ export default function IgvViewerPage() {
           {/* Viewer */}
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle>Interactive Genome Viewer</CardTitle>
-              <CardDescription>
-                IGV.js integration for genomic visualization
-              </CardDescription>
+              <CardTitle>{t("tools.igvViewer.viewerTitle")}</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <div className="border rounded-xl overflow-visible">
@@ -440,38 +435,40 @@ export default function IgvViewerPage() {
               </div>
               <div className="px-6 pt-3 text-xs md:text-sm text-muted-foreground border-t bg-muted/30">
                 <p className="font-semibold text-foreground mb-1">
-                  Data Integration
+                  {t("tools.igvViewer.dataIntegration")}
                 </p>
                 <p>
-                  This viewer integrates the open-source <strong>IGV.js</strong>{" "}
-                  library for interactive genomic visualization (
+                  {t("tools.igvViewer.dataIntegrationPre")}{" "}
+                  <strong>IGV</strong>{" "}
                   <a
                     href="https://github.com/igvteam/igv.js"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline hover:text-primary"
                   >
-                    github.com/igvteam/igv.js
-                  </a>
-                  ) and sample alignment data from the{" "}
-                  <strong>1000 Genomes Project</strong>(
+                    (github.com/igvteam/igv.js)
+                  </a>{" "}
+                  {t("tools.igvViewer.dataIntegrationMid")}{" "}
+                  <strong>{t("tools.igvViewer.genomesLabel")}</strong>{" "}
                   <a
                     href="https://www.internationalgenome.org/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline hover:text-primary"
                   >
-                    internationalgenome.org
+                    (internationalgenome.org)
                   </a>
-                  ). Demo BAM/BAI files are open data resources, used here for
-                  educational and research purposes.
+                  . {t("tools.igvViewer.dataIntegrationPost")}
                 </p>
                 <p className="mt-1 text-[11px] text-muted-foreground">
-                  IGV.js · 1000 Genomes Project (open data)
+                  {t("tools.igvViewer.openDataTag")}
                 </p>
                 <p className="mt-1 text-[11px] text-muted-foreground">
-                  IGV status:{" "}
-                  {igvLoaded ? "Ready" : "Idle (click Launch IGV Viewer)"}.
+                  {t("tools.igvViewer.igvStatusLabel")}{" "}
+                  {igvLoaded
+                    ? t("tools.igvViewer.igvStatusReady")
+                    : t("tools.igvViewer.igvStatusIdle")}
+                  .
                 </p>
               </div>
             </CardContent>

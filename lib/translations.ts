@@ -1101,7 +1101,7 @@ export const translations = {
         "Our goal is to foster a global, collaborative environment where knowledge, technology, and transparency come together to strengthen forensic genetics research and education.",
       team: "Our Team",
       teamP1:
-        "STRhub is developed and led by **Dr. Tamara Frontanilla** and is academically supported by the Laboratory of Forensic Genetics and Population Genetics (LPFG), University of São Paulo (USP), under the supervision of Dr. Celso Teixeira Mendes Junior.",
+        "STRhub is developed and led by **Dr. Tamara Frontanilla** and is academically supported by the Forensic and Genomics Research Laboratory, University of São Paulo (USP), under the supervision of Dr. Celso Teixeira Mendes Junior.",
       teamP2:
         "The project is developed by a multidisciplinary team of researchers, bioinformaticians, and forensic scientists, and is shaped by hands-on experience with real STR datasets, laboratory workflows, and interpretative challenges. STRhub is built to reflect the needs of the forensic and population genetics community, emphasizing clarity, methodological rigor, and accessibility.",
       teamP3: "ORCID: 0000-0002-6873-7813",
@@ -2792,7 +2792,7 @@ export const translations = {
         "Nosso objetivo é promover um ambiente global e colaborativo onde conhecimento, tecnologia e transparência se unam para fortalecer a pesquisa e a educação em genética forense.",
       team: "Nossa equipe",
       teamP1:
-        "O STRhub é um projeto desenvolvido e liderado pela **Dra. Tamara Frontanilla** e conta com apoio acadêmico do Laboratório de Genética Forense e Genética de Populações (LPFG), Universidade de São Paulo (USP), sob a supervisão do Dr. Celso Teixeira Mendes Junior.",
+        "O STRhub é um projeto desenvolvido e liderado pela **Dra. Tamara Frontanilla** e conta com apoio acadêmico do Laboratório de Pesquisas Forenses e Genômicas, Universidade de São Paulo (USP), sob a supervisão do Dr. Celso Teixeira Mendes Junior.",
       teamP2:
         "O projeto é desenvolvido por uma equipe multidisciplinar de pesquisadores, bioinformatas e cientistas forenses, e é moldado pela experiência prática com conjuntos de dados STR reais, rotinas laboratoriais e desafios interpretativos. O STRhub foi construído para refletir as necessidades da comunidade forense e de genética de populações, com ênfase em clareza, rigor metodológico e acessibilidade.",
       teamP3: "ORCID: 0000-0002-6873-7813",
@@ -3944,7 +3944,7 @@ export const translations = {
         "Nuestro objetivo es fomentar un entorno global y colaborativo donde el conocimiento, la tecnología y la transparencia se integren para fortalecer la investigación y la educación en genética forense.",
       team: "Nuestro equipo",
       teamP1:
-        "STRhub es un proyecto desarrollado y liderado por la **Dra. Tamara Frontanilla** y cuenta con el respaldo académico del Laboratorio de Genética Forense y Genética de Poblaciones (LPFG), Universidad de São Paulo (USP), bajo la supervisión del Dr. Celso Teixeira Mendes Junior.",
+        "STRhub es un proyecto desarrollado y liderado por la **Dra. Tamara Frontanilla** y cuenta con el respaldo académico del Laboratorio de Investigaciones Forenses y Genómicas, Universidad de São Paulo (USP), bajo la supervisión del Dr. Celso Teixeira Mendes Junior.",
       teamP2:
         "El proyecto es desarrollado por un equipo multidisciplinario de investigadores, bioinformáticos y científicos forenses, y se nutre de la experiencia directa con conjuntos de datos STR reales, flujos de trabajo de laboratorio y desafíos interpretativos. STRhub está construido para reflejar las necesidades de la comunidad forense y de genética de poblaciones, priorizando la claridad, el rigor metodológico y la accesibilidad.",
       teamP3: "ORCID: 0000-0002-6873-7813",

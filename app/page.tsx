@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/contexts/language-context";
+import { SiteFooter } from "@/components/site-footer";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -323,17 +324,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t py-8 px-4 bg-card/50">
-        <div className="container mx-auto text-center">
-          <p className="text-muted-foreground mb-2">
-            {t("home.footer.mission")}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            {t("home.footer.community")}
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

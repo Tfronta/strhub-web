@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/contexts/language-context"; // Fixed import path to use correct location
 import { PageTitle } from "@/components/page-title";
+import { SiteFooter } from "@/components/site-footer";
 import { markerData } from "@/lib/markerData";
 import { markerFrequenciesCE } from "@/app/marker/[id]/markerFrequencies";
 import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
@@ -650,6 +651,7 @@ export default function CatalogPage() {
           </div>
         </div>
       </div>
+      <SiteFooter />
     </div>
   );
 }

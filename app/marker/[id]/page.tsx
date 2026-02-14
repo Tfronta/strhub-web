@@ -560,7 +560,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
           onValueChange={(value) => setActiveTab(value as TabValue)}
           className="space-y-6"
         >
-          <TabsList className="grid w-full grid-cols-4 h-9 bg-muted/50 p-1 rounded-md border-0">
+          <TabsList className="grid w-full grid-cols-4 h-9 bg-muted/50 p-0 rounded-md border-0">
             <TabsTrigger
               value="overview"
               className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"

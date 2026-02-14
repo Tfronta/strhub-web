@@ -621,7 +621,7 @@ export const translations = {
       about: {
         title: "About FASTA Generation",
         intro:
-          "This module produces high quality FASTA sequences for Short Tandem Repeat (STR) markers, using curated reference regions derived from GRCh38.",
+          "This module produces high-quality FASTA sequences for Short Tandem Repeat (STR) markers, using curated reference regions derived from GRCh38.",
         detail:
           "Each generated sequence represents the expected genomic structure of the STR locus, with customizable upstream and downstream flanking regions.",
         overview: {
@@ -1052,7 +1052,7 @@ export const translations = {
         },
       },
       strider: {
-        title: "STRIDER",
+        title: "STRidER",
         description: "Curated online STR allele-frequency population database providing high-quality genotype probability estimates and autosomal STR quality control.",
         tags: {
           population: "Population data",
@@ -2037,35 +2037,35 @@ export const translations = {
         errorPrefix: "ERRO",
       },
       about: {
-        title: "About FASTA Generation",
+        title: "Sobre a Geração de FASTA",
         intro:
-          "This module produces high-quality FASTA sequences for Short Tandem Repeat (STR) markers, using curated reference regions derived from GRCh38.",
+          "Este módulo produz sequências FASTA de alta qualidade para marcadores de Repetição Curta em Tandem (STR), utilizando regiões de referência curadas derivadas do GRCh38.",
         detail:
-          "Each generated sequence represents the expected genomic structure of the STR locus, with customizable upstream and downstream flanking regions.",
+          "Cada sequência gerada representa a estrutura genômica esperada do locus STR, com regiões flanqueadoras personalizáveis a montante e a jusante.",
         overview: {
-          title: "Overview",
+          title: "Visão geral",
           paragraphs: [
-            "STRhub's FASTA Generator allows researchers to explore allelic variability by simulating STR repeat patterns with precise genomic context.",
-            "Users can define allele ranges, adjust flanking lengths, and export the resulting sequences in several standardized formats.",
+            "O Gerador FASTA do STRhub permite que pesquisadores explorem a variabilidade alélica simulando padrões de repetição STR com contexto genômico preciso.",
+            "Os usuários podem definir faixas de alelos, ajustar comprimentos flanqueadores e exportar as sequências resultantes em vários formatos padronizados.",
           ],
         },
         features: {
-          title: "Features",
+          title: "Recursos",
           items: [
-            "Full support for CODIS core and extended STR markers",
-            "Reference-based slices aligned to GRCh38",
-            "Customizable flanking regions (0–1000 bp per side)",
-            "Multiple export formats: Standard FASTA, Reference-style FASTA, Multi-FASTA, and Tabular CSV",
-            "Direct download and copy options",
+            "Suporte completo para marcadores STR do núcleo CODIS e estendidos",
+            "Fatias baseadas em referência alinhadas ao GRCh38",
+            "Regiões flanqueadoras personalizáveis (0–1000 pb por lado)",
+            "Múltiplos formatos de exportação: FASTA Padrão, FASTA estilo Referência, Multi-FASTA e CSV Tabular",
+            "Opções de download e cópia diretas",
           ],
         },
         useCases: {
-          title: "Use cases",
+          title: "Casos de uso",
           items: [
-            "Forensic and population genetics research",
-            "Allelic reconstruction and in silico analysis",
-            "Primer design and assay validation",
-            "Educational and training purposes in forensic genomics",
+            "Pesquisa em genética forense e populacional",
+            "Reconstrução alélica e análise in silico",
+            "Desenho de primers e validação de ensaios",
+            "Fins educacionais e de treinamento em genômica forense",
           ],
         },
       },
@@ -2429,7 +2429,7 @@ export const translations = {
         },
       },
       strider: {
-        title: "STRIDER",
+        title: "STRidER",
         description: "Banco de dados populacional online de frequências alélicas STR, cuidadosamente curado, que oferece estimativas de probabilidade de genótipos e controle de qualidade de STR autossômicos.",
         tags: {
           population: "Dados populacionais",
@@ -3459,35 +3459,35 @@ export const translations = {
         errorPrefix: "ERROR",
       },
       about: {
-        title: "About FASTA Generation",
+        title: "Acerca de la generación FASTA",
         intro:
-          "This module produces high-quality FASTA sequences for Short Tandem Repeat (STR) markers, using curated reference regions derived from GRCh38.",
+          "Este módulo produce secuencias FASTA de alta calidad para marcadores de Repetición Corta en Tándem (STR), utilizando regiones de referencia curadas derivadas del GRCh38.",
         detail:
-          "Each generated sequence represents the expected genomic structure of the STR locus, with customizable upstream and downstream flanking regions.",
+          "Cada secuencia generada representa la estructura genómica esperada del locus STR, con regiones flanqueantes personalizables.",
         overview: {
-          title: "Overview",
+          title: "Descripción general",
           paragraphs: [
-            "STRhub's FASTA Generator allows researchers to explore allelic variability by simulating STR repeat patterns with precise genomic context.",
-            "Users can define allele ranges, adjust flanking lengths, and export the resulting sequences in several standardized formats.",
+            "El Generador FASTA de STRhub permite a los investigadores explorar la variabilidad alélica simulando patrones de repetición STR con contexto genómico preciso.",
+            "Los usuarios pueden definir rangos de alelos, ajustar longitudes flanqueantes y exportar las secuencias resultantes en varios formatos estandarizados.",
           ],
         },
         features: {
-          title: "Features",
+          title: "Características",
           items: [
-            "Full support for CODIS core and extended STR markers",
-            "Reference-based slices aligned to GRCh38",
-            "Customizable flanking regions (0–1000 bp per side)",
-            "Multiple export formats: Standard FASTA, Reference-style FASTA, Multi-FASTA, and Tabular CSV",
-            "Direct download and copy options",
+            "Soporte completo para marcadores STR del núcleo CODIS y extendidos",
+            "Cortes basados en referencia alineados a GRCh38",
+            "Regiones flanqueantes personalizables (0–1000 pb por lado)",
+            "Múltiples formatos de exportación: FASTA estándar, FASTA estilo referencia, Multi-FASTA y CSV tabular",
+            "Opciones de descarga y copia directas",
           ],
         },
         useCases: {
-          title: "Use cases",
+          title: "Casos de uso",
           items: [
-            "Forensic and population genetics research",
-            "Allelic reconstruction and in silico analysis",
-            "Primer design and assay validation",
-            "Educational and training purposes in forensic genomics",
+            "Investigación en genética forense y poblacional",
+            "Reconstrucción alélica y análisis in silico",
+            "Diseño de cebadores y validación de ensayos",
+            "Propósitos educativos y de formación en genómica forense",
           ],
         },
       },
@@ -3895,7 +3895,7 @@ export const translations = {
         },
       },
       strider: {
-        title: "STRIDER",
+        title: "STRidER",
         description: "Base de datos poblacional de frecuencias alélicas STR cuidadosamente curada, que ofrece estimaciones de probabilidad de genotipos y control de calidad para STR autosómicos.",
         tags: {
           population: "Datos poblacionales",

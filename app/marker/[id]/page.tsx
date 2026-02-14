@@ -61,7 +61,7 @@ import strKitsData from "@/data/str_kits.json";
 import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
 
 const motifExplorerMarkerIds = new Set(
-  Object.keys(strKitsData).map((marker) => marker.toLowerCase())
+  Object.keys(strKitsData).map((marker) => marker.toLowerCase()),
 );
 
 const POP_SUBPOP_DESCRIPTION_KEYS: Record<string, string> = {
@@ -146,7 +146,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     toolId: string,
     field: "interfaces" | "limitations" | "notes" | "config",
     key?: string,
-    originalText?: string
+    originalText?: string,
   ): string => {
     // Build translation key based on field type
     let translationKey = `marker.tools.${toolId}.${field}`;
@@ -186,7 +186,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
           setSelectedPopulation("BRA");
         })
         .catch((err) =>
-          console.error("[v0] Failed to load X-STR frequencies:", err)
+          console.error("[v0] Failed to load X-STR frequencies:", err),
         );
     }
   }, [markerId, marker]);
@@ -240,8 +240,11 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     selectedTechnology === "CE" && markerFreqDataCE
       ? { technology: markerFreqDataCE.technology, kit: markerFreqDataCE.kit }
       : selectedTechnology === "NGS" && markerFreqDataNGS
-      ? { technology: markerFreqDataNGS.technology, kit: markerFreqDataNGS.kit }
-      : null;
+        ? {
+            technology: markerFreqDataNGS.technology,
+            kit: markerFreqDataNGS.kit,
+          }
+        : null;
 
   // Compute available populations based on technology
   const getAvailablePopulations = (): string[] => {
@@ -356,14 +359,14 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
   const latamCEOptions = useMemo(
     () => LATAMCatalog.filter((subpop) => subpop.technology === "CE"),
-    []
+    [],
   );
 
   const groupedLatamOptions = useMemo(() => {
     return latamCEOptions.reduce<{ country: string; items: LatamSubpop[] }[]>(
       (groups, subpop) => {
         const existingGroup = groups.find(
-          (group) => group.country === subpop.country
+          (group) => group.country === subpop.country,
         );
         if (existingGroup) {
           existingGroup.items.push(subpop);
@@ -372,7 +375,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
         }
         return groups;
       },
-      []
+      [],
     );
   }, [latamCEOptions]);
 
@@ -424,13 +427,13 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
       // Check if tool supports the marker's technology
       const techMatch = tool.tech.some((tech) =>
-        compatibleTechs.includes(tech)
+        compatibleTechs.includes(tech),
       );
       if (!techMatch) return false;
 
       // Check if tool supports at least one compatible input format
       const inputMatch = tool.input.some((input) =>
-        compatibleInputs.includes(input)
+        compatibleInputs.includes(input),
       );
       return inputMatch;
     });
@@ -842,17 +845,17 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                                   type="button"
                                                   onClick={() => {
                                                     setSelectedLatamSubpop(
-                                                      subpop
+                                                      subpop,
                                                     );
                                                     setLatamSubpopPopoverOpen(
-                                                      false
+                                                      false,
                                                     );
                                                   }}
                                                   className={cn(
                                                     "flex flex-col items-start rounded-xl border px-3 py-2 text-left text-sm transition",
                                                     isActive
                                                       ? "border-primary bg-primary/5"
-                                                      : "hover:bg-muted"
+                                                      : "hover:bg-muted",
                                                   )}
                                                 >
                                                   <span className="font-medium">
@@ -868,7 +871,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                             })}
                                           </div>
                                         </div>
-                                      )
+                                      ),
                                     )}
                                   </div>
                                 </PopoverContent>
@@ -982,7 +985,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 ) {
                                   // Prefer RAO if available, otherwise use first available population
                                   const ngsPops = Object.keys(
-                                    markerFreqDataNGS
+                                    markerFreqDataNGS,
                                   ).filter(
                                     (key) =>
                                       key !== "kit" &&
@@ -990,13 +993,13 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                       Array.isArray(
                                         markerFreqDataNGS[
                                           key as keyof typeof markerFreqDataNGS
-                                        ]
+                                        ],
                                       ) &&
                                       (
                                         markerFreqDataNGS[
                                           key as keyof typeof markerFreqDataNGS
                                         ] as any[]
-                                      ).length > 0
+                                      ).length > 0,
                                   );
                                   const defaultPop = ngsPops.includes("RAO")
                                     ? "RAO"
@@ -1049,7 +1052,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         selectedTechnology === "NGS" &&
                         selectedPopulation !== "RAO" &&
                         ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
-                          selectedPopulation
+                          selectedPopulation,
                         ) &&
                         NGS_1000G_POPULATION_GROUPS[selectedPopulation];
 
@@ -1070,7 +1073,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                             <p>
                               <span className="font-medium">
                                 {t(
-                                  "marker.frequencies.ngs1000G.populationGroupsLabel"
+                                  "marker.frequencies.ngs1000G.populationGroupsLabel",
                                 )}
                               </span>
                               <br />
@@ -1080,25 +1083,25 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               <p className="font-medium flex items-center gap-2">
                                 <span>
                                   {t(
-                                    "marker.frequencies.ngs1000G.datasetNotesTitle"
+                                    "marker.frequencies.ngs1000G.datasetNotesTitle",
                                   )}
                                 </span>
                               </p>
                               <p>
                                 {t(
-                                  "marker.frequencies.ngs1000G.datasetNotesParagraph1"
+                                  "marker.frequencies.ngs1000G.datasetNotesParagraph1",
                                 )}
                               </p>
                               <p>
                                 {t(
-                                  "marker.frequencies.ngs1000G.datasetNotesParagraph2"
+                                  "marker.frequencies.ngs1000G.datasetNotesParagraph2",
                                 )}
                               </p>
                             </div>
                             <p className="text-xs">
                               <span className="font-semibold">
                                 {t(
-                                  "marker.frequencies.datasetNotes.referenceLabel"
+                                  "marker.frequencies.datasetNotes.referenceLabel",
                                 )}
                                 :
                               </span>
@@ -1134,7 +1137,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           <p className="mt-2 text-sm text-muted-foreground">
                             <span className="font-medium">
                               {t(
-                                "marker.frequencies.datasetNotes.populationLabel"
+                                "marker.frequencies.datasetNotes.populationLabel",
                               )}
                             </span>
                             <br />
@@ -1149,7 +1152,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         selectedTechnology === "NGS" &&
                         selectedPopulation !== "RAO" &&
                         ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
-                          selectedPopulation
+                          selectedPopulation,
                         )
                       ) && (
                         <>
@@ -1171,7 +1174,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                             <AccordionItem value="method-note">
                               <AccordionTrigger className="text-sm font-medium">
                                 {t(
-                                  "marker.frequencies.datasetNotes.accordionTrigger"
+                                  "marker.frequencies.datasetNotes.accordionTrigger",
                                 )}
                               </AccordionTrigger>
                               <AccordionContent className="text-sm text-muted-foreground space-y-2">
@@ -1187,12 +1190,12 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 <p className="text-xs">
                                   <span className="font-semibold">
                                     {t(
-                                      "marker.frequencies.datasetNotes.referenceLabel"
+                                      "marker.frequencies.datasetNotes.referenceLabel",
                                     )}
                                   </span>
                                   <br />
                                   {t(
-                                    "marker.frequencies.datasetNotes.referenceText"
+                                    "marker.frequencies.datasetNotes.referenceText",
                                   )}
                                 </p>
                               </AccordionContent>
@@ -1208,7 +1211,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           selectedTechnology === "NGS" &&
                           selectedPopulation !== "RAO" &&
                           ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
-                            selectedPopulation
+                            selectedPopulation,
                           );
 
                         // NGS 1000G: Show both "Original dataset" and "Original publication" buttons
@@ -1227,7 +1230,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                   rel="noopener noreferrer"
                                 >
                                   {t(
-                                    "marker.frequencies.ngs1000G.originalDatasetButton"
+                                    "marker.frequencies.ngs1000G.originalDatasetButton",
                                   )}
                                 </a>
                               </Button>
@@ -1243,7 +1246,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                   rel="noopener noreferrer"
                                 >
                                   {t(
-                                    "marker.frequencies.ngs1000G.originalPublicationButton"
+                                    "marker.frequencies.ngs1000G.originalPublicationButton",
                                   )}
                                 </a>
                               </Button>
@@ -1373,7 +1376,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                   return a.allele.localeCompare(
                                     b.allele,
                                     undefined,
-                                    { numeric: true }
+                                    { numeric: true },
                                   );
                                 })
                                 .map((item, index) => (
@@ -1496,7 +1499,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                             ]),
                           ]
                             .map((row) =>
-                              row.map((cell) => `"${cell}"`).join(",")
+                              row.map((cell) => `"${cell}"`).join(","),
                             )
                             .join("\n");
 
@@ -1684,7 +1687,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                           {t("marker.panel")}
                                         </a>
                                       </Button>
-                                    )
+                                    ),
                                   )}
                                 </div>
                               </div>
@@ -1704,7 +1707,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                     tool.id,
                                     "config",
                                     "targetFileFormat",
-                                    tool.config.target_file_format
+                                    tool.config.target_file_format,
                                   )}
                                 </div>
                                 {tool.config.flanking_bp_recommended && (
@@ -1829,10 +1832,10 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                         const key = iface.name
                                           .replace(/[-\s]+/g, "")
                                           .replace(/^([a-z])/i, (m) =>
-                                            m.toLowerCase()
+                                            m.toLowerCase(),
                                           )
                                           .replace(/([A-Z])/g, (m) =>
-                                            m.toLowerCase()
+                                            m.toLowerCase(),
                                           );
                                         // For HipSTR-UI, the key should be "hipstrUi"
                                         const interfaceKey =
@@ -1843,7 +1846,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                           tool.id,
                                           "interfaces",
                                           interfaceKey,
-                                          iface.description
+                                          iface.description,
                                         );
                                       })()}
                                     </p>
@@ -1864,26 +1867,26 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                   let translationKey = "";
                                   if (
                                     limitation.includes(
-                                      "Requires aligned BAM/CRAM"
+                                      "Requires aligned BAM/CRAM",
                                     )
                                   ) {
                                     translationKey = "requiresAligned";
                                   } else if (
                                     limitation.includes(
-                                      "Designed for Illumina"
+                                      "Designed for Illumina",
                                     ) &&
                                     limitation.includes("not compatible")
                                   ) {
                                     translationKey = "illuminaOnly";
                                   } else if (
                                     limitation.includes(
-                                      "Optimized for Illumina"
+                                      "Optimized for Illumina",
                                     )
                                   ) {
                                     translationKey = "illuminaOnly";
                                   } else if (
                                     limitation.includes(
-                                      "Requires BAM/CRAM alignment"
+                                      "Requires BAM/CRAM alignment",
                                     )
                                   ) {
                                     translationKey = "requiresBamBed";
@@ -1893,32 +1896,32 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                     translationKey = "ontOptimized";
                                   } else if (
                                     limitation.includes(
-                                      "Not designed for whole-genome"
+                                      "Not designed for whole-genome",
                                     )
                                   ) {
                                     translationKey = "notWgs";
                                   } else if (
                                     limitation.includes(
-                                      "Designed for Illumina data"
+                                      "Designed for Illumina data",
                                     ) &&
                                     limitation.includes("panel configuration")
                                   ) {
                                     translationKey = "illuminaData";
                                   } else if (
                                     limitation.includes(
-                                      "Does not perform read alignment"
+                                      "Does not perform read alignment",
                                     )
                                   ) {
                                     translationKey = "noAlignment";
                                   } else if (
                                     limitation.includes(
-                                      "Designed for forensic NGS"
+                                      "Designed for forensic NGS",
                                     )
                                   ) {
                                     translationKey = "forensicNgs";
                                   } else if (
                                     limitation.includes(
-                                      "Web interface inactive"
+                                      "Web interface inactive",
                                     )
                                   ) {
                                     translationKey = "webInterfaceInactive";
@@ -1929,7 +1932,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                         tool.id,
                                         "limitations",
                                         translationKey,
-                                        limitation
+                                        limitation,
                                       )
                                     : limitation;
 
@@ -2024,7 +2027,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                   tool.id,
                                   "notes",
                                   undefined,
-                                  tool.notes
+                                  tool.notes,
                                 )}
                               </p>
                             </div>

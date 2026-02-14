@@ -58,7 +58,7 @@ export const markers = Object.entries(markerData)
   }))
   .filter(
     (marker) =>
-      !!marker.motif || ["F13A1", "FESFPS", "LPL"].includes(marker.name)
+      !!marker.motif || ["F13A1", "FESFPS", "LPL"].includes(marker.name),
   );
 
 const categories = ["All", "CODIS Core", "Other Autosomal", "X-STR", "Y-STR"];
@@ -86,7 +86,7 @@ const repeatTypes = [
 // Helper function to compute allele range for a marker (same logic as detail page)
 function computeAlleleRangeForMarker(
   markerId: string,
-  fallbackAlleles: string
+  fallbackAlleles: string,
 ): string {
   const markerIdLower = markerId.toLowerCase();
   const marker = markerData[markerIdLower as keyof typeof markerData];
@@ -175,7 +175,7 @@ export default function CatalogPage() {
   // Helper function to translate marker fullName if it matches the pattern
   const getTranslatedFullName = (
     fullName: string,
-    chromosome: string
+    chromosome: string,
   ): string => {
     // Check if it matches "DNA Segment on Chromosome X" pattern (where X is a number or X/Y)
     const pattern = /^DNA Segment on Chromosome (\d+|[XY])$/i;
@@ -241,14 +241,14 @@ export default function CatalogPage() {
         a.chromosome === "X"
           ? 23
           : a.chromosome === "Y"
-          ? 24
-          : Number.parseInt(a.chromosome);
+            ? 24
+            : Number.parseInt(a.chromosome);
       const chrB =
         b.chromosome === "X"
           ? 23
           : b.chromosome === "Y"
-          ? 24
-          : Number.parseInt(b.chromosome);
+            ? 24
+            : Number.parseInt(b.chromosome);
       return chrA - chrB;
     } else if (sortBy === "category") {
       return a.category.localeCompare(b.category);
@@ -389,12 +389,14 @@ export default function CatalogPage() {
                 onValueChange={setSelectedChromosome}
               >
                 <SelectTrigger className="w-32">
-                  <SelectValue placeholder="Chr" />
+                  <SelectValue placeholder={t("catalog.chromosome")} />
                 </SelectTrigger>
                 <SelectContent>
                   {chromosomes.map((chr) => (
                     <SelectItem key={chr} value={chr}>
-                      Chr {chr}
+                      {chr === "All"
+                        ? `${t("catalog.chromosome")} ${t("catalog.allChromosomes")}`
+                        : `${t("catalog.chromosome")} ${chr}`}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -409,7 +411,9 @@ export default function CatalogPage() {
                 <SelectContent>
                   {repeatTypes.map((type) => (
                     <SelectItem key={type} value={type}>
-                      {type}
+                      {type === "All"
+                        ? t("catalog.allRepeatTypes")
+                        : t(`catalog.repeatTypeOptions.${type}` as const)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -453,7 +457,7 @@ export default function CatalogPage() {
             };
 
             const handleCardKeyDown = (
-              event: React.KeyboardEvent<HTMLDivElement>
+              event: React.KeyboardEvent<HTMLDivElement>,
             ) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
@@ -465,7 +469,7 @@ export default function CatalogPage() {
               event:
                 | React.MouseEvent<HTMLElement>
                 | React.KeyboardEvent<HTMLElement>,
-              tab: string
+              tab: string,
             ) => {
               event.stopPropagation();
               if ("preventDefault" in event) {
@@ -476,7 +480,7 @@ export default function CatalogPage() {
 
             const handleTabKeyDown = (
               event: React.KeyboardEvent<HTMLElement>,
-              tab: string
+              tab: string,
             ) => {
               if (event.key === "Enter" || event.key === " ") {
                 handleTabClick(event, tab);
@@ -502,7 +506,7 @@ export default function CatalogPage() {
                         <CardDescription className="font-medium">
                           {getTranslatedFullName(
                             marker.fullName,
-                            marker.chromosome
+                            marker.chromosome,
                           )}
                         </CardDescription>
                       </div>
@@ -514,12 +518,12 @@ export default function CatalogPage() {
                           {marker.category === "CODIS Core"
                             ? t("catalog.categories.CODIS Core")
                             : marker.category === "Other Autosomal"
-                            ? t("catalog.categories.Autosomal")
-                            : marker.category === "Y-STR"
-                            ? t("catalog.categories.Y-STR")
-                            : marker.category === "X-STR"
-                            ? t("catalog.categories.X-STR")
-                            : marker.category}
+                              ? t("catalog.categories.Autosomal")
+                              : marker.category === "Y-STR"
+                                ? t("catalog.categories.Y-STR")
+                                : marker.category === "X-STR"
+                                  ? t("catalog.categories.X-STR")
+                                  : marker.category}
                         </Badge>
                         {marker.nistVerified && (
                           <Badge
@@ -564,7 +568,7 @@ export default function CatalogPage() {
                         <span className="font-medium">
                           {computeAlleleRangeForMarker(
                             marker.id,
-                            marker.alleles
+                            marker.alleles,
                           )}
                         </span>
                       </div>

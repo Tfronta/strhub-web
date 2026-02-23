@@ -884,6 +884,10 @@ export const translations = {
         depthCoverage: "Depth coverage",
         regionInspection: "Region inspection",
         quickVisualization: "Quick visualization",
+        doradoBasecalling: "Dorado basecalling",
+        pod5Convert: "POD5 convert",
+        minimap2Ont: "Minimap2 ONT alignment",
+        nanoplot: "NanoPlot",
       },
       hipstr: {
         title: "HipSTR",
@@ -1005,6 +1009,21 @@ export const translations = {
             tview: "samtools tview sample.bam reference.fasta",
           },
         },
+        nanopore: {
+          title: "Nanopore (ONT) Essentials",
+          subtitle: "For basecalling, format conversion, alignment, and QC of long reads.",
+          features: {
+            1: "Basecall raw POD5/FAST5 and convert formats",
+            2: "Align long reads and inspect STR regions",
+            3: "Quality control and read-length summaries",
+          },
+          commands: {
+            dorado: "dorado basecaller sup pod5/ > reads.fastq",
+            pod5: "pod5 convert fast5 input_fast5/ -o output_pod5/",
+            minimap2: "minimap2 -ax map-ont hg38.fa reads.fastq > aln.sam",
+            nanoplot: "NanoPlot --fastq reads.fastq --outdir nanoplot_out/",
+          },
+        },
         installation: {
           title: "Installation Requirements",
           intro: "The tools shown above do not come pre-installed. To run these commands, you need to install the corresponding bioinformatics utilities according to your operating system.",
@@ -1013,6 +1032,10 @@ export const translations = {
           windowsTitle: "Windows (WSL2 recommended)",
           windowsNote: "Bioinformatics tools are not supported natively on Windows. Use WSL2 (Ubuntu) or a Linux container for full compatibility.",
           guideSoon: "A full step-by-step installation guide for each OS will be added soon.",
+          nanoporeTitle: "Nanopore utilities (POD5 tools, NanoPlot, pycoQC)",
+          nanoporeCmd: "pip install pod5 nanoplot pycoqc",
+          nanoporeNote: "Dorado installation depends on your platform and GPU availability; obtain precompiled binaries from Oxford Nanopore releases.",
+          nanoporePythonNote: "Long-read tools may require Python ≥ 3.8 and sufficient disk space for basecalling models.",
         },
       },
       straitrazor: {
@@ -2261,6 +2284,10 @@ export const translations = {
         depthCoverage: "Cobertura de profundidade",
         regionInspection: "Inspeção de região",
         quickVisualization: "Visualização rápida",
+        doradoBasecalling: "Basecalling Dorado",
+        pod5Convert: "Conversão POD5",
+        minimap2Ont: "Alinhamento Minimap2 ONT",
+        nanoplot: "NanoPlot",
       },
       hipstr: {
         title: "HipSTR",
@@ -2382,6 +2409,21 @@ export const translations = {
             tview: "samtools tview sample.bam reference.fasta",
           },
         },
+        nanopore: {
+          title: "Nanopore (ONT) Essentials",
+          subtitle: "Para basecalling, conversão de formato, alinhamento e QC de leituras longas.",
+          features: {
+            1: "Basecall de POD5/FAST5 e conversão de formatos",
+            2: "Alinhar leituras longas e inspecionar regiões STR",
+            3: "Controle de qualidade e resumos de comprimento",
+          },
+          commands: {
+            dorado: "dorado basecaller sup pod5/ > reads.fastq",
+            pod5: "pod5 convert fast5 input_fast5/ -o output_pod5/",
+            minimap2: "minimap2 -ax map-ont hg38.fa reads.fastq > aln.sam",
+            nanoplot: "NanoPlot --fastq reads.fastq --outdir nanoplot_out/",
+          },
+        },
         installation: {
           title: "Requisitos de Instalação",
           intro: "As ferramentas mostradas acima não vêm instaladas por padrão. Para executar estes comandos, você precisa instalar as ferramentas de bioinformática de acordo com seu sistema operacional.",
@@ -2390,6 +2432,10 @@ export const translations = {
           windowsTitle: "Windows (WSL2 recomendado)",
           windowsNote: "Ferramentas de bioinformática não funcionam de forma nativa no Windows. Use WSL2 (Ubuntu) ou um contêiner Linux para garantir total compatibilidade.",
           guideSoon: "Em breve adicionaremos um guia completo de instalação para cada sistema operacional.",
+          nanoporeTitle: "Utilitários Nanopore (ferramentas POD5, NanoPlot, pycoQC)",
+          nanoporeCmd: "pip install pod5 nanoplot pycoqc",
+          nanoporeNote: "A instalação do Dorado depende da sua plataforma e da disponibilidade de GPU; obtenha binários pré-compilados nas releases da Oxford Nanopore.",
+          nanoporePythonNote: "Ferramentas de leitura longa podem exigir Python ≥ 3.8 e espaço em disco suficiente para modelos de basecalling.",
         },
       },
       straitrazor: {
@@ -3727,6 +3773,10 @@ export const translations = {
         depthCoverage: "Cobertura de profundidad",
         regionInspection: "Inspección de región",
         quickVisualization: "Visualización rápida",
+        doradoBasecalling: "Basecalling Dorado",
+        pod5Convert: "Conversión POD5",
+        minimap2Ont: "Alineamiento Minimap2 ONT",
+        nanoplot: "NanoPlot",
       },
       hipstr: {
         title: "HipSTR",
@@ -3848,6 +3898,21 @@ export const translations = {
             tview: "samtools tview sample.bam reference.fasta",
           },
         },
+        nanopore: {
+          title: "Nanopore (ONT) Essentials",
+          subtitle: "Para basecalling, conversión de formato, alineamiento y QC de lecturas largas.",
+          features: {
+            1: "Basecall de POD5/FAST5 y conversión de formatos",
+            2: "Alinear lecturas largas e inspeccionar regiones STR",
+            3: "Control de calidad y resúmenes de longitud",
+          },
+          commands: {
+            dorado: "dorado basecaller sup pod5/ > reads.fastq",
+            pod5: "pod5 convert fast5 input_fast5/ -o output_pod5/",
+            minimap2: "minimap2 -ax map-ont hg38.fa reads.fastq > aln.sam",
+            nanoplot: "NanoPlot --fastq reads.fastq --outdir nanoplot_out/",
+          },
+        },
         installation: {
           title: "Requisitos de Instalación",
           intro: "Las herramientas mostradas arriba no vienen instaladas por defecto. Para ejecutar estos comandos, es necesario instalar previamente los programas según tu sistema operativo.",
@@ -3856,6 +3921,10 @@ export const translations = {
           windowsTitle: "Windows (WSL2 recomendado)",
           windowsNote: "Las herramientas de bioinformática no funcionan de forma nativa en Windows. Usa WSL2 (Ubuntu) o un contenedor Linux para asegurar la compatibilidad completa.",
           guideSoon: "Muy pronto añadiremos una guía detallada de instalación para cada sistema operativo.",
+          nanoporeTitle: "Utilidades Nanopore (herramientas POD5, NanoPlot, pycoQC)",
+          nanoporeCmd: "pip install pod5 nanoplot pycoqc",
+          nanoporeNote: "La instalación de Dorado depende de tu plataforma y de la disponibilidad de GPU; obtenga binarios precompilados desde las releases de Oxford Nanopore.",
+          nanoporePythonNote: "Las herramientas de lectura larga pueden requerir Python ≥ 3.8 y espacio en disco suficiente para los modelos de basecalling.",
         },
       },
       straitrazor: {

@@ -252,10 +252,10 @@ export default function ToolsPage() {
           <h3 className="text-3xl font-bold mb-12 text-left">
             {t("tools.commands.title")}
           </h3>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Card 1 - Essential Read Processing Commands */}
             <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left">
-              <h4 className="text-2xl font-semibold text-gray-900 mb-2">
+              <h4 className="text-2xl font-semibold mb-2">
                 {t("tools.commands.card1.title")}
               </h4>
               <p className="text-base text-muted-foreground mb-4">
@@ -291,7 +291,7 @@ export default function ToolsPage() {
 
             {/* Card 2 - Alignment & BAM Processing Essentials */}
             <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left">
-              <h4 className="text-2xl font-semibold text-gray-900 mb-2">
+              <h4 className="text-2xl font-semibold mb-2">
                 {t("tools.commands.card2.title")}
               </h4>
               <p className="text-base text-muted-foreground mb-4">
@@ -333,7 +333,7 @@ export default function ToolsPage() {
 
             {/* Card 3 - Inspecting STR Regions & Coverage */}
             <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left">
-              <h4 className="text-2xl font-semibold text-gray-900 mb-2">
+              <h4 className="text-2xl font-semibold mb-2">
                 {t("tools.commands.card3.title")}
               </h4>
               <p className="text-base text-muted-foreground mb-4">
@@ -367,6 +367,54 @@ export default function ToolsPage() {
                     <CodeBlock
                       label={t("tools.codeLabels.quickVisualization")}
                       code={t("tools.commands.card3.commands.tview")}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 4 - Nanopore (ONT) Essentials */}
+            <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left">
+              <h4 className="text-2xl font-semibold mb-2">
+                {t("tools.commands.nanopore.title")}
+              </h4>
+              <p className="text-base text-muted-foreground mb-4">
+                {t("tools.commands.nanopore.subtitle")}
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <h5 className="font-semibold mb-2 text-sm">
+                    {t("tools.common.keyFeatures")}
+                  </h5>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• {t("tools.commands.nanopore.features.1")}</li>
+                    <li>• {t("tools.commands.nanopore.features.2")}</li>
+                    <li>• {t("tools.commands.nanopore.features.3")}</li>
+                  </ul>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <CodeBlock
+                      label={t("tools.codeLabels.doradoBasecalling")}
+                      code={t("tools.commands.nanopore.commands.dorado")}
+                    />
+                  </div>
+                  <div>
+                    <CodeBlock
+                      label={t("tools.codeLabels.pod5Convert")}
+                      code={t("tools.commands.nanopore.commands.pod5")}
+                    />
+                  </div>
+                  <div>
+                    <CodeBlock
+                      label={t("tools.codeLabels.minimap2Ont")}
+                      code={t("tools.commands.nanopore.commands.minimap2")}
+                    />
+                  </div>
+                  <div>
+                    <CodeBlock
+                      label={t("tools.codeLabels.nanoplot")}
+                      code={t("tools.commands.nanopore.commands.nanoplot")}
                     />
                   </div>
                 </div>
@@ -406,6 +454,19 @@ export default function ToolsPage() {
                 <CodeBlock
                   label={t("tools.commands.installation.windowsTitle")}
                   code="sudo apt update && sudo apt install samtools bcftools minimap2 trimmomatic fastp"
+                />
+              </div>
+
+              <div>
+                <p className="mb-2">
+                  {t("tools.commands.installation.nanoporePythonNote")}
+                </p>
+                <p className="mb-2">
+                  {t("tools.commands.installation.nanoporeNote")}
+                </p>
+                <CodeBlock
+                  label={t("tools.commands.installation.nanoporeTitle")}
+                  code={t("tools.commands.installation.nanoporeCmd")}
                 />
               </div>
             </div>

@@ -636,7 +636,7 @@ export const translations = {
           items: [
             "Full support for CODIS core and extended STR markers",
             "Reference-based slices aligned to GRCh38",
-            "Customizable flanking regions (0–1000 bp per side)",
+            "Customizable flanking regions (0–200 bp per side)",
             "Multiple export formats: Standard FASTA, Reference-style FASTA, Multi-FASTA, and Tabular CSV",
             "Direct download and copy options",
           ],
@@ -2054,7 +2054,7 @@ export const translations = {
           items: [
             "Suporte completo para marcadores STR do núcleo CODIS e estendidos",
             "Fatias baseadas em referência alinhadas ao GRCh38",
-            "Regiões flanqueadoras personalizáveis (0–1000 pb por lado)",
+            "Regiões flanqueadoras personalizáveis (0–200 pb por lado)",
             "Múltiplos formatos de exportação: FASTA Padrão, FASTA estilo Referência, Multi-FASTA e CSV Tabular",
             "Opções de download e cópia diretas",
           ],
@@ -3476,7 +3476,7 @@ export const translations = {
           items: [
             "Soporte completo para marcadores STR del núcleo CODIS y extendidos",
             "Cortes basados en referencia alineados a GRCh38",
-            "Regiones flanqueantes personalizables (0–1000 pb por lado)",
+            "Regiones flanqueantes personalizables (0–200 pb por lado)",
             "Múltiples formatos de exportación: FASTA estándar, FASTA estilo referencia, Multi-FASTA y CSV tabular",
             "Opciones de descarga y copia directas",
           ],

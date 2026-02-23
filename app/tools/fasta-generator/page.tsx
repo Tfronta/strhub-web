@@ -234,7 +234,7 @@ export default function FastaGeneratorPage() {
                     value={flankingRegion}
                     onChange={(e) => setFlankingRegion(e.target.value)}
                     min="0"
-                    max="1000"
+                    max="200"
                     placeholder="100"
                     className="h-11 text-base"
                   />

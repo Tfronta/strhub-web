@@ -818,20 +818,14 @@ export default function ToolsPage() {
                   </div>
                   <div>
                     <CodeBlock
-                      label={t("tools.codeLabels.pod5Convert")}
-                      code={t("tools.commands.nanopore.commands.pod5")}
+                      label={t("tools.codeLabels.bam2fastq")}
+                      code={t("tools.commands.nanopore.commands.bam2fastq")}
                     />
                   </div>
                   <div>
                     <CodeBlock
                       label={t("tools.codeLabels.minimap2Ont")}
                       code={t("tools.commands.nanopore.commands.minimap2")}
-                    />
-                  </div>
-                  <div>
-                    <CodeBlock
-                      label={t("tools.codeLabels.nanoplot")}
-                      code={t("tools.commands.nanopore.commands.nanoplot")}
                     />
                   </div>
                 </div>

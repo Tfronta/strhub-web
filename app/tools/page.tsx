@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CodeBlock } from "@/components/ui/code-block";
+import { CommandBlock } from "@/components/ui/command-block";
 import {
   Tooltip,
   TooltipContent,
@@ -669,16 +670,16 @@ export default function ToolsPage() {
           <h3 className="text-3xl font-bold mb-12 text-left">
             {t("tools.commands.title")}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
             {/* Card 1 - Essential Read Processing Commands */}
-            <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left">
+            <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left flex flex-col">
               <h4 className="text-2xl font-semibold mb-2">
                 {t("tools.commands.card1.title")}
               </h4>
               <p className="text-base text-muted-foreground mb-4">
                 {t("tools.commands.card1.subtitle")}
               </p>
-              <div className="space-y-4">
+              <div className="space-y-4 flex-1">
                 <div>
                   <h5 className="font-semibold mb-2 text-sm">
                     {t("tools.common.keyFeatures")}
@@ -689,32 +690,30 @@ export default function ToolsPage() {
                     <li>• {t("tools.commands.card1.features.3")}</li>
                   </ul>
                 </div>
-                <div className="space-y-3">
-                  <div>
-                    <CodeBlock
-                      label={t("tools.codeLabels.trimmomatic")}
-                      code={t("tools.commands.card1.commands.trimmomatic")}
-                    />
-                  </div>
-                  <div>
-                    <CodeBlock
-                      label={t("tools.codeLabels.fastp")}
-                      code={t("tools.commands.card1.commands.fastp")}
-                    />
-                  </div>
+                <div className="space-y-4">
+                  <CommandBlock
+                    titleKey="tools.codeLabels.trimmomatic"
+                    command={t("tools.commands.card1.commands.trimmomatic")}
+                    infoKey="tools.commands.card1.info.trimmomatic"
+                  />
+                  <CommandBlock
+                    titleKey="tools.codeLabels.fastp"
+                    command={t("tools.commands.card1.commands.fastp")}
+                    infoKey="tools.commands.card1.info.fastp"
+                  />
                 </div>
               </div>
             </div>
 
             {/* Card 2 - Alignment & BAM Processing Essentials */}
-            <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left">
+            <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left flex flex-col">
               <h4 className="text-2xl font-semibold mb-2">
                 {t("tools.commands.card2.title")}
               </h4>
               <p className="text-base text-muted-foreground mb-4">
                 {t("tools.commands.card2.subtitle")}
               </p>
-              <div className="space-y-4">
+              <div className="space-y-4 flex-1">
                 <div>
                   <h5 className="font-semibold mb-2 text-sm">
                     {t("tools.common.keyFeatures")}
@@ -725,38 +724,35 @@ export default function ToolsPage() {
                     <li>• {t("tools.commands.card2.features.3")}</li>
                   </ul>
                 </div>
-                <div className="space-y-3">
-                  <div>
-                    <CodeBlock
-                      label={t("tools.codeLabels.bwaAlignment")}
-                      code={t("tools.commands.card2.commands.bwa")}
-                    />
-                  </div>
-                  <div>
-                    <CodeBlock
-                      label={t("tools.codeLabels.convertSortIndex")}
-                      code={t("tools.commands.card2.commands.samtools")}
-                    />
-                  </div>
-                  <div>
-                    <CodeBlock
-                      label={t("tools.codeLabels.removeDuplicates")}
-                      code={t("tools.commands.card2.commands.rmdup")}
-                    />
-                  </div>
+                <div className="space-y-4">
+                  <CommandBlock
+                    titleKey="tools.codeLabels.bwaAlignment"
+                    command={t("tools.commands.card2.commands.bwa")}
+                    infoKey="tools.commands.card2.info.bwa"
+                  />
+                  <CommandBlock
+                    titleKey="tools.codeLabels.convertSortIndex"
+                    command={t("tools.commands.card2.commands.samtools")}
+                    infoKey="tools.commands.card2.info.samtools"
+                  />
+                  <CommandBlock
+                    titleKey="tools.codeLabels.removeDuplicates"
+                    command={t("tools.commands.card2.commands.rmdup")}
+                    infoKey="tools.commands.card2.info.rmdup"
+                  />
                 </div>
               </div>
             </div>
 
             {/* Card 3 - Inspecting STR Regions & Coverage */}
-            <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left">
+            <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left flex flex-col">
               <h4 className="text-2xl font-semibold mb-2">
                 {t("tools.commands.card3.title")}
               </h4>
               <p className="text-base text-muted-foreground mb-4">
                 {t("tools.commands.card3.subtitle")}
               </p>
-              <div className="space-y-4">
+              <div className="space-y-4 flex-1">
                 <div>
                   <h5 className="font-semibold mb-2 text-sm">
                     {t("tools.common.keyFeatures")}
@@ -767,38 +763,35 @@ export default function ToolsPage() {
                     <li>• {t("tools.commands.card3.features.3")}</li>
                   </ul>
                 </div>
-                <div className="space-y-3">
-                  <div>
-                    <CodeBlock
-                      label={t("tools.codeLabels.depthCoverage")}
-                      code={t("tools.commands.card3.commands.depth")}
-                    />
-                  </div>
-                  <div>
-                    <CodeBlock
-                      label={t("tools.codeLabels.regionInspection")}
-                      code={t("tools.commands.card3.commands.view")}
-                    />
-                  </div>
-                  <div>
-                    <CodeBlock
-                      label={t("tools.codeLabels.quickVisualization")}
-                      code={t("tools.commands.card3.commands.tview")}
-                    />
-                  </div>
+                <div className="space-y-4">
+                  <CommandBlock
+                    titleKey="tools.codeLabels.depthCoverage"
+                    command={t("tools.commands.card3.commands.depth")}
+                    infoKey="tools.commands.card3.info.depth"
+                  />
+                  <CommandBlock
+                    titleKey="tools.codeLabels.regionInspection"
+                    command={t("tools.commands.card3.commands.view")}
+                    infoKey="tools.commands.card3.info.view"
+                  />
+                  <CommandBlock
+                    titleKey="tools.codeLabels.quickVisualization"
+                    command={t("tools.commands.card3.commands.tview")}
+                    infoKey="tools.commands.card3.info.tview"
+                  />
                 </div>
               </div>
             </div>
 
             {/* Card 4 - Nanopore (ONT) Essentials */}
-            <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left">
+            <div className="rounded-2xl border bg-muted/40 shadow-sm p-6 lg:p-8 text-left flex flex-col">
               <h4 className="text-2xl font-semibold mb-2">
                 {t("tools.commands.nanopore.title")}
               </h4>
               <p className="text-base text-muted-foreground mb-4">
                 {t("tools.commands.nanopore.subtitle")}
               </p>
-              <div className="space-y-4">
+              <div className="space-y-4 flex-1">
                 <div>
                   <h5 className="font-semibold mb-2 text-sm">
                     {t("tools.common.keyFeatures")}
@@ -809,25 +802,22 @@ export default function ToolsPage() {
                     <li>• {t("tools.commands.nanopore.features.3")}</li>
                   </ul>
                 </div>
-                <div className="space-y-3">
-                  <div>
-                    <CodeBlock
-                      label={t("tools.codeLabels.doradoBasecalling")}
-                      code={t("tools.commands.nanopore.commands.dorado")}
-                    />
-                  </div>
-                  <div>
-                    <CodeBlock
-                      label={t("tools.codeLabels.bam2fastq")}
-                      code={t("tools.commands.nanopore.commands.bam2fastq")}
-                    />
-                  </div>
-                  <div>
-                    <CodeBlock
-                      label={t("tools.codeLabels.minimap2Ont")}
-                      code={t("tools.commands.nanopore.commands.minimap2")}
-                    />
-                  </div>
+                <div className="space-y-4">
+                  <CommandBlock
+                    titleKey="tools.codeLabels.doradoBasecalling"
+                    command={t("tools.commands.nanopore.commands.dorado")}
+                    infoKey="tools.commands.nanopore.info.dorado"
+                  />
+                  <CommandBlock
+                    titleKey="tools.codeLabels.minimap2Ont"
+                    command={t("tools.commands.nanopore.commands.minimap2")}
+                    infoKey="tools.commands.nanopore.info.minimap2"
+                  />
+                  <CommandBlock
+                    titleKey="tools.codeLabels.nanoplot"
+                    command={t("tools.commands.nanopore.commands.nanoplot")}
+                    infoKey="tools.commands.nanopore.info.nanoplot"
+                  />
                 </div>
               </div>
             </div>

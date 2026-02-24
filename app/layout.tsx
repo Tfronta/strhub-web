@@ -8,6 +8,7 @@ import type { Language } from "@/lib/translations";
 import { Suspense } from "react";
 import { GlobalHeader } from "@/components/global-header";
 import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
@@ -44,11 +45,13 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <ThemeProvider>
             <LanguageProvider initialLanguage={initialLanguage}>
-              <div className="min-h-screen bg-background flex flex-col">
-                <GlobalHeader />
-                <main className="flex-1">{children}</main>
-                <Toaster />
-              </div>
+              <TooltipProvider delayDuration={0}>
+                <div className="min-h-screen bg-background flex flex-col">
+                  <GlobalHeader />
+                  <main className="flex-1">{children}</main>
+                  <Toaster />
+                </div>
+              </TooltipProvider>
             </LanguageProvider>
           </ThemeProvider>
         </Suspense>

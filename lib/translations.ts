@@ -984,11 +984,11 @@ export const translations = {
         depthCoverage: "Depth coverage",
         regionInspection: "Region inspection",
         quickVisualization: "Quick visualization",
-        doradoBasecalling: "Basecalling (POD5 to BAM)",
+        doradoBasecalling: "Basecalling (POD5 → BAM)",
         bam2fastq: "Convert to FASTQ",
         pod5Convert: "POD5 convert",
         minimap2Ont: "Alignment to hg38",
-        nanoplot: "NanoPlot",
+        nanoplot: "QC with NanoPlot",
       },
       hipstr: {
         title: "HipSTR",
@@ -1077,6 +1077,10 @@ export const translations = {
             2: "Filter out too-short or poor-quality reads",
             3: "Prepare clean FASTQ files for alignment",
           },
+          info: {
+            trimmomatic: "Cleans paired-end reads by removing adapters and low-quality bases.\nImproves alignment accuracy.\nOutputs cleaned reads (paired + single reads if one mate is removed).",
+            fastp: "Fast all-in-one read cleaner with automatic adapter detection.\nProduces filtered reads and a QC report.\nWidely used in modern pipelines.",
+          },
           commands: {
             trimmomatic: "trimmomatic PE sample_R1.fastq sample_R2.fastq \\\n  output_R1_paired.fastq output_R1_unpaired.fastq \\\n  output_R2_paired.fastq output_R2_unpaired.fastq \\\n  ILLUMINACLIP:adapters.fa:2:30:10 SLIDINGWINDOW:4:20 MINLEN:50",
             fastp: "fastp -i sample_R1.fastq -I sample_R2.fastq \\\n      -o clean_R1.fastq -O clean_R2.fastq \\\n      --detect_adapter_for_pe --html report.html",
@@ -1089,6 +1093,11 @@ export const translations = {
             1: "High-quality alignment",
             2: "Sorting and indexing",
             3: "BAM cleanup operations",
+          },
+          info: {
+            bwa: "Aligns Illumina short reads to a reference genome.\nProduces a SAM file with genomic positions.\nStandard tool for short-read data.",
+            samtools: "Converts SAM to BAM, sorts reads by position, then indexes the file.\nRequired for IGV, depth calculation, and most downstream analyses.\nAllows fast access to specific regions.",
+            rmdup: "Marks or removes PCR duplicates (mainly useful for WGS/WES).\nIn STR amplicon data, duplicates may represent real reads.\nUse with caution.",
           },
           commands: {
             bwa: "bwa-mem2 mem reference.fasta sample_R1.fastq sample_R2.fastq > sample.sam",
@@ -1104,6 +1113,11 @@ export const translations = {
             2: "Inspect soft-clips and misalignments",
             3: "Evaluate STR coverage depth",
           },
+          info: {
+            depth: "Reports how many reads cover each base in a region.\nUseful for STR coverage assessment and QC.\nModify chr:start-end for your locus.",
+            view: "Shows all reads aligned to a selected region.\nUseful for checking mismatches and alignment issues near STRs.\nHelpful for troubleshooting.",
+            tview: "Text-based viewer for BAM files with a reference sequence.\nAllows quick inspection without IGV.\nUseful for rapid checks.",
+          },
           commands: {
             depth: "samtools depth -r chr12:100000-100300 sample.bam > depth.txt",
             view: "samtools view sample.bam chr12:100000-100300",
@@ -1114,14 +1128,19 @@ export const translations = {
           title: "Nanopore (ONT) Essentials",
           subtitle: "Minimal pipeline from raw ONT signals to aligned reads.",
           features: {
-            1: "Basecall POD5 to BAM",
-            2: "Convert to FASTQ and align to reference",
-            3: "Sorted, indexed BAM ready for downstream analysis",
+            1: "Basecall POD5 → reads (unaligned BAM)",
+            2: "Align, sort & index BAM (minimap2 + samtools)",
+            3: "QC metrics with NanoPlot",
+          },
+          info: {
+            dorado: "Converts raw ONT signal (POD5) into DNA sequences.\nOutput is an unaligned BAM file.",
+            minimap2: "Aligns reads to the human reference genome (hg38),\nthen sorts and indexes the BAM file.",
+            nanoplot: "Generates quality metrics and plots from BAM files\n(read length, quality, yield).",
           },
           commands: {
             dorado: "dorado basecaller dna_r10.4.1_e8.2_400bps_sup pod5/ > reads.bam",
-            bam2fastq: "samtools fastq reads.bam > reads.fastq",
-            minimap2: "minimap2 -ax map-ont hg38.fa reads.fastq | samtools sort -o aln.bam -\nsamtools index aln.bam",
+            minimap2: "samtools fastq reads.bam | minimap2 -ax map-ont hg38.fa - | samtools sort -o aln.bam - && samtools index aln.bam",
+            nanoplot: "NanoPlot --bam aln.bam --outdir nanoplot_out/",
           },
         },
         installation: {
@@ -2484,11 +2503,11 @@ export const translations = {
         depthCoverage: "Cobertura de profundidade",
         regionInspection: "Inspeção de região",
         quickVisualization: "Visualização rápida",
-        doradoBasecalling: "Chamada de bases (POD5 a BAM)",
+        doradoBasecalling: "Basecalling (POD5 → BAM)",
         bam2fastq: "Converter para FASTQ",
         pod5Convert: "Conversão POD5",
         minimap2Ont: "Alinhamento para hg38",
-        nanoplot: "NanoPlot",
+        nanoplot: "QC com NanoPlot",
       },
       hipstr: {
         title: "HipSTR",
@@ -2577,6 +2596,10 @@ export const translations = {
             2: "Filtrar leituras muito curtas ou de baixa qualidade",
             3: "Preparar FASTQs limpos para o alinhamento",
           },
+          info: {
+            trimmomatic: "Limpa leituras paired-end removendo adaptadores e bases de baixa qualidade.\nMelhora a precisão do alinhamento.\nGera leituras limpas (pares + leituras individuais se uma for descartada).",
+            fastp: "Ferramenta rápida que limpa leituras e detecta adaptadores automaticamente.\nGera leituras filtradas e relatório de qualidade.\nMuito usada em pipelines modernos.",
+          },
           commands: {
             trimmomatic: "trimmomatic PE sample_R1.fastq sample_R2.fastq \\\n  output_R1_paired.fastq output_R1_unpaired.fastq \\\n  output_R2_paired.fastq output_R2_unpaired.fastq \\\n  ILLUMINACLIP:adapters.fa:2:30:10 SLIDINGWINDOW:4:20 MINLEN:50",
             fastp: "fastp -i sample_R1.fastq -I sample_R2.fastq \\\n      -o clean_R1.fastq -O clean_R2.fastq \\\n      --detect_adapter_for_pe --html report.html",
@@ -2589,6 +2612,11 @@ export const translations = {
             1: "Alinhamento de alta qualidade",
             2: "Ordenação e indexação",
             3: "Operações de limpeza BAM",
+          },
+          info: {
+            bwa: "Alinha leituras curtas de Illumina ao genoma de referência.\nGera um arquivo SAM com posições genômicas.\nFerramenta padrão para dados short-read.",
+            samtools: "Converte SAM para BAM, ordena as leituras por posição e cria um índice.\nNecessário para IGV, cálculo de cobertura e análises posteriores.\nPermite acesso rápido a regiões específicas.",
+            rmdup: "Marca ou remove duplicatas de PCR (principalmente útil em WGS/WES).\nEm STR por amplicon podem representar leituras reais.\nUtilizar com cautela.",
           },
           commands: {
             bwa: "bwa-mem2 mem reference.fasta sample_R1.fastq sample_R2.fastq > sample.sam",
@@ -2604,6 +2632,11 @@ export const translations = {
             2: "Inspecionar soft-clips e desalinhamentos",
             3: "Avaliar profundidade de cobertura STR",
           },
+          info: {
+            depth: "Indica quantas leituras cobrem cada base em uma região.\nÚtil para avaliar cobertura e controle de qualidade em STR.\nModificar chr:start-end conforme o locus.",
+            view: "Mostra todas as leituras alinhadas em uma região selecionada.\nÚtil para detectar erros ou problemas de alinhamento próximos a STR.\nAjuda na resolução de problemas.",
+            tview: "Visualizador em terminal para arquivos BAM com referência.\nPermite inspeção rápida sem IGV.\nÚtil para verificações rápidas.",
+          },
           commands: {
             depth: "samtools depth -r chr12:100000-100300 sample.bam > depth.txt",
             view: "samtools view sample.bam chr12:100000-100300",
@@ -2614,14 +2647,19 @@ export const translations = {
           title: "Nanopore (ONT) Essentials",
           subtitle: "Pipeline mínimo desde sinais brutos de ONT até leituras alinhadas.",
           features: {
-            1: "Basecall de POD5 para BAM",
-            2: "Converter para FASTQ e alinhar à referência",
-            3: "BAM ordenado e indexado pronto para análise",
+            1: "Basecall POD5 → reads (BAM não alinhado)",
+            2: "Alinhar, ordenar e indexar BAM (minimap2 + samtools)",
+            3: "Métricas de QC com NanoPlot",
+          },
+          info: {
+            dorado: "Converte o sinal bruto do ONT (POD5) em sequências de DNA.\nO resultado é um BAM não alinhado.",
+            minimap2: "Alinha as leituras ao genoma humano de referência (hg38),\ndepois ordena e indexa o BAM.",
+            nanoplot: "Gera métricas e gráficos de qualidade a partir do BAM\n(comprimento de leitura, qualidade, rendimento).",
           },
           commands: {
             dorado: "dorado basecaller dna_r10.4.1_e8.2_400bps_sup pod5/ > reads.bam",
-            bam2fastq: "samtools fastq reads.bam > reads.fastq",
-            minimap2: "minimap2 -ax map-ont hg38.fa reads.fastq | samtools sort -o aln.bam -\nsamtools index aln.bam",
+            minimap2: "samtools fastq reads.bam | minimap2 -ax map-ont hg38.fa - | samtools sort -o aln.bam - && samtools index aln.bam",
+            nanoplot: "NanoPlot --bam aln.bam --outdir nanoplot_out/",
           },
         },
         installation: {
@@ -4073,11 +4111,11 @@ export const translations = {
         depthCoverage: "Cobertura de profundidad",
         regionInspection: "Inspección de región",
         quickVisualization: "Visualización rápida",
-        doradoBasecalling: "Llamada de bases (POD5 a BAM)",
+        doradoBasecalling: "Basecalling (POD5 → BAM)",
         bam2fastq: "Convertir a FASTQ",
         pod5Convert: "Conversión POD5",
         minimap2Ont: "Alineamiento a hg38",
-        nanoplot: "NanoPlot",
+        nanoplot: "QC con NanoPlot",
       },
       hipstr: {
         title: "HipSTR",
@@ -4166,6 +4204,10 @@ export const translations = {
             2: "Filtrar lecturas demasiado cortas o con mala calidad",
             3: "Preparar FASTQ limpios para el alineamiento",
           },
+          info: {
+            trimmomatic: "Limpia lecturas paired-end eliminando adaptadores y bases de baja calidad.\nMejora la precisión de la alineación.\nGenera lecturas limpias (pares + lecturas individuales si una se descarta).",
+            fastp: "Herramienta rápida que limpia lecturas y detecta adaptadores automáticamente.\nGenera lecturas filtradas y un informe de calidad.\nMuy usada en pipelines modernos.",
+          },
           commands: {
             trimmomatic: "trimmomatic PE sample_R1.fastq sample_R2.fastq \\\n  output_R1_paired.fastq output_R1_unpaired.fastq \\\n  output_R2_paired.fastq output_R2_unpaired.fastq \\\n  ILLUMINACLIP:adapters.fa:2:30:10 SLIDINGWINDOW:4:20 MINLEN:50",
             fastp: "fastp -i sample_R1.fastq -I sample_R2.fastq \\\n      -o clean_R1.fastq -O clean_R2.fastq \\\n      --detect_adapter_for_pe --html report.html",
@@ -4178,6 +4220,11 @@ export const translations = {
             1: "Alineamiento de alta calidad",
             2: "Ordenamiento e indexación",
             3: "Operaciones de limpieza BAM",
+          },
+          info: {
+            bwa: "Alinea lecturas cortas de Illumina contra un genoma de referencia.\nGenera un archivo SAM con posiciones genómicas.\nHerramienta estándar para datos short-read.",
+            samtools: "Convierte SAM a BAM, ordena las lecturas por posición y crea un índice.\nNecesario para IGV, cálculo de cobertura y análisis posteriores.\nPermite acceso rápido a regiones específicas.",
+            rmdup: "Marca o elimina duplicados de PCR (principalmente útil en WGS/WES).\nEn STR por amplicón pueden ser lecturas reales.\nUsar con precaución.",
           },
           commands: {
             bwa: "bwa-mem2 mem reference.fasta sample_R1.fastq sample_R2.fastq > sample.sam",
@@ -4193,6 +4240,11 @@ export const translations = {
             2: "Inspeccionar soft-clips y desalineamientos",
             3: "Evaluar profundidad de cobertura STR",
           },
+          info: {
+            depth: "Indica cuántas lecturas cubren cada base en una región.\nÚtil para evaluar cobertura y control de calidad en STR.\nModificar chr:start-end según el locus.",
+            view: "Muestra todas las lecturas alineadas en una región seleccionada.\nÚtil para detectar errores o problemas de alineación cerca de STR.\nAyuda en la resolución de problemas.",
+            tview: "Visor en terminal para archivos BAM con referencia.\nPermite inspección rápida sin IGV.\nÚtil para revisiones rápidas.",
+          },
           commands: {
             depth: "samtools depth -r chr12:100000-100300 sample.bam > depth.txt",
             view: "samtools view sample.bam chr12:100000-100300",
@@ -4203,14 +4255,19 @@ export const translations = {
           title: "Nanopore (ONT) Essentials",
           subtitle: "Pipeline mínimo desde señales crudas de ONT hasta lecturas alineadas.",
           features: {
-            1: "Basecall de POD5 a BAM",
-            2: "Convertir a FASTQ y alinear a referencia",
-            3: "BAM ordenado e indexado listo para análisis",
+            1: "Basecall POD5 → reads (BAM no alineado)",
+            2: "Alinear, ordenar e indexar BAM (minimap2 + samtools)",
+            3: "Métricas de QC con NanoPlot",
+          },
+          info: {
+            dorado: "Convierte la señal cruda de ONT (POD5) en secuencias de ADN.\nEl resultado es un BAM no alineado.",
+            minimap2: "Alinea las lecturas al genoma humano de referencia (hg38),\nluego ordena e indexa el BAM.",
+            nanoplot: "Genera métricas y gráficos de calidad a partir del BAM\n(longitud de lectura, calidad, rendimiento).",
           },
           commands: {
             dorado: "dorado basecaller dna_r10.4.1_e8.2_400bps_sup pod5/ > reads.bam",
-            bam2fastq: "samtools fastq reads.bam > reads.fastq",
-            minimap2: "minimap2 -ax map-ont hg38.fa reads.fastq | samtools sort -o aln.bam -\nsamtools index aln.bam",
+            minimap2: "samtools fastq reads.bam | minimap2 -ax map-ont hg38.fa - | samtools sort -o aln.bam - && samtools index aln.bam",
+            nanoplot: "NanoPlot --bam aln.bam --outdir nanoplot_out/",
           },
         },
         installation: {

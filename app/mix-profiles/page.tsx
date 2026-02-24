@@ -46,7 +46,7 @@ export default function Page() {
                     <ul className="list-disc pl-4 space-y-1">
                       <li>{t("mixProfiles.quickGuide.thresholds.at")}</li>
                       <li>{t("mixProfiles.quickGuide.thresholds.st")}</li>
-                      <li>{t("mixProfiles.quickGuide.thresholds.ranges")}</li>
+                      <li>{t("mixProfiles.quickGuide.thresholds.important")}</li>
                     </ul>
                   </div>
                   <div>
@@ -87,6 +87,9 @@ export default function Page() {
                       <li>{t("mixProfiles.quickGuide.simulation.stutter")}</li>
                       <li>{t("mixProfiles.quickGuide.simulation.loci")}</li>
                     </ul>
+                    <p className="mt-1">
+                      {t("mixProfiles.quickGuide.simulation.scenario")}
+                    </p>
                   </div>
 
                   <div>
@@ -100,6 +103,7 @@ export default function Page() {
                       </li>
                       <li>{t("mixProfiles.quickGuide.notes.stutter")}</li>
                       <li>{t("mixProfiles.quickGuide.notes.notAllLoci")}</li>
+                      <li>{t("mixProfiles.quickGuide.notes.validation")}</li>
                     </ul>
                   </div>
                 </div>

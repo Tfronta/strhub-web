@@ -1489,8 +1489,8 @@ export const translations = {
         stutterLevel: "Stutter level (×)",
         autoScale: "Auto-scale Y",
         fixedScale: "Fixed forensic scale (0–800 RFU)",
-        atTooltip: "Analytical Threshold: Minimum RFU to distinguish a peak from noise.\n\nTypical range: 50–100 RFU.",
-        stTooltip: "Stochastic Threshold: RFU level where heterozygote imbalance becomes unlikely.\n\nTypical range: 150–200 RFU.",
+        atTooltip: "Analytical Threshold: Minimum RFU value from which a peak is considered reliable for distinguishing it from background noise. Peaks below this threshold are generally treated as noise or artifacts.\n\nDetermined by internal laboratory validation (varies according to fluorophore color, instrument, and kit). Observed examples in forensic validations: 50–175 RFU.",
+        stTooltip: "Stochastic Threshold: RFU value above which significant allele dropout or pronounced heterozygote imbalance is unlikely in low DNA quantity samples.\n\nDefined by internal laboratory validation. In the zone between AT and ST, interpret with caution due to stochastic effects. Observed examples: 150–600 RFU, depending on the kit and sensitivity. Some laboratories use fixed values such as 570 RFU.",
         autoScaleTooltip: "Automatically adjusts the Y axis to fit all peaks.\n\nUseful to visualize low RFU minor peaks or degraded profiles.",
         degradationKTooltip: "Coefficient simulating signal loss in long fragments.\n\nTypical values:\n• 0.010 = good quality\n• 0.015 – 0.020 = difficult sample\n• > 0.020 = severely degraded\n\nHigher k more decay in longer alleles.",
         noiseBaseTooltip: "Simulated baseline fluorescence noise.\n\nHigher values create more small background peaks and baseline fluctuation.",
@@ -1537,7 +1537,7 @@ export const translations = {
     },
     mixtures: {
       presets: {
-        stutterMinor: "Stutter ≈ minor",
+        stutterMinor: "Stutter ≈ Minor",
         stutterAmbiguity: "Masked mixture",
         dropout: "Low minor allele",
         overlap: "Allele overlap",
@@ -1545,7 +1545,7 @@ export const translations = {
       },
       tooltips: {
         stutterMinor:
-          "Shows a case where some peaks may represent either stutter or true minor alleles.",
+          "Shows a scenario where the stutter from the major contributor resembles the true allele of the minor contributor, potentially leading to interpretation confusion in mixed profiles.",
         stutterAmbiguity:
           "Shows a case where a mixture may appear single-source at this locus due to stutter masking of minor alleles.",
         lowMinor:
@@ -2985,8 +2985,8 @@ export const translations = {
         stutterLevel: "Nível de stutter (×)",
         autoScale: "Auto-escala Y",
         fixedScale: "Escala forense fixa (0–800 RFU)",
-        atTooltip: "Limiar Analítico: RFU mínimo para distinguir um pico do ruído.\n\nFaixa típica: 50–100 RFU.",
-        stTooltip: "Limiar Estocástico: Nível de RFU onde o desequilíbrio de heterozigoto se torna improvável.\n\nFaixa típica: 150–200 RFU.",
+        atTooltip: "Limiar Analítico: Valor mínimo de RFU a partir do qual um pico é considerado confiável para distinção do ruído de fundo. Picos abaixo deste limiar geralmente são tratados como ruído ou artefatos.\n\nDeterminado por validação interna do laboratório (varia conforme cor de fluoróforo, instrumento e kit). Exemplos observados em validações forenses: 50–175 RFU.",
+        stTooltip: "Limiar Estocástico: Valor de RFU acima do qual é improvável a ocorrência significativa de perda de alelos (dropout) ou desbalanço acentuado em heterozigotos, em amostras de baixa quantidade de DNA.\n\nDefinido por validação interna do laboratório. Na zona entre AT e ST, interpretar com cautela devido a efeitos estocásticos. Exemplos observados: 150–600 RFU, dependendo do kit e sensibilidade. Alguns laboratórios utilizam valores fixos como 570 RFU.",
         autoScaleTooltip: "Ajusta automaticamente o eixo Y para ajustar todos os picos.\n\nÚtil para visualizar picos menores de baixo RFU ou perfis degradados.",
         degradationKTooltip: "Coeficiente que simula a perda de sinal em fragmentos longos.\n\nValores típicos:\n• 0,010 = boa qualidade\n• 0,015 – 0,020 = amostra difícil\n• > 0,020 = severamente degradada\n\nk maior → mais decaimento em alelos mais longos.",
         noiseBaseTooltip: "Ruído de fluorescência de linha de base simulado.\n\nValores maiores criam mais picos de fundo pequenos e flutuação de linha de base.",
@@ -3033,7 +3033,7 @@ export const translations = {
     },
     mixtures: {
       presets: {
-        stutterMinor: "Stutter ≈ minoritário",
+        stutterMinor: "Stutter ≈ Minor",
         stutterAmbiguity: "Mistura mascarada",
         dropout: "Alelo minoritário baixo",
         overlap: "Alelos sobrepostos",
@@ -3041,7 +3041,7 @@ export const translations = {
       },
       tooltips: {
         stutterMinor:
-          "Mostra um caso em que alguns picos podem representar stutter ou alelos minoritários verdadeiros.",
+          "Demonstra um cenário em que o stutter do contribuidor majoritário é similar ao alelo verdadeiro do contribuidor minoritário, podendo gerar confusão na interpretação do perfil de mistura.",
         stutterAmbiguity:
           "Mostra um caso em que uma mistura pode parecer de fonte única neste locus devido ao mascaramento por stutter dos alelos minoritários.",
         lowMinor:
@@ -4616,8 +4616,8 @@ export const translations = {
         stutterLevel: "Nivel de stutter (×)",
         autoScale: "Auto-escala Y",
         fixedScale: "Escala forense fija (0–800 RFU)",
-        atTooltip: "Umbral Analítico: RFU mínimo para distinguir un pico del ruido.\n\nRango típico: 50–100 RFU.",
-        stTooltip: "Umbral Estocástico: Nivel de RFU donde el desequilibrio de heterocigoto se vuelve improbable.\n\nRango típico: 150–200 RFU.",
+        atTooltip: "Umbral Analítico: Valor mínimo de RFU a partir del cual un pico se considera confiable para distinguirlo del ruido de fondo. Los picos por debajo de este umbral generalmente se tratan como ruido o artefactos.\n\nDeterminado por validación interna del laboratorio (varía según el color del fluoróforo, instrumento y kit). Ejemplos observados en validaciones forenses: 50–175 RFU.",
+        stTooltip: "Umbral Estocástico: Valor de RFU por encima del cual es improbable la pérdida significativa de alelos (dropout) o un desbalance acentuado en heterocigotos, en muestras de baja cantidad de ADN.\n\nDefinido por validación interna del laboratorio. En la zona entre AT y ST, interpretar con cautela debido a efectos estocásticos. Ejemplos observados: 150–600 RFU, dependiendo del kit y la sensibilidad. Algunos laboratorios utilizan valores fijos como 570 RFU.",
         autoScaleTooltip: "Ajusta automáticamente el eje Y para ajustar todos los picos.\n\nÚtil para visualizar picos menores de bajo RFU o perfiles degradados.",
         degradationKTooltip: "Coeficiente que simula la pérdida de señal en fragmentos largos.\n\nValores típicos:\n• 0,010 = buena calidad\n• 0,015 – 0,020 = muestra difícil\n• > 0,020 = severamente degradada\n\nk mayor → más decaimiento en alelos más largos.",
         noiseBaseTooltip: "Ruido de fluorescencia de línea de base simulado.\n\nValores mayores crean más picos de fondo pequeños y fluctuación de línea de base.",
@@ -4664,7 +4664,7 @@ export const translations = {
     },
     mixtures: {
       presets: {
-        stutterMinor: "Stutter ≈ minoritario",
+        stutterMinor: "Stutter ≈ Minor",
         stutterAmbiguity: "Mezcla enmascarada",
         dropout: "Alelo minoritario bajo",
         overlap: "Alelos solapados",
@@ -4672,7 +4672,7 @@ export const translations = {
       },
       tooltips: {
         stutterMinor:
-          "Muestra un caso donde algunos picos pueden representar stutter o alelos minoritarios verdaderos.",
+          "Muestra un escenario en el que el stutter del contribuidor mayoritario es similar al alelo verdadero del contribuidor minoritario, pudiendo generar confusión en la interpretación del perfil de mezcla.",
         stutterAmbiguity:
           "Muestra un caso donde una mezcla puede parecer de fuente única en este locus debido al enmascaramiento por stutter de los alelos minoritarios.",
         lowMinor:

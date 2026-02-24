@@ -42,16 +42,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Activity,
-  Check,
-  ChevronsUpDown,
-  Info,
-  Layers,
-  HelpCircle,
-  Sparkles,
-  Triangle,
-} from "lucide-react";
+import { Check, ChevronsUpDown, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
 import { Button } from "@/components/ui/button";
@@ -980,29 +971,28 @@ export default function MixProfilesDemo({
             </div>
 
             {/* Y-axis scale toggle + presets */}
-            <div className="mt-4 grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-6">
-              <div className="flex h-full items-center gap-2 rounded-lg border p-3">
+            <div className="mt-4 grid w-full grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-6">
+              <div className="flex h-14 flex-shrink-0 items-center gap-2 rounded-lg border p-3">
                 <Switch
                   id="y-axis-scale"
                   checked={useFixedScale}
                   onCheckedChange={setUseFixedScale}
                 />
-                <label
-                  htmlFor="y-axis-scale"
-                  className="text-sm font-medium cursor-pointer flex items-center gap-1"
-                >
-                  {useFixedScale
-                    ? t("mixProfiles.parameters.fixedScale")
-                    : t("mixProfiles.parameters.autoScale")}
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs whitespace-pre-line">
-                      <p>{t("mixProfiles.parameters.autoScaleTooltip")}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <label
+                      htmlFor="y-axis-scale"
+                      className="cursor-pointer text-sm font-medium"
+                    >
+                      {useFixedScale
+                        ? t("mixProfiles.parameters.fixedScale")
+                        : t("mixProfiles.parameters.autoScale")}
+                    </label>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs whitespace-pre-line">
+                    <p>{t("mixProfiles.parameters.autoScaleTooltip")}</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -1011,9 +1001,8 @@ export default function MixProfilesDemo({
                     variant="outline"
                     size="sm"
                     onClick={() => handlePresetSelect("stutterMinor")}
-                    className="w-full min-h-[56px] justify-start whitespace-normal text-left"
+                    className="h-14 w-full justify-center whitespace-normal text-center text-sm"
                   >
-                    <Sparkles className="mr-2 h-4 w-4" aria-hidden="true" />
                     {t("mixtures.presets.stutterMinor")}
                   </Button>
                 </TooltipTrigger>
@@ -1028,9 +1017,8 @@ export default function MixProfilesDemo({
                     variant="outline"
                     size="sm"
                     onClick={() => handlePresetSelect("stutterAmbiguity")}
-                    className="w-full min-h-[56px] justify-start whitespace-normal text-left"
+                    className="h-14 w-full justify-center whitespace-normal text-center text-sm"
                   >
-                    <HelpCircle className="mr-2 h-4 w-4" aria-hidden="true" />
                     {t("mixtures.presets.stutterAmbiguity")}
                   </Button>
                 </TooltipTrigger>
@@ -1045,9 +1033,8 @@ export default function MixProfilesDemo({
                     variant="outline"
                     size="sm"
                     onClick={() => handlePresetSelect("lowMinor")}
-                    className="w-full min-h-[56px] justify-start whitespace-normal text-left"
+                    className="h-14 w-full justify-center whitespace-normal text-center text-sm"
                   >
-                    <Activity className="mr-2 h-4 w-4" aria-hidden="true" />
                     {t("mixtures.presets.dropout")}
                   </Button>
                 </TooltipTrigger>
@@ -1062,9 +1049,8 @@ export default function MixProfilesDemo({
                     variant="outline"
                     size="sm"
                     onClick={() => handlePresetSelect("overlap")}
-                    className="w-full min-h-[56px] justify-start whitespace-normal text-left"
+                    className="h-14 w-full justify-center whitespace-normal text-center text-sm"
                   >
-                    <Layers className="mr-2 h-4 w-4" aria-hidden="true" />
                     {t("mixtures.presets.overlap")}
                   </Button>
                 </TooltipTrigger>
@@ -1079,9 +1065,8 @@ export default function MixProfilesDemo({
                     variant="outline"
                     size="sm"
                     onClick={() => handlePresetSelect("triallelic")}
-                    className="w-full min-h-[56px] justify-start whitespace-normal text-left"
+                    className="h-14 w-full justify-center whitespace-normal text-center text-sm"
                   >
-                    <Triangle className="mr-2 h-4 w-4" aria-hidden="true" />
                     {t("mixtures.presets.triallelic")}
                   </Button>
                 </TooltipTrigger>

@@ -17,6 +17,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
+import { Switch } from "@/components/ui/switch";
 import { useLanguage } from "@/contexts/language-context";
 
 type Pt = { allele: number; rfu: number };
@@ -68,6 +69,9 @@ export default function CEChart(props: {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  // Modo "Avanzado": vista CE real (stutter en azul, sin desglose en tooltip)
+  const [realMode, setRealMode] = useState(false);
+
   // Translations
   const { t } = useLanguage();
 
@@ -109,6 +113,27 @@ export default function CEChart(props: {
       };
     });
   }, [dataStutter, mStutter]);
+
+  // En modo real: ocultar segmentos de stutter colocalizados con un pico verdadero (solo se ve el azul del alelo con altura total)
+  const stutterVisibleRealMode = useMemo(() => {
+    if (!stutterVisible.length || !allTruePeaks?.length) return stutterVisible;
+    const trueAlleles = new Set(
+      allTruePeaks.map((p) => {
+        const a =
+          typeof p.allele === "number" ? p.allele : parseFloat(String(p.allele));
+        return Number.isNaN(a) ? null : a;
+      }).filter((a): a is number => a !== null)
+    );
+    return stutterVisible.map((pt) => {
+      const pos =
+        typeof pt.allele === "number"
+          ? pt.allele
+          : parseFloat(String(pt.allele));
+      if (Number.isNaN(pos)) return pt;
+      const isColocated = [...trueAlleles].some((a) => Math.abs(a - pos) < 0.1);
+      return { ...pt, rfu: isColocated ? null : pt.rfu };
+    });
+  }, [stutterVisible, allTruePeaks]);
 
   // Build ticks from real peaks - use peak.allele directly (as strings or numbers)
   // Include: (a) all true peaks (blue series), (b) stutter peaks >= AT (orange series)
@@ -250,24 +275,51 @@ export default function CEChart(props: {
 
   return (
     <div className="relative w-full h-[420px]">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <button
-            type="button"
-            aria-label={t("mixProfiles.ceChart.infoLabel")}
-            className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full border text-[10px] text-muted-foreground bg-background/80 backdrop-blur-sm hover:bg-accent transition z-10"
+      <div className="absolute right-2 top-2 flex items-center gap-2 z-10">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex items-center gap-2">
+              <Switch
+                id="ce-chart-advanced"
+                checked={realMode}
+                onCheckedChange={(checked) => setRealMode(checked === true)}
+                aria-label={t("mixProfiles.ceChart.advancedModeLabel")}
+              />
+              <label
+                htmlFor="ce-chart-advanced"
+                className="text-sm font-medium cursor-pointer"
+              >
+                {t("mixProfiles.ceChart.advancedModeLabel")}
+              </label>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent
+            side="left"
+            align="end"
+            className="max-w-xs text-xs whitespace-pre-line"
           >
-            <Info className="h-3.5 w-3.5" aria-hidden="true" />
-          </button>
-        </TooltipTrigger>
-        <TooltipContent
-          side="left"
-          align="end"
-          className="max-w-xs text-xs whitespace-pre-line"
-        >
-          {t("mixProfiles.ceChart.infoText")}
-        </TooltipContent>
-      </Tooltip>
+            {t("mixProfiles.ceChart.advancedModeTooltip")}
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label={t("mixProfiles.ceChart.infoLabel")}
+              className="flex h-6 w-6 items-center justify-center rounded-full border text-[10px] text-muted-foreground bg-background/80 backdrop-blur-sm hover:bg-accent transition"
+            >
+              <Info className="h-3.5 w-3.5" aria-hidden="true" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent
+            side="left"
+            align="end"
+            className="max-w-xs text-xs whitespace-pre-line"
+          >
+            {t("mixProfiles.ceChart.infoText")}
+          </TooltipContent>
+        </Tooltip>
+      </div>
 
       <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <LineChart margin={{ top: 12, right: 20, bottom: 0, left: 20 }}>
@@ -337,11 +389,11 @@ export default function CEChart(props: {
           <Line
             name={t("mixProfiles.ceChart.legendStutter")}
             type="monotone"
-            data={stutterVisible}
+            data={realMode ? stutterVisibleRealMode : stutterVisible}
             dataKey="rfu"
             dot={false}
-            stroke="#DC2626"
-            strokeOpacity={0.9}
+            stroke={realMode ? "#2563EB" : "#DC2626"}
+            strokeOpacity={realMode ? 0.9 : 0.9}
             strokeWidth={2.2}
             connectNulls={false}
             isAnimationActive={false}
@@ -491,7 +543,79 @@ export default function CEChart(props: {
               /* ---------- build lines ---------- */
               const lines: React.ReactNode[] = [];
 
-              if (primaryIsTrue && hitTrue) {
+              if (realMode) {
+                // Modo real: solo altura total + área + estado (sin desglose stutter)
+                if (primaryIsTrue && hitTrue) {
+                  const alleleStr = fmtAllele(hitTrue.allele);
+                  const rfuMax = Math.round(hitTrue.rfu);
+                  lines.push(
+                    <p key="hdr" className="font-semibold">
+                      {t("mixProfiles.ceChart.tooltipAllele", {
+                        allele: alleleStr,
+                      })}
+                    </p>,
+                  );
+                  lines.push(
+                    <p key="rfu" style={{ color: "#2563EB" }}>
+                      {t("mixProfiles.ceChart.tooltipTrue", {
+                        label: alleleStr,
+                        rfu: String(rfuMax),
+                      })}
+                    </p>,
+                  );
+                  const areaStr = lookupArea(hitTrue.allele, truePeakAreas);
+                  if (areaStr) {
+                    lines.push(
+                      <p key="area" className="text-muted-foreground">
+                        {t("mixProfiles.ceChart.tooltipArea", {
+                          area: areaStr,
+                        })}
+                      </p>,
+                    );
+                  }
+                  if (rfuMax >= (interpretationThreshold ?? 0)) {
+                    lines.push(
+                      <p key="status" style={{ color: "#15803d" }}>
+                        {t("mixProfiles.ceChart.tooltipCalled")}
+                      </p>,
+                    );
+                  } else if (rfuMax >= (analyticalThreshold ?? 0)) {
+                    lines.push(
+                      <p key="status" style={{ color: "#F59E0B" }}>
+                        {t("mixProfiles.ceChart.tooltipDropout")}
+                      </p>,
+                    );
+                  }
+                } else if (hitStutter) {
+                  const alleleStr = fmtAllele(hitStutter.allele);
+                  const rfuMax = Math.round(hitStutter.rfu);
+                  lines.push(
+                    <p key="hdr" className="font-semibold">
+                      {t("mixProfiles.ceChart.tooltipAllele", {
+                        allele: alleleStr,
+                      })}
+                    </p>,
+                  );
+                  lines.push(
+                    <p key="rfu" style={{ color: "#2563EB" }}>
+                      {t("mixProfiles.ceChart.tooltipTrue", {
+                        label: alleleStr,
+                        rfu: String(rfuMax),
+                      })}
+                    </p>,
+                  );
+                  const areaStr = lookupArea(hitStutter.allele, stutterPeakAreas);
+                  if (areaStr) {
+                    lines.push(
+                      <p key="area" className="text-muted-foreground">
+                        {t("mixProfiles.ceChart.tooltipArea", {
+                          area: areaStr,
+                        })}
+                      </p>,
+                    );
+                  }
+                }
+              } else if (primaryIsTrue && hitTrue) {
                 const alleleStr = fmtAllele(hitTrue.allele);
                 const rfuMax = Math.round(hitTrue.rfu);
 
@@ -707,12 +831,17 @@ export default function CEChart(props: {
             wrapperStyle={{ paddingTop: "20px", paddingBottom: "5px" }}
             content={({ payload }) => {
               if (!payload || !payload.length) return null;
+              const stutterLegendValue = t("mixProfiles.ceChart.legendStutter");
+              const filteredPayload =
+                realMode
+                  ? payload.filter((entry) => entry.value !== stutterLegendValue)
+                  : payload;
               return (
                 <ul
                   className="recharts-default-legend"
                   style={{ padding: 0, margin: 0, textAlign: "center" }}
                 >
-                  {payload.map((entry, index) => {
+                  {filteredPayload.map((entry, index) => {
                     const isCalled =
                       entry.value === t("mixProfiles.ceChart.legendCalled") ||
                       entry.value === "Called";

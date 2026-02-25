@@ -1459,6 +1459,9 @@ export const translations = {
         noSample: "None",
       },
       ceChart: {
+        advancedModeLabel: "Advanced",
+        advancedModeTooltip:
+          "Simulates real CE view. Stutters are not shown in a different color. Useful for advanced practice.",
         axisAllele: "Allele",
         axisRFU: "RFU",
         legendBaselineNoise: "Baseline noise (RFU)",
@@ -2959,6 +2962,9 @@ export const translations = {
         noSample: "Nenhum",
       },
       ceChart: {
+        advancedModeLabel: "Avançado",
+        advancedModeTooltip:
+          "Simula vista real de CE. Os stutters não se diferenciam por cor. Útil para prática avançada.",
         axisAllele: "Alelo",
         axisRFU: "RFU",
         legendBaselineNoise: "Ruído de linha de base (RFU)",
@@ -4595,6 +4601,9 @@ export const translations = {
         noSample: "Ninguno",
       },
       ceChart: {
+        advancedModeLabel: "Avanzado",
+        advancedModeTooltip:
+          "Simula vista real de CE. Los stutters no se diferencian por color. Útil para práctica avanzada.",
         axisAllele: "Alelo",
         axisRFU: "RFU",
         legendBaselineNoise: "Ruido de línea de base (RFU)",

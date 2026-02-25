@@ -331,11 +331,29 @@ export function getTrueGenotype(
 // ----------------------------------------------------
 export type AlleleLike = number | string;
 
+/**
+ * Per-parent contribution to a stutter peak (for transparent tooltips).
+ * Stutter at a given allele position can come from multiple parents (e.g. −1
+ * from the next allele, +1 from the previous). The UI shows this breakdown; the
+ * displayed total is the sum of rounded contribution RFUs so the numbers add up.
+ */
+export type StutterContribution = {
+  parent: number;
+  delta: number; // -2, -1, or +1 (repeat units)
+  rfu: number;
+};
+
 export type Peak = {
   allele: AlleleLike;
   rfu: number;
   kind: "true" | "stutter";
   source: string;
+  /**
+   * When kind === "stutter", optional breakdown by parent allele and delta.
+   * Used in CE chart tooltip; displayed total = sum(Math.round(c.rfu)) over
+   * contributions for consistency with the per-line values.
+   */
+  stutterBreakdown?: StutterContribution[];
 };
 
 export type LocusSimResult = {

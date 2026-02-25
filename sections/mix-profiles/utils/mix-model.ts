@@ -332,11 +332,14 @@ export function simulateCECore(args: {
   const seedStr = buildCoreSeed({ locusId, contributors, dnaInputNg, p });
   const rand = mulberry32(hash32(seedStr));
 
-  // Map final (true/stutter ya degradados)
-  const map = new Map<
-    number,
-    { trueRFU: number; stRFU: number; sources: Set<string>; parentAllele?: number }
-  >();
+  // Map final (true/stutter ya degradados). stutterBreakdown = all parent contributions at this allele.
+  type MapEntry = {
+    trueRFU: number;
+    stRFU: number;
+    sources: Set<string>;
+    stutterBreakdown: Array<{ parent: number; delta: number; rfu: number }>;
+  };
+  const map = new Map<number, MapEntry>();
 
   // FIRST PASS: base RFU (sin degradación)
   const baseTruePeaks = new Map<number, { rfu: number; sources: Set<string> }>();
@@ -385,8 +388,13 @@ export function simulateCECore(args: {
     }
 
     // store true peak (degradado)
-    const e =
-      map.get(aNum) ?? { trueRFU: 0, stRFU: 0, sources: new Set<string>() };
+    const e: MapEntry =
+      map.get(aNum) ?? {
+        trueRFU: 0,
+        stRFU: 0,
+        sources: new Set<string>(),
+        stutterBreakdown: [],
+      };
     e.trueRFU += degradedRFU;
     for (const source of baseData.sources) e.sources.add(source);
     map.set(aNum, e);
@@ -415,11 +423,15 @@ export function simulateCECore(args: {
     const isValidStutter1 = catalogAlleles.has(m1) || Math.abs(m1 - aNum) === 1;
     console.log(`Parent ${aNum} stutter -1: baseRate ${baseRate1}, s1 ${s1}, mean ${meanStutterRFU1}, final RFU ${stutterRFU1} (${(stutterRFU1 / degradedRFU * 100).toFixed(1)}%)`);
     if (isValidStutter1 && stutterRFU1 > 0) {
-      const e1 =
-        map.get(m1) ??
-        ({ trueRFU: 0, stRFU: 0, sources: new Set<string>(), parentAllele: aNum } as any);
+      const e1: MapEntry =
+        map.get(m1) ?? {
+          trueRFU: 0,
+          stRFU: 0,
+          sources: new Set<string>(),
+          stutterBreakdown: [],
+        };
       e1.stRFU += stutterRFU1;
-      if (!e1.parentAllele) e1.parentAllele = aNum;
+      e1.stutterBreakdown.push({ parent: aNum, delta: -1, rfu: stutterRFU1 });
       map.set(m1, e1);
     }
 
@@ -427,44 +439,54 @@ export function simulateCECore(args: {
       const baseRate2 = st.minus2 * stutterScale;
       const s2 = Math.max(0, Math.min(baseRate2 + gaussian(rand) * sdev, maxRate));
       const meanStutterRFU2 = degradedRFU * s2;
-      const stutterRFU2 =
+      let stutterRFU2 =
         meanStutterRFU2 > 0
           ? Math.max(0, lognormal(meanStutterRFU2, stutterSigmaLN, rand))
           : 0;
+      stutterRFU2 = clamp(stutterRFU2, 0.01 * degradedRFU, 0.05 * degradedRFU);
       const m2 = getStutterPosition(aNum, -2);
       const isValidStutter2 = catalogAlleles.has(m2) || Math.abs(m2 - aNum) === 2;
       if (typeof process !== "undefined" && process.env?.NODE_ENV === "development") {
         console.log(`Parent ${aNum} stutter -2: baseRate ${baseRate2}, s2 ${s2}, mean ${meanStutterRFU2}, final RFU ${stutterRFU2} (${(stutterRFU2 / degradedRFU * 100).toFixed(1)}%)`);
       }
       if (isValidStutter2 && stutterRFU2 > 0) {
-        const e2 =
-          map.get(m2) ??
-          ({ trueRFU: 0, stRFU: 0, sources: new Set<string>(), parentAllele: aNum } as any);
+        const e2: MapEntry =
+          map.get(m2) ?? {
+            trueRFU: 0,
+            stRFU: 0,
+            sources: new Set<string>(),
+            stutterBreakdown: [],
+          };
         e2.stRFU += stutterRFU2;
-        if (!e2.parentAllele) e2.parentAllele = aNum;
+        e2.stutterBreakdown.push({ parent: aNum, delta: -2, rfu: stutterRFU2 });
         map.set(m2, e2);
       }
     }
 
     if (st.plus1) {
       const baseRateP = st.plus1 * stutterScale;
-      const sp = Math.max(0, Math.min(baseRateP + gaussian(rand) * sdev, maxRate));
+      const sp = Math.max(0.01, Math.min(baseRateP + gaussian(rand) * sdev, maxRate));
       const meanStutterRFUP = degradedRFU * sp;
-      const stutterRFUP =
+      let stutterRFUP =
         meanStutterRFUP > 0
           ? Math.max(0, lognormal(meanStutterRFUP, stutterSigmaLN, rand))
           : 0;
+      stutterRFUP = clamp(stutterRFUP, 0.01 * degradedRFU, 0.05 * degradedRFU);
       const p1 = getStutterPosition(aNum, 1);
       const isValidStutterP = catalogAlleles.has(p1) || Math.abs(p1 - aNum) === 1;
       if (typeof process !== "undefined" && process.env?.NODE_ENV === "development") {
         console.log(`Parent ${aNum} stutter +1: baseRate ${baseRateP}, sp ${sp}, mean ${meanStutterRFUP}, final RFU ${stutterRFUP} (${(stutterRFUP / degradedRFU * 100).toFixed(1)}%)`);
       }
       if (isValidStutterP && stutterRFUP > 0) {
-        const ep =
-          map.get(p1) ??
-          ({ trueRFU: 0, stRFU: 0, sources: new Set<string>(), parentAllele: aNum } as any);
+        const ep: MapEntry =
+          map.get(p1) ?? {
+            trueRFU: 0,
+            stRFU: 0,
+            sources: new Set<string>(),
+            stutterBreakdown: [],
+          };
         ep.stRFU += stutterRFUP;
-        if (!ep.parentAllele) ep.parentAllele = aNum;
+        ep.stutterBreakdown.push({ parent: aNum, delta: 1, rfu: stutterRFUP });
         map.set(p1, ep);
       }
     }
@@ -585,15 +607,20 @@ export function simulateCECore(args: {
       let stutterAllele: number | string = alleleNum;
       if (alleleNum % 1 !== 0) stutterAllele = Math.round(alleleNum * 10) / 10;
 
-      const parentAllele = (v as any).parentAllele ?? alleleNum;
       const baseSource = Array.from(v.sources).sort().join("+") || "—";
-
-      stutterPeaks.push({
+      const breakdown = v.stutterBreakdown ?? [];
+      const parentList =
+        breakdown.length > 0
+          ? breakdown.map((c) => `${c.parent}(${c.delta >= 0 ? "+" : ""}${c.delta})`).join(",")
+          : String(alleleNum + 1);
+      const peak: Peak = {
         allele: stutterAllele,
         rfu: stRFU,
         kind: "stutter",
-        source: `${baseSource}|parent:${parentAllele}`,
-      } as Peak);
+        source: `${baseSource}|parent:${parentList}`,
+      };
+      if (breakdown.length > 0) peak.stutterBreakdown = breakdown;
+      stutterPeaks.push(peak);
     }
   }
 

@@ -41,7 +41,8 @@ export default function CEChart(props: {
     allele: number | string;
     rfu: number;
     source?: string;
-  }>; // All stutter peaks for tick calculation (source contains parent info)
+    stutterBreakdown?: Array<{ parent: number; delta: number; rfu: number }>;
+  }>; // All stutter peaks (stutterBreakdown = per-parent contribution for tooltip)
   useFixedScale?: boolean; // If true, use fixed scale (0-800 RFU), otherwise auto-scale
   truePeakAreas?: Map<number, number>; // Numerically integrated area per true peak
   stutterPeakAreas?: Map<number, number>; // Numerically integrated area per stutter peak
@@ -259,7 +260,11 @@ export default function CEChart(props: {
             <Info className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
         </TooltipTrigger>
-        <TooltipContent side="left" align="end" className="max-w-xs text-xs whitespace-pre-line">
+        <TooltipContent
+          side="left"
+          align="end"
+          className="max-w-xs text-xs whitespace-pre-line"
+        >
           {t("mixProfiles.ceChart.infoText")}
         </TooltipContent>
       </Tooltip>
@@ -408,11 +413,13 @@ export default function CEChart(props: {
               /* ---------- helpers ---------- */
               const PEAK_WINDOW = 0.4; // ±allele units (≈10σ)
 
+              type StutterContrib = { parent: number; delta: number; rfu: number };
               type PeakHit = {
                 allele: number;
                 rfu: number;
                 dist: number;
                 source?: string;
+                stutterBreakdown?: StutterContrib[];
               };
 
               const findNearest = (
@@ -420,6 +427,7 @@ export default function CEChart(props: {
                   allele: number | string;
                   rfu: number;
                   source?: string;
+                  stutterBreakdown?: StutterContrib[];
                 }>,
                 maxDist: number,
               ): PeakHit | null => {
@@ -436,7 +444,8 @@ export default function CEChart(props: {
                       allele: pos,
                       rfu: p.rfu,
                       dist,
-                      source: (p as any).source,
+                      source: p.source,
+                      stutterBreakdown: p.stutterBreakdown,
                     };
                   }
                 }
@@ -462,6 +471,11 @@ export default function CEChart(props: {
 
               const fmtAllele = (v: number) =>
                 v % 1 === 0 ? String(v) : v.toFixed(1);
+
+              const parseParentFromSource = (source: string): string | null => {
+                const m = source.match(/\|parent:(.+)$/);
+                return m ? m[1].trim() : null;
+              };
 
               /* ---------- find nearest peaks ---------- */
               const hitTrue = findNearest(allTruePeaks, PEAK_WINDOW);
@@ -499,9 +513,17 @@ export default function CEChart(props: {
                   </p>,
                 );
 
-                // RFU line
+                // RFU line: show breakdown when there is colocated stutter (stRFU > 0)
                 if (colocatedStutter) {
-                  const stRfu = Math.round(colocatedStutter.rfu);
+                  const colocatedBreakdown = colocatedStutter.stutterBreakdown;
+                  const stRfuFromBreakdown =
+                    colocatedBreakdown && colocatedBreakdown.length > 0
+                      ? colocatedBreakdown.reduce(
+                          (s, c) => s + Math.round(c.rfu),
+                          0,
+                        )
+                      : Math.round(colocatedStutter.rfu);
+                  const stRfu = stRfuFromBreakdown;
                   const pureRfu = rfuMax - stRfu;
                   lines.push(
                     <p key="rfu" style={{ color: "#2563EB" }}>
@@ -511,19 +533,59 @@ export default function CEChart(props: {
                         stutterRfu: String(stRfu),
                       })}
                       {": "}
-                      {rfuMax} RFU
+                      {pureRfu + stRfu} RFU
                     </p>,
                   );
-                  // Separate stutter line in red
-                  lines.push(
-                    <p key="stutter" style={{ color: "#DC2626" }}>
-                      {t("mixProfiles.ceChart.tooltipStutter", {
-                        allele: alleleStr,
-                        parent: String(hitTrue.allele + 1),
-                        rfu: String(stRfu),
-                      })}
-                    </p>,
-                  );
+                  if (colocatedBreakdown && colocatedBreakdown.length > 0) {
+                    lines.push(
+                      <p key="stutter" style={{ color: "#DC2626" }}>
+                        {t("mixProfiles.ceChart.tooltipStutterTotal", {
+                          allele: alleleStr,
+                          rfu: String(stRfu),
+                        })}
+                      </p>,
+                    );
+                    colocatedBreakdown.forEach((c: StutterContrib, i: number) => {
+                      const deltaLabel =
+                        c.delta === -2 ? "−2" : c.delta === -1 ? "−1" : "+1";
+                      lines.push(
+                        <p
+                          key={`stutter-${i}`}
+                          className="text-muted-foreground"
+                          style={{ marginLeft: 8, color: "#DC2626" }}
+                        >
+                          {t("mixProfiles.ceChart.tooltipStutterFromParent", {
+                            parent: String(c.parent),
+                            deltaLabel,
+                            rfu: String(Math.round(c.rfu)),
+                          })}
+                        </p>,
+                      );
+                    });
+                  } else {
+                    const parentStr =
+                      parseParentFromSource(colocatedStutter.source ?? "") ??
+                      String(Number(hitTrue.allele) + 1);
+                    lines.push(
+                      <p key="stutter" style={{ color: "#DC2626" }}>
+                        {t("mixProfiles.ceChart.tooltipStutter", {
+                          allele: alleleStr,
+                          parent: parentStr,
+                          rfu: String(stRfu),
+                        })}
+                      </p>,
+                    );
+                    lines.push(
+                      <p
+                        key="stutterNote"
+                        className="text-muted-foreground text-[11px]"
+                      >
+                        {t(
+                          "mixProfiles.ceChart.tooltipStutterMayIncludeMultiple",
+                        )}
+                      </p>,
+                    );
+                  }
                 } else {
                   lines.push(
                     <p key="rfu" style={{ color: "#2563EB" }}>
@@ -564,6 +626,7 @@ export default function CEChart(props: {
               } else if (hitStutter) {
                 const alleleStr = fmtAllele(hitStutter.allele);
                 const rfuMax = Math.round(hitStutter.rfu);
+                const breakdown = hitStutter.stutterBreakdown;
 
                 lines.push(
                   <p key="hdr" className="font-semibold">
@@ -573,15 +636,50 @@ export default function CEChart(props: {
                   </p>,
                 );
 
-                lines.push(
-                  <p key="rfu" style={{ color: "#DC2626" }}>
-                    {t("mixProfiles.ceChart.tooltipStutter", {
-                      allele: alleleStr,
-                      parent: String(hitStutter.allele + 1),
-                      rfu: String(rfuMax),
-                    })}
-                  </p>,
-                );
+                if (breakdown && breakdown.length > 0) {
+                  const totalFromBreakdown = breakdown.reduce(
+                    (s, c) => s + Math.round(c.rfu),
+                    0,
+                  );
+                  lines.push(
+                    <p key="total" style={{ color: "#DC2626" }}>
+                      {t("mixProfiles.ceChart.tooltipStutterTotal", {
+                        allele: alleleStr,
+                        rfu: String(totalFromBreakdown),
+                      })}
+                    </p>,
+                  );
+                  breakdown.forEach((c: StutterContrib, i: number) => {
+                    const deltaLabel =
+                      c.delta === -2 ? "−2" : c.delta === -1 ? "−1" : "+1";
+                    lines.push(
+                      <p
+                        key={`contrib-${i}`}
+                        className="text-muted-foreground"
+                        style={{ marginLeft: 8 }}
+                      >
+                        {t("mixProfiles.ceChart.tooltipStutterFromParent", {
+                          parent: String(c.parent),
+                          deltaLabel,
+                          rfu: String(Math.round(c.rfu)),
+                        })}
+                      </p>,
+                    );
+                  });
+                } else {
+                  const parentStr =
+                    parseParentFromSource(hitStutter.source ?? "") ??
+                    String(Number(hitStutter.allele) + 1);
+                  lines.push(
+                    <p key="rfu" style={{ color: "#DC2626" }}>
+                      {t("mixProfiles.ceChart.tooltipStutter", {
+                        allele: alleleStr,
+                        parent: parentStr,
+                        rfu: String(rfuMax),
+                      })}
+                    </p>,
+                  );
+                }
 
                 const areaStr = lookupArea(hitStutter.allele, stutterPeakAreas);
                 if (areaStr) {

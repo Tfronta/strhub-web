@@ -57,16 +57,20 @@ function parseNum(x: string | number): number {
 /**
  * Compute CE-equivalent peak area for each peak.
  *
- * Because the visual trace uses a very narrow synthetic sigma (0.04 allele
- * units) to keep microvariants visually distinct, trapezoidal integration of
- * that trace yields areas ~100× smaller than real CE instruments.
+ * The value is CE-equivalent in magnitude only: we do not numerically integrate
+ * the drawn trace. The visual trace uses a very narrow synthetic sigma (0.04
+ * allele units) to keep microvariants visually distinct; trapezoidal integration
+ * of that curve would yield areas ~100× smaller than real CE instruments.
  *
  * Real CE instruments report area ≈ height × peak-width-in-time, giving an
  * area/height ratio of roughly 3.5–5.0 for typical conditions (Butler, 2015).
- * We apply a constant scale factor so the displayed area matches what a
- * forensic analyst would expect from a real electropherogram.
+ * We use a constant scale factor (CE_AREA_HEIGHT_RATIO = 4.25, within that
+ * range) so the displayed area matches what a forensic analyst would expect
+ * from a real electropherogram.
+ *
+ * Formula: area = peak.rfu * CE_AREA_HEIGHT_RATIO.
  */
-const CE_AREA_HEIGHT_RATIO = 4.25; // typical real-instrument area/height ratio
+const CE_AREA_HEIGHT_RATIO = 4.25; // typical real-instrument area/height ratio (Butler, 2015)
 
 function computePeakAreas(
   peaks: Array<{ allele: number | string; rfu: number }>,

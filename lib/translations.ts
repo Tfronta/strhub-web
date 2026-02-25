@@ -1494,7 +1494,7 @@ export const translations = {
         autoScaleTooltip: "Automatically adjusts the Y axis to fit all peaks.\n\nUseful to visualize low RFU minor peaks or degraded profiles.",
         degradationKTooltip: "Coefficient simulating signal loss in long fragments.\n\nTypical values:\n• 0.010 = good quality\n• 0.015 – 0.020 = difficult sample\n• > 0.020 = severely degraded\n\nHigher k more decay in longer alleles.",
         noiseBaseTooltip: "Simulated baseline fluorescence noise.\n\nHigher values create more small background peaks and baseline fluctuation.",
-        stutterLevelTooltip: "Global multiplier for stutter intensity.\n\n• 1.0 = average real locus behavior\n• < 1.0 = clean profile\n• > 1.0 = extra stutter for training/visualization.",
+        stutterLevelTooltip: "Factor that increases or reduces the stutter intended for the marker.",
       },
       quickGuide: {
         title: "Quick Guide for DNA Mixture Configuration",
@@ -2992,7 +2992,7 @@ export const translations = {
         autoScaleTooltip: "Ajusta automaticamente o eixo Y para ajustar todos os picos.\n\nÚtil para visualizar picos menores de baixo RFU ou perfis degradados.",
         degradationKTooltip: "Coeficiente que simula a perda de sinal em fragmentos longos.\n\nValores típicos:\n• 0,010 = boa qualidade\n• 0,015 – 0,020 = amostra difícil\n• > 0,020 = severamente degradada\n\nk maior → maior degradação em alelos mais longos.",
         noiseBaseTooltip: "Ruído de fluorescência de linha de base simulado.\n\nValores maiores criam mais picos de fundo pequenos e flutuação de linha de base.",
-        stutterLevelTooltip: "Multiplicador global para intensidade de stutter.\n\n• 1,0 = comportamento médio real do locus\n• < 1,0 = perfil limpo\n• > 1,0 = stutter extra para treinamento/visualização.",
+        stutterLevelTooltip: "Fator que aumenta ou reduz o stutter previsto para o marcador.",
       },
       quickGuide: {
         title: "Guia Rápida para Configuração de Misturas de DNA",
@@ -4625,7 +4625,7 @@ export const translations = {
         autoScaleTooltip: "Ajusta automáticamente el eje Y para ajustar todos los picos.\n\nÚtil para visualizar picos menores de bajo RFU o perfiles degradados.",
         degradationKTooltip: "Coeficiente que simula la pérdida de señal en fragmentos largos.\n\nValores típicos:\n• 0,010 = buena calidad\n• 0,015 – 0,020 = muestra difícil\n• > 0,020 = severamente degradada\n\nk mayor → más decaimiento en alelos más largos.",
         noiseBaseTooltip: "Ruido de fluorescencia de línea de base simulado.\n\nValores mayores crean más picos de fondo pequeños y fluctuación de línea de base.",
-        stutterLevelTooltip: "Multiplicador global para intensidad de stutter.\n\n• 1,0 = comportamiento promedio real del locus\n• < 1,0 = perfil limpio\n• > 1,0 = stutter extra para entrenamiento/visualización.",
+        stutterLevelTooltip: "Factor que aumenta o reduce el stutter previsto para el marcador.",
       },
       quickGuide: {
         title: "Guía Rápida para Configuración de Mezclas de ADN",

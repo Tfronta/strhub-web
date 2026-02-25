@@ -48,7 +48,7 @@ export type NGSParams = {
 export const DEFAULT_CE: CEParams = {
   kappaRFU: 8000,
   hetCV: 0.15,
-  sigmaLN: 0.25,
+  sigmaLN: 0.12,
   baselineMu: 30,
   baselineSd: 10,
   AT: 50,
@@ -193,15 +193,33 @@ const STUTTER_CE: Record<
   string,
   { minus1: number; minus2?: number; plus1?: number; sd?: number }
 > = {
-  CSF1PO: { minus1: 0.06 },
-  D3S1358: { minus1: 0.06 },
-  D18S51: { minus1: 0.09, plus1: 0.02 },
-  D21S11: { minus1: 0.08, plus1: 0.015 },
-  FGA: { minus1: 0.1, plus1: 0.025, minus2: 0.015 },
-  PentaE: { minus1: 0.11, minus2: 0.03 },
+  CSF1PO: { minus1: 0.111, plus1: 0.037 },          // de Luciellen
+  D3S1358: { minus1: 0.135, plus1: 0.017 },         // de Luciellen
+  D18S51: { minus1: 0.146, plus1: 0.028 },          // de Luciellen
+  D21S11: { minus1: 0.127, plus1: 0.028 },          // de Luciellen
+  FGA: { minus1: 0.124, plus1: 0.028 },             // de Luciellen
+  PentaE: { minus1: 0.072, plus1: 0.019 },          // de Luciellen
+  D16S539: { minus1: 0.120, plus1: 0.030 },         // de Luciellen
+  D2S1338: { minus1: 0.136, plus1: 0.022 },         // de Luciellen
+  D1S1656: { minus1: 0.143, plus1: 0.023 },         // de Luciellen
+  D2S441: { minus1: 0.090, plus1: 0.018 },          // de Luciellen
+  D10S1248: { minus1: 0.130, plus1: 0.013 },        // de Luciellen
+  D13S317: { minus1: 0.103, plus1: 0.022 },         // de Luciellen
+  PentaD: { minus1: 0.045, plus1: 0.037 },          // de Luciellen
+  TH01: { minus1: 0.048, plus1: 0.015 },            // de Luciellen
+  vWA: { minus1: 0.144, plus1: 0.027 },             // de Luciellen
+  D12S391: { minus1: 0.174, plus1: 0.027 },         // de Luciellen
+  D19S433: { minus1: 0.121, plus1: 0.026 },         // de Luciellen
+  SE33: { minus1: 0.161, plus1: 0.033 },            // de Luciellen
+  D22S1045: { minus1: 0.168, plus1: 0.090 },        // de Luciellen
+  // Los que no aparecen en Luciellen, mantengo tus originales o default
+  D5S818: { minus1: 0.111, plus1: 0.023 },          // de Luciellen (D5S818)
+  D7S820: { minus1: 0.097, plus1: 0.018 },          // de Luciellen
+  D8S1179: { minus1: 0.118, plus1: 0.034 },         // de Luciellen
+  TPOX: { minus1: 0.054, plus1: 0.011 },            // de Luciellen
 };
-const DEFAULT_STUTTER_CE = { minus1: 0.06 };
 
+const DEFAULT_STUTTER_CE = { minus1: 0.10, plus1: 0.02 };  // media razonable de Luciellen
 /* ===================== Outputs ===================== */
 
 // CORE output: señal pura (sin umbrales)
@@ -263,7 +281,7 @@ export function simulateCECore(args: {
   const { locusId, contributors, dnaInputNg, params = {} } = args;
   const p: CEParams = { ...DEFAULT_CE, ...params };
   const st = STUTTER_CE[locusId] ?? DEFAULT_STUTTER_CE;
-
+  console.log(`Locus ${locusId}: using ${STUTTER_CE[locusId] ? 'specific rates' : 'DEFAULT_STUTTER_CE'} (minus1: ${st.minus1})`);
   const catalogAlleles = getCatalogAlleles(locusId);
 
   const LOCUS_LENGTH_META: Record<
@@ -374,7 +392,8 @@ export function simulateCECore(args: {
     map.set(aNum, e);
 
     // stutter desde parent degradado
-    const sdev = p.stutter.sd ?? 0.02;
+    const stutterSigmaLN = 0.12; // lower variance for stutter only
+    const sdev = p.stutter.sd ?? 0.01; // lower gaussian variance
     const stutterScale = p.stutterScale ?? 1.0;
 
     const getStutterPosition = (parent: number, delta: number): number => {
@@ -387,13 +406,14 @@ export function simulateCECore(args: {
     const maxRate = stutterScale > 1.5 ? 0.30 : 0.22;
     const s1 = Math.max(0, Math.min(baseRate1 + gaussian(rand) * sdev, maxRate));
     const meanStutterRFU1 = degradedRFU * s1;
-    const stutterRFU1 =
+    let stutterRFU1 =
       meanStutterRFU1 > 0
-        ? Math.max(0, lognormal(meanStutterRFU1, p.sigmaLN, rand))
+        ? Math.max(0, lognormal(meanStutterRFU1, stutterSigmaLN, rand))
         : 0;
+    stutterRFU1 = clamp(stutterRFU1, 0.08 * degradedRFU, 0.20 * degradedRFU);
     const m1 = getStutterPosition(aNum, -1);
     const isValidStutter1 = catalogAlleles.has(m1) || Math.abs(m1 - aNum) === 1;
-
+    console.log(`Parent ${aNum} stutter -1: baseRate ${baseRate1}, s1 ${s1}, mean ${meanStutterRFU1}, final RFU ${stutterRFU1} (${(stutterRFU1 / degradedRFU * 100).toFixed(1)}%)`);
     if (isValidStutter1 && stutterRFU1 > 0) {
       const e1 =
         map.get(m1) ??
@@ -409,11 +429,13 @@ export function simulateCECore(args: {
       const meanStutterRFU2 = degradedRFU * s2;
       const stutterRFU2 =
         meanStutterRFU2 > 0
-          ? Math.max(0, lognormal(meanStutterRFU2, p.sigmaLN, rand))
+          ? Math.max(0, lognormal(meanStutterRFU2, stutterSigmaLN, rand))
           : 0;
       const m2 = getStutterPosition(aNum, -2);
       const isValidStutter2 = catalogAlleles.has(m2) || Math.abs(m2 - aNum) === 2;
-
+      if (typeof process !== "undefined" && process.env?.NODE_ENV === "development") {
+        console.log(`Parent ${aNum} stutter -2: baseRate ${baseRate2}, s2 ${s2}, mean ${meanStutterRFU2}, final RFU ${stutterRFU2} (${(stutterRFU2 / degradedRFU * 100).toFixed(1)}%)`);
+      }
       if (isValidStutter2 && stutterRFU2 > 0) {
         const e2 =
           map.get(m2) ??
@@ -430,11 +452,13 @@ export function simulateCECore(args: {
       const meanStutterRFUP = degradedRFU * sp;
       const stutterRFUP =
         meanStutterRFUP > 0
-          ? Math.max(0, lognormal(meanStutterRFUP, p.sigmaLN, rand))
+          ? Math.max(0, lognormal(meanStutterRFUP, stutterSigmaLN, rand))
           : 0;
       const p1 = getStutterPosition(aNum, 1);
       const isValidStutterP = catalogAlleles.has(p1) || Math.abs(p1 - aNum) === 1;
-
+      if (typeof process !== "undefined" && process.env?.NODE_ENV === "development") {
+        console.log(`Parent ${aNum} stutter +1: baseRate ${baseRateP}, sp ${sp}, mean ${meanStutterRFUP}, final RFU ${stutterRFUP} (${(stutterRFUP / degradedRFU * 100).toFixed(1)}%)`);
+      }
       if (isValidStutterP && stutterRFUP > 0) {
         const ep =
           map.get(p1) ??

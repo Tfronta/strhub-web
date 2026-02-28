@@ -1411,7 +1411,7 @@ export const translations = {
       subtitle: "beta",
       description: "Using demo data — you can load your own samples when available.",
       simulatorDescription:
-        "This simulator shows how two or three DNA profiles behave when mixed, in both capillary electrophoresis (CE) and NGS. It helps users understand how peak heights shift, how stutter artifacts appear, and how minor alleles can become hidden or confused with noise, illustrating the real complexity of interpreting mixed profiles in forensic genetics.",
+        "This simulator shows how two or three DNA profiles behave when mixed, in both capillary electrophoresis (CE) and NGS. It helps users understand how peak heights shift, how stutter artifacts appear, and how minor alleles can become hidden or confused with noise, illustrating the real complexity of interpreting mixed profiles in forensic genetics. Profiles are derived from open-access 1000 Genomes samples, except for the simulated triallelic pattern example.",
       controls: {
         locus: "Locus",
         sampleA: "Sample A",
@@ -1436,18 +1436,26 @@ export const translations = {
       },
       ngs: {
         disclaimer:
-          "Genotypes come from 1000 Genomes samples. The NGS sequences shown are representative haplotypes for each allele, not necessarily the exact sequence of this individual.",
+          "Individual haplotypes inferred from Illumina short-read NGS data using specialized STR genotyping software (HipSTR, hg38), displayed for educational purposes only.",
         tableAllele: "Allele",
-        tableCoverage: "Coverage (reads)",
+        tableCoverage: "Allelic Coverage (PDP)",
+        tableCoverageTooltipAria: "Explanation about allelic coverage",
+        tableCoverageTooltip:
+          "Probabilistic read support per allele from HipSTR PDP (fractional values possible).",
         tableRepeatSequence: "Repeat Sequence",
         axisLabelAllele: "Allele",
-        axisLabelCoverage: "Coverage",
+        axisLabelCoverage: "Allelic Coverage (PDP)",
         fullSequenceColumnLabel: "Full Sequence",
         fullSequenceTooltipAria: "Explanation about full amplicon sequence",
         fullSequenceNote:
-          "In NGS, the full amplicon sequence is shown, including flanking regions and internal variants. These regions may contain insertions, deletions, or interruptions, so one allele can have a longer total sequence than another even when it has fewer repeat units. This is normal in sequence-based STR typing.",
+          "Complete amplicon haplotype sequence inferred from NGS data, including flanking regions (hg38), repeat region, and internal variants. Total length may differ between alleles even with similar repeat counts.",
+        fullSequenceDidacticNote:
+          "Flanks do not count toward the CE allele call; the repeat region is what is used for allele calling.",
         isoTooltip:
           "Isoallele: sequence variation without a change in length. Detectable only with NGS and increases the power of discrimination between individuals.",
+        flank5Tooltip: "5' flank",
+        repeatRegionTooltip: "Repeat region",
+        flank3Tooltip: "3' flank",
       },
       trueGenotypes: {
         toggleLabel: "Show true genotypes",
@@ -2914,7 +2922,7 @@ export const translations = {
       subtitle: "beta",
       description: "Usando dados de demonstração — você pode carregar suas próprias amostras quando disponível.",
       simulatorDescription:
-        "Este simulador permite visualizar como dois ou três perfis de DNA se comportam quando são misturados, tanto na eletroforese capilar (CE) quanto no NGS. Ele ajuda a compreender como as alturas dos picos mudam, como surgem os stutters e como alelos minoritários podem ficar ocultos ou confundidos com ruído, mostrando a complexidade real da interpretação de perfis mistos na genética forense.",
+        "Este simulador mostra como dois ou três perfis de DNA se comportam quando misturados, tanto na eletroforese capilar (CE) quanto em NGS. Ele ajuda a compreender como as alturas dos picos mudam, como surgem artefatos de stutter e como alelos minoritários podem ficar ocultos ou confundidos com ruído, ilustrando a real complexidade da interpretação de misturas em genética forense. Os perfis são derivados de amostras de acesso aberto do Projeto 1000 Genomes, exceto pelo exemplo simulado de padrão trialélico.",
       controls: {
         locus: "Locus",
         sampleA: "Amostra A",
@@ -2939,18 +2947,26 @@ export const translations = {
       },
       ngs: {
         disclaimer:
-          "Os genótipos vêm de amostras do Projeto 1000 Genomes. As sequências NGS mostradas são haplótipos representativos para cada alelo, não necessariamente a sequência exata deste indivíduo.",
+          "Haplótipos individuais inferidos a partir de dados NGS de leituras curtas Illumina usando software especializado de genotipagem de STRs (HipSTR, hg38), exibidos apenas para fins educacionais.",
         tableAllele: "Alelo",
-        tableCoverage: "Cobertura (leituras)",
+        tableCoverage: "Cobertura alélica (PDP)",
+        tableCoverageTooltipAria: "Explicação sobre cobertura alélica",
+        tableCoverageTooltip:
+          "Suporte probabilístico de leituras por alelo derivado do PDP do HipSTR (valores fracionários possíveis).",
         tableRepeatSequence: "Sequência de Repetição",
         axisLabelAllele: "Alelo",
-        axisLabelCoverage: "Cobertura",
+        axisLabelCoverage: "Cobertura alélica (PDP)",
         fullSequenceColumnLabel: "Sequência completa",
         fullSequenceTooltipAria: "Explicação sobre a sequência completa do amplicon",
         fullSequenceNote:
-          "No NGS é mostrada a sequência completa do amplicon, incluindo as regiões flanqueadoras e variantes internas. Essas regiões podem conter inserções, deleções ou interrupções, de modo que um alelo pode ter uma sequência total mais longa do que outro mesmo tendo menos unidades repetitivas. Isso é normal na tipagem de STR baseada em sequenciamento.",
+          "Sequência completa do haplótipo do amplicon inferida a partir de dados NGS, incluindo regiões flanqueadoras (hg38), região repetitiva e variantes internas. Alelos com números semelhantes de repetições podem apresentar comprimentos totais diferentes.",
+        fullSequenceDidacticNote:
+          "Os flancos não contam para o alelo CE; a região repetitiva é a utilizada para a chamada do alelo.",
         isoTooltip:
           "Isoalelo: variação na sequência sem mudança no comprimento. Detectável apenas com NGS e aumenta o poder de discriminação entre indivíduos.",
+        flank5Tooltip: "Flanco 5'",
+        repeatRegionTooltip: "Região repetitiva",
+        flank3Tooltip: "Flanco 3'",
       },
       trueGenotypes: {
         toggleLabel: "Mostrar genótipos verdadeiros",
@@ -4553,7 +4569,7 @@ export const translations = {
       subtitle: "beta",
       description: "Usando datos de demostración — puede cargar sus propias muestras cuando estén disponibles.",
       simulatorDescription:
-        "Este simulador permite visualizar cómo se comportan dos o tres perfiles de ADN cuando se mezclan, tanto en electroforesis capilar (CE) como en NGS. Ayuda a comprender cómo cambian las alturas de pico, cómo aparecen los stutters y cómo los alelos minoritarios pueden quedar ocultos o confundirse con ruido, mostrando la complejidad real de interpretar perfiles mixtos en genética forense.",
+        "Este simulador muestra cómo dos o tres perfiles de ADN se comportan cuando se mezclan, tanto en electroforesis capilar (CE) como en NGS. Ayuda a comprender cómo cambian las alturas de los picos, cómo aparecen los artefactos de stutter y cómo los alelos minoritarios pueden quedar ocultos o confundidos con ruido, ilustrando la complejidad real de la interpretación de mezclas en genética forense. Los perfiles se derivan de muestras de acceso abierto del Proyecto 1000 Genomes, excepto el ejemplo simulado de patrón trialélico.",
       controls: {
         locus: "Locus",
         sampleA: "Muestra A",
@@ -4578,18 +4594,26 @@ export const translations = {
       },
       ngs: {
         disclaimer:
-          "Los genotipos provienen de muestras del Proyecto 1000 Genomas. Las secuencias NGS mostradas son haplotipos representativos para cada alelo, no necesariamente la secuencia exacta de este individuo.",
+          "Haplotipos individuales inferidos a partir de datos NGS de lecturas cortas Illumina mediante software especializado de genotipado de STRs (HipSTR, hg38), mostrados únicamente con fines educativos.",
         tableAllele: "Alelo",
-        tableCoverage: "Cobertura (lecturas)",
+        tableCoverage: "Cobertura alélica (PDP)",
+        tableCoverageTooltipAria: "Explicación sobre cobertura alélica",
+        tableCoverageTooltip:
+          "Soporte probabilístico de lecturas por alelo derivado del PDP de HipSTR (valores fraccionales posibles).",
         tableRepeatSequence: "Secuencia de Repetición",
         axisLabelAllele: "Alelo",
-        axisLabelCoverage: "Cobertura",
+        axisLabelCoverage: "Cobertura alélica (PDP)",
         fullSequenceColumnLabel: "Secuencia completa",
         fullSequenceTooltipAria: "Explicación sobre la secuencia completa del amplicón",
         fullSequenceNote:
-          "En NGS se muestra la secuencia completa del amplicón, incluyendo las regiones flanqueadoras y variantes internas. Estas regiones pueden contener inserciones, deleciones o interrupciones, por lo que un alelo puede tener una secuencia total más larga que otro aun teniendo menos unidades repetitivas. Esto es normal en la tipificación de STR basada en secuenciación.",
+          "Secuencia completa del haplotipo del amplicón inferida a partir de datos NGS, incluyendo regiones flanqueadoras (hg38), región repetitiva y variantes internas. Alelos con números similares de repeticiones pueden presentar longitudes totales diferentes.",
+        fullSequenceDidacticNote:
+          "Los flancos no cuentan para el alelo CE; la región repetitiva es la utilizada para el llamado del alelo.",
         isoTooltip:
           "Isoalelo: variación en la secuencia sin cambio en la longitud. Es detectable solo con NGS y aumenta el poder de discriminación entre individuos.",
+        flank5Tooltip: "Flanco 5'",
+        repeatRegionTooltip: "Región repetitiva",
+        flank3Tooltip: "Flanco 3'",
       },
       trueGenotypes: {
         toggleLabel: "Mostrar genotipos verdaderos",

@@ -30,12 +30,21 @@ export type SimParams = {
   baseRFU?: number;            // intensidad media CE por alelo “puro”
 };
 
+/** Segments for flank/repeat highlighting in Full Sequence column */
+export type FullSequenceSegments = {
+  flank5?: string;
+  repeat: string;
+  flank3?: string;
+};
+
 export type NGSRow = {
   allele: string | number;     // tamaño (p.ej. 12) o label con isoalelos (p.ej. "12 iso1")
   coverage: number;            // lecturas (suma A+B)
   stutterPct?: number | '—';
   repeatSequence?: string | '—';
   fullSequence?: string | '—'; // columna de secuencia completa
+  /** When set, UI highlights flank vs repeat region in full sequence */
+  fullSequenceSegments?: FullSequenceSegments;
   isIsoallele?: boolean;
   sequenceId?: string;         // Unique identifier for React keys (e.g., "12-0", "12-1")
 };

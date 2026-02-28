@@ -6,6 +6,10 @@
 
 import { CATALOG } from "@/app/catalog/data";
 import { markerData } from "@/lib/markerData";
+import {
+  getSampleNgsLocus,
+  parseFullSeqSegments,
+} from "./data/ngs-haplotypes";
 
 // ----------------------------------------------------
 // Umbrales (RFU)
@@ -246,6 +250,25 @@ export type LocusId = string;
 
 // Synthetic/demo-only samples (used by presets but hidden from the contributor dropdown)
 const SYNTHETIC_SAMPLES: ReadonlySet<string> = new Set(["SYN_TRI01"]);
+
+// Simulated NGS sequences for triallelic preset (SYN_TRI01 at TPOX); format "LEFT REPEAT RIGHT" for UI flank/repeat highlighting
+const SYN_TRI01_TPOX_NGS: Record<string, { bracketed: string; fullSequence: string }> = {
+  "8": {
+    bracketed: "[AATG]8",
+    fullSequence:
+      "CTGGCACAGAACAGGGAACCCTCACTG AATGAATGAATGAATGAATGAATGAATGAATG TTTGGGCAAATAAACGGACAGAAGGGC",
+  },
+  "9": {
+    bracketed: "[AATG]9",
+    fullSequence:
+      "CTGGCACAGAACAGGGAACCCTCACTG AATGAATGAATGAATGAATGAATGAATGAATGAATG TTTGGGCAAATAAACGGACAGAAGGGC",
+  },
+  "11": {
+    bracketed: "[AATG]11",
+    fullSequence:
+      "CTGGCACAGAACAGGGAACCCTCACTG AATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATG TTTGGGCAAATAAACGGACAGAAGGGC",
+  },
+};
 
 export const sampleOptions = (Object.keys(SAMPLE_DATABASE) as SampleId[]).filter(
   (id) => !SYNTHETIC_SAMPLES.has(id)
@@ -754,21 +777,31 @@ export function cePeaksToNGSRowsWithSeq(
 
   const stPctByTarget = stPctByTargetOverride ?? computedStutterPct
 
-  // Count allele copies from contributors' genotypes
+  // Count allele copies from contributors' genotypes and track which sample each copy comes from
   const alleleCounts: Record<string, number> = {}
+  const alleleToCopySources: Record<
+    string,
+    Array<{ sampleId: string; alleleIndex: 0 | 1 }>
+  > = {}
   if (contributors && contributors.length > 0) {
     for (const contrib of contributors) {
-      if (contrib.proportion <= 0) continue
+      if (contrib.proportion <= 0 || !contrib.sampleId) continue
       const genotype = getTrueGenotype(contrib.sampleId, locusId)
       if (!genotype) continue
+      const sampleId = contrib.sampleId as string
 
-      // Count all alleles (supports triallelic loci)
       const a1 = String(genotype.allele1)
       const a2 = String(genotype.allele2)
+      if (!alleleToCopySources[a1]) alleleToCopySources[a1] = []
+      if (!alleleToCopySources[a2]) alleleToCopySources[a2] = []
+      alleleToCopySources[a1].push({ sampleId, alleleIndex: 0 })
+      alleleToCopySources[a2].push({ sampleId, alleleIndex: 1 })
       alleleCounts[a1] = (alleleCounts[a1] ?? 0) + 1
       alleleCounts[a2] = (alleleCounts[a2] ?? 0) + 1
       if (genotype.allele3 != null) {
         const a3 = String(genotype.allele3)
+        if (!alleleToCopySources[a3]) alleleToCopySources[a3] = []
+        alleleToCopySources[a3].push({ sampleId, alleleIndex: 0 })
         alleleCounts[a3] = (alleleCounts[a3] ?? 0) + 1
       }
     }
@@ -907,31 +940,70 @@ export function cePeaksToNGSRowsWithSeq(
     // Get all variants for this allele from catalog
     const variantsForAllele = getVariantsForAllele(alleleLabel)
 
-    // Generate exactly copiesNeeded entries, always trying to use catalog variants
+    // Generate exactly copiesNeeded entries; prefer sample-specific NGS data when available
     for (let i = 0; i < copiesNeeded; i++) {
-      // Select variant: cycle through available variants, or use null if none exist
-      const variant = variantsForAllele.length > 0
-        ? variantsForAllele[i % variantsForAllele.length]
-        : null
+      const source = alleleToCopySources[alleleLabel]?.[i]
+      let repeatSequence: string | '—' = '—'
+      let fullSequence: string | '—' = '—'
+      let fullSequenceSegments: { flank5?: string; repeat: string; flank3?: string } | undefined
+      let isIsoallele = copiesNeeded > 1 && i > 0
 
-      // Distribute coverage across copies
+      let rowCoverage: number | null = null
+      if (source) {
+        const entry = getSampleNgsLocus(source.sampleId, locusId)
+        if (entry) {
+          const useFirst = source.alleleIndex === 0
+          repeatSequence = useFirst ? entry.bracketed1 : entry.bracketed2
+          const fullSeq = useFirst ? entry.full_seq1 : entry.full_seq2
+          const repeatSeq = useFirst ? entry.repeat_seq1 : entry.repeat_seq2
+          fullSequence = fullSeq.replace(/\s+/g, " ").trim()
+          const segments = parseFullSeqSegments(fullSeq, repeatSeq)
+          if (segments) fullSequenceSegments = segments
+          if (typeof entry.coverage1 === "number" && typeof entry.coverage2 === "number") {
+            rowCoverage = useFirst ? entry.coverage1 : entry.coverage2
+          }
+        } else if (
+          source.sampleId === "SYN_TRI01" &&
+          locusId === "TPOX"
+        ) {
+          const simulated = SYN_TRI01_TPOX_NGS[alleleLabel]
+          if (simulated) {
+            repeatSequence = simulated.bracketed
+            fullSequence = simulated.fullSequence.replace(/\s+/g, " ").trim()
+            const segments = parseFullSeqSegments(simulated.fullSequence, null)
+            if (segments) fullSequenceSegments = segments
+          }
+        }
+      }
+      if (repeatSequence === '—' || fullSequence === '—') {
+        const variant = variantsForAllele.length > 0
+          ? variantsForAllele[i % variantsForAllele.length]
+          : null
+        if (variant) {
+          repeatSequence = variant.repeatSequence ?? '—'
+          fullSequence = variant.fullSequence ?? '—'
+          isIsoallele = variant.isIsoallele || (copiesNeeded > 1 && i > 0)
+        }
+      }
+
       const coveragePerCopy = copiesNeeded > 0
         ? Math.max(1, Math.floor(totalCoverage / copiesNeeded))
         : totalCoverage
       const remainder = totalCoverage - (coveragePerCopy * copiesNeeded)
-      // Add remainder to last copy to ensure total matches
-      const coverage = i === copiesNeeded - 1
+      const coverageFromRfu = i === copiesNeeded - 1
         ? coveragePerCopy + remainder
         : coveragePerCopy
+      const coverage = rowCoverage != null ? rowCoverage : coverageFromRfu
 
       rows.push({
         allele: alleleLabel,
-        coverage: coverage,
-        stutterPct: variant?.stutterPct ?? stPctByTarget[alleleLabel] ?? '—',
-        repeatSequence: variant?.repeatSequence ?? '—',
-        fullSequence: variant?.fullSequence ?? '—',
-        isIsoallele: variant?.isIsoallele || (copiesNeeded > 1 && i > 0),
-        sequenceId: `${alleleLabel}-${i}`, // Unique identifier for React keys
+        coverage,
+        stutterPct: stPctByTarget[alleleLabel] ?? '—',
+        repeatSequence,
+        fullSequence,
+        fullSequenceSegments,
+        isIsoallele,
+        sequenceId: `${alleleLabel}-${i}`,
       })
     }
   }

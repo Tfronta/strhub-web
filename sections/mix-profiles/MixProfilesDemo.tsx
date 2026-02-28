@@ -1117,6 +1117,7 @@ export default function MixProfilesDemo({
         <NGSChart
           bars={ngsBars}
           rows={ngsRows}
+          locusId={selectedMarker}
           analyticalThreshold={AT}
           interpretationThreshold={IT}
         />

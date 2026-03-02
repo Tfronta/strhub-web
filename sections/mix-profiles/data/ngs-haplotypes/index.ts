@@ -1,28 +1,20 @@
 /**
  * NGS haplotypes per sample (real sequences for mix-profiles NGS table).
  * When available, used to show sample-specific sequences with flank/repeat highlighting.
+ * Loader supports both: array of loci (legacy) and wrapper { sample, dateProcessed, source, loci }.
  */
 
-export type NgsLocusEntry = {
-  locus: string;
-  genotype_forense: string;
-  repeat_seq1: string;
-  full_seq1: string;
-  bracketed1: string;
-  repeat_seq2: string;
-  full_seq2: string;
-  bracketed2: string;
-  /** Allelic coverage (PDP) for allele 1, from HipSTR when available */
-  coverage1?: number;
-  /** Allelic coverage (PDP) for allele 2, from HipSTR when available */
-  coverage2?: number;
-};
+import { parseRawNgsPayload } from "./parseNgsHaplotypes";
+import type { LocusRecord } from "./parseNgsHaplotypes";
 
-type NgsSamplePayload = {
-  sample: string;
-  dateProcessed?: string;
-  loci: NgsLocusEntry[];
-};
+export type { LocusRecord };
+export {
+  parseRawNgsPayload,
+  getDisplaySequenceForAllele,
+} from "./parseNgsHaplotypes";
+
+/** Locus entry used by app: LocusRecord with required fields for display. */
+export type NgsLocusEntry = LocusRecord;
 
 import HG00097Data from "./HG00097.json";
 import HG00145Data from "./HG00145.json";
@@ -30,13 +22,33 @@ import HG00372Data from "./HG00372.json";
 import HG01063Data from "./HG01063.json";
 import HG02944Data from "./HG02944.json";
 
-const NGS_HAPLOTYPES_BY_SAMPLE: Record<string, NgsLocusEntry[]> = {
-  HG00097: (HG00097Data as NgsSamplePayload).loci,
-  HG00145: (HG00145Data as NgsSamplePayload).loci,
-  HG00372: (HG00372Data as NgsSamplePayload).loci,
-  HG01063: (HG01063Data as NgsSamplePayload).loci,
-  HG02944: (HG02944Data as NgsSamplePayload).loci,
-};
+const SAMPLE_IDS = ["HG00097", "HG00145", "HG00372", "HG01063", "HG02944"] as const;
+const JSON_BY_SAMPLE = [
+  HG00097Data,
+  HG00145Data,
+  HG00372Data,
+  HG01063Data,
+  HG02944Data,
+] as const;
+
+const NGS_HAPLOTYPES_BY_SAMPLE: Record<string, NgsLocusEntry[]> = {};
+const RESOLVED_SAMPLE_NAME: Record<string, string> = {};
+
+SAMPLE_IDS.forEach((sampleId, i) => {
+  const raw = JSON_BY_SAMPLE[i];
+  const { loci, sample } = parseRawNgsPayload(raw, `${sampleId}.json`);
+  NGS_HAPLOTYPES_BY_SAMPLE[sampleId] = loci;
+  if (sample != null) RESOLVED_SAMPLE_NAME[sampleId] = sample;
+  if (typeof process !== "undefined" && process.env?.NODE_ENV === "development" && i === 0) {
+    const isWrapper = !Array.isArray(raw) && raw != null && typeof raw === "object" && "loci" in raw;
+    console.log("[ngs-haplotypes] Checklist: loader wrapper=" + isWrapper + ", sample=" + (sample ?? sampleId) + ", display_seq=left+repeat+right, overlaps=metadata only");
+  }
+});
+
+/** Sample name from JSON when present, otherwise the sampleId (e.g. filename-derived). */
+export function getResolvedSampleName(sampleId: string): string {
+  return RESOLVED_SAMPLE_NAME[sampleId] ?? sampleId;
+}
 
 export function getSampleNgsLocus(
   sampleId: string | null,

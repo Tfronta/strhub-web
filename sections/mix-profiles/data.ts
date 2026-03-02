@@ -8,6 +8,7 @@ import { CATALOG } from "@/app/catalog/data";
 import { markerData } from "@/lib/markerData";
 import {
   getSampleNgsLocus,
+  getDisplaySequenceForAllele,
   parseFullSeqSegments,
 } from "./data/ngs-haplotypes";
 
@@ -953,12 +954,16 @@ export function cePeaksToNGSRowsWithSeq(
         const entry = getSampleNgsLocus(source.sampleId, locusId)
         if (entry) {
           const useFirst = source.alleleIndex === 0
-          repeatSequence = useFirst ? entry.bracketed1 : entry.bracketed2
-          const fullSeq = useFirst ? entry.full_seq1 : entry.full_seq2
-          const repeatSeq = useFirst ? entry.repeat_seq1 : entry.repeat_seq2
-          fullSequence = fullSeq.replace(/\s+/g, " ").trim()
-          const segments = parseFullSeqSegments(fullSeq, repeatSeq)
+          repeatSequence = (useFirst ? entry.bracketed1 : entry.bracketed2) ?? "—"
+          const alleleNum = useFirst ? 1 : 2
+          const { displaySeq, segments } = getDisplaySequenceForAllele(entry, alleleNum)
+          fullSequence = displaySeq ? displaySeq.replace(/\s+/g, " ").trim() : "—"
           if (segments) fullSequenceSegments = segments
+          else if (fullSequence !== "—") {
+            const repeatSeq = useFirst ? entry.repeat_seq1 : entry.repeat_seq2
+            const parsed = parseFullSeqSegments(fullSequence, repeatSeq ?? undefined)
+            if (parsed) fullSequenceSegments = parsed
+          }
           if (typeof entry.coverage1 === "number" && typeof entry.coverage2 === "number") {
             rowCoverage = useFirst ? entry.coverage1 : entry.coverage2
           }

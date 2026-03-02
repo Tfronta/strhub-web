@@ -205,7 +205,63 @@ export default function NGSChart({
                   <td className="px-3 py-2 text-left font-mono text-xs break-words">
                     {(() => {
                       const raw = String(r.fullSequence ?? "").trim();
-                      if (!raw) return <span>—</span>;
+                      const segs = r.fullSequenceSegments;
+                      if (!raw && !segs?.repeat) return <span>—</span>;
+                      // Prefer 3-segment painting from loader (left_flank_in_full + repeat_seq + right_flank_in_full)
+                      if (segs && (segs.flank5 != null || segs.repeat || segs.flank3 != null)) {
+                        return (
+                          <span className="inline">
+                            {segs.flank5 != null && segs.flank5.length > 0 ? (
+                              <TooltipProvider>
+                                <UITooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="text-muted-foreground cursor-default">
+                                      {segs.flank5}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-muted text-muted-foreground border-muted-foreground/20">
+                                    <p className="text-xs">
+                                      {t("mixProfiles.ngs.flank5Tooltip")}
+                                    </p>
+                                  </TooltipContent>
+                                </UITooltip>
+                              </TooltipProvider>
+                            ) : null}
+                            {segs.repeat ? (
+                              <TooltipProvider>
+                                <UITooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="font-semibold text-foreground bg-primary/15 dark:bg-primary/20 rounded">
+                                      {segs.repeat}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="text-xs">
+                                      {t("mixProfiles.ngs.repeatRegionTooltip")}
+                                    </p>
+                                  </TooltipContent>
+                                </UITooltip>
+                              </TooltipProvider>
+                            ) : null}
+                            {segs.flank3 != null && segs.flank3.length > 0 ? (
+                              <TooltipProvider>
+                                <UITooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="text-muted-foreground cursor-default">
+                                      {segs.flank3}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-muted text-muted-foreground border-muted-foreground/20">
+                                    <p className="text-xs">
+                                      {t("mixProfiles.ngs.flank3Tooltip")}
+                                    </p>
+                                  </TooltipContent>
+                                </UITooltip>
+                              </TooltipProvider>
+                            ) : null}
+                          </span>
+                        );
+                      }
                       const {
                         continuous,
                         repeatStart,

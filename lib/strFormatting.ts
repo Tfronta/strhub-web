@@ -27,18 +27,47 @@ export function isIsoAllele(
 /**
  * Whether to show the "iso" badge for a row: there are ≥2 rows with the same CE allele
  * and ≥2 distinct normalized repeat sequences among them.
+ * Uses fullSequenceSegments.repeat (actual repeat DNA) when present, so isoalleles
+ * with the same bracketed designation (e.g. [AGAA]14) but different sequences are detected.
  */
 export function shouldShowIsoBadge<
-  T extends { allele: string | number; repeatSequence?: string | "—" }
+  T extends {
+    allele: string | number;
+    repeatSequence?: string | "—";
+    fullSequenceSegments?: { repeat?: string };
+  }
 >(row: T, allRows: T[]): boolean {
   const ce = String(row.allele);
   const sameCe = allRows.filter((r) => String(r.allele) === ce);
   if (sameCe.length < 2) return false;
-  const normalized = sameCe.map((r) =>
-    normalizeSeq(String(r.repeatSequence ?? ""))
-  );
+  const normalized = sameCe.map((r) => {
+    const rawRepeat = r.fullSequenceSegments?.repeat;
+    return normalizeSeq(
+      String(rawRepeat != null && rawRepeat !== "" ? rawRepeat : r.repeatSequence ?? "")
+    );
+  });
   const unique = new Set(normalized);
   return unique.size >= 2;
+}
+
+/**
+ * Whether this row is the "leader" for its allele among allRows: the one on which
+ * to show the isoallele badge (once per allele group). Leader = row with highest
+ * allelic coverage (PDP); if coverage is missing or tied, the first row in allRows order.
+ */
+export function isLeaderRowForAllele<
+  T extends { allele: string | number; coverage?: number }
+>(row: T, allRows: T[]): boolean {
+  const ce = String(row.allele);
+  const sameCe = allRows.filter((r) => String(r.allele) === ce);
+  if (sameCe.length === 0) return false;
+  const maxCoverage = Math.max(
+    ...sameCe.map((r) => (typeof r.coverage === "number" ? r.coverage : -Infinity))
+  );
+  const withMax = sameCe.filter(
+    (r) => (typeof r.coverage === "number" ? r.coverage : -Infinity) === maxCoverage
+  );
+  return withMax.length > 0 && row === withMax[0];
 }
 
 /**

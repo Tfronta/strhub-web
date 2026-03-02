@@ -1452,7 +1452,7 @@ export const translations = {
         fullSequenceDidacticNote:
           "Flanks do not count toward the CE allele call; the repeat region is what is used for allele calling.",
         isoTooltip:
-          "Isoallele: sequence variation without a change in length. Detectable only with NGS and increases the power of discrimination between individuals.",
+          "Isoallele: same allele designation but different repeat sequence (internal variation).",
         flank5Tooltip: "5' flank",
         repeatRegionTooltip: "Repeat region",
         flank3Tooltip: "3' flank",
@@ -2963,7 +2963,7 @@ export const translations = {
         fullSequenceDidacticNote:
           "Os flancos não contam para o alelo CE; a região repetitiva é a utilizada para a chamada do alelo.",
         isoTooltip:
-          "Isoalelo: variação na sequência sem mudança no comprimento. Detectável apenas com NGS e aumenta o poder de discriminação entre indivíduos.",
+          "Isoalelo: mesma designação alélica, mas sequência de repetição diferente (variação interna).",
         flank5Tooltip: "Flanco 5'",
         repeatRegionTooltip: "Região repetitiva",
         flank3Tooltip: "Flanco 3'",
@@ -4610,7 +4610,7 @@ export const translations = {
         fullSequenceDidacticNote:
           "Los flancos no cuentan para el alelo CE; la región repetitiva es la utilizada para el llamado del alelo.",
         isoTooltip:
-          "Isoalelo: variación en la secuencia sin cambio en la longitud. Es detectable solo con NGS y aumenta el poder de discriminación entre individuos.",
+          "Isoalelo: misma designación alélica pero distinta secuencia de repetición (variación interna).",
         flank5Tooltip: "Flanco 5'",
         repeatRegionTooltip: "Región repetitiva",
         flank3Tooltip: "Flanco 3'",

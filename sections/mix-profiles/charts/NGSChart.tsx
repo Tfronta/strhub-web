@@ -27,6 +27,7 @@ import {
   getPrimaryMotifForLocus,
   getContinuousSequenceWithRepeat,
   shouldShowIsoBadge,
+  isLeaderRowForAllele,
 } from "@/lib/strFormatting";
 import { useMemo } from "react";
 
@@ -180,15 +181,19 @@ export default function NGSChart({
                   <td className="px-3 py-2 text-center">
                     <span className="inline-flex items-center gap-1">
                       {r.allele}
-                      {shouldShowIsoBadge(r, sortedRows) ? (
+                      {shouldShowIsoBadge(r, sortedRows) &&
+                      isLeaderRowForAllele(r, sortedRows) ? (
                         <TooltipProvider>
                           <UITooltip>
                             <TooltipTrigger asChild>
-                              <span className="text-[11px] text-muted-foreground cursor-help">
+                              <span
+                                className="text-[11px] text-muted-foreground cursor-help"
+                                title={t("mixProfiles.ngs.isoTooltip")}
+                              >
                                 iso
                               </span>
                             </TooltipTrigger>
-                            <TooltipContent className="max-w-xs text-sm leading-snug">
+                            <TooltipContent className="max-w-sm text-sm leading-snug">
                               {t("mixProfiles.ngs.isoTooltip")}
                             </TooltipContent>
                           </UITooltip>

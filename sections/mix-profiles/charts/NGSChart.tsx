@@ -375,7 +375,7 @@ export default function NGSChart({
               }}
             />
             <YAxis
-              domain={["auto", "auto"]}
+              domain={[0, "auto"]}
               label={{
                 value: t("mixProfiles.ngs.axisLabelCoverage"),
                 angle: -90,

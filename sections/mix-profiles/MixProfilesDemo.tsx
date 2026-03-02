@@ -326,7 +326,7 @@ export default function MixProfilesDemo({
   const [IT, setIT] = useState<number>(170); // 170 RFU
   const [kDeg, setKDeg] = useState<number>(0.015); // Degradation k
   const [noise, setNoise] = useState<number>(25); // Noise/Base = 25 RFU
-  const [stutterScale, setStutterScale] = useState<number>(1.2); // Stutter level × = 1.2
+  const [stutterScale, setStutterScale] = useState<number>(1.0); // Stutter level × = 1.0
   const [useFixedScale, setUseFixedScale] = useState<boolean>(false); // Auto-scale Y axis by default
 
   const markerKeys = useMemo(
@@ -335,7 +335,7 @@ export default function MixProfilesDemo({
     []
   );
 
-  const [selectedMarker, setSelectedMarker] = useState<LocusId>("CSF1PO");
+  const [selectedMarker, setSelectedMarker] = useState<LocusId>("D18S51");
   const [locusOpen, setLocusOpen] = useState(false);
   const [showTrueGenotypes, setShowTrueGenotypes] = useState<boolean>(true);
   const [contributors, setContributors] = useState<ContributorState[]>([

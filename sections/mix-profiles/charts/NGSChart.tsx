@@ -78,7 +78,7 @@ export default function NGSChart({
   const { t } = useLanguage();
   const motif = useMemo(
     () => (locusId ? getPrimaryMotifForLocus(locusId) : null),
-    [locusId]
+    [locusId],
   );
 
   if (!bars?.length) return <div className="h-[320px]" />;
@@ -112,7 +112,7 @@ export default function NGSChart({
                         type="button"
                         className="inline-flex items-center justify-center rounded-full h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
                         aria-label={t(
-                          "mixProfiles.ngs.tableCoverageTooltipAria"
+                          "mixProfiles.ngs.tableCoverageTooltipAria",
                         )}
                       >
                         <Info className="h-3.5 w-3.5" />
@@ -138,7 +138,7 @@ export default function NGSChart({
                         type="button"
                         className="inline-flex items-center justify-center rounded-full h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
                         aria-label={t(
-                          "mixProfiles.ngs.fullSequenceTooltipAria"
+                          "mixProfiles.ngs.fullSequenceTooltipAria",
                         )}
                       >
                         <Info className="h-3.5 w-3.5" />
@@ -156,23 +156,21 @@ export default function NGSChart({
           </thead>
           <tbody>
             {(() => {
-              const sortedRows = rows
-                .slice()
-                .sort((a, b) => {
-                  const aStr = String(a.allele);
-                  const bStr = String(b.allele);
-                  if (aStr === bStr) {
-                    return (a.fullSequence ?? "").localeCompare(
-                      b.fullSequence ?? ""
-                    );
-                  }
-                  const aNum = Number(aStr.replace(/[^\d.]/g, ""));
-                  const bNum = Number(bStr.replace(/[^\d.]/g, ""));
-                  if (!Number.isNaN(aNum) && !Number.isNaN(bNum)) {
-                    return aNum - bNum;
-                  }
-                  return aStr.localeCompare(bStr);
-                });
+              const sortedRows = rows.slice().sort((a, b) => {
+                const aStr = String(a.allele);
+                const bStr = String(b.allele);
+                if (aStr === bStr) {
+                  return (a.fullSequence ?? "").localeCompare(
+                    b.fullSequence ?? "",
+                  );
+                }
+                const aNum = Number(aStr.replace(/[^\d.]/g, ""));
+                const bNum = Number(bStr.replace(/[^\d.]/g, ""));
+                if (!Number.isNaN(aNum) && !Number.isNaN(bNum)) {
+                  return aNum - bNum;
+                }
+                return aStr.localeCompare(bStr);
+              });
               return sortedRows.map((r, i) => (
                 <tr
                   key={r.sequenceId ?? `${r.allele}-${i}`}
@@ -193,8 +191,14 @@ export default function NGSChart({
                                 iso
                               </span>
                             </TooltipTrigger>
-                            <TooltipContent className="max-w-sm text-sm leading-snug">
-                              {t("mixProfiles.ngs.isoTooltip")}
+                            <TooltipContent
+                              side="top"
+                              sideOffset={6}
+                              className="max-w-[min(320px,calc(100vw-2rem))] sm:max-w-[320px]"
+                            >
+                              <p className="text-inherit">
+                                {t("mixProfiles.ngs.isoTooltip")}
+                              </p>
                             </TooltipContent>
                           </UITooltip>
                         </TooltipProvider>
@@ -213,7 +217,12 @@ export default function NGSChart({
                       const segs = r.fullSequenceSegments;
                       if (!raw && !segs?.repeat) return <span>—</span>;
                       // Prefer 3-segment painting from loader (left_flank_in_full + repeat_seq + right_flank_in_full)
-                      if (segs && (segs.flank5 != null || segs.repeat || segs.flank3 != null)) {
+                      if (
+                        segs &&
+                        (segs.flank5 != null ||
+                          segs.repeat ||
+                          segs.flank3 != null)
+                      ) {
                         return (
                           <span className="inline">
                             {segs.flank5 != null && segs.flank5.length > 0 ? (
@@ -267,11 +276,8 @@ export default function NGSChart({
                           </span>
                         );
                       }
-                      const {
-                        continuous,
-                        repeatStart,
-                        repeatEnd,
-                      } = getContinuousSequenceWithRepeat(raw);
+                      const { continuous, repeatStart, repeatEnd } =
+                        getContinuousSequenceWithRepeat(raw);
                       if (!continuous) return <span>—</span>;
                       const hasHighlight =
                         repeatStart != null &&
@@ -291,9 +297,7 @@ export default function NGSChart({
                                     </TooltipTrigger>
                                     <TooltipContent className="bg-muted text-muted-foreground border-muted-foreground/20">
                                       <p className="text-xs">
-                                        {t(
-                                          "mixProfiles.ngs.flank5Tooltip"
-                                        )}
+                                        {t("mixProfiles.ngs.flank5Tooltip")}
                                       </p>
                                     </TooltipContent>
                                   </UITooltip>
@@ -307,15 +311,13 @@ export default function NGSChart({
                                     <span className="font-semibold text-foreground bg-primary/15 dark:bg-primary/20 rounded">
                                       {continuous.slice(
                                         repeatStart!,
-                                        repeatEnd!
+                                        repeatEnd!,
                                       )}
                                     </span>
                                   </TooltipTrigger>
                                   <TooltipContent>
                                     <p className="text-xs">
-                                      {t(
-                                        "mixProfiles.ngs.repeatRegionTooltip"
-                                      )}
+                                      {t("mixProfiles.ngs.repeatRegionTooltip")}
                                     </p>
                                   </TooltipContent>
                                 </UITooltip>
@@ -330,9 +332,7 @@ export default function NGSChart({
                                     </TooltipTrigger>
                                     <TooltipContent className="bg-muted text-muted-foreground border-muted-foreground/20">
                                       <p className="text-xs">
-                                        {t(
-                                          "mixProfiles.ngs.flank3Tooltip"
-                                        )}
+                                        {t("mixProfiles.ngs.flank3Tooltip")}
                                       </p>
                                     </TooltipContent>
                                   </UITooltip>

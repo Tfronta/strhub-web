@@ -2,14 +2,14 @@
 // Tool existence comes from ToolCards; this enriches the marker tab when available.
 
 import type { ToolDetails } from "./types";
-import { toolsData } from "@/app/marker/[id]/toolsData";
+import { toolsDetailsData } from "./toolsDetailsData";
 
 let detailsById: Record<string, ToolDetails> | null = null;
 
 function buildDetailsMap(): Record<string, ToolDetails> {
   if (detailsById) return detailsById;
   detailsById = Object.fromEntries(
-    toolsData.map((t) => [t.id, t as unknown as ToolDetails])
+    toolsDetailsData.map((t) => [t.id, t])
   );
   return detailsById;
 }

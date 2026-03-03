@@ -1,52 +1,9 @@
-// STR analysis tools data
-export interface ToolConfig {
-  target_file_format: string;
-  customizable_targets: boolean;
-  flanking_bp_recommended?: number;
-}
+// STR analysis tools extended data (config, compatibility, interfaces, limitations, notes).
+// Single source of truth for full tool profiles; consumed by /tools and marker Tools tab via getToolDetails().
 
-export interface Compatibility {
-  status: "maintained" | "archived";
-  maintenance: "active" | "community-maintained" | "limited" | "unmaintained";
-  maintainer?: string;
-  license: string;
-  last_release?: string;
-  ont_models?: string[];
-  docker_image?: string;
-}
+import type { ToolDetails } from "./types";
 
-export interface ToolInterface {
-  name: string;
-  url: string;
-  description: string;
-}
-
-export interface ToolSupport {
-  native_panels?: string[];
-  configurable?: boolean;
-  wrapper?: boolean;
-}
-
-export interface Tool {
-  id: string;
-  name: string;
-  tech: string[];
-  input: string[];
-  output: string[];
-  support: ToolSupport;
-  config: ToolConfig;
-  compatibility: Compatibility;
-  interfaces?: ToolInterface[];
-  limitations?: string[];
-  repo_url: string | null;
-  paper_doi: string | null;
-  last_checked: string;
-  online_version?: string;
-  docs_url?: string;
-  notes?: string;
-}
-
-export const toolsData: Tool[] = [
+export const toolsDetailsData: ToolDetails[] = [
   {
     id: "hipstr",
     name: "HipSTR",
@@ -253,4 +210,3 @@ export const toolsData: Tool[] = [
       "ToaSTR (also known as STRaitRazor-NGS) extends STRaitRazor functionality for Illumina data analysis. Integrated into STRhub for historical comparison and reference validation in forensic genomics workflows.",
   },
 ];
-

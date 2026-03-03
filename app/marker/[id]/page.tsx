@@ -39,6 +39,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Tooltip as UITooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -60,6 +65,7 @@ import {
   getToolDetails,
   DEFAULT_MARKER_TOOL_VIEW,
 } from "@/lib/tools";
+import { ToolCardCompact } from "@/components/tools/ToolCardCompact";
 import { LATAMCatalog, type LatamSubpop } from "@/lib/latamCatalog";
 import { getDatasetConfig } from "./datasetConfig";
 import { cn } from "@/lib/utils";
@@ -147,34 +153,6 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     return type;
   };
 
-  // Helper function to translate tool-specific texts
-  const translateToolText = (
-    toolId: string,
-    field: "interfaces" | "limitations" | "notes" | "config",
-    key?: string,
-    originalText?: string,
-  ): string => {
-    // Build translation key based on field type
-    let translationKey = `marker.tools.${toolId}.${field}`;
-
-    // For interfaces, add the interface key and "description"
-    if (field === "interfaces" && key) {
-      translationKey += `.${key}.description`;
-    } else if (key) {
-      // For other fields, just add the key
-      translationKey += `.${key}`;
-    }
-
-    const translation = t(translationKey);
-
-    // If translation exists and is different from the key, use it
-    if (translation && translation !== translationKey) {
-      return translation;
-    }
-
-    // Fallback to original text if provided
-    return originalText || translation;
-  };
   const tabValues = ["overview", "frequencies", "variants", "tools"] as const;
   type TabValue = (typeof tabValues)[number];
   const requestedTab = (searchParams?.get("tab") ?? "overview") as string;
@@ -411,9 +389,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
         toolCards,
         supportModelByToolId,
         DEFAULT_MARKER_TOOL_VIEW,
-        getToolDetails
+        getToolDetails,
       ),
-    [toolCards]
+    [toolCards],
   );
 
   const latamSubpopForChart = isLatamCE ? selectedLatamSubpop : null;
@@ -522,9 +500,6 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
               {marker.category}
             </Badge>
           </div>
-          <p className="text-base font-normal text-foreground mb-2">
-            {marker.fullName}
-          </p>
           <p className="text-sm text-muted-foreground leading-relaxed">
             {getTranslatedDescription(marker.description)}
           </p>
@@ -1528,604 +1503,78 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
             </Card>
           </TabsContent>
 
-          <TabsContent value="tools" className="space-y-4">
-            <Card className="border rounded-md shadow-none bg-card">
-              <CardHeader className="pb-3 px-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-sm font-semibold text-foreground">
+          <TabsContent value="tools" className="space-y-3">
+            <Card className="border rounded-md shadow-none bg-card py-4">
+              <CardHeader className="pb-0 pt-2 px-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <CardTitle className="text-sm font-semibold text-foreground leading-tight">
                       {t("marker.toolsCompatibility")}
                     </CardTitle>
-                    <CardDescription className="text-xs font-normal mt-1">
-                      {t("marker.toolsDescription")}
-                    </CardDescription>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 text-xs font-normal rounded-sm px-3"
-                    asChild
-                  >
-                    <Link href="/about#contact">
-                      <ExternalLink className="h-3 w-3 mr-1" />
-                      {t("marker.addNewTool")}
-                    </Link>
-                  </Button>
+                  <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 text-xs font-normal rounded-sm px-2.5 py-1.5"
+                      asChild
+                    >
+                      <Link href="/tools">
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        {t("marker.viewAllToolsPipelines")}
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 text-xs font-normal rounded-sm px-2.5 py-1.5"
+                      asChild
+                    >
+                      <Link href="/about#contact">
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        {t("marker.addNewTool")}
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
-              <CardContent className="px-4">
-                <div className="mb-4 p-3 bg-muted/30 border border-border rounded-md">
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    {t("marker.toolsDisclaimer")}{" "}
-                    <Link
-                      href="/about#contact"
-                      className="text-primary hover:underline"
-                    >
-                      {t("marker.contactUs")}
-                    </Link>
-                    .
-                  </p>
-                </div>
-                <div className="mb-4 flex justify-end">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-xs font-normal rounded-sm px-3"
-                    asChild
-                  >
-                    <Link href="/tools">
-                      <ExternalLink className="h-3 w-3 mr-1" />
-                      {t("marker.viewAllToolsPipelines")}
-                    </Link>
-                  </Button>
+              <CardContent className="px-4 pb-4 pt-0">
+                <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground leading-snug">
+                  <span>{t("marker.toolsDisclaimerShort")}</span>
+                  <UITooltip>
+                    <TooltipTrigger asChild>
+                      <span
+                        className="inline-flex shrink-0 cursor-help text-muted-foreground hover:text-foreground"
+                        aria-label={t("marker.toolsDisclaimerShort")}
+                      >
+                        <Info className="h-3.5 w-3.5" />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-sm text-xs">
+                      {t("marker.toolsDisclaimer")}
+                    </TooltipContent>
+                  </UITooltip>
                 </div>
                 {toolsForMarker.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="grid lg:grid-cols-2 gap-5">
                     {toolsForMarker.map((item) => {
-                      const tool = item.details;
-                      const card = item.card;
-                      const badgeText =
+                      const badgeLabel =
                         item.label === "curated_supported"
                           ? t("marker.supported")
-                          : t("marker.configurableRequiresTargets");
-                      const techDisplay = tool
-                        ? tool.tech
-                        : card.technology.map((tx) =>
-                            tx === "multi_platform"
-                              ? "Multi-platform"
-                              : tx === "illumina"
-                                ? "Illumina"
-                                : tx === "ont"
-                                  ? "ONT"
-                                  : tx === "pacbio"
-                                    ? "PacBio"
-                                    : tx === "targeted"
-                                      ? "Targeted"
-                                      : tx
-                          );
+                          : undefined;
+                      const firstInterface = item.details?.interfaces?.[0];
+                      const interfaceTeaser = firstInterface
+                        ? { name: firstInterface.name, url: firstInterface.url }
+                        : null;
                       return (
-                      <div
-                        key={card.id}
-                        className="border border-border rounded-md p-4 space-y-3"
-                      >
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-bold text-foreground">
-                            {card.name}
-                          </h3>
-                          <Badge
-                            variant="outline"
-                            className="text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
-                          >
-                            {badgeText}
-                          </Badge>
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="flex flex-wrap gap-2">
-                            <div className="flex items-center gap-1">
-                              <span className="text-xs font-normal text-muted-foreground">
-                                {t("marker.technology")}:
-                              </span>
-                              {techDisplay.map((tech) => (
-                                <Badge
-                                  key={tech}
-                                  variant="outline"
-                                  className="text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
-                                >
-                                  {tech}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="flex flex-wrap gap-2">
-                            <div className="flex items-center gap-1">
-                              <span className="text-xs font-normal text-muted-foreground">
-                                {t("marker.inputFormat")}:
-                              </span>
-                              {tool
-                                ? tool.input.map((input) => (
-                                    <Badge
-                                      key={input}
-                                      variant="outline"
-                                      className="text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
-                                    >
-                                      {input}
-                                    </Badge>
-                                  ))
-                                : card.input && (
-                                    <Badge
-                                      variant="outline"
-                                      className="text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
-                                    >
-                                      {card.input}
-                                    </Badge>
-                                  )}
-                            </div>
-                          </div>
-
-                          <div className="flex flex-wrap gap-2">
-                            <div className="flex items-center gap-1">
-                              <span className="text-xs font-normal text-muted-foreground">
-                                {t("marker.outputFormat")}:
-                              </span>
-                              {tool
-                                ? tool.output.map((output) => (
-                                    <Badge
-                                      key={output}
-                                      variant="outline"
-                                      className="text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
-                                    >
-                                      {output}
-                                    </Badge>
-                                  ))
-                                : card.output && (
-                                    <Badge
-                                      variant="outline"
-                                      className="text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
-                                    >
-                                      {card.output}
-                                    </Badge>
-                                  )}
-                            </div>
-                          </div>
-
-                          {tool?.support.native_panels &&
-                            tool?.support.native_panels.length > 0 && (
-                              <div className="space-y-1">
-                                <span className="text-xs font-normal text-muted-foreground">
-                                  {t("marker.nativePanels")}:
-                                </span>
-                                <div className="flex flex-wrap gap-2">
-                                  {tool?.support.native_panels.map(
-                                    (panelUrl, idx) => (
-                                      <Button
-                                        key={idx}
-                                        variant="outline"
-                                        size="sm"
-                                        className="h-7 text-xs font-normal rounded-sm px-2"
-                                        asChild
-                                      >
-                                        <a
-                                          href={panelUrl}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
-                                          <ExternalLink className="h-3 w-3 mr-1" />
-                                          {t("marker.panel")}
-                                        </a>
-                                      </Button>
-                                    ),
-                                  )}
-                                </div>
-                              </div>
-                            )}
-
-                          {tool && (
-                          <>
-                          <div className="space-y-2 pt-2 border-t border-border">
-                            <div className="space-y-1">
-                              <span className="text-xs font-semibold text-foreground">
-                                {t("marker.configuration")}:
-                              </span>
-                              <div className="text-xs text-muted-foreground space-y-1">
-                                <div>
-                                  <span className="font-medium">
-                                    {t("marker.targetFileFormat")}:
-                                  </span>{" "}
-                                  {translateToolText(
-                                    card.id,
-                                    "config",
-                                    "targetFileFormat",
-                                    tool.config.target_file_format,
-                                  )}
-                                </div>
-                                {tool.config.flanking_bp_recommended && (
-                                  <div>
-                                    <span className="font-medium">
-                                      {t("marker.flankingBpRecommended")}:
-                                    </span>{" "}
-                                    {tool.config.flanking_bp_recommended} bp
-                                  </div>
-                                )}
-                                {tool.config.customizable_targets && (
-                                  <div className="flex items-center gap-1">
-                                    <Badge
-                                      variant="secondary"
-                                      className="text-xs font-normal px-2 py-0.5"
-                                    >
-                                      {t("marker.customizableTargetsLabel")}
-                                    </Badge>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="space-y-2 pt-2 border-t border-border">
-                            <div className="space-y-1">
-                              <span className="text-xs font-semibold text-foreground">
-                                {t("marker.compatibility")}:
-                              </span>
-                              <div className="text-xs text-muted-foreground space-y-1">
-                                <div className="flex items-center gap-2">
-                                  <span className="font-medium">
-                                    {t("marker.status")}:
-                                  </span>
-                                  <Badge
-                                    variant={
-                                      tool.compatibility.status === "maintained"
-                                        ? "default"
-                                        : "secondary"
-                                    }
-                                    className="text-xs font-normal px-2 py-0.5"
-                                  >
-                                    {tool.compatibility.status === "maintained"
-                                      ? t("marker.maintained")
-                                      : t("marker.archived")}
-                                  </Badge>
-                                </div>
-                                {tool.compatibility.maintainer && (
-                                  <div>
-                                    <span className="font-medium">
-                                      {t("marker.maintainer")}:
-                                    </span>{" "}
-                                    {tool.compatibility.maintainer}
-                                  </div>
-                                )}
-                                <div>
-                                  <span className="font-medium">
-                                    {t("marker.license")}:
-                                  </span>{" "}
-                                  {tool.compatibility.license}
-                                </div>
-                                {tool.compatibility.last_release && (
-                                  <div>
-                                    <span className="font-medium">
-                                      {t("marker.lastRelease")}:
-                                    </span>{" "}
-                                    {tool.compatibility.last_release}
-                                  </div>
-                                )}
-                                {tool.compatibility.ont_models &&
-                                  tool.compatibility.ont_models.length > 0 && (
-                                    <div>
-                                      <span className="font-medium">
-                                        {t("marker.ontModels")}:
-                                      </span>{" "}
-                                      {tool.compatibility.ont_models.join(", ")}
-                                    </div>
-                                  )}
-                                {tool.compatibility.docker_image && (
-                                  <div>
-                                    <span className="font-medium">
-                                      {t("marker.dockerImage")}:
-                                    </span>{" "}
-                                    <code className="text-xs bg-muted px-1 py-0.5 rounded">
-                                      {tool.compatibility.docker_image}
-                                    </code>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          {tool.interfaces && tool.interfaces.length > 0 && (
-                            <div className="space-y-2 pt-2 border-t border-border">
-                              <span className="text-xs font-semibold text-foreground">
-                                {t("marker.interfaces")}:
-                              </span>
-                              <div className="space-y-2">
-                                {tool.interfaces.map((iface, idx) => (
-                                  <div key={idx} className="space-y-1">
-                                    <div className="flex items-center gap-2">
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="h-7 text-xs font-normal rounded-sm px-2"
-                                        asChild
-                                      >
-                                        <a
-                                          href={iface.url}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
-                                          <ExternalLink className="h-3 w-3 mr-1" />
-                                          {iface.name}
-                                        </a>
-                                      </Button>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground">
-                                      {(() => {
-                                        // Convert interface name to translation key format
-                                        // "HipSTR-UI" -> "hipstrUi"
-                                        const key = iface.name
-                                          .replace(/[-\s]+/g, "")
-                                          .replace(/^([a-z])/i, (m) =>
-                                            m.toLowerCase(),
-                                          )
-                                          .replace(/([A-Z])/g, (m) =>
-                                            m.toLowerCase(),
-                                          );
-                                        // For HipSTR-UI, the key should be "hipstrUi"
-                                        const interfaceKey =
-                                          iface.name === "HipSTR-UI"
-                                            ? "hipstrUi"
-                                            : key;
-                                        return translateToolText(
-                                          card.id,
-                                          "interfaces",
-                                          interfaceKey,
-                                          iface.description,
-                                        );
-                                      })()}
-                                    </p>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-
-                          {tool.limitations && tool.limitations.length > 0 && (
-                            <div className="space-y-2 pt-2 border-t border-border">
-                              <span className="text-xs font-semibold text-foreground">
-                                {t("marker.limitations")}:
-                              </span>
-                              <ul className="list-disc list-inside space-y-1 text-xs text-muted-foreground">
-                                {tool.limitations.map((limitation, idx) => {
-                                  // Map limitation text to translation key
-                                  let translationKey = "";
-                                  if (
-                                    limitation.includes(
-                                      "Requires aligned BAM/CRAM",
-                                    )
-                                  ) {
-                                    translationKey = "requiresAligned";
-                                  } else if (
-                                    limitation.includes(
-                                      "Designed for Illumina",
-                                    ) &&
-                                    limitation.includes("not compatible")
-                                  ) {
-                                    translationKey = "illuminaOnly";
-                                  } else if (
-                                    limitation.includes(
-                                      "Optimized for Illumina",
-                                    )
-                                  ) {
-                                    translationKey = "illuminaOnly";
-                                  } else if (
-                                    limitation.includes(
-                                      "Requires BAM/CRAM alignment",
-                                    )
-                                  ) {
-                                    translationKey = "requiresBamBed";
-                                  } else if (
-                                    limitation.includes("Optimized for ONT")
-                                  ) {
-                                    translationKey = "ontOptimized";
-                                  } else if (
-                                    limitation.includes(
-                                      "Not designed for whole-genome",
-                                    )
-                                  ) {
-                                    translationKey = "notWgs";
-                                  } else if (
-                                    limitation.includes(
-                                      "Designed for Illumina data",
-                                    ) &&
-                                    limitation.includes("panel configuration")
-                                  ) {
-                                    translationKey = "illuminaData";
-                                  } else if (
-                                    limitation.includes(
-                                      "Does not perform read alignment",
-                                    )
-                                  ) {
-                                    translationKey = "noAlignment";
-                                  } else if (
-                                    limitation.includes(
-                                      "Designed for forensic NGS",
-                                    )
-                                  ) {
-                                    translationKey = "forensicNgs";
-                                  } else if (
-                                    limitation.includes(
-                                      "Web interface inactive",
-                                    )
-                                  ) {
-                                    translationKey = "webInterfaceInactive";
-                                  }
-
-                                  const translated = translationKey
-                                    ? translateToolText(
-                                        card.id,
-                                        "limitations",
-                                        translationKey,
-                                        limitation,
-                                      )
-                                    : limitation;
-
-                                  return <li key={idx}>{translated}</li>;
-                                })}
-                              </ul>
-                            </div>
-                          )}
-
-                          <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
-                            {tool.repo_url && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-7 text-xs font-normal rounded-sm px-2"
-                                asChild
-                              >
-                                <a
-                                  href={tool.repo_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <ExternalLink className="h-3 w-3 mr-1" />
-                                  {t("marker.repository")}
-                                </a>
-                              </Button>
-                            )}
-                            {tool.paper_doi && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-7 text-xs font-normal rounded-sm px-2"
-                                asChild
-                              >
-                                <a
-                                  href={
-                                    tool.paper_doi.startsWith("http")
-                                      ? tool.paper_doi
-                                      : `https://doi.org/${tool.paper_doi}`
-                                  }
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <FileText className="h-3 w-3 mr-1" />
-                                  {t("marker.originalPublication")}
-                                </a>
-                              </Button>
-                            )}
-                            {tool.docs_url && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-7 text-xs font-normal rounded-sm px-2"
-                                asChild
-                              >
-                                <a
-                                  href={tool.docs_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <FileText className="h-3 w-3 mr-1" />
-                                  {t("marker.documentation")}
-                                </a>
-                              </Button>
-                            )}
-                            {tool.online_version && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-7 text-xs font-normal rounded-sm px-2"
-                                asChild
-                              >
-                                <a
-                                  href={tool.online_version}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <ExternalLink className="h-3 w-3 mr-1" />
-                                  {t("marker.onlineVersion")}
-                                </a>
-                              </Button>
-                            )}
-                          </div>
-
-                          {tool.notes && (
-                            <div className="space-y-1 pt-2 border-t border-border">
-                              <span className="text-xs font-semibold text-foreground">
-                                {t("marker.notes")}:
-                              </span>
-                              <p className="text-xs text-muted-foreground leading-relaxed">
-                                {translateToolText(
-                                  card.id,
-                                  "notes",
-                                  undefined,
-                                  tool.notes,
-                                )}
-                              </p>
-                            </div>
-                          )}
-
-                          <div className="text-xs text-muted-foreground pt-2 border-t border-border">
-                            {t("marker.lastChecked")}: {tool.last_checked}
-                          </div>
-                          </>
-                          )}
-                          {!tool && (
-                            <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
-                              {card.github && (
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-7 text-xs font-normal rounded-sm px-2"
-                                  asChild
-                                >
-                                  <a
-                                    href={card.github}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    <ExternalLink className="h-3 w-3 mr-1" />
-                                    {t("marker.repository")}
-                                  </a>
-                                </Button>
-                              )}
-                              {card.publication && (
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-7 text-xs font-normal rounded-sm px-2"
-                                  asChild
-                                >
-                                  <a
-                                    href={card.publication}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    <FileText className="h-3 w-3 mr-1" />
-                                    {t("marker.originalPublication")}
-                                  </a>
-                                </Button>
-                              )}
-                              {card.website && (
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-7 text-xs font-normal rounded-sm px-2"
-                                  asChild
-                                >
-                                  <a
-                                    href={card.website}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    <ExternalLink className="h-3 w-3 mr-1" />
-                                    {t("marker.onlineVersion")}
-                                  </a>
-                                </Button>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
+                        <ToolCardCompact
+                          key={item.card.id}
+                          variant="marker"
+                          card={item.card}
+                          badgeLabel={badgeLabel}
+                          interfaceTeaser={interfaceTeaser}
+                        />
+                      );
                     })}
                   </div>
                 ) : (

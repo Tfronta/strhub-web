@@ -1,14 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ExternalLink, Github, Info, FileText, Filter } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { useMemo, useState, useEffect, useRef } from "react";
+import { ExternalLink, Github, Info, FileText, Filter, ChevronDown, ChevronUp } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,8 +18,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/language-context";
-import { buildToolCards } from "@/lib/tools";
+import { buildToolCards, getToolDetails } from "@/lib/tools";
 import type {
   TechnologyKey,
   ReadTypeKey,
@@ -34,6 +28,8 @@ import type {
   UsageKey,
   ToolCard,
 } from "@/lib/tools";
+import { ToolCardCompact } from "@/components/tools/ToolCardCompact";
+import { ToolProfileSections } from "@/components/tools/ToolProfileSections";
 
 export type { TechnologyKey, ReadTypeKey, AnalysisKey, UsageKey, ToolCard };
 
@@ -56,9 +52,13 @@ const USAGE_OPTIONS: UsageKey[] = [
 
 export default function ToolsPage() {
   const { t } = useLanguage();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [filterTech, setFilterTech] = useState<string>("all");
   const [filterAnalysis, setFilterAnalysis] = useState<string>("all");
   const [filterUsage, setFilterUsage] = useState<string>("all");
+  const [expandedToolId, setExpandedToolId] = useState<string | null>(null);
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const tools: ToolCard[] = useMemo(() => buildToolCards(t), [t]);
 
@@ -91,6 +91,35 @@ export default function ToolsPage() {
     setFilterUsage("all");
   };
 
+  // Deep link: ?tool=id — expand that tool and scroll into view
+  const toolParam = searchParams?.get("tool") ?? null;
+  useEffect(() => {
+    if (!toolParam) return;
+    const exists = filteredTools.some((tool) => tool.id === toolParam);
+    if (exists) {
+      setExpandedToolId(toolParam);
+      // Scroll after paint
+      const timer = requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          cardRefs.current[toolParam]?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+      return () => cancelAnimationFrame(timer);
+    }
+  }, [toolParam, filteredTools]);
+
+  const setExpanded = (id: string | null) => {
+    setExpandedToolId(id);
+    const params = new URLSearchParams(searchParams?.toString() ?? "");
+    if (id) {
+      params.set("tool", id);
+    } else {
+      params.delete("tool");
+    }
+    const qs = params.toString();
+    router.replace(qs ? `/tools?${qs}` : "/tools", { scroll: false });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -119,9 +148,21 @@ export default function ToolsPage() {
       {/* Tools Section */}
       <section className="pt-4 pb-16 px-4">
         <div className="container mx-auto">
-          <h3 className="text-3xl font-bold mb-8">
-            {t("tools.categories.analysis")}
-          </h3>
+          <div className="flex items-start gap-2 mb-6">
+            <h3 className="text-3xl font-bold">
+              {t("tools.categories.analysis")}
+            </h3>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="inline-flex shrink-0 text-muted-foreground hover:text-foreground cursor-help mt-1.5">
+                  <Info className="h-4 w-4" aria-hidden />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-sm text-sm">
+                {t("tools.hero.disclaimer")}
+              </TooltipContent>
+            </Tooltip>
+          </div>
 
           {/* Compact filter toolbar */}
           <div className="mb-6 flex flex-wrap items-center gap-2">
@@ -295,137 +336,55 @@ export default function ToolsPage() {
 
           <div className="grid lg:grid-cols-2 gap-6">
             {filteredTools.map((tool) => {
-              const techKey = tool.technology[0];
-              const readKey = tool.read_type[0];
-              const showReadType =
-                readKey &&
-                readKey !== "any" &&
-                !tool.technology.includes("multi_platform");
-              const analysisKey = tool.analysis[0];
+              const details = getToolDetails(tool.id);
+              const isExpanded = expandedToolId === tool.id;
 
               return (
-                <Card
+                <div
                   key={tool.id}
-                  className="border-0 bg-gradient-to-br from-card to-card/50"
+                  ref={(el) => {
+                    cardRefs.current[tool.id] = el;
+                  }}
+                  id={`tool-${tool.id}`}
+                  className="scroll-mt-6"
                 >
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-xl mb-2">
-                          {tool.name}
-                        </CardTitle>
-                        <CardDescription className="text-base mb-4">
-                          {tool.summary}
-                        </CardDescription>
-                        <div className="flex items-center gap-2 mb-4 flex-wrap">
-                          {techKey && (
-                            <Badge variant="secondary">
-                              {t(`tools.badges.technology.${techKey}`)}
-                            </Badge>
-                          )}
-                          {showReadType && readKey && (
-                            <Badge variant="outline">
-                              {t(`tools.badges.readType.${readKey}`)}
-                            </Badge>
-                          )}
-                          {analysisKey && (
-                            <Badge variant="outline">
-                              {t(`tools.badges.analysis.${analysisKey}`)}
-                            </Badge>
-                          )}
-                          {tool.usage.map((u) => (
-                            <Badge
-                              key={u}
-                              variant="outline"
-                              className="font-normal"
-                            >
-                              {t(`tools.badges.usage.${u}`)}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-semibold mb-2">
-                        {t("tools.common.keyFeatures")}
-                      </h4>
-                      <ul className="text-sm text-muted-foreground space-y-1">
-                        {tool.features.map((feature, idx) => (
-                          <li key={idx}>• {feature}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    {(tool.input != null || tool.output != null) && (
-                      <div className="text-sm text-muted-foreground space-y-1">
-                        {tool.input != null && (
-                          <div>
-                            {t("tools.common.inputLabel")}: {tool.input}
-                          </div>
+                  <ToolCardCompact
+                    card={tool}
+                    actions={
+                      <Button
+                        size="sm"
+                        variant={isExpanded ? "secondary" : "outline"}
+                        className="text-xs"
+                        onClick={() => setExpanded(isExpanded ? null : tool.id)}
+                        aria-expanded={isExpanded}
+                      >
+                        {isExpanded ? (
+                          <>
+                            <ChevronUp className="h-3.5 w-3.5 mr-1" />
+                            {t("tools.common.hideDetails")}
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown className="h-3.5 w-3.5 mr-1" />
+                            {t("tools.common.viewDetails")}
+                          </>
                         )}
-                        {tool.output != null && (
-                          <div>
-                            {t("tools.common.outputLabel")}: {tool.output}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    <div className="flex gap-2 flex-wrap">
-                      {tool.github && (
-                        <Button size="sm" variant="outline" asChild>
-                          <a
-                            href={tool.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Github className="h-4 w-4 mr-1" />
-                            {t("tools.common.github")}
-                          </a>
-                        </Button>
-                      )}
-                      {tool.website && (
-                        <Button size="sm" variant="outline" asChild>
-                          <a
-                            href={tool.website}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink className="h-4 w-4 mr-1" />
-                            {tool.websiteLabel || t("tools.common.website")}
-                          </a>
-                        </Button>
-                      )}
-                      {tool.publication && (
-                        <Button size="sm" variant="outline" asChild>
-                          <a
-                            href={tool.publication}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FileText className="h-4 w-4 mr-1" />
-                            {t("tools.common.originalPublication")}
-                          </a>
-                        </Button>
-                      )}
-                      {tool.uiPublication && (
-                        <Button size="sm" variant="outline" asChild>
-                          <a
-                            href={tool.uiPublication}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FileText className="h-4 w-4 mr-1" />
-                            {t("tools.common.uiPublication")}
-                          </a>
-                        </Button>
+                      </Button>
+                    }
+                  />
+                  {isExpanded && (
+                    <div className="mt-4 rounded-md border border-border bg-muted/20 p-4">
+                      {details ? (
+                        <ToolProfileSections details={details} t={t} />
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          {t("tools.common.detailsNotCurated")}
+                        </p>
                       )}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
+                  )}
+                </div>
+              );
             })}
           </div>
         </div>

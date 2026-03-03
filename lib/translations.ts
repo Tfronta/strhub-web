@@ -435,6 +435,7 @@ export const translations = {
       supported: "Supported",
       configurableRequiresTargets: "Configurable (requires targets)",
       viewAllToolsPipelines: "View all tools & pipelines",
+      viewFullToolProfile: "View full tool profile",
       notSupported: "Not Supported",
       originalPublication: "Original Publication",
       githubRepository: "GitHub Repository",
@@ -469,6 +470,7 @@ export const translations = {
       ontModels: "ONT Models",
       dockerImage: "Docker Image",
       interfaces: "Interfaces",
+      interfaceAvailable: "Interface available:",
       limitations: "Limitations",
       maintainerInitiatives: "Maintainer Initiatives",
       repository: "Repository",
@@ -476,7 +478,8 @@ export const translations = {
       notes: "Notes",
       addNewTool: "Add New Tool",
       contactUs: "contact us",
-      toolsDisclaimer: "All software tools listed in this section are open-access and third-party resources. STRhub maintains no commercial relationship with the developers of these tools and receives no financial compensation for their inclusion. The catalog is provided solely for educational and research purposes, to help the community explore and compare available STR analysis pipelines. If you wish to suggest a new tool or report an update, you can",
+      toolsDisclaimer: "All software tools listed in this section are open-access and third-party resources. STRhub maintains no commercial relationship with the developers of these tools and receives no financial compensation for their inclusion. The catalog is provided solely for educational and research purposes.",
+      toolsDisclaimerShort: "Third-party open-access tools. No commercial relationship.",
       toolsNote:
         "Tool compatibility is based on marker characteristics and community validation. GitHub repositories and publication references are provided for each supported tool. Always verify compatibility with your specific analysis requirements and check for the latest versions.",
       igvViewer: "IGV Genome Viewer",
@@ -879,6 +882,9 @@ export const translations = {
         uiPublication: "User interface publication",
         inputLabel: "Input",
         outputLabel: "Output",
+        viewDetails: "View details",
+        hideDetails: "Hide details",
+        detailsNotCurated: "Details not yet curated.",
       },
       badges: {
         technology: {
@@ -2012,6 +2018,7 @@ export const translations = {
       supported: "Suportado",
       configurableRequiresTargets: "Configurável (requer alvos)",
       viewAllToolsPipelines: "Ver todas as ferramentas e pipelines",
+      viewFullToolProfile: "Ver perfil completo da ferramenta",
       notSupported: "Não Suportado",
       originalPublication: "Publicação Original",
       githubRepository: "Repositório GitHub",
@@ -2046,6 +2053,7 @@ export const translations = {
       ontModels: "Modelos ONT",
       dockerImage: "Imagem Docker",
       interfaces: "Interfaces",
+      interfaceAvailable: "Interface disponível:",
       limitations: "Limitações",
       maintainerInitiatives: "Iniciativas do Mantenedor",
       repository: "Repositório",
@@ -2053,7 +2061,8 @@ export const translations = {
       notes: "Notas",
       addNewTool: "Adicionar Nova Ferramenta",
       contactUs: "entrar em contato conosco",
-      toolsDisclaimer: "Todas as ferramentas de software listadas nesta seção são recursos de acesso aberto e de terceiros. O STRhub não mantém relacionamento comercial com os desenvolvedores dessas ferramentas e não recebe compensação financeira por sua inclusão. O catálogo é fornecido exclusivamente para fins educacionais e de pesquisa, para ajudar a comunidade a explorar e comparar os pipelines de análise STR disponíveis. Se você deseja sugerir uma nova ferramenta ou relatar uma atualização, pode",
+      toolsDisclaimer: "Todas as ferramentas de software listadas nesta seção são recursos de acesso aberto e de terceiros. O STRhub não mantém relacionamento comercial com os desenvolvedores dessas ferramentas e não recebe compensação financeira por sua inclusão. O catálogo é fornecido exclusivamente para fins educacionais e de pesquisa.",
+      toolsDisclaimerShort: "Ferramentas de terceiros em acesso aberto. Sem relação comercial.",
       toolsNote:
         "A compatibilidade da ferramenta se basa nas características do marcador e validação da comunidade. Se proporcionam repositorios GitHub e referências de publicação para cada ferramenta suportada. Sempre verifique a compatibilidade com seus requisitos específicos de análise e consulte as versões mais recentes.",
       igvViewer: "Visualizador Genômico IGV",
@@ -2415,6 +2424,9 @@ export const translations = {
         uiPublication: "Publicação da interface de usuário",
         inputLabel: "Entrada",
         outputLabel: "Saída",
+        viewDetails: "Ver detalhes",
+        hideDetails: "Ocultar detalhes",
+        detailsNotCurated: "Detalhes ainda não curados.",
       },
       badges: {
         technology: {
@@ -3594,6 +3606,7 @@ export const translations = {
       supported: "Soportado",
       configurableRequiresTargets: "Configurable (requiere objetivos)",
       viewAllToolsPipelines: "Ver todas las herramientas y pipelines",
+      viewFullToolProfile: "Ver perfil completo de la herramienta",
       notSupported: "No Soportado",
       originalPublication: "Publicación Original",
       githubRepository: "Repositorio GitHub",
@@ -3628,6 +3641,7 @@ export const translations = {
       ontModels: "Modelos ONT",
       dockerImage: "Imagen Docker",
       interfaces: "Interfaces",
+      interfaceAvailable: "Interface disponible:",
       limitations: "Limitaciones",
       maintainerInitiatives: "Iniciativas del Mantenedor",
       repository: "Repositorio",
@@ -3635,7 +3649,8 @@ export const translations = {
       notes: "Notas",
       addNewTool: "Agregar Nueva Herramienta",
       contactUs: "contactarnos",
-      toolsDisclaimer: "Todas las herramientas de software listadas en esta sección son recursos de acceso abierto y de terceros. STRhub no mantiene relación comercial con los desarrolladores de estas herramientas y no recibe compensación financiera por su inclusión. El catálogo se proporciona únicamente con fines educativos y de investigación, para ayudar a la comunidad a explorar y comparar los pipelines de análisis STR disponibles. Si desea sugerir una nueva herramienta o informar una actualización, puede",
+      toolsDisclaimer: "Todas las herramientas de software listadas en esta sección son recursos de acceso abierto y de terceros. STRhub no mantiene relación comercial con los desarrolladores de estas herramientas y no recibe compensación financiera por su inclusión. El catálogo se proporciona únicamente con fines educativos y de investigación.",
+      toolsDisclaimerShort: "Herramientas de terceros en acceso abierto. Sin relación comercial.",
       toolsNote:
         "La compatibilidad de herramientas se basa en las características del marcador y la validación de la comunidad. Se proporcionan repositorios GitHub y referencias de publicación para cada herramienta soportada. Siempre verifique la compatibilidad con sus requisitos específicos de análisis y consulte las versiones más recientes.",
       igvViewer: "Visor Genómico IGV",
@@ -4041,6 +4056,9 @@ export const translations = {
         uiPublication: "Publicación de la interfaz de usuario",
         inputLabel: "Entrada",
         outputLabel: "Salida",
+        viewDetails: "Ver detalles",
+        hideDetails: "Ocultar detalles",
+        detailsNotCurated: "Detalles aún no curados.",
       },
       badges: {
         technology: {

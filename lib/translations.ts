@@ -943,7 +943,7 @@ export const translations = {
       },
       nanomnt: {
         title: "NanoMnT",
-        summary: "STR genotyping from Oxford Nanopore alignments with allele and locus tables.",
+        summary: "ONT-based STR genotyping from aligned long-read data with locus-level reporting.",
         features: {
           1: "STR genotyping from BAM alignments",
           2: "Allele and locus-level output tables",
@@ -953,7 +953,7 @@ export const translations = {
       },
       strkit: {
         title: "STRkit",
-        summary: "Long-read STR genotyping with Gaussian models, confidence intervals, and phasing.",
+        summary: "Long-read STR genotyping toolkit with model-based allele inference.",
         features: {
           1: "Gaussian model for allele length estimation",
           2: "Confidence intervals and bootstrapping",
@@ -964,7 +964,7 @@ export const translations = {
       },
       nastra: {
         title: "NASTRA",
-        summary: "Structure-aware, reference-free STR caller for forensic markers.",
+        summary: "Reference-free STR analysis for forensic markers using structural modeling.",
         features: {
           1: "Structure-aware STR calling",
           2: "Reference-free approach",
@@ -975,7 +975,7 @@ export const translations = {
       },
       nanostr: {
         title: "NanoSTR",
-        summary: "Targeted STR typing from Nanopore reads with read-length ranking.",
+        summary: "Targeted STR typing from Nanopore long-read data.",
         features: {
           1: "Targeted STR typing from FASTQ",
           2: "Read length ranking for allele inference",
@@ -1000,7 +1000,7 @@ export const translations = {
       },
       hipstr: {
         title: "HipSTR",
-        description: "Tool for genotyping short tandem repeats from Illumina sequencing data",
+        description: "STR genotyping from aligned Illumina short-read data (BAM/CRAM) with VCF output.",
         category: "Genotyping",
         language: "C++",
         features: {
@@ -1011,7 +1011,7 @@ export const translations = {
       },
       gangstr: {
         title: "GangSTR",
-        description: "Tool for genome-wide profiling of tandem repeats from short reads",
+        description: "Genome-wide STR genotyping from aligned short-read data with VCF output.",
         category: "Profiling",
         language: "C++",
         features: {
@@ -1167,7 +1167,7 @@ export const translations = {
       },
       straitrazor: {
         title: "STRait Razor",
-        description: "Lightweight motif-matching tool for Illumina-based forensic STR analysis. Suitable for teaching and training purposes in STR interpretation.",
+        description: "Motif-based STR analysis from Illumina FASTQ with CLI and online version.",
         tags: {
           category: "Genotyping",
           language: "R",
@@ -1182,6 +1182,24 @@ export const translations = {
           github: "GitHub",
           paper: "Original publication",
           online: "Online Version",
+        },
+      },
+      toastr: {
+        title: "toaSTR",
+        description: "Reference-free STR allele analysis tool using sequence-to-structure representations.",
+        tags: {
+          category: "Genotyping",
+          language: "Docker",
+        },
+        features: {
+          1: "STR analysis from MPS/Illumina data",
+          2: "Dockerized multi-container setup (MySQL, job queue)",
+          3: "Web interface at localhost after startup",
+          4: "Original publication in Forensic Science International: Genetics",
+        },
+        buttons: {
+          github: "GitHub",
+          paper: "Original publication",
         },
       },
       strnaming: {
@@ -1221,7 +1239,7 @@ export const translations = {
       },
       strspy: {
         title: "STRspy",
-        description: "Python toolkit for STR analysis, allele profiling, and visualization.",
+        description: "ONT-based STR genotyping toolkit with tabular output.",
         tags: {
           category: "Analysis",
           language: "Python",
@@ -2485,7 +2503,7 @@ export const translations = {
       },
       nanomnt: {
         title: "NanoMnT",
-        summary: "Genotipagem STR a partir de alinhamentos Oxford Nanopore com tabelas de alelos e loci.",
+        summary: "Genotipagem de STRs baseada em ONT a partir de leituras longas alinhadas com relatório por locus.",
         features: {
           1: "Genotipagem STR a partir de BAM",
           2: "Tabelas de alelos e loci",
@@ -2495,7 +2513,7 @@ export const translations = {
       },
       strkit: {
         title: "STRkit",
-        summary: "Genotipagem STR de leitura longa com modelos gaussianos, intervalos de confiança e faseamento.",
+        summary: "Ferramenta de genotipagem de STRs de leitura longa com inferência alélica baseada em modelos.",
         features: {
           1: "Modelo gaussiano para tamanho alélico",
           2: "Intervalos de confiança e bootstrapping",
@@ -2506,7 +2524,7 @@ export const translations = {
       },
       nastra: {
         title: "NASTRA",
-        summary: "Chamador STR consciente da estrutura, sem referência, para marcadores forenses.",
+        summary: "Análise de STRs sem referência para marcadores forenses por modelagem estrutural.",
         features: {
           1: "Chamada STR consciente da estrutura",
           2: "Abordagem sem referência",
@@ -2517,7 +2535,7 @@ export const translations = {
       },
       nanostr: {
         title: "NanoSTR",
-        summary: "Tipagem STR direcionada a partir de leituras Nanopore com ranqueamento por tamanho.",
+        summary: "Tipagem direcionada de STRs a partir de dados de leitura longa Nanopore.",
         features: {
           1: "Tipagem STR direcionada a partir de FASTQ",
           2: "Ranqueamento por tamanho de leitura para inferência alélica",
@@ -2542,7 +2560,7 @@ export const translations = {
       },
       hipstr: {
         title: "HipSTR",
-        description: "Ferramenta para genotipagem de repetições em tandem curtas a partir de dados de sequenciamento Illumina",
+        description: "Genotipagem de STRs a partir de dados Illumina alinhados (BAM/CRAM) com saída VCF.",
         category: "Genotipagem",
         language: "C++",
         features: {
@@ -2553,7 +2571,7 @@ export const translations = {
       },
       gangstr: {
         title: "GangSTR",
-        description: "Ferramenta para perfilamento genômico de repetições em tandem a partir de leituras curtas",
+        description: "Genotipagem genome-wide de STRs a partir de dados alinhados de leitura curta com saída VCF.",
         category: "Perfilamento",
         language: "C++",
         features: {
@@ -2709,7 +2727,7 @@ export const translations = {
       },
       straitrazor: {
         title: "STRait Razor",
-        description: "Ferramenta leve de correspondência de motivos para análise forense de STR baseada em Illumina. Adequada para fins de ensino e treinamento em interpretação de STR.",
+        description: "Análise de STRs baseada em motivos a partir de FASTQ Illumina, com versão CLI e online.",
         tags: {
           category: "Genotipagem",
           language: "R",
@@ -2724,6 +2742,24 @@ export const translations = {
           github: "GitHub",
           paper: "Publicação original",
           online: "Versão Online",
+        },
+      },
+      toastr: {
+        title: "toaSTR",
+        description: "Ferramenta de análise de alelos STR sem referência baseada em representações estruturais de sequência.",
+        tags: {
+          category: "Genotipagem",
+          language: "Docker",
+        },
+        features: {
+          1: "Análise de STR a partir de dados MPS/Illumina",
+          2: "Ambiente Docker multi-container (MySQL, fila de jobs)",
+          3: "Interface web em localhost após inicialização",
+          4: "Publicação original em Forensic Science International: Genetics",
+        },
+        buttons: {
+          github: "GitHub",
+          paper: "Publicação original",
         },
       },
       strnaming: {
@@ -2763,7 +2799,7 @@ export const translations = {
       },
       strspy: {
         title: "STRspy",
-        description: "Toolkit em Python para análise de STR, perfilagem de alelos e visualização.",
+        description: "Ferramenta de genotipagem de STRs baseada em ONT com saída tabular.",
         tags: {
           category: "Análise",
           language: "Python",
@@ -4117,7 +4153,7 @@ export const translations = {
       },
       nanomnt: {
         title: "NanoMnT",
-        summary: "Genotipado STR a partir de alineamientos Oxford Nanopore con tablas de alelos y loci.",
+        summary: "Genotipado de STRs basado en ONT a partir de lecturas largas alineadas con reporte por locus.",
         features: {
           1: "Genotipado STR a partir de BAM",
           2: "Tablas de alelos y loci",
@@ -4127,7 +4163,7 @@ export const translations = {
       },
       strkit: {
         title: "STRkit",
-        summary: "Genotipado STR de lectura larga con modelos gaussianos, intervalos de confianza y faseamiento.",
+        summary: "Herramienta de genotipado de STRs de lectura larga con inferencia alélica basada en modelos.",
         features: {
           1: "Modelo gaussiano para longitud alélica",
           2: "Intervalos de confianza y bootstrapping",
@@ -4138,7 +4174,7 @@ export const translations = {
       },
       nastra: {
         title: "NASTRA",
-        summary: "Llamador STR consciente de la estructura, sin referencia, para marcadores forenses.",
+        summary: "Análisis de STRs sin referencia para marcadores forenses mediante modelado estructural.",
         features: {
           1: "Llamada STR consciente de la estructura",
           2: "Enfoque sin referencia",
@@ -4149,7 +4185,7 @@ export const translations = {
       },
       nanostr: {
         title: "NanoSTR",
-        summary: "Tipado STR dirigido a partir de lecturas Nanopore con clasificación por longitud.",
+        summary: "Tipificación dirigida de STRs a partir de datos de lectura larga Nanopore.",
         features: {
           1: "Tipado STR dirigido a partir de FASTQ",
           2: "Clasificación por longitud de lectura para inferencia alélica",
@@ -4174,7 +4210,7 @@ export const translations = {
       },
       hipstr: {
         title: "HipSTR",
-        description: "Herramienta para genotipado de repeticiones en tándem cortas a partir de datos de secuenciación Illumina",
+        description: "Genotipado de STRs a partir de datos Illumina alineados (BAM/CRAM) con salida VCF.",
         category: "Genotipado",
         language: "C++",
         features: {
@@ -4185,7 +4221,7 @@ export const translations = {
       },
       gangstr: {
         title: "GangSTR",
-        description: "Herramienta para perfilado genómico de repeticiones en tándem a partir de lecturas cortas",
+        description: "Genotipado genome-wide de STRs a partir de datos alineados de lectura corta con salida VCF.",
         category: "Perfilado",
         language: "C++",
         features: {
@@ -4341,7 +4377,7 @@ export const translations = {
       },
       straitrazor: {
         title: "STRait Razor",
-        description: "Herramienta ligera de coincidencia de motivos para análisis forense de STR basado en Illumina. Adecuada para fines de enseñanza y capacitación en interpretación de STR.",
+        description: "Análisis de STRs basado en motivos a partir de FASTQ Illumina, con versión CLI y online.",
         tags: {
           category: "Genotipado",
           language: "R",
@@ -4356,6 +4392,24 @@ export const translations = {
           github: "GitHub",
           paper: "Publicación original",
           online: "Versión Online",
+        },
+      },
+      toastr: {
+        title: "toaSTR",
+        description: "Herramienta de análisis de alelos STR sin referencia basada en representaciones estructurales de secuencia.",
+        tags: {
+          category: "Genotipado",
+          language: "Docker",
+        },
+        features: {
+          1: "Análisis de STR a partir de datos MPS/Illumina",
+          2: "Configuración Docker multi-contenedor (MySQL, cola de trabajos)",
+          3: "Interfaz web en localhost tras el arranque",
+          4: "Publicación original en Forensic Science International: Genetics",
+        },
+        buttons: {
+          github: "GitHub",
+          paper: "Publicación original",
         },
       },
       strnaming: {
@@ -4395,7 +4449,7 @@ export const translations = {
       },
       strspy: {
         title: "STRspy",
-        description: "Conjunto de herramientas en Python para análisis de STR, perfilado de alelos y visualización.",
+        description: "Herramienta de genotipado de STRs basada en ONT con salida tabular.",
         tags: {
           category: "Análisis",
           language: "Python",

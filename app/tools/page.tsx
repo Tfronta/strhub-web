@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState, useEffect, useRef } from "react";
-import { ExternalLink, Github, Info, FileText, Filter, ChevronDown, ChevronUp } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ExternalLink, Github, Info, FileText, Filter } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,9 +18,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/language-context";
-import { buildToolCards, getToolDetails } from "@/lib/tools";
+import { buildToolCards } from "@/lib/tools";
 import type {
   TechnologyKey,
   ReadTypeKey,
@@ -29,7 +28,6 @@ import type {
   ToolCard,
 } from "@/lib/tools";
 import { ToolCardCompact } from "@/components/tools/ToolCardCompact";
-import { ToolProfileSections } from "@/components/tools/ToolProfileSections";
 
 export type { TechnologyKey, ReadTypeKey, AnalysisKey, UsageKey, ToolCard };
 
@@ -52,13 +50,9 @@ const USAGE_OPTIONS: UsageKey[] = [
 
 export default function ToolsPage() {
   const { t } = useLanguage();
-  const searchParams = useSearchParams();
-  const router = useRouter();
   const [filterTech, setFilterTech] = useState<string>("all");
   const [filterAnalysis, setFilterAnalysis] = useState<string>("all");
   const [filterUsage, setFilterUsage] = useState<string>("all");
-  const [expandedToolId, setExpandedToolId] = useState<string | null>(null);
-  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const tools: ToolCard[] = useMemo(() => buildToolCards(t), [t]);
 
@@ -89,35 +83,6 @@ export default function ToolsPage() {
     setFilterTech("all");
     setFilterAnalysis("all");
     setFilterUsage("all");
-  };
-
-  // Deep link: ?tool=id — expand that tool and scroll into view
-  const toolParam = searchParams?.get("tool") ?? null;
-  useEffect(() => {
-    if (!toolParam) return;
-    const exists = filteredTools.some((tool) => tool.id === toolParam);
-    if (exists) {
-      setExpandedToolId(toolParam);
-      // Scroll after paint
-      const timer = requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          cardRefs.current[toolParam]?.scrollIntoView({ behavior: "smooth", block: "start" });
-        });
-      });
-      return () => cancelAnimationFrame(timer);
-    }
-  }, [toolParam, filteredTools]);
-
-  const setExpanded = (id: string | null) => {
-    setExpandedToolId(id);
-    const params = new URLSearchParams(searchParams?.toString() ?? "");
-    if (id) {
-      params.set("tool", id);
-    } else {
-      params.delete("tool");
-    }
-    const qs = params.toString();
-    router.replace(qs ? `/tools?${qs}` : "/tools", { scroll: false });
   };
 
   return (
@@ -335,57 +300,15 @@ export default function ToolsPage() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-6">
-            {filteredTools.map((tool) => {
-              const details = getToolDetails(tool.id);
-              const isExpanded = expandedToolId === tool.id;
-
-              return (
-                <div
-                  key={tool.id}
-                  ref={(el) => {
-                    cardRefs.current[tool.id] = el;
-                  }}
-                  id={`tool-${tool.id}`}
-                  className="scroll-mt-6"
-                >
-                  <ToolCardCompact
-                    card={tool}
-                    actions={
-                      <Button
-                        size="sm"
-                        variant={isExpanded ? "secondary" : "outline"}
-                        className="text-xs"
-                        onClick={() => setExpanded(isExpanded ? null : tool.id)}
-                        aria-expanded={isExpanded}
-                      >
-                        {isExpanded ? (
-                          <>
-                            <ChevronUp className="h-3.5 w-3.5 mr-1" />
-                            {t("tools.common.hideDetails")}
-                          </>
-                        ) : (
-                          <>
-                            <ChevronDown className="h-3.5 w-3.5 mr-1" />
-                            {t("tools.common.viewDetails")}
-                          </>
-                        )}
-                      </Button>
-                    }
-                  />
-                  {isExpanded && (
-                    <div className="mt-4 rounded-md border border-border bg-muted/20 p-4">
-                      {details ? (
-                        <ToolProfileSections details={details} t={t} />
-                      ) : (
-                        <p className="text-sm text-muted-foreground">
-                          {t("tools.common.detailsNotCurated")}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {filteredTools.map((tool) => (
+              <div
+                key={tool.id}
+                id={`tool-${tool.id}`}
+                className="scroll-mt-6"
+              >
+                <ToolCardCompact card={tool} />
+              </div>
+            ))}
           </div>
         </div>
       </section>

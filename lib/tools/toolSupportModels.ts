@@ -41,6 +41,12 @@ export const supportModelByToolId: Record<string, ToolSupportModel> = {
     supportedTechnologies: ["illumina", "targeted"],
     compatibilityMode: "configurable",
   },
+  toastr: {
+    isGenotyper: true,
+    requiresTargets: true,
+    supportedTechnologies: ["illumina"],
+    compatibilityMode: "configurable",
+  },
   nanomnt: {
     isGenotyper: true,
     requiresTargets: true,

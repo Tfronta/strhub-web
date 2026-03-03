@@ -194,19 +194,19 @@ export const toolsDetailsData: ToolDetails[] = [
       customizable_targets: true,
     },
     compatibility: {
-      status: "archived",
-      maintenance: "unmaintained",
+      status: "maintained",
+      maintenance: "community-maintained",
       license: "GPL-3.0",
       last_release: "v1.0",
     },
     limitations: [
       "Designed for forensic NGS STR analysis; requires STRaitRazor reference panel.",
-      "Web interface inactive on some legacy servers.",
+      "Runs as Dockerized multi-container app (MySQL, job queue); web UI at localhost:3000.",
     ],
-    repo_url: null,
-    paper_doi: "10.1016/j.fsigen.2018.07.006",
+    repo_url: "https://github.com/labconowl/toastr",
+    paper_doi: "https://doi.org/10.1016/j.fsigen.2018.07.006",
     last_checked: "2025-11-06",
     notes:
-      "ToaSTR (also known as STRaitRazor-NGS) extends STRaitRazor functionality for Illumina data analysis. Integrated into STRhub for historical comparison and reference validation in forensic genomics workflows.",
+      "ToaSTR is a browser-based application for the analysis of short tandem repeats from massively parallel sequencing data. The Dockerized distribution (labconowl/toastr) runs on macOS, Windows, and Linux. Integrated into STRhub for forensic STR analysis and reference validation.",
   },
 ];

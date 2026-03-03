@@ -88,7 +88,7 @@ export default function ToolsPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="py-8 px-4">
+      <section className="pt-8 pb-2 px-4">
         <div className="container mx-auto text-left">
           <h1 className="text-3xl font-bold mb-2 tracking-tight">
             {t("tools.title")}
@@ -111,7 +111,7 @@ export default function ToolsPage() {
       </section>
 
       {/* Tools Section */}
-      <section className="pt-4 pb-16 px-4">
+      <section className="pt-2 pb-16 px-4">
         <div className="container mx-auto">
           <div className="flex items-start gap-2 mb-6">
             <h3 className="text-3xl font-bold">

@@ -1469,6 +1469,10 @@ export const translations = {
           "Flanks do not count toward the CE allele call; the repeat region is what is used for allele calling.",
         isoTooltip:
           "Isoallele: same allele designation but different repeat sequence (internal variation).",
+        lowPdpBadge: "low PDP",
+        lowPdpTooltip:
+          "Low allelic coverage (PDP < 10).\nThis haplotype may reflect sequencing noise or alignment artifacts and is not used for isoallele detection.",
+        lowPdpTooltipAria: "Explanation about low allelic coverage",
         flank5Tooltip: "5' flank",
         repeatRegionTooltip: "Repeat region",
         flank3Tooltip: "3' flank",
@@ -2996,6 +3000,10 @@ export const translations = {
           "Os flancos não contam para o alelo CE; a região repetitiva é a utilizada para a chamada do alelo.",
         isoTooltip:
           "Isoalelo: mesma designação alélica, mas sequência de repetição diferente (variação interna).",
+        lowPdpBadge: "PDP baixo",
+        lowPdpTooltip:
+          "Cobertura alélica baixa (PDP < 10).\nEste haplótipo pode refletir ruído de sequenciamento ou artefatos de alinhamento e não é usado para detecção de isoalelos.",
+        lowPdpTooltipAria: "Explicação sobre cobertura alélica baixa",
         flank5Tooltip: "Flanco 5'",
         repeatRegionTooltip: "Região repetitiva",
         flank3Tooltip: "Flanco 3'",
@@ -4659,6 +4667,10 @@ export const translations = {
           "Los flancos no cuentan para el alelo CE; la región repetitiva es la utilizada para el llamado del alelo.",
         isoTooltip:
           "Isoalelo: misma designación alélica pero distinta secuencia de repetición (variación interna).",
+        lowPdpBadge: "PDP bajo",
+        lowPdpTooltip:
+          "Cobertura alélica baja (PDP < 10).\nEste haplotipo puede reflejar ruido de secuenciación o artefactos de alineamiento y no se utiliza para la detección de isoalelos.",
+        lowPdpTooltipAria: "Explicación sobre cobertura alélica baja",
         flank5Tooltip: "Flanco 5'",
         repeatRegionTooltip: "Región repetitiva",
         flank3Tooltip: "Flanco 3'",

@@ -28,6 +28,7 @@ import {
   getContinuousSequenceWithRepeat,
   shouldShowIsoBadge,
   isLeaderRowForAllele,
+  ISOALLELE_MIN_COVERAGE,
 } from "@/lib/strFormatting";
 import { useMemo } from "react";
 
@@ -171,13 +172,17 @@ export default function NGSChart({
                 }
                 return aStr.localeCompare(bStr);
               });
-              return sortedRows.map((r, i) => (
+              return sortedRows.map((r, i) => {
+                const lowCoverage =
+                  r.coverage != null &&
+                  r.coverage < ISOALLELE_MIN_COVERAGE;
+                return (
                 <tr
                   key={r.sequenceId ?? `${r.allele}-${i}`}
                   className="odd:bg-background even:bg-muted/10"
                 >
                   <td className="px-3 py-2 text-center">
-                    <span className="inline-flex items-center gap-1">
+                    <span className="inline-flex items-center gap-1 flex-wrap">
                       {r.allele}
                       {shouldShowIsoBadge(r, sortedRows) &&
                       isLeaderRowForAllele(r, sortedRows) ? (
@@ -205,7 +210,35 @@ export default function NGSChart({
                       ) : null}
                     </span>
                   </td>
-                  <td className="px-3 py-2 text-center">{r.coverage}</td>
+                  <td className="px-3 py-2 text-center">
+                    <span className="inline-flex items-center justify-center gap-1">
+                      {r.coverage}
+                      {lowCoverage ? (
+                        <TooltipProvider>
+                          <UITooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                className="inline-flex items-center justify-center rounded-full h-4 w-4 text-muted-foreground hover:text-foreground transition-colors cursor-help"
+                                aria-label={t("mixProfiles.ngs.lowPdpTooltipAria")}
+                              >
+                                <Info className="h-3.5 w-3.5" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="top"
+                              sideOffset={6}
+                              className="max-w-[min(320px,calc(100vw-2rem))] sm:max-w-[320px]"
+                            >
+                              <p className="text-inherit whitespace-pre-line">
+                                {t("mixProfiles.ngs.lowPdpTooltip")}
+                              </p>
+                            </TooltipContent>
+                          </UITooltip>
+                        </TooltipProvider>
+                      ) : null}
+                    </span>
+                  </td>
                   <td className="px-3 py-2 text-left font-mono text-xs break-words">
                     {motif
                       ? formatMicrovariant(String(r.allele), motif)
@@ -349,7 +382,8 @@ export default function NGSChart({
                     })()}
                   </td>
                 </tr>
-              ));
+              );
+              });
             })()}
           </tbody>
         </table>

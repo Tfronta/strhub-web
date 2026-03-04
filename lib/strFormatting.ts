@@ -3,6 +3,9 @@
 
 import { markerData } from "@/lib/markerData";
 
+/** Minimum allelic coverage (PDP) required to trust an isoallele call. */
+export const ISOALLELE_MIN_COVERAGE = 10;
+
 /**
  * Normalize a sequence string for comparison: remove all whitespace, uppercase.
  */
@@ -27,19 +30,26 @@ export function isIsoAllele(
 /**
  * Whether to show the "iso" badge for a row: there are ≥2 rows with the same CE allele
  * and ≥2 distinct normalized repeat sequences among them.
- * Uses fullSequenceSegments.repeat (actual repeat DNA) when present, so isoalleles
- * with the same bracketed designation (e.g. [AGAA]14) but different sequences are detected.
+ * Uses fullSequenceSegments.repeat (actual repeat DNA) when present, else repeatSequence.
+ * Requires every row in the same-allele group to have coverage >= ISOALLELE_MIN_COVERAGE;
+ * if any row has missing/undefined/null coverage, the badge is not shown.
  */
 export function shouldShowIsoBadge<
   T extends {
     allele: string | number;
     repeatSequence?: string | "—";
     fullSequenceSegments?: { repeat?: string };
+    coverage?: number;
   }
 >(row: T, allRows: T[]): boolean {
   const ce = String(row.allele);
   const sameCe = allRows.filter((r) => String(r.allele) === ce);
   if (sameCe.length < 2) return false;
+  // Every row in the group must have numeric coverage >= minimum
+  for (const r of sameCe) {
+    const cov = (r as { coverage?: number }).coverage;
+    if (typeof cov !== "number" || cov < ISOALLELE_MIN_COVERAGE) return false;
+  }
   const normalized = sameCe.map((r) => {
     const rawRepeat = r.fullSequenceSegments?.repeat;
     return normalizeSeq(

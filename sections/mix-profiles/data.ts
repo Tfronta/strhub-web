@@ -5,6 +5,7 @@
 // ====================================================================
 
 import { CATALOG } from "@/app/catalog/data";
+import { ISOALLELE_MIN_COVERAGE } from "@/lib/strFormatting";
 import { markerData } from "@/lib/markerData";
 import {
   getSampleNgsLocus,
@@ -1000,6 +1001,8 @@ export function cePeaksToNGSRowsWithSeq(
         : coveragePerCopy
       const coverage = rowCoverage != null ? rowCoverage : coverageFromRfu
 
+      const meetsMinCoverage =
+        typeof coverage === "number" && coverage >= ISOALLELE_MIN_COVERAGE;
       rows.push({
         allele: alleleLabel,
         coverage,
@@ -1007,7 +1010,7 @@ export function cePeaksToNGSRowsWithSeq(
         repeatSequence,
         fullSequence,
         fullSequenceSegments,
-        isIsoallele,
+        isIsoallele: isIsoallele && meetsMinCoverage,
         sequenceId: `${alleleLabel}-${i}`,
       })
     }

@@ -43,6 +43,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Check, ChevronsUpDown, Info } from "lucide-react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
 import { Button } from "@/components/ui/button";
@@ -1108,12 +1109,53 @@ export default function MixProfilesDemo({
 
       {/* NGS */}
       <div className="rounded-xl border p-4">
-        <h3 className="text-base font-semibold">
-          {t("mixProfiles.charts.ngsTitle")}
-        </h3>
-        <p className="text-sm text-muted-foreground leading-relaxed pb-2 max-w-none">
-          {t("mixProfiles.ngs.disclaimer")}
-        </p>
+        <div className="flex items-start justify-between gap-4 pb-2">
+          <div className="min-w-0">
+            <h3 className="text-base font-semibold">
+              {t("mixProfiles.charts.ngsTitle")}
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed pt-0.5 max-w-none">
+              {t("mixProfiles.ngs.disclaimer")}
+            </p>
+          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="shrink-0 text-muted-foreground hover:text-foreground h-8 gap-1.5 px-2"
+                aria-label={t("mixProfiles.ngs.igvGuideTitle")}
+              >
+                <Info className="h-3.5 w-3.5" />
+                <span className="text-xs font-medium">IGV</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-80">
+              <p className="font-semibold text-sm mb-1.5">
+                {t("mixProfiles.ngs.igvGuideTitle")}
+              </p>
+              <p className="text-xs text-muted-foreground mb-3">
+                {t("mixProfiles.ngs.igvGuideBody")}
+              </p>
+              <ol className="text-xs text-muted-foreground list-decimal list-inside space-y-0.5 mb-3">
+                <li>{t("mixProfiles.ngs.igvGuideStep1")}</li>
+                <li>{t("mixProfiles.ngs.igvGuideStep2")}</li>
+                <li>{t("mixProfiles.ngs.igvGuideStep3")}</li>
+              </ol>
+              <p className="text-xs text-muted-foreground italic mb-3">
+                {t("mixProfiles.ngs.igvGuideNote")}
+              </p>
+              <Link
+                href={`/tools/igv-viewer?marker=${encodeURIComponent(
+                  String(selectedMarker).toLowerCase()
+                )}`}
+                className="inline-flex items-center text-xs font-medium text-primary hover:underline"
+              >
+                {t("mixProfiles.ngs.igvGuideCta")}
+              </Link>
+            </PopoverContent>
+          </Popover>
+        </div>
         <NGSChart
           bars={ngsBars}
           rows={ngsRows}

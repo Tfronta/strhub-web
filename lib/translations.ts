@@ -1476,6 +1476,15 @@ export const translations = {
         flank5Tooltip: "5' flank",
         repeatRegionTooltip: "Repeat region",
         flank3Tooltip: "3' flank",
+        igvGuideTitle: "Inspect reads in IGV",
+        igvGuideBody:
+          "STRhub provides an integrated IGV viewer to explore the sequencing reads behind these haplotypes.",
+        igvGuideStep1: "Open the IGV viewer",
+        igvGuideStep2: "Select a sample",
+        igvGuideStep3: "Select the STR marker",
+        igvGuideNote:
+          "Note: IGV displays one sample at a time. For mixture profiles, inspect each sample separately.",
+        igvGuideCta: "Open IGV Viewer →",
       },
       trueGenotypes: {
         toggleLabel: "Show true genotypes",
@@ -3007,6 +3016,15 @@ export const translations = {
         flank5Tooltip: "Flanco 5'",
         repeatRegionTooltip: "Região repetitiva",
         flank3Tooltip: "Flanco 3'",
+        igvGuideTitle: "Inspecionar leituras no IGV",
+        igvGuideBody:
+          "O STRhub oferece um visualizador IGV integrado para explorar as leituras de sequenciamento por trás destes haplótipos.",
+        igvGuideStep1: "Abra o visualizador IGV",
+        igvGuideStep2: "Selecione uma amostra",
+        igvGuideStep3: "Selecione o marcador STR",
+        igvGuideNote:
+          "Nota: o IGV exibe uma amostra por vez. Em perfis de mistura, inspecione cada amostra separadamente.",
+        igvGuideCta: "Abrir IGV Viewer →",
       },
       trueGenotypes: {
         toggleLabel: "Mostrar genótipos verdadeiros",
@@ -4674,6 +4692,15 @@ export const translations = {
         flank5Tooltip: "Flanco 5'",
         repeatRegionTooltip: "Región repetitiva",
         flank3Tooltip: "Flanco 3'",
+        igvGuideTitle: "Inspeccionar lecturas en IGV",
+        igvGuideBody:
+          "STRhub proporciona un visor IGV integrado para explorar las lecturas de secuenciación detrás de estos haplotipos.",
+        igvGuideStep1: "Abra el visor IGV",
+        igvGuideStep2: "Seleccione una muestra",
+        igvGuideStep3: "Seleccione el marcador STR",
+        igvGuideNote:
+          "Nota: IGV muestra una muestra a la vez. En perfiles de mezcla, inspeccione cada muestra por separado.",
+        igvGuideCta: "Abrir IGV Viewer →",
       },
       trueGenotypes: {
         toggleLabel: "Mostrar genotipos verdaderos",

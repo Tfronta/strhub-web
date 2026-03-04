@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { ChevronDown, Eye, Info } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import {
@@ -58,9 +59,7 @@ function getBaiUrl(sampleId: string): string {
 
 export default function IgvViewerPage() {
   const { t } = useLanguage();
-  const [selectedMarker, setSelectedMarker] = useState("");
-  const selectedBuild = "hg38";
-  const [selectedSample, setSelectedSample] = useState<string>("HG00097");
+  const searchParams = useSearchParams();
   const [igvLoaded, setIgvLoaded] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const igvContainerRef = useRef<HTMLDivElement | null>(null);
@@ -167,6 +166,13 @@ export default function IgvViewerPage() {
     { id: "tpox", name: "TPOX", chromosome: "2", position: "1489587-1489752" },
     { id: "vwa", name: "vWA", chromosome: "12", position: "5983894-5984109" },
   ];
+
+  const markerParam = searchParams?.get("marker")?.toLowerCase() ?? "";
+  const validMarkerId =
+    markerParam && markers.some((m) => m.id === markerParam) ? markerParam : "";
+  const [selectedMarker, setSelectedMarker] = useState(validMarkerId);
+  const selectedBuild = "hg38";
+  const [selectedSample, setSelectedSample] = useState<string>("HG00097");
 
   const SAMPLES: Record<string, { label: string; bam: string; bai: string }> = {
     HG00097: {

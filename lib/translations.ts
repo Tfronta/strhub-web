@@ -945,42 +945,36 @@ export const translations = {
         title: "NanoMnT",
         summary: "ONT-based STR genotyping from aligned long-read data with locus-level reporting.",
         features: {
-          1: "STR genotyping from BAM alignments",
-          2: "Allele and locus-level output tables",
-          3: "Designed for Nanopore long-read data",
-          4: "Open-source pipeline",
+          1: "STR genotyping from Nanopore long-read alignments",
+          2: "Locus-level allele and coverage reporting",
+          3: "Optimized for noisy long-read sequencing data",
         },
       },
       strkit: {
         title: "STRkit",
         summary: "Long-read STR genotyping toolkit with model-based allele inference.",
         features: {
-          1: "Gaussian model for allele length estimation",
-          2: "Confidence intervals and bootstrapping",
-          3: "Phasing with SNVs",
-          4: "Expansion and complex repeat support",
-          5: "Optimized for ONT R10 chemistry",
+          1: "Model-based STR allele length estimation",
+          2: "Confidence intervals via statistical bootstrapping",
+          3: "Optional phasing with nearby SNVs",
         },
       },
       nastra: {
         title: "NASTRA",
         summary: "Reference-free STR analysis for forensic markers using structural modeling.",
         features: {
-          1: "Structure-aware STR calling",
-          2: "Reference-free approach",
-          3: "Forensic STR marker support",
-          4: "Parallelizable pipeline",
-          5: "Validated on cell line data",
+          1: "Structure-aware STR allele calling",
+          2: "Reference-free STR detection approach",
+          3: "Designed for forensic STR markers",
         },
       },
       nanostr: {
         title: "NanoSTR",
         summary: "Targeted STR typing from Nanopore long-read data.",
         features: {
-          1: "Targeted STR typing from FASTQ",
-          2: "Read length ranking for allele inference",
-          3: "Fast execution",
-          4: "Custom BED panel support",
+          1: "Targeted STR genotyping from Nanopore reads",
+          2: "Read-length ranking for allele inference",
+          3: "Fast processing for targeted STR panels",
         },
       },
       codeLabels: {
@@ -1004,9 +998,9 @@ export const translations = {
         category: "Genotyping",
         language: "C++",
         features: {
-          1: "High accuracy",
-          2: "Handles complex STRs",
-          3: "Population-scale analysis",
+          1: "Haplotype-based STR genotyping with stutter modeling",
+          2: "Local realignment of reads around STR loci",
+          3: "Joint multi-sample genotyping for population analysis",
         },
       },
       gangstr: {
@@ -1015,9 +1009,9 @@ export const translations = {
         category: "Profiling",
         language: "C++",
         features: {
-          1: "Genome-wide analysis",
-          2: "Short read support",
-          3: "High throughput",
+          1: "Genome-wide STR genotyping from short-read sequencing",
+          2: "Detection of repeat expansions and contractions",
+          3: "Statistical modeling of STR length distributions",
         },
       },
       tutorials: {
@@ -1173,10 +1167,9 @@ export const translations = {
           language: "R",
         },
         features: {
-          1: "Direct motif matching from FASTQ",
-          2: "Lightweight algorithm for forensic panels",
-          3: "Online web interface available",
-          4: "Integrated into STRhub for Illumina-based pipelines",
+          1: "Motif-based STR allele detection from FASTQ reads",
+          2: "Optimized for forensic STR marker panels",
+          3: "Lightweight CLI with optional web interface",
         },
         buttons: {
           github: "GitHub",
@@ -1192,10 +1185,9 @@ export const translations = {
           language: "Docker",
         },
         features: {
-          1: "STR analysis from MPS/Illumina data",
-          2: "Dockerized multi-container setup (MySQL, job queue)",
-          3: "Web interface at localhost after startup",
-          4: "Original publication in Forensic Science International: Genetics",
+          1: "Reference-free STR allele inference",
+          2: "Sequence-to-structure embedding representations",
+          3: "Designed for general STR analysis from sequencing reads",
         },
         buttons: {
           github: "GitHub",
@@ -1211,9 +1203,9 @@ export const translations = {
           webtool: "Web",
         },
         features: {
-          1: "Standardized allele naming",
-          2: "Automated allele description",
-          3: "Developed by the Netherlands Forensic Institute",
+          1: "Automated generation of standardized STR allele names",
+          2: "Sequence-based allele description across loci",
+          3: "Human-readable nomenclature for forensic sequencing",
         },
         buttons: {
           website: "Website",
@@ -1228,10 +1220,9 @@ export const translations = {
           webtool: "Web",
         },
         features: {
-          1: "High-quality curated allele frequencies",
-          2: "Genotype probability estimates",
-          3: "Quality control for autosomal STR data",
-          4: "Developed at the Institute of Legal Medicine, Medical University of Innsbruck",
+          1: "Curated autosomal STR allele frequency database",
+          2: "Centralized quality control for population datasets",
+          3: "Reliable genotype probability estimation for forensic analysis",
         },
         buttons: {
           website: "Website",
@@ -1245,10 +1236,9 @@ export const translations = {
           language: "Python",
         },
         features: {
-          1: "STR profiles genotyping",
-          2: "Statistical analysis of allele patterns",
-          3: "Easy integration with bioinformatics pipelines",
-          4: "Open-source toolkit",
+          1: "STR allele calling from Nanopore long-read sequencing",
+          2: "Sequence-level allele resolution using reference databases",
+          3: "Designed for forensic STR profiling",
         },
         buttons: {
           github: "GitHub",
@@ -2505,42 +2495,36 @@ export const translations = {
         title: "NanoMnT",
         summary: "Genotipagem de STRs baseada em ONT a partir de leituras longas alinhadas com relatório por locus.",
         features: {
-          1: "Genotipagem STR a partir de BAM",
-          2: "Tabelas de alelos e loci",
-          3: "Para dados de leitura longa Nanopore",
-          4: "Pipeline de código aberto",
+          1: "Genotipagem STR a partir de alinhamentos de leitura longa Nanopore",
+          2: "Relatório de alelos e cobertura por locus",
+          3: "Otimizado para dados de sequenciamento de leitura longa ruidosos",
         },
       },
       strkit: {
         title: "STRkit",
         summary: "Ferramenta de genotipagem de STRs de leitura longa com inferência alélica baseada em modelos.",
         features: {
-          1: "Modelo gaussiano para tamanho alélico",
-          2: "Intervalos de confiança e bootstrapping",
-          3: "Faseamento com SNVs",
-          4: "Suporte a expansões e repetições complexas",
-          5: "Otimizado para química ONT R10",
+          1: "Estimativa de comprimento alélico STR baseada em modelos",
+          2: "Intervalos de confiança via bootstrapping estatístico",
+          3: "Faseamento opcional com SNVs próximos",
         },
       },
       nastra: {
         title: "NASTRA",
         summary: "Análise de STRs sem referência para marcadores forenses por modelagem estrutural.",
         features: {
-          1: "Chamada STR consciente da estrutura",
-          2: "Abordagem sem referência",
-          3: "Suporte a marcadores STR forenses",
-          4: "Pipeline paralelizável",
-          5: "Validado em dados de linhagens celulares",
+          1: "Chamada de alelos STR consciente da estrutura",
+          2: "Abordagem de detecção STR sem referência",
+          3: "Projetado para marcadores STR forenses",
         },
       },
       nanostr: {
         title: "NanoSTR",
         summary: "Tipagem direcionada de STRs a partir de dados de leitura longa Nanopore.",
         features: {
-          1: "Tipagem STR direcionada a partir de FASTQ",
+          1: "Genotipagem STR direcionada a partir de leituras Nanopore",
           2: "Ranqueamento por tamanho de leitura para inferência alélica",
-          3: "Execução rápida",
-          4: "Suporte a painel BED personalizado",
+          3: "Processamento rápido para painéis STR direcionados",
         },
       },
       codeLabels: {
@@ -2564,9 +2548,9 @@ export const translations = {
         category: "Genotipagem",
         language: "C++",
         features: {
-          1: "Alta precisão",
-          2: "Lida com STRs complexos",
-          3: "Análise em escala populacional",
+          1: "Genotipagem STR baseada em haplótipos com modelagem de stutter",
+          2: "Realinhamento local de leituras em torno dos loci STR",
+          3: "Genotipagem multi-amostra conjunta para análise populacional",
         },
       },
       gangstr: {
@@ -2575,9 +2559,9 @@ export const translations = {
         category: "Perfilamento",
         language: "C++",
         features: {
-          1: "Análise genômica completa",
-          2: "Suporte para leituras curtas",
-          3: "Alto rendimento",
+          1: "Genotipagem STR em todo o genoma a partir de sequenciamento de leitura curta",
+          2: "Detecção de expansões e contrações de repetições",
+          3: "Modelagem estatística das distribuições de comprimento STR",
         },
       },
       tutorials: {
@@ -2733,10 +2717,9 @@ export const translations = {
           language: "R",
         },
         features: {
-          1: "Correspondência direta de motivos a partir de FASTQ",
-          2: "Algoritmo leve para painéis forenses",
-          3: "Interface web online disponível",
-          4: "Integrado ao STRhub para pipelines baseados em Illumina",
+          1: "Detecção de alelos STR baseada em motivos a partir de leituras FASTQ",
+          2: "Otimizado para painéis de marcadores STR forenses",
+          3: "CLI leve com interface web opcional",
         },
         buttons: {
           github: "GitHub",
@@ -2752,10 +2735,9 @@ export const translations = {
           language: "Docker",
         },
         features: {
-          1: "Análise de STR a partir de dados MPS/Illumina",
-          2: "Ambiente Docker multi-container (MySQL, fila de jobs)",
-          3: "Interface web em localhost após inicialização",
-          4: "Publicação original em Forensic Science International: Genetics",
+          1: "Inferência de alelos STR sem referência",
+          2: "Representações de incorporação sequência-estrutura",
+          3: "Projetado para análise STR geral a partir de leituras de sequenciamento",
         },
         buttons: {
           github: "GitHub",
@@ -2771,9 +2753,9 @@ export const translations = {
           webtool: "Web",
         },
         features: {
-          1: "Nomenclatura padronizada de alelos",
-          2: "Descrição automatizada de alelos",
-          3: "Desenvolvido pelo Instituto Forense da Holanda",
+          1: "Geração automatizada de nomes padronizados de alelos STR",
+          2: "Descrição alélica baseada em sequência entre loci",
+          3: "Nomenclatura legível para sequenciamento forense",
         },
         buttons: {
           website: "Website",
@@ -2788,10 +2770,9 @@ export const translations = {
           webtool: "Web",
         },
         features: {
-          1: "Frequências alélicas de alta qualidade e curadas",
-          2: "Estimativas de probabilidade de genótipos",
-          3: "Controle de qualidade para STR autossômicos",
-          4: "Desenvolvido no Instituto de Medicina Legal, Universidade Médica de Innsbruck",
+          1: "Banco de dados curado de frequências alélicas STR autossômicas",
+          2: "Controle de qualidade centralizado para conjuntos de dados populacionais",
+          3: "Estimativa confiável de probabilidade de genótipos para análise forense",
         },
         buttons: {
           website: "Website",
@@ -2805,10 +2786,9 @@ export const translations = {
           language: "Python",
         },
         features: {
-          1: "Genotipagem de perfis STR",
-          2: "Análise estatística de padrões de alelos",
-          3: "Integração simples com pipelines de bioinformática",
-          4: "Toolkit open source",
+          1: "Chamada de alelos STR a partir de sequenciamento de leitura longa Nanopore",
+          2: "Resolução alélica em nível de sequência usando bancos de referência",
+          3: "Projetado para perfilamento STR forense",
         },
         buttons: {
           github: "GitHub",
@@ -4155,42 +4135,36 @@ export const translations = {
         title: "NanoMnT",
         summary: "Genotipado de STRs basado en ONT a partir de lecturas largas alineadas con reporte por locus.",
         features: {
-          1: "Genotipado STR a partir de BAM",
-          2: "Tablas de alelos y loci",
-          3: "Diseñado para datos de lectura larga Nanopore",
-          4: "Pipeline de código abierto",
+          1: "Genotipado STR a partir de alineamientos de lectura larga Nanopore",
+          2: "Reporte de alelos y cobertura por locus",
+          3: "Optimizado para datos de secuenciación de lectura larga ruidosos",
         },
       },
       strkit: {
         title: "STRkit",
         summary: "Herramienta de genotipado de STRs de lectura larga con inferencia alélica basada en modelos.",
         features: {
-          1: "Modelo gaussiano para longitud alélica",
-          2: "Intervalos de confianza y bootstrapping",
-          3: "Faseamiento con SNVs",
-          4: "Soporte para expansiones y repeticiones complejas",
-          5: "Optimizado para química ONT R10",
+          1: "Estimación de longitud alélica STR basada en modelos",
+          2: "Intervalos de confianza mediante bootstrapping estadístico",
+          3: "Faseamiento opcional con SNVs cercanos",
         },
       },
       nastra: {
         title: "NASTRA",
         summary: "Análisis de STRs sin referencia para marcadores forenses mediante modelado estructural.",
         features: {
-          1: "Llamada STR consciente de la estructura",
-          2: "Enfoque sin referencia",
-          3: "Soporte para marcadores STR forenses",
-          4: "Pipeline paralelizable",
-          5: "Validado con datos de líneas celulares",
+          1: "Llamada de alelos STR consciente de la estructura",
+          2: "Enfoque de detección STR sin referencia",
+          3: "Diseñado para marcadores STR forenses",
         },
       },
       nanostr: {
         title: "NanoSTR",
         summary: "Tipificación dirigida de STRs a partir de datos de lectura larga Nanopore.",
         features: {
-          1: "Tipado STR dirigido a partir de FASTQ",
+          1: "Genotipado STR dirigido a partir de lecturas Nanopore",
           2: "Clasificación por longitud de lectura para inferencia alélica",
-          3: "Ejecución rápida",
-          4: "Soporte para panel BED personalizado",
+          3: "Procesamiento rápido para paneles STR dirigidos",
         },
       },
       codeLabels: {
@@ -4214,9 +4188,9 @@ export const translations = {
         category: "Genotipado",
         language: "C++",
         features: {
-          1: "Alta precisión",
-          2: "Maneja STRs complejos",
-          3: "Análisis a escala poblacional",
+          1: "Genotipado STR basado en haplotipos con modelado de stutter",
+          2: "Realineamiento local de lecturas en torno a loci STR",
+          3: "Genotipado multi-muestra conjunto para análisis poblacional",
         },
       },
       gangstr: {
@@ -4225,9 +4199,9 @@ export const translations = {
         category: "Perfilado",
         language: "C++",
         features: {
-          1: "Análisis genómico completo",
-          2: "Soporte para lecturas cortas",
-          3: "Alto rendimiento",
+          1: "Genotipado STR en todo el genoma a partir de secuenciación de lectura corta",
+          2: "Detección de expansiones y contracciones de repeticiones",
+          3: "Modelado estadístico de distribuciones de longitud STR",
         },
       },
       tutorials: {
@@ -4383,10 +4357,9 @@ export const translations = {
           language: "R",
         },
         features: {
-          1: "Coincidencia directa de motivos desde FASTQ",
-          2: "Algoritmo ligero para paneles forenses",
-          3: "Interfaz web en línea disponible",
-          4: "Integrado en STRhub para pipelines basados en Illumina",
+          1: "Detección de alelos STR basada en motivos a partir de lecturas FASTQ",
+          2: "Optimizado para paneles de marcadores STR forenses",
+          3: "CLI ligero con interfaz web opcional",
         },
         buttons: {
           github: "GitHub",
@@ -4402,10 +4375,9 @@ export const translations = {
           language: "Docker",
         },
         features: {
-          1: "Análisis de STR a partir de datos MPS/Illumina",
-          2: "Configuración Docker multi-contenedor (MySQL, cola de trabajos)",
-          3: "Interfaz web en localhost tras el arranque",
-          4: "Publicación original en Forensic Science International: Genetics",
+          1: "Inferencia de alelos STR sin referencia",
+          2: "Representaciones de incrustación secuencia-estructura",
+          3: "Diseñado para análisis STR general a partir de lecturas de secuenciación",
         },
         buttons: {
           github: "GitHub",
@@ -4421,9 +4393,9 @@ export const translations = {
           webtool: "Web",
         },
         features: {
-          1: "Nomenclatura estandarizada de alelos",
-          2: "Descripción automatizada de alelos",
-          3: "Desarrollado por el Instituto Forense de los Países Bajos",
+          1: "Generación automatizada de nombres estandarizados de alelos STR",
+          2: "Descripción alélica basada en secuencia entre loci",
+          3: "Nomenclatura legible para secuenciación forense",
         },
         buttons: {
           website: "Sitio web",
@@ -4438,10 +4410,9 @@ export const translations = {
           webtool: "Web",
         },
         features: {
-          1: "Frecuencias alélicas cuidadosamente curadas",
-          2: "Estimaciones de probabilidad de genotipos",
-          3: "Control de calidad para datos STR autosómicos",
-          4: "Desarrollado en el Instituto de Medicina Legal, Universidad Médica de Innsbruck",
+          1: "Base de datos curada de frecuencias alélicas STR autosómicas",
+          2: "Control de calidad centralizado para conjuntos de datos poblacionales",
+          3: "Estimación fiable de probabilidad de genotipos para análisis forense",
         },
         buttons: {
           website: "Sitio web",
@@ -4455,10 +4426,9 @@ export const translations = {
           language: "Python",
         },
         features: {
-          1: "Genotipado de perfiles STR",
-          2: "Análisis estadístico de patrones de alelos",
-          3: "Integración sencilla con pipelines de bioinformática",
-          4: "Toolkit de código abierto",
+          1: "Llamada de alelos STR a partir de secuenciación de lectura larga Nanopore",
+          2: "Resolución alélica a nivel de secuencia usando bases de referencia",
+          3: "Diseñado para perfilado STR forense",
         },
         buttons: {
           github: "GitHub",

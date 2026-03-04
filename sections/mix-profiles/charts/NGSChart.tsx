@@ -26,8 +26,7 @@ import {
   formatMicrovariant,
   getPrimaryMotifForLocus,
   getContinuousSequenceWithRepeat,
-  shouldShowIsoBadge,
-  isLeaderRowForAllele,
+  shouldShowIsoBadgeOnMinorRow,
   ISOALLELE_MIN_COVERAGE,
 } from "@/lib/strFormatting";
 import { useMemo } from "react";
@@ -184,8 +183,7 @@ export default function NGSChart({
                   <td className="px-3 py-2 text-center">
                     <span className="inline-flex items-center gap-1 flex-wrap">
                       {r.allele}
-                      {shouldShowIsoBadge(r, sortedRows) &&
-                      isLeaderRowForAllele(r, sortedRows) ? (
+                      {shouldShowIsoBadgeOnMinorRow(r, sortedRows) ? (
                         <TooltipProvider>
                           <UITooltip>
                             <TooltipTrigger asChild>

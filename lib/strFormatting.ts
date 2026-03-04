@@ -80,6 +80,73 @@ export function isLeaderRowForAllele<
   return withMax.length > 0 && row === withMax[0];
 }
 
+type IsoRow = {
+  allele: string | number;
+  repeatSequence?: string | "—";
+  fullSequenceSegments?: { repeat?: string };
+  coverage?: number;
+};
+
+function getNormalizedRepeat<T extends IsoRow>(r: T): string {
+  const raw = r.fullSequenceSegments?.repeat;
+  return normalizeSeq(
+    String(raw != null && raw !== "" ? raw : r.repeatSequence ?? "")
+  );
+}
+
+/**
+ * Whether to show the "iso" badge on this row. True only for minor/alternative
+ * sequence rows in an isoallele group: same allele designation, ≥2 distinct
+ * trusted sequences (coverage >= ISOALLELE_MIN_COVERAGE), and this row's
+ * normalized sequence is not the major sequence (major = highest summed
+ * coverage per sequence; tie-break = first appearance in allRows).
+ */
+export function shouldShowIsoBadgeOnMinorRow<
+  T extends {
+    allele: string | number;
+    repeatSequence?: string | "—";
+    fullSequenceSegments?: { repeat?: string };
+    coverage?: number;
+  }
+>(row: T, allRows: T[]): boolean {
+  const ce = String(row.allele);
+  const bySeq: Record<string, { totalCov: number; firstIndex: number }> = {};
+  let trustedCount = 0;
+
+  for (let i = 0; i < allRows.length; i++) {
+    const r = allRows[i];
+    if (String(r.allele) !== ce) continue;
+    const cov = (r as IsoRow).coverage;
+    if (typeof cov !== "number" || cov < ISOALLELE_MIN_COVERAGE) continue;
+    trustedCount++;
+    const norm = getNormalizedRepeat(r as T);
+    if (!bySeq[norm]) bySeq[norm] = { totalCov: 0, firstIndex: i };
+    bySeq[norm].totalCov += cov;
+  }
+
+  if (trustedCount < 2 || Object.keys(bySeq).length < 2) return false;
+
+  const rowCov = (row as IsoRow).coverage;
+  if (typeof rowCov !== "number" || rowCov < ISOALLELE_MIN_COVERAGE) return false;
+
+  let majorSeq = "";
+  let bestCov = -Infinity;
+  let bestFirstIndex = Infinity;
+  for (const seq of Object.keys(bySeq)) {
+    const { totalCov, firstIndex } = bySeq[seq];
+    if (
+      totalCov > bestCov ||
+      (totalCov === bestCov && firstIndex < bestFirstIndex)
+    ) {
+      bestCov = totalCov;
+      bestFirstIndex = firstIndex;
+      majorSeq = seq;
+    }
+  }
+
+  return getNormalizedRepeat(row as T) !== majorSeq;
+}
+
 /**
  * Formats an allele for didactic "Estructura" display (bracketed notation).
  * - Integer allele (e.g. "15") → "[motif]15"

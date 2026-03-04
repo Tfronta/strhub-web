@@ -335,11 +335,11 @@ export default function MixProfilesDemo({
     []
   );
 
-  const [selectedMarker, setSelectedMarker] = useState<LocusId>("D18S51");
+  const [selectedMarker, setSelectedMarker] = useState<LocusId>("vWA");
   const [locusOpen, setLocusOpen] = useState(false);
   const [showTrueGenotypes, setShowTrueGenotypes] = useState<boolean>(true);
   const [contributors, setContributors] = useState<ContributorState[]>([
-    { label: "A", sampleId: "HG02944" as SampleId, proportion: 70 },
+    { label: "A", sampleId: "HG01063" as SampleId, proportion: 70 },
     { label: "B", sampleId: "HG00097" as SampleId, proportion: 30 },
     { label: "C", sampleId: null, proportion: 0 },
   ]);

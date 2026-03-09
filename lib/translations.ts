@@ -1211,6 +1211,22 @@ export const translations = {
           website: "Website",
         },
       },
+      fdstools: {
+        title: "FDSTools",
+        description: "Python package for analysis of forensic NGS data: characterisation and filtering of PCR stutter and sequencing noise, and automatic allele detection. Integrates STRNaming for nomenclature.",
+        tags: {
+          category: "Analysis",
+          language: "Python",
+        },
+        features: {
+          1: "Stutter and PCR/sequencing noise characterisation and correction",
+          2: "Automatic allele detection in targeted MPS data",
+          3: "STRNaming-based nomenclature; supports built-in and custom kits",
+        },
+        buttons: {
+          website: "Website",
+        },
+      },
       strider: {
         title: "STRidER",
         description: "Curated online STR allele-frequency population database providing high-quality genotype probability estimates and autosomal STR quality control.",
@@ -2769,6 +2785,22 @@ export const translations = {
           1: "Geração automatizada de nomes padronizados de alelos STR",
           2: "Descrição alélica baseada em sequência entre loci",
           3: "Nomenclatura legível para sequenciamento forense",
+        },
+        buttons: {
+          website: "Website",
+        },
+      },
+      fdstools: {
+        title: "FDSTools",
+        description: "Pacote Python para análise de dados NGS forenses: caracterização e filtragem de stutter de PCR e ruído de sequenciamento, e detecção automática de alelos. Integra STRNaming para nomenclatura.",
+        tags: {
+          category: "Análise",
+          language: "Python",
+        },
+        features: {
+          1: "Caracterização e correção de stutter e ruído de PCR/sequenciamento",
+          2: "Detecção automática de alelos em dados MPS direcionados",
+          3: "Nomenclatura baseada em STRNaming; suporta kits embutidos e personalizados",
         },
         buttons: {
           website: "Website",
@@ -4422,6 +4454,22 @@ export const translations = {
           1: "Generación automatizada de nombres estandarizados de alelos STR",
           2: "Descripción alélica basada en secuencia entre loci",
           3: "Nomenclatura legible para secuenciación forense",
+        },
+        buttons: {
+          website: "Sitio web",
+        },
+      },
+      fdstools: {
+        title: "FDSTools",
+        description: "Paquete Python para análisis de datos NGS forenses: caracterización y filtrado de stutter de PCR y ruido de secuenciación, y detección automática de alelos. Integra STRNaming para nomenclatura.",
+        tags: {
+          category: "Análisis",
+          language: "Python",
+        },
+        features: {
+          1: "Caracterización y corrección de stutter y ruido de PCR/secuenciación",
+          2: "Detección automática de alelos en datos MPS dirigidos",
+          3: "Nomenclatura basada en STRNaming; soporta kits integrados y personalizados",
         },
         buttons: {
           website: "Sitio web",

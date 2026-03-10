@@ -1,6 +1,7 @@
 "use client";
 
 import { FileText, Dna, Search, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Card,
   CardContent,
@@ -52,6 +53,7 @@ interface BackToBasicsCardProps {
 }
 
 export function BackToBasicsCard({ post }: BackToBasicsCardProps) {
+  const { language } = useLanguage();
   const IconComponent = getIconForPost(post.fields.keywords);
   const slug = post.fields.slug || post.sys.id;
 
@@ -80,7 +82,7 @@ export function BackToBasicsCard({ post }: BackToBasicsCardProps) {
             ))}
           </div>
         </div>
-        <Link href={`/basics/${slug}`} className="mt-auto">
+        <Link href={`/basics/${language}/${slug}`} className="mt-auto">
           <Button className="w-full">
             <ClientReadArticle />
             <ArrowRight className="h-4 w-4 ml-2" />

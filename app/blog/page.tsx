@@ -40,7 +40,7 @@ interface BlogPost {
 }
 
 export default function BlogPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -260,7 +260,7 @@ export default function BlogPage() {
                         <span>{formatDate(post.date)}</span>
                       </div>
                       <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/basics/${post.id}`}>
+                        <Link href={`/basics/${language}/${post.id}`}>
                           {t("communityHub.recentPosts.readMore")}{" "}
                           <ArrowRight className="h-4 w-4 ml-1" />
                         </Link>

@@ -122,7 +122,7 @@ export function buildSearchIndex(t: (key: string) => string, language: Language 
       title: post.fields.title,
       description: post.fields.summary,
       tags: post.fields.keywords || [],
-      href: `/basics/${slug}`,
+      href: `/basics/${language}/${slug}`,
     });
   });
 

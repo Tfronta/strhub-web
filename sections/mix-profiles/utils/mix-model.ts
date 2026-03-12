@@ -342,6 +342,13 @@ export function simulateCECore(args: {
   const map = new Map<number, MapEntry>();
 
   // FIRST PASS: base RFU (sin degradación)
+  // Heterozygotes: Butler-style PHR (minor/major) ~ Normal(0.85, 0.10), truncated [0.50, 1.00].
+  // Larger RFU is assigned to the smaller-size allele (preferential amplification of shorter alleles).
+  const PHR_MEAN = 0.85;
+  const PHR_SD = 0.1;
+  const PHR_MIN = 0.5;
+  const PHR_MAX = 1.0;
+
   const baseTruePeaks = new Map<number, { rfu: number; sources: Set<string> }>();
 
   for (const c of contributors.filter((x) => x.proportion > 0)) {
@@ -351,22 +358,36 @@ export function simulateCECore(args: {
     const dnaEff = dnaInputNg * c.proportion * p.locusEff;
     const scaleRFU = p.kappaRFU * dnaEff;
 
-    // Equal weight per allele copy (no inter-allelic imbalance)
-    const nCopies = alleles.length;
-    const perCopyMean = Math.max(1, scaleRFU / nCopies);
-
-    // Single lognormal draw for this contributor+locus
-    // → all allele copies share the same base RFU, so distinct
-    //   heterozygous alleles from the same contributor are equal
-    const baseRFU = lognormal(perCopyMean, p.sigmaLN, rand);
-
-    alleles.forEach((aNum) => {
-      const existing =
-        baseTruePeaks.get(aNum) ?? { rfu: 0, sources: new Set<string>() };
-      existing.rfu += baseRFU;
-      existing.sources.add(c.label);
-      baseTruePeaks.set(aNum, existing);
-    });
+    if (alleles.length === 2) {
+      // Heterozygote: smaller allele (by repeat size) gets major RFU, larger allele gets minor RFU.
+      const smallerAllele = Math.min(alleles[0], alleles[1]);
+      const largerAllele = Math.max(alleles[0], alleles[1]);
+      const phrRaw = PHR_MEAN + PHR_SD * gaussian(rand);
+      const phr = clamp(phrRaw, PHR_MIN, PHR_MAX);
+      const totalRFU = Math.max(0, lognormal(scaleRFU, p.sigmaLN, rand));
+      const majorRFU = totalRFU / (1 + phr);
+      const minorRFU = (totalRFU * phr) / (1 + phr);
+      for (const aNum of [smallerAllele, largerAllele]) {
+        const rfu = aNum === smallerAllele ? majorRFU : minorRFU;
+        const existing =
+          baseTruePeaks.get(aNum) ?? { rfu: 0, sources: new Set<string>() };
+        existing.rfu += rfu;
+        existing.sources.add(c.label);
+        baseTruePeaks.set(aNum, existing);
+      }
+    } else {
+      // Homozygote or triallelic: equal weight per copy (no PHR).
+      const nCopies = alleles.length;
+      const perCopyMean = Math.max(1, scaleRFU / nCopies);
+      const baseRFU = lognormal(perCopyMean, p.sigmaLN, rand);
+      alleles.forEach((aNum) => {
+        const existing =
+          baseTruePeaks.get(aNum) ?? { rfu: 0, sources: new Set<string>() };
+        existing.rfu += baseRFU;
+        existing.sources.add(c.label);
+        baseTruePeaks.set(aNum, existing);
+      });
+    }
   }
 
   // SECOND PASS: degradación + stutter derivado del parent degradado

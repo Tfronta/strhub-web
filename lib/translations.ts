@@ -3045,9 +3045,9 @@ export const translations = {
         lowPdpTooltip:
           "Cobertura alélica baixa (PDP < 10).\nEste haplótipo pode refletir ruído de sequenciamento ou artefatos de alinhamento e não é usado para detecção de isoalelos.",
         lowPdpTooltipAria: "Explicação sobre cobertura alélica baixa",
-        flank5Tooltip: "Flanco 5'",
+        flank5Tooltip: "Flanqueadora 5'",
         repeatRegionTooltip: "Região repetitiva",
-        flank3Tooltip: "Flanco 3'",
+        flank3Tooltip: "Flanqueadora 3'",
         igvGuideTitle: "Inspecionar leituras no IGV",
         igvGuideBody:
           "O STRhub oferece um visualizador IGV integrado para explorar as leituras de sequenciamento por trás destes haplótipos.",
@@ -4737,9 +4737,9 @@ export const translations = {
         lowPdpTooltip:
           "Cobertura alélica baja (PDP < 10).\nEste haplotipo puede reflejar ruido de secuenciación o artefactos de alineamiento y no se utiliza para la detección de isoalelos.",
         lowPdpTooltipAria: "Explicación sobre cobertura alélica baja",
-        flank5Tooltip: "Flanco 5'",
+        flank5Tooltip: "Flanqueadora 5'",
         repeatRegionTooltip: "Región repetitiva",
-        flank3Tooltip: "Flanco 3'",
+        flank3Tooltip: "Flanqueadora 3'",
         igvGuideTitle: "Inspeccionar lecturas en IGV",
         igvGuideBody:
           "STRhub proporciona un visor IGV integrado para explorar las lecturas de secuenciación detrás de estos haplotipos.",

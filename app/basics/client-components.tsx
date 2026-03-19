@@ -34,7 +34,7 @@ const PRIORITY_TITLES = [
 
 const prioritizePosts = (posts: BackToBasicsPost[]) => {
   const priorityMap = new Map(
-    PRIORITY_TITLES.map((title, index) => [title, index])
+    PRIORITY_TITLES.map((title, index) => [title, index]),
   );
 
   return [...posts].sort((a, b) => {
@@ -73,9 +73,12 @@ export function ClientBackToBasicsGrid() {
       setError(null);
 
       try {
-        const response = await fetch(`/api/back-to-basics?locale=${language}`, {
-          signal: controller.signal,
-        });
+        const response = await fetch(
+          `/api/back-to-basics?locale=${language}&tags=bioinformatics`,
+          {
+            signal: controller.signal,
+          },
+        );
 
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
@@ -96,7 +99,7 @@ export function ClientBackToBasicsGrid() {
         setError(
           err instanceof Error
             ? err.message
-            : "Unable to load Back to Basics posts."
+            : "Unable to load Back to Basics posts.",
         );
       } finally {
         if (isMounted) {
@@ -144,6 +147,97 @@ export function ClientBackToBasicsGrid() {
           {t("basics.bioinformaticsDesc")}
         </p>
       </div>
+      <div className="grid lg:grid-cols-2 gap-8">
+        {posts.map((post) => (
+          <BackToBasicsCard key={post.sys.id} post={post} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function ClientCoreConceptsGrid() {
+  const { language, t } = useLanguage();
+  const [posts, setPosts] = useState<BackToBasicsPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshIndex, setRefreshIndex] = useState(0);
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function loadPosts() {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(
+          `/api/back-to-basics?locale=${language}&tags=coreConcept`,
+          {
+            signal: controller.signal,
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const data = (await response.json()) as {
+          items: BackToBasicsPost[];
+        };
+
+        if (isMounted) {
+          setPosts(prioritizePosts(data.items));
+        }
+      } catch (err) {
+        if (controller.signal.aborted || !isMounted) {
+          return;
+        }
+
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Unable to load Core Concepts posts.",
+        );
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadPosts();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [language, refreshIndex]);
+
+  const handleRetry = () => setRefreshIndex((value) => value + 1);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-16 text-muted-foreground">
+        {t("communityHub.recentPosts.loading")}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center gap-4 py-16 text-center">
+        <p className="text-sm text-muted-foreground">{error}</p>
+        <Button onClick={handleRetry} variant="outline">
+          Try again
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
       <div className="grid lg:grid-cols-2 gap-8">
         {posts.map((post) => (
           <BackToBasicsCard key={post.sys.id} post={post} />

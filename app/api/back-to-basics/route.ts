@@ -10,17 +10,32 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const locale = searchParams.get("locale") || undefined
     const preview = searchParams.get("preview") === "1"
+    const tags = searchParams
+      .getAll("tags")
+      .flatMap((value) => value.split(","))
+      .map((t) => t.trim())
+      .filter(Boolean)
 
     const client = getContentfulClient({ preview })
-    const response = await client.getEntries({
+
+    const query: any = {
       content_type: "backToBasicsPost",
       order: "-sys.createdAt",
       include: 2,
-      locale: locale === 'en' ? undefined : locale,
+      locale: locale === "en" ? undefined : locale,
       select:
         "sys.id,fields.title,fields.summary,fields.postReadMinutes,fields.keywords,fields.bodyMd,fields.authors,fields.slug",
       access_token: CONTENTFUL_ACCESS_TOKEN,
-    })
+    }
+
+    // Contentful supports filtering by metadata tags as well, but this project
+    // surfaces "tag-like" values from `fields.keywords`. Use the optional `tags`
+    // query param to filter down to posts that include those keywords.
+    if (tags.length > 0) {
+      query["metadata.tags.sys.id[in]"] = tags.join(",")
+    }
+
+    const response = await client.getEntries(query)
 
     const maps = buildIncludesMaps(response.includes)
     const items = (response.items || []).map((it: any) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { ClientBackToBasicsGrid } from "./client-components";
+import { ClientBackToBasicsGrid, ClientCoreConceptsGrid } from "./client-components";
 import { PageTitle } from "@/components/page-title";
 import { useLanguage } from "@/contexts/language-context";
 import { KaryotypeExplorer } from "@/components/explorer/KaryotypeExplorer";
@@ -51,6 +51,7 @@ export default function BasicsPage() {
             </p>
           </div>
 
+          <ClientCoreConceptsGrid />
           <ClientBackToBasicsGrid />
         </div>
       </section>

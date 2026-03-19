@@ -298,6 +298,7 @@ export const translations = {
     // Marker Details
     marker: {
       backToCatalog: "Back to Catalog",
+      backToGenomeExplorer: "Back to Genome Explorer",
       tabs: {
         overview: "Overview",
         isoalleles: "Isoalleles",
@@ -835,14 +836,40 @@ export const translations = {
     },
     // Back to Basics
     basics: {
-      title: "Back to Basics",
+      title: "STR Foundations",
       subtitle: "Understanding the Fundamentals",
       description:
-        "Master the essential concepts in bioinformatics and forensic genetics. From file formats to flanking regions, build a solid foundation for STR analysis.",
+        "Explore STR loci across human chromosomes and learn the core concepts behind forensic genetics and bioinformatics workflows.",
       readArticle: "Read Article",
       backToArticles: "← Back to All Articles",
       readTime: "min read",
       topicsCovered: "Topics covered:",
+      explorerSectionTitle: "Explore STRs in the Genome",
+      explorerSectionDesc:
+        "Select a chromosome to view its STR loci, then open any marker to see its details.",
+      coreConceptsTitle: "Core Concepts",
+      coreConceptsDesc:
+        "Build a solid foundation for STR analysis—from sequencing file formats to forensic interpretation.",
+      bioinformaticsTitle: "Bioinformatics",
+      bioinformaticsDesc:
+        "Sequencing formats, alignment, and the data foundations behind STR analysis workflows.",
+    },
+    explorer: {
+      title: "Genome Explorer",
+      description:
+        "Short Tandem Repeats (STRs) are regions of DNA used in forensic genetics.\nThis explorer shows their approximate location across chromosomes. Select a chromosome to see its STR loci and explore each marker in detail.",
+      karyotypeAria: "Human karyotype with clickable chromosomes",
+      chromosome: "Chromosome",
+      backToKaryotype: "All chromosomes",
+      articlesHeading: "Articles",
+      forensicStrLocus: "forensic STR locus",
+      forensicStrLoci: "forensic STR loci",
+      pArmTooltip: "p arm (short arm)",
+      pArmTooltipDesc: "The shorter section of the chromosome.",
+      centromereTooltip: "Centromere",
+      centromereTooltipDesc: "Divides the chromosome into p and q arms.",
+      qArmTooltip: "q arm (long arm)",
+      qArmTooltipDesc: "The longer section of the chromosome.",
     },
     // Blog
     blog: {
@@ -1918,6 +1945,7 @@ export const translations = {
     // Marker Details
     marker: {
       backToCatalog: "Voltar ao Catálogo",
+      backToGenomeExplorer: "Voltar ao Explorador do Genoma",
       tabs: {
         overview: "Visão Geral",
         isoalleles: "Isoalelos",
@@ -3175,14 +3203,40 @@ export const translations = {
     },
     // Back to Basics
     basics: {
-      title: "Fundamentos",
+      title: "Fundamentos de STR",
       subtitle: "Entendendo os Fundamentos",
       description:
-        "Domine os conceitos essenciais em bioinformática e genética forense. Desde formatos de arquivo até regiões flanqueantes, construa uma base sólida para a análise STR.",
+        "Explore loci STR ao longo dos cromossomos humanos e aprenda os conceitos centrais por trás da genética forense e dos fluxos de trabalho em bioinformática.",
       readArticle: "Ler Artigo",
       backToArticles: "← Voltar a Todos os Artigos",
       readTime: "min de leitura",
       topicsCovered: "Tópicos:",
+      explorerSectionTitle: "Explorar STR no genoma",
+      explorerSectionDesc:
+        "Selecione um cromossomo para visualizar seus loci STR e abra qualquer marcador para ver seus detalhes.",
+      coreConceptsTitle: "Conceitos fundamentais",
+      coreConceptsDesc:
+        "Desenvolva uma base sólida em análise de STR, desde os dados de sequenciamento até a interpretação forense.",
+      bioinformaticsTitle: "Bioinformática",
+      bioinformaticsDesc:
+        "Formatos de sequenciamento, alinhamento e os fundamentos de dados por trás dos fluxos de análise de STR.",
+    },
+    explorer: {
+      title: "Explorador do Genoma",
+      description:
+        "Repetições em Tandem Curtas (STRs) são regiões do DNA usadas em genética forense.\nEste explorador mostra sua localização aproximada nos cromossomos. Selecione um cromossomo para ver seus loci STR e explorar cada marcador em detalhe.",
+      karyotypeAria: "Cariótipo humano com cromossomos clicáveis",
+      chromosome: "Cromossomo",
+      backToKaryotype: "Todos os cromossomos",
+      articlesHeading: "Artigos",
+      forensicStrLocus: "locus STR forense",
+      forensicStrLoci: "loci STR forenses",
+      pArmTooltip: "braço p (braço curto)",
+      pArmTooltipDesc: "A seção mais curta do cromossomo.",
+      centromereTooltip: "Centrômero",
+      centromereTooltipDesc: "Divide o cromossomo nos braços p e q.",
+      qArmTooltip: "braço q (braço longo)",
+      qArmTooltipDesc: "A seção mais longa do cromossomo.",
     },
     // About
     about: {
@@ -3543,6 +3597,7 @@ export const translations = {
     // Marker Details
     marker: {
       backToCatalog: "Volver al Catálogo",
+      backToGenomeExplorer: "Volver al Explorador del Genoma",
       tabs: {
         overview: "Resumen",
         isoalleles: "Isoalelos",
@@ -4083,14 +4138,40 @@ export const translations = {
     },
     // Back to Basics
     basics: {
-      title: "Fundamentos",
+      title: "Fundamentos de STR",
       subtitle: "Entendiendo los Fundamentos",
       description:
-        "Domine los conceptos esenciales en bioinformática y genética forense. Desde formatos de archivo hasta regiones flanqueantes, construya una base sólida para el análisis STR.",
+        "Explorá loci STR a lo largo de los cromosomas humanos y aprendé los conceptos centrales detrás de la genética forense y los flujos de trabajo en bioinformática.",
       readArticle: "Leer Artículo",
       backToArticles: "← Volver a Todos los Artículos",
       readTime: "min de lectura",
       topicsCovered: "Temas cubiertos:",
+      explorerSectionTitle: "Explorar STR en el genoma",
+      explorerSectionDesc:
+        "Selecciona un cromosoma para ver sus loci STR y abre cualquier marcador para explorar sus detalles.",
+      coreConceptsTitle: "Conceptos fundamentales",
+      coreConceptsDesc:
+        "Desarrolla una base sólida en el análisis de STR, desde los datos de secuenciación hasta la interpretación forense.",
+      bioinformaticsTitle: "Bioinformática",
+      bioinformaticsDesc:
+        "Formatos de secuenciación, alineamiento y las bases de datos que sustentan los flujos de trabajo en el análisis de STR.",
+    },
+    explorer: {
+      title: "Explorador del Genoma",
+      description:
+        "Los Short Tandem Repeats (STRs) son regiones del ADN utilizadas en genética forense.\nEste explorador muestra su ubicación aproximada en los cromosomas. Seleccioná un cromosoma para ver sus loci STR y explorar cada marcador en detalle.",
+      karyotypeAria: "Cariotipo humano con cromosomas clickeables",
+      chromosome: "Cromosoma",
+      backToKaryotype: "Todos los cromosomas",
+      articlesHeading: "Artículos",
+      forensicStrLocus: "locus STR forense",
+      forensicStrLoci: "loci STR forenses",
+      pArmTooltip: "brazo p (brazo corto)",
+      pArmTooltipDesc: "La sección más corta del cromosoma.",
+      centromereTooltip: "Centrómero",
+      centromereTooltipDesc: "Divide el cromosoma en brazos p y q.",
+      qArmTooltip: "brazo q (brazo largo)",
+      qArmTooltipDesc: "La sección más larga del cromosoma.",
     },
     // Blog
     blog: {

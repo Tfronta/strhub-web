@@ -113,6 +113,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     useState<LatamSubpop | null>(null);
   const [latamSubpopPopoverOpen, setLatamSubpopPopoverOpen] = useState(false);
   const searchParams = useSearchParams();
+  const fromBasics = searchParams?.get("from") === "basics";
 
   const markerId = params.id.toLowerCase();
   const marker = markerData[markerId as keyof typeof markerData];
@@ -193,13 +194,24 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-6">
-          <Link
-            href="/catalog"
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {t("marker.backToCatalog")}
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            {fromBasics && (
+              <Link
+                href="/basics"
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                {t("marker.backToGenomeExplorer")}
+              </Link>
+            )}
+            <Link
+              href="/catalog"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              {t("marker.backToCatalog")}
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -479,7 +491,16 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   return (
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-6">
-        <div className="mb-4">
+        <div className="mb-4 flex flex-wrap items-center gap-3">
+          {fromBasics && (
+            <Link
+              href="/basics"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              {t("marker.backToGenomeExplorer")}
+            </Link>
+          )}
           <Link
             href="/catalog"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"

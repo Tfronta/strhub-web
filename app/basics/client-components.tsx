@@ -135,10 +135,20 @@ export function ClientBackToBasicsGrid() {
   }
 
   return (
-    <div className="grid lg:grid-cols-2 gap-8">
-      {posts.map((post) => (
-        <BackToBasicsCard key={post.sys.id} post={post} />
-      ))}
+    <div className="space-y-4">
+      <div>
+        <h3 className="text-lg font-semibold mb-1">
+          {t("basics.bioinformaticsTitle")}
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          {t("basics.bioinformaticsDesc")}
+        </p>
+      </div>
+      <div className="grid lg:grid-cols-2 gap-8">
+        {posts.map((post) => (
+          <BackToBasicsCard key={post.sys.id} post={post} />
+        ))}
+      </div>
     </div>
   );
 }

@@ -849,7 +849,7 @@ export const translations = {
         "Select a chromosome to view its STR loci, then open any marker to see its details.",
       coreConceptsTitle: "Core Concepts",
       coreConceptsDesc:
-        "Build a solid foundation for STR analysis—from sequencing file formats to forensic interpretation.",
+        "Key principles of forensic STR profiling and interpretation.",
       bioinformaticsTitle: "Bioinformatics",
       bioinformaticsDesc:
         "Sequencing formats, alignment, and the data foundations behind STR analysis workflows.",
@@ -3216,7 +3216,7 @@ export const translations = {
         "Selecione um cromossomo para visualizar seus loci STR e abra qualquer marcador para ver seus detalhes.",
       coreConceptsTitle: "Conceitos fundamentais",
       coreConceptsDesc:
-        "Desenvolva uma base sólida em análise de STR, desde os dados de sequenciamento até a interpretação forense.",
+        "Princípios chave da análise e interpretação de STRs forenses.",
       bioinformaticsTitle: "Bioinformática",
       bioinformaticsDesc:
         "Formatos de sequenciamento, alinhamento e os fundamentos de dados por trás dos fluxos de análise de STR.",
@@ -4151,7 +4151,7 @@ export const translations = {
         "Selecciona un cromosoma para ver sus loci STR y abre cualquier marcador para explorar sus detalles.",
       coreConceptsTitle: "Conceptos fundamentales",
       coreConceptsDesc:
-        "Desarrolla una base sólida en el análisis de STR, desde los datos de secuenciación hasta la interpretación forense.",
+        "Principios clave del perfilado e interpretación de STRs forenses.",
       bioinformaticsTitle: "Bioinformática",
       bioinformaticsDesc:
         "Formatos de secuenciación, alineamiento y las bases de datos que sustentan los flujos de trabajo en el análisis de STR.",

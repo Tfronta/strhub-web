@@ -61,21 +61,58 @@ const options = {
     ),
     [BLOCKS.TABLE_ROW]: (node: any, children: React.ReactNode) => <tr>{children}</tr>,
     [BLOCKS.EMBEDDED_ASSET]: (node: any) => {
-      const { file, title } = node.data.target.fields
-      if (file?.contentType?.startsWith("image/")) {
-        return (
-          <div className="my-6">
-            <Image
-              src={`https:${file.url}`}
-              alt={title || "Embedded image"}
-              width={file.details.image.width}
-              height={file.details.image.height}
-              className="rounded-lg max-w-full h-auto"
-            />
-          </div>
-        )
-      }
-      return null
+      const { file, title, description } = node.data.target.fields
+      if (!file?.contentType?.startsWith("image/")) return null
+
+      const originalWidth = file.details?.image?.width ?? 760
+      const originalHeight = file.details?.image?.height ?? 400
+      const displayWidth = Math.min(originalWidth, 760)
+      const displayHeight = Math.round((originalHeight / originalWidth) * displayWidth)
+
+      return (
+        <figure className="my-6">
+          <Image
+            src={`https:${file.url}?w=1520&fm=webp&q=80`}
+            alt={description || title || ""}
+            width={displayWidth}
+            height={displayHeight}
+            className="rounded-lg w-full h-auto mx-auto block"
+            style={{ maxWidth: displayWidth }}
+          />
+          {description && (
+            <figcaption className="mt-2 text-center text-sm text-muted-foreground italic">
+              {description}
+            </figcaption>
+          )}
+        </figure>
+      )
+    },
+    [INLINES.EMBEDDED_RESOURCE]: (node: any) => {
+      const { file, title, description } = node.data.target.fields
+      if (!file?.contentType?.startsWith("image/")) return null
+
+      const originalWidth = file.details?.image?.width ?? 760
+      const originalHeight = file.details?.image?.height ?? 400
+      const displayWidth = Math.min(originalWidth, 760)
+      const displayHeight = Math.round((originalHeight / originalWidth) * displayWidth)
+
+      return (
+        <figure className="my-6">
+          <Image
+            src={`https:${file.url}?w=1520&fm=webp&q=80`}
+            alt={description || title || ""}
+            width={displayWidth}
+            height={displayHeight}
+            className="rounded-lg w-full h-auto mx-auto block"
+            style={{ maxWidth: displayWidth }}
+          />
+          {description && (
+            <figcaption className="mt-2 text-center text-sm text-muted-foreground italic">
+              {description}
+            </figcaption>
+          )}
+        </figure>
+      )
     },
     [INLINES.HYPERLINK]: (node: any, children: React.ReactNode) => (
       <a href={node.data.uri} className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
@@ -87,7 +124,7 @@ const options = {
 
 export default function ContentfulRichText({ document, className = "" }: ContentfulRichTextProps) {
   return (
-    <div className={`prose prose-lg max-w-none dark:prose-invert ${className}`}>
+    <div className={`prose prose-lg max-w-full dark:prose-invert ${className}`}>
       {documentToReactComponents(document, options)}
     </div>
   )

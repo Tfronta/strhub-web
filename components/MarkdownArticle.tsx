@@ -46,21 +46,21 @@ export default function MarkdownArticle({ markdown }: { markdown: string }) {
       {lightbox && (
         <ImageLightbox src={lightbox.src} alt={lightbox.alt} onClose={closeLightbox} />
       )}
-      <div id="cms-body" className="prose max-w-3xl">
+      <div id="cms-body" className="prose max-w-none">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeRaw]}
           components={{
             img: ({ src, alt }) => (
-              <figure className="my-6">
+              <figure className="my-6" style={{ maxWidth: "min(100%, 760px)" }}>
                 <img
                   src={src || ""}
                   alt={alt || ""}
-                  className="rounded-lg h-auto mx-auto block cursor-zoom-in transition-opacity hover:opacity-90"
+                  className="rounded-lg h-auto block w-full cursor-zoom-in transition-opacity hover:opacity-90"
                   style={{ maxWidth: "min(100%, 760px)" }}
                   onClick={() => openLightbox(src || "", alt || "")}
                 />
-                {alt && (
+                {alt && alt.length > 20 && (
                   <figcaption className="mt-2 text-center text-sm text-muted-foreground italic">
                     {alt}
                   </figcaption>

@@ -152,7 +152,7 @@ export function buildSearchIndex(t: (key: string) => string, language: Language 
       id: "tools",
       title: t("nav.tools"),
       description: t("home.explore.tools.description"),
-      tags: ["tools", "pipelines", "hipstr", "strspy", "gangstr", "analysis"],
+      tags: ["tools", "pipelines", "hipstr", "longtr", "strspy", "gangstr", "analysis"],
       href: "/tools",
     },
     {

@@ -23,6 +23,12 @@ export const supportModelByToolId: Record<string, ToolSupportModel> = {
     supportedTechnologies: ["illumina"],
     compatibilityMode: "configurable",
   },
+  longtr: {
+    isGenotyper: true,
+    requiresTargets: true,
+    supportedTechnologies: ["ont", "pacbio"],
+    compatibilityMode: "configurable",
+  },
   strspy: {
     isGenotyper: true,
     requiresTargets: true,

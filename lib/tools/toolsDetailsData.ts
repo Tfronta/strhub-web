@@ -46,6 +46,40 @@ export const toolsDetailsData: ToolDetails[] = [
       "Actively maintained by Tamara Frontanilla as part of the STRhub project. HipSTR-UI enables interactive execution, allele visualization, and population data integration for forensic and research workflows.",
   },
   {
+    id: "longtr",
+    name: "LongTR",
+    tech: ["PacBio", "ONT"],
+    input: ["BAM", "CRAM", "FASTA"],
+    output: ["VCF"],
+    support: {
+      native_panels: [],
+      configurable: true,
+      wrapper: false,
+    },
+    config: {
+      target_file_format:
+        "BED: chrom, 1-based start, end, motif (comma-separated if multiple), optional 5th column locus name",
+      customizable_targets: true,
+    },
+    compatibility: {
+      status: "maintained",
+      maintenance: "active",
+      license: "GPL-2.0",
+      last_release: "v1.2",
+    },
+    limitations: [
+      "Requires indel-sensitive long-read alignments; BAM/CRAM must be coordinate-sorted and indexed, with FASTA matching the build used for alignment.",
+      "Project is under active development; CLI options and output format may change between releases.",
+      "No built-in multi-threading documented in README; parallelize by chromosome or by splitting the regions BED.",
+    ],
+    repo_url: "https://github.com/gymrek-lab/LongTR",
+    docs_url: "https://github.com/gymrek-lab/LongTR/blob/master/README.md",
+    paper_doi: "https://doi.org/10.1186/s13059-024-03319-2",
+    last_checked: "2026-02-10",
+    notes:
+      "Tandem repeat genotyping from long reads (PacBio HiFi and Oxford Nanopore), inspired by the HipSTR framework and adapted for long-read sequencing data. Outputs bgzipped VCF. Installable via conda (bioconda) or built from source.",
+  },
+  {
     id: "gangstr",
     name: "GangSTR",
     tech: ["Illumina"],

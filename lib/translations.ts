@@ -527,6 +527,20 @@ export const translations = {
           notes:
             "Actively maintained by Tamara Frontanilla as part of the STRhub project. HipSTR-UI enables interactive execution, allele visualization, and population data integration for forensic and research workflows.",
         },
+        longtr: {
+          config: {
+            targetFileFormat:
+              "BED: chrom, 1-based start, end, motif(s), optional locus name",
+          },
+          limitations: {
+            bamRequirements:
+              "Requires indel-sensitive long-read BAM/CRAM (sorted, indexed) and a reference FASTA matching the alignment build.",
+            activeDevelopment:
+              "Under active development; CLI parameters and output formats may change between releases.",
+          },
+          notes:
+            "LongTR is inspired by the HipSTR framework and adapted for PacBio HiFi and Oxford Nanopore long reads, genotyping STRs and VNTRs to bgzipped VCF. Available via conda (bioconda) or GitHub.",
+        },
         gangstr: {
           limitations: {
             illuminaOnly:
@@ -1028,6 +1042,19 @@ export const translations = {
           1: "Haplotype-based STR genotyping with stutter modeling",
           2: "Local realignment of reads around STR loci",
           3: "Joint multi-sample genotyping for population analysis",
+        },
+      },
+      longtr: {
+        title: "LongTR",
+        description:
+          "Tandem repeat genotyping from long reads (PacBio HiFi and Oxford Nanopore), inspired by the HipSTR framework and adapted for long-read sequencing data. Outputs bgzipped VCF files.",
+        category: "Genotyping",
+        language: "C++",
+        features: {
+          1: "Genotypes tandem repeats (STRs and VNTRs) from long-read BAM/CRAM using a TR regions BED file",
+          2: "Workflow options for PacBio HiFi and Oxford Nanopore data",
+          3: "Supports phased BAM inputs",
+          4: "VCF output with INFO/FORMAT fields for downstream filtering",
         },
       },
       gangstr: {
@@ -2174,6 +2201,20 @@ export const translations = {
           notes:
             "Mantido ativamente por Tamara Frontanilla como parte do projeto STRhub. O HipSTR-UI permite execução interativa, visualização de alelos e integração de dados populacionais para fluxos de trabalho forenses e de pesquisa.",
         },
+        longtr: {
+          config: {
+            targetFileFormat:
+              "BED: cromossomo, início (base 1), fim, motivo(s), nome opcional do locus",
+          },
+          limitations: {
+            bamRequirements:
+              "Requer BAM/CRAM de leituras longas com alinhamento sensível a indels (ordenado, indexado) e FASTA de referência compatível com o alinhamento.",
+            activeDevelopment:
+              "Em desenvolvimento ativo; parâmetros da CLI e formatos de saída podem mudar entre versões.",
+          },
+          notes:
+            "LongTR inspira-se no arcabouço HipSTR e adapta-se a leituras longas PacBio HiFi e Oxford Nanopore, genotipando STRs e VNTRs em VCF compactado com bgzip. Disponível via conda (bioconda) ou GitHub.",
+        },
         gangstr: {
           limitations: {
             illuminaOnly:
@@ -2608,6 +2649,19 @@ export const translations = {
           1: "Genotipagem STR baseada em haplótipos com modelagem de stutter",
           2: "Realinhamento local de leituras em torno dos loci STR",
           3: "Genotipagem multi-amostra conjunta para análise populacional",
+        },
+      },
+      longtr: {
+        title: "LongTR",
+        description:
+          "Genotipagem de repetições em tandem a partir de leituras longas (PacBio HiFi e Oxford Nanopore), inspirada no arcabouço HipSTR e adaptada a dados de sequenciamento de leitura longa. Produz arquivos VCF compactados com bgzip.",
+        category: "Genotipagem",
+        language: "C++",
+        features: {
+          1: "Genotipa repetições em tandem (STRs e VNTRs) a partir de BAM/CRAM de leituras longas com BED de regiões TR",
+          2: "Opções de fluxo para dados PacBio HiFi e Oxford Nanopore",
+          3: "Suporta entradas BAM fasadas (haplotipadas)",
+          4: "Saída VCF com campos INFO/FORMAT para filtragem downstream",
         },
       },
       gangstr: {
@@ -3826,6 +3880,20 @@ export const translations = {
           notes:
             "Mantenido activamente por Tamara Frontanilla como parte del proyecto STRhub. HipSTR-UI permite ejecución interactiva, visualización de alelos e integración de datos poblacionales para flujos de trabajo forenses y de investigación.",
         },
+        longtr: {
+          config: {
+            targetFileFormat:
+              "BED: cromosoma, inicio (base 1), fin, motivo(s), nombre opcional del locus",
+          },
+          limitations: {
+            bamRequirements:
+              "Requiere BAM/CRAM de lecturas largas con alineamiento sensible a indels (ordenado, indexado) y FASTA de referencia coherente con el alineamiento.",
+            activeDevelopment:
+              "En desarrollo activo; los parámetros de la CLI y los formatos de salida pueden cambiar entre versiones.",
+          },
+          notes:
+            "LongTR se inspira en el marco HipSTR y está adaptado a lecturas largas PacBio HiFi y Oxford Nanopore, genotipando STR y VNTR en VCF comprimido con bgzip. Disponible vía conda (bioconda) o GitHub.",
+        },
         gangstr: {
           limitations: {
             illuminaOnly:
@@ -4330,6 +4398,19 @@ export const translations = {
           1: "Genotipado STR basado en haplotipos con modelado de stutter",
           2: "Realineamiento local de lecturas en torno a loci STR",
           3: "Genotipado multi-muestra conjunto para análisis poblacional",
+        },
+      },
+      longtr: {
+        title: "LongTR",
+        description:
+          "Genotipado de repeticiones en tándem a partir de lecturas largas (PacBio HiFi y Oxford Nanopore), inspirado en el marco HipSTR y adaptado a datos de secuenciación de lectura larga. Produce archivos VCF comprimidos con bgzip.",
+        category: "Genotipado",
+        language: "C++",
+        features: {
+          1: "Genotipa repeticiones en tándem (STR y VNTR) desde BAM/CRAM de lecturas largas con BED de regiones TR",
+          2: "Opciones de flujo para datos PacBio HiFi y Oxford Nanopore",
+          3: "Admite entradas BAM fasadas (haplotipadas)",
+          4: "Salida VCF con campos INFO/FORMAT para filtrado downstream",
         },
       },
       gangstr: {

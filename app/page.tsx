@@ -63,15 +63,21 @@ export default function HomePage() {
 
           {/* Search Bar */}
           <div className="max-w-md mx-auto">
-            <form onSubmit={handleSearch} className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <form
+              onSubmit={handleSearch}
+              className="flex h-12 w-full min-w-0 items-center gap-2 rounded-md border border-input bg-transparent px-3 shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 dark:bg-input/30"
+            >
+              <Search
+                className="h-4 w-4 shrink-0 text-muted-foreground"
+                aria-hidden
+              />
               <Input
                 placeholder={t("home.searchPlaceholder")}
-                className="pl-10 h-12 text-lg"
+                className="h-full min-w-0 w-0 flex-1 basis-0 border-0 bg-transparent px-0 py-0 text-lg shadow-none focus-visible:ring-0 focus-visible:border-transparent md:text-lg truncate"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Button type="submit" className="absolute right-1 top-1 h-10">
+              <Button type="submit" className="h-10 shrink-0">
                 {t("nav.search")}
               </Button>
             </form>

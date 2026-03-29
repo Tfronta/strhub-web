@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   description:
     "Modern educational and scientific platform for STR research, forensic analysis, and genetic studies",
   generator: "v0.app",
+  icons: {
+    apple: "/strhub-isologo.svg",
+  },
 };
 
 export default function RootLayout({

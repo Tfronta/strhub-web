@@ -9,6 +9,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/favicon.ico',
+        destination: '/strhub-isologo.svg',
+        permanent: false,
+      },
+      {
         source: '/blog',
         destination: '/community',
         permanent: true,

@@ -23,6 +23,10 @@ export const metadata: Metadata = {
     "Modern educational and scientific platform for STR research, forensic analysis, and genetic studies",
   generator: "v0.app",
   icons: {
+    icon: [
+      { url: "/strhub-isologo.svg", type: "image/svg+xml", sizes: "any" },
+    ],
+    shortcut: "/strhub-isologo.svg",
     apple: "/strhub-isologo.svg",
   },
 };

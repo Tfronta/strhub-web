@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Database } from "lucide-react";
 import { LanguageToggle } from "@/components/language-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useLanguage } from "@/contexts/language-context";
@@ -23,10 +22,13 @@ export function GlobalHeader() {
   return (
     <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 md:px-0 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 dark:to-primary bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-            <Database className="h-5 w-5 text-primary-foreground" />
-          </div>
+        <Link href="/" className="flex items-center justify-center gap-1">
+          <img
+            src="/strhub-isologo.svg"
+            alt=""
+            className="h-10 w-auto shrink-0 translate-y-px mb-1.5"
+            aria-hidden={true}
+          />
           <span className="text-2xl font-bold text-gradient">
             {t("home.title")}
           </span>

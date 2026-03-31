@@ -858,7 +858,7 @@ export const translations = {
       backToArticles: "← Back to All Articles",
       readTime: "min read",
       topicsCovered: "Topics covered:",
-      explorerSectionTitle: "Explore STRs in the Genome",
+      explorerSectionTitle: "Explore STR loci in the Genome",
       explorerSectionDesc:
         "Select a chromosome to view its STR loci, then open any marker to see its details.",
       coreConceptsTitle: "Core Concepts",
@@ -1717,7 +1717,7 @@ export const translations = {
     home: {
       title: "STRhub",
       subtitle: "Hub Central de",
-      tagline: "Plataforma de acesso aberto para análise e visualização forense de STR",
+      tagline: "Plataforma de acesso aberto para análise e visualização forense de STRs",
       description: "De CE a NGS: ferramentas integradas para genética forense e estudos populacionais",
       searchPlaceholder: "Marcadores, ferramentas, artigos…",
       searchButton: "Buscar no Banco de Dados",
@@ -3257,7 +3257,7 @@ export const translations = {
     },
     // Back to Basics
     basics: {
-      title: "Fundamentos de STR",
+      title: "Fundamentos de STRs",
       subtitle: "Entendendo os Fundamentos",
       description:
         "Explore loci STR ao longo dos cromossomos humanos e aprenda os conceitos centrais por trás da genética forense e dos fluxos de trabalho em bioinformática.",
@@ -3265,7 +3265,7 @@ export const translations = {
       backToArticles: "← Voltar a Todos os Artigos",
       readTime: "min de leitura",
       topicsCovered: "Tópicos:",
-      explorerSectionTitle: "Explorar STR no genoma",
+      explorerSectionTitle: "Explorar STRs no genoma",
       explorerSectionDesc:
         "Selecione um cromossomo para visualizar seus loci STR e abra qualquer marcador para ver seus detalhes.",
       coreConceptsTitle: "Conceitos fundamentais",
@@ -3395,7 +3395,7 @@ export const translations = {
     home: {
       title: "STRhub",
       subtitle: "Hub Central de",
-      tagline: "Plataforma de acceso abierto para el análisis y visualización forense de STR",
+      tagline: "Plataforma de acceso abierto para el análisis y visualización forense de STRs",
       description: "De CE a NGS: herramientas integradas para genética forense y estudios poblacionales",
       searchPlaceholder: "Marcadores, herramientas, artículos…",
       searchButton: "Buscar en Base de Datos",
@@ -4206,7 +4206,7 @@ export const translations = {
     },
     // Back to Basics
     basics: {
-      title: "Fundamentos de STR",
+      title: "Fundamentos de STRs",
       subtitle: "Entendiendo los Fundamentos",
       description:
         "Explorá loci STR a lo largo de los cromosomas humanos y aprendé los conceptos centrales detrás de la genética forense y los flujos de trabajo en bioinformática.",
@@ -4214,7 +4214,7 @@ export const translations = {
       backToArticles: "← Volver a Todos los Artículos",
       readTime: "min de lectura",
       topicsCovered: "Temas cubiertos:",
-      explorerSectionTitle: "Explorar STR en el genoma",
+      explorerSectionTitle: "Explorar STRs en el genoma",
       explorerSectionDesc:
         "Selecciona un cromosoma para ver sus loci STR y abre cualquier marcador para explorar sus detalles.",
       coreConceptsTitle: "Conceptos fundamentales",

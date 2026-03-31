@@ -5,6 +5,16 @@ import { PageTitle } from "@/components/page-title";
 import { useLanguage } from "@/contexts/language-context";
 import { KaryotypeExplorer } from "@/components/explorer/KaryotypeExplorer";
 import { Separator } from "@/components/ui/separator";
+import type { ReactNode } from "react";
+
+function withItalicLoci(text: string): ReactNode[] {
+  return text.split(/(\b[Ll]oci\b)/g).map((part, idx) => {
+    if (/^[Ll]oci$/.test(part)) {
+      return <em key={`${part}-${idx}`}>{part}</em>;
+    }
+    return part;
+  });
+}
 
 export default function BasicsPage() {
   const { t } = useLanguage();
@@ -15,7 +25,7 @@ export default function BasicsPage() {
         <div className="container mx-auto text-left space-y-4">
           <PageTitle
             title={t("basics.title")}
-            description={t("basics.description")}
+            description={withItalicLoci(t("basics.description"))}
           />
         </div>
       </section>
@@ -25,10 +35,10 @@ export default function BasicsPage() {
         <div className="container mx-auto space-y-4">
           <div>
             <h2 className="text-xl font-semibold mb-1">
-              {t("basics.explorerSectionTitle")}
+              {withItalicLoci(t("basics.explorerSectionTitle"))}
             </h2>
             <p className="text-sm text-muted-foreground">
-              {t("basics.explorerSectionDesc")}
+              {withItalicLoci(t("basics.explorerSectionDesc"))}
             </p>
           </div>
           <KaryotypeExplorer showHeader={false} />

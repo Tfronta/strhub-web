@@ -111,8 +111,8 @@ export default function STRBasePage() {
     (update) =>
       update.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       update.markers.some((marker) =>
-        marker.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+        marker.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
   );
 
   return (

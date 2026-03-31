@@ -107,10 +107,10 @@ export default function DatasetsPage() {
   const [dataType, setDataType] = useState<DataType | "">("");
   const [selectedDataset, setSelectedDataset] = useState<DatasetId | "">("");
   const [selectedPopulations, setSelectedPopulations] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
   const [viewType, setViewType] = useState<"frequencies" | "genotypes">(
-    "frequencies"
+    "frequencies",
   );
   const [tableGenerated, setTableGenerated] = useState(false);
   const [locusFilter, setLocusFilter] = useState<string>("");
@@ -159,7 +159,7 @@ export default function DatasetsPage() {
   const availableDatasets = useMemo(() => {
     if (!dataType) return [];
     return Object.values(datasetConfigs).filter(
-      (ds) => ds.technology === dataType
+      (ds) => ds.technology === dataType,
     );
   }, [dataType]);
 
@@ -212,7 +212,7 @@ export default function DatasetsPage() {
           const has1000GData = ["AFR", "EUR", "NAM", "EAS", "SAS"].some(
             (pop) =>
               markerFreqData[pop as NGSPop] &&
-              Array.isArray(markerFreqData[pop as NGSPop])
+              Array.isArray(markerFreqData[pop as NGSPop]),
           );
           if (has1000GData) {
             const markerInfo = markerData[markerId as keyof typeof markerData];
@@ -257,7 +257,7 @@ export default function DatasetsPage() {
           if (popData && Array.isArray(popData)) {
             const totalCount = popData.reduce(
               (sum, entry) => sum + entry.count,
-              0
+              0,
             );
             popData.forEach((entry) => {
               if (entry.frequency > 0) {
@@ -293,7 +293,7 @@ export default function DatasetsPage() {
             if (popData && Array.isArray(popData)) {
               const totalCount = popData.reduce(
                 (sum, entry) => sum + entry.count,
-                0
+                0,
               );
               popData.forEach((entry) => {
                 if (entry.frequency > 0) {
@@ -325,12 +325,12 @@ export default function DatasetsPage() {
 
   const frequencyData = useMemo(
     () => getFrequencyData(),
-    [selectedDataset, selectedPopulations, availableMarkers, currentDataset]
+    [selectedDataset, selectedPopulations, availableMarkers, currentDataset],
   );
 
   const genotypeData = useMemo(
     () => getGenotypeData(),
-    [selectedDataset, selectedPopulations]
+    [selectedDataset, selectedPopulations],
   );
 
   const hasGenotypeData = genotypeData.length > 0;
@@ -491,8 +491,8 @@ export default function DatasetsPage() {
     XLSX.writeFile(
       wb,
       `datasets_${selectedDataset}_${viewType}_${Array.from(
-        selectedPopulations
-      ).join("-")}.xlsx`
+        selectedPopulations,
+      ).join("-")}.xlsx`,
     );
   };
 
@@ -514,7 +514,7 @@ export default function DatasetsPage() {
             }
             return JSON.stringify(value);
           })
-          .join(",")
+          .join(","),
       ),
     ];
 
@@ -524,7 +524,7 @@ export default function DatasetsPage() {
     const a = document.createElement("a");
     a.href = url;
     a.download = `datasets_${selectedDataset}_${viewType}_${Array.from(
-      selectedPopulations
+      selectedPopulations,
     ).join("-")}.csv`;
     document.body.appendChild(a);
     a.click();
@@ -553,7 +553,7 @@ export default function DatasetsPage() {
     const a = document.createElement("a");
     a.href = url;
     a.download = `datasets_${selectedDataset}_${viewType}_${Array.from(
-      selectedPopulations
+      selectedPopulations,
     ).join("-")}.json`;
     document.body.appendChild(a);
     a.click();
@@ -574,7 +574,7 @@ export default function DatasetsPage() {
 
   // Normalize dataset ID to translation key
   const normalizeDatasetId = (
-    datasetId: DatasetId
+    datasetId: DatasetId,
   ): keyof typeof datasetI18nMap | null => {
     if (datasetId === "CE") return "popstrCE";
     if (datasetId === "1000G") return "g1k";
@@ -751,7 +751,7 @@ export default function DatasetsPage() {
                             <div>
                               <h4 className="text-sm font-semibold text-foreground mb-1">
                                 {t(
-                                  "globalFrequencies.populationGroupsIncluded"
+                                  "globalFrequencies.populationGroupsIncluded",
                                 )}
                               </h4>
                               <p className="text-muted-foreground whitespace-pre-line">

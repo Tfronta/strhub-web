@@ -60,7 +60,7 @@ const persistLanguageCookie = (value: Language) => {
   }
 
   document.cookie = `${LANGUAGE_COOKIE_NAME}=${encodeURIComponent(
-    value
+    value,
   )}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}; SameSite=Lax`;
 };
 
@@ -71,7 +71,7 @@ interface LanguageContextType {
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
-  undefined
+  undefined,
 );
 
 interface LanguageProviderProps {
@@ -112,10 +112,12 @@ export function LanguageProvider({
 
     if (!params) return translation;
 
-    return Object.entries(params).reduce(
+    const interpolated = Object.entries(params).reduce(
       (text, [param, value]) => text.replace(`{${param}}`, value),
-      translation
+      translation,
     );
+
+    return interpolated;
   };
 
   return (

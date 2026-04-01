@@ -59,7 +59,7 @@ export function GlobalHeader() {
 
           <button
             type="button"
-            className="lg:hidden inline-flex items-center justify-center rounded-md p-2 hover:bg-muted transition-colors"
+            className="lg:hidden inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-muted transition-colors"
             onClick={() => setMobileOpen((v) => !v)}
             aria-expanded={mobileOpen}
             aria-label="Toggle navigation menu"
@@ -72,7 +72,7 @@ export function GlobalHeader() {
           </button>
 
           {mobileOpen && (
-            <nav className="absolute left-0 top-full w-full border-b bg-card/95 backdrop-blur-sm animate-in slide-in-from-top-2 fade-in duration-200 z-50">
+            <nav className="absolute left-0 top-full w-full border-b bg-muted backdrop-blur-sm animate-in slide-in-from-top-2 fade-in duration-200 z-50">
               <div className="container mx-auto px-4 py-3 flex flex-col gap-1">
                 {navItems.map((item) => (
                   <Link

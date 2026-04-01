@@ -51,8 +51,7 @@ export default function HomePage() {
         <div className="container mx-auto text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
             {t("home.subtitle")}{" "}
-            <span className="text-gradient">Short Tandem Repeats</span>{" "}
-            (STRs)
+            <span className="text-gradient">Short Tandem Repeats</span> (STRs)
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground/80 mb-2 max-w-3xl mx-auto">
             {t("home.tagline")}

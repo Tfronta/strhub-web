@@ -12,9 +12,9 @@ const navItems = [
   { href: "/basics", labelKey: "nav.basics" },
   { href: "/catalog", labelKey: "nav.catalog" },
   { href: "/datasets", labelKey: "nav.datasets" },
-  { href: "/community", labelKey: "nav.blog" },
   { href: "/tools", labelKey: "nav.tools" },
   { href: "/mix-profiles", labelKey: "nav.mixProfiles" },
+  { href: "/community", labelKey: "nav.blog" },
   { href: "/projects", labelKey: "nav.projects" },
   { href: "/about", labelKey: "nav.about" },
 ];

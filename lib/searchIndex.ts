@@ -135,6 +135,13 @@ export function buildSearchIndex(t: (key: string) => string, language: Language 
     href: string;
   }> = [
     {
+      id: "basics",
+      title: t("nav.basics"),
+      description: t("home.explore.basics.description"),
+      tags: ["basics", "tutorial", "education", "learning", "cram", "bam", "sam"],
+      href: "/basics",
+    },
+    {
       id: "catalog",
       title: t("nav.catalog"),
       description: t("home.explore.catalog.description"),
@@ -142,11 +149,11 @@ export function buildSearchIndex(t: (key: string) => string, language: Language 
       href: "/catalog",
     },
     {
-      id: "basics",
-      title: t("nav.basics"),
-      description: t("home.explore.basics.description"),
-      tags: ["basics", "tutorial", "education", "learning", "cram", "bam", "sam"],
-      href: "/basics",
+      id: "datasets",
+      title: t("nav.datasets"),
+      description: t("datasets.description"),
+      tags: ["datasets", "data", "download", "frequencies", "allele", "genotype", "str"],
+      href: "/datasets",
     },
     {
       id: "tools",
@@ -163,10 +170,17 @@ export function buildSearchIndex(t: (key: string) => string, language: Language 
       href: "/mix-profiles",
     },
     {
+      id: "community",
+      title: t("nav.blog"),
+      description: t("home.explore.communityHub.description"),
+      tags: ["community", "blog", "news", "updates"],
+      href: "/community",
+    },
+    {
       id: "projects",
       title: t("nav.projects"),
       description: t("home.explore.projects.description"),
-      tags: ["projects", "research", "genomics", "1000 genomes"],
+      tags: ["projects", "resources", "research", "genomics", "1000 genomes"],
       href: "/projects",
     },
     {
@@ -175,13 +189,6 @@ export function buildSearchIndex(t: (key: string) => string, language: Language 
       description: t("home.explore.about.description"),
       tags: ["about", "mission", "team", "contact"],
       href: "/about",
-    },
-    {
-      id: "community",
-      title: t("nav.blog"),
-      description: t("home.explore.communityHub.description"),
-      tags: ["community", "blog", "news", "updates"],
-      href: "/community",
     },
     {
       id: "fasta-generator",

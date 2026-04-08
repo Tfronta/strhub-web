@@ -1329,10 +1329,12 @@ export const translations = {
         "Our goal is to foster a global, collaborative environment where knowledge, technology, and transparency come together to strengthen forensic genetics research and education.",
       team: "Our Team",
       teamP1:
-        "STRhub is developed and led by **Dr. Tamara Frontanilla** and is academically supported by the Forensic and Genomics Research Laboratory, University of São Paulo (USP), under the supervision of Dr. Celso Teixeira Mendes Junior.",
+        "STRhub is developed and led by **Dr. Tamara Frontanilla**.",
       teamP2:
-        "The project is developed by a multidisciplinary team of researchers, bioinformaticians, and forensic scientists, and is shaped by hands-on experience with real STR datasets, laboratory workflows, and interpretative challenges. STRhub is built to reflect the needs of the forensic and population genetics community, emphasizing clarity, methodological rigor, and accessibility.",
-      teamP3: "ORCID: 0000-0002-6873-7813",
+        "The project originated as an independent initiative, and its core concept, architecture and implementation were developed by the author.",
+      teamP3:
+        "STRhub currently receives academic support from the Forensic and Genomics Research Laboratory, University of São Paulo (USP), under the supervision of Dr. Celso Teixeira Mendes Junior.",
+      teamP4: "ORCID: 0000-0002-6873-7813",
       teamGithub: "GitHub profile: Tamara Frontanilla",
       whyThisMatters: "Why This Matters",
       whyP1:
@@ -3303,12 +3305,14 @@ export const translations = {
         "O projeto tem como objetivo conectar tecnologias analíticas, estruturas de interpretação e necessidades educacionais por meio da integração de informações STR derivadas tanto da eletroforese capilar (CE) quanto do sequenciamento de nova geração (NGS). O STRhub oferece ferramentas confiáveis, conjuntos de dados curados e recursos educacionais que apoiam pesquisadores, estudantes e laboratórios em todo o mundo na interpretação da complexidade da análise de STRs.",
       missionP3:
         "Nosso objetivo é promover um ambiente global e colaborativo onde conhecimento, tecnologia e transparência se unam para fortalecer a pesquisa e a educação em genética forense.",
-      team: "Nossa equipe",
+      team: "Nossa Equipe",
       teamP1:
-        "O STRhub é um projeto desenvolvido e liderado pela **Dra. Tamara Frontanilla** e conta com apoio acadêmico do Laboratório de Pesquisas Forenses e Genômicas, Universidade de São Paulo (USP), sob a supervisão do Dr. Celso Teixeira Mendes Junior.",
+        "O STRhub é desenvolvido e liderado pela **Dra. Tamara Frontanilla**.",
       teamP2:
-        "O projeto é desenvolvido por uma equipe multidisciplinar de pesquisadores, bioinformatas e cientistas forenses, e é moldado pela experiência prática com conjuntos de dados STR reais, rotinas laboratoriais e desafios interpretativos. O STRhub foi construído para refletir as necessidades da comunidade forense e de genética de populações, com ênfase em clareza, rigor metodológico e acessibilidade.",
-      teamP3: "ORCID: 0000-0002-6873-7813",
+        "O projeto surgiu como uma iniciativa independente, e seu conceito, arquitetura e implementação foram desenvolvidos pela autora.",
+      teamP3:
+        "Atualmente o STRhub recebe apoio acadêmico do Laboratório de Pesquisas Forenses e Genômicas, Universidade de São Paulo (USP), sob a supervisão do Dr. Celso Teixeira Mendes Junior.",
+      teamP4: "ORCID: 0000-0002-6873-7813",
       teamGithub: "Perfil no GitHub: Tamara Frontanilla",
       whyThisMatters: "Por que isso importa",
       whyP1:
@@ -4683,12 +4687,14 @@ export const translations = {
         "El proyecto tiene como objetivo conectar tecnologías analíticas, marcos de interpretación y necesidades educativas mediante la integración de información STR derivada tanto de electroforesis capilar (CE) como de secuenciación de nueva generación (NGS). STRhub ofrece herramientas confiables, conjuntos de datos curados y recursos de aprendizaje que apoyan a investigadores, estudiantes y laboratorios de todo el mundo en la interpretación de la complejidad del análisis de STRs.",
       missionP3:
         "Nuestro objetivo es fomentar un entorno global y colaborativo donde el conocimiento, la tecnología y la transparencia se integren para fortalecer la investigación y la educación en genética forense.",
-      team: "Nuestro equipo",
+      team: "Nuestro Equipo",
       teamP1:
-        "STRhub es un proyecto desarrollado y liderado por la **Dra. Tamara Frontanilla** y cuenta con el respaldo académico del Laboratorio de Investigaciones Forenses y Genómicas, Universidad de São Paulo (USP), bajo la supervisión del Dr. Celso Teixeira Mendes Junior.",
+        "STRhub es desarrollado y liderado por la **Dra. Tamara Frontanilla**.",
       teamP2:
-        "El proyecto es desarrollado por un equipo multidisciplinario de investigadores, bioinformáticos y científicos forenses, y se nutre de la experiencia directa con conjuntos de datos STR reales, flujos de trabajo de laboratorio y desafíos interpretativos. STRhub está construido para reflejar las necesidades de la comunidad forense y de genética de poblaciones, priorizando la claridad, el rigor metodológico y la accesibilidad.",
-      teamP3: "ORCID: 0000-0002-6873-7813",
+        "El proyecto surgió como una iniciativa independiente, y su concepto, arquitectura e implementación fueron desarrollados por la autora.",
+      teamP3:
+        "Actualmente STRhub recibe apoyo académico del Laboratorio de Investigaciones Forenses y Genómicas, Universidad de São Paulo (USP), bajo la supervisión del Dr. Celso Teixeira Mendes Junior.",
+      teamP4: "ORCID: 0000-0002-6873-7813",
       teamGithub: "Perfil de GitHub: Tamara Frontanilla",
       whyThisMatters: "Por qué esto importa",
       whyP1:

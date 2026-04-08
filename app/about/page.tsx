@@ -75,6 +75,9 @@ export default function AboutPage() {
                 <p className="text-muted-foreground leading-relaxed">
                   {trans.teamP2}
                 </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {trans.teamP3}
+                </p>
                 <p className="text-muted-foreground leading-relaxed text-sm">
                   <a
                     href="https://orcid.org/0000-0002-6873-7813"
@@ -82,7 +85,7 @@ export default function AboutPage() {
                     rel="noopener noreferrer"
                     className="text-primary hover:underline"
                   >
-                    {trans.teamP3}
+                    {trans.teamP4}
                   </a>
                 </p>
               </CardContent>

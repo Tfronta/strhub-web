@@ -116,6 +116,8 @@ const POPULATION_COLORS: Record<string, string> = {
   OCE: "#06b6d4",
 };
 
+const NGS_1000G_POPS = new Set(["AFR", "NAM", "EUR", "EAS", "SAS"]);
+
 export default function MarkerPage({ params }: { params: { id: string } }) {
   const { t, language } = useLanguage();
   const [selectedPopulation, setSelectedPopulation] = useState<string>("AFR");
@@ -126,6 +128,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     useState<LatamSubpop | null>(null);
   const [latamSubpopPopoverOpen, setLatamSubpopPopoverOpen] = useState(false);
   const [showAllPopulations, setShowAllPopulations] = useState(false);
+  const [hiddenPopulations, setHiddenPopulations] = useState<Set<string>>(
+    new Set(),
+  );
   const searchParams = useSearchParams();
   const fromBasics = searchParams?.get("from") === "basics";
 
@@ -201,6 +206,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     if (selectedTechnology !== "CE") {
       setShowAllPopulations(false);
     }
+    setHiddenPopulations(new Set());
   }, [selectedTechnology, selectedPopulation]);
 
   useEffect(() => {
@@ -430,6 +436,15 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     [availablePopulations],
   );
 
+  const ngs1000GPops = useMemo(
+    () => availablePopulations.filter((p) => NGS_1000G_POPS.has(p)),
+    [availablePopulations],
+  );
+  const ngsRaoPops = useMemo(
+    () => availablePopulations.filter((p) => !NGS_1000G_POPS.has(p)),
+    [availablePopulations],
+  );
+
   const allPopulationsChartData = useMemo<
     Array<Record<string, string | number> & { allele: string }>
   >(() => {
@@ -459,6 +474,64 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
         return a.allele.localeCompare(b.allele, undefined, { numeric: true });
       });
   }, [showAllPopulations, selectedTechnology, isXSTR, cePopulationsForAll, marker]);
+
+  const allNgsChartData = useMemo<
+    Array<Record<string, string | number> & { allele: string }>
+  >(() => {
+    if (!showAllPopulations || selectedTechnology !== "NGS" || !markerFreqDataNGS)
+      return [];
+
+    const alleleMap = new Map<string, Record<string, number>>();
+
+    for (const pop of ngs1000GPops) {
+      const entries = markerFreqDataNGS[
+        pop as keyof typeof markerFreqDataNGS
+      ] as Array<{ allele: string; frequency: number }> | undefined;
+      if (!entries) continue;
+      for (const entry of entries) {
+        if (entry.frequency <= 0) continue;
+        const row = alleleMap.get(entry.allele) ?? {};
+        row[pop] = entry.frequency;
+        alleleMap.set(entry.allele, row);
+      }
+    }
+
+    return Array.from(alleleMap.entries())
+      .map(([allele, pops]) => ({ allele, ...pops }))
+      .sort((a, b) => {
+        const na = Number.parseFloat(a.allele);
+        const nb = Number.parseFloat(b.allele);
+        if (!isNaN(na) && !isNaN(nb)) return na - nb;
+        return a.allele.localeCompare(b.allele, undefined, { numeric: true });
+      });
+  }, [showAllPopulations, selectedTechnology, markerFreqDataNGS, ngs1000GPops]);
+
+  const isNgsAllMode =
+    showAllPopulations && selectedTechnology === "NGS";
+  const isCeAllMode =
+    showAllPopulations && selectedTechnology === "CE" && !isXSTR;
+  const activeAllChartData = isNgsAllMode
+    ? allNgsChartData
+    : isCeAllMode
+      ? allPopulationsChartData
+      : [];
+  const activeAllPops = isNgsAllMode
+    ? ngs1000GPops
+    : isCeAllMode
+      ? cePopulationsForAll
+      : [];
+
+  const compareYMax = useMemo(() => {
+    if (activeAllChartData.length === 0 || activeAllPops.length === 0) return 0;
+    let max = 0;
+    for (const row of activeAllChartData) {
+      for (const pop of activeAllPops) {
+        const v = row[pop];
+        if (typeof v === "number" && v > max) max = v;
+      }
+    }
+    return Math.ceil(max * 1000) / 1000;
+  }, [activeAllChartData, activeAllPops]);
 
   let chartData: any[] = [];
   let citationUrl = "";
@@ -939,14 +1012,24 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         {!isXSTR && (
                           <>
                             <div className="h-5 w-px bg-border" />
-                            <Button
-                              variant={showAllPopulations ? "default" : "outline"}
-                              size="sm"
-                              onClick={() => setShowAllPopulations(true)}
-                              className="h-7 text-xs font-normal rounded-sm px-2"
-                            >
-                              ALL
-                            </Button>
+                            <UITooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant={showAllPopulations ? "default" : "outline"}
+                                  size="sm"
+                                  onClick={() => {
+                                    setShowAllPopulations(true);
+                                    setHiddenPopulations(new Set());
+                                  }}
+                                  className="h-7 text-xs font-normal rounded-sm px-2"
+                                >
+                                  Compare
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs text-xs">
+                                {t("marker.frequencies.compareTooltip")}
+                              </TooltipContent>
+                            </UITooltip>
                           </>
                         )}
                       </div>
@@ -954,22 +1037,75 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     {selectedTechnology === "NGS" && (
                       <>
                         {hasNGS ? (
-                          <div className="flex gap-2">
-                            {availablePopulations.map((pop) => (
+                          <div className="flex items-center gap-2 flex-wrap">
+                            {ngs1000GPops.map((pop) => (
                               <Button
                                 key={pop}
                                 variant={
+                                  !showAllPopulations &&
                                   selectedPopulation === pop
                                     ? "default"
                                     : "outline"
                                 }
                                 size="sm"
-                                onClick={() => setSelectedPopulation(pop)}
+                                onClick={() => {
+                                  setShowAllPopulations(false);
+                                  setSelectedPopulation(pop);
+                                }}
                                 className="h-7 text-xs font-normal rounded-sm px-2"
                               >
                                 {pop}
                               </Button>
                             ))}
+                            {ngs1000GPops.length >= 2 && (
+                              <>
+                                <div className="h-5 w-px bg-border" />
+                                <UITooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant={
+                                        showAllPopulations ? "default" : "outline"
+                                      }
+                                      size="sm"
+                                      onClick={() => {
+                                        setShowAllPopulations(true);
+                                        setHiddenPopulations(new Set());
+                                      }}
+                                      className="h-7 text-xs font-normal rounded-sm px-2"
+                                    >
+                                      1000G
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="max-w-xs text-xs">
+                                    {t("marker.frequencies.ngs1000gTooltip")}
+                                  </TooltipContent>
+                                </UITooltip>
+                              </>
+                            )}
+                            {ngsRaoPops.length > 0 && (
+                              <>
+                                <div className="h-5 w-px bg-border" />
+                                {ngsRaoPops.map((pop) => (
+                                  <Button
+                                    key={pop}
+                                    variant={
+                                      !showAllPopulations &&
+                                      selectedPopulation === pop
+                                        ? "default"
+                                        : "outline"
+                                    }
+                                    size="sm"
+                                    onClick={() => {
+                                      setShowAllPopulations(false);
+                                      setSelectedPopulation(pop);
+                                    }}
+                                    className="h-7 text-xs font-normal rounded-sm px-2"
+                                  >
+                                    {pop}
+                                  </Button>
+                                ))}
+                              </>
+                            )}
                           </div>
                         ) : (
                           <div className="flex items-center gap-2">
@@ -1089,13 +1225,13 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                 </div>
                 {availableTechnologies.includes(selectedTechnology) &&
                 (showAllPopulations
-                  ? allPopulationsChartData.length > 0
+                  ? activeAllChartData.length > 0
                   : chartData.length > 0) ? (
                   <>
                     <div className={showAllPopulations ? "h-[420px]" : "h-80"}>
                       <ResponsiveContainer width="100%" height="100%">
                         {showAllPopulations ? (
-                          <LineChart data={allPopulationsChartData}>
+                          <LineChart data={activeAllChartData}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis
                               dataKey="allele"
@@ -1110,6 +1246,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               tickFormatter={(value) =>
                                 Number(value).toFixed(3)
                               }
+                              domain={[0, compareYMax || "auto"]}
                             />
                             <Tooltip
                               formatter={(value: any, name: string) => [
@@ -1119,10 +1256,35 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               contentStyle={{ fontSize: 12 }}
                             />
                             <Legend
-                              wrapperStyle={{ fontSize: 12 }}
+                              wrapperStyle={{ fontSize: 12, cursor: "pointer" }}
                               iconType="plainline"
+                              onClick={(e: any) => {
+                                const pop = e.dataKey as string;
+                                setHiddenPopulations((prev) => {
+                                  const next = new Set(prev);
+                                  if (next.has(pop)) {
+                                    next.delete(pop);
+                                  } else {
+                                    const visibleCount =
+                                      activeAllPops.length - next.size;
+                                    if (visibleCount > 1) next.add(pop);
+                                  }
+                                  return next;
+                                });
+                              }}
+                              formatter={(value: string) => (
+                                <span
+                                  style={{
+                                    color: hiddenPopulations.has(value)
+                                      ? "#d1d5db"
+                                      : undefined,
+                                  }}
+                                >
+                                  {value}
+                                </span>
+                              )}
                             />
-                            {cePopulationsForAll.map((pop) => (
+                            {activeAllPops.map((pop) => (
                               <Line
                                 key={pop}
                                 type="monotone"
@@ -1133,6 +1295,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 activeDot={{ r: 5 }}
                                 name={pop}
                                 connectNulls
+                                hide={hiddenPopulations.has(pop)}
                               />
                             ))}
                           </LineChart>
@@ -1160,6 +1323,87 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         )}
                       </ResponsiveContainer>
                     </div>
+                    {showAllPopulations && (
+                      <p className="mt-1 text-center text-xs text-muted-foreground">
+                        {t("marker.frequencies.legendClickHint")}
+                      </p>
+                    )}
+
+                    {isNgsAllMode && (
+                      <>
+                        <div className="mt-2 space-y-3 text-sm text-muted-foreground">
+                          <p>{t("marker.frequencies.ngs1000G.intro")}</p>
+                          <div className="space-y-1">
+                            <p className="font-medium flex items-center gap-2">
+                              <span>
+                                {t(
+                                  "marker.frequencies.ngs1000G.datasetNotesTitle",
+                                )}
+                              </span>
+                            </p>
+                            <p>
+                              {t(
+                                "marker.frequencies.ngs1000G.datasetNotesParagraph1",
+                              )}
+                            </p>
+                            <p>
+                              {t(
+                                "marker.frequencies.ngs1000G.datasetNotesParagraph2",
+                              )}
+                            </p>
+                          </div>
+                          <p className="text-xs">
+                            <span className="font-semibold">
+                              {t(
+                                "marker.frequencies.datasetNotes.referenceLabel",
+                              )}
+                              :
+                            </span>
+                            <br />
+                            Frontanilla TS et al. Open-Access Worldwide
+                            Population STR Database Constructed Using
+                            High-Coverage Whole-Genome Sequencing Data from the
+                            1000 Genomes Project. Genes. 2022;13(12):2205.
+                            <br />
+                            https://doi.org/10.3390/genes13122205
+                          </p>
+                        </div>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="text-xs"
+                          >
+                            <a
+                              href={NGS_1000G_DATASET_LINKS.datasetUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {t(
+                                "marker.frequencies.ngs1000G.originalDatasetButton",
+                              )}
+                            </a>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="text-xs"
+                          >
+                            <a
+                              href={NGS_1000G_DATASET_LINKS.publicationUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {t(
+                                "marker.frequencies.ngs1000G.originalPublicationButton",
+                              )}
+                            </a>
+                          </Button>
+                        </div>
+                      </>
+                    )}
 
                     {!showAllPopulations && (
                     <>
@@ -1443,10 +1687,10 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           onClick={() => {
                             if (showAllPopulations) {
                               const csvContent = [
-                                [t("common.allele"), ...cePopulationsForAll],
-                                ...allPopulationsChartData.map((item) => [
+                                [t("common.allele"), ...activeAllPops],
+                                ...activeAllChartData.map((item) => [
                                   item.allele,
-                                  ...cePopulationsForAll.map((pop) =>
+                                  ...activeAllPops.map((pop) =>
                                     (item[pop] != null
                                       ? Number(item[pop]).toFixed(4)
                                       : ""),
@@ -1462,7 +1706,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               const url = window.URL.createObjectURL(blob);
                               const a = document.createElement("a");
                               a.href = url;
-                              a.download = `${marker.name}_ALL_frequencies.csv`;
+                              a.download = `${marker.name}_ALL_${selectedTechnology}_frequencies.csv`;
                               document.body.appendChild(a);
                               a.click();
                               document.body.removeChild(a);
@@ -1501,12 +1745,12 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         <div className="max-h-64 overflow-y-auto">
                           {showAllPopulations ? (
                             <table className="w-full">
-                              <thead className="bg-muted/30 sticky top-0 border-b border-border">
+                              <thead className="bg-background sticky top-0 border-b border-border">
                                 <tr>
                                   <th className="text-left p-2 text-xs font-semibold text-foreground">
                                     {t("common.allele")}
                                   </th>
-                                  {cePopulationsForAll.map((pop) => (
+                                  {activeAllPops.map((pop) => (
                                     <th
                                       key={pop}
                                       className="text-left p-2 text-xs font-semibold text-foreground"
@@ -1527,7 +1771,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 </tr>
                               </thead>
                               <tbody>
-                                {allPopulationsChartData.map((item, index) => (
+                                {activeAllChartData.map((item, index) => (
                                   <tr
                                     key={item.allele}
                                     className={
@@ -1539,7 +1783,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                     <td className="p-2 text-xs font-mono text-foreground">
                                       {item.allele}
                                     </td>
-                                    {cePopulationsForAll.map((pop) => (
+                                    {activeAllPops.map((pop) => (
                                       <td
                                         key={pop}
                                         className="p-2 text-xs font-normal text-foreground"

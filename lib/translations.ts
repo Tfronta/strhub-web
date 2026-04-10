@@ -421,6 +421,11 @@ export const translations = {
           originalPublicationButton: "Original publication",
         },
         openOriginalPaperButton: "Open original paper",
+        compareTooltip:
+          "Compares AFR, NAM, EAS, SAS, EUR, MES and OCE populations from the SP-SMART/CESGA dataset",
+        ngs1000gTooltip:
+          "Compares AFR, NAM, EAS, SAS and EUR from the 1000 Genomes Project Phase 3",
+        legendClickHint: "Click a population in the legend to show/hide",
         latam: {
           selectorHint: "Select a LATAM population for this marker.",
           noDataForLocus: "No LATAM datasets available for this marker.",
@@ -2097,6 +2102,11 @@ export const translations = {
           originalPublicationButton: "Publicação original",
         },
         openOriginalPaperButton: "Abrir artigo original",
+        compareTooltip:
+          "Compara as populações AFR, NAM, EAS, SAS, EUR, MES e OCE do dataset SP-SMART/CESGA",
+        ngs1000gTooltip:
+          "Compara AFR, NAM, EAS, SAS e EUR do Projeto 1000 Genomas Fase 3",
+        legendClickHint: "Clique em uma população na legenda para mostrar/ocultar",
         latam: {
           selectorHint: "Selecione uma população LATAM para este marcador.",
           noDataForLocus: "Não há dados LATAM disponíveis para este marcador.",
@@ -3778,6 +3788,11 @@ export const translations = {
           originalPublicationButton: "Publicación original",
         },
         openOriginalPaperButton: "Abrir artículo original",
+        compareTooltip:
+          "Compara las poblaciones AFR, NAM, EAS, SAS, EUR, MES y OCE del dataset SP-SMART/CESGA",
+        ngs1000gTooltip:
+          "Compara AFR, NAM, EAS, SAS y EUR del Proyecto 1000 Genomas Fase 3",
+        legendClickHint: "Haz clic en una población de la leyenda para mostrar/ocultar",
         latam: {
           selectorHint: "Selecciona una población LATAM para este marcador.",
           noDataForLocus: "No hay datos LATAM disponibles para este marcador.",

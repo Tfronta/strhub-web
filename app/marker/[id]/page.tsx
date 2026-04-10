@@ -49,10 +49,13 @@ import { useSearchParams } from "next/navigation";
 import {
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from "recharts";
 import { markerData } from "@/lib/markerData";
@@ -103,6 +106,16 @@ const NGS_1000G_DATASET_LINKS = {
     "https://www.mdpi.com/2073-4425/13/12/2205#app1-genes-13-02205",
 };
 
+const POPULATION_COLORS: Record<string, string> = {
+  AFR: "#f59e0b",
+  NAM: "#ef4444",
+  EAS: "#3b82f6",
+  SAS: "#8b5cf6",
+  EUR: "#10b981",
+  MES: "#f97316",
+  OCE: "#06b6d4",
+};
+
 export default function MarkerPage({ params }: { params: { id: string } }) {
   const { t, language } = useLanguage();
   const [selectedPopulation, setSelectedPopulation] = useState<string>("AFR");
@@ -112,6 +125,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   const [selectedLatamSubpop, setSelectedLatamSubpop] =
     useState<LatamSubpop | null>(null);
   const [latamSubpopPopoverOpen, setLatamSubpopPopoverOpen] = useState(false);
+  const [showAllPopulations, setShowAllPopulations] = useState(false);
   const searchParams = useSearchParams();
   const fromBasics = searchParams?.get("from") === "basics";
 
@@ -183,6 +197,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     if (selectedPopulation !== "LATAM" || selectedTechnology !== "CE") {
       setSelectedLatamSubpop(null);
       setLatamSubpopPopoverOpen(false);
+    }
+    if (selectedTechnology !== "CE") {
+      setShowAllPopulations(false);
     }
   }, [selectedTechnology, selectedPopulation]);
 
@@ -407,6 +424,41 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   );
 
   const latamSubpopForChart = isLatamCE ? selectedLatamSubpop : null;
+
+  const cePopulationsForAll = useMemo(
+    () => availablePopulations.filter((p) => p !== "LATAM"),
+    [availablePopulations],
+  );
+
+  const allPopulationsChartData = useMemo<
+    Array<Record<string, string | number> & { allele: string }>
+  >(() => {
+    if (!showAllPopulations || selectedTechnology !== "CE" || isXSTR) return [];
+
+    const alleleMap = new Map<string, Record<string, number>>();
+
+    for (const pop of cePopulationsForAll) {
+      const entries =
+        marker?.populationFrequencies?.[
+          pop as keyof typeof marker.populationFrequencies
+        ] || [];
+      for (const entry of entries) {
+        if (!entry || entry.frequency == null || entry.frequency <= 0) continue;
+        const row = alleleMap.get(entry.allele) ?? {};
+        row[pop] = entry.frequency;
+        alleleMap.set(entry.allele, row);
+      }
+    }
+
+    return Array.from(alleleMap.entries())
+      .map(([allele, pops]) => ({ allele, ...pops }))
+      .sort((a, b) => {
+        const na = Number.parseFloat(a.allele);
+        const nb = Number.parseFloat(b.allele);
+        if (!isNaN(na) && !isNaN(nb)) return na - nb;
+        return a.allele.localeCompare(b.allele, undefined, { numeric: true });
+      });
+  }, [showAllPopulations, selectedTechnology, isXSTR, cePopulationsForAll, marker]);
 
   let chartData: any[] = [];
   let citationUrl = "";
@@ -782,20 +834,20 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between gap-2 flex-wrap border-b border-border pb-3">
                     {selectedTechnology !== "NGS" && (
-                      <div className="flex gap-2 flex-wrap">
+                      <div className="flex items-center gap-2 flex-wrap">
                         {availablePopulations.map((pop) => {
                           const isLatam = pop === "LATAM";
                           const label = isLatam ? latamButtonLabel : pop;
+                          const isActive =
+                            !showAllPopulations &&
+                            selectedPopulation === pop;
 
                           const button = (
                             <Button
-                              variant={
-                                selectedPopulation === pop
-                                  ? "default"
-                                  : "outline"
-                              }
+                              variant={isActive ? "default" : "outline"}
                               size="sm"
                               onClick={() => {
+                                setShowAllPopulations(false);
                                 setSelectedPopulation(pop);
                                 if (isLatam) {
                                   setLatamSubpopPopoverOpen(true);
@@ -815,6 +867,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 onOpenChange={(open) => {
                                   setLatamSubpopPopoverOpen(open);
                                   if (open) {
+                                    setShowAllPopulations(false);
                                     setSelectedPopulation("LATAM");
                                   }
                                 }}
@@ -838,7 +891,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                           </p>
                                           <div className="flex flex-col gap-1.5">
                                             {items.map((subpop) => {
-                                              const isActive =
+                                              const isSubActive =
                                                 latamSubpopForChart?.id ===
                                                 subpop.id;
                                               return (
@@ -855,7 +908,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                                   }}
                                                   className={cn(
                                                     "flex flex-col items-start rounded-xl border px-3 py-2 text-left text-sm transition",
-                                                    isActive
+                                                    isSubActive
                                                       ? "border-primary bg-primary/5"
                                                       : "hover:bg-muted",
                                                   )}
@@ -883,6 +936,19 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
                           return <span key={pop}>{button}</span>;
                         })}
+                        {!isXSTR && (
+                          <>
+                            <div className="h-5 w-px bg-border" />
+                            <Button
+                              variant={showAllPopulations ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setShowAllPopulations(true)}
+                              className="h-7 text-xs font-normal rounded-sm px-2"
+                            >
+                              ALL
+                            </Button>
+                          </>
+                        )}
                       </div>
                     )}
                     {selectedTechnology === "NGS" && (
@@ -1022,31 +1088,81 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                   </div>
                 </div>
                 {availableTechnologies.includes(selectedTechnology) &&
-                chartData.length > 0 ? (
+                (showAllPopulations
+                  ? allPopulationsChartData.length > 0
+                  : chartData.length > 0) ? (
                   <>
-                    <div className="h-80">
+                    <div className={showAllPopulations ? "h-[420px]" : "h-80"}>
                       <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={chartData}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="allele" tick={{ fontSize: 12 }} />
-                          <YAxis
-                            tick={{ fontSize: 12 }}
-                            tickFormatter={(value) => Number(value).toFixed(3)}
-                          />
-                          <Tooltip
-                            formatter={(value: any, name: string) => [
-                              value,
-                              name === "frequency"
-                                ? t("common.frequency")
-                                : t("common.count"),
-                            ]}
-                            contentStyle={{ fontSize: 12 }}
-                          />
-                          <Bar dataKey="frequency" fill="#6b7280" />
-                        </BarChart>
+                        {showAllPopulations ? (
+                          <LineChart data={allPopulationsChartData}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis
+                              dataKey="allele"
+                              tick={{ fontSize: 11 }}
+                              interval={0}
+                              angle={-45}
+                              textAnchor="end"
+                              height={50}
+                            />
+                            <YAxis
+                              tick={{ fontSize: 12 }}
+                              tickFormatter={(value) =>
+                                Number(value).toFixed(3)
+                              }
+                            />
+                            <Tooltip
+                              formatter={(value: any, name: string) => [
+                                Number(value).toFixed(4),
+                                name,
+                              ]}
+                              contentStyle={{ fontSize: 12 }}
+                            />
+                            <Legend
+                              wrapperStyle={{ fontSize: 12 }}
+                              iconType="plainline"
+                            />
+                            {cePopulationsForAll.map((pop) => (
+                              <Line
+                                key={pop}
+                                type="monotone"
+                                dataKey={pop}
+                                stroke={POPULATION_COLORS[pop] ?? "#6b7280"}
+                                strokeWidth={2}
+                                dot={false}
+                                activeDot={{ r: 5 }}
+                                name={pop}
+                                connectNulls
+                              />
+                            ))}
+                          </LineChart>
+                        ) : (
+                          <BarChart data={chartData}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="allele" tick={{ fontSize: 12 }} />
+                            <YAxis
+                              tick={{ fontSize: 12 }}
+                              tickFormatter={(value) =>
+                                Number(value).toFixed(3)
+                              }
+                            />
+                            <Tooltip
+                              formatter={(value: any, name: string) => [
+                                value,
+                                name === "frequency"
+                                  ? t("common.frequency")
+                                  : t("common.count"),
+                              ]}
+                              contentStyle={{ fontSize: 12 }}
+                            />
+                            <Bar dataKey="frequency" fill="#6b7280" />
+                          </BarChart>
+                        )}
                       </ResponsiveContainer>
                     </div>
 
+                    {!showAllPopulations && (
+                    <>
                     {/* Show dataset-specific description if available, otherwise show generic description */}
                     {(() => {
                       // Check if this is NGS 1000G dataset (AFR/EUR/NAM/EAS/SAS, but not RAO)
@@ -1312,6 +1428,8 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         );
                       })()}
                     </div>
+                    </>
+                    )}
 
                     <div className="mt-4">
                       <div className="flex items-center justify-between mb-3">
@@ -1323,27 +1441,55 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           size="sm"
                           className="h-7 text-xs font-normal rounded-sm px-2"
                           onClick={() => {
-                            const csvContent = [
-                              [t("common.allele"), t("common.frequency")],
-                              ...chartData.map((item) => [
-                                item.allele,
-                                item.frequency.toString(),
-                              ]),
-                            ]
-                              .map((row) => row.join(","))
-                              .join("\n");
+                            if (showAllPopulations) {
+                              const csvContent = [
+                                [t("common.allele"), ...cePopulationsForAll],
+                                ...allPopulationsChartData.map((item) => [
+                                  item.allele,
+                                  ...cePopulationsForAll.map((pop) =>
+                                    (item[pop] != null
+                                      ? Number(item[pop]).toFixed(4)
+                                      : ""),
+                                  ),
+                                ]),
+                              ]
+                                .map((row) => row.join(","))
+                                .join("\n");
 
-                            const blob = new Blob([csvContent], {
-                              type: "text/csv",
-                            });
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement("a");
-                            a.href = url;
-                            a.download = `${marker.name}_${selectedPopulation}_frequencies.csv`;
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            window.URL.revokeObjectURL(url);
+                              const blob = new Blob([csvContent], {
+                                type: "text/csv",
+                              });
+                              const url = window.URL.createObjectURL(blob);
+                              const a = document.createElement("a");
+                              a.href = url;
+                              a.download = `${marker.name}_ALL_frequencies.csv`;
+                              document.body.appendChild(a);
+                              a.click();
+                              document.body.removeChild(a);
+                              window.URL.revokeObjectURL(url);
+                            } else {
+                              const csvContent = [
+                                [t("common.allele"), t("common.frequency")],
+                                ...chartData.map((item) => [
+                                  item.allele,
+                                  item.frequency.toString(),
+                                ]),
+                              ]
+                                .map((row) => row.join(","))
+                                .join("\n");
+
+                              const blob = new Blob([csvContent], {
+                                type: "text/csv",
+                              });
+                              const url = window.URL.createObjectURL(blob);
+                              const a = document.createElement("a");
+                              a.href = url;
+                              a.download = `${marker.name}_${selectedPopulation}_frequencies.csv`;
+                              document.body.appendChild(a);
+                              a.click();
+                              document.body.removeChild(a);
+                              window.URL.revokeObjectURL(url);
+                            }
                           }}
                         >
                           <Download className="h-3 w-3 mr-1" />
@@ -1353,35 +1499,35 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
                       <div className="border border-border rounded-md overflow-hidden">
                         <div className="max-h-64 overflow-y-auto">
-                          <table className="w-full">
-                            <thead className="bg-muted/30 sticky top-0 border-b border-border">
-                              <tr>
-                                <th className="text-left p-2 text-xs font-semibold text-foreground">
-                                  {t("common.allele")}
-                                </th>
-                                <th className="text-left p-2 text-xs font-semibold text-foreground">
-                                  {t("common.frequency")}
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {chartData
-                                .filter((item) => item.frequency > 0)
-                                .sort((a, b) => {
-                                  const alleleA = Number.parseFloat(a.allele);
-                                  const alleleB = Number.parseFloat(b.allele);
-
-                                  if (!isNaN(alleleA) && !isNaN(alleleB)) {
-                                    return alleleA - alleleB;
-                                  }
-
-                                  return a.allele.localeCompare(
-                                    b.allele,
-                                    undefined,
-                                    { numeric: true },
-                                  );
-                                })
-                                .map((item, index) => (
+                          {showAllPopulations ? (
+                            <table className="w-full">
+                              <thead className="bg-muted/30 sticky top-0 border-b border-border">
+                                <tr>
+                                  <th className="text-left p-2 text-xs font-semibold text-foreground">
+                                    {t("common.allele")}
+                                  </th>
+                                  {cePopulationsForAll.map((pop) => (
+                                    <th
+                                      key={pop}
+                                      className="text-left p-2 text-xs font-semibold text-foreground"
+                                    >
+                                      <span className="flex items-center gap-1.5">
+                                        <span
+                                          className="inline-block h-2.5 w-2.5 rounded-sm"
+                                          style={{
+                                            backgroundColor:
+                                              POPULATION_COLORS[pop] ??
+                                              "#6b7280",
+                                          }}
+                                        />
+                                        {pop}
+                                      </span>
+                                    </th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {allPopulationsChartData.map((item, index) => (
                                   <tr
                                     key={item.allele}
                                     className={
@@ -1393,13 +1539,71 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                     <td className="p-2 text-xs font-mono text-foreground">
                                       {item.allele}
                                     </td>
-                                    <td className="p-2 text-xs font-normal text-foreground">
-                                      {item.frequency.toFixed(4)}
-                                    </td>
+                                    {cePopulationsForAll.map((pop) => (
+                                      <td
+                                        key={pop}
+                                        className="p-2 text-xs font-normal text-foreground"
+                                      >
+                                        {item[pop] != null
+                                          ? Number(item[pop]).toFixed(4)
+                                          : "—"}
+                                      </td>
+                                    ))}
                                   </tr>
                                 ))}
-                            </tbody>
-                          </table>
+                              </tbody>
+                            </table>
+                          ) : (
+                            <table className="w-full">
+                              <thead className="bg-muted/30 sticky top-0 border-b border-border">
+                                <tr>
+                                  <th className="text-left p-2 text-xs font-semibold text-foreground">
+                                    {t("common.allele")}
+                                  </th>
+                                  <th className="text-left p-2 text-xs font-semibold text-foreground">
+                                    {t("common.frequency")}
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {chartData
+                                  .filter((item) => item.frequency > 0)
+                                  .sort((a, b) => {
+                                    const alleleA = Number.parseFloat(
+                                      a.allele,
+                                    );
+                                    const alleleB = Number.parseFloat(
+                                      b.allele,
+                                    );
+                                    if (!isNaN(alleleA) && !isNaN(alleleB)) {
+                                      return alleleA - alleleB;
+                                    }
+                                    return a.allele.localeCompare(
+                                      b.allele,
+                                      undefined,
+                                      { numeric: true },
+                                    );
+                                  })
+                                  .map((item, index) => (
+                                    <tr
+                                      key={item.allele}
+                                      className={
+                                        index % 2 === 0
+                                          ? "bg-background"
+                                          : "bg-muted/10"
+                                      }
+                                    >
+                                      <td className="p-2 text-xs font-mono text-foreground">
+                                        {item.allele}
+                                      </td>
+                                      <td className="p-2 text-xs font-normal text-foreground">
+                                        {item.frequency.toFixed(4)}
+                                      </td>
+                                    </tr>
+                                  ))}
+                              </tbody>
+                            </table>
+                          )}
                         </div>
                       </div>
                     </div>

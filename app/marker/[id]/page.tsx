@@ -528,10 +528,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
         {activeTab !== "overview" && (
           <div className="sticky top-0 z-10 mb-4 flex flex-wrap items-center gap-x-4 gap-y-1 rounded-md border border-border bg-background/95 px-4 py-2 text-xs backdrop-blur">
-            <span className="font-semibold text-foreground">
-              {marker.name}
-            </span>
-            <span className="border-l border-border pl-4">
+            <span>
               <span className="text-muted-foreground">Chr</span>{" "}
               <span className="text-foreground">{marker.chromosome}</span>
             </span>

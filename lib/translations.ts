@@ -421,6 +421,7 @@ export const translations = {
           originalPublicationButton: "Original publication",
         },
         openOriginalPaperButton: "Open original paper",
+        compareButton: "Compare",
         compareTooltip:
           "Compares AFR, NAM, EAS, SAS, EUR, MES and OCE populations from the SP-SMART/CESGA dataset",
         ngs1000gTooltip:
@@ -2102,6 +2103,7 @@ export const translations = {
           originalPublicationButton: "Publicação original",
         },
         openOriginalPaperButton: "Abrir artigo original",
+        compareButton: "Comparar",
         compareTooltip:
           "Compara as populações AFR, NAM, EAS, SAS, EUR, MES e OCE do dataset SP-SMART/CESGA",
         ngs1000gTooltip:
@@ -3788,6 +3790,7 @@ export const translations = {
           originalPublicationButton: "Publicación original",
         },
         openOriginalPaperButton: "Abrir artículo original",
+        compareButton: "Comparar",
         compareTooltip:
           "Compara las poblaciones AFR, NAM, EAS, SAS, EUR, MES y OCE del dataset SP-SMART/CESGA",
         ngs1000gTooltip:

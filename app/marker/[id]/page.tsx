@@ -416,6 +416,49 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     ? t(`marker.frequencies.${currentDataset.metadata.descriptionKey}`)
     : null;
 
+  const hidePopStrDatasetNotesAccordion =
+    selectedTechnology === "NGS" &&
+    selectedPopulation !== "RAO" &&
+    ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(selectedPopulation);
+
+  const showPopStrDatasetNotesAccordion =
+    isPopStrDataset && !datasetDescription && !hidePopStrDatasetNotesAccordion;
+
+  const popStrDatasetNotesShortTitleAndAccordion = useMemo(
+    () => (
+      <>
+        {/* TODO: move these dataset notes strings into the i18n translation files (EN/ES/PT) */}
+        <div className="mt-3 text-sm text-muted-foreground space-y-1">
+          <p className="font-medium flex items-center gap-2">
+            <span>{t("marker.frequencies.datasetNotes.title")}</span>
+          </p>
+          <p>{t("marker.frequencies.datasetNotes.shortLine1")}</p>
+          <p>{t("marker.frequencies.datasetNotes.shortLine2")}</p>
+        </div>
+        <Accordion type="single" collapsible className="mt-2">
+          <AccordionItem value="method-note">
+            <AccordionTrigger className="text-sm font-medium">
+              {t("marker.frequencies.datasetNotes.accordionTrigger")}
+            </AccordionTrigger>
+            <AccordionContent className="text-sm text-muted-foreground space-y-2">
+              <p>{t("marker.frequencies.datasetNotes.full1")}</p>
+              <p>{t("marker.frequencies.datasetNotes.full2")}</p>
+              <p>{t("marker.frequencies.datasetNotes.full3")}</p>
+              <p className="text-xs">
+                <span className="font-semibold">
+                  {t("marker.frequencies.datasetNotes.referenceLabel")}
+                </span>
+                <br />
+                {t("marker.frequencies.datasetNotes.referenceText")}
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </>
+    ),
+    [t],
+  );
+
   // NGS genotyping tools only (derived from master catalog; no CE/frequency-based filtering)
   const toolCards = useMemo(() => buildToolCards(t), [t]);
   const toolsForMarker = useMemo(
@@ -1023,7 +1066,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                   }}
                                   className="h-7 text-xs font-normal rounded-sm px-2"
                                 >
-                                  Compare
+                                  {t("marker.frequencies.compareButton")}
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent className="max-w-xs text-xs">
@@ -1329,82 +1372,6 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </p>
                     )}
 
-                    {isNgsAllMode && (
-                      <>
-                        <div className="mt-2 space-y-3 text-sm text-muted-foreground">
-                          <p>{t("marker.frequencies.ngs1000G.intro")}</p>
-                          <div className="space-y-1">
-                            <p className="font-medium flex items-center gap-2">
-                              <span>
-                                {t(
-                                  "marker.frequencies.ngs1000G.datasetNotesTitle",
-                                )}
-                              </span>
-                            </p>
-                            <p>
-                              {t(
-                                "marker.frequencies.ngs1000G.datasetNotesParagraph1",
-                              )}
-                            </p>
-                            <p>
-                              {t(
-                                "marker.frequencies.ngs1000G.datasetNotesParagraph2",
-                              )}
-                            </p>
-                          </div>
-                          <p className="text-xs">
-                            <span className="font-semibold">
-                              {t(
-                                "marker.frequencies.datasetNotes.referenceLabel",
-                              )}
-                              :
-                            </span>
-                            <br />
-                            Frontanilla TS et al. Open-Access Worldwide
-                            Population STR Database Constructed Using
-                            High-Coverage Whole-Genome Sequencing Data from the
-                            1000 Genomes Project. Genes. 2022;13(12):2205.
-                            <br />
-                            https://doi.org/10.3390/genes13122205
-                          </p>
-                        </div>
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                            className="text-xs"
-                          >
-                            <a
-                              href={NGS_1000G_DATASET_LINKS.datasetUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {t(
-                                "marker.frequencies.ngs1000G.originalDatasetButton",
-                              )}
-                            </a>
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                            className="text-xs"
-                          >
-                            <a
-                              href={NGS_1000G_DATASET_LINKS.publicationUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {t(
-                                "marker.frequencies.ngs1000G.originalPublicationButton",
-                              )}
-                            </a>
-                          </Button>
-                        </div>
-                      </>
-                    )}
-
                     {!showAllPopulations && (
                     <>
                     {/* Show dataset-specific description if available, otherwise show generic description */}
@@ -1508,63 +1475,8 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         </>
                       );
                     })()}
-                    {isPopStrDataset &&
-                      !datasetDescription &&
-                      !(
-                        selectedTechnology === "NGS" &&
-                        selectedPopulation !== "RAO" &&
-                        ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
-                          selectedPopulation,
-                        )
-                      ) && (
-                        <>
-                          {/* TODO: move these dataset notes strings into the i18n translation files (EN/ES/PT) */}
-                          <div className="mt-3 text-sm text-muted-foreground space-y-1">
-                            <p className="font-medium flex items-center gap-2">
-                              <span>
-                                {t("marker.frequencies.datasetNotes.title")}
-                              </span>
-                            </p>
-                            <p>
-                              {t("marker.frequencies.datasetNotes.shortLine1")}
-                            </p>
-                            <p>
-                              {t("marker.frequencies.datasetNotes.shortLine2")}
-                            </p>
-                          </div>
-                          <Accordion type="single" collapsible className="mt-2">
-                            <AccordionItem value="method-note">
-                              <AccordionTrigger className="text-sm font-medium">
-                                {t(
-                                  "marker.frequencies.datasetNotes.accordionTrigger",
-                                )}
-                              </AccordionTrigger>
-                              <AccordionContent className="text-sm text-muted-foreground space-y-2">
-                                <p>
-                                  {t("marker.frequencies.datasetNotes.full1")}
-                                </p>
-                                <p>
-                                  {t("marker.frequencies.datasetNotes.full2")}
-                                </p>
-                                <p>
-                                  {t("marker.frequencies.datasetNotes.full3")}
-                                </p>
-                                <p className="text-xs">
-                                  <span className="font-semibold">
-                                    {t(
-                                      "marker.frequencies.datasetNotes.referenceLabel",
-                                    )}
-                                  </span>
-                                  <br />
-                                  {t(
-                                    "marker.frequencies.datasetNotes.referenceText",
-                                  )}
-                                </p>
-                              </AccordionContent>
-                            </AccordionItem>
-                          </Accordion>
-                        </>
-                      )}
+                    {showPopStrDatasetNotesAccordion &&
+                      popStrDatasetNotesShortTitleAndAccordion}
 
                     <div className="mt-4 flex flex-wrap gap-2">
                       {(() => {
@@ -1745,7 +1657,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         <div className="max-h-64 overflow-y-auto">
                           {showAllPopulations ? (
                             <table className="w-full">
-                              <thead className="bg-background sticky top-0 border-b border-border">
+                              <thead className="sticky top-0 z-10 border-b border-border bg-background">
                                 <tr>
                                   <th className="text-left p-2 text-xs font-semibold text-foreground">
                                     {t("common.allele")}
@@ -1799,7 +1711,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                             </table>
                           ) : (
                             <table className="w-full">
-                              <thead className="bg-muted/30 sticky top-0 border-b border-border">
+                              <thead className="sticky top-0 z-10 border-b border-border bg-background">
                                 <tr>
                                   <th className="text-left p-2 text-xs font-semibold text-foreground">
                                     {t("common.allele")}
@@ -1850,6 +1762,93 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           )}
                         </div>
                       </div>
+
+                    {isNgsAllMode && (
+                      <>
+                        <div className="mt-4 space-y-3 text-sm text-muted-foreground">
+                          <p>{t("marker.frequencies.ngs1000G.intro")}</p>
+                          <div className="space-y-1">
+                            <p className="font-medium flex items-center gap-2">
+                              <span>
+                                {t(
+                                  "marker.frequencies.ngs1000G.datasetNotesTitle",
+                                )}
+                              </span>
+                            </p>
+                            <p>
+                              {t(
+                                "marker.frequencies.ngs1000G.datasetNotesParagraph1",
+                              )}
+                            </p>
+                            <p>
+                              {t(
+                                "marker.frequencies.ngs1000G.datasetNotesParagraph2",
+                              )}
+                            </p>
+                          </div>
+                          <p className="text-xs">
+                            <span className="font-semibold">
+                              {t(
+                                "marker.frequencies.datasetNotes.referenceLabel",
+                              )}
+                              :
+                            </span>
+                            <br />
+                            Frontanilla TS et al. Open-Access Worldwide
+                            Population STR Database Constructed Using
+                            High-Coverage Whole-Genome Sequencing Data from the
+                            1000 Genomes Project. Genes. 2022;13(12):2205.
+                            <br />
+                            https://doi.org/10.3390/genes13122205
+                          </p>
+                        </div>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="text-xs"
+                          >
+                            <a
+                              href={NGS_1000G_DATASET_LINKS.datasetUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {t(
+                                "marker.frequencies.ngs1000G.originalDatasetButton",
+                              )}
+                            </a>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="text-xs"
+                          >
+                            <a
+                              href={NGS_1000G_DATASET_LINKS.publicationUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {t(
+                                "marker.frequencies.ngs1000G.originalPublicationButton",
+                              )}
+                            </a>
+                          </Button>
+                        </div>
+                      </>
+                    )}
+
+                    {showPopStrDatasetNotesAccordion &&
+                      showAllPopulations &&
+                      selectedTechnology === "CE" && (
+                        <>
+                          <p className="mt-4 text-sm text-muted-foreground">
+                            {t("marker.frequencies.datasetNotes.provenance")}
+                          </p>
+                          {popStrDatasetNotesShortTitleAndAccordion}
+                        </>
+                      )}
                     </div>
                   </>
                 ) : (
@@ -1890,7 +1889,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     <div className="border border-border rounded-md overflow-hidden">
                       <div className="max-h-96 overflow-y-auto">
                         <table className="w-full">
-                          <thead className="bg-muted/30 sticky top-0 border-b border-border">
+                          <thead className="sticky top-0 z-10 border-b border-border bg-background">
                             <tr>
                               <th className="text-left px-3 py-2 text-xs font-semibold text-foreground">
                                 {t("marker.alleleDesignation")}

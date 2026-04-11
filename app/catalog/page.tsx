@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Search, Database, ExternalLink } from "lucide-react";
 import {
   Card,
@@ -29,6 +29,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { markerData } from "@/lib/markerData";
 import { markerFrequenciesCE } from "@/app/marker/[id]/markerFrequencies";
 import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
+import { cn } from "@/lib/utils";
 
 // Helper function to normalize category names
 function normalizeCategory(category: string): string {
@@ -154,6 +155,19 @@ export default function CatalogPage() {
   const [sortBy, setSortBy] = useState("name"); // Added sortBy state
   const [showNistOnly, setShowNistOnly] = useState(false);
   const router = useRouter();
+  const markersListRef = useRef<HTMLElement>(null);
+
+  const scrollToMarkersList = () => {
+    markersListRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  const handleCategoryCardClick = (category: string) => {
+    setSelectedCategory(category);
+    scrollToMarkersList();
+  };
 
   // Helper function to translate marker type
   const getTranslatedType = (type: string): string => {
@@ -292,8 +306,12 @@ export default function CatalogPage() {
         {/* Category Cards */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
           <Card
-            className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
-            onClick={() => setSelectedCategory("CODIS Core")}
+            className={cn(
+              "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-[colors,box-shadow]",
+              selectedCategory === "CODIS Core" &&
+                "ring-2 ring-primary ring-offset-2 ring-offset-background",
+            )}
+            onClick={() => handleCategoryCardClick("CODIS Core")}
           >
             <CardHeader className="pb-3">
               <div className="text-lg font-semibold text-blue-900 dark:text-blue-100">
@@ -305,8 +323,12 @@ export default function CatalogPage() {
             </CardHeader>
           </Card>
           <Card
-            className="bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 cursor-pointer hover:bg-green-100 dark:hover:bg-green-900 transition-colors"
-            onClick={() => setSelectedCategory("Other Autosomal")}
+            className={cn(
+              "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 cursor-pointer hover:bg-green-100 dark:hover:bg-green-900 transition-[colors,box-shadow]",
+              selectedCategory === "Other Autosomal" &&
+                "ring-2 ring-primary ring-offset-2 ring-offset-background",
+            )}
+            onClick={() => handleCategoryCardClick("Other Autosomal")}
           >
             <CardHeader className="pb-3">
               <CardTitle className="text-lg font-semibold text-green-900 dark:text-green-100">
@@ -318,8 +340,12 @@ export default function CatalogPage() {
             </CardHeader>
           </Card>
           <Card
-            className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
-            onClick={() => setSelectedCategory("Y-STR")}
+            className={cn(
+              "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-[colors,box-shadow]",
+              selectedCategory === "Y-STR" &&
+                "ring-2 ring-primary ring-offset-2 ring-offset-background",
+            )}
+            onClick={() => handleCategoryCardClick("Y-STR")}
           >
             <CardHeader className="pb-3">
               <CardTitle className="text-lg font-semibold text-blue-900 dark:text-blue-100">
@@ -331,8 +357,12 @@ export default function CatalogPage() {
             </CardHeader>
           </Card>
           <Card
-            className="bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900 transition-colors"
-            onClick={() => setSelectedCategory("X-STR")}
+            className={cn(
+              "bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900 transition-[colors,box-shadow]",
+              selectedCategory === "X-STR" &&
+                "ring-2 ring-primary ring-offset-2 ring-offset-background",
+            )}
+            onClick={() => handleCategoryCardClick("X-STR")}
           >
             <CardHeader className="pb-3">
               <CardTitle className="text-lg font-semibold text-purple-900 dark:text-purple-100">
@@ -439,17 +469,22 @@ export default function CatalogPage() {
           </div>
         </div>
 
-        {/* Results Summary */}
-        <div className="mb-6">
-          <div className="text-sm text-muted-foreground">
-            {t("catalog.showing")} {filteredMarkers.length} {t("catalog.of")}{" "}
-            {markers.length} {t("catalog.markersFound")}
-            {showNistOnly && ` (${t("catalog.nistVerifiedOnly")})`}
+        <section
+          ref={markersListRef}
+          id="catalog-markers-list"
+          className="scroll-mt-20"
+        >
+          {/* Results Summary */}
+          <div className="mb-6">
+            <div className="text-sm text-muted-foreground">
+              {t("catalog.showing")} {filteredMarkers.length} {t("catalog.of")}{" "}
+              {markers.length} {t("catalog.markersFound")}
+              {showNistOnly && ` (${t("catalog.nistVerifiedOnly")})`}
+            </div>
           </div>
-        </div>
 
-        {/* Markers Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Markers Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedMarkers.map((marker) => {
             const detailPath = `/marker/${marker.id}`;
 
@@ -606,18 +641,19 @@ export default function CatalogPage() {
           })}
         </div>
 
-        {/* No Results */}
-        {filteredMarkers.length === 0 && (
-          <div className="text-center py-12">
-            <Database className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
-              {t("common.notFound")}
-            </h3>
-            <p className="text-muted-foreground">
-              Try adjusting your search terms or filters
-            </p>
-          </div>
-        )}
+          {/* No Results */}
+          {filteredMarkers.length === 0 && (
+            <div className="text-center py-12">
+              <Database className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">
+                {t("common.notFound")}
+              </h3>
+              <p className="text-muted-foreground">
+                Try adjusting your search terms or filters
+              </p>
+            </div>
+          )}
+        </section>
 
         {/* Data Integration Footer */}
         <div className="mt-12 p-6 bg-muted/30 rounded-lg">

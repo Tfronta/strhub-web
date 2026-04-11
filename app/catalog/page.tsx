@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Search, Database, ExternalLink } from "lucide-react";
 import {
   Card,
@@ -155,19 +155,6 @@ export default function CatalogPage() {
   const [sortBy, setSortBy] = useState("name"); // Added sortBy state
   const [showNistOnly, setShowNistOnly] = useState(false);
   const router = useRouter();
-  const markersListRef = useRef<HTMLElement>(null);
-
-  const scrollToMarkersList = () => {
-    markersListRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  };
-
-  const handleCategoryCardClick = (category: string) => {
-    setSelectedCategory(category);
-    scrollToMarkersList();
-  };
 
   // Helper function to translate marker type
   const getTranslatedType = (type: string): string => {
@@ -311,7 +298,7 @@ export default function CatalogPage() {
               selectedCategory === "CODIS Core" &&
                 "ring-2 ring-primary ring-offset-2 ring-offset-background",
             )}
-            onClick={() => handleCategoryCardClick("CODIS Core")}
+            onClick={() => setSelectedCategory("CODIS Core")}
           >
             <CardHeader className="pb-3">
               <div className="text-lg font-semibold text-blue-900 dark:text-blue-100">
@@ -328,7 +315,7 @@ export default function CatalogPage() {
               selectedCategory === "Other Autosomal" &&
                 "ring-2 ring-primary ring-offset-2 ring-offset-background",
             )}
-            onClick={() => handleCategoryCardClick("Other Autosomal")}
+            onClick={() => setSelectedCategory("Other Autosomal")}
           >
             <CardHeader className="pb-3">
               <CardTitle className="text-lg font-semibold text-green-900 dark:text-green-100">
@@ -345,7 +332,7 @@ export default function CatalogPage() {
               selectedCategory === "Y-STR" &&
                 "ring-2 ring-primary ring-offset-2 ring-offset-background",
             )}
-            onClick={() => handleCategoryCardClick("Y-STR")}
+            onClick={() => setSelectedCategory("Y-STR")}
           >
             <CardHeader className="pb-3">
               <CardTitle className="text-lg font-semibold text-blue-900 dark:text-blue-100">
@@ -362,7 +349,7 @@ export default function CatalogPage() {
               selectedCategory === "X-STR" &&
                 "ring-2 ring-primary ring-offset-2 ring-offset-background",
             )}
-            onClick={() => handleCategoryCardClick("X-STR")}
+            onClick={() => setSelectedCategory("X-STR")}
           >
             <CardHeader className="pb-3">
               <CardTitle className="text-lg font-semibold text-purple-900 dark:text-purple-100">
@@ -469,22 +456,17 @@ export default function CatalogPage() {
           </div>
         </div>
 
-        <section
-          ref={markersListRef}
-          id="catalog-markers-list"
-          className="scroll-mt-20"
-        >
-          {/* Results Summary */}
-          <div className="mb-6">
-            <div className="text-sm text-muted-foreground">
-              {t("catalog.showing")} {filteredMarkers.length} {t("catalog.of")}{" "}
-              {markers.length} {t("catalog.markersFound")}
-              {showNistOnly && ` (${t("catalog.nistVerifiedOnly")})`}
-            </div>
+        {/* Results Summary */}
+        <div className="mb-6">
+          <div className="text-sm text-muted-foreground">
+            {t("catalog.showing")} {filteredMarkers.length} {t("catalog.of")}{" "}
+            {markers.length} {t("catalog.markersFound")}
+            {showNistOnly && ` (${t("catalog.nistVerifiedOnly")})`}
           </div>
+        </div>
 
-          {/* Markers Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Markers Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedMarkers.map((marker) => {
             const detailPath = `/marker/${marker.id}`;
 
@@ -641,19 +623,18 @@ export default function CatalogPage() {
           })}
         </div>
 
-          {/* No Results */}
-          {filteredMarkers.length === 0 && (
-            <div className="text-center py-12">
-              <Database className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">
-                {t("common.notFound")}
-              </h3>
-              <p className="text-muted-foreground">
-                Try adjusting your search terms or filters
-              </p>
-            </div>
-          )}
-        </section>
+        {/* No Results */}
+        {filteredMarkers.length === 0 && (
+          <div className="text-center py-12">
+            <Database className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">
+              {t("common.notFound")}
+            </h3>
+            <p className="text-muted-foreground">
+              Try adjusting your search terms or filters
+            </p>
+          </div>
+        )}
 
         {/* Data Integration Footer */}
         <div className="mt-12 p-6 bg-muted/30 rounded-lg">

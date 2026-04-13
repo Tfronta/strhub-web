@@ -2,8 +2,8 @@
 
 import type React from "react";
 
-import { useState } from "react";
-import { Search, Database, ExternalLink } from "lucide-react";
+import { useRef, useState } from "react";
+import { Search, Database, ExternalLink, SlidersHorizontal } from "lucide-react";
 import {
   Card,
   CardDescription,
@@ -30,6 +30,13 @@ import { markerData } from "@/lib/markerData";
 import { markerFrequenciesCE } from "@/app/marker/[id]/markerFrequencies";
 import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
 import { cn } from "@/lib/utils";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 
 // Helper function to normalize category names
 function normalizeCategory(category: string): string {
@@ -154,7 +161,34 @@ export default function CatalogPage() {
   const [selectedRepeatType, setSelectedRepeatType] = useState("All");
   const [sortBy, setSortBy] = useState("name"); // Added sortBy state
   const [showNistOnly, setShowNistOnly] = useState(false);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
   const router = useRouter();
+  const markersListRef = useRef<HTMLDivElement>(null);
+
+  const activeFilterCount =
+    (selectedCategory !== "All" ? 1 : 0) +
+    (selectedChromosome !== "All" ? 1 : 0) +
+    (selectedRepeatType !== "All" ? 1 : 0);
+
+  const applyMobileFilterAndClose = () => {
+    setFilterSheetOpen(false);
+    setTimeout(() => {
+      markersListRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 300);
+  };
+
+  const handleMobileCategorySelect = (category: string) => {
+    setSelectedCategory((prev) => (prev === category ? "All" : category));
+    applyMobileFilterAndClose();
+  };
+
+  const handleMobileClearCategory = () => {
+    setSelectedCategory("All");
+    applyMobileFilterAndClose();
+  };
 
   // Helper function to translate marker type
   const getTranslatedType = (type: string): string => {
@@ -290,8 +324,8 @@ export default function CatalogPage() {
           />
         </div>
 
-        {/* Category Cards */}
-        <div className="grid md:grid-cols-4 gap-4 mb-8">
+        {/* Category Cards — desktop only; mobile uses the floating Sheet */}
+        <div className="hidden md:grid md:grid-cols-4 gap-4 mb-8">
           <Card
             className={cn(
               "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-[colors,box-shadow]",
@@ -367,21 +401,37 @@ export default function CatalogPage() {
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <form onSubmit={handleSearchSubmit} className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder={t("catalog.searchPlaceholder")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 pr-14 md:pr-3"
                 />
               </form>
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 -translate-y-1/2 md:hidden flex h-7 items-center border-l border-border pl-2 rounded-md text-primary hover:bg-accent/80 transition-colors"
+                onClick={() => setFilterSheetOpen(true)}
+                aria-label={t("catalog.filterByCategory")}
+              >
+                <span className="relative inline-flex size-7 items-center justify-center">
+                  {activeFilterCount > 0 && (
+                    <span
+                      className="absolute -top-0.5 left-1/2 size-1.5 -translate-x-1/2 rounded-full bg-primary"
+                      aria-hidden
+                    />
+                  )}
+                  <SlidersHorizontal className="h-4 w-4 text-primary" />
+                </span>
+              </button>
             </div>
-            <div className="flex gap-2 flex-wrap">
+            <div className="hidden md:flex gap-2 flex-wrap">
               <Select
                 value={selectedCategory}
                 onValueChange={setSelectedCategory}
               >
-                <SelectTrigger className="w-full md:w-48">
+                <SelectTrigger className="w-48">
                   <SelectValue placeholder={t("catalog.filterByCategory")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -437,7 +487,7 @@ export default function CatalogPage() {
                 </SelectContent>
               </Select>
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-full md:w-32">
+                <SelectTrigger className="w-32">
                   <SelectValue placeholder={t("catalog.sortBy")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -457,7 +507,7 @@ export default function CatalogPage() {
         </div>
 
         {/* Results Summary */}
-        <div className="mb-6">
+        <div ref={markersListRef} className="mb-6 scroll-mt-20">
           <div className="text-sm text-muted-foreground">
             {t("catalog.showing")} {filteredMarkers.length} {t("catalog.of")}{" "}
             {markers.length} {t("catalog.markersFound")}
@@ -669,6 +719,177 @@ export default function CatalogPage() {
         </div>
       </div>
       <SiteFooter />
+
+      <Sheet open={filterSheetOpen} onOpenChange={setFilterSheetOpen}>
+        <SheetContent
+          side="bottom"
+          className="flex max-h-[90vh] flex-col gap-0 overflow-hidden rounded-t-2xl pb-4"
+        >
+          <SheetHeader className="shrink-0 space-y-1 px-4 pb-2 pt-2">
+            <SheetTitle className="text-base leading-tight">
+              {t("catalog.filterByCategory")}
+            </SheetTitle>
+            <SheetDescription className="text-xs leading-snug">
+              {t("catalog.showing")} {filteredMarkers.length} {t("catalog.of")}{" "}
+              {markers.length} {t("catalog.markersFound")}
+            </SheetDescription>
+          </SheetHeader>
+
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            {/* Category cards — natural height, full titles; scroll inside sheet if needed */}
+            <div className="grid grid-cols-2 gap-3 px-4">
+              <Card
+                className={cn(
+                  "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-[colors,box-shadow]",
+                  selectedCategory === "CODIS Core" &&
+                    "ring-2 ring-primary ring-offset-2 ring-offset-background",
+                )}
+                onClick={() => handleMobileCategorySelect("CODIS Core")}
+              >
+                <CardHeader className="p-4">
+                  <div className="text-sm font-semibold leading-snug text-blue-900 dark:text-blue-100">
+                    {t("catalog.categories.CODIS Core")}
+                  </div>
+                  <CardDescription className="mt-1 text-xl font-bold text-foreground">
+                    {markers.filter((m) => m.category === "CODIS Core").length}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+              <Card
+                className={cn(
+                  "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 cursor-pointer hover:bg-green-100 dark:hover:bg-green-900 transition-[colors,box-shadow]",
+                  selectedCategory === "Other Autosomal" &&
+                    "ring-2 ring-primary ring-offset-2 ring-offset-background",
+                )}
+                onClick={() => handleMobileCategorySelect("Other Autosomal")}
+              >
+                <CardHeader className="p-4">
+                  <CardTitle className="text-sm font-semibold leading-snug text-green-900 dark:text-green-100">
+                    {t("catalog.categories.Autosomal")}
+                  </CardTitle>
+                  <CardDescription className="mt-1 text-xl font-bold text-foreground">
+                    {markers.filter((m) => m.category === "Other Autosomal").length}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+              <Card
+                className={cn(
+                  "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-[colors,box-shadow]",
+                  selectedCategory === "Y-STR" &&
+                    "ring-2 ring-primary ring-offset-2 ring-offset-background",
+                )}
+                onClick={() => handleMobileCategorySelect("Y-STR")}
+              >
+                <CardHeader className="p-4">
+                  <CardTitle className="text-sm font-semibold leading-snug text-blue-900 dark:text-blue-100">
+                    {t("catalog.categories.Y-STR")}
+                  </CardTitle>
+                  <CardDescription className="mt-1 text-xl font-bold text-foreground">
+                    {markers.filter((m) => m.category === "Y-STR").length}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+              <Card
+                className={cn(
+                  "bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900 transition-[colors,box-shadow]",
+                  selectedCategory === "X-STR" &&
+                    "ring-2 ring-primary ring-offset-2 ring-offset-background",
+                )}
+                onClick={() => handleMobileCategorySelect("X-STR")}
+              >
+                <CardHeader className="p-4">
+                  <CardTitle className="text-sm font-semibold leading-snug text-purple-900 dark:text-purple-100">
+                    {t("catalog.categories.X-STR")}
+                  </CardTitle>
+                  <CardDescription className="mt-1 text-xl font-bold text-foreground">
+                    {markers.filter((m) => m.category === "X-STR").length}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </div>
+            <div className="px-4 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9 w-full touch-manipulation text-sm font-medium"
+                onClick={handleMobileClearCategory}
+              >
+                {t("catalog.allCategories")}
+              </Button>
+            </div>
+
+            {/* Additional filters */}
+            <div className="grid grid-cols-2 gap-2 px-4 pb-2 pt-2">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground">
+                {t("catalog.chromosome")}
+              </label>
+              <Select
+                value={selectedChromosome}
+                onValueChange={setSelectedChromosome}
+              >
+                <SelectTrigger className="h-9 w-full text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {chromosomes.map((chr) => (
+                    <SelectItem key={chr} value={chr}>
+                      {chr === "All"
+                        ? t("catalog.allChromosomes")
+                        : `Chr ${chr}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground">
+                {t("catalog.repeatType")}
+              </label>
+              <Select
+                value={selectedRepeatType}
+                onValueChange={setSelectedRepeatType}
+              >
+                <SelectTrigger className="h-9 w-full text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {repeatTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type === "All"
+                        ? t("catalog.allRepeatTypes")
+                        : t(`catalog.repeatTypeOptions.${type}` as const)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="col-span-2 space-y-1">
+              <label className="text-xs font-medium text-muted-foreground">
+                {t("catalog.sortBy")}
+              </label>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="h-9 w-full text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="name">
+                    {t("catalog.sortOptions.name")}
+                  </SelectItem>
+                  <SelectItem value="chromosome">
+                    {t("catalog.sortOptions.chromosome")}
+                  </SelectItem>
+                  <SelectItem value="category">
+                    {t("catalog.sortOptions.category")}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

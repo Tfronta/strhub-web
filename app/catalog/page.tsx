@@ -3,7 +3,12 @@
 import type React from "react";
 
 import { useRef, useState } from "react";
-import { Search, Database, ExternalLink, SlidersHorizontal } from "lucide-react";
+import {
+  Search,
+  Database,
+  ExternalLink,
+  SlidersHorizontal,
+} from "lucide-react";
 import {
   Card,
   CardDescription,
@@ -411,7 +416,7 @@ export default function CatalogPage() {
               </form>
               <button
                 type="button"
-                className="absolute right-2 top-1/2 -translate-y-1/2 md:hidden flex h-7 items-center border-l border-border pl-2 rounded-md text-primary hover:bg-accent/80 transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 md:hidden flex h-7 items-center border border-border rounded-md text-primary hover:bg-accent/80 transition-colors"
                 onClick={() => setFilterSheetOpen(true)}
                 aria-label={t("catalog.filterByCategory")}
               >
@@ -768,7 +773,10 @@ export default function CatalogPage() {
                     {t("catalog.categories.Autosomal")}
                   </CardTitle>
                   <CardDescription className="mt-1 text-xl font-bold text-foreground">
-                    {markers.filter((m) => m.category === "Other Autosomal").length}
+                    {
+                      markers.filter((m) => m.category === "Other Autosomal")
+                        .length
+                    }
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -821,72 +829,72 @@ export default function CatalogPage() {
 
             {/* Additional filters */}
             <div className="grid grid-cols-2 gap-2 px-4 pb-2 pt-2">
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
-                {t("catalog.chromosome")}
-              </label>
-              <Select
-                value={selectedChromosome}
-                onValueChange={setSelectedChromosome}
-              >
-                <SelectTrigger className="h-9 w-full text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {chromosomes.map((chr) => (
-                    <SelectItem key={chr} value={chr}>
-                      {chr === "All"
-                        ? t("catalog.allChromosomes")
-                        : `Chr ${chr}`}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">
+                  {t("catalog.chromosome")}
+                </label>
+                <Select
+                  value={selectedChromosome}
+                  onValueChange={setSelectedChromosome}
+                >
+                  <SelectTrigger className="h-9 w-full text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {chromosomes.map((chr) => (
+                      <SelectItem key={chr} value={chr}>
+                        {chr === "All"
+                          ? t("catalog.allChromosomes")
+                          : `Chr ${chr}`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">
+                  {t("catalog.repeatType")}
+                </label>
+                <Select
+                  value={selectedRepeatType}
+                  onValueChange={setSelectedRepeatType}
+                >
+                  <SelectTrigger className="h-9 w-full text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {repeatTypes.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type === "All"
+                          ? t("catalog.allRepeatTypes")
+                          : t(`catalog.repeatTypeOptions.${type}` as const)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="col-span-2 space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">
+                  {t("catalog.sortBy")}
+                </label>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="h-9 w-full text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">
+                      {t("catalog.sortOptions.name")}
                     </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
-                {t("catalog.repeatType")}
-              </label>
-              <Select
-                value={selectedRepeatType}
-                onValueChange={setSelectedRepeatType}
-              >
-                <SelectTrigger className="h-9 w-full text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {repeatTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type === "All"
-                        ? t("catalog.allRepeatTypes")
-                        : t(`catalog.repeatTypeOptions.${type}` as const)}
+                    <SelectItem value="chromosome">
+                      {t("catalog.sortOptions.chromosome")}
                     </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    <SelectItem value="category">
+                      {t("catalog.sortOptions.category")}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <div className="col-span-2 space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
-                {t("catalog.sortBy")}
-              </label>
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="h-9 w-full text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="name">
-                    {t("catalog.sortOptions.name")}
-                  </SelectItem>
-                  <SelectItem value="chromosome">
-                    {t("catalog.sortOptions.chromosome")}
-                  </SelectItem>
-                  <SelectItem value="category">
-                    {t("catalog.sortOptions.category")}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
           </div>
         </SheetContent>
       </Sheet>

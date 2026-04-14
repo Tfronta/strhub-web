@@ -15,13 +15,6 @@ const nextConfig = {
         destination: 'https://strhub.app/:path*',
         permanent: true,
       },
-      // Redirige http → https (fix SEO)
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'strhub.app' }],
-        destination: 'https://strhub.app/:path*',
-        permanent: true,
-      },
       {
         source: '/favicon.ico',
         destination: '/strhub-isologo.svg',

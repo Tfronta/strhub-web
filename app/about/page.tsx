@@ -140,7 +140,7 @@ export default function AboutPage() {
                 </p>
                 <div className="pt-2">
                   <Button asChild>
-                    <Link href="https://www.strhub.app/community#contact">
+                    <Link href="/community#contact">
                       {trans.contactButton}
                     </Link>
                   </Button>

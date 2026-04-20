@@ -27,10 +27,19 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://strhub.app"),
   title: "STRhub - Central Hub for Short Tandem Repeats",
   description:
     "Modern educational and scientific platform for STR research, forensic analysis, and genetic studies",
   generator: "v0.app",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    url: "https://strhub.app",
+    siteName: "STRhub",
+    type: "website",
+  },
   icons: {
     icon: [{ url: "/strhub-isologo.svg", type: "image/svg+xml", sizes: "any" }],
     shortcut: "/strhub-isologo.svg",

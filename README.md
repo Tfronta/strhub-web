@@ -2,7 +2,7 @@
 
 **STRhub** is an open, web-based **educational and exploratory platform** for forensic Short Tandem Repeat (STR) genetics.
 
-**Link to the platform:** https://www.strhub.app/
+**Link to the platform:** https://strhub.app/
 
 It is designed to make key forensic genetics concepts **transparent, visual, and accessible**, without requiring laboratory infrastructure, proprietary software, or black-box pipelines.
 

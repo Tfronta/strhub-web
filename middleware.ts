@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
     const slug = match[1];
     const url = request.nextUrl.clone();
     url.pathname = `/basics/en/${slug}`;
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(url, 308);
   }
   return NextResponse.next();
 }

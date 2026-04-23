@@ -29,6 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
+import { COMMUNITY_CONTRIBUTORS } from "@/lib/communityContributors";
 
 interface BlogPost {
   id: string;
@@ -195,23 +196,41 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* Early Contributors & Partner Labs */}
+      {/* Community Contributors */}
       <section className="py-16 px-4">
         <div className="container mx-auto">
           <h3 className="text-3xl font-bold mb-4 text-center">
-            {t("communityHub.earlyContributors.title")}
+            {t("communityHub.communityContributors.title")}
           </h3>
           <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto text-center">
-            {t("communityHub.earlyContributors.body")}
+            {t("communityHub.communityContributors.subtitle")}
           </p>
-          <div className="flex justify-center">
-            <Card className="border-0 bg-muted/50 max-w-md">
-              <CardContent className="pt-6">
-                <p className="text-center text-muted-foreground">
-                  {t("communityHub.earlyContributors.comingSoon")}
-                </p>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+            {COMMUNITY_CONTRIBUTORS.map((contributor) => (
+              <Card
+                key={contributor.name}
+                className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 h-full"
+              >
+                <CardHeader className="space-y-1.5">
+                  <p className="font-bold text-foreground leading-snug">
+                    {contributor.name}
+                  </p>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {contributor.institution}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t(
+                      `communityHub.communityContributors.countries.${contributor.country}`
+                    )}
+                  </p>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+          <div className="mt-6 w-full overflow-x-auto">
+            <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm whitespace-nowrap">
+              {t("communityHub.communityContributors.disclaimer")}
+            </p>
           </div>
         </div>
       </section>

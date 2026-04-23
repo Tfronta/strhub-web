@@ -256,25 +256,6 @@ export default function BlogPage() {
           </div>
         </section>
 
-        {/* Early Contributors & Partner Labs */}
-        <section className="border-t border-border pt-12">
-          <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-            {t("communityHub.earlyContributors.title")}
-          </h2>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-            {t("communityHub.earlyContributors.body")}
-          </p>
-          <div className="mt-6">
-            <Card className="border-0 bg-muted/50 max-w-md py-3">
-              <CardContent className="py-0">
-                <p className="text-muted-foreground">
-                  {t("communityHub.earlyContributors.comingSoon")}
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
         {/* Recent Posts */}
         <section className="border-t border-border pt-12">
           <div className="flex items-start justify-between mb-2">

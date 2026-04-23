@@ -1408,10 +1408,18 @@ export const translations = {
         },
         cta: "I want to contribute",
       },
-      earlyContributors: {
-        title: "Early contributors and partner labs",
-        body: "STRhub is being shaped with input from researchers, students, and laboratories that believe in open science and accessible technology. This section will highlight the teams and individuals who are helping to build and validate the platform.",
-        comingSoon: "Coming soon",
+      communityContributors: {
+        title: "Community Contributors",
+        subtitle:
+          "STRhub is shaped by feedback and collaboration from researchers and specialists who believe in open science and accessible genomic tools.",
+        countries: {
+          Brazil: "Brazil",
+          USA: "USA",
+          Spain: "Spain",
+          Europe: "Europe",
+        },
+        disclaimer:
+          "Every interaction, question, and suggestion from this community has made STRhub better. Thank you.",
       },
       recentPosts: {
         title: "Recent educational posts",
@@ -2481,10 +2489,18 @@ export const translations = {
         },
         cta: "Quero contribuir",
       },
-      earlyContributors: {
-        title: "Colaboradores iniciais e laboratórios parceiros",
-        body: "O STRhub está sendo construído com contribuições de pesquisadores, estudantes e laboratórios que acreditam em ciência aberta e tecnologia acessível. Nesta seção vamos destacar as equipes e pessoas que ajudam a construir e validar a plataforma.",
-        comingSoon: "Em breve",
+      communityContributors: {
+        title: "Colaboradores da comunidade",
+        subtitle:
+          "O STRhub é moldado pelo feedback e pela colaboração de pesquisadores e especialistas que acreditam em ciência aberta e em ferramentas genômicas acessíveis.",
+        countries: {
+          Brazil: "Brasil",
+          USA: "EUA",
+          Spain: "Espanha",
+          Europe: "Europa",
+        },
+        disclaimer:
+          "Cada interação, pergunta e sugestão desta comunidade tornou o STRhub melhor. Obrigada.",
       },
       recentPosts: {
         title: "Publicações educacionais recentes",
@@ -4780,10 +4796,18 @@ export const translations = {
         },
         cta: "Quiero contribuir",
       },
-      earlyContributors: {
-        title: "Colaboradores iniciales y laboratorios aliados",
-        body: "STRhub se está construyendo con el aporte de investigadores, estudiantes y laboratorios que creen en la ciencia abierta y en la tecnología accesible. En esta sección vamos a destacar a los equipos y personas que ayudan a construir y validar la plataforma.",
-        comingSoon: "Próximamente",
+      communityContributors: {
+        title: "Colaboradores de la comunidad",
+        subtitle:
+          "STRhub se construye con el feedback y la colaboración de investigadores y especialistas que creen en la ciencia abierta y en herramientas genómicas accesibles.",
+        countries: {
+          Brazil: "Brasil",
+          USA: "EE. UU.",
+          Spain: "España",
+          Europe: "Europa",
+        },
+        disclaimer:
+          "Cada interacción, pregunta y sugerencia de esta comunidad hizo de STRhub una mejor herramienta. Gracias.",
       },
       recentPosts: {
         title: "Publicaciones educativas recientes",

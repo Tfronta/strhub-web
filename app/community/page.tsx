@@ -1,20 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  Users,
-  MessageSquare,
-  BookOpen,
-  Calendar,
-  ArrowRight,
-  Share2,
-  Code,
-  Handshake,
-  Sparkles,
-  FileText,
-  Database,
-  Wrench,
-} from "lucide-react";
+import { useState } from "react";
+import { Github, MessageSquare, Users } from "lucide-react";
 import {
   Card,
   CardDescription,
@@ -22,7 +9,6 @@ import {
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,29 +16,19 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
-import {
-  BackToBasicsCard,
-  type BackToBasicsPost,
-} from "@/components/back-to-basics/BackToBasicsCard";
 import { PageTitle } from "@/components/page-title";
 import { useToast } from "@/hooks/use-toast";
 
-interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  category: "Blog" | "Projects" | "Educational";
-  date: string;
-  published: boolean;
-}
+const GITHUB_DISCUSSIONS_URL =
+  "https://github.com/Tfronta/strhub-web/discussions";
 
-export default function BlogPage() {
-  const { language, t } = useLanguage();
+/** Matches production / other STRhub cards: soft gradient surface, subtle border, generous padding. */
+const communityCardShell =
+  "rounded-xl border border-border bg-gradient-to-br from-card to-card/50 p-8 shadow-sm dark:border-white/10 dark:ring-1 dark:ring-white/10 dark:shadow-[0_20px_40px_rgba(0,0,0,0.6)]";
+
+export default function CommunityPage() {
+  const { t } = useLanguage();
   const { toast } = useToast();
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [recentPosts, setRecentPosts] = useState<BackToBasicsPost[]>([]);
-  const [isLoadingPosts, setIsLoadingPosts] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -61,79 +37,6 @@ export default function BlogPage() {
     subject: "",
     message: "",
   });
-
-  const fallbackPosts: BlogPost[] = [];
-
-  useEffect(() => {
-    loadPosts();
-  }, []);
-
-  useEffect(() => {
-    loadRecentPosts();
-  }, [language]);
-
-  const loadPosts = async () => {
-    try {
-      const response = await fetch("/api/content?category=Educational");
-      if (response.ok) {
-        const data = await response.json();
-        setPosts(data.entries || []);
-      }
-    } catch (error) {
-      console.error("Failed to load blog posts:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const loadRecentPosts = async () => {
-    setIsLoadingPosts(true);
-    try {
-      const response = await fetch(`/api/back-to-basics?locale=${language}`);
-      if (response.ok) {
-        const data = await response.json();
-        const allPosts: BackToBasicsPost[] = data.items || [];
-
-        // Show the most recent posts (limit to 2-4 posts)
-        // Posts are already ordered by -sys.createdAt from the API
-        const recentPosts = allPosts.slice(0, 4);
-
-        setRecentPosts(recentPosts);
-      }
-    } catch (error) {
-      console.error("Failed to load recent posts:", error);
-      setRecentPosts([]);
-    } finally {
-      setIsLoadingPosts(false);
-    }
-  };
-
-  const displayPosts = posts.length > 0 ? posts : fallbackPosts;
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-  const getExcerpt = (content: string, maxLength = 150) => {
-    const plainText = content
-      .replace(/!\[([^\]]*)\]$$([^)]+)$$/g, "") // Remove images
-      .replace(/#{1,6}\s/g, "") // Remove headers
-      .replace(/\*\*(.*?)\*\*/g, "$1") // Remove bold
-      .replace(/\*(.*?)\*/g, "$1") // Remove italic
-      .replace(/`([^`]+)`/g, "$1") // Remove inline code
-      .replace(/\[([^\]]+)\]$$([^)]+)$$/g, "$1") // Remove links, keep text
-      .replace(/^\* /gm, "") // Remove list markers
-      .replace(/^\d+\. /gm, "") // Remove numbered list markers
-      .replace(/^> /gm, "") // Remove blockquote markers
-      .trim();
-
-    if (plainText.length <= maxLength) return plainText;
-    return plainText.substring(0, maxLength).trim() + "...";
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,12 +55,10 @@ export default function BlogPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        // Set form error to display in the form
         setFormError(data.error || "Failed to send message");
         return;
       }
 
-      // Success
       toast({
         title: t("about.formSuccess") || "Message sent!",
         description:
@@ -165,11 +66,9 @@ export default function BlogPage() {
           "Thank you for contacting us. We'll get back to you soon.",
       });
 
-      // Reset form and clear errors
       setFormData({ name: "", email: "", subject: "", message: "" });
       setFormError(null);
     } catch (error: any) {
-      // Network or other errors
       setFormError(
         error.message || "Failed to send message. Please try again."
       );
@@ -180,189 +79,120 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 md:px-0 py-8 space-y-6">
-        {/* Hero Section */}
-        <section className="border-b border-border pb-4">
-          <PageTitle
-            title={t("nav.blog")}
-            description={t("communityHub.hero.subtitle")}
-          />
-          <div className="mt-5">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-primary to-accent"
-              asChild
-            >
-              <Link href="#contact">{t("communityHub.hero.cta")}</Link>
-            </Button>
-          </div>
-        </section>
-
-        {/* How You Can Be Part of This */}
-        <section className="pt-4">
-          <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-            {t("communityHub.howToJoin.title")}
-          </h2>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-            {t("communityHub.howToJoin.intro")}
-          </p>
-          <div className="mt-6 grid gap-6 md:grid-cols-3">
-            <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
-                  <Share2 className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <CardTitle>
-                  {t("communityHub.howToJoin.cards.experience.title")}
-                </CardTitle>
-                <CardDescription>
-                  {t("communityHub.howToJoin.cards.experience.body")}
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
-                  <BookOpen className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <CardTitle>
-                  {t("communityHub.howToJoin.cards.tutorials.title")}
-                </CardTitle>
-                <CardDescription>
-                  {t("communityHub.howToJoin.cards.tutorials.body")}
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
-                  <Handshake className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <CardTitle>
-                  {t("communityHub.howToJoin.cards.collaborations.title")}
-                </CardTitle>
-                <CardDescription>
-                  {t("communityHub.howToJoin.cards.collaborations.body")}
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-          <div className="mt-6">
-            <Button size="lg" variant="outline" asChild>
-              <Link href="#contact">{t("communityHub.howToJoin.cta")}</Link>
-            </Button>
-          </div>
-        </section>
-
-        {/* Recent Posts */}
-        <section className="border-t border-border pt-12">
-          <div className="flex items-start justify-between mb-2">
-            <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-              {t("communityHub.recentPosts.title")}
-            </h2>
-            <Link
-              href="/basics"
-              className="text-sm font-medium text-primary hover:underline mt-1"
-            >
-              {t("communityHub.recentPosts.viewAll")}
-            </Link>
-          </div>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground mb-8">
-            {t("communityHub.recentPosts.subtitle")}
-          </p>
-
-          {isLoadingPosts ? (
-            <div className="py-8">
-              <p className="text-muted-foreground">
-                {t("communityHub.recentPosts.loading")}
-              </p>
+      <main className="container mx-auto px-4 md:px-0 py-8 space-y-4">
+        {/* Section 1 — Hero */}
+        <section className="border-b border-border pb-6">
+          <PageTitle title={t("nav.blog")} />
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4 shadow-sm">
+              <span className="text-[28px] font-medium tabular-nums tracking-tight text-foreground">
+                7+
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {t("communityHub.metrics.countries")}
+              </span>
             </div>
-          ) : recentPosts.length > 0 ? (
-            <div className="grid lg:grid-cols-2 gap-8">
-              {recentPosts.map((post) => (
-                <BackToBasicsCard key={post.sys.id} post={post} />
-              ))}
+            <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4 shadow-sm">
+              <span className="text-[28px] font-medium tabular-nums tracking-tight text-foreground">
+                100%
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {t("communityHub.metrics.organicGrowth")}
+              </span>
             </div>
-          ) : (
-            <div className="py-8">
-              <p className="text-muted-foreground">
-                {t("communityHub.recentPosts.noPosts")}
-              </p>
+            <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4 shadow-sm">
+              <span className="text-[28px] font-medium tabular-nums tracking-tight text-foreground">
+                MIT
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {t("communityHub.metrics.openSourceLicense")}
+              </span>
             </div>
-          )}
+          </div>
+          <p className="mt-4 text-lg text-pretty leading-relaxed text-muted-foreground">
+            {t("communityHub.hero.subtitle")}
+          </p>
+          <p className="mt-4 text-base text-pretty leading-relaxed text-muted-foreground">
+            {t("communityHub.hero.reality")}
+          </p>
         </section>
 
-        {/* Coming Soon */}
-        <section className="border-t border-border pt-12">
-          <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-            {t("communityHub.comingSoon.title")}
-          </h2>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground mb-8">
-            {t("communityHub.comingSoon.intro")}
-          </p>
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
-                  <Database className="h-6 w-6 text-primary-foreground" />
+        {/* Left: GitHub + About teaser | Right: Contact (full row height) */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-stretch">
+          <div className="flex h-full flex-col gap-4">
+            <Card className={`h-full ${communityCardShell}`}>
+              <CardHeader className="px-0 pb-4">
+                <div className="mb-4 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary">
+                  <Github
+                    className="h-6 w-6 text-primary-foreground"
+                    aria-hidden
+                  />
                 </div>
-                <CardTitle>
-                  {t("communityHub.comingSoon.cards.structureBrowser.title")}
+                <CardTitle className="text-2xl">
+                  {t("communityHub.discussion.title")}
                 </CardTitle>
-                <CardDescription>
-                  {t("communityHub.comingSoon.cards.structureBrowser.body")}
+                <CardDescription className="mt-2 text-base leading-relaxed">
+                  {t("communityHub.discussion.body")}
                 </CardDescription>
               </CardHeader>
+              <CardContent className="px-0 pt-0">
+                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+                  <a
+                    href={GITHUB_DISCUSSIONS_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t("communityHub.discussion.cta")}
+                  </a>
+                </Button>
+              </CardContent>
             </Card>
 
-            <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
-                  <FileText className="h-6 w-6 text-primary-foreground" />
+            <Card className={communityCardShell}>
+              <CardHeader className="px-0 pb-2">
+                <div className="mb-4 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary">
+                  <Users
+                    className="h-6 w-6 text-primary-foreground"
+                    aria-hidden
+                  />
                 </div>
-                <CardTitle>
-                  {t("communityHub.comingSoon.cards.caseStudies.title")}
-                </CardTitle>
-                <CardDescription>
-                  {t("communityHub.comingSoon.cards.caseStudies.body")}
-                </CardDescription>
               </CardHeader>
-            </Card>
-
-            <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
-                  <Wrench className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <CardTitle>
-                  {t("communityHub.comingSoon.cards.pipelines.title")}
-                </CardTitle>
-                <CardDescription>
-                  {t("communityHub.comingSoon.cards.pipelines.body")}
-                </CardDescription>
-              </CardHeader>
+              <CardContent className="space-y-3 px-0 pt-0 text-sm leading-relaxed text-muted-foreground">
+                <p className="text-pretty">{t("communityHub.aboutTeaser.body")}</p>
+                <Link
+                  href="/about"
+                  className="inline-block font-medium text-primary hover:underline"
+                >
+                  {t("communityHub.aboutTeaser.linkText")}
+                </Link>
+              </CardContent>
             </Card>
           </div>
-        </section>
 
-        {/* Contact / Join the Conversation */}
-        <section id="contact" className="border-t border-border pt-12">
-          <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-            <CardHeader className="pb-4">
-              <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
-                <MessageSquare className="h-6 w-6 text-primary-foreground" />
+          <Card
+            id="contact"
+            className={`flex h-full min-h-0 flex-col ${communityCardShell}`}
+          >
+            <CardHeader className="px-0 pb-4">
+              <div className="mb-4 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary">
+                <MessageSquare
+                  className="h-6 w-6 text-primary-foreground"
+                  aria-hidden
+                />
               </div>
               <CardTitle className="text-2xl">
                 {t("communityHub.contact.title")}
               </CardTitle>
-              <CardDescription className="mt-2">
+              <CardDescription className="mt-2 text-base leading-relaxed">
                 {t("communityHub.contact.intro")}
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-0">
-              <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            <CardContent className="flex flex-1 flex-col px-0 pt-0">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-1 flex-col space-y-4"
+                noValidate
+              >
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">{t("about.formName")}</Label>
@@ -426,7 +256,7 @@ export default function BlogPage() {
                 )}
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="mt-auto w-full bg-primary text-primary-foreground hover:bg-primary/90"
                   disabled={isSubmitting}
                 >
                   {isSubmitting
@@ -436,7 +266,7 @@ export default function BlogPage() {
               </form>
             </CardContent>
           </Card>
-        </section>
+        </div>
       </main>
     </div>
   );

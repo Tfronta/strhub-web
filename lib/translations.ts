@@ -1385,8 +1385,34 @@ export const translations = {
       hero: {
         title: "Connect, Learn, Collaborate",
         subtitle:
-          "We're building the first global community dedicated to STR analysis with next-generation sequencing. Soon you'll find tutorials, guides, real case examples, and collaborations created by researchers, labs, and students from around the world.",
+          "STRhub is used by researchers, students, and forensic labs across more than 7 countries. This space exists to ask questions, share experiences, report what works and what doesn't, and help shape what gets built next.",
+        reality:
+          "STR analysis with NGS is still a developing field. No tool is perfect, no pipeline is universal. The most valuable thing you can contribute is your real experience: a question that others haven't asked yet, a use case that reveals an edge case, or feedback that makes the platform more useful for everyone.",
         cta: "Join as an early contributor",
+      },
+      discussion: {
+        title: "Join the discussion on GitHub",
+        body:
+          "Ask questions, share how you use STRhub, suggest features, or connect with others working in STR analysis. No account needed to read, just a GitHub account to participate.",
+        categoriesLabel: "Discussion categories",
+        categories: {
+          announcements: "Announcements",
+          general: "General",
+          ideas: "Ideas",
+          qa: "Q&A",
+          showAndTell: "Show and tell",
+        },
+        cta: "Open Discussions",
+      },
+      aboutTeaser: {
+        body:
+          "Want to know who's behind STRhub and who has contributed to it?",
+        linkText: "Visit the About page →",
+      },
+      metrics: {
+        countries: "countries",
+        organicGrowth: "organic growth",
+        openSourceLicense: "open source license",
       },
       howToJoin: {
         title: "How you can be part of this",
@@ -1449,7 +1475,7 @@ export const translations = {
         },
       },
       contact: {
-        title: "Join the conversation",
+        title: "Contact & Collaboration",
         intro:
           "Have ideas, questions, or collaboration proposals? Tell us how STRhub could support your work or what you would like to see in this community.",
         messagePlaceholder:
@@ -2466,8 +2492,33 @@ export const translations = {
       hero: {
         title: "Conectar, aprender, colaborar",
         subtitle:
-          "Estamos construindo a primeira comunidade global dedicada à análise de STRs com sequenciamento de nova geração. Em breve você vai encontrar tutoriais, guias, casos reais e colaborações criadas por pesquisadores, laboratórios e estudantes do mundo todo.",
+          "O STRhub é utilizado por pesquisadores, estudantes e laboratórios forenses em mais de 7 países. Este espaço existe para fazer perguntas, compartilhar experiências, relatar o que funciona e o que não funciona, e ajudar a construir o que vem a seguir.",
+        reality:
+          "A análise de STRs com NGS ainda é um campo em desenvolvimento. Nenhuma ferramenta é perfeita, nenhum pipeline é universal. A contribuição mais valiosa que você pode fazer é a sua experiência real: uma pergunta que outros ainda não fizeram, um caso de uso que revela um comportamento inesperado, ou um feedback que torna a plataforma mais útil para todos.",
         cta: "Participar como colaborador(a) inicial",
+      },
+      discussion: {
+        title: "Participe da discussão no GitHub",
+        body:
+          "Faça perguntas, compartilhe como você usa o STRhub, sugira funcionalidades ou conecte-se com outros pesquisadores. Não é necessário conta para ler, apenas uma conta GitHub para participar.",
+        categoriesLabel: "Categorias de discussão",
+        categories: {
+          announcements: "Anúncios",
+          general: "Geral",
+          ideas: "Ideias",
+          qa: "Perguntas e respostas",
+          showAndTell: "Mostrar e contar",
+        },
+        cta: "Abrir Discussões",
+      },
+      aboutTeaser: {
+        body: "Quer saber quem está por trás do STRhub e quem contribuiu?",
+        linkText: "Visitar a página Sobre →",
+      },
+      metrics: {
+        countries: "países",
+        organicGrowth: "crescimento orgânico",
+        openSourceLicense: "licença open source",
       },
       howToJoin: {
         title: "Como você pode fazer parte disso",
@@ -2530,7 +2581,7 @@ export const translations = {
         },
       },
       contact: {
-        title: "Entre na conversa",
+        title: "Contato e Colaboração",
         intro:
           "Tem ideias, perguntas ou propostas de colaboração? Conte como o STRhub pode apoiar o seu trabalho ou o que você gostaria de ver nesta comunidade.",
         messagePlaceholder:
@@ -4773,8 +4824,34 @@ export const translations = {
       hero: {
         title: "Conectar, aprender, colaborar",
         subtitle:
-          "Estamos construyendo la primera comunidad global dedicada al análisis de STRs con secuenciación de nueva generación. Muy pronto vas a encontrar tutoriales, guías, casos reales y colaboraciones creadas por investigadores, laboratorios y estudiantes de todo el mundo.",
+          "STRhub es utilizado por investigadores, estudiantes y laboratorios forenses en más de 7 países. Este espacio existe para hacer preguntas, compartir experiencias, reportar lo que funciona y lo que no, y ayudar a construir lo que viene después.",
+        reality:
+          "El análisis de STRs con NGS es todavía un campo en desarrollo. Ninguna herramienta es perfecta, ningún pipeline es universal. Lo más valioso que podés aportar es tu experiencia real: una pregunta que otros todavía no hicieron, un caso de uso que revela un comportamiento inesperado, o un feedback que hace la plataforma más útil para todos.",
         cta: "Unirte como colaborador/a inicial",
+      },
+      discussion: {
+        title: "Unite a la discusión en GitHub",
+        body:
+          "Hacé preguntas, compartí cómo usás STRhub, sugerí funcionalidades o conectate con otros investigadores. No necesitás cuenta para leer, solo una cuenta de GitHub para participar.",
+        categoriesLabel: "Categorías de discusión",
+        categories: {
+          announcements: "Anuncios",
+          general: "General",
+          ideas: "Ideas",
+          qa: "Preguntas y respuestas",
+          showAndTell: "Mostrar y contar",
+        },
+        cta: "Abrir Discusiones",
+      },
+      aboutTeaser: {
+        body:
+          "¿Querés saber quiénes están detrás de STRhub y quiénes han contribuido?",
+        linkText: "Visitar la página Acerca de →",
+      },
+      metrics: {
+        countries: "países",
+        organicGrowth: "crecimiento orgánico",
+        openSourceLicense: "licencia open source",
       },
       howToJoin: {
         title: "Cómo podés ser parte de esto",
@@ -4837,7 +4914,7 @@ export const translations = {
         },
       },
       contact: {
-        title: "Sumate a la conversación",
+        title: "Contacto y Colaboración",
         intro:
           "¿Tenés ideas, preguntas o propuestas de colaboración? Contanos cómo STRhub podría apoyar tu trabajo o qué te gustaría ver en esta comunidad.",
         messagePlaceholder:

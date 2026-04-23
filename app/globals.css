@@ -38,6 +38,13 @@
   --sidebar-accent-foreground: oklch(0.35 0.01 240);
   --sidebar-border: oklch(0.9 0.005 240);
   --sidebar-ring: oklch(0.6 0.15 200 / 0.5);
+  /* Neutral metric tiles (no teal / green tint) */
+  --color-background-secondary: oklch(0.96 0 0);
+  --color-text-primary: var(--foreground);
+  --color-text-secondary: var(--muted-foreground);
+  --color-border-tertiary: oklch(0.88 0 0);
+  --border-radius-md: calc(var(--radius) - 2px);
+  --border-radius-lg: 0.5rem;
 }
 
 .dark {
@@ -74,6 +81,12 @@
   --sidebar-accent-foreground: oklch(0.95 0.005 240);
   --sidebar-border: oklch(0.2 0.01 240);
   --sidebar-ring: oklch(0.5 0 0 / 0.5);
+  --color-background-secondary: oklch(0.17 0 0);
+  --color-text-primary: var(--foreground);
+  --color-text-secondary: var(--muted-foreground);
+  --color-border-tertiary: oklch(0.28 0 0);
+  --border-radius-md: calc(var(--radius) - 2px);
+  --border-radius-lg: 0.5rem;
 }
 
 @theme inline {

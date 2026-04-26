@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   ArrowLeft,
   Database,
@@ -175,6 +175,23 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     // Fallback to original type if no translation found
     return type;
   };
+
+  /** Short label for frequency-tab population buttons (CE / NGS), same tooltip chrome as "Comparar". */
+  const populationAbbrevTooltip = useCallback(
+    (pop: string) => {
+      if (pop === "LATAM") {
+        return t("marker.populationLabels.LAT");
+      }
+      if (pop === "RAO") {
+        return t("marker.frequencies.raoPopulationButtonTooltip");
+      }
+      const i18nKey = `marker.populationLabels.${pop}`;
+      const label = t(i18nKey);
+      if (!label || label === i18nKey) return pop;
+      return label;
+    },
+    [t],
+  );
 
   const tabValues = ["overview", "frequencies", "statistics", "variants", "tools"] as const;
   type TabValue = (typeof tabValues)[number];
@@ -402,8 +419,8 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   }, [latamCEOptions]);
 
   const latamButtonLabel = selectedLatamSubpop
-    ? `LATAM: ${selectedLatamSubpop.country} — ${selectedLatamSubpop.region} (N = ${selectedLatamSubpop.N})`
-    : "LATAM";
+    ? `LAT: ${selectedLatamSubpop.country} — ${selectedLatamSubpop.region} (N = ${selectedLatamSubpop.N})`
+    : "LAT";
 
   const isXSTR = marker.type === "X-STR" || marker.chromosome === "X";
   const populationDescriptionKey =
@@ -986,20 +1003,22 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
 
                           if (isLatam) {
                             return (
-                              <Popover
-                                key={pop}
-                                open={latamSubpopPopoverOpen && isLatamCE}
-                                onOpenChange={(open) => {
-                                  setLatamSubpopPopoverOpen(open);
-                                  if (open) {
-                                    setShowAllPopulations(false);
-                                    setSelectedPopulation("LATAM");
-                                  }
-                                }}
-                              >
-                                <PopoverTrigger asChild>
-                                  {button}
-                                </PopoverTrigger>
+                              <UITooltip key={pop}>
+                                <TooltipTrigger asChild>
+                                  <span className="inline-flex">
+                                    <Popover
+                                      open={latamSubpopPopoverOpen && isLatamCE}
+                                      onOpenChange={(open) => {
+                                        setLatamSubpopPopoverOpen(open);
+                                        if (open) {
+                                          setShowAllPopulations(false);
+                                          setSelectedPopulation("LATAM");
+                                        }
+                                      }}
+                                    >
+                                      <PopoverTrigger asChild>
+                                        {button}
+                                      </PopoverTrigger>
                                 <PopoverContent
                                   className="w-80 max-h-80 overflow-y-auto"
                                   align="start"
@@ -1055,11 +1074,24 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                     )}
                                   </div>
                                 </PopoverContent>
-                              </Popover>
+                                    </Popover>
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs text-xs">
+                                  {populationAbbrevTooltip(pop)}
+                                </TooltipContent>
+                              </UITooltip>
                             );
                           }
 
-                          return <span key={pop}>{button}</span>;
+                          return (
+                            <UITooltip key={pop}>
+                              <TooltipTrigger asChild>{button}</TooltipTrigger>
+                              <TooltipContent className="max-w-xs text-xs">
+                                {populationAbbrevTooltip(pop)}
+                              </TooltipContent>
+                            </UITooltip>
+                          );
                         })}
                         {!isXSTR && (
                           <>
@@ -1091,23 +1123,29 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         {hasNGS ? (
                           <div className="flex items-center gap-2 flex-wrap">
                             {ngs1000GPops.map((pop) => (
-                              <Button
-                                key={pop}
-                                variant={
-                                  !showAllPopulations &&
-                                  selectedPopulation === pop
-                                    ? "default"
-                                    : "outline"
-                                }
-                                size="sm"
-                                onClick={() => {
-                                  setShowAllPopulations(false);
-                                  setSelectedPopulation(pop);
-                                }}
-                                className="h-7 text-xs font-normal rounded-sm px-2"
-                              >
-                                {pop}
-                              </Button>
+                              <UITooltip key={pop}>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant={
+                                      !showAllPopulations &&
+                                      selectedPopulation === pop
+                                        ? "default"
+                                        : "outline"
+                                    }
+                                    size="sm"
+                                    onClick={() => {
+                                      setShowAllPopulations(false);
+                                      setSelectedPopulation(pop);
+                                    }}
+                                    className="h-7 text-xs font-normal rounded-sm px-2"
+                                  >
+                                    {pop}
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs text-xs">
+                                  {populationAbbrevTooltip(pop)}
+                                </TooltipContent>
+                              </UITooltip>
                             ))}
                             {ngs1000GPops.length >= 2 && (
                               <>
@@ -1138,23 +1176,29 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               <>
                                 <div className="h-5 w-px bg-border" />
                                 {ngsRaoPops.map((pop) => (
-                                  <Button
-                                    key={pop}
-                                    variant={
-                                      !showAllPopulations &&
-                                      selectedPopulation === pop
-                                        ? "default"
-                                        : "outline"
-                                    }
-                                    size="sm"
-                                    onClick={() => {
-                                      setShowAllPopulations(false);
-                                      setSelectedPopulation(pop);
-                                    }}
-                                    className="h-7 text-xs font-normal rounded-sm px-2"
-                                  >
-                                    {pop}
-                                  </Button>
+                                  <UITooltip key={pop}>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        variant={
+                                          !showAllPopulations &&
+                                          selectedPopulation === pop
+                                            ? "default"
+                                            : "outline"
+                                        }
+                                        size="sm"
+                                        onClick={() => {
+                                          setShowAllPopulations(false);
+                                          setSelectedPopulation(pop);
+                                        }}
+                                        className="h-7 text-xs font-normal rounded-sm px-2"
+                                      >
+                                        {pop}
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-xs text-xs">
+                                      {populationAbbrevTooltip(pop)}
+                                    </TooltipContent>
+                                  </UITooltip>
                                 ))}
                               </>
                             )}
@@ -1865,8 +1909,8 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     <p className="text-sm text-muted-foreground max-w-md">
                       {isLatamCE
                         ? latamSubpopForChart
-                          ? "Allele frequencies for this LATAM subpopulation are being curated."
-                          : "Allele frequencies for LATAM are being curated."
+                          ? "Allele frequencies for this LAT subpopulation are being curated."
+                          : "Allele frequencies for LAT are being curated."
                         : t("marker.noFrequenciesMessage")}
                     </p>
                     <Button variant="outline" size="sm" asChild>

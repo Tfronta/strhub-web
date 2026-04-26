@@ -360,18 +360,20 @@ export const translations = {
       datasetButton: "Dataset",
       originalPublicationButton: "Original publication",
       populationGroup: "Population Group",
-      populations: {
-        AFR: "African",
-        NAM: "American",
-        EAS: "East Asian",
-        CSA: "Central–South Asian",
+      populationLabels: {
+        AFR: "Africa",
+        NAM: "Native American",
+        EAS: "East Asia",
+        CSA: "Central and South Asia",
+        EUR: "Europe",
+        MES: "Middle East",
+        OCE: "Oceania",
+        LAT: "Latin America",
         SAS: "South Asian",
-        EUR: "European",
-        OCE: "Oceanian",
       },
       frequencies: {
         region: {
-          latam: "LATAM",
+          latam: "LAT",
         },
         datasetNotes: {
           provenance:
@@ -431,9 +433,11 @@ export const translations = {
         ngs1000gTooltip:
           "Compares AFR, NAM, EAS, SAS and EUR from the 1000 Genomes Project Phase 3",
         legendClickHint: "Click a population in the legend to show/hide",
+        raoPopulationButtonTooltip:
+          "NGS STR panel from a Brazilian sample (Ribeirão Preto; Valle-Silva et al., 2022).",
         latam: {
-          selectorHint: "Select a LATAM population for this marker.",
-          noDataForLocus: "No LATAM datasets available for this marker.",
+          selectorHint: "Select a LAT population for this marker.",
+          noDataForLocus: "No LAT datasets available for this marker.",
           sampleSize: "n = {n}",
           markerCount: "{count} STR markers",
         },
@@ -1477,7 +1481,7 @@ export const translations = {
         intro: "We're working on new resources and tools that will gradually appear in this hub.",
         cards: {
           structureBrowser: {
-            title: "LATAM Catalog",
+            title: "LAT Catalog",
             body: "Curated allele frequency catalog of Latin American populations.",
           },
           caseStudies: {
@@ -2092,18 +2096,20 @@ export const translations = {
       datasetButton: "Conjunto de dados",
       originalPublicationButton: "Publicação original",
       populationGroup: "Grupo Populacional",
-      populations: {
-        AFR: "Africano",
-        NAM: "Americano",
-        EAS: "Asiático Oriental",
+      populationLabels: {
+        AFR: "África",
+        NAM: "Nativo Americano",
+        EAS: "Ásia Oriental",
         CSA: "Ásia Central e do Sul",
-        SAS: "Asiático do Sul",
-        EUR: "Europeu",
-        OCE: "Oceânico",
+        EUR: "Europa",
+        MES: "Oriente Médio",
+        OCE: "Oceania",
+        LAT: "América Latina",
+        SAS: "Sul da Ásia",
       },
       frequencies: {
         region: {
-          latam: "LATAM",
+          latam: "LAT",
         },
         datasetNotes: {
           provenance:
@@ -2163,9 +2169,11 @@ export const translations = {
         ngs1000gTooltip:
           "Compara AFR, NAM, EAS, SAS e EUR do Projeto 1000 Genomas Fase 3",
         legendClickHint: "Clique em uma população na legenda para mostrar/ocultar",
+        raoPopulationButtonTooltip:
+          "Painel STR por NGS de uma amostra brasileira (Ribeirão Preto; Valle-Silva et al., 2022).",
         latam: {
-          selectorHint: "Selecione uma população LATAM para este marcador.",
-          noDataForLocus: "Não há dados LATAM disponíveis para este marcador.",
+          selectorHint: "Selecione uma população LAT para este marcador.",
+          noDataForLocus: "Não há dados LAT disponíveis para este marcador.",
           sampleSize: "n = {n}",
           markerCount: "{count} marcadores STR",
         },
@@ -2599,7 +2607,7 @@ export const translations = {
         intro: "Estamos desenvolvendo novos recursos e ferramentas que vão aparecer neste hub aos poucos.",
         cards: {
           structureBrowser: {
-            title: "Catálogo LATAM",
+            title: "Catálogo LAT",
             body: "Catálogo curado de frequências alélicas de populações latino-americanas.",
           },
           caseStudies: {
@@ -3828,18 +3836,20 @@ export const translations = {
       datasetButton: "Conjunto de datos",
       originalPublicationButton: "Publicación original",
       populationGroup: "Grupo Poblacional",
-      populations: {
-        AFR: "Africano",
-        NAM: "Americano",
-        EAS: "Asiático Oriental",
+      populationLabels: {
+        AFR: "África",
+        NAM: "Nativo Americano",
+        EAS: "Asia Oriental",
         CSA: "Asia Central y del Sur",
-        SAS: "Asiático del Sur",
-        EUR: "Europeu",
-        OCE: "Oceánico",
+        EUR: "Europa",
+        MES: "Medio Oriente",
+        OCE: "Oceanía",
+        LAT: "Latinoamérica",
+        SAS: "Asia del Sur",
       },
       frequencies: {
         region: {
-          latam: "LATAM",
+          latam: "LAT",
         },
         datasetNotes: {
           provenance:
@@ -3899,9 +3909,11 @@ export const translations = {
         ngs1000gTooltip:
           "Compara AFR, NAM, EAS, SAS y EUR del Proyecto 1000 Genomas Fase 3",
         legendClickHint: "Haz clic en una población de la leyenda para mostrar/ocultar",
+        raoPopulationButtonTooltip:
+          "Panel STR NGS de una muestra brasileña (Ribeirão Preto; Valle-Silva et al., 2022).",
         latam: {
-          selectorHint: "Selecciona una población LATAM para este marcador.",
-          noDataForLocus: "No hay datos LATAM disponibles para este marcador.",
+          selectorHint: "Selecciona una población LAT para este marcador.",
+          noDataForLocus: "No hay datos LAT disponibles para este marcador.",
           sampleSize: "n = {n}",
           markerCount: "{count} marcadores STR",
         },
@@ -4948,7 +4960,7 @@ export const translations = {
         intro: "Estamos trabajando en nuevos recursos y herramientas que se irán sumando a este hub.",
         cards: {
           structureBrowser: {
-            title: "Catálogo LATAM",
+            title: "Catálogo LAT",
             body: "Catálogo curado de frecuencias alélicas de poblaciones latinoamericanas.",
           },
           caseStudies: {

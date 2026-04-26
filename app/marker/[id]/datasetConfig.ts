@@ -67,7 +67,7 @@ export const datasetConfigs: Record<string, AlleleFrequencyDataset> = {
   },
   LATAM: {
     id: "LATAM",
-    label: "LATAM",
+    label: "LAT",
     technology: "CE",
   },
 };

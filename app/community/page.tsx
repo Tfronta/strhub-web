@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Github, MessageSquare, Users } from "lucide-react";
+import { Github, Mail, MessageSquare, Users } from "lucide-react";
 import {
   Card,
   CardDescription,
@@ -13,11 +13,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
-import { useToast } from "@/hooks/use-toast";
+
+const CONTACT_EMAIL = "contact@strhub.app";
 
 const GITHUB_DISCUSSIONS_URL =
   "https://github.com/Tfronta/strhub-web/discussions";
@@ -28,53 +28,17 @@ const communityCardShell =
 
 export default function CommunityPage() {
   const { t } = useLanguage();
-  const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
     subject: "",
     message: "",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setFormError(null);
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setFormError(data.error || "Failed to send message");
-        return;
-      }
-
-      toast({
-        title: t("about.formSuccess") || "Message sent!",
-        description:
-          t("about.formSuccessDescription") ||
-          "Thank you for contacting us. We'll get back to you soon.",
-      });
-
-      setFormData({ name: "", email: "", subject: "", message: "" });
-      setFormError(null);
-    } catch (error: any) {
-      setFormError(
-        error.message || "Failed to send message. Please try again."
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
+    const subject = encodeURIComponent(formData.subject);
+    const body = encodeURIComponent(formData.message);
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    setFormData({ subject: "", message: "" });
   };
 
   return (
@@ -193,35 +157,6 @@ export default function CommunityPage() {
                 className="flex flex-1 flex-col space-y-4"
                 noValidate
               >
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">{t("about.formName")}</Label>
-                    <Input
-                      id="name"
-                      placeholder={t("about.formNamePlaceholder")}
-                      value={formData.name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
-                      }
-                      required
-                      disabled={isSubmitting}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">{t("about.formEmail")}</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder={t("about.formEmailPlaceholder")}
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                      required
-                      disabled={isSubmitting}
-                    />
-                  </div>
-                </div>
                 <div className="space-y-2">
                   <Label htmlFor="subject">{t("about.formSubject")}</Label>
                   <Input
@@ -232,7 +167,6 @@ export default function CommunityPage() {
                       setFormData({ ...formData, subject: e.target.value })
                     }
                     required
-                    disabled={isSubmitting}
                   />
                 </div>
                 <div className="space-y-2">
@@ -246,22 +180,14 @@ export default function CommunityPage() {
                       setFormData({ ...formData, message: e.target.value })
                     }
                     required
-                    disabled={isSubmitting}
                   />
                 </div>
-                {formError && (
-                  <Alert variant="destructive">
-                    <AlertDescription>{formError}</AlertDescription>
-                  </Alert>
-                )}
                 <Button
                   type="submit"
-                  className="mt-auto w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                  disabled={isSubmitting}
+                  className="mt-auto inline-flex w-full items-center justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  {isSubmitting
-                    ? t("about.formSending") || "Sending..."
-                    : t("about.formSend")}
+                  <Mail className="h-4 w-4 shrink-0" aria-hidden />
+                  {t("about.formSend")}
                 </Button>
               </form>
             </CardContent>

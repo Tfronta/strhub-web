@@ -45,9 +45,9 @@ export const datasetConfigs: Record<string, AlleleFrequencyDataset> = {
     label: "EAS",
     technology: "CE",
   },
-  SAS: {
-    id: "SAS",
-    label: "SAS",
+  CSA: {
+    id: "CSA",
+    label: "CSA",
     technology: "CE",
   },
   EUR: {

@@ -96,7 +96,7 @@ export default function GlobalFrequenciesPage() {
       id: "CE",
       name: "pop.STR (CE)",
       technology: "CE",
-      populations: ["AFR", "NAM", "EAS", "SAS", "EUR", "MES", "OCE"],
+      populations: ["AFR", "NAM", "EAS", "CSA", "EUR", "MES", "OCE"],
     },
     "1000G": {
       id: "1000G",

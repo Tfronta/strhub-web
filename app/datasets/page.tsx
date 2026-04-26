@@ -124,7 +124,7 @@ export default function DatasetsPage() {
       id: "CE",
       name: "pop.STR (CE)",
       technology: "CE",
-      populations: ["AFR", "NAM", "EAS", "SAS", "EUR", "MES", "OCE"],
+      populations: ["AFR", "NAM", "EAS", "CSA", "EUR", "MES", "OCE"],
       description: t("globalFrequencies.datasets.popstrCE.source"),
       sampleSize: "3,809",
     },

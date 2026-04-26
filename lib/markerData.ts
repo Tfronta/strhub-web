@@ -8,7 +8,7 @@ const pf = (markerId: string): Record<CEPop, AlleleEntry[]> => ({
   AFR: markerFrequenciesCE[markerId]?.AFR ?? [],
   NAM: markerFrequenciesCE[markerId]?.NAM ?? [],
   EAS: markerFrequenciesCE[markerId]?.EAS ?? [],
-  SAS: markerFrequenciesCE[markerId]?.SAS ?? [],
+  CSA: markerFrequenciesCE[markerId]?.CSA ?? [],
   EUR: markerFrequenciesCE[markerId]?.EUR ?? [],
   MES: markerFrequenciesCE[markerId]?.MES ?? [],
   OCE: markerFrequenciesCE[markerId]?.OCE ?? [],

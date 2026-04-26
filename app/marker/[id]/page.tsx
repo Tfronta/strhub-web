@@ -61,6 +61,7 @@ import {
 import { markerData } from "@/lib/markerData";
 import { useLanguage } from "@/contexts/language-context";
 import { markerFrequenciesCE, markerFrequenciesNGS } from "./markerFrequencies";
+import { markerStatisticsCE } from "./markerStatisticsCE";
 import {
   buildToolCards,
   getToolsForMarker,
@@ -83,6 +84,7 @@ const POP_SUBPOP_DESCRIPTION_KEYS: Record<string, string> = {
   AFR: "populationAfr",
   NAM: "populationNam",
   EAS: "populationEas",
+  CSA: "populationCsa",
   SAS: "populationSas",
   EUR: "populationEur",
   MES: "populationMes",
@@ -110,6 +112,7 @@ const POPULATION_COLORS: Record<string, string> = {
   AFR: "#f59e0b",
   NAM: "#ef4444",
   EAS: "#3b82f6",
+  CSA: "#8b5cf6",
   SAS: "#8b5cf6",
   EUR: "#10b981",
   MES: "#f97316",
@@ -173,7 +176,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     return type;
   };
 
-  const tabValues = ["overview", "frequencies", "variants", "tools"] as const;
+  const tabValues = ["overview", "frequencies", "statistics", "variants", "tools"] as const;
   type TabValue = (typeof tabValues)[number];
   const requestedTab = (searchParams?.get("tab") ?? "overview") as string;
   const initialTabParam: TabValue = tabValues.includes(requestedTab as TabValue)
@@ -290,7 +293,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
       return [];
     } else {
       // For CE, return standard populations including LATAM
-      return ["AFR", "NAM", "EAS", "SAS", "EUR", "MES", "OCE", "LATAM"];
+      return ["AFR", "NAM", "EAS", "CSA", "EUR", "MES", "OCE", "LATAM"];
     }
   };
 
@@ -730,7 +733,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
           onValueChange={(value) => setActiveTab(value as TabValue)}
           className="space-y-6"
         >
-          <TabsList className="grid w-full grid-cols-4 h-9 bg-muted/50 p-0 rounded-md border-0">
+          <TabsList className="grid w-full grid-cols-5 h-9 bg-muted/50 p-0 rounded-md border-0">
             <TabsTrigger
               value="overview"
               className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
@@ -742,6 +745,12 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
               className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
             >
               {t("marker.tabs.frequencies")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="statistics"
+              className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
+            >
+              {t("marker.tabs.statistics")}
             </TabsTrigger>
             <TabsTrigger
               value="variants"
@@ -1868,6 +1877,147 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     </Button>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="statistics" className="space-y-4">
+            <Card className="border rounded-md shadow-none bg-card">
+              <CardHeader className="pb-3 px-4">
+                <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                  {t("marker.statistics.title")}
+                </CardTitle>
+                <CardDescription className="text-xs font-normal mt-1">
+                  {t("marker.statistics.description")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="px-4">
+                {(() => {
+                  const stats = markerStatisticsCE[markerId];
+                  if (!stats || Object.keys(stats).length === 0) {
+                    return (
+                      <p className="text-sm text-muted-foreground text-center py-8">
+                        {t("marker.statistics.noData")}
+                      </p>
+                    );
+                  }
+                  const pops = (["AFR", "NAM", "EAS", "CSA", "EUR", "MES", "OCE"] as const).filter(
+                    (p) => stats[p] != null,
+                  );
+                  const rows = pops.map((p) => stats[p]!);
+                  const showN = rows.some((r) => r.N != null);
+                  const showHobs = rows.some((r) => r.Hobs != null);
+                  const showHexp = rows.some((r) => r.Hexp != null);
+                  const showFis = rows.some((r) => r.Fis != null);
+                  const showFst = rows.some((r) => r.Fst != null);
+                  const legendParts = [
+                    showN && t("marker.statistics.legendN"),
+                    showHobs && t("marker.statistics.legendHobs"),
+                    showHexp && t("marker.statistics.legendHexp"),
+                    showFis && t("marker.statistics.legendFis"),
+                    showFst && t("marker.statistics.legendFst"),
+                  ].filter(Boolean) as string[];
+                  const footerText =
+                    legendParts.length > 0
+                      ? `${t("marker.statistics.sourceIntro")}. ${legendParts.join("; ")}.`
+                      : `${t("marker.statistics.sourceIntro")}.`;
+                  return (
+                    <div className="space-y-4">
+                      <div className="border border-border rounded-md overflow-hidden">
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="bg-muted/50 border-b border-border">
+                                <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground">
+                                  {t("marker.statistics.population")}
+                                </th>
+                                {showN ? (
+                                  <th className="text-right px-3 py-2 text-xs font-semibold text-muted-foreground">
+                                    N
+                                  </th>
+                                ) : null}
+                                {showHobs ? (
+                                  <th className="text-right px-3 py-2 text-xs font-semibold text-muted-foreground">
+                                    H<sub>obs</sub>
+                                  </th>
+                                ) : null}
+                                {showHexp ? (
+                                  <th className="text-right px-3 py-2 text-xs font-semibold text-muted-foreground">
+                                    H<sub>exp</sub>
+                                  </th>
+                                ) : null}
+                                {showFis ? (
+                                  <th className="text-right px-3 py-2 text-xs font-semibold text-muted-foreground">
+                                    F<sub>is</sub>
+                                  </th>
+                                ) : null}
+                                {showFst ? (
+                                  <th className="text-right px-3 py-2 text-xs font-semibold text-muted-foreground">
+                                    F<sub>st</sub>
+                                  </th>
+                                ) : null}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {pops.map((pop, i) => {
+                                const s = stats[pop]!;
+                                return (
+                                  <tr
+                                    key={pop}
+                                    className={cn(
+                                      "border-b border-border last:border-b-0",
+                                      i % 2 === 0 ? "bg-background" : "bg-muted/30",
+                                    )}
+                                  >
+                                    <td className="px-3 py-2 font-medium text-foreground">
+                                      <span className="flex items-center gap-2">
+                                        <span
+                                          className="inline-block h-2.5 w-2.5 rounded-full"
+                                          style={{
+                                            backgroundColor:
+                                              POPULATION_COLORS[pop] ?? "#888",
+                                          }}
+                                        />
+                                        {pop}
+                                      </span>
+                                    </td>
+                                    {showN ? (
+                                      <td className="px-3 py-2 text-right tabular-nums text-foreground">
+                                        {s.N != null ? s.N.toLocaleString() : "–"}
+                                      </td>
+                                    ) : null}
+                                    {showHobs ? (
+                                      <td className="px-3 py-2 text-right tabular-nums text-foreground">
+                                        {s.Hobs != null ? s.Hobs.toFixed(3) : "–"}
+                                      </td>
+                                    ) : null}
+                                    {showHexp ? (
+                                      <td className="px-3 py-2 text-right tabular-nums text-foreground">
+                                        {s.Hexp != null ? s.Hexp.toFixed(3) : "–"}
+                                      </td>
+                                    ) : null}
+                                    {showFis ? (
+                                      <td className="px-3 py-2 text-right tabular-nums text-foreground">
+                                        {s.Fis != null ? s.Fis.toFixed(4) : "–"}
+                                      </td>
+                                    ) : null}
+                                    {showFst ? (
+                                      <td className="px-3 py-2 text-right tabular-nums text-foreground">
+                                        {s.Fst != null ? s.Fst.toFixed(4) : "–"}
+                                      </td>
+                                    ) : null}
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{footerText}</p>
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
           </TabsContent>

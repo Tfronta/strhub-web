@@ -101,7 +101,7 @@ export const translations = {
         integratedDatabase: {
           title: "Integrated STR Database",
           description:
-            "Access CODIS and non-CODIS markers with allele frequencies, flanking sequences, and population data across AFR, NAM, EAS, SAS, and EUR groups",
+            "Access CODIS and non-CODIS markers with allele frequencies, flanking sequences, and population data across AFR, NAM, EAS, CSA, and EUR groups",
         },
         visualizationSuite: {
           title: "Visualization Suite",
@@ -263,7 +263,7 @@ export const translations = {
             "0": "This CE dataset uses a consistent kit and allele definitions across populations, enabling valid comparisons within this dataset.",
             "1": "Total sample size: 3,809 genotyped individuals.",
           },
-          populationGroups: "AFR: Central African Republic (Biaka Pygmies), Democratic Republic of the Congo (Mbuti Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria (Yoruba), Senegal (Mandenka), Somalia, South Africa (Bantu).\nNAM: Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), Mexico (Pima).\nEAS: Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), Siberia (Yakut).\nSAS: China (Uygur), Pakistan (Balochi), Pakistan (Brahui), Pakistan (Burusho), Pakistan (Hazara), Pakistan (Kalash), Pakistan (Makrani), Pakistan (Pathan), Pakistan (Sindhi).\nEUR: France (Basque), France (French), Italy (Bergamo – North Italian), Italy (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands (Orcadian), Russia (Russian), Russia Caucasus (Adygei), Sweden, U.S. Europeans.\nMES: Algeria (Mzab – Mozabite), Israel (Carmel – Druze), Israel (Central – Palestinian), Israel (Negev – Bedouin).\nOCE: Bougainville (NAN Melanesian), New Guinea (Papuan).",
+          populationGroups: "AFR: Central African Republic (Biaka Pygmies), Democratic Republic of the Congo (Mbuti Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria (Yoruba), Senegal (Mandenka), Somalia, South Africa (Bantu).\nNAM: Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), Mexico (Pima).\nEAS: Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), Siberia (Yakut).\nCSA: Populations aggregated as Central–South Asia in the STRs Local dataset (pop.STR / SP-SMART, CESGA).\nEUR: France (Basque), France (French), Italy (Bergamo – North Italian), Italy (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands (Orcadian), Russia (Russian), Russia Caucasus (Adygei), Sweden, U.S. Europeans.\nMES: Algeria (Mzab – Mozabite), Israel (Carmel – Druze), Israel (Central – Palestinian), Israel (Negev – Bedouin).\nOCE: Bougainville (NAN Melanesian), New Guinea (Papuan).",
           comparability: "Comparisons are valid within this harmonized CE dataset. Not directly comparable to NGS-based frequencies.",
         },
         g1k: {
@@ -303,6 +303,7 @@ export const translations = {
         overview: "Overview",
         isoalleles: "Isoalleles",
         frequencies: "Frequencies",
+        statistics: "Statistics",
         tools: "Tools",
         igv: "IGV Viewer",
         fasta: "FASTA Generator",
@@ -363,6 +364,7 @@ export const translations = {
         AFR: "African",
         NAM: "American",
         EAS: "East Asian",
+        CSA: "Central–South Asian",
         SAS: "South Asian",
         EUR: "European",
         OCE: "Oceanian",
@@ -381,6 +383,8 @@ export const translations = {
             "Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), and Mexico (Pima).",
           populationEas:
             "Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), and Siberia (Yakut).",
+          populationCsa:
+            "Populations aggregated as Central–South Asia in the STRs Local dataset (pop.STR / SP-SMART, CESGA).",
           populationSas:
             "China (Uygur), Pakistan (Balochi), Pakistan (Brahui), Pakistan (Burusho), Pakistan (Hazara), Pakistan (Kalash), Pakistan (Makrani), Pakistan (Pathan), and Pakistan (Sindhi).",
           populationEur:
@@ -423,7 +427,7 @@ export const translations = {
         openOriginalPaperButton: "Open original paper",
         compareButton: "Compare",
         compareTooltip:
-          "Compares AFR, NAM, EAS, SAS, EUR, MES and OCE populations from the SP-SMART/CESGA dataset",
+          "Compares AFR, NAM, EAS, CSA, EUR, MES and OCE populations from the SP-SMART/CESGA dataset",
         ngs1000gTooltip:
           "Compares AFR, NAM, EAS, SAS and EUR from the 1000 Genomes Project Phase 3",
         legendClickHint: "Click a population in the legend to show/hide",
@@ -435,8 +439,20 @@ export const translations = {
         },
       },
       citation:
-        "Citation: Population frequency data sourced from STRBase – NIST database. All alleles reported in STRbase for each marker are included across all population groups (AFR, NAM, EAS, SAS, EUR).",
+        "Citation: Population frequency data sourced from STRBase – NIST database. All alleles reported in STRbase for each marker are included across all population groups (AFR, NAM, EAS, CSA, EUR).",
       citationReference: "Reference: NIST STRBase. Available at: https://strbase.nist.gov/",
+      statistics: {
+        title: "Population Statistics",
+        description: "Summary statistics for each CE population (Illumina ForenSeq, pop.STR / SP-SMART).",
+        population: "Population",
+        noData: "No population statistics available for this marker.",
+        sourceIntro: "Source: SP-SMART / pop.STR (CESGA)",
+        legendN: "N = sample size",
+        legendHobs: "Hobs = observed heterozygosity",
+        legendHexp: "Hexp = expected heterozygosity",
+        legendFis: "Fis = inbreeding coefficient",
+        legendFst: "Fst = fixation index",
+      },
       toolsCompatibility: "Tools & Pipelines Compatibility",
       toolsDescription: "STR analysis tools and pipelines that support this marker",
       supported: "Supported",
@@ -815,7 +831,7 @@ export const translations = {
       features: {
         populationFrequency: {
           title: "Population Frequency Data",
-          description: "Complete allele frequency distributions for AFR, NAM, EAS, SAS, and EUR populations",
+          description: "Complete allele frequency distributions for AFR, NAM, EAS, CSA, and EUR populations",
         },
         markerVerification: {
           title: "Marker Verification",
@@ -1816,7 +1832,7 @@ export const translations = {
         integratedDatabase: {
           title: "Banco de Dados Integrado de STR",
           description:
-            "Acesse marcadores CODIS e não-CODIS com frequências alélicas, sequências flanqueantes e dados populacionais em grupos AFR, NAM, EAS, SAS e EUR",
+            "Acesse marcadores CODIS e não-CODIS com frequências alélicas, sequências flanqueantes e dados populacionais em grupos AFR, NAM, EAS, CSA e EUR",
         },
         visualizationSuite: {
           title: "Suite de Visualização",
@@ -1979,7 +1995,7 @@ export const translations = {
             "0": "Este conjunto de dados de CE utiliza um kit e definições alélicas consistentes entre populações, permitindo comparações válidas dentro deste conjunto de dados.",
             "1": "Tamanho amostral total: 3.809 indivíduos genotipados.",
           },
-          populationGroups: "AFR: Central African Republic (Biaka Pygmies), Democratic Republic of the Congo (Mbuti Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria (Yoruba), Senegal (Mandenka), Somalia, South Africa (Bantu).\nNAM: Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), Mexico (Pima).\nEAS: Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), Siberia (Yakut).\nSAS: China (Uygur), Pakistan (Balochi), Pakistan (Brahui), Pakistan (Burusho), Pakistan (Hazara), Pakistan (Kalash), Pakistan (Makrani), Pakistan (Pathan), Pakistan (Sindhi).\nEUR: France (Basque), France (French), Italy (Bergamo – North Italian), Italy (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands (Orcadian), Russia (Russian), Russia Caucasus (Adygei), Sweden, U.S. Europeans.\nMES: Algeria (Mzab – Mozabite), Israel (Carmel – Druze), Israel (Central – Palestinian), Israel (Negev – Bedouin).\nOCE: Bougainville (NAN Melanesian), New Guinea (Papuan).",
+          populationGroups: "AFR: Central African Republic (Biaka Pygmies), Democratic Republic of the Congo (Mbuti Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria (Yoruba), Senegal (Mandenka), Somalia, South Africa (Bantu).\nNAM: Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), Mexico (Pima).\nEAS: Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), Siberia (Yakut).\nCSA: Populations aggregated as Central–South Asia in the STRs Local dataset (pop.STR / SP-SMART, CESGA).\nEUR: France (Basque), France (French), Italy (Bergamo – North Italian), Italy (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands (Orcadian), Russia (Russian), Russia Caucasus (Adygei), Sweden, U.S. Europeans.\nMES: Algeria (Mzab – Mozabite), Israel (Carmel – Druze), Israel (Central – Palestinian), Israel (Negev – Bedouin).\nOCE: Bougainville (NAN Melanesian), New Guinea (Papuan).",
           comparability: "As comparações são válidas dentro deste conjunto de dados CE harmonizado. Não é diretamente comparável a frequências baseadas em NGS.",
         },
         g1k: {
@@ -2019,6 +2035,7 @@ export const translations = {
         overview: "Visão Geral",
         isoalleles: "Isoalelos",
         frequencies: "Frequências",
+        statistics: "Estatísticas",
         tools: "Ferramentas",
         igv: "Visualizador IGV",
         fasta: "Gerador FASTA",
@@ -2079,6 +2096,7 @@ export const translations = {
         AFR: "Africano",
         NAM: "Americano",
         EAS: "Asiático Oriental",
+        CSA: "Ásia Central e do Sul",
         SAS: "Asiático do Sul",
         EUR: "Europeu",
         OCE: "Oceânico",
@@ -2097,6 +2115,8 @@ export const translations = {
             "Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), and Mexico (Pima).",
           populationEas:
             "Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), and Siberia (Yakut).",
+          populationCsa:
+            "Populações agregadas como Ásia Central e do Sul no conjunto de dados STRs Local (pop.STR / SP-SMART, CESGA).",
           populationSas:
             "China (Uygur), Pakistan (Balochi), Pakistan (Brahui), Pakistan (Burusho), Pakistan (Hazara), Pakistan (Kalash), Pakistan (Makrani), Pakistan (Pathan), and Pakistan (Sindhi).",
           populationEur:
@@ -2139,7 +2159,7 @@ export const translations = {
         openOriginalPaperButton: "Abrir artigo original",
         compareButton: "Comparar",
         compareTooltip:
-          "Compara as populações AFR, NAM, EAS, SAS, EUR, MES e OCE do dataset SP-SMART/CESGA",
+          "Compara as populações AFR, NAM, EAS, CSA, EUR, MES e OCE do dataset SP-SMART/CESGA",
         ngs1000gTooltip:
           "Compara AFR, NAM, EAS, SAS e EUR do Projeto 1000 Genomas Fase 3",
         legendClickHint: "Clique em uma população na legenda para mostrar/ocultar",
@@ -2151,8 +2171,20 @@ export const translations = {
         },
       },
       citation:
-        "Citação: Dados de frequência populacional obtidos do banco de dados STRBase – NIST. Todos os alelos relatados no STRbase para cada marcador estão incluídos em todos os grupos populacionais (AFR, NAM, EAS, SAS, EUR).",
+        "Citação: Dados de frequência populacional obtidos do banco de dados STRBase – NIST. Todos os alelos relatados no STRbase para cada marcador estão incluídos em todos os grupos populacionais (AFR, NAM, EAS, CSA, EUR).",
       citationReference: "Referência: NIST STRBase. Disponível em: https://strbase.nist.gov/",
+      statistics: {
+        title: "Estatísticas Populacionais",
+        description: "Estatísticas resumidas para cada população CE (Illumina ForenSeq, pop.STR / SP-SMART).",
+        population: "População",
+        noData: "Nenhuma estatística populacional disponível para este marcador.",
+        sourceIntro: "Fonte: SP-SMART / pop.STR (CESGA)",
+        legendN: "N = tamanho amostral",
+        legendHobs: "Hobs = heterozigosidade observada",
+        legendHexp: "Hexp = heterozigosidade esperada",
+        legendFis: "Fis = coeficiente de endogamia",
+        legendFst: "Fst = índice de fixação",
+      },
       toolsCompatibility: "Compatibilidade de Ferramentas e Pipelines",
       toolsDescription: "Ferramentas de análise STR e pipelines que suportam este marcador",
       supported: "Suportado",
@@ -3051,7 +3083,7 @@ export const translations = {
       features: {
         populationFrequency: {
           title: "Datos de Frecuencia Poblacional",
-          description: "Distribuciones completas de frecuencia alélica para poblaciones AFR, NAM, EAS, SAS y EUR",
+          description: "Distribuciones completas de frecuencia alélica para poblaciones AFR, NAM, EAS, CSA y EUR",
         },
         markerVerification: {
           title: "Verificación de Marcadores",
@@ -3536,7 +3568,7 @@ export const translations = {
         integratedDatabase: {
           title: "Base de Datos Integrada de STR",
           description:
-            "Acceda a marcadores CODIS y no-CODIS con frecuencias alélicas, secuencias flanqueantes y datos poblacionales en grupos AFR, NAM, EAS, SAS y EUR",
+            "Acceda a marcadores CODIS y no-CODIS con frecuencias alélicas, secuencias flanqueantes y datos poblacionales en grupos AFR, NAM, EAS, CSA y EUR",
         },
         visualizationSuite: {
           title: "Suite de Visualización",
@@ -3699,7 +3731,7 @@ export const translations = {
             "0": "Este conjunto de datos de CE utiliza un kit y definiciones alélicas consistentes entre poblaciones, lo que permite comparaciones válidas dentro de este conjunto de datos.",
             "1": "Tamaño muestral total: 3.809 individuos genotipados.",
           },
-          populationGroups: "AFR: Central African Republic (Biaka Pygmies), Democratic Republic of the Congo (Mbuti Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria (Yoruba), Senegal (Mandenka), Somalia, South Africa (Bantu).\nNAM: Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), Mexico (Pima).\nEAS: Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), Siberia (Yakut).\nSAS: China (Uygur), Pakistan (Balochi), Pakistan (Brahui), Pakistan (Burusho), Pakistan (Hazara), Pakistan (Kalash), Pakistan (Makrani), Pakistan (Pathan), Pakistan (Sindhi).\nEUR: France (Basque), France (French), Italy (Bergamo – North Italian), Italy (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands (Orcadian), Russia (Russian), Russia Caucasus (Adygei), Sweden, U.S. Europeans.\nMES: Algeria (Mzab – Mozabite), Israel (Carmel – Druze), Israel (Central – Palestinian), Israel (Negev – Bedouin).\nOCE: Bougainville (NAN Melanesian), New Guinea (Papuan).",
+          populationGroups: "AFR: Central African Republic (Biaka Pygmies), Democratic Republic of the Congo (Mbuti Pygmies), Kenya (Bantu N.E.), Namibia (San), Nigeria (Yoruba), Senegal (Mandenka), Somalia, South Africa (Bantu).\nNAM: Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), Mexico (Pima).\nEAS: Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), Siberia (Yakut).\nCSA: Populations aggregated as Central–South Asia in the STRs Local dataset (pop.STR / SP-SMART, CESGA).\nEUR: France (Basque), France (French), Italy (Bergamo – North Italian), Italy (Sardinian), Italy (Tuscan), N.W. Spain, Orkney Islands (Orcadian), Russia (Russian), Russia Caucasus (Adygei), Sweden, U.S. Europeans.\nMES: Algeria (Mzab – Mozabite), Israel (Carmel – Druze), Israel (Central – Palestinian), Israel (Negev – Bedouin).\nOCE: Bougainville (NAN Melanesian), New Guinea (Papuan).",
           comparability: "Las comparaciones son válidas dentro de este conjunto de datos de CE armonizado. No es directamente comparable con frecuencias basadas en NGS.",
         },
         g1k: {
@@ -3739,6 +3771,7 @@ export const translations = {
         overview: "Resumen",
         isoalleles: "Isoalelos",
         frequencies: "Frecuencias",
+        statistics: "Estadísticas",
         tools: "Herramientas",
         igv: "Visor IGV",
         fasta: "Generador FASTA",
@@ -3799,6 +3832,7 @@ export const translations = {
         AFR: "Africano",
         NAM: "Americano",
         EAS: "Asiático Oriental",
+        CSA: "Asia Central y del Sur",
         SAS: "Asiático del Sur",
         EUR: "Europeu",
         OCE: "Oceánico",
@@ -3817,6 +3851,8 @@ export const translations = {
             "Brazil (Karitiana), Brazil (Surui), Colombia (Colombian), Dominican Republic, Mexico (Maya), and Mexico (Pima).",
           populationEas:
             "Cambodia (Cambodian), China (Dai), China (Daur), China (Han), China (Hezhen), China (Lahu), China (Miaozu), China (Mongola), China (Naxi), China (Oroqen), China (She), China (Tu), China (Tujia), China (Xibo), China (Yizu), Japan (Japanese), and Siberia (Yakut).",
+          populationCsa:
+            "Poblaciones agregadas como Asia Central y del Sur en el conjunto de datos STRs Local (pop.STR / SP-SMART, CESGA).",
           populationSas:
             "China (Uygur), Pakistan (Balochi), Pakistan (Brahui), Pakistan (Burusho), Pakistan (Hazara), Pakistan (Kalash), Pakistan (Makrani), Pakistan (Pathan), and Pakistan (Sindhi).",
           populationEur:
@@ -3859,7 +3895,7 @@ export const translations = {
         openOriginalPaperButton: "Abrir artículo original",
         compareButton: "Comparar",
         compareTooltip:
-          "Compara las poblaciones AFR, NAM, EAS, SAS, EUR, MES y OCE del dataset SP-SMART/CESGA",
+          "Compara las poblaciones AFR, NAM, EAS, CSA, EUR, MES y OCE del dataset SP-SMART/CESGA",
         ngs1000gTooltip:
           "Compara AFR, NAM, EAS, SAS y EUR del Proyecto 1000 Genomas Fase 3",
         legendClickHint: "Haz clic en una población de la leyenda para mostrar/ocultar",
@@ -3871,8 +3907,20 @@ export const translations = {
         },
       },
       citation:
-        "Cita: Dados de frecuencia poblacional obtenidos de la base de datos STRBase – NIST. Todos los alelos reportados en STRbase para cada marcador están incluidos en todos los grupos poblacionales (AFR, NAM, EAS, SAS, EUR).",
+        "Cita: Dados de frecuencia poblacional obtenidos de la base de datos STRBase – NIST. Todos los alelos reportados en STRbase para cada marcador están incluidos en todos los grupos poblacionales (AFR, NAM, EAS, CSA, EUR).",
       citationReference: "Referencia: NIST STRBase. Disponible en: https://strbase.nist.gov/",
+      statistics: {
+        title: "Estadísticas Poblacionales",
+        description: "Estadísticas resumidas para cada población CE (Illumina ForenSeq, pop.STR / SP-SMART).",
+        population: "Población",
+        noData: "No hay estadísticas poblacionales disponibles para este marcador.",
+        sourceIntro: "Fuente: SP-SMART / pop.STR (CESGA)",
+        legendN: "N = tamaño muestral",
+        legendHobs: "Hobs = heterocigosidad observada",
+        legendHexp: "Hexp = heterocigosidad esperada",
+        legendFis: "Fis = coeficiente de endogamia",
+        legendFst: "Fst = índice de fijación",
+      },
       toolsCompatibility: "Compatibilidad de Herramientas y Pipelines",
       toolsDescription: "Herramientas de análisis STR y pipelines que soportan este marcador",
       supported: "Soportado",
@@ -4254,7 +4302,7 @@ export const translations = {
       features: {
         populationFrequency: {
           title: "Datos de Frecuencia Poblacional",
-          description: "Distribuciones completas de frecuencia alélica para poblaciones AFR, NAM, EAS, SAS y EUR",
+          description: "Distribuciones completas de frecuencia alélica para poblaciones AFR, NAM, EAS, CSA y EUR",
         },
         markerVerification: {
           title: "Verificación de Marcadores",

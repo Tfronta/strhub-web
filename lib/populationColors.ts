@@ -14,7 +14,8 @@ const POPULATION_COLOR_VARS: Record<string, string> = {
   NAM: "#AEB8C4", // slate con contraste real
   AMR: "#AEB8C4", // alias
   OCE: "#C3A8E8", // lavender con cuerpo
-  SAS: "#9FD6E8", // cyan más presente
+  CSA: "#9FD6E8", // Central–South Asia (pop.STR CE)
+  SAS: "#9FD6E8", // South Asian (1000 Genomes NGS)
 };
 
 /**
@@ -52,7 +53,7 @@ function resolveThemeColor(varName: string, fallback: string): string {
  * Get the resolved color value for a population.
  * Returns the computed RGB/hex color that can be used directly in Recharts.
  * 
- * @param pop - Population code (AFR, EUR, EAS, SAS, NAM, AMR, MES, OCE, RAO)
+ * @param pop - Population code (AFR, EUR, EAS, CSA, SAS, NAM, AMR, MES, OCE, RAO)
  * @returns Resolved color value (RGB string)
  */
 export function getPopulationColor(pop: string): string {

@@ -40,7 +40,7 @@ const integrationFeatures = [
   {
     title: "Population Frequency Data",
     description:
-      "Complete allele frequency distributions for AFR, NAM, EAS, SAS, and EUR populations",
+      "Complete allele frequency distributions for AFR, NAM, EAS, CSA, and EUR populations",
     icon: BarChart3,
     status: "active",
     coverage: "100%",
@@ -274,7 +274,7 @@ export default function STRBasePage() {
                       Population Groups
                     </span>
                     <span className="text-sm font-medium">
-                      {strbaseStats.populationGroups} (AFR, NAM, EAS, SAS, EUR)
+                      {strbaseStats.populationGroups} (AFR, NAM, EAS, CSA, EUR)
                     </span>
                   </div>
                 </CardContent>

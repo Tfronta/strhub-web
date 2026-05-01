@@ -202,8 +202,11 @@ export default function BlogPage() {
           <h3 className="text-3xl font-bold mb-4 text-center">
             {t("communityHub.communityContributors.title")}
           </h3>
-          <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto text-center">
+          <p className="text-lg text-muted-foreground mb-3 max-w-3xl mx-auto text-center">
             {t("communityHub.communityContributors.subtitle")}
+          </p>
+          <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto text-center">
+            {t("communityHub.communityContributors.disclaimer")}
           </p>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {COMMUNITY_CONTRIBUTORS.map((contributor) => (
@@ -226,11 +229,6 @@ export default function BlogPage() {
                 </CardHeader>
               </Card>
             ))}
-          </div>
-          <div className="mt-6 w-full overflow-x-auto">
-            <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm whitespace-nowrap">
-              {t("communityHub.communityContributors.disclaimer")}
-            </p>
           </div>
         </div>
       </section>

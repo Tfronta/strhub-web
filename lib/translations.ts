@@ -1462,10 +1462,10 @@ export const translations = {
           Brazil: "Brazil",
           USA: "USA",
           Spain: "Spain",
-          Europe: "Europe",
+          Germany: "Germany",
         },
         disclaimer:
-          "Every interaction, question, and suggestion from this community has made STRhub better. Thank you.",
+          "The people listed below generously shared feedback, ideas, or conversations that helped shape STRhub. This recognition does not mean they authored STRhub's content or materials. Thank you.",
       },
       recentPosts: {
         title: "Recent educational posts",
@@ -2588,10 +2588,10 @@ export const translations = {
           Brazil: "Brasil",
           USA: "EUA",
           Spain: "Espanha",
-          Europe: "Europa",
+          Germany: "Alemanha",
         },
         disclaimer:
-          "Cada interação, pergunta e sugestão desta comunidade tornou o STRhub melhor. Obrigada.",
+          "As pessoas listadas abaixo compartilharam feedback, ideias ou conversas que ajudaram a moldar o STRhub. Esse reconhecimento não significa autoria do conteúdo ou dos materiais do STRhub. Agradecemos.",
       },
       recentPosts: {
         title: "Publicações educacionais recentes",
@@ -4941,10 +4941,10 @@ export const translations = {
           Brazil: "Brasil",
           USA: "EE. UU.",
           Spain: "España",
-          Europe: "Europa",
+          Germany: "Alemania",
         },
         disclaimer:
-          "Cada interacción, pregunta y sugerencia de esta comunidad hizo de STRhub una mejor herramienta. Gracias.",
+          "Las personas listadas abajo compartieron feedback, ideas o intercambios que ayudaron a dar forma a STRhub. Este reconocimiento no implica autoría del contenido ni de los materiales de STRhub. Gracias.",
       },
       recentPosts: {
         title: "Publicaciones educativas recientes",

@@ -9,7 +9,10 @@ import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
 import { PageTitle } from "@/components/page-title";
-import { COMMUNITY_CONTRIBUTORS } from "@/lib/communityContributors";
+import {
+  COMMUNITY_CONTRIBUTORS,
+  compareContributorsByFirstSurname,
+} from "@/lib/communityContributors";
 
 export default function AboutPage() {
   const { language, t } = useLanguage();
@@ -101,32 +104,32 @@ export default function AboutPage() {
             <p className="mt-3 text-base leading-relaxed text-muted-foreground">
               {t("communityHub.communityContributors.subtitle")}
             </p>
+            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+              {t("communityHub.communityContributors.disclaimer")}
+            </p>
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-              {COMMUNITY_CONTRIBUTORS.map((contributor) => (
-                <Card
-                  key={contributor.name}
-                  className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 h-full"
-                >
-                  <CardHeader className="space-y-1.5">
-                    <p className="font-bold text-foreground leading-snug">
-                      {contributor.name}
-                    </p>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {contributor.institution}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {t(
-                        `communityHub.communityContributors.countries.${contributor.country}`
-                      )}
-                    </p>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
-            <div className="mt-6 w-full overflow-x-auto">
-              <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm whitespace-nowrap">
-                {t("communityHub.communityContributors.disclaimer")}
-              </p>
+              {[...COMMUNITY_CONTRIBUTORS]
+                .sort(compareContributorsByFirstSurname)
+                .map((contributor) => (
+                  <Card
+                    key={contributor.name}
+                    className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 h-full"
+                  >
+                    <CardHeader className="space-y-1.5">
+                      <p className="font-bold text-foreground leading-snug">
+                        {contributor.name}
+                      </p>
+                      <p className="text-sm leading-relaxed text-muted-foreground">
+                        {contributor.institution}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {t(
+                          `communityHub.communityContributors.countries.${contributor.country}`
+                        )}
+                      </p>
+                    </CardHeader>
+                  </Card>
+                ))}
             </div>
           </section>
 

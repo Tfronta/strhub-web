@@ -1,7 +1,7 @@
 // Unified search index for STRhub
 // Combines markers, tools, blog posts, and static pages
 
-import { markers } from "@/app/catalog/page";
+import { markers } from "@/lib/catalogMarkers";
 import { backToBasicsArticles } from "@/lib/content/backToBasics";
 import { getToolsData } from "@/lib/toolsData";
 import { translations, type Language } from "@/lib/translations";

@@ -18531,3 +18531,6 @@ export const markerData = markerDataConst as {
 }
 
 export type MarkerData = typeof markerData
+
+/** A single locus record (one value in `markerData`). */
+export type MarkerEntry = MarkerData[keyof MarkerData]

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useLanguage } from "@/contexts/language-context";
-import { markers } from "@/app/catalog/page";
+import { markers } from "@/lib/catalogMarkers";
 import { KaryotypeView } from "./KaryotypeView";
 import { ChromosomeDetail } from "./ChromosomeDetail";
 

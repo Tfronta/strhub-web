@@ -739,6 +739,15 @@ function normalizeMarkerKey(id: string) {
   return id.toLowerCase().replace(/\s+/g, "_").replace(/-/g, "_");
 }
 
+/** Safe lookup: `markerData` has no string index signature. */
+function getMarkerEntryByLocusId(locusId: string) {
+  const markerKey = normalizeMarkerKey(locusId);
+  if (markerKey in markerData) {
+    return markerData[markerKey as keyof typeof markerData];
+  }
+  return undefined;
+}
+
 type MarkerSequenceEntry = {
   allele?: string;
   pattern?: string;
@@ -817,8 +826,7 @@ export function cePeaksToNGSRowsWithSeq(
   }
 
   // Get marker data for this locus (same source as Variant Alleles tab)
-  const markerKey = normalizeMarkerKey(locusId)
-  const markerEntry = markerData[markerKey]
+  const markerEntry = getMarkerEntryByLocusId(locusId)
   const markerSequences: Array<{
     allele?: string;
     pattern?: string;
@@ -976,7 +984,7 @@ export function cePeaksToNGSRowsWithSeq(
           if (simulated) {
             repeatSequence = simulated.bracketed
             fullSequence = simulated.fullSequence.replace(/\s+/g, " ").trim()
-            const segments = parseFullSeqSegments(simulated.fullSequence, null)
+            const segments = parseFullSeqSegments(simulated.fullSequence, undefined)
             if (segments) fullSequenceSegments = segments
           }
         }

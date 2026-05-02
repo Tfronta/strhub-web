@@ -32,6 +32,7 @@ import { useLanguage } from "@/contexts/language-context"; // Fixed import path 
 import { PageTitle } from "@/components/page-title";
 import { SiteFooter } from "@/components/site-footer";
 import { markerData } from "@/lib/markerData";
+import { markers } from "@/lib/catalogMarkers";
 import { markerFrequenciesCE } from "@/app/marker/[id]/markerFrequencies";
 import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
 import { cn } from "@/lib/utils";
@@ -42,38 +43,6 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-
-// Helper function to normalize category names
-function normalizeCategory(category: string): string {
-  if (category === "CODIS Core") return "CODIS Core";
-  if (
-    category === "Other Autosomal STRs" ||
-    category === "European Standard Set"
-  )
-    return "Other Autosomal";
-  if (category === "X STRs" || category === "X-Chromosome STRs") return "X-STR";
-  if (category === "Y STRs" || category === "Y-Chromosome STRs") return "Y-STR";
-  return category;
-}
-
-// Transform markerData object into markers array
-export const markers = Object.entries(markerData)
-  .map(([id, marker]) => ({
-    id,
-    name: marker.name,
-    fullName: marker.fullName,
-    chromosome: marker.chromosome,
-    motif: marker.motif ?? "",
-    type: marker.type ?? "",
-    alleles: marker.alleles ?? "",
-    category: normalizeCategory(marker.category),
-    nistVerified:
-      marker.sequences?.some((seq) => seq.nistVerified === true) ?? false,
-  }))
-  .filter(
-    (marker) =>
-      !!marker.motif || ["F13A1", "FESFPS", "LPL"].includes(marker.name),
-  );
 
 const categories = ["All", "CODIS Core", "Other Autosomal", "X-STR", "Y-STR"];
 

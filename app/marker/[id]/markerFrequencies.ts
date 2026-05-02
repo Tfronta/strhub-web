@@ -6,6 +6,12 @@ export type NGSPop = "AFR" | "NAM" | "EUR" | "EAS" | "SAS" | "RAO";
 export type Pop = CEPop | NGSPop;
 export type AlleleEntry = { allele: string; frequency: number; count: number };
 
+/** NGS frequency blocks: `kit` is optional when data are not tied to a single commercial kit. */
+export type MarkerFrequencyNGSEntry = {
+  kit?: string
+  technology: string
+} & Partial<Record<NGSPop, AlleleEntry[]>>
+
 // CE (Capillary Electrophoresis) frequency data
 export const markerFrequenciesCE: Record<string, { kit: string; technology: string; } & Partial<Record<CEPop, AlleleEntry[]>>> = {
 
@@ -3549,7 +3555,7 @@ export const markerFrequenciesCE: Record<string, { kit: string; technology: stri
   },
 } as const;
 
-export const markerFrequenciesNGS: Record<string, { kit: string; technology: string; } & Partial<Record<NGSPop, AlleleEntry[]>>> = {
+export const markerFrequenciesNGS: Record<string, MarkerFrequencyNGSEntry> = {
 
   csf1po: {
     technology: "NGS",

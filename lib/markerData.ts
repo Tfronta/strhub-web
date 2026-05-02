@@ -14,7 +14,7 @@ const pf = (markerId: string): Record<CEPop, AlleleEntry[]> => ({
   OCE: markerFrequenciesCE[markerId]?.OCE ?? [],
 });
 
-export const markerData = {
+const markerDataConst = {
   "csf1po": {
     "name": "CSF1PO",
     "fullName": "CSF1PO",
@@ -18514,5 +18514,20 @@ export const markerData = {
     "populationFrequencies": pf(key("y-ggaat-1b07"))
   }
 } as const
+
+/** Inferred repeat categories from data, plus sex-chromosome STR kinds used in UI logic. */
+export type MarkerRepeatCategory =
+  | (typeof markerDataConst)[keyof typeof markerDataConst]["type"]
+  | "X-STR"
+  | "Y-STR"
+
+export const markerData = markerDataConst as {
+  readonly [K in keyof typeof markerDataConst]: Omit<
+    (typeof markerDataConst)[K],
+    "type"
+  > & {
+    readonly type: MarkerRepeatCategory
+  }
+}
 
 export type MarkerData = typeof markerData

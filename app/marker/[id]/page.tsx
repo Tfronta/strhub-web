@@ -159,9 +159,12 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   };
 
   // Helper function to translate marker type
-  const getTranslatedType = (type: string): string => {
+  const getTranslatedType = (type: string | null): string => {
+    if (type == null || type === "") {
+      return "—";
+    }
     // Convert type to lowercase key format (e.g., "Tetranucleotide" -> "tetranucleotide")
-    const typeKey = type?.toLowerCase() ?? "";
+    const typeKey = type.toLowerCase();
 
     // Try to get translation from repeatTypes
     const translationKey = `marker.repeatTypes.${typeKey}`;

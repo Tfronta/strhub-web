@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getContentfulClient, CONTENTFUL_ACCESS_TOKEN } from "@/lib/contentful";
+import { getContentfulClient } from "@/lib/contentful";
 import ArticlePageClient from "./ArticlePageClient";
 
 const SUPPORTED_LOCALES = ["en", "es", "pt"] as const;
@@ -17,8 +17,7 @@ async function getArticleSeo(slug: string, locale: string) {
       limit: 1,
       include: 0,
       locale: locale === "en" ? undefined : locale,
-      select: "fields.title,fields.summary",
-      access_token: CONTENTFUL_ACCESS_TOKEN,
+      select: ["fields.title", "fields.summary"],
     });
     const item: any = response.items?.[0];
     return {

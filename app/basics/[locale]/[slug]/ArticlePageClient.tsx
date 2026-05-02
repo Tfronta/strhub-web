@@ -102,10 +102,10 @@ export default function ArticlePageClient({
             {post.fields.authors && post.fields.authors.length > 0 && (
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4" />
-                {post.fields.authors.map((author, index) => (
+                {post.fields.authors.map((author, index, authors) => (
                   <span key={index}>
                     {author.name}
-                    {index < post.fields.authors.length - 1 ? ", " : ""}
+                    {index < authors.length - 1 ? ", " : ""}
                   </span>
                 ))}
               </div>

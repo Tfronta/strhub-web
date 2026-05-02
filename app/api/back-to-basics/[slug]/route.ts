@@ -1,6 +1,6 @@
 // app/api/back-to-basics/[slug]/route.ts
 import { NextResponse } from 'next/server';
-import { getContentfulClient, buildIncludesMaps, resolveAuthor, CONTENTFUL_ACCESS_TOKEN } from '@/lib/contentful';
+import { getContentfulClient, buildIncludesMaps, resolveAuthor } from '@/lib/contentful';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,7 +20,6 @@ export async function GET(request: Request, context: RouteContext) {
       limit: 1,
       include: 2,
       locale,
-      access_token: CONTENTFUL_ACCESS_TOKEN
     });
 
     if (!response.items?.length) {

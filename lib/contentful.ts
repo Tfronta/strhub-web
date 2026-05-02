@@ -1,6 +1,6 @@
 // lib/contentful.ts
 import 'server-only';
-import { createClient, type EntryCollection } from 'contentful';
+import { createClient } from 'contentful';
 
 const SPACE = process.env.CONTENTFUL_SPACE_ID!;
 const ENVIRONMENT = process.env.CONTENTFUL_ENVIRONMENT || 'master';
@@ -25,7 +25,10 @@ export type Author = {
   photo?: { url: string; title: string };
 };
 
-export function buildIncludesMaps(includes?: EntryCollection<unknown>['includes']) {
+export function buildIncludesMaps(includes?: {
+  Entry?: any[]
+  Asset?: any[]
+}) {
   const entries = new Map<string, any>();
   const assets = new Map<string, any>();
   includes?.Entry?.forEach((e: any) => entries.set(e.sys.id, e));

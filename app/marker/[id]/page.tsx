@@ -196,7 +196,13 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
     [t],
   );
 
-  const tabValues = ["overview", "frequencies", "statistics", "variants", "tools"] as const;
+  const tabValues = [
+    "overview",
+    "frequencies",
+    "statistics",
+    "variants",
+    "tools",
+  ] as const;
   type TabValue = (typeof tabValues)[number];
   const requestedTab = (searchParams?.get("tab") ?? "overview") as string;
   const initialTabParam: TabValue = tabValues.includes(requestedTab as TabValue)
@@ -539,12 +545,22 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
         if (!isNaN(na) && !isNaN(nb)) return na - nb;
         return a.allele.localeCompare(b.allele, undefined, { numeric: true });
       });
-  }, [showAllPopulations, selectedTechnology, isXSTR, cePopulationsForAll, marker]);
+  }, [
+    showAllPopulations,
+    selectedTechnology,
+    isXSTR,
+    cePopulationsForAll,
+    marker,
+  ]);
 
   const allNgsChartData = useMemo<
     Array<Record<string, string | number> & { allele: string }>
   >(() => {
-    if (!showAllPopulations || selectedTechnology !== "NGS" || !markerFreqDataNGS)
+    if (
+      !showAllPopulations ||
+      selectedTechnology !== "NGS" ||
+      !markerFreqDataNGS
+    )
       return [];
 
     const alleleMap = new Map<string, Record<string, number>>();
@@ -572,8 +588,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
       });
   }, [showAllPopulations, selectedTechnology, markerFreqDataNGS, ngs1000GPops]);
 
-  const isNgsAllMode =
-    showAllPopulations && selectedTechnology === "NGS";
+  const isNgsAllMode = showAllPopulations && selectedTechnology === "NGS";
   const isCeAllMode =
     showAllPopulations && selectedTechnology === "CE" && !isXSTR;
   const activeAllChartData = isNgsAllMode
@@ -984,8 +999,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           const isLatam = pop === "LATAM";
                           const label = isLatam ? latamButtonLabel : pop;
                           const isActive =
-                            !showAllPopulations &&
-                            selectedPopulation === pop;
+                            !showAllPopulations && selectedPopulation === pop;
 
                           const button = (
                             <Button
@@ -1022,61 +1036,61 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                       <PopoverTrigger asChild>
                                         {button}
                                       </PopoverTrigger>
-                                <PopoverContent
-                                  className="w-80 max-h-80 overflow-y-auto"
-                                  align="start"
-                                >
-                                  <div className="flex flex-col gap-3">
-                                    {groupedLatamOptions.map(
-                                      ({ country, items }) => (
-                                        <div
-                                          key={country}
-                                          className="space-y-2"
-                                        >
-                                          <p className="text-xs font-semibold text-muted-foreground">
-                                            {country}
-                                          </p>
-                                          <div className="flex flex-col gap-1.5">
-                                            {items.map((subpop) => {
-                                              const isSubActive =
-                                                latamSubpopForChart?.id ===
-                                                subpop.id;
-                                              return (
-                                                <button
-                                                  key={subpop.id}
-                                                  type="button"
-                                                  onClick={() => {
-                                                    setSelectedLatamSubpop(
-                                                      subpop,
+                                      <PopoverContent
+                                        className="w-80 max-h-80 overflow-y-auto"
+                                        align="start"
+                                      >
+                                        <div className="flex flex-col gap-3">
+                                          {groupedLatamOptions.map(
+                                            ({ country, items }) => (
+                                              <div
+                                                key={country}
+                                                className="space-y-2"
+                                              >
+                                                <p className="text-xs font-semibold text-muted-foreground">
+                                                  {country}
+                                                </p>
+                                                <div className="flex flex-col gap-1.5">
+                                                  {items.map((subpop) => {
+                                                    const isSubActive =
+                                                      latamSubpopForChart?.id ===
+                                                      subpop.id;
+                                                    return (
+                                                      <button
+                                                        key={subpop.id}
+                                                        type="button"
+                                                        onClick={() => {
+                                                          setSelectedLatamSubpop(
+                                                            subpop,
+                                                          );
+                                                          setLatamSubpopPopoverOpen(
+                                                            false,
+                                                          );
+                                                        }}
+                                                        className={cn(
+                                                          "flex flex-col items-start rounded-xl border px-3 py-2 text-left text-sm transition",
+                                                          isSubActive
+                                                            ? "border-primary bg-primary/5"
+                                                            : "hover:bg-muted",
+                                                        )}
+                                                      >
+                                                        <span className="font-medium">
+                                                          {subpop.country} —{" "}
+                                                          {subpop.region}
+                                                        </span>
+                                                        <span className="text-xs text-muted-foreground">
+                                                          Kit: {subpop.kit} · N
+                                                          = {subpop.N}
+                                                        </span>
+                                                      </button>
                                                     );
-                                                    setLatamSubpopPopoverOpen(
-                                                      false,
-                                                    );
-                                                  }}
-                                                  className={cn(
-                                                    "flex flex-col items-start rounded-xl border px-3 py-2 text-left text-sm transition",
-                                                    isSubActive
-                                                      ? "border-primary bg-primary/5"
-                                                      : "hover:bg-muted",
-                                                  )}
-                                                >
-                                                  <span className="font-medium">
-                                                    {subpop.country} —{" "}
-                                                    {subpop.region}
-                                                  </span>
-                                                  <span className="text-xs text-muted-foreground">
-                                                    Kit: {subpop.kit} · N ={" "}
-                                                    {subpop.N}
-                                                  </span>
-                                                </button>
-                                              );
-                                            })}
-                                          </div>
+                                                  })}
+                                                </div>
+                                              </div>
+                                            ),
+                                          )}
                                         </div>
-                                      ),
-                                    )}
-                                  </div>
-                                </PopoverContent>
+                                      </PopoverContent>
                                     </Popover>
                                   </span>
                                 </TooltipTrigger>
@@ -1102,7 +1116,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                             <UITooltip>
                               <TooltipTrigger asChild>
                                 <Button
-                                  variant={showAllPopulations ? "default" : "outline"}
+                                  variant={
+                                    showAllPopulations ? "default" : "outline"
+                                  }
                                   size="sm"
                                   onClick={() => {
                                     setShowAllPopulations(true);
@@ -1122,10 +1138,61 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </div>
                     )}
                     {selectedTechnology === "NGS" && (
-                      <>
-                        {hasNGS ? (
-                          <div className="flex items-center gap-2 flex-wrap">
-                            {ngs1000GPops.map((pop) => (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {ngs1000GPops.map((pop) => (
+                          <UITooltip key={pop}>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant={
+                                  !showAllPopulations &&
+                                  selectedPopulation === pop
+                                    ? "default"
+                                    : "outline"
+                                }
+                                size="sm"
+                                onClick={() => {
+                                  setShowAllPopulations(false);
+                                  setSelectedPopulation(pop);
+                                }}
+                                className="h-7 text-xs font-normal rounded-sm px-2"
+                              >
+                                {pop}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs text-xs">
+                              {populationAbbrevTooltip(pop)}
+                            </TooltipContent>
+                          </UITooltip>
+                        ))}
+                        {ngs1000GPops.length >= 2 && (
+                          <>
+                            <div className="h-5 w-px bg-border" />
+                            <UITooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant={
+                                    showAllPopulations ? "default" : "outline"
+                                  }
+                                  size="sm"
+                                  onClick={() => {
+                                    setShowAllPopulations(true);
+                                    setHiddenPopulations(new Set());
+                                  }}
+                                  className="h-7 text-xs font-normal rounded-sm px-2"
+                                >
+                                  1000G
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs text-xs">
+                                {t("marker.frequencies.ngs1000gTooltip")}
+                              </TooltipContent>
+                            </UITooltip>
+                          </>
+                        )}
+                        {ngsRaoPops.length > 0 && (
+                          <>
+                            <div className="h-5 w-px bg-border" />
+                            {ngsRaoPops.map((pop) => (
                               <UITooltip key={pop}>
                                 <TooltipTrigger asChild>
                                   <Button
@@ -1150,117 +1217,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 </TooltipContent>
                               </UITooltip>
                             ))}
-                            {ngs1000GPops.length >= 2 && (
-                              <>
-                                <div className="h-5 w-px bg-border" />
-                                <UITooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant={
-                                        showAllPopulations ? "default" : "outline"
-                                      }
-                                      size="sm"
-                                      onClick={() => {
-                                        setShowAllPopulations(true);
-                                        setHiddenPopulations(new Set());
-                                      }}
-                                      className="h-7 text-xs font-normal rounded-sm px-2"
-                                    >
-                                      1000G
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent className="max-w-xs text-xs">
-                                    {t("marker.frequencies.ngs1000gTooltip")}
-                                  </TooltipContent>
-                                </UITooltip>
-                              </>
-                            )}
-                            {ngsRaoPops.length > 0 && (
-                              <>
-                                <div className="h-5 w-px bg-border" />
-                                {ngsRaoPops.map((pop) => (
-                                  <UITooltip key={pop}>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        variant={
-                                          !showAllPopulations &&
-                                          selectedPopulation === pop
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        size="sm"
-                                        onClick={() => {
-                                          setShowAllPopulations(false);
-                                          setSelectedPopulation(pop);
-                                        }}
-                                        className="h-7 text-xs font-normal rounded-sm px-2"
-                                      >
-                                        {pop}
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent className="max-w-xs text-xs">
-                                      {populationAbbrevTooltip(pop)}
-                                    </TooltipContent>
-                                  </UITooltip>
-                                ))}
-                              </>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <Label className="text-xs text-muted-foreground whitespace-nowrap">
-                              Dataset:
-                            </Label>
-                            <Select
-                              value={selectedDataset}
-                              onValueChange={setSelectedDataset}
-                              disabled={
-                                !marker?.ceStudiesByPop?.[
-                                  selectedPopulation as keyof typeof marker.ceStudiesByPop
-                                ] ||
-                                (
-                                  marker.ceStudiesByPop[
-                                    selectedPopulation as keyof typeof marker.ceStudiesByPop
-                                  ] as any[]
-                                )?.length === 0
-                              }
-                            >
-                              <SelectTrigger className="h-7 w-[200px] text-xs">
-                                <SelectValue placeholder="No NGS datasets available" />
-                              </SelectTrigger>
-                              {marker?.ceStudiesByPop?.[
-                                selectedPopulation as keyof typeof marker.ceStudiesByPop
-                              ] &&
-                                (
-                                  marker.ceStudiesByPop[
-                                    selectedPopulation as keyof typeof marker.ceStudiesByPop
-                                  ] as any[]
-                                )?.length > 0 && (
-                                  <SelectContent>
-                                    {(
-                                      marker.ceStudiesByPop[
-                                        selectedPopulation as keyof typeof marker.ceStudiesByPop
-                                      ] as any[]
-                                    ).map((study: any, index: number) => {
-                                      const country =
-                                        study.country ||
-                                        study.location ||
-                                        "Unknown";
-                                      const n =
-                                        study.n || study.sampleSize || 0;
-                                      const value = `dataset_${index}`;
-                                      return (
-                                        <SelectItem key={value} value={value}>
-                                          {country}, n={n}
-                                        </SelectItem>
-                                      );
-                                    })}
-                                  </SelectContent>
-                                )}
-                            </Select>
-                          </div>
+                          </>
                         )}
-                      </>
+                      </div>
                     )}
 
                     {availableTechnologies.length > 0 && (
@@ -1429,125 +1388,212 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                     )}
 
                     {!showAllPopulations && (
-                    <>
-                    {/* Show dataset-specific description if available, otherwise show generic description */}
-                    {(() => {
-                      // Check if this is NGS 1000G dataset (AFR/EUR/NAM/EAS/SAS, but not RAO)
-                      const isNGS1000G =
-                        selectedTechnology === "NGS" &&
-                        selectedPopulation !== "RAO" &&
-                        ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
-                          selectedPopulation,
-                        ) &&
-                        NGS_1000G_POPULATION_GROUPS[selectedPopulation];
+                      <>
+                        {/* Show dataset-specific description if available, otherwise show generic description */}
+                        {(() => {
+                          // Check if this is NGS 1000G dataset (AFR/EUR/NAM/EAS/SAS, but not RAO)
+                          const isNGS1000G =
+                            selectedTechnology === "NGS" &&
+                            selectedPopulation !== "RAO" &&
+                            ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
+                              selectedPopulation,
+                            ) &&
+                            NGS_1000G_POPULATION_GROUPS[selectedPopulation];
 
-                      // Show RAO description if it exists (unchanged)
-                      if (datasetDescription && selectedPopulation === "RAO") {
-                        return (
-                          <p className="mt-2 text-sm text-muted-foreground">
-                            {datasetDescription}
-                          </p>
-                        );
-                      }
+                          // Show RAO description if it exists (unchanged)
+                          if (
+                            datasetDescription &&
+                            selectedPopulation === "RAO"
+                          ) {
+                            return (
+                              <p className="mt-2 text-sm text-muted-foreground">
+                                {datasetDescription}
+                              </p>
+                            );
+                          }
 
-                      // Show NGS 1000G description for AFR/EUR/NAM/EAS/SAS
-                      if (isNGS1000G) {
-                        return (
-                          <div className="mt-2 space-y-3 text-sm text-muted-foreground">
-                            <p>{t("marker.frequencies.ngs1000G.intro")}</p>
-                            <p>
-                              <span className="font-medium">
-                                {t(
-                                  "marker.frequencies.ngs1000G.populationGroupsLabel",
-                                )}
-                              </span>
-                              <br />
-                              {NGS_1000G_POPULATION_GROUPS[selectedPopulation]}
-                            </p>
-                            <div className="space-y-1">
-                              <p className="font-medium flex items-center gap-2">
-                                <span>
+                          // Show NGS 1000G description for AFR/EUR/NAM/EAS/SAS
+                          if (isNGS1000G) {
+                            return (
+                              <div className="mt-2 space-y-3 text-sm text-muted-foreground">
+                                <p>{t("marker.frequencies.ngs1000G.intro")}</p>
+                                <p>
+                                  <span className="font-medium">
+                                    {t(
+                                      "marker.frequencies.ngs1000G.populationGroupsLabel",
+                                    )}
+                                  </span>
+                                  <br />
+                                  {
+                                    NGS_1000G_POPULATION_GROUPS[
+                                      selectedPopulation
+                                    ]
+                                  }
+                                </p>
+                                <div className="space-y-1">
+                                  <p className="font-medium flex items-center gap-2">
+                                    <span>
+                                      {t(
+                                        "marker.frequencies.ngs1000G.datasetNotesTitle",
+                                      )}
+                                    </span>
+                                  </p>
+                                  <p>
+                                    {t(
+                                      "marker.frequencies.ngs1000G.datasetNotesParagraph1",
+                                    )}
+                                  </p>
+                                  <p>
+                                    {t(
+                                      "marker.frequencies.ngs1000G.datasetNotesParagraph2",
+                                    )}
+                                  </p>
+                                </div>
+                                <p className="text-xs">
+                                  <span className="font-semibold">
+                                    {t(
+                                      "marker.frequencies.datasetNotes.referenceLabel",
+                                    )}
+                                    :
+                                  </span>
+                                  <br />
+                                  Frontanilla TS et al. Open-Access Worldwide
+                                  Population STR Database Constructed Using
+                                  High-Coverage Whole-Genome Sequencing Data
+                                  from the 1000 Genomes Project. Genes.
+                                  2022;13(12):2205.
+                                  <br />
+                                  https://doi.org/10.3390/genes13122205
+                                </p>
+                              </div>
+                            );
+                          }
+
+                          // Show RAO description if it exists (for any other case)
+                          if (datasetDescription) {
+                            return (
+                              <p className="mt-2 text-sm text-muted-foreground">
+                                {datasetDescription}
+                              </p>
+                            );
+                          }
+
+                          // Default: show generic pop.STR description
+                          return (
+                            <>
+                              {isPopStrDataset && (
+                                <p className="mt-2 text-sm text-muted-foreground">
                                   {t(
-                                    "marker.frequencies.ngs1000G.datasetNotesTitle",
+                                    "marker.frequencies.datasetNotes.provenance",
+                                  )}
+                                </p>
+                              )}
+                              <p className="mt-2 text-sm text-muted-foreground">
+                                <span className="font-medium">
+                                  {t(
+                                    "marker.frequencies.datasetNotes.populationLabel",
                                   )}
                                 </span>
+                                <br />
+                                {populationDescription}
                               </p>
-                              <p>
-                                {t(
-                                  "marker.frequencies.ngs1000G.datasetNotesParagraph1",
-                                )}
-                              </p>
-                              <p>
-                                {t(
-                                  "marker.frequencies.ngs1000G.datasetNotesParagraph2",
-                                )}
-                              </p>
-                            </div>
-                            <p className="text-xs">
-                              <span className="font-semibold">
-                                {t(
-                                  "marker.frequencies.datasetNotes.referenceLabel",
-                                )}
-                                :
-                              </span>
-                              <br />
-                              Frontanilla TS et al. Open-Access Worldwide
-                              Population STR Database Constructed Using
-                              High-Coverage Whole-Genome Sequencing Data from
-                              the 1000 Genomes Project. Genes. 2022;13(12):2205.
-                              <br />
-                              https://doi.org/10.3390/genes13122205
-                            </p>
-                          </div>
-                        );
-                      }
-
-                      // Show RAO description if it exists (for any other case)
-                      if (datasetDescription) {
-                        return (
-                          <p className="mt-2 text-sm text-muted-foreground">
-                            {datasetDescription}
-                          </p>
-                        );
-                      }
-
-                      // Default: show generic pop.STR description
-                      return (
-                        <>
-                          {isPopStrDataset && (
-                            <p className="mt-2 text-sm text-muted-foreground">
-                              {t("marker.frequencies.datasetNotes.provenance")}
-                            </p>
-                          )}
-                          <p className="mt-2 text-sm text-muted-foreground">
-                            <span className="font-medium">
-                              {t(
-                                "marker.frequencies.datasetNotes.populationLabel",
-                              )}
-                            </span>
-                            <br />
-                            {populationDescription}
-                          </p>
-                        </>
-                      );
-                    })()}
-                    {showPopStrDatasetNotesAccordion &&
-                      popStrDatasetNotesShortTitleAndAccordion}
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {(() => {
-                        // Check if this is NGS 1000G dataset (AFR/EUR/NAM/EAS/SAS, but not RAO)
-                        const isNGS1000G =
-                          selectedTechnology === "NGS" &&
-                          selectedPopulation !== "RAO" &&
-                          ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
-                            selectedPopulation,
+                            </>
                           );
+                        })()}
+                        {showPopStrDatasetNotesAccordion &&
+                          popStrDatasetNotesShortTitleAndAccordion}
 
-                        // NGS 1000G: Show both "Original dataset" and "Original publication" buttons
-                        if (isNGS1000G) {
-                          return (
-                            <>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {(() => {
+                            // Check if this is NGS 1000G dataset (AFR/EUR/NAM/EAS/SAS, but not RAO)
+                            const isNGS1000G =
+                              selectedTechnology === "NGS" &&
+                              selectedPopulation !== "RAO" &&
+                              ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
+                                selectedPopulation,
+                              );
+
+                            // NGS 1000G: Show both "Original dataset" and "Original publication" buttons
+                            if (isNGS1000G) {
+                              return (
+                                <>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    asChild
+                                    className="text-xs"
+                                  >
+                                    <a
+                                      href={NGS_1000G_DATASET_LINKS.datasetUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      {t(
+                                        "marker.frequencies.ngs1000G.originalDatasetButton",
+                                      )}
+                                    </a>
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    asChild
+                                    className="text-xs"
+                                  >
+                                    <a
+                                      href={
+                                        NGS_1000G_DATASET_LINKS.publicationUrl
+                                      }
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      {t(
+                                        "marker.frequencies.ngs1000G.originalPublicationButton",
+                                      )}
+                                    </a>
+                                  </Button>
+                                </>
+                              );
+                            }
+
+                            // RAO and other datasets: Use existing logic (unchanged)
+                            // Show dataset button only if no external URL is configured
+                            if (!currentDataset?.metadata?.externalUrl) {
+                              return (
+                                <>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    asChild
+                                    className="text-xs"
+                                  >
+                                    <a
+                                      href="http://spsmart.cesga.es/search.php?dataSet=strs_local"
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      {t("marker.datasetButton")}
+                                    </a>
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    asChild
+                                    className="text-xs"
+                                  >
+                                    <a
+                                      href="https://pubmed.ncbi.nlm.nih.gov/18847484/"
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      {t("marker.originalPublicationButton")}
+                                    </a>
+                                  </Button>
+                                </>
+                              );
+                            }
+
+                            // Show external URL button if metadata provides one (e.g., RAO)
+                            return (
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -1555,92 +1601,19 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 className="text-xs"
                               >
                                 <a
-                                  href={NGS_1000G_DATASET_LINKS.datasetUrl}
+                                  href={currentDataset.metadata.externalUrl}
                                   target="_blank"
-                                  rel="noopener noreferrer"
+                                  rel="noreferrer"
                                 >
                                   {t(
-                                    "marker.frequencies.ngs1000G.originalDatasetButton",
+                                    "marker.frequencies.openOriginalPaperButton",
                                   )}
                                 </a>
                               </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                asChild
-                                className="text-xs"
-                              >
-                                <a
-                                  href={NGS_1000G_DATASET_LINKS.publicationUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  {t(
-                                    "marker.frequencies.ngs1000G.originalPublicationButton",
-                                  )}
-                                </a>
-                              </Button>
-                            </>
-                          );
-                        }
-
-                        // RAO and other datasets: Use existing logic (unchanged)
-                        // Show dataset button only if no external URL is configured
-                        if (!currentDataset?.metadata?.externalUrl) {
-                          return (
-                            <>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                asChild
-                                className="text-xs"
-                              >
-                                <a
-                                  href="http://spsmart.cesga.es/search.php?dataSet=strs_local"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  {t("marker.datasetButton")}
-                                </a>
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                asChild
-                                className="text-xs"
-                              >
-                                <a
-                                  href="https://pubmed.ncbi.nlm.nih.gov/18847484/"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  {t("marker.originalPublicationButton")}
-                                </a>
-                              </Button>
-                            </>
-                          );
-                        }
-
-                        // Show external URL button if metadata provides one (e.g., RAO)
-                        return (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                            className="text-xs"
-                          >
-                            <a
-                              href={currentDataset.metadata.externalUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {t("marker.frequencies.openOriginalPaperButton")}
-                            </a>
-                          </Button>
-                        );
-                      })()}
-                    </div>
-                    </>
+                            );
+                          })()}
+                        </div>
+                      </>
                     )}
 
                     <div className="mt-4">
@@ -1659,9 +1632,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 ...activeAllChartData.map((item) => [
                                   item.allele,
                                   ...activeAllPops.map((pop) =>
-                                    (item[pop] != null
+                                    item[pop] != null
                                       ? Number(item[pop]).toFixed(4)
-                                      : ""),
+                                      : "",
                                   ),
                                 ]),
                               ]
@@ -1781,12 +1754,8 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 {chartData
                                   .filter((item) => item.frequency > 0)
                                   .sort((a, b) => {
-                                    const alleleA = Number.parseFloat(
-                                      a.allele,
-                                    );
-                                    const alleleB = Number.parseFloat(
-                                      b.allele,
-                                    );
+                                    const alleleA = Number.parseFloat(a.allele);
+                                    const alleleB = Number.parseFloat(b.allele);
                                     if (!isNaN(alleleA) && !isNaN(alleleB)) {
                                       return alleleA - alleleB;
                                     }
@@ -1819,92 +1788,92 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         </div>
                       </div>
 
-                    {isNgsAllMode && (
-                      <>
-                        <div className="mt-4 space-y-3 text-sm text-muted-foreground">
-                          <p>{t("marker.frequencies.ngs1000G.intro")}</p>
-                          <div className="space-y-1">
-                            <p className="font-medium flex items-center gap-2">
-                              <span>
+                      {isNgsAllMode && (
+                        <>
+                          <div className="mt-4 space-y-3 text-sm text-muted-foreground">
+                            <p>{t("marker.frequencies.ngs1000G.intro")}</p>
+                            <div className="space-y-1">
+                              <p className="font-medium flex items-center gap-2">
+                                <span>
+                                  {t(
+                                    "marker.frequencies.ngs1000G.datasetNotesTitle",
+                                  )}
+                                </span>
+                              </p>
+                              <p>
                                 {t(
-                                  "marker.frequencies.ngs1000G.datasetNotesTitle",
+                                  "marker.frequencies.ngs1000G.datasetNotesParagraph1",
                                 )}
+                              </p>
+                              <p>
+                                {t(
+                                  "marker.frequencies.ngs1000G.datasetNotesParagraph2",
+                                )}
+                              </p>
+                            </div>
+                            <p className="text-xs">
+                              <span className="font-semibold">
+                                {t(
+                                  "marker.frequencies.datasetNotes.referenceLabel",
+                                )}
+                                :
                               </span>
-                            </p>
-                            <p>
-                              {t(
-                                "marker.frequencies.ngs1000G.datasetNotesParagraph1",
-                              )}
-                            </p>
-                            <p>
-                              {t(
-                                "marker.frequencies.ngs1000G.datasetNotesParagraph2",
-                              )}
+                              <br />
+                              Frontanilla TS et al. Open-Access Worldwide
+                              Population STR Database Constructed Using
+                              High-Coverage Whole-Genome Sequencing Data from
+                              the 1000 Genomes Project. Genes. 2022;13(12):2205.
+                              <br />
+                              https://doi.org/10.3390/genes13122205
                             </p>
                           </div>
-                          <p className="text-xs">
-                            <span className="font-semibold">
-                              {t(
-                                "marker.frequencies.datasetNotes.referenceLabel",
-                              )}
-                              :
-                            </span>
-                            <br />
-                            Frontanilla TS et al. Open-Access Worldwide
-                            Population STR Database Constructed Using
-                            High-Coverage Whole-Genome Sequencing Data from the
-                            1000 Genomes Project. Genes. 2022;13(12):2205.
-                            <br />
-                            https://doi.org/10.3390/genes13122205
-                          </p>
-                        </div>
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                            className="text-xs"
-                          >
-                            <a
-                              href={NGS_1000G_DATASET_LINKS.datasetUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                              className="text-xs"
                             >
-                              {t(
-                                "marker.frequencies.ngs1000G.originalDatasetButton",
-                              )}
-                            </a>
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                            className="text-xs"
-                          >
-                            <a
-                              href={NGS_1000G_DATASET_LINKS.publicationUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                              <a
+                                href={NGS_1000G_DATASET_LINKS.datasetUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {t(
+                                  "marker.frequencies.ngs1000G.originalDatasetButton",
+                                )}
+                              </a>
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                              className="text-xs"
                             >
-                              {t(
-                                "marker.frequencies.ngs1000G.originalPublicationButton",
-                              )}
-                            </a>
-                          </Button>
-                        </div>
-                      </>
-                    )}
-
-                    {showPopStrDatasetNotesAccordion &&
-                      showAllPopulations &&
-                      selectedTechnology === "CE" && (
-                        <>
-                          <p className="mt-4 text-sm text-muted-foreground">
-                            {t("marker.frequencies.datasetNotes.provenance")}
-                          </p>
-                          {popStrDatasetNotesShortTitleAndAccordion}
+                              <a
+                                href={NGS_1000G_DATASET_LINKS.publicationUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {t(
+                                  "marker.frequencies.ngs1000G.originalPublicationButton",
+                                )}
+                              </a>
+                            </Button>
+                          </div>
                         </>
                       )}
+
+                      {showPopStrDatasetNotesAccordion &&
+                        showAllPopulations &&
+                        selectedTechnology === "CE" && (
+                          <>
+                            <p className="mt-4 text-sm text-muted-foreground">
+                              {t("marker.frequencies.datasetNotes.provenance")}
+                            </p>
+                            {popStrDatasetNotesShortTitleAndAccordion}
+                          </>
+                        )}
                     </div>
                   </>
                 ) : (
@@ -1949,9 +1918,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                       </p>
                     );
                   }
-                  const pops = (["AFR", "NAM", "EAS", "CSA", "EUR", "MES", "OCE"] as const).filter(
-                    (p) => stats[p] != null,
-                  );
+                  const pops = (
+                    ["AFR", "NAM", "EAS", "CSA", "EUR", "MES", "OCE"] as const
+                  ).filter((p) => stats[p] != null);
                   const rows = pops.map((p) => stats[p]!);
                   const showN = rows.some((r) => r.N != null);
                   const showHobs = rows.some((r) => r.Hobs != null);
@@ -2014,7 +1983,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                     key={pop}
                                     className={cn(
                                       "border-b border-border last:border-b-0",
-                                      i % 2 === 0 ? "bg-background" : "bg-muted/30",
+                                      i % 2 === 0
+                                        ? "bg-background"
+                                        : "bg-muted/30",
                                     )}
                                   >
                                     <td className="px-3 py-2 font-medium text-foreground">
@@ -2031,17 +2002,23 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                     </td>
                                     {showN ? (
                                       <td className="px-3 py-2 text-right tabular-nums text-foreground">
-                                        {s.N != null ? s.N.toLocaleString() : "–"}
+                                        {s.N != null
+                                          ? s.N.toLocaleString()
+                                          : "–"}
                                       </td>
                                     ) : null}
                                     {showHobs ? (
                                       <td className="px-3 py-2 text-right tabular-nums text-foreground">
-                                        {s.Hobs != null ? s.Hobs.toFixed(3) : "–"}
+                                        {s.Hobs != null
+                                          ? s.Hobs.toFixed(3)
+                                          : "–"}
                                       </td>
                                     ) : null}
                                     {showHexp ? (
                                       <td className="px-3 py-2 text-right tabular-nums text-foreground">
-                                        {s.Hexp != null ? s.Hexp.toFixed(3) : "–"}
+                                        {s.Hexp != null
+                                          ? s.Hexp.toFixed(3)
+                                          : "–"}
                                       </td>
                                     ) : null}
                                     {showFis ? (
@@ -2061,7 +2038,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           </table>
                         </div>
                       </div>
-                      <p className="text-xs text-muted-foreground">{footerText}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {footerText}
+                      </p>
                     </div>
                   );
                 })()}

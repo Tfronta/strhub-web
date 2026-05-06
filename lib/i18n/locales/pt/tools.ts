@@ -340,7 +340,7 @@ tools: {
     features: {
       1: "Genotipagem STR forense no navegador a partir de dados MPS",
       2: "Modelagem de stutter sensível à sequência e chamada automática de alelos",
-      3: "Relatórios PDF conformes com ISFG",
+      3: "Relatório de cobertura por alelo e visualização interativa",
     },
     buttons: {
       github: "GitHub",

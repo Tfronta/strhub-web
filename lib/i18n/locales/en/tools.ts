@@ -340,7 +340,7 @@ tools: {
     features: {
       1: "Forensic STR genotyping in the browser from MPS data",
       2: "Sequence-aware stutter modeling and automatic allele calling",
-      3: "ISFG-compliant PDF reporting",
+      3: "Per-allele coverage reporting and interactive visualization",
     },
     buttons: {
       github: "GitHub",

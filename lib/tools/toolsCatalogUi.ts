@@ -181,7 +181,7 @@ export function buildToolCards(t: (key: string) => string): ToolCard[] {
         t("tools.toastr.features.3"),
       ],
       input: "FASTA (repeat definitions), FASTQ (reads)",
-      output: "Tabular allele calls and STR structural summary",
+      output: "Tabular allele calls, STR structural summary, and ISFG-compliant PDF reports",
       github: "https://github.com/labconowl/toastr",
       publication: "https://www.fsigenetics.com/article/S1872-4973(18)30063-2/fulltext",
     },

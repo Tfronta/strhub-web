@@ -313,7 +313,7 @@ marker: {
           "Interfaz web inactiva en algunos servidores heredados.",
       },
       notes:
-        "ToaSTR (también conocido como STRaitRazor-NGS) extiende la funcionalidad STRaitRazor para análisis de datos Illumina. Integrado en STRhub para comparación histórica y validación de referencia en flujos de trabajo de genómica forense.",
+        "ToaSTR es una herramienta forense de genotipado STR basada en navegador para datos MPS, con modelado de stutter consciente de la secuencia, llamada automática de alelos e informes PDF conformes con ISFG. La distribución en Docker (labconowl/toastr) se ejecuta en macOS, Windows y Linux. Integrada en STRhub para análisis STR forense y validación de referencias.",
     },
   },
   repeatTypes: {

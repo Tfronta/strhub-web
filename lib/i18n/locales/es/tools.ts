@@ -331,15 +331,16 @@ tools: {
   },
   toastr: {
     title: "toaSTR",
-    description: "Herramienta de análisis de alelos STR sin referencia basada en representaciones estructurales de secuencia.",
+    description:
+      "Herramienta forense de genotipado STR basada en navegador para datos MPS, con modelado de stutter consciente de la secuencia, llamada automática de alelos e informes PDF conformes con ISFG.",
     tags: {
       category: "Genotipado",
       language: "Docker",
     },
     features: {
-      1: "Inferencia de alelos STR sin referencia",
-      2: "Representaciones de incrustación secuencia-estructura",
-      3: "Diseñado para análisis STR general a partir de lecturas de secuenciación",
+      1: "Genotipado STR forense en el navegador a partir de datos MPS",
+      2: "Modelado de stutter consciente de la secuencia y llamada automática de alelos",
+      3: "Informes PDF conformes con ISFG",
     },
     buttons: {
       github: "GitHub",

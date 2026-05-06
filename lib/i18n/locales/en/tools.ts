@@ -331,15 +331,16 @@ tools: {
   },
   toastr: {
     title: "toaSTR",
-    description: "Reference-free STR allele analysis tool using sequence-to-structure representations.",
+    description:
+      "Browser-based forensic STR genotyping tool for MPS data, with sequence-aware stutter modeling, automatic allele calling, and ISFG-compliant PDF reporting.",
     tags: {
       category: "Genotyping",
       language: "Docker",
     },
     features: {
-      1: "Reference-free STR allele inference",
-      2: "Sequence-to-structure embedding representations",
-      3: "Designed for general STR analysis from sequencing reads",
+      1: "Forensic STR genotyping in the browser from MPS data",
+      2: "Sequence-aware stutter modeling and automatic allele calling",
+      3: "ISFG-compliant PDF reporting",
     },
     buttons: {
       github: "GitHub",

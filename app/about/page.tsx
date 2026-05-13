@@ -9,14 +9,12 @@ import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
 import { PageTitle } from "@/components/page-title";
-import {
-  COMMUNITY_CONTRIBUTORS,
-  compareContributorsByFirstSurname,
-} from "@/lib/communityContributors";
+import { getCommunityContributorsForGrid } from "@/lib/communityContributors";
 
 export default function AboutPage() {
   const { language, t } = useLanguage();
   const trans = translations[language].about;
+  const { firstRow, remaining } = getCommunityContributorsForGrid();
 
   // Scroll to contact section if hash is present
   useEffect(() => {
@@ -107,10 +105,9 @@ export default function AboutPage() {
             <p className="mt-3 text-base leading-relaxed text-muted-foreground">
               {t("communityHub.communityContributors.disclaimer")}
             </p>
-            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-              {[...COMMUNITY_CONTRIBUTORS]
-                .sort(compareContributorsByFirstSurname)
-                .map((contributor) => (
+            <div className="mt-6 space-y-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                {firstRow.map((contributor) => (
                   <Card
                     key={contributor.name}
                     className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 h-full"
@@ -130,6 +127,31 @@ export default function AboutPage() {
                     </CardHeader>
                   </Card>
                 ))}
+              </div>
+              {remaining.length > 0 && (
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                  {remaining.map((contributor) => (
+                    <Card
+                      key={contributor.name}
+                      className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 h-full"
+                    >
+                      <CardHeader className="space-y-1.5">
+                        <p className="font-bold text-foreground leading-snug">
+                          {contributor.name}
+                        </p>
+                        <p className="text-sm leading-relaxed text-muted-foreground">
+                          {contributor.institution}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {t(
+                            `communityHub.communityContributors.countries.${contributor.country}`
+                          )}
+                        </p>
+                      </CardHeader>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </div>
           </section>
 

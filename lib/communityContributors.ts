@@ -45,11 +45,6 @@ export const COMMUNITY_CONTRIBUTORS: CommunityContributor[] = [
     country: "USA",
   },
   {
-    name: "Ángel Carracedo",
-    institution: "CIMUS / Universidad de Santiago de Compostela",
-    country: "Spain",
-  },
-  {
     name: "Sebastian Ganschow",
     institution: "Oxford Nanopore Technologies",
     country: "Germany",
@@ -75,3 +70,29 @@ export const COMMUNITY_CONTRIBUTORS: CommunityContributor[] = [
     country: "USA",
   },
 ];
+
+/** Shown first, same row (md+), left to right. Must match `name` in `COMMUNITY_CONTRIBUTORS`. */
+const COMMUNITY_CONTRIBUTORS_FIRST_ROW_NAMES: readonly string[] = [
+  "John M. Butler",
+  "Sebastian Ganschow",
+  "Melissa Gymrek",
+];
+
+export function getCommunityContributorsForGrid(): {
+  firstRow: CommunityContributor[];
+  remaining: CommunityContributor[];
+} {
+  const byName = new Map(
+    COMMUNITY_CONTRIBUTORS.map((c) => [c.name, c] as const)
+  );
+  const firstRow = COMMUNITY_CONTRIBUTORS_FIRST_ROW_NAMES.map((name) =>
+    byName.get(name)
+  ).filter((c): c is CommunityContributor => c != null);
+
+  const firstSet = new Set(firstRow.map((c) => c.name));
+  const remaining = [...COMMUNITY_CONTRIBUTORS]
+    .filter((c) => !firstSet.has(c.name))
+    .sort(compareContributorsByFirstSurname);
+
+  return { firstRow, remaining };
+}

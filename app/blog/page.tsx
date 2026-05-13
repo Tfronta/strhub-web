@@ -29,7 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
-import { COMMUNITY_CONTRIBUTORS } from "@/lib/communityContributors";
+import { getCommunityContributorsForGrid } from "@/lib/communityContributors";
 
 interface BlogPost {
   id: string;
@@ -42,6 +42,7 @@ interface BlogPost {
 
 export default function BlogPage() {
   const { t, language } = useLanguage();
+  const { firstRow, remaining } = getCommunityContributorsForGrid();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -208,27 +209,53 @@ export default function BlogPage() {
           <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto text-center">
             {t("communityHub.communityContributors.disclaimer")}
           </p>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-            {COMMUNITY_CONTRIBUTORS.map((contributor) => (
-              <Card
-                key={contributor.name}
-                className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 h-full"
-              >
-                <CardHeader className="space-y-1.5">
-                  <p className="font-bold text-foreground leading-snug">
-                    {contributor.name}
-                  </p>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {contributor.institution}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {t(
-                      `communityHub.communityContributors.countries.${contributor.country}`
-                    )}
-                  </p>
-                </CardHeader>
-              </Card>
-            ))}
+          <div className="mt-6 space-y-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {firstRow.map((contributor) => (
+                <Card
+                  key={contributor.name}
+                  className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 h-full"
+                >
+                  <CardHeader className="space-y-1.5">
+                    <p className="font-bold text-foreground leading-snug">
+                      {contributor.name}
+                    </p>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {contributor.institution}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {t(
+                        `communityHub.communityContributors.countries.${contributor.country}`
+                      )}
+                    </p>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+            {remaining.length > 0 && (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                {remaining.map((contributor) => (
+                  <Card
+                    key={contributor.name}
+                    className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 h-full"
+                  >
+                    <CardHeader className="space-y-1.5">
+                      <p className="font-bold text-foreground leading-snug">
+                        {contributor.name}
+                      </p>
+                      <p className="text-sm leading-relaxed text-muted-foreground">
+                        {contributor.institution}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {t(
+                          `communityHub.communityContributors.countries.${contributor.country}`
+                        )}
+                      </p>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>

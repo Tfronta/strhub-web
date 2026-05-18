@@ -84,11 +84,6 @@ communityHub: {
       "¿Querés saber quiénes están detrás de STRhub y quiénes han contribuido?",
     linkText: "Visitar la página Acerca de →",
   },
-  metrics: {
-    countries: "países",
-    organicGrowth: "crecimiento orgánico",
-    openSourceLicense: "licencia open source",
-  },
   howToJoin: {
     title: "Cómo podés ser parte de esto",
     intro:

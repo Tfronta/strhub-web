@@ -84,11 +84,6 @@ communityHub: {
       "Want to know who's behind STRhub and who has contributed to it?",
     linkText: "Visit the About page →",
   },
-  metrics: {
-    countries: "countries",
-    organicGrowth: "organic growth",
-    openSourceLicense: "open source license",
-  },
   howToJoin: {
     title: "How you can be part of this",
     intro:

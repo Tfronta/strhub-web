@@ -47,32 +47,6 @@ export default function CommunityPage() {
         {/* Section 1 — Hero */}
         <section className="border-b border-border pb-6">
           <PageTitle title={t("nav.blog")} />
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4 shadow-sm">
-              <span className="text-[28px] font-medium tabular-nums tracking-tight text-foreground">
-                7+
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {t("communityHub.metrics.countries")}
-              </span>
-            </div>
-            <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4 shadow-sm">
-              <span className="text-[28px] font-medium tabular-nums tracking-tight text-foreground">
-                100%
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {t("communityHub.metrics.organicGrowth")}
-              </span>
-            </div>
-            <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4 shadow-sm">
-              <span className="text-[28px] font-medium tabular-nums tracking-tight text-foreground">
-                MIT
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {t("communityHub.metrics.openSourceLicense")}
-              </span>
-            </div>
-          </div>
           <p className="mt-4 text-lg text-pretty leading-relaxed text-muted-foreground">
             {t("communityHub.hero.subtitle")}
           </p>

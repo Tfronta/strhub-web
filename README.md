@@ -94,5 +94,5 @@ It must not be used for forensic casework, legal reporting, or evidentiary inter
 
 ## License
 
-This project is released under an open-source license.  
-See the `LICENSE` file for details.
+This project is licensed under the [GNU Affero General Public License v3.0](LICENSE).  
+STRhub is and will remain free and open-source for the forensic genetics community.

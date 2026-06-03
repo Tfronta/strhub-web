@@ -6,74 +6,30 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import MarkdownArticle from "@/components/MarkdownArticle";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLanguage } from "@/contexts/language-context";
+import type { BasicsArticle } from "@/lib/back-to-basics-types";
 import type { Language } from "@/lib/translations";
 
 const SUPPORTED_LOCALES: Language[] = ["en", "es", "pt"];
 
-type ArticleItem = {
-  fields: {
-    title?: string;
-    summary?: string;
-    postReadMinutes?: number;
-    bodyMd?: string;
-    authors?: Array<{ name?: string }>;
-  };
-};
-
 export default function ArticlePageClient({
   params,
+  initialPost,
 }: {
   params: { locale: string; slug: string };
+  initialPost: BasicsArticle;
 }) {
-  const [post, setPost] = useState<ArticleItem | null>(null);
-  const [loading, setLoading] = useState(true);
   const { setLanguage } = useLanguage();
-
   const locale = params.locale as Language;
   const isValidLocale = SUPPORTED_LOCALES.includes(locale);
+  const post = initialPost;
 
-  useEffect(() => {
-    if (!isValidLocale) return;
-
-    async function fetchPost() {
-      try {
-        const res = await fetch(
-          "/api/back-to-basics/" +
-            params.slug +
-            "?locale=" +
-            (locale === "en" ? "" : locale)
-        );
-        const { item } = await res.json();
-        setPost(item);
-      } catch (error) {
-        console.error("Error fetching post:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchPost();
-  }, [params.slug, locale, isValidLocale]);
-
-  // Sync app language to the article's locale.
   useEffect(() => {
     setLanguage(locale);
   }, [locale, setLanguage]);
 
   if (!isValidLocale) {
-    notFound();
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        Loading...
-      </div>
-    );
-  }
-
-  if (!post) {
     notFound();
   }
 

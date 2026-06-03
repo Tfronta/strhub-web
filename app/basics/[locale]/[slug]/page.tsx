@@ -1,57 +1,43 @@
 import type { Metadata } from "next";
-import { getContentfulClient } from "@/lib/contentful";
+import { notFound } from "next/navigation";
+import { fetchBasicsArticle } from "@/lib/back-to-basics-server";
+import {
+  basicsArticleAlternates,
+  basicsArticlePath,
+  isBasicsLocale,
+  type BasicsLocale,
+} from "@/lib/seo";
 import ArticlePageClient from "./ArticlePageClient";
 
-const SUPPORTED_LOCALES = ["en", "es", "pt"] as const;
+export const revalidate = 60;
 
 type PageProps = {
   params: { locale: string; slug: string };
 };
 
-async function getArticleSeo(slug: string, locale: string) {
-  try {
-    const client = getContentfulClient();
-    const response = await client.getEntries({
-      content_type: "backToBasicsPost",
-      "fields.slug": slug,
-      limit: 1,
-      include: 0,
-      locale: locale === "en" ? undefined : locale,
-      select: ["fields.title", "fields.summary"],
-    });
-    const item: any = response.items?.[0];
-    return {
-      title: item?.fields?.title as string | undefined,
-      summary: item?.fields?.summary as string | undefined,
-    };
-  } catch {
-    return { title: undefined, summary: undefined };
-  }
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, slug } = params;
-  const canonicalPath = `/basics/${locale}/${slug}`;
 
-  if (!SUPPORTED_LOCALES.includes(locale as (typeof SUPPORTED_LOCALES)[number])) {
+  if (!isBasicsLocale(locale)) {
     return {
       robots: { index: false, follow: false },
       alternates: { canonical: "/basics" },
     };
   }
 
-  const seo = await getArticleSeo(slug, locale);
-  const title = seo.title
-    ? `${seo.title} | STRhub`
+  const post = await fetchBasicsArticle(slug, locale);
+  const title = post?.fields?.title
+    ? `${post.fields.title} | STRhub`
     : "Back to Basics Article | STRhub";
   const description =
-    seo.summary ||
+    post?.fields?.summary ||
     "Foundational educational content on forensic genetics and STR workflows.";
+  const canonicalPath = basicsArticlePath(locale, slug);
 
   return {
     title,
     description,
-    alternates: { canonical: canonicalPath },
+    alternates: basicsArticleAlternates(slug, locale as BasicsLocale),
     openGraph: {
       title,
       description,
@@ -62,6 +48,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default function ArticlePage({ params }: PageProps) {
-  return <ArticlePageClient params={params} />;
+export default async function ArticlePage({ params }: PageProps) {
+  if (!isBasicsLocale(params.locale)) {
+    notFound();
+  }
+
+  const post = await fetchBasicsArticle(params.slug, params.locale);
+  if (!post) {
+    notFound();
+  }
+
+  return <ArticlePageClient params={params} initialPost={post} />;
 }

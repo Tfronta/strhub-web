@@ -32,9 +32,6 @@ export const metadata: Metadata = {
   description:
     "Modern educational and scientific platform for STR research, forensic analysis, and genetic studies",
   generator: "v0.app",
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     url: "https://strhub.app",
     siteName: "STRhub",

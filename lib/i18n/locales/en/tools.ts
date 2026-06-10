@@ -313,15 +313,15 @@ tools: {
   },
   straitrazor: {
     title: "STRait Razor",
-    description: "Motif-based STR analysis from Illumina FASTQ with CLI and online version.",
+    description: "Motif-based STR allele calling from FASTQ for targeted forensic panels, with CLI and online version.",
     tags: {
       category: "Genotyping",
       language: "R",
     },
     features: {
       1: "Motif-based STR allele detection from FASTQ reads",
-      2: "Optimized for forensic STR marker panels",
-      3: "Lightweight CLI with optional web interface",
+      2: "Configurable for forensic STR marker panels",
+      3: "Best suited for Illumina short reads; apply extra scrutiny on homopolymer-prone platforms",
     },
     buttons: {
       github: "GitHub",
@@ -373,8 +373,8 @@ tools: {
     },
     features: {
       1: "Stutter and PCR/sequencing noise characterisation and correction",
-      2: "Automatic allele detection in targeted MPS data",
-      3: "STRNaming-based nomenclature; supports built-in and custom kits",
+      2: "Automatic allele detection from FASTQ in targeted MPS data",
+      3: "Best suited for Illumina short reads; apply extra scrutiny on homopolymer-prone platforms",
     },
     buttons: {
       website: "Website",

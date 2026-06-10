@@ -35,7 +35,9 @@ function limitationTranslationKey(limitation: string): string {
   if (limitation.includes("Requires BAM/CRAM alignment")) return "requiresBamBed";
   if (limitation.includes("Optimized for ONT")) return "ontOptimized";
   if (limitation.includes("Not designed for whole-genome")) return "notWgs";
-  if (limitation.includes("Designed for Illumina data") && limitation.includes("panel configuration")) return "illuminaData";
+  if (limitation.includes("BAM not currently supported")) return "fastqOnly";
+  if (limitation.includes("Requires panel configuration")) return "requiresPanel";
+  if (limitation.includes("homopolymer-prone")) return "homopolymerScrutiny";
   if (limitation.includes("Does not perform read alignment")) return "noAlignment";
   if (limitation.includes("Designed for forensic NGS")) return "forensicNgs";
   if (limitation.includes("Web interface inactive")) return "webInterfaceInactive";

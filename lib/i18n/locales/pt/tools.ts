@@ -313,15 +313,15 @@ tools: {
   },
   straitrazor: {
     title: "STRait Razor",
-    description: "Análise de STRs baseada em motivos a partir de FASTQ Illumina, com versão CLI e online.",
+    description: "Chamada de alelos STR baseada em motivos a partir de FASTQ para painéis forenses direcionados, com versão CLI e online.",
     tags: {
       category: "Genotipagem",
       language: "R",
     },
     features: {
       1: "Detecção de alelos STR baseada em motivos a partir de leituras FASTQ",
-      2: "Otimizado para painéis de marcadores STR forenses",
-      3: "CLI leve com interface web opcional",
+      2: "Configurável para painéis de marcadores STR forenses",
+      3: "Melhor adaptado a leituras curtas Illumina; aplicar escrutínio extra em plataformas propensas a erros de homopolímeros",
     },
     buttons: {
       github: "GitHub",
@@ -373,8 +373,8 @@ tools: {
     },
     features: {
       1: "Caracterização e correção de stutter e ruído de PCR/sequenciamento",
-      2: "Detecção automática de alelos em dados MPS direcionados",
-      3: "Nomenclatura baseada em STRNaming; suporta kits embutidos e personalizados",
+      2: "Detecção automática de alelos a partir de FASTQ em dados MPS direcionados",
+      3: "Melhor adaptado a leituras curtas Illumina; aplicar escrutínio extra em plataformas propensas a erros de homopolímeros",
     },
     buttons: {
       website: "Website",

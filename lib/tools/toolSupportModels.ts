@@ -41,10 +41,16 @@ export const supportModelByToolId: Record<string, ToolSupportModel> = {
     supportedTechnologies: ["illumina"],
     compatibilityMode: "configurable",
   },
+  fdstools: {
+    isGenotyper: true,
+    requiresTargets: true,
+    supportedTechnologies: ["multi_platform", "targeted"],
+    compatibilityMode: "configurable",
+  },
   straitrazor: {
     isGenotyper: true,
     requiresTargets: true,
-    supportedTechnologies: ["illumina", "targeted"],
+    supportedTechnologies: ["multi_platform", "targeted"],
     compatibilityMode: "configurable",
   },
   toastr: {

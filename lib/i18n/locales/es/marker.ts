@@ -293,17 +293,34 @@ marker: {
       notes:
         "STRspy está integrado en el ecosistema STRhub para análisis STR forense y poblacional utilizando datos Oxford Nanopore. Su diseño modular permite visualización, benchmarking y compatibilidad cruzada con conjuntos de datos HipSTR-UI.",
     },
-    straitrazor: {
+    fdstools: {
       config: {
-        targetFileFormat: "CSV o panel STRaitRazor predefinido",
+        targetFileFormat: "Definición de kit STR forense integrado o personalizado",
       },
       limitations: {
-        illuminaData: "Diseñado para datos Illumina; requiere configuración de panel.",
+        fastqOnly:
+          "Acepta FASTQ de cualquier plataforma MPS; BAM no soportado actualmente.",
+        homopolymerScrutiny:
+          "Mejor adaptado a lecturas cortas Illumina; aplicar escrutinio extra en plataformas propensas a errores de homopolímeros.",
+      },
+      notes:
+        "FDSTools es un toolkit Python para análisis de datos MPS forenses, incluyendo caracterización de stutter, filtrado de ruido y detección automática de alelos con nomenclatura STRNaming.",
+    },
+    straitrazor: {
+      config: {
+        targetFileFormat: "Panel FASTA o CSV que define loci STR y motivos",
+      },
+      limitations: {
+        fastqOnly:
+          "Acepta FASTQ de cualquier plataforma MPS; BAM no soportado actualmente.",
+        requiresPanel: "Requiere configuración de panel.",
+        homopolymerScrutiny:
+          "Mejor adaptado a lecturas cortas Illumina; aplicar escrutinio extra en plataformas propensas a errores de homopolímeros.",
         noAlignment:
           "No realiza alineamiento de lecturas; la coincidencia de motivo es directa.",
       },
       notes:
-        "STRait Razor está incluido en el ecosistema STRhub para integración con pipelines forenses basados en Illumina. Su algoritmo ligero de coincidencia de motivos lo hace adecuado para fines de enseñanza y capacitación en interpretación de STR.",
+        "STRait Razor está incluido en el ecosistema STRhub para análisis STR forense dirigido. Su algoritmo ligero de coincidencia de motivos lo hace adecuado para enseñanza y capacitación en interpretación de STR.",
     },
     toastr: {
       limitations: {

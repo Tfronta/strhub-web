@@ -181,9 +181,41 @@ export const toolsDetailsData: ToolDetails[] = [
       "Integrated in STRhub for legacy validation and benchmark comparisons. STRique operates as a target-based caller using a TSV configuration file with motif and flanking regions. BED files can be converted by adding repeat/prefix/suffix columns.",
   },
   {
+    id: "fdstools",
+    name: "FDSTools",
+    tech: ["Multi-platform"],
+    input: ["FASTQ"],
+    output: ["TXT", "CSV"],
+    support: {
+      native_panels: [],
+      configurable: true,
+      wrapper: false,
+    },
+    config: {
+      target_file_format: "Built-in or custom forensic STR kit definition",
+      customizable_targets: true,
+    },
+    compatibility: {
+      status: "maintained",
+      maintenance: "active",
+      license: "GPL-3.0",
+      last_release: "v2.0",
+    },
+    limitations: [
+      "Accepts FASTQ from any MPS platform; BAM not currently supported.",
+      "Best suited to Illumina short reads; apply extra scrutiny to homopolymer-prone platforms.",
+    ],
+    repo_url: "https://github.com/Jerrythafast/FDSTools",
+    docs_url: "https://www.fdstools.nl/",
+    paper_doi: "10.1016/j.fsigen.2016.11.007",
+    last_checked: "2025-11-06",
+    notes:
+      "FDSTools is a Python toolkit for forensic MPS data analysis, including stutter characterization, noise filtering, and automatic allele detection with STRNaming nomenclature.",
+  },
+  {
     id: "straitrazor",
     name: "STRait Razor",
-    tech: ["Illumina"],
+    tech: ["Multi-platform"],
     input: ["FASTQ"],
     output: ["TXT", "CSV"],
     support: {
@@ -202,7 +234,9 @@ export const toolsDetailsData: ToolDetails[] = [
       last_release: "v3.0",
     },
     limitations: [
-      "Designed for Illumina data; requires panel configuration.",
+      "Accepts FASTQ from any MPS platform; BAM not currently supported.",
+      "Requires panel configuration.",
+      "Best suited to Illumina short reads; apply extra scrutiny to homopolymer-prone platforms.",
       "Does not perform read alignment; motif matching is direct.",
     ],
     repo_url: "https://github.com/Ahhgust/STRaitRazor",
@@ -210,7 +244,7 @@ export const toolsDetailsData: ToolDetails[] = [
     paper_doi: "https://doi.org/10.1016/j.fsigen.2021.102463",
     last_checked: "2025-11-06",
     notes:
-      "STRait Razor is included in the STRhub ecosystem for integration with Illumina-based forensic pipelines. Its lightweight motif-matching algorithm makes it suitable for teaching and training purposes in STR interpretation.",
+      "STRait Razor is included in the STRhub ecosystem for targeted forensic STR analysis. Its lightweight motif-matching algorithm makes it suitable for teaching and training in STR interpretation.",
   },
   {
     id: "toastr",

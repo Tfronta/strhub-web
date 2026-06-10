@@ -293,17 +293,34 @@ marker: {
       notes:
         "STRspy is integrated into the STRhub ecosystem for forensic and population STR analysis using Oxford Nanopore data. Its modular design allows visualization, benchmarking, and cross-compatibility with HipSTR-UI datasets.",
     },
-    straitrazor: {
+    fdstools: {
       config: {
-        targetFileFormat: "CSV or predefined STRaitRazor panel",
+        targetFileFormat: "Built-in or custom forensic STR kit definition",
       },
       limitations: {
-        illuminaData: "Designed for Illumina data; requires panel configuration.",
+        fastqOnly:
+          "Accepts FASTQ from any MPS platform; BAM not currently supported.",
+        homopolymerScrutiny:
+          "Best suited to Illumina short reads; apply extra scrutiny to homopolymer-prone platforms.",
+      },
+      notes:
+        "FDSTools is a Python toolkit for forensic MPS data analysis, including stutter characterization, noise filtering, and automatic allele detection with STRNaming nomenclature.",
+    },
+    straitrazor: {
+      config: {
+        targetFileFormat: "FASTA or CSV panel defining STR loci and motifs",
+      },
+      limitations: {
+        fastqOnly:
+          "Accepts FASTQ from any MPS platform; BAM not currently supported.",
+        requiresPanel: "Requires panel configuration.",
+        homopolymerScrutiny:
+          "Best suited to Illumina short reads; apply extra scrutiny to homopolymer-prone platforms.",
         noAlignment:
           "Does not perform read alignment; motif matching is direct.",
       },
       notes:
-        "STRait Razor is included in the STRhub ecosystem for integration with Illumina-based forensic pipelines. Its lightweight motif-matching algorithm makes it suitable for teaching and training purposes in STR interpretation.",
+        "STRait Razor is included in the STRhub ecosystem for targeted forensic STR analysis. Its lightweight motif-matching algorithm makes it suitable for teaching and training in STR interpretation.",
     },
     toastr: {
       limitations: {

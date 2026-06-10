@@ -293,17 +293,34 @@ marker: {
       notes:
         "STRspy está integrado ao ecossistema STRhub para análise STR forense e populacional usando dados Oxford Nanopore. Seu design modular permite visualização, benchmarking e compatibilidade cruzada com conjuntos de dados HipSTR-UI.",
     },
-    straitrazor: {
+    fdstools: {
       config: {
-        targetFileFormat: "CSV ou painel STRaitRazor predefinido",
+        targetFileFormat: "Definição de kit STR forense embutido ou personalizado",
       },
       limitations: {
-        illuminaData: "Projetado para dados Illumina; requer configuração de painel.",
+        fastqOnly:
+          "Aceita FASTQ de qualquer plataforma MPS; BAM não suportado atualmente.",
+        homopolymerScrutiny:
+          "Melhor adaptado a leituras curtas Illumina; aplicar escrutínio extra em plataformas propensas a erros de homopolímeros.",
+      },
+      notes:
+        "FDSTools é um toolkit Python para análise de dados MPS forenses, incluindo caracterização de stutter, filtragem de ruído e detecção automática de alelos com nomenclatura STRNaming.",
+    },
+    straitrazor: {
+      config: {
+        targetFileFormat: "Painel FASTA ou CSV que define loci STR e motivos",
+      },
+      limitations: {
+        fastqOnly:
+          "Aceita FASTQ de qualquer plataforma MPS; BAM não suportado atualmente.",
+        requiresPanel: "Requer configuração de painel.",
+        homopolymerScrutiny:
+          "Melhor adaptado a leituras curtas Illumina; aplicar escrutínio extra em plataformas propensas a erros de homopolímeros.",
         noAlignment:
           "Não realiza alinhamento de leituras; correspondência de motivo é direta.",
       },
       notes:
-        "STRait Razor está incluído no ecossistema STRhub para integração com pipelines forenses baseados em Illumina. Seu algoritmo leve de correspondência de motivos o torna adequado para fins de ensino e treinamento na interpretação de STR.",
+        "STRait Razor está incluído no ecossistema STRhub para análise STR forense direcionada. Seu algoritmo leve de correspondência de motivos o torna adequado para ensino e treinamento na interpretação de STR.",
     },
     toastr: {
       limitations: {

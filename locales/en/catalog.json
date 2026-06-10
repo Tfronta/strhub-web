@@ -1,0 +1,14 @@
+{
+  "summary": "Summary",
+  "alleleFrequencies": "Allele frequencies",
+  "references": "References",
+  "tools": "Tools",
+  "genomicCoordinates": "Genomic coordinates",
+  "chromosome": "Chromosome",
+  "motif": "Motif",
+  "type": "Type",
+  "selectPopulation": "Select population",
+  "noDataForMarker": "No data for this marker yet",
+  "externalResources": "External resources",
+  "nistVariantTable": "NIST STRbase variant table"
+}

@@ -1,0 +1,2081 @@
+{
+  "source": "SPSmart pop.STR — CESGA (http://spsmart.cesga.es)",
+  "dataset": "strs_local",
+  "kit": "Illumina ForenSeq",
+  "population": "AMERICA",
+  "n_markers": 27,
+  "markers": [
+    "CSF1PO",
+    "D1S1656",
+    "D2S1338",
+    "D2S441",
+    "D3S1358",
+    "D4S2408",
+    "D5S818",
+    "D6S1043",
+    "D7S820",
+    "D8S1179",
+    "D9S1122",
+    "D10S1248",
+    "D12S391",
+    "D13S317",
+    "D16S539",
+    "D17S1301",
+    "D18S51",
+    "D19S433",
+    "D20S482",
+    "D21S11",
+    "D22S1045",
+    "FGA",
+    "Penta D",
+    "Penta E",
+    "TH01",
+    "TPOX",
+    "vWA"
+  ],
+  "frequencies": {
+    "CSF1PO": [
+      {
+        "allele": "6",
+        "frequency": 0.0
+      },
+      {
+        "allele": "7",
+        "frequency": 0.038
+      },
+      {
+        "allele": "8",
+        "frequency": 0.032
+      },
+      {
+        "allele": "9",
+        "frequency": 0.037
+      },
+      {
+        "allele": "10",
+        "frequency": 0.239
+      },
+      {
+        "allele": "11",
+        "frequency": 0.28
+      },
+      {
+        "allele": "12",
+        "frequency": 0.314
+      },
+      {
+        "allele": "13",
+        "frequency": 0.052
+      },
+      {
+        "allele": "14",
+        "frequency": 0.009
+      },
+      {
+        "allele": "15",
+        "frequency": 0.0
+      }
+    ],
+    "D1S1656": [
+      {
+        "allele": "8",
+        "frequency": 0.0
+      },
+      {
+        "allele": "9",
+        "frequency": 0.0
+      },
+      {
+        "allele": "10",
+        "frequency": 0.003
+      },
+      {
+        "allele": "11",
+        "frequency": 0.059
+      },
+      {
+        "allele": "12",
+        "frequency": 0.089
+      },
+      {
+        "allele": "13",
+        "frequency": 0.09
+      },
+      {
+        "allele": "13.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "14",
+        "frequency": 0.175
+      },
+      {
+        "allele": "14.3",
+        "frequency": 0.016
+      },
+      {
+        "allele": "15",
+        "frequency": 0.141
+      },
+      {
+        "allele": "15.3",
+        "frequency": 0.033
+      },
+      {
+        "allele": "16",
+        "frequency": 0.134
+      },
+      {
+        "allele": "16.3",
+        "frequency": 0.059
+      },
+      {
+        "allele": "17",
+        "frequency": 0.045
+      },
+      {
+        "allele": "17.1",
+        "frequency": 0.001
+      },
+      {
+        "allele": "17.3",
+        "frequency": 0.105
+      },
+      {
+        "allele": "18",
+        "frequency": 0.006
+      },
+      {
+        "allele": "18.3",
+        "frequency": 0.036
+      },
+      {
+        "allele": "19",
+        "frequency": 0.001
+      },
+      {
+        "allele": "19.3",
+        "frequency": 0.006
+      },
+      {
+        "allele": "20.3",
+        "frequency": 0.0
+      }
+    ],
+    "D2S1338": [
+      {
+        "allele": "11",
+        "frequency": 0.0
+      },
+      {
+        "allele": "13",
+        "frequency": 0.001
+      },
+      {
+        "allele": "14",
+        "frequency": 0.0
+      },
+      {
+        "allele": "15",
+        "frequency": 0.003
+      },
+      {
+        "allele": "16",
+        "frequency": 0.054
+      },
+      {
+        "allele": "17",
+        "frequency": 0.171
+      },
+      {
+        "allele": "18",
+        "frequency": 0.061
+      },
+      {
+        "allele": "19",
+        "frequency": 0.172
+      },
+      {
+        "allele": "20",
+        "frequency": 0.093
+      },
+      {
+        "allele": "21",
+        "frequency": 0.077
+      },
+      {
+        "allele": "21.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "22",
+        "frequency": 0.085
+      },
+      {
+        "allele": "23",
+        "frequency": 0.118
+      },
+      {
+        "allele": "24",
+        "frequency": 0.08
+      },
+      {
+        "allele": "25",
+        "frequency": 0.063
+      },
+      {
+        "allele": "26",
+        "frequency": 0.018
+      },
+      {
+        "allele": "27",
+        "frequency": 0.004
+      }
+    ],
+    "D2S441": [
+      {
+        "allele": "8",
+        "frequency": 0.0
+      },
+      {
+        "allele": "9",
+        "frequency": 0.005
+      },
+      {
+        "allele": "9.1",
+        "frequency": 0.0
+      },
+      {
+        "allele": "10",
+        "frequency": 0.229
+      },
+      {
+        "allele": "11",
+        "frequency": 0.32
+      },
+      {
+        "allele": "11.3",
+        "frequency": 0.045
+      },
+      {
+        "allele": "12",
+        "frequency": 0.103
+      },
+      {
+        "allele": "12.3",
+        "frequency": 0.001
+      },
+      {
+        "allele": "13",
+        "frequency": 0.043
+      },
+      {
+        "allele": "13.3",
+        "frequency": 0.005
+      },
+      {
+        "allele": "14",
+        "frequency": 0.223
+      },
+      {
+        "allele": "14.3",
+        "frequency": 0.001
+      },
+      {
+        "allele": "15",
+        "frequency": 0.024
+      },
+      {
+        "allele": "16",
+        "frequency": 0.003
+      },
+      {
+        "allele": "17",
+        "frequency": 0.0
+      }
+    ],
+    "D3S1358": [
+      {
+        "allele": "6",
+        "frequency": 0.0
+      },
+      {
+        "allele": "9",
+        "frequency": 0.001
+      },
+      {
+        "allele": "11",
+        "frequency": 0.0
+      },
+      {
+        "allele": "12",
+        "frequency": 0.003
+      },
+      {
+        "allele": "13",
+        "frequency": 0.006
+      },
+      {
+        "allele": "14",
+        "frequency": 0.085
+      },
+      {
+        "allele": "15",
+        "frequency": 0.326
+      },
+      {
+        "allele": "15.2",
+        "frequency": 0.001
+      },
+      {
+        "allele": "16",
+        "frequency": 0.296
+      },
+      {
+        "allele": "17",
+        "frequency": 0.187
+      },
+      {
+        "allele": "18",
+        "frequency": 0.088
+      },
+      {
+        "allele": "19",
+        "frequency": 0.005
+      },
+      {
+        "allele": "20",
+        "frequency": 0.002
+      }
+    ],
+    "D4S2408": [
+      {
+        "allele": "6",
+        "frequency": 0.0
+      },
+      {
+        "allele": "7",
+        "frequency": 0.0
+      },
+      {
+        "allele": "8",
+        "frequency": 0.016
+      },
+      {
+        "allele": "9",
+        "frequency": 0.726
+      },
+      {
+        "allele": "10",
+        "frequency": 0.161
+      },
+      {
+        "allele": "11",
+        "frequency": 0.081
+      },
+      {
+        "allele": "12",
+        "frequency": 0.016
+      },
+      {
+        "allele": "13",
+        "frequency": 0.0
+      }
+    ],
+    "D5S818": [
+      {
+        "allele": "7",
+        "frequency": 0.031
+      },
+      {
+        "allele": "8",
+        "frequency": 0.027
+      },
+      {
+        "allele": "9",
+        "frequency": 0.036
+      },
+      {
+        "allele": "10",
+        "frequency": 0.062
+      },
+      {
+        "allele": "11",
+        "frequency": 0.296
+      },
+      {
+        "allele": "12",
+        "frequency": 0.317
+      },
+      {
+        "allele": "13",
+        "frequency": 0.21
+      },
+      {
+        "allele": "14",
+        "frequency": 0.016
+      },
+      {
+        "allele": "15",
+        "frequency": 0.001
+      },
+      {
+        "allele": "16",
+        "frequency": 0.005
+      }
+    ],
+    "D6S1043": [
+      {
+        "allele": "7",
+        "frequency": 0.0
+      },
+      {
+        "allele": "9",
+        "frequency": 0.002
+      },
+      {
+        "allele": "10",
+        "frequency": 0.008
+      },
+      {
+        "allele": "11",
+        "frequency": 0.159
+      },
+      {
+        "allele": "12",
+        "frequency": 0.184
+      },
+      {
+        "allele": "13",
+        "frequency": 0.117
+      },
+      {
+        "allele": "14",
+        "frequency": 0.097
+      },
+      {
+        "allele": "15",
+        "frequency": 0.035
+      },
+      {
+        "allele": "16",
+        "frequency": 0.021
+      },
+      {
+        "allele": "17",
+        "frequency": 0.061
+      },
+      {
+        "allele": "18",
+        "frequency": 0.116
+      },
+      {
+        "allele": "19",
+        "frequency": 0.088
+      },
+      {
+        "allele": "19.3",
+        "frequency": 0.005
+      },
+      {
+        "allele": "20",
+        "frequency": 0.041
+      },
+      {
+        "allele": "20.3",
+        "frequency": 0.009
+      },
+      {
+        "allele": "21",
+        "frequency": 0.01
+      },
+      {
+        "allele": "21.3",
+        "frequency": 0.027
+      },
+      {
+        "allele": "22",
+        "frequency": 0.009
+      },
+      {
+        "allele": "22.3",
+        "frequency": 0.005
+      },
+      {
+        "allele": "23",
+        "frequency": 0.001
+      },
+      {
+        "allele": "23.3",
+        "frequency": 0.001
+      },
+      {
+        "allele": "24",
+        "frequency": 0.005
+      },
+      {
+        "allele": "25",
+        "frequency": 0.001
+      }
+    ],
+    "D7S820": [
+      {
+        "allele": "6",
+        "frequency": 0.0
+      },
+      {
+        "allele": "6.3",
+        "frequency": 0.001
+      },
+      {
+        "allele": "7",
+        "frequency": 0.009
+      },
+      {
+        "allele": "7.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "8",
+        "frequency": 0.168
+      },
+      {
+        "allele": "8.1",
+        "frequency": 0.0
+      },
+      {
+        "allele": "9",
+        "frequency": 0.088
+      },
+      {
+        "allele": "10",
+        "frequency": 0.299
+      },
+      {
+        "allele": "10.1",
+        "frequency": 0.0
+      },
+      {
+        "allele": "10.3",
+        "frequency": 0.001
+      },
+      {
+        "allele": "11",
+        "frequency": 0.245
+      },
+      {
+        "allele": "11.1",
+        "frequency": 0.0
+      },
+      {
+        "allele": "11.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "12",
+        "frequency": 0.15
+      },
+      {
+        "allele": "13",
+        "frequency": 0.032
+      },
+      {
+        "allele": "13.1",
+        "frequency": 0.001
+      },
+      {
+        "allele": "14",
+        "frequency": 0.007
+      },
+      {
+        "allele": "15",
+        "frequency": 0.001
+      }
+    ],
+    "D8S1179": [
+      {
+        "allele": "8",
+        "frequency": 0.004
+      },
+      {
+        "allele": "9",
+        "frequency": 0.005
+      },
+      {
+        "allele": "10",
+        "frequency": 0.063
+      },
+      {
+        "allele": "11",
+        "frequency": 0.066
+      },
+      {
+        "allele": "12",
+        "frequency": 0.114
+      },
+      {
+        "allele": "12.1",
+        "frequency": 0.0
+      },
+      {
+        "allele": "13",
+        "frequency": 0.273
+      },
+      {
+        "allele": "14",
+        "frequency": 0.285
+      },
+      {
+        "allele": "15",
+        "frequency": 0.143
+      },
+      {
+        "allele": "16",
+        "frequency": 0.04
+      },
+      {
+        "allele": "17",
+        "frequency": 0.007
+      },
+      {
+        "allele": "18",
+        "frequency": 0.0
+      }
+    ],
+    "D9S1122": [
+      {
+        "allele": "9",
+        "frequency": 0.0
+      },
+      {
+        "allele": "10",
+        "frequency": 0.016
+      },
+      {
+        "allele": "11",
+        "frequency": 0.07
+      },
+      {
+        "allele": "12",
+        "frequency": 0.211
+      },
+      {
+        "allele": "13",
+        "frequency": 0.633
+      },
+      {
+        "allele": "14",
+        "frequency": 0.063
+      },
+      {
+        "allele": "15",
+        "frequency": 0.008
+      },
+      {
+        "allele": "16",
+        "frequency": 0.0
+      }
+    ],
+    "D10S1248": [
+      {
+        "allele": "8",
+        "frequency": 0.005
+      },
+      {
+        "allele": "9",
+        "frequency": 0.002
+      },
+      {
+        "allele": "10",
+        "frequency": 0.005
+      },
+      {
+        "allele": "11",
+        "frequency": 0.016
+      },
+      {
+        "allele": "12",
+        "frequency": 0.079
+      },
+      {
+        "allele": "13",
+        "frequency": 0.231
+      },
+      {
+        "allele": "14",
+        "frequency": 0.318
+      },
+      {
+        "allele": "15",
+        "frequency": 0.21
+      },
+      {
+        "allele": "16",
+        "frequency": 0.109
+      },
+      {
+        "allele": "17",
+        "frequency": 0.024
+      },
+      {
+        "allele": "18",
+        "frequency": 0.002
+      },
+      {
+        "allele": "19",
+        "frequency": 0.0
+      }
+    ],
+    "D12S391": [
+      {
+        "allele": "12",
+        "frequency": 0.0
+      },
+      {
+        "allele": "13",
+        "frequency": 0.001
+      },
+      {
+        "allele": "14",
+        "frequency": 0.0
+      },
+      {
+        "allele": "15",
+        "frequency": 0.071
+      },
+      {
+        "allele": "16",
+        "frequency": 0.039
+      },
+      {
+        "allele": "17",
+        "frequency": 0.103
+      },
+      {
+        "allele": "17.1",
+        "frequency": 0.001
+      },
+      {
+        "allele": "17.3",
+        "frequency": 0.006
+      },
+      {
+        "allele": "18",
+        "frequency": 0.216
+      },
+      {
+        "allele": "18.1",
+        "frequency": 0.001
+      },
+      {
+        "allele": "18.3",
+        "frequency": 0.012
+      },
+      {
+        "allele": "19",
+        "frequency": 0.166
+      },
+      {
+        "allele": "19.1",
+        "frequency": 0.002
+      },
+      {
+        "allele": "19.3",
+        "frequency": 0.007
+      },
+      {
+        "allele": "20",
+        "frequency": 0.137
+      },
+      {
+        "allele": "20.1",
+        "frequency": 0.0
+      },
+      {
+        "allele": "20.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "21",
+        "frequency": 0.087
+      },
+      {
+        "allele": "22",
+        "frequency": 0.072
+      },
+      {
+        "allele": "22.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "22.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "23",
+        "frequency": 0.056
+      },
+      {
+        "allele": "24",
+        "frequency": 0.013
+      },
+      {
+        "allele": "24.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "24.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "25",
+        "frequency": 0.005
+      },
+      {
+        "allele": "25.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "25.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "26",
+        "frequency": 0.003
+      },
+      {
+        "allele": "26.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "27",
+        "frequency": 0.0
+      },
+      {
+        "allele": "27.2",
+        "frequency": 0.0
+      }
+    ],
+    "D13S317": [
+      {
+        "allele": "7",
+        "frequency": 0.0
+      },
+      {
+        "allele": "8",
+        "frequency": 0.056
+      },
+      {
+        "allele": "9",
+        "frequency": 0.089
+      },
+      {
+        "allele": "10",
+        "frequency": 0.064
+      },
+      {
+        "allele": "11",
+        "frequency": 0.26
+      },
+      {
+        "allele": "12",
+        "frequency": 0.345
+      },
+      {
+        "allele": "13",
+        "frequency": 0.113
+      },
+      {
+        "allele": "14",
+        "frequency": 0.071
+      },
+      {
+        "allele": "15",
+        "frequency": 0.002
+      },
+      {
+        "allele": "16",
+        "frequency": 0.001
+      }
+    ],
+    "D16S539": [
+      {
+        "allele": "5",
+        "frequency": 0.0
+      },
+      {
+        "allele": "8",
+        "frequency": 0.03
+      },
+      {
+        "allele": "9",
+        "frequency": 0.186
+      },
+      {
+        "allele": "10",
+        "frequency": 0.108
+      },
+      {
+        "allele": "11",
+        "frequency": 0.271
+      },
+      {
+        "allele": "12",
+        "frequency": 0.237
+      },
+      {
+        "allele": "13",
+        "frequency": 0.144
+      },
+      {
+        "allele": "14",
+        "frequency": 0.022
+      },
+      {
+        "allele": "15",
+        "frequency": 0.003
+      }
+    ],
+    "D17S1301": [
+      {
+        "allele": "7",
+        "frequency": 0.0
+      },
+      {
+        "allele": "8",
+        "frequency": 0.0
+      },
+      {
+        "allele": "9",
+        "frequency": 0.0
+      },
+      {
+        "allele": "10",
+        "frequency": 0.008
+      },
+      {
+        "allele": "11",
+        "frequency": 0.283
+      },
+      {
+        "allele": "12",
+        "frequency": 0.525
+      },
+      {
+        "allele": "13",
+        "frequency": 0.167
+      },
+      {
+        "allele": "14",
+        "frequency": 0.008
+      },
+      {
+        "allele": "15",
+        "frequency": 0.008
+      }
+    ],
+    "D18S51": [
+      {
+        "allele": "9",
+        "frequency": 0.0
+      },
+      {
+        "allele": "10",
+        "frequency": 0.006
+      },
+      {
+        "allele": "10.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "11",
+        "frequency": 0.009
+      },
+      {
+        "allele": "11.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "12",
+        "frequency": 0.108
+      },
+      {
+        "allele": "12.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "13",
+        "frequency": 0.093
+      },
+      {
+        "allele": "13.1",
+        "frequency": 0.0
+      },
+      {
+        "allele": "13.2",
+        "frequency": 0.004
+      },
+      {
+        "allele": "14",
+        "frequency": 0.135
+      },
+      {
+        "allele": "14.2",
+        "frequency": 0.003
+      },
+      {
+        "allele": "15",
+        "frequency": 0.15
+      },
+      {
+        "allele": "15.2",
+        "frequency": 0.001
+      },
+      {
+        "allele": "16",
+        "frequency": 0.131
+      },
+      {
+        "allele": "16.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "17",
+        "frequency": 0.144
+      },
+      {
+        "allele": "17.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "18",
+        "frequency": 0.084
+      },
+      {
+        "allele": "18.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "19",
+        "frequency": 0.067
+      },
+      {
+        "allele": "19.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "20",
+        "frequency": 0.036
+      },
+      {
+        "allele": "21",
+        "frequency": 0.019
+      },
+      {
+        "allele": "21.2",
+        "frequency": 0.001
+      },
+      {
+        "allele": "22",
+        "frequency": 0.006
+      },
+      {
+        "allele": "23",
+        "frequency": 0.001
+      },
+      {
+        "allele": "24",
+        "frequency": 0.0
+      },
+      {
+        "allele": "25",
+        "frequency": 0.0
+      },
+      {
+        "allele": "28",
+        "frequency": 0.0
+      }
+    ],
+    "D19S433": [
+      {
+        "allele": "9",
+        "frequency": 0.0
+      },
+      {
+        "allele": "9.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "10",
+        "frequency": 0.006
+      },
+      {
+        "allele": "11",
+        "frequency": 0.036
+      },
+      {
+        "allele": "11.2",
+        "frequency": 0.003
+      },
+      {
+        "allele": "12",
+        "frequency": 0.104
+      },
+      {
+        "allele": "12.2",
+        "frequency": 0.023
+      },
+      {
+        "allele": "13",
+        "frequency": 0.255
+      },
+      {
+        "allele": "13.2",
+        "frequency": 0.082
+      },
+      {
+        "allele": "14",
+        "frequency": 0.241
+      },
+      {
+        "allele": "14.2",
+        "frequency": 0.046
+      },
+      {
+        "allele": "15",
+        "frequency": 0.095
+      },
+      {
+        "allele": "15.2",
+        "frequency": 0.071
+      },
+      {
+        "allele": "16",
+        "frequency": 0.016
+      },
+      {
+        "allele": "16.2",
+        "frequency": 0.014
+      },
+      {
+        "allele": "17",
+        "frequency": 0.002
+      },
+      {
+        "allele": "17.2",
+        "frequency": 0.005
+      },
+      {
+        "allele": "18",
+        "frequency": 0.004
+      },
+      {
+        "allele": "18.2",
+        "frequency": 0.0
+      }
+    ],
+    "D20S482": [
+      {
+        "allele": "9",
+        "frequency": 0.0
+      },
+      {
+        "allele": "10",
+        "frequency": 0.0
+      },
+      {
+        "allele": "11",
+        "frequency": 0.0
+      },
+      {
+        "allele": "12",
+        "frequency": 0.031
+      },
+      {
+        "allele": "13",
+        "frequency": 0.25
+      },
+      {
+        "allele": "14",
+        "frequency": 0.461
+      },
+      {
+        "allele": "15",
+        "frequency": 0.227
+      },
+      {
+        "allele": "16",
+        "frequency": 0.031
+      },
+      {
+        "allele": "17",
+        "frequency": 0.0
+      }
+    ],
+    "D21S11": [
+      {
+        "allele": "24.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "24.3",
+        "frequency": 0.001
+      },
+      {
+        "allele": "25",
+        "frequency": 0.0
+      },
+      {
+        "allele": "25.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "25.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "26",
+        "frequency": 0.0
+      },
+      {
+        "allele": "26.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "27",
+        "frequency": 0.031
+      },
+      {
+        "allele": "28",
+        "frequency": 0.205
+      },
+      {
+        "allele": "28.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "29",
+        "frequency": 0.193
+      },
+      {
+        "allele": "29.2",
+        "frequency": 0.001
+      },
+      {
+        "allele": "29.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "30",
+        "frequency": 0.202
+      },
+      {
+        "allele": "30.2",
+        "frequency": 0.033
+      },
+      {
+        "allele": "30.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "31",
+        "frequency": 0.066
+      },
+      {
+        "allele": "31.2",
+        "frequency": 0.073
+      },
+      {
+        "allele": "32",
+        "frequency": 0.025
+      },
+      {
+        "allele": "32.1",
+        "frequency": 0.001
+      },
+      {
+        "allele": "32.2",
+        "frequency": 0.088
+      },
+      {
+        "allele": "33",
+        "frequency": 0.003
+      },
+      {
+        "allele": "33.1",
+        "frequency": 0.003
+      },
+      {
+        "allele": "33.2",
+        "frequency": 0.042
+      },
+      {
+        "allele": "34",
+        "frequency": 0.006
+      },
+      {
+        "allele": "34.1",
+        "frequency": 0.0
+      },
+      {
+        "allele": "34.2",
+        "frequency": 0.004
+      },
+      {
+        "allele": "35",
+        "frequency": 0.019
+      },
+      {
+        "allele": "35.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "36",
+        "frequency": 0.003
+      },
+      {
+        "allele": "36.1",
+        "frequency": 0.0
+      },
+      {
+        "allele": "37",
+        "frequency": 0.001
+      },
+      {
+        "allele": "37.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "38",
+        "frequency": 0.0
+      },
+      {
+        "allele": "38.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "39",
+        "frequency": 0.0
+      }
+    ],
+    "D22S1045": [
+      {
+        "allele": "8",
+        "frequency": 0.001
+      },
+      {
+        "allele": "9",
+        "frequency": 0.0
+      },
+      {
+        "allele": "10",
+        "frequency": 0.038
+      },
+      {
+        "allele": "11",
+        "frequency": 0.103
+      },
+      {
+        "allele": "12",
+        "frequency": 0.03
+      },
+      {
+        "allele": "13",
+        "frequency": 0.003
+      },
+      {
+        "allele": "14",
+        "frequency": 0.063
+      },
+      {
+        "allele": "15",
+        "frequency": 0.349
+      },
+      {
+        "allele": "16",
+        "frequency": 0.266
+      },
+      {
+        "allele": "17",
+        "frequency": 0.134
+      },
+      {
+        "allele": "18",
+        "frequency": 0.012
+      },
+      {
+        "allele": "19",
+        "frequency": 0.001
+      }
+    ],
+    "FGA": [
+      {
+        "allele": "16",
+        "frequency": 0.0
+      },
+      {
+        "allele": "16.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "17",
+        "frequency": 0.0
+      },
+      {
+        "allele": "17.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "18",
+        "frequency": 0.007
+      },
+      {
+        "allele": "18.2",
+        "frequency": 0.007
+      },
+      {
+        "allele": "19",
+        "frequency": 0.075
+      },
+      {
+        "allele": "19.2",
+        "frequency": 0.001
+      },
+      {
+        "allele": "20",
+        "frequency": 0.079
+      },
+      {
+        "allele": "20.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "20.3",
+        "frequency": 0.001
+      },
+      {
+        "allele": "21",
+        "frequency": 0.136
+      },
+      {
+        "allele": "21.2",
+        "frequency": 0.001
+      },
+      {
+        "allele": "22",
+        "frequency": 0.171
+      },
+      {
+        "allele": "22.2",
+        "frequency": 0.002
+      },
+      {
+        "allele": "22.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "23",
+        "frequency": 0.136
+      },
+      {
+        "allele": "23.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "23.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "24",
+        "frequency": 0.165
+      },
+      {
+        "allele": "24.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "24.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "25",
+        "frequency": 0.123
+      },
+      {
+        "allele": "25.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "26",
+        "frequency": 0.051
+      },
+      {
+        "allele": "27",
+        "frequency": 0.022
+      },
+      {
+        "allele": "27.1",
+        "frequency": 0.0
+      },
+      {
+        "allele": "27.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "28",
+        "frequency": 0.011
+      },
+      {
+        "allele": "28.1",
+        "frequency": 0.0
+      },
+      {
+        "allele": "29",
+        "frequency": 0.006
+      },
+      {
+        "allele": "30",
+        "frequency": 0.002
+      },
+      {
+        "allele": "30.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "31.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "33",
+        "frequency": 0.001
+      },
+      {
+        "allele": "33.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "33.3",
+        "frequency": 0.0
+      },
+      {
+        "allele": "43.2",
+        "frequency": 0.0
+      },
+      {
+        "allele": "45.2",
+        "frequency": 0.003
+      },
+      {
+        "allele": "46.2",
+        "frequency": 0.001
+      }
+    ],
+    "Penta D": [
+      {
+        "allele": "2.2",
+        "frequency": 0.08
+      },
+      {
+        "allele": "3.2",
+        "frequency": 0.003
+      },
+      {
+        "allele": "5",
+        "frequency": 0.018
+      },
+      {
+        "allele": "6",
+        "frequency": 0.001
+      },
+      {
+        "allele": "7",
+        "frequency": 0.018
+      },
+      {
+        "allele": "8",
+        "frequency": 0.045
+      },
+      {
+        "allele": "9",
+        "frequency": 0.176
+      },
+      {
+        "allele": "10",
+        "frequency": 0.152
+      },
+      {
+        "allele": "11",
+        "frequency": 0.139
+      },
+      {
+        "allele": "12",
+        "frequency": 0.147
+      },
+      {
+        "allele": "13",
+        "frequency": 0.146
+      },
+      {
+        "allele": "14",
+        "frequency": 0.059
+      },
+      {
+        "allele": "15",
+        "frequency": 0.015
+      },
+      {
+        "allele": "16",
+        "frequency": 0.002
+      },
+      {
+        "allele": "17",
+        "frequency": 0.0
+      }
+    ],
+    "Penta E": [
+      {
+        "allele": "5",
+        "frequency": 0.061
+      },
+      {
+        "allele": "7",
+        "frequency": 0.08
+      },
+      {
+        "allele": "8",
+        "frequency": 0.089
+      },
+      {
+        "allele": "9",
+        "frequency": 0.018
+      },
+      {
+        "allele": "10",
+        "frequency": 0.075
+      },
+      {
+        "allele": "11",
+        "frequency": 0.092
+      },
+      {
+        "allele": "12",
+        "frequency": 0.151
+      },
+      {
+        "allele": "13",
+        "frequency": 0.095
+      },
+      {
+        "allele": "14",
+        "frequency": 0.078
+      },
+      {
+        "allele": "15",
+        "frequency": 0.074
+      },
+      {
+        "allele": "16",
+        "frequency": 0.059
+      },
+      {
+        "allele": "17",
+        "frequency": 0.055
+      },
+      {
+        "allele": "18",
+        "frequency": 0.024
+      },
+      {
+        "allele": "19",
+        "frequency": 0.015
+      },
+      {
+        "allele": "20",
+        "frequency": 0.008
+      },
+      {
+        "allele": "21",
+        "frequency": 0.018
+      },
+      {
+        "allele": "22",
+        "frequency": 0.005
+      },
+      {
+        "allele": "23",
+        "frequency": 0.002
+      },
+      {
+        "allele": "24",
+        "frequency": 0.0
+      }
+    ],
+    "TH01": [
+      {
+        "allele": "5",
+        "frequency": 0.002
+      },
+      {
+        "allele": "6",
+        "frequency": 0.226
+      },
+      {
+        "allele": "7",
+        "frequency": 0.316
+      },
+      {
+        "allele": "8",
+        "frequency": 0.157
+      },
+      {
+        "allele": "9",
+        "frequency": 0.149
+      },
+      {
+        "allele": "9.3",
+        "frequency": 0.14
+      },
+      {
+        "allele": "10",
+        "frequency": 0.011
+      },
+      {
+        "allele": "11",
+        "frequency": 0.0
+      },
+      {
+        "allele": "12",
+        "frequency": 0.0
+      }
+    ],
+    "TPOX": [
+      {
+        "allele": "6",
+        "frequency": 0.04
+      },
+      {
+        "allele": "7",
+        "frequency": 0.01
+      },
+      {
+        "allele": "8",
+        "frequency": 0.409
+      },
+      {
+        "allele": "9",
+        "frequency": 0.126
+      },
+      {
+        "allele": "10",
+        "frequency": 0.073
+      },
+      {
+        "allele": "11",
+        "frequency": 0.273
+      },
+      {
+        "allele": "12",
+        "frequency": 0.067
+      },
+      {
+        "allele": "13",
+        "frequency": 0.003
+      }
+    ],
+    "vWA": [
+      {
+        "allele": "11",
+        "frequency": 0.004
+      },
+      {
+        "allele": "12",
+        "frequency": 0.0
+      },
+      {
+        "allele": "13",
+        "frequency": 0.008
+      },
+      {
+        "allele": "14",
+        "frequency": 0.061
+      },
+      {
+        "allele": "15",
+        "frequency": 0.15
+      },
+      {
+        "allele": "16",
+        "frequency": 0.316
+      },
+      {
+        "allele": "17",
+        "frequency": 0.223
+      },
+      {
+        "allele": "18",
+        "frequency": 0.147
+      },
+      {
+        "allele": "19",
+        "frequency": 0.071
+      },
+      {
+        "allele": "20",
+        "frequency": 0.019
+      },
+      {
+        "allele": "21",
+        "frequency": 0.001
+      },
+      {
+        "allele": "22",
+        "frequency": 0.0
+      }
+    ]
+  },
+  "statistics": [
+    {
+      "marker": "CSF1PO",
+      "population": "AMERICA",
+      "N": 542,
+      "Hobs": 0.758,
+      "Hexp": 0.76,
+      "Fis": null,
+      "Fst": 0.024
+    },
+    {
+      "marker": "D1S1656",
+      "population": "AMERICA",
+      "N": 548,
+      "Hobs": 0.876,
+      "Hexp": 0.892,
+      "Fis": null,
+      "Fst": 0.014
+    },
+    {
+      "marker": "D2S1338",
+      "population": "AMERICA",
+      "N": 542,
+      "Hobs": 0.858,
+      "Hexp": 0.888,
+      "Fis": null,
+      "Fst": 0.019
+    },
+    {
+      "marker": "D2S441",
+      "population": "AMERICA",
+      "N": 546,
+      "Hobs": 0.744,
+      "Hexp": 0.781,
+      "Fis": null,
+      "Fst": 0.055
+    },
+    {
+      "marker": "D3S1358",
+      "population": "AMERICA",
+      "N": 545,
+      "Hobs": 0.723,
+      "Hexp": 0.756,
+      "Fis": null,
+      "Fst": 0.016
+    },
+    {
+      "marker": "D4S2408",
+      "population": "AMERICA",
+      "N": 62,
+      "Hobs": 0.355,
+      "Hexp": 0.44,
+      "Fis": null,
+      "Fst": 0.096
+    },
+    {
+      "marker": "D5S818",
+      "population": "AMERICA",
+      "N": 546,
+      "Hobs": 0.747,
+      "Hexp": 0.761,
+      "Fis": null,
+      "Fst": 0.028
+    },
+    {
+      "marker": "D6S1043",
+      "population": "AMERICA",
+      "N": 548,
+      "Hobs": 0.883,
+      "Hexp": 0.889,
+      "Fis": null,
+      "Fst": 0.025
+    },
+    {
+      "marker": "D7S820",
+      "population": "AMERICA",
+      "N": 537,
+      "Hobs": 0.791,
+      "Hexp": 0.791,
+      "Fis": null,
+      "Fst": 0.022
+    },
+    {
+      "marker": "D8S1179",
+      "population": "AMERICA",
+      "N": 544,
+      "Hobs": 0.811,
+      "Hexp": 0.801,
+      "Fis": null,
+      "Fst": 0.014
+    },
+    {
+      "marker": "D9S1122",
+      "population": "AMERICA",
+      "N": 64,
+      "Hobs": 0.578,
+      "Hexp": 0.546,
+      "Fis": null,
+      "Fst": 0.07
+    },
+    {
+      "marker": "D10S1248",
+      "population": "AMERICA",
+      "N": 547,
+      "Hobs": 0.804,
+      "Hexp": 0.782,
+      "Fis": null,
+      "Fst": 0.02
+    },
+    {
+      "marker": "D12S391",
+      "population": "AMERICA",
+      "N": 546,
+      "Hobs": 0.852,
+      "Hexp": 0.873,
+      "Fis": null,
+      "Fst": 0.024
+    },
+    {
+      "marker": "D13S317",
+      "population": "AMERICA",
+      "N": 545,
+      "Hobs": 0.741,
+      "Hexp": 0.781,
+      "Fis": null,
+      "Fst": 0.035
+    },
+    {
+      "marker": "D16S539",
+      "population": "AMERICA",
+      "N": 543,
+      "Hobs": 0.762,
+      "Hexp": 0.802,
+      "Fis": null,
+      "Fst": 0.015
+    },
+    {
+      "marker": "D17S1301",
+      "population": "AMERICA",
+      "N": 60,
+      "Hobs": 0.55,
+      "Hexp": 0.616,
+      "Fis": null,
+      "Fst": 0.189
+    },
+    {
+      "marker": "D18S51",
+      "population": "AMERICA",
+      "N": 541,
+      "Hobs": 0.891,
+      "Hexp": 0.887,
+      "Fis": null,
+      "Fst": 0.009
+    },
+    {
+      "marker": "D19S433",
+      "population": "AMERICA",
+      "N": 546,
+      "Hobs": 0.842,
+      "Hexp": 0.841,
+      "Fis": null,
+      "Fst": 0.017
+    },
+    {
+      "marker": "D20S482",
+      "population": "AMERICA",
+      "N": 64,
+      "Hobs": 0.641,
+      "Hexp": 0.672,
+      "Fis": null,
+      "Fst": 0.09
+    },
+    {
+      "marker": "D21S11",
+      "population": "AMERICA",
+      "N": 543,
+      "Hobs": 0.901,
+      "Hexp": 0.857,
+      "Fis": null,
+      "Fst": 0.015
+    },
+    {
+      "marker": "D22S1045",
+      "population": "AMERICA",
+      "N": 546,
+      "Hobs": 0.723,
+      "Hexp": 0.772,
+      "Fis": null,
+      "Fst": 0.031
+    },
+    {
+      "marker": "FGA",
+      "population": "AMERICA",
+      "N": 535,
+      "Hobs": 0.837,
+      "Hexp": 0.876,
+      "Fis": null,
+      "Fst": 0.01
+    },
+    {
+      "marker": "Penta D",
+      "population": "AMERICA",
+      "N": 549,
+      "Hobs": 0.849,
+      "Hexp": 0.871,
+      "Fis": null,
+      "Fst": 0.016
+    },
+    {
+      "marker": "Penta E",
+      "population": "AMERICA",
+      "N": 550,
+      "Hobs": 0.893,
+      "Hexp": 0.916,
+      "Fis": null,
+      "Fst": 0.017
+    },
+    {
+      "marker": "TH01",
+      "population": "AMERICA",
+      "N": 545,
+      "Hobs": 0.745,
+      "Hexp": 0.783,
+      "Fis": null,
+      "Fst": 0.024
+    },
+    {
+      "marker": "TPOX",
+      "population": "AMERICA",
+      "N": 543,
+      "Hobs": 0.715,
+      "Hexp": 0.731,
+      "Fis": null,
+      "Fst": 0.013
+    },
+    {
+      "marker": "vWA",
+      "population": "AMERICA",
+      "N": 545,
+      "Hobs": 0.785,
+      "Hexp": 0.797,
+      "Fis": null,
+      "Fst": 0.015
+    }
+  ]
+}

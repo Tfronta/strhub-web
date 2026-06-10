@@ -1,0 +1,14 @@
+{
+  "summary": "Resumen",
+  "alleleFrequencies": "Frecuencias alélicas",
+  "references": "Referencias",
+  "tools": "Herramientas",
+  "genomicCoordinates": "Coordenadas genómicas",
+  "chromosome": "Cromosoma",
+  "motif": "Motivo",
+  "type": "Tipo",
+  "selectPopulation": "Seleccionar población",
+  "noDataForMarker": "Aún no hay datos para este marcador",
+  "externalResources": "Recursos externos",
+  "nistVariantTable": "Tabla de variantes NIST STRbase"
+}

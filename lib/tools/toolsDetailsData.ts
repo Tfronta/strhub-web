@@ -1,0 +1,280 @@
+// STR analysis tools extended data (config, compatibility, interfaces, limitations, notes).
+// Single source of truth for full tool profiles; consumed by /tools and marker Tools tab via getToolDetails().
+
+import type { ToolDetails } from "./types";
+
+export const toolsDetailsData: ToolDetails[] = [
+  {
+    id: "hipstr",
+    name: "HipSTR",
+    tech: ["Illumina"],
+    input: ["BAM", "CRAM"],
+    output: ["VCF"],
+    support: {
+      native_panels: [
+        "https://github.com/tfwillems/HipSTR/blob/master/test/input/chr1_regions.bed",
+      ],
+      configurable: true,
+      wrapper: false,
+    },
+    config: {
+      target_file_format: "BED: chr, start, end, name",
+      customizable_targets: true,
+    },
+    compatibility: {
+      status: "maintained",
+      maintenance: "community-maintained",
+      license: "MIT",
+      last_release: "v0.8.7",
+    },
+    interfaces: [
+      {
+        name: "HipSTR-UI",
+        url: "https://github.com/HipSTR-UI/hipstr-ui",
+        description:
+          "Web interface developed and maintained by STRhub for running, visualizing, and exploring HipSTR results interactively.",
+      },
+    ],
+    limitations: [
+      "Requires aligned BAM/CRAM files and performs internal realignment (FASTQ not supported).",
+      "Designed for Illumina short-read data; not compatible with ONT or PacBio.",
+    ],
+    repo_url: "https://github.com/tfwillems/HipSTR",
+    paper_doi: "https://doi.org/10.1038/nmeth.4267",
+    last_checked: "2025-11-06",
+    notes:
+      "Actively maintained by Tamara Frontanilla as part of the STRhub project. HipSTR-UI enables interactive execution, allele visualization, and population data integration for forensic and research workflows.",
+  },
+  {
+    id: "longtr",
+    name: "LongTR",
+    tech: ["PacBio", "ONT"],
+    input: ["BAM", "CRAM", "FASTA"],
+    output: ["VCF"],
+    support: {
+      native_panels: [],
+      configurable: true,
+      wrapper: false,
+    },
+    config: {
+      target_file_format:
+        "BED: chrom, 1-based start, end, motif (comma-separated if multiple), optional 5th column locus name",
+      customizable_targets: true,
+    },
+    compatibility: {
+      status: "maintained",
+      maintenance: "active",
+      license: "GPL-2.0",
+      last_release: "v1.2",
+    },
+    limitations: [
+      "Requires indel-sensitive long-read alignments; BAM/CRAM must be coordinate-sorted and indexed, with FASTA matching the build used for alignment.",
+      "Project is under active development; CLI options and output format may change between releases.",
+      "No built-in multi-threading documented in README; parallelize by chromosome or by splitting the regions BED.",
+    ],
+    repo_url: "https://github.com/gymrek-lab/LongTR",
+    docs_url: "https://github.com/gymrek-lab/LongTR/blob/master/README.md",
+    paper_doi: "https://doi.org/10.1186/s13059-024-03319-2",
+    last_checked: "2026-02-10",
+    notes:
+      "Tandem repeat genotyping from long reads (PacBio HiFi and Oxford Nanopore), inspired by the HipSTR framework and adapted for long-read sequencing data. Outputs bgzipped VCF. Installable via conda (bioconda) or built from source.",
+  },
+  {
+    id: "gangstr",
+    name: "GangSTR",
+    tech: ["Illumina"],
+    input: ["BAM", "CRAM"],
+    output: ["VCF"],
+    support: {
+      native_panels: [
+        "https://github.com/gymreklab/GangSTR/blob/master/test/HTT.bed",
+      ],
+      configurable: true,
+      wrapper: false,
+    },
+    config: {
+      target_file_format: "BED: chr, start, end, name",
+      customizable_targets: true,
+    },
+    compatibility: {
+      status: "maintained",
+      maintenance: "active",
+      license: "GPL-3.0",
+      last_release: "v2.5",
+    },
+    limitations: [
+      "Optimized for Illumina short-read data; not compatible with ONT or PacBio.",
+      "Requires BAM/CRAM alignment and BED file with defined loci.",
+    ],
+    repo_url: "https://github.com/gymreklab/GangSTR",
+    paper_doi: "https://doi.org/10.1093/nar/gkz501",
+    last_checked: "2025-11-06",
+    notes:
+      "GangSTR is integrated into the STRhub catalog for benchmarking and cross-platform comparison. It supports locus-based analysis of STR repeat expansions and is widely used for population-scale Illumina datasets.",
+  },
+  {
+    id: "strspy",
+    name: "STRspy",
+    tech: ["ONT"],
+    input: ["FASTQ", "BAM"],
+    output: ["TSV", "CSV"],
+    support: {
+      native_panels: [],
+      configurable: true,
+      wrapper: false,
+    },
+    config: {
+      target_file_format:
+        "BED or JSON: STR locus definitions and flanking sequences",
+      customizable_targets: true,
+    },
+    compatibility: {
+      status: "maintained",
+      maintenance: "active",
+      license: "MIT",
+      last_release: "v1.0.0",
+    },
+    limitations: [
+      "Optimized for ONT forensic STR panels; requires reference file of loci.",
+      "Not designed for whole-genome (WGS) applications.",
+    ],
+    repo_url: "https://github.com/unique379r/strspy",
+    paper_doi: "10.1016/j.fsigen.2021.102629",
+    last_checked: "2025-11-06",
+    notes:
+      "STRspy is integrated into the STRhub ecosystem for forensic and population STR analysis using Oxford Nanopore data. Its modular design allows visualization, benchmarking, and cross-compatibility with HipSTR-UI datasets.",
+  },
+  {
+    id: "strique",
+    name: "STRique",
+    tech: ["ONT"],
+    input: ["FAST5", "BAM"],
+    output: ["TSV", "PNG"],
+    support: {
+      native_panels: [],
+      configurable: true,
+      wrapper: false,
+    },
+    config: {
+      target_file_format: "TSV: chr, begin, end, name, repeat, prefix, suffix",
+      customizable_targets: true,
+      flanking_bp_recommended: 150,
+    },
+    compatibility: {
+      status: "archived",
+      maintenance: "unmaintained",
+      ont_models: ["R9.4.x"],
+      docker_image: "giesselmann/strique",
+      last_release: "v0.4.2",
+      license: "MIT",
+    },
+    limitations: [
+      "Archived project; may fail with modern FAST5 formats and dependencies.",
+      "Requires raw FAST5 files and matching BAM/SAM alignment.",
+      "Models not updated for R10.3 chemistry.",
+    ],
+    repo_url: "https://github.com/giesselmann/STRique",
+    docs_url: "https://strique.readthedocs.io/",
+    paper_doi: "10.1038/s41587-019-0293-x",
+    last_checked: "2025-11-06",
+    notes:
+      "Integrated in STRhub for legacy validation and benchmark comparisons. STRique operates as a target-based caller using a TSV configuration file with motif and flanking regions. BED files can be converted by adding repeat/prefix/suffix columns.",
+  },
+  {
+    id: "fdstools",
+    name: "FDSTools",
+    tech: ["Multi-platform"],
+    input: ["FASTQ"],
+    output: ["TXT", "CSV"],
+    support: {
+      native_panels: [],
+      configurable: true,
+      wrapper: false,
+    },
+    config: {
+      target_file_format: "Built-in or custom forensic STR kit definition",
+      customizable_targets: true,
+    },
+    compatibility: {
+      status: "maintained",
+      maintenance: "active",
+      license: "GPL-3.0",
+      last_release: "v2.0",
+    },
+    limitations: [
+      "Accepts FASTQ from any MPS platform; BAM not currently supported.",
+      "Best suited to Illumina short reads; apply extra scrutiny to homopolymer-prone platforms.",
+    ],
+    repo_url: "https://github.com/Jerrythafast/FDSTools",
+    docs_url: "https://www.fdstools.nl/",
+    paper_doi: "10.1016/j.fsigen.2016.11.007",
+    last_checked: "2025-11-06",
+    notes:
+      "FDSTools is a Python toolkit for forensic MPS data analysis, including stutter characterization, noise filtering, and automatic allele detection with STRNaming nomenclature.",
+  },
+  {
+    id: "straitrazor",
+    name: "STRait Razor",
+    tech: ["Multi-platform"],
+    input: ["FASTQ"],
+    output: ["TXT", "CSV"],
+    support: {
+      native_panels: [],
+      configurable: true,
+      wrapper: false,
+    },
+    config: {
+      target_file_format: "FASTA or CSV panel defining STR loci and motifs",
+      customizable_targets: true,
+    },
+    compatibility: {
+      status: "maintained",
+      maintenance: "active",
+      license: "GPL-3.0",
+      last_release: "v3.0",
+    },
+    limitations: [
+      "Accepts FASTQ from any MPS platform; BAM not currently supported.",
+      "Requires panel configuration.",
+      "Best suited to Illumina short reads; apply extra scrutiny to homopolymer-prone platforms.",
+      "Does not perform read alignment; motif matching is direct.",
+    ],
+    repo_url: "https://github.com/Ahhgust/STRaitRazor",
+    online_version: "https://expectationsmanaged.shinyapps.io/STRaitRazoR/",
+    paper_doi: "https://doi.org/10.1016/j.fsigen.2021.102463",
+    last_checked: "2025-11-06",
+    notes:
+      "STRait Razor is included in the STRhub ecosystem for targeted forensic STR analysis. Its lightweight motif-matching algorithm makes it suitable for teaching and training in STR interpretation.",
+  },
+  {
+    id: "toastr",
+    name: "ToaSTR",
+    tech: ["Illumina"],
+    input: ["FASTQ"],
+    output: ["CSV", "HTML", "PDF"],
+    support: {
+      native_panels: [],
+      configurable: true,
+      wrapper: false,
+    },
+    config: {
+      target_file_format: "CSV or predefined STRaitRazor panel",
+      customizable_targets: true,
+    },
+    compatibility: {
+      status: "maintained",
+      maintenance: "community-maintained",
+      license: "GPL-3.0",
+      last_release: "v1.0",
+    },
+    limitations: [
+      "Designed for forensic NGS STR analysis; requires STRaitRazor reference panel.",
+      "Runs as Dockerized multi-container app (MySQL, job queue); web UI at localhost:3000.",
+    ],
+    repo_url: "https://github.com/labconowl/toastr",
+    paper_doi: "https://doi.org/10.1016/j.fsigen.2018.07.006",
+    last_checked: "2025-11-06",
+    notes:
+      "ToaSTR is a browser-based forensic STR genotyping tool for MPS data, with sequence-aware stutter modeling, automatic allele calling, and ISFG-compliant PDF reporting. The Dockerized distribution (labconowl/toastr) runs on macOS, Windows, and Linux. Integrated into STRhub for forensic STR analysis and reference validation.",
+  },
+];

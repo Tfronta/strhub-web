@@ -1,0 +1,1040 @@
+// app/sections/mix-profiles/data.ts
+// ====================================================================
+//  CODIS desde CATALOG real + mezcla CE determinista + NGS con secuencias
+//  Exports compatibles con tu UI actual.
+// ====================================================================
+
+import { CATALOG } from "@/app/catalog/data";
+import { ISOALLELE_MIN_COVERAGE } from "@/lib/strFormatting";
+import { markerData } from "@/lib/markerData";
+import {
+  getSampleNgsLocus,
+  getDisplaySequenceForAllele,
+  parseFullSeqSegments,
+} from "./data/ngs-haplotypes";
+
+// ----------------------------------------------------
+// Umbrales (RFU)
+// ----------------------------------------------------
+export const DEFAULT_AT = 50; // Analytical Threshold
+export const DEFAULT_IT = 80; // Interpretation/Stochastic Threshold
+
+// ----------------------------------------------------
+// (Opcional) Colores para charts desde CSS vars
+// ----------------------------------------------------
+export function getChartColors(): string[] {
+  const fallbacks = ['#4F46E5', '#06B6D4', '#22C55E', '#F59E0B', '#EF4444', '#8B5CF6'];
+  if (typeof window === 'undefined') return fallbacks;
+  const styles = getComputedStyle(document.documentElement);
+  const vals: string[] = [];
+  for (let i = 1; i <= 6; i++) {
+    let v = styles.getPropertyValue(`--chart-${i}`).trim();
+    if (!v) v = styles.getPropertyValue(`--color-chart-${i}`).trim();
+    if (v) vals.push(v);
+  }
+  return vals.length ? vals : fallbacks;
+}
+
+// ----------------------------------------------------
+// Carga CATALOG y construye demoCatalog solo con CODIS Core
+// (mismo nombre que usabas antes, pero ahora es el catálogo real filtrado)
+// ----------------------------------------------------
+function isCodisCore(entry: any) {
+  const tag = (entry?.type || entry?.category || "").toString().toLowerCase();
+  return tag.includes("codis") && tag.includes("core");
+}
+
+type DemoAllele = {
+  size: number | string;
+  repeatSequence?: string;
+  fullSequence?: string;
+  stutterPct?: number;
+  isIsoallele?: boolean;
+};
+
+export const demoCatalog: Record<string, {
+  id: string;
+  name: string;
+  type: string;
+  alleles: DemoAllele[];
+}> = Object.fromEntries(
+  Object.entries(CATALOG as any)
+    .filter(([_, v]) => isCodisCore(v))
+    .map(([k, v]: any) => {
+      const list = Array.isArray(v.alleleObjects) ? v.alleleObjects : (v.alleles || []);
+      const alleles: DemoAllele[] = (list || []).map((a: any) => ({
+        size: a.size,
+        repeatSequence: a.repeatSequence,
+        fullSequence: a.fullSequence,
+        stutterPct: a.stutterPct,
+        isIsoallele: !!a.isIsoallele,
+      }));
+      return [k, { id: k, name: v.name ?? k, type: v.type ?? v.category ?? "CODIS Core", alleles }];
+    })
+);
+
+// ----------------------------------------------------
+// Genotipos reales para mezcla (hasta 3 contribuyentes)
+// ----------------------------------------------------
+type AlleleValue = number;
+
+type SampleProfile = {
+  sampleId: string;
+  loci: Record<string, { alleles: AlleleValue[] }>;
+};
+
+export const SAMPLE_DATABASE: Record<string, SampleProfile> = {
+  // Fictitious sample with triallelic patterns at TPOX and TH01.
+  // Not from 1000 Genomes — created for educational demonstration of
+  // triallelic loci, a rare but documented phenomenon in forensic STR analysis.
+  SYN_TRI01: {
+    sampleId: "SYN_TRI01",
+    loci: {
+      CSF1PO: { alleles: [10, 12] },
+      D10S1248: { alleles: [13, 15] },
+      D12S391: { alleles: [18, 21] },
+      D13S317: { alleles: [11, 12] },
+      D16S539: { alleles: [11, 13] },
+      D18S51: { alleles: [14, 17] },
+      D19S433: { alleles: [13, 14] },
+      D1S1656: { alleles: [12, 16] },
+      D22S1045: { alleles: [15, 16] },
+      D2S1338: { alleles: [19, 23] },
+      D2S441: { alleles: [11, 14] },
+      D3S1358: { alleles: [15, 17] },
+      D5S818: { alleles: [11, 13] },
+      D7S820: { alleles: [10, 12] },
+      D8S1179: { alleles: [13, 15] },
+      FGA: { alleles: [21, 23] },
+      PentaD: { alleles: [9, 12] },
+      PentaE: { alleles: [10, 14] },
+      TH01: { alleles: [6, 7, 9.3] },   // Triallelic — 3 alleles at this locus
+      TPOX: { alleles: [8, 9, 11] },     // Triallelic — 3 alleles at this locus
+      vWA: { alleles: [16, 18] },
+    },
+  },
+  HG02944: {
+    sampleId: "HG02944",
+    loci: {
+      CSF1PO: { alleles: [7, 8] },
+      D10S1248: { alleles: [13, 14] },
+      D12S391: { alleles: [17, 20] },
+      D13S317: { alleles: [11, 13] },
+      D16S539: { alleles: [11, 12] },
+      D18S51: { alleles: [15, 16] },
+      D19S433: { alleles: [13, 14.2] },
+      D1S1656: { alleles: [11, 15] },
+      D21S11: { alleles: [29, 30] },
+      D22S1045: { alleles: [10, 17] },
+      D2S1338: { alleles: [20, 22] },
+      D2S441: { alleles: [14, 14] },
+      D3S1358: { alleles: [16, 17] },
+      D5S818: { alleles: [11, 12] },
+      D7S820: { alleles: [10, 11] },
+      D8S1179: { alleles: [14, 15] },
+      FGA: { alleles: [21, 24] },
+      PentaD: { alleles: [8, 10] },
+      PentaE: { alleles: [7, 10] },
+      TH01: { alleles: [6, 8] },
+      TPOX: { alleles: [8, 9] },
+      vWA: { alleles: [15, 17] },
+    },
+  },
+  HG00097: {
+    sampleId: "HG00097",
+    loci: {
+      CSF1PO: { alleles: [12, 12] },
+      D10S1248: { alleles: [15, 15] },
+      D12S391: { alleles: [22, 23] },
+      D13S317: { alleles: [11, 14] },
+      D16S539: { alleles: [11, 11] },
+      D18S51: { alleles: [14, 14] },
+      D19S433: { alleles: [13, 13] },
+      D1S1656: { alleles: [15, 17.3] },
+      D21S11: { alleles: [30, 31] },
+      D22S1045: { alleles: [16, 16] },
+      D2S1338: { alleles: [22, 24] },
+      D2S441: { alleles: [10, 14] },
+      D3S1358: { alleles: [15, 16] },
+      D5S818: { alleles: [11, 11] },
+      D7S820: { alleles: [13, 10] },
+      D8S1179: { alleles: [13, 10] },
+      FGA: { alleles: [22, 23] },
+      PentaD: { alleles: [9, 12] },
+      PentaE: { alleles: [7, 7] },
+      TH01: { alleles: [7, 6] },
+      TPOX: { alleles: [8, 11] },
+      vWA: { alleles: [17, 17] },
+    },
+  },
+  HG00145: {
+    sampleId: "HG00145",
+    loci: {
+      CSF1PO: { alleles: [12, 12] },
+      D10S1248: { alleles: [14, 16] },
+      D12S391: { alleles: [18, 18] },
+      D13S317: { alleles: [10, 13] },
+      D16S539: { alleles: [13, 13] },
+      D18S51: { alleles: [18, 17] },
+      D19S433: { alleles: [14, 13] },
+      D1S1656: { alleles: [16, 16.3] },
+      D22S1045: { alleles: [15, 16] },
+      D2S1338: { alleles: [20, 25] },
+      D2S441: { alleles: [10, 10] },
+      D3S1358: { alleles: [16, 17] },
+      D5S818: { alleles: [12, 12] },
+      D7S820: { alleles: [8, 10] },
+      D8S1179: { alleles: [12, 14] },
+      FGA: { alleles: [22, 21] },
+      PentaD: { alleles: [9, 11] },
+      PentaE: { alleles: [7, 12] },
+      TH01: { alleles: [8, 9] },
+      TPOX: { alleles: [8, 11] },
+      vWA: { alleles: [17, 18] },
+    },
+  },
+  HG00372: {
+    sampleId: "HG00372",
+    loci: {
+      CSF1PO: { alleles: [13, 10] },
+      D10S1248: { alleles: [13, 13] },
+      D12S391: { alleles: [18, 19] },
+      D13S317: { alleles: [11, 9] },
+      D16S539: { alleles: [9, 12] },
+      D18S51: { alleles: [16, 19] },
+      D19S433: { alleles: [14, 13] },
+      D1S1656: { alleles: [14, 17.3] },
+      D22S1045: { alleles: [17, 15] },
+      D2S1338: { alleles: [18, 24] },
+      D2S441: { alleles: [11.3, 14] },
+      D3S1358: { alleles: [15, 16] },
+      D5S818: { alleles: [12, 11] },
+      D7S820: { alleles: [11, 11] },
+      D8S1179: { alleles: [11, 14] },
+      FGA: { alleles: [20, 21] },
+      PentaD: { alleles: [9, 10] },
+      PentaE: { alleles: [12, 12] },
+      TH01: { alleles: [7, 6] },
+      TPOX: { alleles: [8, 9] },
+      vWA: { alleles: [18, 18] },
+    },
+  },
+  HG01063: {
+    sampleId: "HG01063",
+    loci: {
+      CSF1PO: { alleles: [12, 12] },
+      D10S1248: { alleles: [13, 16] },
+      D12S391: { alleles: [18, 23] },
+      D13S317: { alleles: [13, 14] },
+      D16S539: { alleles: [12, 12] },
+      D18S51: { alleles: [12, 22] },
+      D19S433: { alleles: [14, 12] },
+      D1S1656: { alleles: [13, 17.3] },
+      D22S1045: { alleles: [17, 16] },
+      D2S1338: { alleles: [23, 17] },
+      D2S441: { alleles: [10, 14] },
+      D3S1358: { alleles: [16, 18] },
+      D5S818: { alleles: [12, 7] },
+      D7S820: { alleles: [8, 11] },
+      D8S1179: { alleles: [10, 14] },
+      FGA: { alleles: [19, 20] },
+      PentaD: { alleles: [13, 5] },
+      PentaE: { alleles: [7, 13] },
+      TH01: { alleles: [9.3, 9.3] },
+      TPOX: { alleles: [8, 8] },
+      vWA: { alleles: [14, 16] },
+    },
+  },
+};
+
+export type SampleId = keyof typeof SAMPLE_DATABASE;
+export type LocusId = string;
+
+// Synthetic/demo-only samples (used by presets but hidden from the contributor dropdown)
+const SYNTHETIC_SAMPLES: ReadonlySet<string> = new Set(["SYN_TRI01"]);
+
+// Simulated NGS sequences for triallelic preset (SYN_TRI01 at TPOX); format "LEFT REPEAT RIGHT" for UI flank/repeat highlighting
+const SYN_TRI01_TPOX_NGS: Record<string, { bracketed: string; fullSequence: string }> = {
+  "8": {
+    bracketed: "[AATG]8",
+    fullSequence:
+      "CTGGCACAGAACAGGGAACCCTCACTG AATGAATGAATGAATGAATGAATGAATGAATG TTTGGGCAAATAAACGGACAGAAGGGC",
+  },
+  "9": {
+    bracketed: "[AATG]9",
+    fullSequence:
+      "CTGGCACAGAACAGGGAACCCTCACTG AATGAATGAATGAATGAATGAATGAATGAATGAATG TTTGGGCAAATAAACGGACAGAAGGGC",
+  },
+  "11": {
+    bracketed: "[AATG]11",
+    fullSequence:
+      "CTGGCACAGAACAGGGAACCCTCACTG AATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATG TTTGGGCAAATAAACGGACAGAAGGGC",
+  },
+};
+
+export const sampleOptions = (Object.keys(SAMPLE_DATABASE) as SampleId[]).filter(
+  (id) => !SYNTHETIC_SAMPLES.has(id)
+);
+
+// Only include loci present in ALL samples so every contributor has data
+export const LOCI_ORDER: LocusId[] = (() => {
+  const samples = Object.values(SAMPLE_DATABASE);
+  if (!samples.length) return [];
+  const allLoci = new Set(samples[0] ? Object.keys(samples[0].loci) : []);
+  for (const sample of samples) {
+    const sampleLoci = new Set(Object.keys(sample.loci));
+    for (const locus of allLoci) {
+      if (!sampleLoci.has(locus)) allLoci.delete(locus);
+    }
+  }
+  return Array.from(allLoci).sort();
+})();
+
+// ----------------------------------------------------
+// Utility: Get true genotype from SAMPLE_DATABASE
+// ----------------------------------------------------
+/**
+ * Retrieves the true genotype for a given sample and locus from SAMPLE_DATABASE.
+ * Returns null if no data is available (never synthesizes or infers alleles).
+ * 
+ * Supports triallelic loci: when 3 alleles are present, allele3 is populated.
+ * 
+ * @param sampleId - The sample ID (e.g., "HG02944")
+ * @param locus - The locus name (e.g., "CSF1PO")
+ * @returns Object with allele1, allele2, and optional allele3, or null if not found
+ */
+export function getTrueGenotype(
+  sampleId: SampleId | null,
+  locus: LocusId
+): { allele1: string | number; allele2: string | number; allele3?: string | number } | null {
+  if (!sampleId) {
+    return null;
+  }
+
+  const profile = SAMPLE_DATABASE[sampleId];
+  if (!profile) {
+    return null;
+  }
+
+  const locusData = profile.loci?.[locus];
+  if (!locusData || !locusData.alleles || locusData.alleles.length === 0) {
+    return null;
+  }
+
+  const alleles = locusData.alleles;
+
+  // Triallelic case: 3 alleles at this locus
+  if (alleles.length >= 3) {
+    return {
+      allele1: alleles[0],
+      allele2: alleles[1],
+      allele3: alleles[2],
+    };
+  }
+  
+  // Standard diploid: return both alleles (for homozygotes, both will be the same)
+  if (alleles.length === 2) {
+    return {
+      allele1: alleles[0],
+      allele2: alleles[1],
+    };
+  }
+  
+  // Single allele case (rare, but handle it)
+  if (alleles.length === 1) {
+    return {
+      allele1: alleles[0],
+      allele2: alleles[0],
+    };
+  }
+
+  return null;
+}
+
+// ----------------------------------------------------
+// Motor CE determinista con 1-3 contribuyentes
+// ----------------------------------------------------
+export type AlleleLike = number | string;
+
+/**
+ * Per-parent contribution to a stutter peak (for transparent tooltips).
+ * Stutter at a given allele position can come from multiple parents (e.g. −1
+ * from the next allele, +1 from the previous). The UI shows this breakdown; the
+ * displayed total is the sum of rounded contribution RFUs so the numbers add up.
+ */
+export type StutterContribution = {
+  parent: number;
+  delta: number; // -2, -1, or +1 (repeat units)
+  rfu: number;
+};
+
+export type Peak = {
+  allele: AlleleLike;
+  rfu: number;
+  kind: "true" | "stutter";
+  source: string;
+  /**
+   * When kind === "stutter", optional breakdown by parent allele and delta.
+   * Used in CE chart tooltip; displayed total = sum(Math.round(c.rfu)) over
+   * contributions for consistency with the per-line values.
+   */
+  stutterBreakdown?: StutterContribution[];
+};
+
+export type LocusSimResult = {
+  locusId: string;
+  peaks: Peak[];
+  notes: string[];
+};
+
+const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
+
+function hash01(seed: string) {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  h >>>= 0;
+  return (h % 10000) / 10000;
+}
+
+function formatAlleleLabel(value: number): string {
+  const decimals = value % 1 === 0 ? 0 : 1;
+  const factor = decimals ? 10 : 1;
+  return (Math.round(value * factor) / factor).toString();
+}
+
+type StutterPreset = {
+  minus1: number;
+  plus1?: number;
+  minus2?: number;
+};
+
+const STUTTER_PRESETS: Record<LocusId, StutterPreset> = {
+  CSF1PO: { minus1: 0.05 },
+  D10S1248: { minus1: 0.04 },
+  D12S391: { minus1: 0.07, plus1: 0.015 },
+  D13S317: { minus1: 0.05 },
+  D16S539: { minus1: 0.04 },
+  D18S51: { minus1: 0.09, plus1: 0.02 },
+  D19S433: { minus1: 0.03 },
+  D1S1656: { minus1: 0.08, plus1: 0.01 },
+  D21S11: { minus1: 0.08, plus1: 0.015 },
+  D22S1045: { minus1: 0.04 },
+  D2S1338: { minus1: 0.07 },
+  D2S441: { minus1: 0.04 },
+  D3S1358: { minus1: 0.06 },
+  D5S818: { minus1: 0.05 },
+  D7S820: { minus1: 0.05 },
+  D8S1179: { minus1: 0.06 },
+  FGA: { minus1: 0.1, plus1: 0.025, minus2: 0.015 },
+  PentaD: { minus1: 0.08, minus2: 0.02 },
+  PentaE: { minus1: 0.07 },
+  TH01: { minus1: 0.03 },
+  TPOX: { minus1: 0.02 },
+  vWA: { minus1: 0.06 },
+};
+
+const DEFAULT_STUTTER: StutterPreset = { minus1: 0.06 };
+
+export type ContributorInput = {
+  sampleId: SampleId;
+  proportion: number; // 0..1
+  label: "A" | "B" | "C";
+};
+
+export type MixtureParams = {
+  targetPerLocus: number;
+  hetImbalanceCV: number;
+  showStutter: boolean;
+  seed: string;
+  degradationKPer100bp?: number; // Degradation constant k (per 100 bp). If undefined or <= 0, no degradation applied.
+};
+
+export const DEFAULT_MIX_PARAMS: MixtureParams = {
+  targetPerLocus: 400,
+  hetImbalanceCV: 0.08,
+  showStutter: true,
+  seed: "strhub-mix",
+  degradationKPer100bp: undefined, // No degradation by default
+};
+
+function getSampleAlleles(locusId: LocusId, sampleId: SampleId): number[] {
+  const profile = SAMPLE_DATABASE[sampleId];
+  const alleles = profile?.loci?.[locusId]?.alleles ?? [];
+  return alleles.filter((a) => a != null);
+}
+
+function splitAlleles(
+  alleles: number[],
+  totalRFU: number,
+  seed: string,
+  cv: number
+): number[] {
+  if (!alleles.length) return [];
+  if (alleles.length === 1) return [totalRFU];
+
+  const bias = (hash01(seed) - 0.5) * 2 * cv;
+  const p1 = clamp(0.5 + bias, 0.2, 0.8);
+  const weights = [p1, 1 - p1];
+
+  if (alleles.length > 2) {
+    const rest = Math.max(1, alleles.length - 2);
+    const residual = Math.max(0, 1 - weights[0] - weights[1]);
+    const per = residual / rest;
+    for (let i = 2; i < alleles.length; i++) {
+      weights[i] = per;
+    }
+  }
+
+  const sum = weights.reduce((acc, w) => acc + w, 0);
+  return weights.map((w) => (w / sum) * totalRFU);
+}
+
+function addToMap(
+  map: Map<string, { rfu: number; sources: Set<string> }>,
+  allele: string,
+  inc: number,
+  label: string
+) {
+  if (inc <= 0) return;
+  const prev = map.get(allele);
+  if (!prev) {
+    map.set(allele, { rfu: inc, sources: new Set([label]) });
+  } else {
+    prev.rfu += inc;
+    prev.sources.add(label);
+  }
+}
+
+function buildSourceLabel(vals: Set<string>): string {
+  return Array.from(vals).sort().join("+");
+}
+
+// Per-locus metadata for amplicon length approximation
+// (alleleRef, Lref in bp, motifLen in bp)
+// Keys are uppercase to match SAMPLE_DATABASE
+const LOCUS_LENGTH_META: Record<string, { alleleRef: number; Lref: number; motifLen: number }> = {
+  FGA: { alleleRef: 20, Lref: 280, motifLen: 4 },
+  CSF1PO: { alleleRef: 10, Lref: 200, motifLen: 4 },
+  D10S1248: { alleleRef: 13, Lref: 220, motifLen: 4 },
+  D12S391: { alleleRef: 18, Lref: 250, motifLen: 4 },
+  D13S317: { alleleRef: 11, Lref: 210, motifLen: 4 },
+  D16S539: { alleleRef: 10, Lref: 200, motifLen: 4 },
+  D18S51: { alleleRef: 18, Lref: 270, motifLen: 4 },
+  D19S433: { alleleRef: 13, Lref: 220, motifLen: 4 },
+  D1S1656: { alleleRef: 15, Lref: 240, motifLen: 4 },
+  D21S11: { alleleRef: 30, Lref: 330, motifLen: 4 },
+  D22S1045: { alleleRef: 16, Lref: 250, motifLen: 4 },
+  D2S1338: { alleleRef: 20, Lref: 280, motifLen: 4 },
+  D2S441: { alleleRef: 12, Lref: 210, motifLen: 4 },
+  D3S1358: { alleleRef: 15, Lref: 230, motifLen: 4 },
+  D5S818: { alleleRef: 11, Lref: 210, motifLen: 4 },
+  D7S820: { alleleRef: 10, Lref: 200, motifLen: 4 },
+  D8S1179: { alleleRef: 12, Lref: 210, motifLen: 4 },
+  PentaD: { alleleRef: 9, Lref: 190, motifLen: 5 },
+  PentaE: { alleleRef: 10, Lref: 200, motifLen: 5 },
+  TH01: { alleleRef: 7, Lref: 180, motifLen: 4 },
+  TPOX: { alleleRef: 8, Lref: 190, motifLen: 4 },
+  vWA: { alleleRef: 16, Lref: 250, motifLen: 4 },
+};
+const DEFAULT_LOCUS_META = { alleleRef: 10, Lref: 200, motifLen: 4 };
+
+/**
+ * Computes the approximate amplicon length L (bp) for an allele at a given locus.
+ * Uses per-locus metadata to approximate: L ≈ Lref + motifLen * (allele - alleleRef)
+ * 
+ * @param locusId - The locus ID (e.g., "CSF1PO")
+ * @param allele - The allele value (numeric)
+ * @returns The approximate amplicon length in base pairs
+ */
+function getAmpliconLength(locusId: LocusId, allele: number): number {
+  // Normalize locusId to uppercase for lookup (SAMPLE_DATABASE uses uppercase)
+  const normalizedLocusId = locusId.toUpperCase();
+  
+  // Get locus-specific metadata or use default
+  const meta = LOCUS_LENGTH_META[normalizedLocusId] ?? DEFAULT_LOCUS_META;
+  
+  // Approximation: L ≈ Lref + motifLen * (allele - alleleRef)
+  // This accounts for:
+  // - Base amplicon length (flanking regions, primers, etc.) = Lref at alleleRef
+  // - Variable repeat region length = motifLen * (allele - alleleRef)
+  return meta.Lref + meta.motifLen * (allele - meta.alleleRef);
+}
+
+/**
+ * Computes the degradation attenuation factor for an allele.
+ * Degradation model: exponential attenuation per 100 bp.
+ * atten = exp(-k * (L / 100)), where k is the degradation constant (per 100 bp)
+ * 
+ * @param locusId - The locus ID (e.g., "CSF1PO")
+ * @param allele - The allele value (numeric)
+ * @param k - The degradation constant k (per 100 bp). If undefined or <= 0, returns 1.0 (no degradation)
+ * @returns The attenuation factor (0 < atten <= 1). Returns 1.0 if k is undefined or <= 0.
+ */
+function getDegradationAttenuation(locusId: LocusId, allele: number, k?: number): number {
+  // If k is undefined or <= 0, no degradation (atten = 1)
+  if (!k || k <= 0) {
+    return 1.0;
+  }
+  
+  // If allele is not numeric, skip attenuation (atten = 1)
+  // This should not happen in normal operation, but handle defensively
+  if (typeof allele !== 'number' || Number.isNaN(allele) || !Number.isFinite(allele)) {
+    // TODO: Handle non-numeric alleles if needed (e.g., microvariants)
+    return 1.0;
+  }
+  
+  // Compute amplicon length L (bp) for this allele
+  const L = getAmpliconLength(locusId, allele);
+  
+  // Compute attenuation factor: atten = exp(-k * (L / 100))
+  // This ensures: ↑k ⇒ ↓RFU, and ↑L ⇒ ↓RFU
+  const atten = Math.exp(-k * (L / 100.0));
+  
+  // Clamp attenuation to [0, 1] (should always be in this range for k > 0 and L > 0)
+  return Math.max(0, Math.min(1, atten));
+}
+
+function createStutter(
+  peak: Peak,
+  preset: StutterPreset,
+  map: Map<string, { rfu: number; sources: Set<string> }>
+) {
+  const alleleNum = Number(peak.allele);
+  if (Number.isNaN(alleleNum)) return;
+
+  const addStutter = (delta: number, rate?: number) => {
+    if (!rate || rate <= 0) return;
+    const shifted = alleleNum + delta;
+    const label = formatAlleleLabel(shifted);
+    addToMap(map, label, peak.rfu * rate, peak.source);
+  };
+
+  addStutter(-1, preset.minus1 ?? DEFAULT_STUTTER.minus1);
+  addStutter(1, preset.plus1);
+  addStutter(-2, preset.minus2);
+}
+
+type MixtureArgs = {
+  locusId: LocusId;
+  contributors: ContributorInput[];
+  params?: Partial<MixtureParams>;
+};
+
+export function simulateMixtureForLocus({
+  locusId,
+  contributors,
+  params = {},
+}: MixtureArgs): LocusSimResult {
+  const { targetPerLocus, hetImbalanceCV, showStutter, seed, degradationKPer100bp } = {
+    ...DEFAULT_MIX_PARAMS,
+    ...params,
+  };
+
+  const trueMap = new Map<string, { rfu: number; sources: Set<string> }>();
+
+  contributors
+    .filter((c) => c.proportion > 0)
+    .forEach((contrib) => {
+      const alleles = getSampleAlleles(locusId, contrib.sampleId);
+      if (!alleles.length) return;
+      
+      // Compute contributor RFU (baseline before degradation)
+      const contributorRFU = targetPerLocus * contrib.proportion;
+      
+      // Split RFU across alleles (before degradation)
+      const split = splitAlleles(
+        alleles,
+        contributorRFU,
+        `${seed}|${contrib.label}|${locusId}`,
+        hetImbalanceCV
+      );
+      
+      // Apply degradation per-allele (Approach A: per-allele attenuation after split)
+      // Degradation model: exponential attenuation per 100 bp
+      // rfu_degraded = rfu_raw * exp(-k * (L / 100))
+      // where L = amplicon length (bp) for this allele
+      // k = degradation constant (per 100 bp)
+      // Physical intent: more degradation → less signal, longer alleles lose more signal than shorter ones
+      split.forEach((rfuRaw, idx) => {
+        const alleleValue = alleles[idx] ?? alleles[alleles.length - 1];
+        
+        // Compute degradation attenuation factor
+        const atten = getDegradationAttenuation(locusId, alleleValue, degradationKPer100bp);
+        
+        // Apply attenuation to RFU
+        // Important: degraded RFU is used as-is, without any re-normalization
+        // Attenuation must reflect true signal loss
+        const rfuDegraded = rfuRaw * atten;
+        
+        // Store degraded RFU in map
+        const label = formatAlleleLabel(alleleValue);
+        addToMap(trueMap, label, rfuDegraded, contrib.label);
+        
+        // Debug logging: verify degradation is applied correctly
+        // Log first few peaks for verification (can be removed in production)
+        // Format: console.debug('DEG TEST', allele, k, rfuRaw, rfuDegraded, rfuFinal);
+        // Increasing k must lower both rfuDegraded and rfuFinal
+        if (idx === 0 && degradationKPer100bp && degradationKPer100bp > 0) {
+          // Log first allele of first contributor for verification
+          console.debug('DEG TEST', alleleValue, degradationKPer100bp, rfuRaw.toFixed(1), rfuDegraded.toFixed(1), rfuDegraded.toFixed(1));
+        }
+      });
+    });
+
+  const truePeaks: Peak[] = Array.from(trueMap.entries()).map(([allele, val]) => ({
+    allele,
+    rfu: val.rfu,
+    kind: "true" as const,
+    source: buildSourceLabel(val.sources),
+  }));
+
+  const preset = STUTTER_PRESETS[locusId] ?? DEFAULT_STUTTER;
+  const stutterMap = new Map<string, { rfu: number; sources: Set<string> }>();
+
+  if (showStutter) {
+    truePeaks.forEach((peak) => createStutter(peak, preset, stutterMap));
+  }
+
+  const stutterPeaks: Peak[] = Array.from(stutterMap.entries())
+    .map(([allele, val]) => ({
+      allele,
+      rfu: val.rfu,
+      kind: "stutter" as const,
+      source: buildSourceLabel(val.sources),
+    }))
+    .filter((p) => p.rfu >= DEFAULT_AT);
+
+  const allPeaks = [...truePeaks, ...stutterPeaks].sort(
+    (a, b) => Number(a.allele) - Number(b.allele)
+  );
+
+  const notes: string[] = [];
+  allPeaks
+    .filter((p) => p.kind === "true")
+    .forEach((p) => {
+      if (p.rfu < DEFAULT_IT) {
+        notes.push(
+          `Posible dropout: ${p.allele} (${Math.round(
+            p.rfu
+          )} RFU) < IT (${DEFAULT_IT}).`
+        );
+      }
+    });
+
+  return {
+    locusId,
+    peaks: allPeaks,
+    notes,
+  };
+}
+
+// ----------------------------------------------------
+// NGS: tabla derivada de picos CE + secuencias reales del CATALOG
+// ----------------------------------------------------
+
+function normalizeMarkerKey(id: string) {
+  return id.toLowerCase().replace(/\s+/g, "_").replace(/-/g, "_");
+}
+
+/** Safe lookup: `markerData` has no string index signature. */
+function getMarkerEntryByLocusId(locusId: string) {
+  const markerKey = normalizeMarkerKey(locusId);
+  if (markerKey in markerData) {
+    return markerData[markerKey as keyof typeof markerData];
+  }
+  return undefined;
+}
+
+type MarkerSequenceEntry = {
+  allele?: string;
+  pattern?: string;
+  sequence?: string;
+};
+
+/**
+ * CE → NGS pedagogical bridge:
+ * Derives NGS-like allele coverage from CE peak heights (RFU).
+ *
+ * - The CE simulation encodes mixture proportions and degradation in RFU.
+ * - AT/IT are interpretation gates and MUST NOT alter underlying RFU or NGS coverage.
+ * - We allocate a fixed TOTAL_READS per locus and distribute it by RFU proportion.
+ *
+ * This is an educational mapping to support CE→NGS migration (not a wet-lab model).
+ */
+export function cePeaksToNGSRowsWithSeq(
+  locusId: string,
+  peaks: Peak[],
+  contributors?: ContributorInput[],
+  stPctByTargetOverride?: Record<string, number | string>,
+  kOverride?: number
+) {
+  const rows: any[] = []
+
+  // Compute stutter percentages from peaks
+  const computedStutterPct: Record<string, number> = {}
+  for (const p of peaks) {
+    if (p.kind !== "stutter") continue
+    const target = String(p.allele)
+    const parent = String(Number(target) + 1)
+    const parentRFU =
+      peaks.find((q) => q.kind === "true" && String(q.allele) === parent)?.rfu ?? 0
+    if (parentRFU > 0) {
+      computedStutterPct[target] = Math.round((p.rfu / parentRFU) * 100)
+    }
+  }
+
+  const stPctByTarget = stPctByTargetOverride ?? computedStutterPct
+
+  // Count allele copies from contributors' genotypes and track which sample each copy comes from
+  const alleleCounts: Record<string, number> = {}
+  const alleleToCopySources: Record<
+    string,
+    Array<{ sampleId: string; alleleIndex: 0 | 1 }>
+  > = {}
+  if (contributors && contributors.length > 0) {
+    for (const contrib of contributors) {
+      if (contrib.proportion <= 0 || !contrib.sampleId) continue
+      const genotype = getTrueGenotype(contrib.sampleId, locusId)
+      if (!genotype) continue
+      const sampleId = contrib.sampleId as string
+
+      const a1 = String(genotype.allele1)
+      const a2 = String(genotype.allele2)
+      if (!alleleToCopySources[a1]) alleleToCopySources[a1] = []
+      if (!alleleToCopySources[a2]) alleleToCopySources[a2] = []
+      alleleToCopySources[a1].push({ sampleId, alleleIndex: 0 })
+      alleleToCopySources[a2].push({ sampleId, alleleIndex: 1 })
+      alleleCounts[a1] = (alleleCounts[a1] ?? 0) + 1
+      alleleCounts[a2] = (alleleCounts[a2] ?? 0) + 1
+      if (genotype.allele3 != null) {
+        const a3 = String(genotype.allele3)
+        if (!alleleToCopySources[a3]) alleleToCopySources[a3] = []
+        alleleToCopySources[a3].push({ sampleId, alleleIndex: 0 })
+        alleleCounts[a3] = (alleleCounts[a3] ?? 0) + 1
+      }
+    }
+  } else {
+    // Fallback: count from peaks if no contributors provided
+    for (const p of peaks) {
+      if (p.kind === "stutter") continue
+      const alleleLabel = String(p.allele)
+      alleleCounts[alleleLabel] = (alleleCounts[alleleLabel] ?? 0) + 1
+    }
+  }
+
+  // Get marker data for this locus (same source as Variant Alleles tab)
+  const markerEntry = getMarkerEntryByLocusId(locusId)
+  const markerSequences: Array<{
+    allele?: string;
+    pattern?: string;
+    sequence?: string;
+    isIsoallele?: boolean;
+  }> = Array.isArray(markerEntry?.sequences) ? markerEntry.sequences : []
+
+  // Debug log to inspect catalog structure
+  if (typeof console !== 'undefined' && console.log) {
+    console.log("NGS locus catalog", locusId, markerSequences.slice(0, 10))
+  }
+
+  // Helper: get variants for an allele from markerData
+  // Match by numeric repeat number from the allele field
+  const getVariantsForAllele = (alleleNumber: string | number): Array<{
+    repeatSequence?: string;
+    fullSequence?: string;
+    isIsoallele?: boolean;
+  }> => {
+    const num = typeof alleleNumber === 'number' ? alleleNumber : parseFloat(String(alleleNumber))
+    if (Number.isNaN(num)) return []
+    
+    const variants = markerSequences.filter((v: any) => {
+      // Extract numeric repeat number from allele field
+      // allele can be "7", "8", "12", "12.3", etc.
+      const variantAllele = v.allele
+      if (!variantAllele) return false
+      
+      // Parse the numeric part (handle cases like "12.3" or "12 iso")
+      const variantNum = parseFloat(String(variantAllele))
+      if (Number.isNaN(variantNum)) return false
+      
+      // Compare with tolerance for floating point
+      return Math.abs(variantNum - num) < 0.01
+    })
+
+    // Debug log to verify matching
+    if (typeof console !== 'undefined' && console.log) {
+      console.log(
+        "[NGS variants match]",
+        locusId,
+        "alleleNumber=",
+        alleleNumber,
+        "found=",
+        variants.length
+      )
+    }
+
+    return variants.map((v: any) => ({
+      repeatSequence: v.pattern,
+      fullSequence: v.sequence,
+      isIsoallele: v.isIsoallele || false,
+    }))
+  }
+
+  // ---------------------------------------------------------------------------
+  // CE → NGS linkage (didactic mapping for forensic migration CE→NGS)
+  //
+  // Forensic principle:
+  // - Mixture proportion and degradation are encoded in the CE signal (RFU) model.
+  // - AT/IT are interpretation thresholds; they must NOT change underlying signal.
+  // - Therefore, NGS "coverage" is derived from TRUE-peak RFU proportions,
+  //   allocating a fixed total reads budget per locus.
+  //
+  // Result:
+  // - Changing AT/IT will not change bar heights (coverage), only what you *flag*.
+  // - Changing mixture/degradation will change RFU → and thus coverage (as expected).
+  // ---------------------------------------------------------------------------
+
+  const TOTAL_READS = 2000; // fixed reads budget per locus (UI/education, not wet-lab)
+
+  const truePeaks = peaks.filter((p) => p.kind === "true");
+  const sumRFU = truePeaks.reduce(
+    (acc, p) => acc + (Number.isFinite(p.rfu) ? Math.max(0, p.rfu) : 0),
+    0
+  );
+
+  const alleleToCoverage: Record<string, number> = {};
+
+  if (sumRFU > 0) {
+    // Allocate reads proportionally to RFU
+    for (const p of truePeaks) {
+      const alleleLabel = String(p.allele);
+      const prop = Math.max(0, p.rfu) / sumRFU;
+      const reads = Math.max(1, Math.round(prop * TOTAL_READS));
+      alleleToCoverage[alleleLabel] = (alleleToCoverage[alleleLabel] ?? 0) + reads;
+    }
+
+    // Optional correction to make total exactly TOTAL_READS
+    const currentTotal = Object.values(alleleToCoverage).reduce((a, b) => a + b, 0);
+    const diff = TOTAL_READS - currentTotal;
+    if (diff !== 0) {
+      const maxKey = Object.entries(alleleToCoverage).sort((a, b) => b[1] - a[1])[0]?.[0];
+      if (maxKey) {
+        alleleToCoverage[maxKey] = Math.max(1, alleleToCoverage[maxKey] + diff);
+      }
+    }
+  } else {
+    // Fallback: if RFU is zero/missing, assign minimal coverage to visible alleles
+    for (const p of truePeaks) {
+      const alleleLabel = String(p.allele);
+      alleleToCoverage[alleleLabel] = (alleleToCoverage[alleleLabel] ?? 0) + 1;
+    }
+  }
+
+  // Ensure all alleles with coverage are included (fallback for alleles in peaks but not in contributors)
+  for (const alleleLabel of Object.keys(alleleToCoverage)) {
+    if (!(alleleLabel in alleleCounts)) {
+      alleleCounts[alleleLabel] = 1 // Default to 1 copy if not found in contributors
+    }
+  }
+
+  // For each unique allele, create rows based on copies needed
+  // Only process alleles that have coverage (appear in peaks)
+  for (const [alleleLabel, copiesNeeded] of Object.entries(alleleCounts)) {
+    const totalCoverage = alleleToCoverage[alleleLabel] ?? 0
+    
+    // Skip alleles with no coverage (they don't appear in peaks)
+    if (totalCoverage <= 0) continue
+
+    // Get all variants for this allele from catalog
+    const variantsForAllele = getVariantsForAllele(alleleLabel)
+
+    // Generate exactly copiesNeeded entries; prefer sample-specific NGS data when available
+    for (let i = 0; i < copiesNeeded; i++) {
+      const source = alleleToCopySources[alleleLabel]?.[i]
+      let repeatSequence: string | '—' = '—'
+      let fullSequence: string | '—' = '—'
+      let fullSequenceSegments: { flank5?: string; repeat: string; flank3?: string } | undefined
+      let isIsoallele = copiesNeeded > 1 && i > 0
+
+      let rowCoverage: number | null = null
+      if (source) {
+        const entry = getSampleNgsLocus(source.sampleId, locusId)
+        if (entry) {
+          const useFirst = source.alleleIndex === 0
+          repeatSequence = (useFirst ? entry.bracketed1 : entry.bracketed2) ?? "—"
+          const alleleNum = useFirst ? 1 : 2
+          const { displaySeq, segments } = getDisplaySequenceForAllele(entry, alleleNum)
+          fullSequence = displaySeq ? displaySeq.replace(/\s+/g, " ").trim() : "—"
+          if (segments) fullSequenceSegments = segments
+          else if (fullSequence !== "—") {
+            const repeatSeq = useFirst ? entry.repeat_seq1 : entry.repeat_seq2
+            const parsed = parseFullSeqSegments(fullSequence, repeatSeq ?? undefined)
+            if (parsed) fullSequenceSegments = parsed
+          }
+          if (typeof entry.coverage1 === "number" && typeof entry.coverage2 === "number") {
+            rowCoverage = useFirst ? entry.coverage1 : entry.coverage2
+          }
+        } else if (
+          source.sampleId === "SYN_TRI01" &&
+          locusId === "TPOX"
+        ) {
+          const simulated = SYN_TRI01_TPOX_NGS[alleleLabel]
+          if (simulated) {
+            repeatSequence = simulated.bracketed
+            fullSequence = simulated.fullSequence.replace(/\s+/g, " ").trim()
+            const segments = parseFullSeqSegments(simulated.fullSequence, undefined)
+            if (segments) fullSequenceSegments = segments
+          }
+        }
+      }
+      if (repeatSequence === '—' || fullSequence === '—') {
+        const variant = variantsForAllele.length > 0
+          ? variantsForAllele[i % variantsForAllele.length]
+          : null
+        if (variant) {
+          repeatSequence = variant.repeatSequence ?? '—'
+          fullSequence = variant.fullSequence ?? '—'
+          isIsoallele = variant.isIsoallele || (copiesNeeded > 1 && i > 0)
+        }
+      }
+
+      const coveragePerCopy = copiesNeeded > 0
+        ? Math.max(1, Math.floor(totalCoverage / copiesNeeded))
+        : totalCoverage
+      const remainder = totalCoverage - (coveragePerCopy * copiesNeeded)
+      const coverageFromRfu = i === copiesNeeded - 1
+        ? coveragePerCopy + remainder
+        : coveragePerCopy
+      const coverage = rowCoverage != null ? rowCoverage : coverageFromRfu
+
+      const meetsMinCoverage =
+        typeof coverage === "number" && coverage >= ISOALLELE_MIN_COVERAGE;
+      rows.push({
+        allele: alleleLabel,
+        coverage,
+        stutterPct: stPctByTarget[alleleLabel] ?? '—',
+        repeatSequence,
+        fullSequence,
+        fullSequenceSegments,
+        isIsoallele: isIsoallele && meetsMinCoverage,
+        sequenceId: `${alleleLabel}-${i}`,
+      })
+    }
+  }
+
+  // Preserve sorting for clean display
+  rows.sort((a, b) => {
+    const numA = parseFloat(String(a.allele))
+    const numB = parseFloat(String(b.allele))
+    if (!Number.isNaN(numA) && !Number.isNaN(numB)) {
+      if (numA !== numB) return numA - numB
+      // If same allele number, sort by sequenceId to maintain order
+      return String(a.sequenceId).localeCompare(String(b.sequenceId))
+    }
+    return String(a.allele).localeCompare(String(b.allele))
+  })
+
+  return rows
+}

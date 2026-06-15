@@ -2,7 +2,7 @@ export default {
   verified: {
     title: "STRhub Verified",
     description:
-      "Atestaciones independientes y automáticas de que una herramienta forense de STR se instala, corre de principio a fin y produce un output plausible — verificado sobre su código público en un commit fijado. No afirma exactitud de genotipos ni aptitud para casework.",
+      "Atestaciones independientes y automáticas de que una herramienta forense de STR se instala, corre de principio a fin y produce un output plausible, verificado sobre su código público en un commit fijado. No afirma exactitud de genotipos ni aptitud para casework.",
     empty: "Todavía no hay atestaciones publicadas.",
     verifiedOn: "Verificado el",
     backToList: "Todas las herramientas verificadas",
@@ -49,7 +49,7 @@ export default {
     },
     readme: {
       heading: "Chequeo de README (informativo)",
-      note: "Checklist de presencia sobre el README de la herramienta — informativo, nunca pasa/falla.",
+      note: "Checklist de presencia sobre el README de la herramienta, informativo, nunca pasa/falla.",
       install: "Instalación / armado del entorno",
       command: "Comando para correr",
       input: "Input esperado",
@@ -62,48 +62,126 @@ export default {
       subtitle:
         "Certificación self-service de que tu herramienta se instala y corre de principio a fin sobre su código público en un commit fijado.",
       disclaimerSnapshot:
-        "El resultado es una foto fechada. Podés volver el repo privado después — la atestación registra las condiciones del momento del run.",
+        "El resultado es una foto fechada. Podés volver el repo privado después. La atestación registra las condiciones del momento del run.",
       disclaimerNoSource:
         "STRhub nunca guarda tu código fuente. El Dockerfile clona tu repo público en el commit fijado solo en build time.",
       required: "obligatorio",
       optional: "opcional",
       sectionTool: "Herramienta",
       sectionSource: "Código público",
+      sectionSourceHint: "El repositorio público de GitHub donde está el código fuente de tu herramienta.",
       sectionEnv: "Entorno",
       sectionRun: "Ejecución",
-      sectionInputs: "Inputs",
+      sectionInputs: "Datos de entrada",
+      sectionInputsHint:
+        "Indicá el tipo de assay y la ruta del archivo de prueba en tu repositorio público. STRhub corre tu herramienta con esos datos. Si tenemos un dataset de referencia open source compatible, sumaremos una segunda corrida para una capa extra de validación.",
+      referenceDatasetsTitle: "Datasets de referencia STRhub (open access, solo loci STR)",
+      referenceDatasetsIntro:
+        "Para tipos de assay compatibles, STRhub también prueba tu herramienta con un dataset STR de referencia open source. Hoy hay dos:",
+      referenceDatasetIllumina:
+        "NIST Forensic DNA Open Dataset (ForenSeq y PowerSeq 46GY, uso investigación/educación)",
+      referenceDatasetOnt:
+        "slice CODIS 1000 Genomes ONT (open access en AWS)",
+      referenceDatasetsScope:
+        "No hay datasets de referencia para paneles SNP, ONT FASTQ crudo ni capilar FSA/HID. Para esos tipos, la verificación usa solo tu archivo (no es un fallo). STRhub no es custodio de datos. Aplican las licencias upstream.",
+      inputTypeGroupWithReference: "Datasets STRhub de referencia",
+      inputTypeGroupOwnOnly: "Solo tu archivo de prueba",
+      inputTypeGroupAdvanced: "Avanzado",
+      inputTypeSuffixWithReference: ", incluye test STRhub",
+      inputTypeSuffixOwnOnly: ", solo tu fixture",
       sectionOutputs: "Output esperado",
+      sectionOutputsHint:
+        "Indicá qué archivo escribe tu comando de ejecución y qué tipo de datos contiene. No hace falta conocer el motor de STRhub, solo la documentación de tu herramienta.",
       name: "Nombre de la herramienta",
       version: "Versión",
       maintainer: "Mantenedor",
       contact: "Contacto (issue tracker o email)",
       repo: "URL del repo público de GitHub",
       ref: "Commit SHA o tag de release (inmutable)",
+      refHint: "Un hash de commit específico o un tag. Asegura que siempre se teste exactamente el mismo código.",
+      refTooltip:
+        "En GitHub, abrí tu repositorio público. Para una release: andá a Releases y copiá el nombre del tag (ej. v3.0). Para un commit: en Code, abrí el historial, elegí un commit y copiá el SHA completo (40 caracteres) o el hash corto que aparece arriba. Pegalo acá. STRhub clonará siempre esa versión exacta.",
+      refTooltipAria: "Cómo encontrar un commit SHA o tag de release en GitHub",
       dockerMode: "¿Cómo se debe construir el entorno?",
+      dockerModeTooltip:
+        "STRhub corre tu herramienta dentro de Docker. Generámelo: elegís lenguaje y comando de instalación; STRhub escribe el Dockerfile, clona tu repo en el ref fijado y ejecuta el build. Yo aporto un Dockerfile: pegás un Dockerfile completo y STRhub lo construye tal cual. Usalo si ya tenés uno o necesitás control total.",
+      dockerModeTooltipAria: "Qué significa cada opción de armado del entorno",
       dockerProvided: "Yo aporto un Dockerfile",
       dockerGenerated: "Generámelo",
-      dockerProvidedHint: "Pegá un Dockerfile completo (camino A — máximo control).",
+      dockerProvidedHint: "Pegá un Dockerfile completo (camino A, máximo control).",
       dockerGeneratedHint:
-        "STRhub arma el Dockerfile desde una plantilla (camino B — pip/conda/make).",
+        "STRhub arma el Dockerfile desde una plantilla (camino B, pip/conda/make).",
       dockerfile: "Contenido del Dockerfile",
       language: "Lenguaje / stack",
       buildCmd: "Comando de build / install",
+      buildCmdTooltip:
+        "Comando que STRhub ejecuta al construir la imagen Docker, después de clonar tu repo. Suele ser tu instalación: pip install, make, conda env create, etc. Si falla, la verificación se detiene en la compuerta Installs.",
+      buildCmdTooltipAria: "Para qué sirve el comando de build o install",
       checkCmd: "Comando de sanity check en build",
+      checkCmdTooltip:
+        "Opcional. Un comando corto que se corre una vez durante el build para confirmar que la instalación funcionó, ej. mytool --help o mytool --version. Dejalo vacío si no estás seguro.",
+      checkCmdTooltipAria: "Para qué sirve el sanity check en build",
       cmd: "Comando de ejecución (lee /data/in, escribe /data/out)",
+      cmdTooltip:
+        "Comando que STRhub ejecuta dentro del contenedor al verificar. Los inputs están en solo lectura bajo /data/in/; escribí outputs bajo /data/out/. Usá rutas del contenedor, no de tu computadora ni del árbol de GitHub.",
+      cmdTooltipAria: "Qué es el comando de ejecución y cómo funcionan las rutas",
+      cmdHint: "Tu herramienta lee los datos de /data/in/ y escribe la salida en /data/out/.",
       timeout: "Timeout (minutos)",
-      inputType: "Tipo de input (para matching de dataset externo)",
-      inputTypePlaceholder: "ej. illumina-str-fastq",
-      fixtureMode: "Tus datos de prueba (BYOR)",
-      fixtureLocal: "Ruta en el repo del motor",
-      fixtureRemote: "Ruta en mi repo público (recomendado)",
-      fixturePath: "Ruta del fixture",
-      fixtureRepo: "URL del repo del fixture",
-      fixtureRef: "Commit / tag del fixture",
-      fixtureFilePath: "Ruta del archivo en el repo",
-      outputPath: "Glob de salida (relativo a /data/out)",
-      outputFormat: "Formato",
+      inputType: "¿Qué tipo de datos recibe tu herramienta?",
+      inputTypeSelect: "Seleccioná el tipo de input",
+      inputTypeDescIlluminaStrFastq:
+        "FASTQ Illumina MiSeq/MiniSeq STR: Verogen ForenSeq o Promega PowerSeq 46GY (los únicos dos kits en nuestro dataset NIST de referencia por ahora)",
+      inputTypeDescOntBamHg38: "BAM Oxford Nanopore alineado a hg38 (regiones CODIS)",
+      inputTypeDescOntFastq: "FASTQ crudo Oxford Nanopore",
+      inputTypeDescIlluminaSnpFastq: "FASTQ Illumina para paneles SNP de identidad/ancestría",
+      inputTypeDescCapillaryFsa: "Archivos de electroforesis capilar ABI .fsa o .hid",
+      inputTypeOther: "Otro (lo escribo yo)",
+      inputTypeCustom: "Slug personalizado del tipo de input",
+      inputTypeCustomHint:
+        "Un identificador corto, ej. 'pacbio-hifi-bam'. No hay dataset STRhub para tipos custom.",
+      externalNoteIllumina:
+        "STRhub correrá 2 pruebas: con tu archivo y con datos Illumina STR del NIST mds2-2157. Nuestro dataset NIST cubre solo ForenSeq y PowerSeq 46GY. Usá reads que coincidan con tu kit en tu propio fixture.",
+      externalNoteOnt:
+        "STRhub correrá 2 pruebas: con tu BAM y con un slice CODIS 1000 Genomes ONT hg38 (~30 MB).",
+      externalNoteOwnOnly:
+        "STRhub correrá 1 prueba solo con tu archivo. No hay dataset STRhub para este tipo de input (no es un fallo).",
+      fixtureLabel: "Tu archivo de prueba (obligatorio)",
+      fixtureExplainer:
+        "Siempre obligatorio. Indicá un archivo pequeño y accesible públicamente en el ref que indicaste. Si tu tipo de assay tiene dataset STRhub, una segunda corrida automática usa datos STR de terceros.",
+      fixtureSameRepo: "Está en el repo de mi herramienta",
+      fixtureOtherRepo: "Está en otro repo",
+      fixtureSameRepoNote: "Usando repo {repo} en ref {ref}.",
+      fixturePathInRepo: "Ruta al archivo de prueba en el repo",
+      fixturePathInRepoTooltip:
+        "Ruta a tu archivo de prueba pequeño dentro del repo y ref que indicaste, relativa a la raíz del repo. Ejemplo: test/data/sample.fastq. El archivo debe existir en ese ref en GitHub para que STRhub pueda obtenerlo.",
+      fixturePathInRepoTooltipAria: "Cómo indicar la ruta del archivo de prueba en el repositorio",
+      fixturePathHint: "Ruta relativa desde la raíz del repo, ej. test/data/sample.fastq",
+      fixtureRepo: "URL del repo con datos de prueba",
+      fixtureRef: "Commit / tag",
+      outputPath: "Nombre del archivo de salida (patrón)",
+      outputPathHint:
+        "El nombre (o patrón) del archivo que tu herramienta escribe en /data/out/, ej. *.allsequences.txt o result.vcf.",
+      outputPathTooltip:
+        "Usá el mismo nombre o comodín que crea tu comando dentro del contenedor. STRhub busca ese archivo después del run. No tiene que coincidir con la extensión del campo siguiente.",
+      outputPathTooltipAria: "Cómo indicar el archivo de salida que produce tu herramienta",
+      outputFormat: "Tipo de contenido del output",
+      outputFormatHint:
+        "Cómo está armado por dentro, no necesariamente la extensión. Columnas separadas por tab → TSV (aunque termine en .txt).",
+      outputFormatTooltip:
+        "Elegí la estructura que coincide con el output de tu herramienta. TSV: columnas separadas por tab (STRait Razor .allsequences.txt es TSV). CSV: separado por comas. VCF: variantes. JSON: datos JSON. Text: líneas simples sin parser de tabla.",
+      outputFormatTooltipAria: "Cómo elegir el tipo de contenido del output",
+      outputFormatOptions: {
+        tsv: "TSV (columnas separadas por tab)",
+        csv: "CSV (columnas separadas por coma)",
+        vcf: "VCF (variant call format)",
+        json: "JSON",
+        text: "Texto plano (líneas, sin tabla)",
+      },
       minRecords: "Registros mínimos",
       contentToggle: "Agregar chequeos de plausibilidad de contenido (avanzado)",
+      contentToggleTooltip:
+        "Opcional. Chequeos extra sobre el archivo de salida: columnas, caracteres DNA, mínimo de loci o reads, y loci esperados. Ayuda a mostrar que el output parece genotipos plausibles, no solo un archivo no vacío. Omitilo si alcanza con chequeos básicos de formato.",
+      contentToggleTooltipAria: "Qué hacen los chequeos opcionales de plausibilidad de contenido",
       submit: "Enviar para verificación",
       submitting: "Enviando…",
       statePendingApproval:

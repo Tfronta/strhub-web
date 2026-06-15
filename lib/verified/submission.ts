@@ -12,6 +12,70 @@
  */
 import { z } from "zod";
 
+/** Metadata for a STRhub external reference dataset (open-access, STR loci only). */
+export type ExternalDatasetInfo = {
+  name: string;
+  sourceUrl: string;
+  /** Extra detail shown in the form, e.g. assay kits covered in NIST mds2-2157. */
+  detail?: string;
+};
+
+/**
+ * Known assay / input types. Each maps to a slug used in datasets/index.json
+ * and a human-readable label + short description shown in the form dropdown.
+ * "other" is a fallback for unlisted types (the user types a custom slug).
+ *
+ * `hasExternalDataset` mirrors slugs present in strhub-verified/datasets/index.json.
+ * STRhub reference data covers STR assays only — not SNP panels or capillary FSA/HID.
+ */
+export const INPUT_TYPES = [
+  {
+    slug: "illumina-str-fastq",
+    label: "Illumina STR FASTQ",
+    description:
+      "Illumina MiSeq/MiniSeq STR FASTQ: Verogen ForenSeq or Promega PowerSeq 46GY (the only two kits in our NIST reference dataset for now)",
+    hasExternalDataset: true,
+    externalDataset: {
+      name: "NIST mds2-2157",
+      sourceUrl: "https://data.nist.gov/od/id/mds2-2157",
+      detail: "Verogen ForenSeq & Promega PowerSeq 46GY (donor NTD01)",
+    },
+  },
+  {
+    slug: "ont-bam-hg38",
+    label: "ONT BAM (hg38)",
+    description: "Oxford Nanopore aligned BAM against hg38 (CODIS regions)",
+    hasExternalDataset: true,
+    externalDataset: {
+      name: "1000 Genomes ONT, hg38 CODIS slice",
+      sourceUrl:
+        "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
+    },
+  },
+  {
+    slug: "ont-fastq",
+    label: "ONT FASTQ",
+    description: "Oxford Nanopore raw FASTQ reads",
+    hasExternalDataset: false,
+  },
+  {
+    slug: "illumina-snp-fastq",
+    label: "Illumina SNP FASTQ",
+    description: "Illumina FASTQ targeting identity/ancestry SNPs",
+    hasExternalDataset: false,
+  },
+  {
+    slug: "capillary-fsa",
+    label: "Capillary electrophoresis (FSA/HID)",
+    description: "ABI .fsa or .hid fragment analysis files",
+    hasExternalDataset: false,
+  },
+] as const;
+export type InputTypeSlug = (typeof INPUT_TYPES)[number]["slug"];
+
+export const INPUT_TYPES_WITH_REFERENCE = INPUT_TYPES.filter((t) => t.hasExternalDataset);
+export const INPUT_TYPES_OWN_ONLY = INPUT_TYPES.filter((t) => !t.hasExternalDataset);
+
 /** Output formats the engine's IO gate understands. */
 export const OUTPUT_FORMATS = ["vcf", "csv", "tsv", "json", "text"] as const;
 export type OutputFormat = (typeof OUTPUT_FORMATS)[number];

@@ -2,12 +2,23 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ShieldCheck, AlertTriangle, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { ShieldCheck, AlertTriangle, Loader2, CheckCircle2, XCircle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PageTitle } from "@/components/page-title";
 import { SiteFooter } from "@/components/site-footer";
@@ -16,14 +27,30 @@ import {
   submissionSchema,
   OUTPUT_FORMATS,
   BUILD_LANGUAGES,
+  INPUT_TYPES,
+  INPUT_TYPES_OWN_ONLY,
+  INPUT_TYPES_WITH_REFERENCE,
   type SubmissionInput,
 } from "@/lib/verified/submission";
 
 type Phase = "form" | "submitting" | "pending" | "tracking" | "done";
 type RunState = "pending" | "queued" | "in_progress" | "completed";
 
-const SELECT_CLASS =
-  "flex h-10 w-full items-center rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2";
+const INPUT_TYPE_DESC_KEYS: Record<string, string> = {
+  "illumina-str-fastq": "verified.submit.inputTypeDescIlluminaStrFastq",
+  "ont-bam-hg38": "verified.submit.inputTypeDescOntBamHg38",
+  "ont-fastq": "verified.submit.inputTypeDescOntFastq",
+  "illumina-snp-fastq": "verified.submit.inputTypeDescIlluminaSnpFastq",
+  "capillary-fsa": "verified.submit.inputTypeDescCapillaryFsa",
+};
+
+function inputTypeOptionLabel(
+  label: string,
+  t: (key: string) => string,
+  suffixKey: "verified.submit.inputTypeSuffixWithReference" | "verified.submit.inputTypeSuffixOwnOnly",
+): string {
+  return `${label}${t(suffixKey)}`;
+}
 
 function num(v: string): number | undefined {
   if (v.trim() === "") return undefined;
@@ -56,7 +83,7 @@ export function VerifiedSubmitForm() {
   const [formError, setFormError] = useState<string | null>(null);
 
   const [dockerMode, setDockerMode] = useState<"generated" | "provided">("generated");
-  const [fixtureMode, setFixtureMode] = useState<"remote" | "local">("remote");
+  const [fixtureSource, setFixtureSource] = useState<"same" | "other">("same");
   const [showContent, setShowContent] = useState(false);
 
   // Result state.
@@ -82,10 +109,10 @@ export function VerifiedSubmitForm() {
     cmd: "",
     timeout: "15",
     inputType: "",
-    fixturePath: "",
+    inputTypeCustom: "",
+    fixtureFilePath: "",
     fixtureRepo: "",
     fixtureRef: "",
-    fixtureFilePath: "",
     outputPath: "",
     outputFormat: "tsv",
     minRecords: "1",
@@ -100,6 +127,18 @@ export function VerifiedSubmitForm() {
   });
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setF((prev) => ({ ...prev, [k]: e.target.value }));
+
+  const resolvedInputType =
+    f.inputType === "__other__" ? f.inputTypeCustom : f.inputType;
+
+  const selectedTypeInfo = INPUT_TYPES.find((t) => t.slug === f.inputType);
+
+  function externalNoteMessage(): string | null {
+    if (!resolvedInputType) return null;
+    if (resolvedInputType === "illumina-str-fastq") return t("verified.submit.externalNoteIllumina");
+    if (resolvedInputType === "ont-bam-hg38") return t("verified.submit.externalNoteOnt");
+    return t("verified.submit.externalNoteOwnOnly");
+  }
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => () => {
@@ -118,6 +157,9 @@ export function VerifiedSubmitForm() {
           min_total_reads: num(f.minTotalReads),
         }
       : undefined;
+
+    const fixtureRepo = fixtureSource === "same" ? f.repo : f.fixtureRepo;
+    const fixtureRef = fixtureSource === "same" ? f.ref : f.fixtureRef;
 
     return {
       tool: {
@@ -138,11 +180,12 @@ export function VerifiedSubmitForm() {
           : { mode: "provided", dockerfile: f.dockerfile },
       run: { cmd: f.cmd, timeout_minutes: num(f.timeout) ?? 15 },
       inputs: {
-        type: f.inputType || undefined,
-        fixture:
-          fixtureMode === "remote"
-            ? { repo: f.fixtureRepo, ref: f.fixtureRef, path: f.fixtureFilePath }
-            : f.fixturePath,
+        type: resolvedInputType || undefined,
+        fixture: {
+          repo: fixtureRepo,
+          ref: fixtureRef,
+          path: f.fixtureFilePath,
+        },
       },
       outputs: [
         {
@@ -322,24 +365,26 @@ export function VerifiedSubmitForm() {
         )}
 
         <form onSubmit={onSubmit} className="mt-6 space-y-8">
+          {/* ── 1. Tool ─────────────────────────────────────────────── */}
           <Section title={t("verified.submit.sectionTool")}>
             <Field label={t("verified.submit.name")} required>
-              <Input value={f.name} onChange={set("name")} />
+              <Input value={f.name} onChange={set("name")} placeholder="STRait Razor" />
               {err("tool.name")}
             </Field>
             <Field label={t("verified.submit.version")} required>
-              <Input value={f.version} onChange={set("version")} placeholder="v1.0" />
+              <Input value={f.version} onChange={set("version")} placeholder="v3.0" />
               {err("tool.version")}
             </Field>
             <Field label={t("verified.submit.maintainer")} optional>
               <Input value={f.maintainer} onChange={set("maintainer")} />
             </Field>
             <Field label={t("verified.submit.contact")} optional>
-              <Input value={f.contact} onChange={set("contact")} />
+              <Input value={f.contact} onChange={set("contact")} placeholder="https://github.com/owner/tool/issues" />
             </Field>
           </Section>
 
-          <Section title={t("verified.submit.sectionSource")}>
+          {/* ── 2. Source ────────────────────────────────────────────── */}
+          <Section title={t("verified.submit.sectionSource")} hint={t("verified.submit.sectionSourceHint")}>
             <Field label={t("verified.submit.repo")} required>
               <Input
                 value={f.repo}
@@ -348,14 +393,25 @@ export function VerifiedSubmitForm() {
               />
               {err("source.repo")}
             </Field>
-            <Field label={t("verified.submit.ref")} required>
-              <Input value={f.ref} onChange={set("ref")} placeholder="9f2c1ab… or v1.0" />
+            <Field
+              label={t("verified.submit.ref")}
+              required
+              infoTooltip={t("verified.submit.refTooltip")}
+              infoTooltipAria={t("verified.submit.refTooltipAria")}
+            >
+              <Input value={f.ref} onChange={set("ref")} placeholder="b618e93… or v3.0" />
+              <p className="text-xs text-muted-foreground mt-1">{t("verified.submit.refHint")}</p>
               {err("source.ref")}
             </Field>
           </Section>
 
+          {/* ── 3. Environment ───────────────────────────────────────── */}
           <Section title={t("verified.submit.sectionEnv")}>
-            <Field label={t("verified.submit.dockerMode")}>
+            <Field
+              label={t("verified.submit.dockerMode")}
+              infoTooltip={t("verified.submit.dockerModeTooltip")}
+              infoTooltipAria={t("verified.submit.dockerModeTooltipAria")}
+            >
               <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
                 <label className="flex items-center gap-2 text-sm">
                   <input
@@ -382,15 +438,25 @@ export function VerifiedSubmitForm() {
                   {t("verified.submit.dockerGeneratedHint")}
                 </p>
                 <Field label={t("verified.submit.language")} required>
-                  <select className={SELECT_CLASS} value={f.language} onChange={set("language")}>
-                    {BUILD_LANGUAGES.map((l) => (
-                      <option key={l} value={l}>
-                        {l}
-                      </option>
-                    ))}
-                  </select>
+                  <Select value={f.language} onValueChange={(v) => setF((prev) => ({ ...prev, language: v }))}>
+                    <SelectTrigger className="h-11 text-base">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {BUILD_LANGUAGES.map((l) => (
+                        <SelectItem key={l} value={l}>
+                          {l}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </Field>
-                <Field label={t("verified.submit.buildCmd")} required>
+                <Field
+                  label={t("verified.submit.buildCmd")}
+                  required
+                  infoTooltip={t("verified.submit.buildCmdTooltip")}
+                  infoTooltipAria={t("verified.submit.buildCmdTooltipAria")}
+                >
                   <Input
                     value={f.buildCmd}
                     onChange={set("buildCmd")}
@@ -398,7 +464,12 @@ export function VerifiedSubmitForm() {
                   />
                   {err("docker.build_cmd")}
                 </Field>
-                <Field label={t("verified.submit.checkCmd")} optional>
+                <Field
+                  label={t("verified.submit.checkCmd")}
+                  optional
+                  infoTooltip={t("verified.submit.checkCmdTooltip")}
+                  infoTooltipAria={t("verified.submit.checkCmdTooltipAria")}
+                >
                   <Input value={f.checkCmd} onChange={set("checkCmd")} placeholder="mytool --help" />
                 </Field>
               </>
@@ -421,8 +492,14 @@ export function VerifiedSubmitForm() {
             )}
           </Section>
 
+          {/* ── 4. Execution ─────────────────────────────────────────── */}
           <Section title={t("verified.submit.sectionRun")}>
-            <Field label={t("verified.submit.cmd")} required>
+            <Field
+              label={t("verified.submit.cmd")}
+              required
+              infoTooltip={t("verified.submit.cmdTooltip")}
+              infoTooltipAria={t("verified.submit.cmdTooltipAria")}
+            >
               <Textarea
                 value={f.cmd}
                 onChange={set("cmd")}
@@ -430,6 +507,7 @@ export function VerifiedSubmitForm() {
                 className="font-mono text-xs"
                 placeholder="mytool --input /data/in/sample.fastq --out /data/out/result.tsv"
               />
+              <p className="text-xs text-muted-foreground mt-1">{t("verified.submit.cmdHint")}</p>
               {err("run.cmd")}
             </Field>
             <Field label={t("verified.submit.timeout")}>
@@ -438,95 +516,241 @@ export function VerifiedSubmitForm() {
             </Field>
           </Section>
 
-          <Section title={t("verified.submit.sectionInputs")}>
-            <Field label={t("verified.submit.inputType")} optional>
-              <Input
-                value={f.inputType}
-                onChange={set("inputType")}
-                placeholder={t("verified.submit.inputTypePlaceholder")}
-              />
-            </Field>
-            <Field label={t("verified.submit.fixtureMode")}>
-              <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="radio"
-                    checked={fixtureMode === "remote"}
-                    onChange={() => setFixtureMode("remote")}
-                  />
-                  {t("verified.submit.fixtureRemote")}
-                </label>
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="radio"
-                    checked={fixtureMode === "local"}
-                    onChange={() => setFixtureMode("local")}
-                  />
-                  {t("verified.submit.fixtureLocal")}
-                </label>
+          {/* ── 5. Inputs ────────────────────────────────────────────── */}
+          <Section title={t("verified.submit.sectionInputs")} hint={t("verified.submit.sectionInputsHint")}>
+            {/* STRhub reference datasets callout */}
+            <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-3 py-3 text-xs text-muted-foreground">
+              <Info className="h-4 w-4 mt-0.5 shrink-0" />
+              <div className="space-y-2">
+                <p className="font-medium text-foreground">{t("verified.submit.referenceDatasetsTitle")}</p>
+                <p>{t("verified.submit.referenceDatasetsIntro")}</p>
+                <ul className="list-disc space-y-1 pl-4">
+                  <li>
+                    <strong>Illumina STR FASTQ</strong>: {t("verified.submit.referenceDatasetIllumina")}{" "}
+                    <a
+                      href="https://data.nist.gov/od/id/mds2-2157"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2"
+                    >
+                      NIST mds2-2157
+                    </a>
+                  </li>
+                  <li>
+                    <strong>ONT BAM (hg38)</strong>: {t("verified.submit.referenceDatasetOnt")}{" "}
+                    <a
+                      href="https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2"
+                    >
+                      1000 Genomes ONT
+                    </a>
+                  </li>
+                </ul>
+                <p>{t("verified.submit.referenceDatasetsScope")}</p>
               </div>
+            </div>
+
+            {/* Input type dropdown */}
+            <Field label={t("verified.submit.inputType")}>
+              <Select
+                value={f.inputType || undefined}
+                onValueChange={(value) => setF((prev) => ({ ...prev, inputType: value }))}
+              >
+                <SelectTrigger className="h-11 text-base">
+                  <SelectValue placeholder={t("verified.submit.inputTypeSelect")} />
+                </SelectTrigger>
+                <SelectContent className="max-h-80">
+                  <SelectGroup>
+                    <SelectLabel>{t("verified.submit.inputTypeGroupWithReference")}</SelectLabel>
+                    {INPUT_TYPES_WITH_REFERENCE.map((it) => (
+                      <SelectItem key={it.slug} value={it.slug}>
+                        {inputTypeOptionLabel(
+                          it.label,
+                          t,
+                          "verified.submit.inputTypeSuffixWithReference",
+                        )}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                  <SelectSeparator />
+                  <SelectGroup>
+                    <SelectLabel>{t("verified.submit.inputTypeGroupOwnOnly")}</SelectLabel>
+                    {INPUT_TYPES_OWN_ONLY.map((it) => (
+                      <SelectItem key={it.slug} value={it.slug}>
+                        {inputTypeOptionLabel(
+                          it.label,
+                          t,
+                          "verified.submit.inputTypeSuffixOwnOnly",
+                        )}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                  <SelectSeparator />
+                  <SelectGroup>
+                    <SelectLabel>{t("verified.submit.inputTypeGroupAdvanced")}</SelectLabel>
+                    <SelectItem value="__other__">{t("verified.submit.inputTypeOther")}</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {selectedTypeInfo && INPUT_TYPE_DESC_KEYS[f.inputType] && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t(INPUT_TYPE_DESC_KEYS[f.inputType])}
+                </p>
+              )}
             </Field>
-            {fixtureMode === "remote" ? (
-              <>
-                <Field label={t("verified.submit.fixtureRepo")} required>
-                  <Input
-                    value={f.fixtureRepo}
-                    onChange={set("fixtureRepo")}
-                    placeholder="https://github.com/owner/tool"
-                  />
-                  {err("inputs.fixture.repo")}
-                </Field>
-                <Field label={t("verified.submit.fixtureRef")} required>
-                  <Input value={f.fixtureRef} onChange={set("fixtureRef")} />
-                  {err("inputs.fixture.ref")}
-                </Field>
-                <Field label={t("verified.submit.fixtureFilePath")} required>
-                  <Input
-                    value={f.fixtureFilePath}
-                    onChange={set("fixtureFilePath")}
-                    placeholder="examples/sample.fastq"
-                  />
-                  {err("inputs.fixture.path")}
-                </Field>
-              </>
-            ) : (
-              <Field label={t("verified.submit.fixturePath")} required>
+
+            {f.inputType === "__other__" && (
+              <Field label={t("verified.submit.inputTypeCustom")} required>
                 <Input
-                  value={f.fixturePath}
-                  onChange={set("fixturePath")}
-                  placeholder="fixtures/example"
+                  value={f.inputTypeCustom}
+                  onChange={set("inputTypeCustom")}
+                  placeholder="my-custom-type"
                 />
-                {err("inputs.fixture")}
+                <p className="text-xs text-muted-foreground mt-1">{t("verified.submit.inputTypeCustomHint")}</p>
               </Field>
             )}
+
+            {resolvedInputType && externalNoteMessage() && (
+              <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+                <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                <span>{externalNoteMessage()}</span>
+              </div>
+            )}
+
+            {/* Fixture — test data */}
+            <div className="pt-2 border-t border-border">
+              <Field label={t("verified.submit.fixtureLabel")}>
+                <p className="text-xs text-muted-foreground mb-2">{t("verified.submit.fixtureExplainer")}</p>
+                <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="radio"
+                      checked={fixtureSource === "same"}
+                      onChange={() => setFixtureSource("same")}
+                    />
+                    {t("verified.submit.fixtureSameRepo")}
+                  </label>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="radio"
+                      checked={fixtureSource === "other"}
+                      onChange={() => setFixtureSource("other")}
+                    />
+                    {t("verified.submit.fixtureOtherRepo")}
+                  </label>
+                </div>
+              </Field>
+
+              {fixtureSource === "same" ? (
+                <>
+                  {f.repo && (
+                    <div className="flex items-start gap-2 rounded-md bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+                      <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                      <span>{t("verified.submit.fixtureSameRepoNote", { repo: f.repo, ref: f.ref || "…" })}</span>
+                    </div>
+                  )}
+                  <Field
+                    label={t("verified.submit.fixturePathInRepo")}
+                    required
+                    infoTooltip={t("verified.submit.fixturePathInRepoTooltip")}
+                    infoTooltipAria={t("verified.submit.fixturePathInRepoTooltipAria")}
+                  >
+                    <Input
+                      value={f.fixtureFilePath}
+                      onChange={set("fixtureFilePath")}
+                      placeholder="test/data/sample.fastq"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">{t("verified.submit.fixturePathHint")}</p>
+                    {err("inputs.fixture.path")}
+                  </Field>
+                </>
+              ) : (
+                <>
+                  <Field label={t("verified.submit.fixtureRepo")} required>
+                    <Input
+                      value={f.fixtureRepo}
+                      onChange={set("fixtureRepo")}
+                      placeholder="https://github.com/owner/test-data"
+                    />
+                    {err("inputs.fixture.repo")}
+                  </Field>
+                  <Field label={t("verified.submit.fixtureRef")} required>
+                    <Input value={f.fixtureRef} onChange={set("fixtureRef")} placeholder="main" />
+                    {err("inputs.fixture.ref")}
+                  </Field>
+                  <Field
+                    label={t("verified.submit.fixturePathInRepo")}
+                    required
+                    infoTooltip={t("verified.submit.fixturePathInRepoTooltip")}
+                    infoTooltipAria={t("verified.submit.fixturePathInRepoTooltipAria")}
+                  >
+                    <Input
+                      value={f.fixtureFilePath}
+                      onChange={set("fixtureFilePath")}
+                      placeholder="data/sample.fastq"
+                    />
+                    {err("inputs.fixture.path")}
+                  </Field>
+                </>
+              )}
+            </div>
           </Section>
 
-          <Section title={t("verified.submit.sectionOutputs")}>
-            <Field label={t("verified.submit.outputPath")} required>
-              <Input value={f.outputPath} onChange={set("outputPath")} placeholder="*.tsv" />
+          {/* ── 6. Outputs ───────────────────────────────────────────── */}
+          <Section title={t("verified.submit.sectionOutputs")} hint={t("verified.submit.sectionOutputsHint")}>
+            <Field
+              label={t("verified.submit.outputPath")}
+              required
+              infoTooltip={t("verified.submit.outputPathTooltip")}
+              infoTooltipAria={t("verified.submit.outputPathTooltipAria")}
+            >
+              <Input value={f.outputPath} onChange={set("outputPath")} placeholder="*.allsequences.txt" />
+              <p className="text-xs text-muted-foreground mt-1">{t("verified.submit.outputPathHint")}</p>
               {err("outputs.0.path")}
             </Field>
-            <Field label={t("verified.submit.outputFormat")} required>
-              <select className={SELECT_CLASS} value={f.outputFormat} onChange={set("outputFormat")}>
-                {OUTPUT_FORMATS.map((fmt) => (
-                  <option key={fmt} value={fmt}>
-                    {fmt}
-                  </option>
-                ))}
-              </select>
+            <Field
+              label={t("verified.submit.outputFormat")}
+              required
+              infoTooltip={t("verified.submit.outputFormatTooltip")}
+              infoTooltipAria={t("verified.submit.outputFormatTooltipAria")}
+            >
+              <Select
+                value={f.outputFormat}
+                onValueChange={(v) => setF((prev) => ({ ...prev, outputFormat: v }))}
+              >
+                <SelectTrigger className="h-11 text-base">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {OUTPUT_FORMATS.map((fmt) => (
+                    <SelectItem key={fmt} value={fmt}>
+                      {t(`verified.submit.outputFormatOptions.${fmt}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">{t("verified.submit.outputFormatHint")}</p>
             </Field>
             <Field label={t("verified.submit.minRecords")}>
               <Input type="number" min={0} value={f.minRecords} onChange={set("minRecords")} />
             </Field>
 
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={showContent}
-                onChange={(e) => setShowContent(e.target.checked)}
+            <div className="flex items-center gap-1.5 text-sm">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showContent}
+                  onChange={(e) => setShowContent(e.target.checked)}
+                />
+                {t("verified.submit.contentToggle")}
+              </label>
+              <InfoTooltipIcon
+                tooltip={t("verified.submit.contentToggleTooltip")}
+                ariaLabel={t("verified.submit.contentToggleTooltipAria")}
               />
-              {t("verified.submit.contentToggle")}
-            </label>
+            </div>
             {showContent && (
               <div className="grid grid-cols-2 gap-3">
                 <Field label="columns">
@@ -586,12 +810,32 @@ function ResultShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
     <fieldset className="space-y-4">
       <legend className="text-lg font-semibold">{title}</legend>
+      {hint && <p className="text-sm text-muted-foreground -mt-2">{hint}</p>}
       {children}
     </fieldset>
+  );
+}
+
+function InfoTooltipIcon({ tooltip, ariaLabel }: { tooltip: string; ariaLabel?: string }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          className="inline-flex rounded-sm text-muted-foreground hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          aria-label={ariaLabel ?? tooltip}
+        >
+          <Info className="h-3.5 w-3.5 shrink-0" aria-hidden />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="top" className="max-w-sm text-left leading-relaxed">
+        {tooltip}
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -599,23 +843,32 @@ function Field({
   label,
   required,
   optional,
+  infoTooltip,
+  infoTooltipAria,
   children,
 }: {
   label: string;
   required?: boolean;
   optional?: boolean;
+  infoTooltip?: string;
+  infoTooltipAria?: string;
   children: React.ReactNode;
 }) {
   const { t } = useLanguage();
   return (
     <div className="space-y-1.5">
-      <Label className="text-sm">
-        {label}
-        {required && <span className="ml-1 text-destructive">*</span>}
-        {optional && (
-          <span className="ml-1 text-xs text-muted-foreground">
-            ({t("verified.submit.optional")})
-          </span>
+      <Label className="text-sm inline-flex items-center gap-1.5">
+        <span>
+          {label}
+          {required && <span className="ml-1 text-destructive">*</span>}
+          {optional && (
+            <span className="ml-1 text-xs text-muted-foreground">
+              ({t("verified.submit.optional")})
+            </span>
+          )}
+        </span>
+        {infoTooltip && (
+          <InfoTooltipIcon tooltip={infoTooltip} ariaLabel={infoTooltipAria} />
         )}
       </Label>
       {children}

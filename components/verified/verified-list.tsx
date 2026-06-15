@@ -22,10 +22,19 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
   return (
     <div className="flex flex-col min-h-[60vh]">
       <div className="container mx-auto px-4 py-8 flex-1">
-        <PageTitle
-          title={t("verified.title")}
-          description={t("verified.description")}
-        />
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <PageTitle
+            title={t("verified.title")}
+            description={t("verified.description")}
+          />
+          <Link
+            href="/verified/submit"
+            className="shrink-0 inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            <ShieldCheck className="h-4 w-4" />
+            {t("verified.submit.cta")}
+          </Link>
+        </div>
 
         {index.tools.length === 0 ? (
           <p className="mt-8 text-muted-foreground">{t("verified.empty")}</p>

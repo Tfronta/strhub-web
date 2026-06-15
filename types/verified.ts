@@ -17,6 +17,9 @@ export type VerifiedLevel =
   | "io"
   | "content";
 
+/** Compact state of a verification matrix leg in index.json. */
+export type LegState = "pass" | "fail" | "na" | null;
+
 /** One row in index.json — enough to render a card without fetching the report. */
 export interface VerifiedIndexEntry {
   slug: string;
@@ -30,6 +33,11 @@ export interface VerifiedIndexEntry {
   distinct_str_loci: number | null;
   distinct_snp_markers: number | null;
   total_reads: number | null;
+  // Fase 3: matrix + advisory README summary (absent on older reports).
+  own_state?: LegState;
+  external_state?: LegState;
+  readme_score?: number | null;
+  readme_max?: number | null;
   report: string;
   page: string;
 }
@@ -54,6 +62,28 @@ export interface VerifiedContentStats {
   top_loci_by_depth?: [string, number][];
 }
 
+/** A leg of the verification matrix (own data / external dataset). */
+export interface VerifiedMatrixLeg {
+  leg: "own" | "external" | string;
+  label: string;
+  available: boolean;
+  io?: boolean;
+  content?: boolean;
+  passed?: boolean;
+  type?: string | null;
+  dataset?: string | null;
+}
+
+/** The advisory README "minimum-to-run" check. Never gates the badge. */
+export interface VerifiedReadmeCheck {
+  gate: "readme";
+  advisory: true;
+  score: number;
+  max: number;
+  empty?: boolean;
+  checks: Record<string, { present: boolean; matched?: string | null }>;
+}
+
 export interface VerifiedReport {
   schema: string;
   tool: { name: string; version?: string; maintainer?: string; contact?: string };
@@ -65,6 +95,9 @@ export interface VerifiedReport {
   level: VerifiedLevel;
   io_detail?: unknown;
   content_detail?: { outputs?: { stats?: VerifiedContentStats }[] };
+  // Fase 3 additions (optional for backward compatibility with older reports).
+  datasets?: VerifiedMatrixLeg[];
+  readme_check?: VerifiedReadmeCheck | null;
   scope: string;
 }
 

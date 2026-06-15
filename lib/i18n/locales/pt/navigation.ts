@@ -12,6 +12,7 @@ nav: {
   mixProfiles: "Misturas",
   globalFrequencies: "Frequências Globais",
   datasets: "Dados",
+  verified: "Verificadas",
 },
 search: {
   title: "Resultados da Busca",

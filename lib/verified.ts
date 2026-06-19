@@ -23,16 +23,23 @@ async function fetchJson<T>(url: string): Promise<T | null> {
   }
 }
 
+function isCatalogueGhost(entry: VerifiedIndex["tools"][number]): boolean {
+  // Older gh-pages builds mistakenly listed index.json as a tool report.
+  return entry.slug === "index" || entry.report === "index.json";
+}
+
 export async function getVerifiedIndex(): Promise<VerifiedIndex> {
   const data = await fetchJson<VerifiedIndex>(`${BASE}/index.json`);
-  return (
-    data ?? {
+  if (!data) {
+    return {
       schema: "strhub-verified/index/1",
       generated: new Date().toISOString(),
       count: 0,
       tools: [],
-    }
-  );
+    };
+  }
+  const tools = data.tools.filter((t) => !isCatalogueGhost(t));
+  return { ...data, count: tools.length, tools };
 }
 
 export async function getVerifiedReport(

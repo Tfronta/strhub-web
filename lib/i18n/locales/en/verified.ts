@@ -17,6 +17,10 @@ export default {
     staticPage: "static report",
     disclaimer:
       "Each result is a dated snapshot, verified on the tool's public repository at a pinned commit. STRhub stores no tool source code.",
+    group: {
+      runs: "verification runs",
+      runSingular: "1 verification run",
+    },
     col: {
       strLoci: "STR loci",
       snps: "SNPs",
@@ -40,6 +44,9 @@ export default {
     data: {
       heading: "Verification data",
       note: "Reference datasets used as input for this verification run. STRhub is not the data provider; see upstream sources for terms of use.",
+      lociTested: "Loci tested",
+      lociCount: "forensic STR loci",
+      lociScope: "This verification only covers the specific STR loci listed above. The tool may support additional loci not tested by this reference dataset.",
     },
     matrix: {
       heading: "Verification matrix",
@@ -136,6 +143,7 @@ export default {
       inputTypeDescIlluminaStrFastq:
         "Illumina MiSeq/MiniSeq STR FASTQ: Verogen ForenSeq or Promega PowerSeq 46GY (the only two kits in our NIST reference dataset for now)",
       inputTypeDescOntBamHg38: "Oxford Nanopore BAM aligned to hg38 (CODIS regions)",
+      inputTypeDescIlluminaBamHg38: "Illumina WGS BAM aligned to hg38 (CODIS regions)",
       inputTypeDescOntFastq: "Oxford Nanopore raw FASTQ reads",
       inputTypeDescIlluminaSnpFastq: "Illumina FASTQ for identity/ancestry SNP panels",
       inputTypeDescCapillaryFsa: "ABI .fsa or .hid capillary fragment analysis files",
@@ -147,6 +155,8 @@ export default {
         "STRhub will run two tests: on your file and on NIST mds2-2157 Illumina STR data. Our NIST reference covers ForenSeq and PowerSeq 46GY only. Use kit-matched reads in your own fixture.",
       externalNoteOnt:
         "STRhub will run two tests: on your BAM and on a 1000 Genomes ONT hg38 CODIS slice (~30 MB).",
+      externalNoteIlluminaBam:
+        "STRhub will run two tests: on your BAM and on a 1000 Genomes Illumina 30x hg38 CODIS slice. The reference dataset covers 27 core forensic STR loci only.",
       externalNoteOwnOnly:
         "STRhub will run one test with your file only. There is no STRhub reference dataset for this input type (not a failure).",
       fixtureLabel: "Your test file (required)",
@@ -200,6 +210,11 @@ export default {
       viewReport: "View attestation",
       errorGeneric: "Something went wrong. Please try again.",
       errorValidation: "Please fix the highlighted fields.",
+      pdfDownload: "Download PDF report",
+      pdfGenerating: "Generating PDF…",
+      pdfDone: "PDF downloaded",
+      pdfError: "PDF failed — retry",
+      pdfErrorHint: "The report may not be published yet. Try again in a few seconds.",
     },
   },
 };

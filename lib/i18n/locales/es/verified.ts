@@ -17,6 +17,10 @@ export default {
     staticPage: "reporte estático",
     disclaimer:
       "Cada resultado es una foto fechada, verificada sobre el repositorio público de la herramienta en un commit fijado. STRhub no guarda código fuente de ninguna herramienta.",
+    group: {
+      runs: "corridas de verificación",
+      runSingular: "1 corrida de verificación",
+    },
     col: {
       strLoci: "loci STR",
       snps: "SNPs",
@@ -40,6 +44,9 @@ export default {
     data: {
       heading: "Datos de verificación",
       note: "Conjuntos de datos de referencia utilizados como entrada para esta corrida de verificación. STRhub no es el proveedor de los datos; consulte las fuentes originales para los términos de uso.",
+      lociTested: "Loci probados",
+      lociCount: "loci STR forenses",
+      lociScope: "Esta verificación cubre únicamente los loci STR listados arriba. La herramienta puede soportar loci adicionales no incluidos en este dataset de referencia.",
     },
     matrix: {
       heading: "Matriz de verificación",
@@ -136,6 +143,7 @@ export default {
       inputTypeDescIlluminaStrFastq:
         "FASTQ Illumina MiSeq/MiniSeq STR: Verogen ForenSeq o Promega PowerSeq 46GY (los únicos dos kits en nuestro dataset NIST de referencia por ahora)",
       inputTypeDescOntBamHg38: "BAM Oxford Nanopore alineado a hg38 (regiones CODIS)",
+      inputTypeDescIlluminaBamHg38: "BAM Illumina WGS alineado a hg38 (regiones CODIS)",
       inputTypeDescOntFastq: "FASTQ crudo Oxford Nanopore",
       inputTypeDescIlluminaSnpFastq: "FASTQ Illumina para paneles SNP de identidad/ancestría",
       inputTypeDescCapillaryFsa: "Archivos de electroforesis capilar ABI .fsa o .hid",
@@ -147,6 +155,8 @@ export default {
         "STRhub correrá 2 pruebas: con tu archivo y con datos Illumina STR del NIST mds2-2157. Nuestro dataset NIST cubre solo ForenSeq y PowerSeq 46GY. Usá reads que coincidan con tu kit en tu propio fixture.",
       externalNoteOnt:
         "STRhub correrá 2 pruebas: con tu BAM y con un slice CODIS 1000 Genomes ONT hg38 (~30 MB).",
+      externalNoteIlluminaBam:
+        "STRhub correrá 2 pruebas: con tu BAM y con un slice CODIS 1000 Genomes Illumina 30x hg38. El dataset de referencia cubre solo 27 loci STR forenses centrales.",
       externalNoteOwnOnly:
         "STRhub correrá 1 prueba solo con tu archivo. No hay dataset STRhub para este tipo de input (no es un fallo).",
       fixtureLabel: "Tu archivo de prueba (obligatorio)",
@@ -200,6 +210,11 @@ export default {
       viewReport: "Ver atestación",
       errorGeneric: "Algo salió mal. Intentá de nuevo.",
       errorValidation: "Corregí los campos resaltados.",
+      pdfDownload: "Descargar reporte PDF",
+      pdfGenerating: "Generando PDF…",
+      pdfDone: "PDF descargado",
+      pdfError: "PDF falló — reintentar",
+      pdfErrorHint: "El reporte puede no estar publicado aún. Intentá de nuevo en unos segundos.",
     },
   },
 };

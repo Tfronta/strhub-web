@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ShieldCheck, AlertTriangle, Loader2, CheckCircle2, XCircle, Info } from "lucide-react";
+import { AlertTriangle, Loader2, CheckCircle2, XCircle, Info, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,6 +39,7 @@ type RunState = "pending" | "queued" | "in_progress" | "completed";
 const INPUT_TYPE_DESC_KEYS: Record<string, string> = {
   "illumina-str-fastq": "verified.submit.inputTypeDescIlluminaStrFastq",
   "ont-bam-hg38": "verified.submit.inputTypeDescOntBamHg38",
+  "illumina-bam-hg38": "verified.submit.inputTypeDescIlluminaBamHg38",
   "ont-fastq": "verified.submit.inputTypeDescOntFastq",
   "illumina-snp-fastq": "verified.submit.inputTypeDescIlluminaSnpFastq",
   "capillary-fsa": "verified.submit.inputTypeDescCapillaryFsa",
@@ -75,12 +76,52 @@ function numList(v: string): number[] | undefined {
   return items.length && items.every((n) => Number.isFinite(n)) ? items : undefined;
 }
 
+async function downloadPdfForSlug(reportSlug: string) {
+  const base =
+    process.env.NEXT_PUBLIC_VERIFIED_BASE ??
+    "https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages";
+  const res = await fetch(`${base}/${reportSlug}.json`);
+  if (!res.ok) throw new Error("Report not available yet");
+  const report = await res.json();
+
+  const [{ pdf }, { VerifiedPDF }] = await Promise.all([
+    import("@react-pdf/renderer"),
+    import("./verified-pdf"),
+  ]);
+
+  let logoSrc: string | undefined;
+  try {
+    const logoRes = await fetch("/strhub-logo-pdf.png");
+    const logoBlob = await logoRes.blob();
+    logoSrc = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(logoBlob);
+    });
+  } catch { /* logo is optional */ }
+
+  const blob = await pdf(
+    <VerifiedPDF report={report} slug={reportSlug} logoSrc={logoSrc} />
+  ).toBlob();
+  const date = report.generated?.slice(0, 10) ?? "undated";
+  const filename = `STRhub-Verified_${reportSlug}_${date}.pdf`;
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
 export function VerifiedSubmitForm() {
   const { t } = useLanguage();
 
   const [phase, setPhase] = useState<Phase>("form");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
+  const [pdfState, setPdfState] = useState<"idle" | "generating" | "done" | "error">("idle");
 
   const [dockerMode, setDockerMode] = useState<"generated" | "provided">("generated");
   const [fixtureSource, setFixtureSource] = useState<"same" | "other">("same");
@@ -137,6 +178,7 @@ export function VerifiedSubmitForm() {
     if (!resolvedInputType) return null;
     if (resolvedInputType === "illumina-str-fastq") return t("verified.submit.externalNoteIllumina");
     if (resolvedInputType === "ont-bam-hg38") return t("verified.submit.externalNoteOnt");
+    if (resolvedInputType === "illumina-bam-hg38") return t("verified.submit.externalNoteIlluminaBam");
     return t("verified.submit.externalNoteOwnOnly");
   }
 
@@ -276,7 +318,7 @@ export function VerifiedSubmitForm() {
     return (
       <ResultShell>
         <Alert>
-          <ShieldCheck className="h-4 w-4" />
+          <Info className="h-4 w-4" />
           <AlertTitle>{t("verified.submit.title")}</AlertTitle>
           <AlertDescription>{pendingMessage}</AlertDescription>
         </Alert>
@@ -331,6 +373,38 @@ export function VerifiedSubmitForm() {
                 </Link>
               )}
             </div>
+            {phase === "done" && success && slug && (
+              <div className="pt-2 border-t">
+                <button
+                  type="button"
+                  disabled={pdfState === "generating"}
+                  className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted disabled:opacity-50"
+                  onClick={async () => {
+                    setPdfState("generating");
+                    try {
+                      await downloadPdfForSlug(slug);
+                      setPdfState("done");
+                    } catch {
+                      setPdfState("error");
+                    }
+                  }}
+                >
+                  <Download className="h-4 w-4" />
+                  {pdfState === "generating"
+                    ? t("verified.submit.pdfGenerating")
+                    : pdfState === "done"
+                    ? t("verified.submit.pdfDone")
+                    : pdfState === "error"
+                    ? t("verified.submit.pdfError")
+                    : t("verified.submit.pdfDownload")}
+                </button>
+                {pdfState === "error" && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t("verified.submit.pdfErrorHint")}
+                  </p>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
       </ResultShell>
@@ -348,11 +422,11 @@ export function VerifiedSubmitForm() {
 
         <div className="mt-6 space-y-3">
           <Alert>
-            <ShieldCheck className="h-4 w-4" />
+            <Info className="h-4 w-4" />
             <AlertDescription>{t("verified.submit.disclaimerSnapshot")}</AlertDescription>
           </Alert>
           <Alert>
-            <ShieldCheck className="h-4 w-4" />
+            <Info className="h-4 w-4" />
             <AlertDescription>{t("verified.submit.disclaimerNoSource")}</AlertDescription>
           </Alert>
         </div>

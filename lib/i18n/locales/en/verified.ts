@@ -37,6 +37,10 @@ export default {
       totalReads: "Total reads across calls",
       strLociList: "STR loci",
     },
+    data: {
+      heading: "Verification data",
+      note: "Reference datasets used as input for this verification run. STRhub is not the data provider; see upstream sources for terms of use.",
+    },
     matrix: {
       heading: "Verification matrix",
       own: "Your data",

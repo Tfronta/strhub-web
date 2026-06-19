@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { ArrowLeft, Check, Minus, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
@@ -13,34 +12,64 @@ import {
 } from "@/types/verified";
 import { cn } from "@/lib/utils";
 
-const DATASET_PROVENANCE: Record<
-  string,
-  { name: string; source: string; doi?: string; license: string }
-> = {
+const CODIS_CORE_LOCI = [
+  "Amelogenin", "CSF1PO", "D1S1656", "D2S441", "D2S1338", "D3S1358",
+  "D5S818", "D7S820", "D8S1179", "D10S1248", "D12S391", "D13S317",
+  "D16S539", "D17S1301", "D18S51", "D19S433", "D20S482", "D21S11",
+  "D22S1045", "FGA", "TH01", "TPOX", "vWA", "PentaD", "PentaE",
+  "DYS391", "SE33",
+];
+
+const FORENSEQ_STR_LOCI = [
+  "Amelogenin", "CSF1PO", "D1S1656", "D2S441", "D2S1338", "D3S1358",
+  "D4S2408", "D5S818", "D6S1043", "D7S820", "D8S1179", "D9S1122",
+  "D10S1248", "D12S391", "D13S317", "D16S539", "D17S1301", "D18S51",
+  "D19S433", "D20S482", "D21S11", "D22S1045", "FGA", "TH01", "TPOX",
+  "vWA", "PentaD", "PentaE",
+  "DXS7132", "DXS7423", "DXS8378", "DXS10074", "DXS10103", "DXS10135",
+  "DYF387S1", "DYS19", "DYS385", "DYS389I", "DYS389II", "DYS390",
+  "DYS391", "DYS392", "DYS437", "DYS438", "DYS439", "DYS448",
+  "DYS456", "DYS458", "DYS460", "DYS461", "DYS481", "DYS505",
+  "DYS522", "DYS533", "DYS549", "DYS570", "DYS576", "DYS612",
+  "DYS635", "DYS643", "HPRTB", "Y-GATA-H4",
+];
+
+interface DatasetProvenance {
+  name: string;
+  source: string;
+  doi?: string;
+  license: string;
+  loci: string[];
+}
+
+const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
   "illumina-str-fastq": {
     name: "NIST mds2-2157 — Illumina STR (ForenSeq slice, donor NTD01)",
     source: "https://data.nist.gov/od/id/mds2-2157",
     doi: "10.18434/M32157",
     license:
       "Research / training / education only (per NIST); not for donor identification or database searching.",
+    loci: FORENSEQ_STR_LOCI,
   },
   "ont-bam-hg38": {
     name: "1000 Genomes ONT — hg38 CODIS slice (R10 SUP)",
     source:
       "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
     license: "Open access (1000 Genomes / HPRC). Research use.",
+    loci: CODIS_CORE_LOCI,
+  },
+  "illumina-bam-hg38": {
+    name: "1000 Genomes Illumina 30x — hg38 CODIS slice",
+    source:
+      "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38",
+    license: "Open access (1000 Genomes). Research use.",
+    loci: CODIS_CORE_LOCI,
   },
 };
 
 const LEGACY_SLUG_DATASETS: Record<string, string[]> = {
   "strait-razor-ForenSeqv1.27": ["illumina-str-fastq"],
 };
-
-const VerifiedDownloadButton = dynamic(
-  () =>
-    import("./verified-download-button").then((m) => m.VerifiedDownloadButton),
-  { ssr: false, loading: () => <span className="text-sm text-muted-foreground">Loading...</span> }
-);
 
 const TONE: Record<string, string> = {
   green: "bg-emerald-600 text-white border-transparent",
@@ -85,18 +114,13 @@ export function VerifiedDetail({
           <ArrowLeft className="h-4 w-4" /> {t("verified.backToList")}
         </Link>
 
-        {/* Header: badge + title + download */}
-        <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="space-y-2">
-            <Badge className={cn("w-fit", TONE[level.tone])}>{level.label}</Badge>
-            <h1 className="text-3xl font-bold tracking-tight">
-              {report.tool.name}
-            </h1>
-            <p className="font-mono text-sm text-muted-foreground">{slug}</p>
-          </div>
-          <div className="shrink-0">
-            <VerifiedDownloadButton report={report} slug={slug} />
-          </div>
+        {/* Header: badge + title */}
+        <div className="mt-6 space-y-2">
+          <Badge className={cn("w-fit", TONE[level.tone])}>{level.label}</Badge>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {report.tool.name}
+          </h1>
+          <p className="font-mono text-sm text-muted-foreground">{slug}</p>
         </div>
 
         {/* Tool metadata card */}
@@ -284,10 +308,22 @@ export function VerifiedDetail({
                     )}
                     <dt className="text-muted-foreground">License</dt>
                     <dd className="text-muted-foreground">{ds.license}</dd>
+                    <dt className="text-muted-foreground pt-1">{t("verified.data.lociTested")}</dt>
+                    <dd className="pt-1">
+                      <p className="text-xs text-muted-foreground mb-1">
+                        {ds.loci.length} {t("verified.data.lociCount")}
+                      </p>
+                      <p className="text-[10px] font-mono text-muted-foreground/70 leading-relaxed">
+                        {ds.loci.join(", ")}
+                      </p>
+                    </dd>
                   </dl>
                 </div>
               ))}
             </div>
+            <p className="mt-3 text-xs text-muted-foreground italic">
+              {t("verified.data.lociScope")}
+            </p>
           </>
         )}
 

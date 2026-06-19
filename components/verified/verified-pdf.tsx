@@ -19,22 +19,58 @@ const LINK = "#666";
 const BORDER = "#d0d0d0";
 const BG_LIGHT = "#f5f5f5";
 
-const DATASET_PROVENANCE: Record<
-  string,
-  { name: string; source: string; doi?: string; license: string }
-> = {
+const CODIS_CORE_LOCI = [
+  "Amelogenin", "CSF1PO", "D1S1656", "D2S441", "D2S1338", "D3S1358",
+  "D5S818", "D7S820", "D8S1179", "D10S1248", "D12S391", "D13S317",
+  "D16S539", "D17S1301", "D18S51", "D19S433", "D20S482", "D21S11",
+  "D22S1045", "FGA", "TH01", "TPOX", "vWA", "PentaD", "PentaE",
+  "DYS391", "SE33",
+];
+
+const FORENSEQ_STR_LOCI = [
+  "Amelogenin", "CSF1PO", "D1S1656", "D2S441", "D2S1338", "D3S1358",
+  "D4S2408", "D5S818", "D6S1043", "D7S820", "D8S1179", "D9S1122",
+  "D10S1248", "D12S391", "D13S317", "D16S539", "D17S1301", "D18S51",
+  "D19S433", "D20S482", "D21S11", "D22S1045", "FGA", "TH01", "TPOX",
+  "vWA", "PentaD", "PentaE",
+  "DXS7132", "DXS7423", "DXS8378", "DXS10074", "DXS10103", "DXS10135",
+  "DYF387S1", "DYS19", "DYS385", "DYS389I", "DYS389II", "DYS390",
+  "DYS391", "DYS392", "DYS437", "DYS438", "DYS439", "DYS448",
+  "DYS456", "DYS458", "DYS460", "DYS461", "DYS481", "DYS505",
+  "DYS522", "DYS533", "DYS549", "DYS570", "DYS576", "DYS612",
+  "DYS635", "DYS643", "HPRTB", "Y-GATA-H4",
+];
+
+interface DatasetProvenance {
+  name: string;
+  source: string;
+  doi?: string;
+  license: string;
+  loci: string[];
+}
+
+const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
   "illumina-str-fastq": {
     name: "NIST mds2-2157 — Illumina STR (ForenSeq slice, donor NTD01)",
     source: "https://data.nist.gov/od/id/mds2-2157",
     doi: "10.18434/M32157",
     license:
       "Research / training / education only (per NIST); not for donor identification or database searching.",
+    loci: FORENSEQ_STR_LOCI,
   },
   "ont-bam-hg38": {
     name: "1000 Genomes ONT — hg38 CODIS slice (R10 SUP)",
     source:
       "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
     license: "Open access (1000 Genomes / HPRC). Research use.",
+    loci: CODIS_CORE_LOCI,
+  },
+  "illumina-bam-hg38": {
+    name: "1000 Genomes Illumina 30x — hg38 CODIS slice",
+    source:
+      "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38",
+    license: "Open access (1000 Genomes). Research use.",
+    loci: CODIS_CORE_LOCI,
   },
 };
 
@@ -562,8 +598,29 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
                   <Text style={{ ...s.kvLabel, width: 60 }}>License</Text>
                   <Text style={s.datasetMeta}>{ds.license}</Text>
                 </View>
+                <View style={{ ...s.kvRow, marginTop: 2 }}>
+                  <Text style={{ ...s.kvLabel, width: 60 }}>Loci tested</Text>
+                  <Text style={s.datasetMeta}>
+                    {ds.loci.length} forensic STR loci
+                  </Text>
+                </View>
+                <Text style={{ fontSize: 6.5, color: SUBTLE, marginTop: 1 }}>
+                  {ds.loci.join(", ")}
+                </Text>
               </View>
             ))}
+            <Text
+              style={{
+                fontSize: 7.5,
+                color: SECONDARY,
+                fontStyle: "italic",
+                marginTop: 4,
+              }}
+            >
+              This verification only covers the specific STR loci listed above.
+              The tool may support additional loci not tested by this reference
+              dataset.
+            </Text>
           </>
         )}
 

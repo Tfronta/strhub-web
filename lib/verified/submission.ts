@@ -53,6 +53,17 @@ export const INPUT_TYPES = [
     },
   },
   {
+    slug: "illumina-bam-hg38",
+    label: "Illumina BAM (hg38)",
+    description: "Illumina WGS BAM aligned to hg38 (CODIS regions)",
+    hasExternalDataset: true,
+    externalDataset: {
+      name: "1000 Genomes Illumina 30x, hg38 CODIS slice",
+      sourceUrl:
+        "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38",
+    },
+  },
+  {
     slug: "ont-fastq",
     label: "ONT FASTQ",
     description: "Oxford Nanopore raw FASTQ reads",

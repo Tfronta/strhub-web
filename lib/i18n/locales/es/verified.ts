@@ -37,6 +37,10 @@ export default {
       totalReads: "Reads totales",
       strLociList: "Loci STR",
     },
+    data: {
+      heading: "Datos de verificación",
+      note: "Conjuntos de datos de referencia utilizados como entrada para esta corrida de verificación. STRhub no es el proveedor de los datos; consulte las fuentes originales para los términos de uso.",
+    },
     matrix: {
       heading: "Matriz de verificación",
       own: "Tus datos",

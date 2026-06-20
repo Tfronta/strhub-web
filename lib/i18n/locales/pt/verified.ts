@@ -129,6 +129,7 @@ export default {
       cmdTooltip:
         "Comando que o STRhub executa dentro do contêiner na verificação. Os inputs ficam somente leitura em /data/in/; escreva outputs em /data/out/. Use caminhos do contêiner, não do seu computador nem da árvore do GitHub.",
       cmdTooltipAria: "O que é o comando de execução e como funcionam os caminhos",
+      cmdReplaceMytool: "Substitua \"mytool\" pelo binário ou comando real da sua ferramenta (ex. hipstr, strait_razor, toastr). O restante dos caminhos está correto.",
       cmdHint: "Sua ferramenta lê os dados de /data/in/ e escreve a saída em /data/out/.",
       cmdHintWithRef: "Sua ferramenta lê os dados de /data/in/, o genoma de referência de {mountPath}, e escreve a saída em /data/out/.",
       refGenomeTitle: "Genoma de referência: {assembly}",
@@ -157,8 +158,12 @@ export default {
       externalNoteOwnOnly:
         "O STRhub rodará 1 teste apenas com seu arquivo. Não há dataset STRhub para este tipo de input (não é falha).",
       fixtureLabel: "Seu arquivo de teste (obrigatório)",
+      fixtureLabelRecommended: "Seu arquivo de teste (recomendado)",
       fixtureExplainer:
-        "Sempre obrigatório. Indique um arquivo pequeno e acessível publicamente no ref que você indicou. Quando seu tipo de assay tem dataset STRhub, uma segunda execução automática usa dados STR de terceiros.",
+        "Obrigatório. Indique um arquivo pequeno e acessível publicamente no ref que você indicou.",
+      fixtureExplainerOptional:
+        "Recomendado. Para uma verificação mais completa, indique um arquivo de teste no seu repo — o STRhub rodará tanto com seus dados quanto com nosso dataset de referência. Se seu repo não inclui dados de teste, deixe em branco e o STRhub rodará apenas com nosso dataset de referência.",
+      fixtureRequiredError: "Um arquivo de teste é necessário para este tipo de input (não há dataset de referência STRhub disponível).",
       fixtureSameRepo: "Está no repo da minha ferramenta",
       fixtureOtherRepo: "Está em outro repo",
       fixtureSameRepoNote: "Usando repo {repo} no ref {ref}.",

@@ -30,6 +30,7 @@ import {
   INPUT_TYPES,
   INPUT_TYPES_OWN_ONLY,
   INPUT_TYPES_WITH_REFERENCE,
+  type InputTypeEntry,
   type SubmissionInput,
 } from "@/lib/verified/submission";
 
@@ -51,6 +52,18 @@ function inputTypeOptionLabel(
   suffixKey: "verified.submit.inputTypeSuffixWithReference" | "verified.submit.inputTypeSuffixOwnOnly",
 ): string {
   return `${label}${t(suffixKey)}`;
+}
+
+const CMD_TEMPLATE_PREFIX = "mytool ";
+
+function buildCmdTemplate(entry: InputTypeEntry | undefined): string {
+  if (!entry?.canonicalPaths?.length) return "";
+  const paths = entry.canonicalPaths.join(" ");
+  return `mytool ${paths} --out /data/out/result.tsv`;
+}
+
+function isCmdTemplate(cmd: string): boolean {
+  return cmd === "" || cmd.startsWith(CMD_TEMPLATE_PREFIX);
 }
 
 function num(v: string): number | undefined {
@@ -175,6 +188,31 @@ export function VerifiedSubmitForm() {
   const selectedTypeInfo = INPUT_TYPES.find((t) => t.slug === f.inputType);
   const selectedRefGenome = selectedTypeInfo?.referenceGenome ?? null;
   const selectedCanonicalPaths = selectedTypeInfo?.canonicalPaths ?? null;
+  const fixtureIsOptional = selectedTypeInfo?.hasExternalDataset === true;
+  const cmdLooksLikeTemplate = f.cmd === "" || f.cmd.startsWith(CMD_TEMPLATE_PREFIX);
+
+  function onInputTypeChange(value: string) {
+    const entry = INPUT_TYPES.find((t) => t.slug === value);
+    const template = buildCmdTemplate(entry);
+    setF((prev) => ({
+      ...prev,
+      inputType: value,
+      ...(isCmdTemplate(prev.cmd) && template ? { cmd: template } : {}),
+    }));
+  }
+
+  const canSubmit =
+    phase === "form" &&
+    f.name.trim() !== "" &&
+    f.version.trim() !== "" &&
+    f.repo.trim() !== "" &&
+    f.ref.trim() !== "" &&
+    (dockerMode === "generated" ? f.buildCmd.trim() !== "" : f.dockerfile.trim().length >= 10) &&
+    f.cmd.trim() !== "" &&
+    !cmdLooksLikeTemplate &&
+    f.inputType !== "" &&
+    (fixtureIsOptional || f.fixtureFilePath.trim() !== "") &&
+    f.outputPath.trim() !== "";
 
   function externalNoteMessage(): string | null {
     if (!resolvedInputType) return null;
@@ -205,6 +243,11 @@ export function VerifiedSubmitForm() {
     const fixtureRepo = fixtureSource === "same" ? f.repo : f.fixtureRepo;
     const fixtureRef = fixtureSource === "same" ? f.ref : f.fixtureRef;
 
+    const hasFixture = f.fixtureFilePath.trim() !== "";
+    const fixture = hasFixture
+      ? { repo: fixtureRepo, ref: fixtureRef, path: f.fixtureFilePath }
+      : undefined;
+
     return {
       tool: {
         name: f.name,
@@ -225,11 +268,7 @@ export function VerifiedSubmitForm() {
       run: { cmd: f.cmd, timeout_minutes: num(f.timeout) ?? 15 },
       inputs: {
         type: resolvedInputType || undefined,
-        fixture: {
-          repo: fixtureRepo,
-          ref: fixtureRef,
-          path: f.fixtureFilePath,
-        },
+        fixture,
       },
       outputs: [
         {
@@ -267,6 +306,13 @@ export function VerifiedSubmitForm() {
     setErrors({});
 
     const payload = buildPayload();
+
+    if (!payload.inputs.fixture && !fixtureIsOptional) {
+      setErrors({ "inputs.fixture.path": t("verified.submit.fixtureRequiredError") });
+      setFormError(t("verified.submit.errorValidation"));
+      return;
+    }
+
     const parsed = submissionSchema.safeParse(payload);
     if (!parsed.success) {
       const fieldErrors: Record<string, string> = {};
@@ -568,39 +614,7 @@ export function VerifiedSubmitForm() {
             )}
           </Section>
 
-          {/* ── 4. Execution ─────────────────────────────────────────── */}
-          <Section title={t("verified.submit.sectionRun")}>
-            <Field
-              label={t("verified.submit.cmd")}
-              required
-              infoTooltip={t("verified.submit.cmdTooltip")}
-              infoTooltipAria={t("verified.submit.cmdTooltipAria")}
-            >
-              <Textarea
-                value={f.cmd}
-                onChange={set("cmd")}
-                rows={2}
-                className="font-mono text-xs"
-                placeholder={
-                  selectedCanonicalPaths
-                    ? `mytool ${selectedCanonicalPaths.map((p) => p.startsWith("/data/ref/") ? `--fasta ${p}` : `--input ${p}`).join(" ")} --out /data/out/result.tsv`
-                    : "mytool --input /data/in/sample.fastq --out /data/out/result.tsv"
-                }
-              />
-              <p className="text-xs text-muted-foreground mt-1">
-                {selectedRefGenome
-                  ? t("verified.submit.cmdHintWithRef", { mountPath: selectedRefGenome.mountPath })
-                  : t("verified.submit.cmdHint")}
-              </p>
-              {err("run.cmd")}
-            </Field>
-            <Field label={t("verified.submit.timeout")}>
-              <Input type="number" min={1} max={60} value={f.timeout} onChange={set("timeout")} />
-              {err("run.timeout_minutes")}
-            </Field>
-          </Section>
-
-          {/* ── 5. Inputs ────────────────────────────────────────────── */}
+          {/* ── 4. Input data (before Execution so user sees canonical paths first) */}
           <Section title={t("verified.submit.sectionInputs")} hint={t("verified.submit.sectionInputsHint")}>
             {/* STRhub reference datasets callout */}
             <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-3 py-3 text-xs text-muted-foreground">
@@ -651,7 +665,7 @@ export function VerifiedSubmitForm() {
             <Field label={t("verified.submit.inputType")}>
               <Select
                 value={f.inputType || undefined}
-                onValueChange={(value) => setF((prev) => ({ ...prev, inputType: value }))}
+                onValueChange={onInputTypeChange}
               >
                 <SelectTrigger className="h-11 text-base">
                   <SelectValue placeholder={t("verified.submit.inputTypeSelect")} />
@@ -743,10 +757,18 @@ export function VerifiedSubmitForm() {
               </div>
             )}
 
-            {/* Fixture — test data */}
+            {/* Fixture — test data (optional when STRhub has a reference dataset) */}
             <div className="pt-2 border-t border-border">
-              <Field label={t("verified.submit.fixtureLabel")}>
-                <p className="text-xs text-muted-foreground mb-2">{t("verified.submit.fixtureExplainer")}</p>
+              <Field
+                label={fixtureIsOptional
+                  ? t("verified.submit.fixtureLabelRecommended")
+                  : t("verified.submit.fixtureLabel")}
+              >
+                <p className="text-xs text-muted-foreground mb-2">
+                  {fixtureIsOptional
+                    ? t("verified.submit.fixtureExplainerOptional")
+                    : t("verified.submit.fixtureExplainer")}
+                </p>
                 <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
                   <label className="flex items-center gap-2 text-sm">
                     <input
@@ -777,7 +799,8 @@ export function VerifiedSubmitForm() {
                   )}
                   <Field
                     label={t("verified.submit.fixturePathInRepo")}
-                    required
+                    required={!fixtureIsOptional}
+                    optional={fixtureIsOptional}
                     infoTooltip={t("verified.submit.fixturePathInRepoTooltip")}
                     infoTooltipAria={t("verified.submit.fixturePathInRepoTooltipAria")}
                   >
@@ -792,7 +815,7 @@ export function VerifiedSubmitForm() {
                 </>
               ) : (
                 <>
-                  <Field label={t("verified.submit.fixtureRepo")} required>
+                  <Field label={t("verified.submit.fixtureRepo")} required={!fixtureIsOptional} optional={fixtureIsOptional}>
                     <Input
                       value={f.fixtureRepo}
                       onChange={set("fixtureRepo")}
@@ -800,13 +823,14 @@ export function VerifiedSubmitForm() {
                     />
                     {err("inputs.fixture.repo")}
                   </Field>
-                  <Field label={t("verified.submit.fixtureRef")} required>
+                  <Field label={t("verified.submit.fixtureRef")} required={!fixtureIsOptional} optional={fixtureIsOptional}>
                     <Input value={f.fixtureRef} onChange={set("fixtureRef")} placeholder="main" />
                     {err("inputs.fixture.ref")}
                   </Field>
                   <Field
                     label={t("verified.submit.fixturePathInRepo")}
-                    required
+                    required={!fixtureIsOptional}
+                    optional={fixtureIsOptional}
                     infoTooltip={t("verified.submit.fixturePathInRepoTooltip")}
                     infoTooltipAria={t("verified.submit.fixturePathInRepoTooltipAria")}
                   >
@@ -820,6 +844,44 @@ export function VerifiedSubmitForm() {
                 </>
               )}
             </div>
+          </Section>
+
+          {/* ── 5. Execution ─────────────────────────────────────────── */}
+          <Section title={t("verified.submit.sectionRun")}>
+            <Field
+              label={t("verified.submit.cmd")}
+              required
+              infoTooltip={t("verified.submit.cmdTooltip")}
+              infoTooltipAria={t("verified.submit.cmdTooltipAria")}
+            >
+              <Textarea
+                value={f.cmd}
+                onChange={set("cmd")}
+                rows={2}
+                className="font-mono text-xs"
+                placeholder={
+                  selectedCanonicalPaths
+                    ? `mytool ${selectedCanonicalPaths.join(" ")} --out /data/out/result.tsv`
+                    : "mytool /data/in/sample.fastq --out /data/out/result.tsv"
+                }
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                {selectedRefGenome
+                  ? t("verified.submit.cmdHintWithRef", { mountPath: selectedRefGenome.mountPath })
+                  : t("verified.submit.cmdHint")}
+              </p>
+              {f.cmd.trim() !== "" && cmdLooksLikeTemplate && (
+                <div className="mt-2 flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-400">
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>{t("verified.submit.cmdReplaceMytool")}</span>
+                </div>
+              )}
+              {err("run.cmd")}
+            </Field>
+            <Field label={t("verified.submit.timeout")}>
+              <Input type="number" min={1} max={60} value={f.timeout} onChange={set("timeout")} />
+              {err("run.timeout_minutes")}
+            </Field>
           </Section>
 
           {/* ── 6. Outputs ───────────────────────────────────────────── */}
@@ -908,7 +970,7 @@ export function VerifiedSubmitForm() {
             )}
           </Section>
 
-          <Button type="submit" disabled={phase === "submitting"} className="w-full sm:w-auto">
+          <Button type="submit" disabled={!canSubmit} className="w-full sm:w-auto">
             {phase === "submitting" ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

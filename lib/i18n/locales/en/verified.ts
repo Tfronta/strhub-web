@@ -141,6 +141,7 @@ export default {
       cmdTooltip:
         "Command STRhub runs inside the container at verification time. Input files are read-only under /data/in/; write outputs under /data/out/. Use container paths, not paths on your computer or in the GitHub tree.",
       cmdTooltipAria: "What the run command is and how paths work",
+      cmdReplaceMytool: "Replace \"mytool\" with the actual binary or command that runs your tool (e.g. hipstr, strait_razor, toastr). The rest of the paths are correct.",
       cmdHint: "Your tool reads input from /data/in/ and writes output to /data/out/.",
       cmdHintWithRef: "Your tool reads input from /data/in/, the reference genome from {mountPath}, and writes output to /data/out/.",
       refGenomeTitle: "Reference genome: {assembly}",
@@ -171,8 +172,12 @@ export default {
       externalNoteOwnOnly:
         "STRhub will run one test with your file only. There is no STRhub reference dataset for this input type (not a failure).",
       fixtureLabel: "Your test file (required)",
+      fixtureLabelRecommended: "Your test file (recommended)",
       fixtureExplainer:
-        "Always required. Point to a small, publicly accessible test file at the ref you specified. When your assay type has a STRhub reference dataset, a second automatic run uses third-party STR data.",
+        "Required. Point to a small, publicly accessible test file at the ref you specified.",
+      fixtureExplainerOptional:
+        "Recommended. For a stronger verification, point to a test file in your repo — STRhub will run both your data and our reference dataset. If your repo doesn't include test data, leave blank and STRhub will run with our reference dataset only.",
+      fixtureRequiredError: "A test file is required for this input type (no STRhub reference dataset available).",
       fixtureSameRepo: "It's in my tool's repo",
       fixtureOtherRepo: "It's in a different repo",
       fixtureSameRepoNote: "Using repo {repo} at ref {ref}.",

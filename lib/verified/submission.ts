@@ -20,6 +20,23 @@ export type ExternalDatasetInfo = {
   detail?: string;
 };
 
+/** Reference genome provided automatically by the harness for BAM-based datasets. */
+export type ReferenceGenomeInfo = {
+  assembly: string;
+  mountPath: string;
+};
+
+export interface InputTypeEntry {
+  slug: string;
+  label: string;
+  description: string;
+  hasExternalDataset: boolean;
+  externalDataset?: ExternalDatasetInfo;
+  referenceGenome?: ReferenceGenomeInfo;
+  /** Standard input paths that the harness guarantees inside the container. */
+  canonicalPaths?: string[];
+}
+
 /**
  * Known assay / input types. Each maps to a slug used in datasets/index.json
  * and a human-readable label + short description shown in the form dropdown.
@@ -40,6 +57,7 @@ export const INPUT_TYPES = [
       sourceUrl: "https://data.nist.gov/od/id/mds2-2157",
       detail: "Verogen ForenSeq & Promega PowerSeq 46GY (donor NTD01)",
     },
+    canonicalPaths: ["/data/in/sample.fastq"],
   },
   {
     slug: "ont-bam-hg38",
@@ -51,6 +69,11 @@ export const INPUT_TYPES = [
       sourceUrl:
         "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
     },
+    referenceGenome: {
+      assembly: "GRCh38 / hg38",
+      mountPath: "/data/ref/hg38.fa",
+    },
+    canonicalPaths: ["/data/in/input.bam", "/data/ref/hg38.fa"],
   },
   {
     slug: "illumina-bam-hg38",
@@ -62,6 +85,11 @@ export const INPUT_TYPES = [
       sourceUrl:
         "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38",
     },
+    referenceGenome: {
+      assembly: "GRCh38 / hg38",
+      mountPath: "/data/ref/hg38.fa",
+    },
+    canonicalPaths: ["/data/in/input.bam", "/data/ref/hg38.fa"],
   },
   {
     slug: "ont-fastq",
@@ -81,7 +109,7 @@ export const INPUT_TYPES = [
     description: "ABI .fsa or .hid fragment analysis files",
     hasExternalDataset: false,
   },
-] as const;
+] satisfies InputTypeEntry[];
 export type InputTypeSlug = (typeof INPUT_TYPES)[number]["slug"];
 
 export const INPUT_TYPES_WITH_REFERENCE = INPUT_TYPES.filter((t) => t.hasExternalDataset);

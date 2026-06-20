@@ -78,10 +78,14 @@ export default {
       referenceDatasetsTitle: "Datasets de referência STRhub (open access, apenas loci STR)",
       referenceDatasetsIntro:
         "Para tipos de assay compatíveis, o STRhub também testa sua ferramenta com um dataset STR de referência open source. Hoje existem dois:",
+      referenceDatasetsIntro3:
+        "Para tipos de assay compatíveis, o STRhub também testa sua ferramenta com um dataset STR de referência open source. Hoje existem três:",
       referenceDatasetIllumina:
         "NIST Forensic DNA Open Dataset (ForenSeq e PowerSeq 46GY, uso pesquisa/educação)",
       referenceDatasetOnt:
         "slice CODIS 1000 Genomes ONT (open access na AWS)",
+      referenceDatasetIlluminaBamDesc:
+        "slice CODIS 1000 Genomes Illumina 30x hg38 (open access, 27 loci)",
       referenceDatasetsScope:
         "Não há datasets de referência para painéis SNP, ONT FASTQ bruto ou capilar FSA/HID. Para esses tipos, a verificação usa apenas seu arquivo (não é falha). O STRhub não é custodiante de dados. Aplicam-se as licenças upstream.",
       inputTypeGroupWithReference: "Datasets STRhub de referência",
@@ -126,12 +130,19 @@ export default {
         "Comando que o STRhub executa dentro do contêiner na verificação. Os inputs ficam somente leitura em /data/in/; escreva outputs em /data/out/. Use caminhos do contêiner, não do seu computador nem da árvore do GitHub.",
       cmdTooltipAria: "O que é o comando de execução e como funcionam os caminhos",
       cmdHint: "Sua ferramenta lê os dados de /data/in/ e escreve a saída em /data/out/.",
+      cmdHintWithRef: "Sua ferramenta lê os dados de /data/in/, o genoma de referência de {mountPath}, e escreve a saída em /data/out/.",
+      refGenomeTitle: "Genoma de referência: {assembly}",
+      refGenomeDescription: "O STRhub fornece automaticamente o genoma de referência indexado e pronto em {mountPath}. Use este caminho para --fasta ou o parâmetro equivalente no seu comando de execução.",
+      refGenomeNote: "O genoma de referência ({assembly}) é baixado, indexado e montado automaticamente pelo STRhub.",
+      canonicalPathsTitle: "Use estes caminhos padrão no seu comando de execução",
+      canonicalPathsDescription: "O STRhub renomeia todos os arquivos de entrada para nomes padrão para que o mesmo comando funcione tanto com seus dados quanto com nosso dataset de referência. Use exatamente estes caminhos:",
       timeout: "Timeout (minutos)",
       inputType: "Que tipo de dados sua ferramenta recebe?",
       inputTypeSelect: "Selecione o tipo de input",
       inputTypeDescIlluminaStrFastq:
         "FASTQ Illumina MiSeq/MiniSeq STR: Verogen ForenSeq ou Promega PowerSeq 46GY (os únicos dois kits no nosso dataset NIST de referência por enquanto)",
       inputTypeDescOntBamHg38: "BAM Oxford Nanopore alinhado ao hg38 (regiões CODIS)",
+      inputTypeDescIlluminaBamHg38: "BAM Illumina WGS alinhado ao hg38 (regiões CODIS)",
       inputTypeDescOntFastq: "FASTQ bruto Oxford Nanopore",
       inputTypeDescIlluminaSnpFastq: "FASTQ Illumina para painéis SNP de identidade/ancestralidade",
       inputTypeDescCapillaryFsa: "Arquivos de eletroforese capilar ABI .fsa ou .hid",

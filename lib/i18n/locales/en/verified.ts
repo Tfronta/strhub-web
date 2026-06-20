@@ -47,6 +47,7 @@ export default {
       lociTested: "Loci tested",
       lociCount: "forensic STR loci",
       lociScope: "This verification only covers the specific STR loci listed above. The tool may support additional loci not tested by this reference dataset.",
+      refGenome: "Ref. genome",
     },
     matrix: {
       heading: "Verification matrix",
@@ -89,10 +90,14 @@ export default {
       referenceDatasetsTitle: "STRhub reference datasets (open access, STR loci only)",
       referenceDatasetsIntro:
         "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently two:",
+      referenceDatasetsIntro3:
+        "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently three:",
       referenceDatasetIllumina:
         "NIST Forensic DNA Open Dataset (ForenSeq & PowerSeq 46GY, research/training use)",
       referenceDatasetOnt:
         "1000 Genomes ONT CODIS slice (open access on AWS)",
+      referenceDatasetIlluminaBamDesc:
+        "1000 Genomes Illumina 30x hg38 CODIS slice (open access, 27 loci)",
       referenceDatasetsScope:
         "No reference datasets for SNP panels, raw ONT FASTQ, or capillary FSA/HID. For those types, verification uses only your test file (not a failure). STRhub is not a data custodian. See upstream licenses.",
       inputTypeGroupWithReference: "STRhub reference datasets",
@@ -137,6 +142,12 @@ export default {
         "Command STRhub runs inside the container at verification time. Input files are read-only under /data/in/; write outputs under /data/out/. Use container paths, not paths on your computer or in the GitHub tree.",
       cmdTooltipAria: "What the run command is and how paths work",
       cmdHint: "Your tool reads input from /data/in/ and writes output to /data/out/.",
+      cmdHintWithRef: "Your tool reads input from /data/in/, the reference genome from {mountPath}, and writes output to /data/out/.",
+      refGenomeTitle: "Reference genome: {assembly}",
+      refGenomeDescription: "STRhub automatically provides the reference genome indexed and ready at {mountPath}. Use this path for --fasta or equivalent parameters in your run command.",
+      refGenomeNote: "The reference genome ({assembly}) is automatically downloaded, indexed, and mounted by STRhub.",
+      canonicalPathsTitle: "Use these standard paths in your run command",
+      canonicalPathsDescription: "STRhub renames all input files to standard names so the same command works for both your data and our reference dataset. Use exactly these paths:",
       timeout: "Timeout (minutes)",
       inputType: "What kind of data does your tool take?",
       inputTypeSelect: "Select input type",

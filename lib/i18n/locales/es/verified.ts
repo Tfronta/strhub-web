@@ -47,6 +47,7 @@ export default {
       lociTested: "Loci probados",
       lociCount: "loci STR forenses",
       lociScope: "Esta verificación cubre únicamente los loci STR listados arriba. La herramienta puede soportar loci adicionales no incluidos en este dataset de referencia.",
+      refGenome: "Genoma ref.",
     },
     matrix: {
       heading: "Matriz de verificación",
@@ -89,10 +90,14 @@ export default {
       referenceDatasetsTitle: "Datasets de referencia STRhub (open access, solo loci STR)",
       referenceDatasetsIntro:
         "Para tipos de assay compatibles, STRhub también prueba tu herramienta con un dataset STR de referencia open source. Hoy hay dos:",
+      referenceDatasetsIntro3:
+        "Para tipos de assay compatibles, STRhub también prueba tu herramienta con un dataset STR de referencia open source. Hoy hay tres:",
       referenceDatasetIllumina:
         "NIST Forensic DNA Open Dataset (ForenSeq y PowerSeq 46GY, uso investigación/educación)",
       referenceDatasetOnt:
         "slice CODIS 1000 Genomes ONT (open access en AWS)",
+      referenceDatasetIlluminaBamDesc:
+        "slice CODIS 1000 Genomes Illumina 30x hg38 (open access, 27 loci)",
       referenceDatasetsScope:
         "No hay datasets de referencia para paneles SNP, ONT FASTQ crudo ni capilar FSA/HID. Para esos tipos, la verificación usa solo tu archivo (no es un fallo). STRhub no es custodio de datos. Aplican las licencias upstream.",
       inputTypeGroupWithReference: "Datasets STRhub de referencia",
@@ -137,6 +142,12 @@ export default {
         "Comando que STRhub ejecuta dentro del contenedor al verificar. Los inputs están en solo lectura bajo /data/in/; escribí outputs bajo /data/out/. Usá rutas del contenedor, no de tu computadora ni del árbol de GitHub.",
       cmdTooltipAria: "Qué es el comando de ejecución y cómo funcionan las rutas",
       cmdHint: "Tu herramienta lee los datos de /data/in/ y escribe la salida en /data/out/.",
+      cmdHintWithRef: "Tu herramienta lee los datos de /data/in/, el genoma de referencia de {mountPath}, y escribe la salida en /data/out/.",
+      refGenomeTitle: "Genoma de referencia: {assembly}",
+      refGenomeDescription: "STRhub provee automáticamente el genoma de referencia indexado y listo en {mountPath}. Usá esta ruta para --fasta o el parámetro equivalente en tu comando de ejecución.",
+      refGenomeNote: "El genoma de referencia ({assembly}) se descarga, indexa y monta automáticamente por STRhub.",
+      canonicalPathsTitle: "Usá estas rutas estándar en tu comando de ejecución",
+      canonicalPathsDescription: "STRhub renombra todos los archivos de entrada a nombres estándar para que el mismo comando funcione tanto con tus datos como con nuestro dataset de referencia. Usá exactamente estas rutas:",
       timeout: "Timeout (minutos)",
       inputType: "¿Qué tipo de datos recibe tu herramienta?",
       inputTypeSelect: "Seleccioná el tipo de input",

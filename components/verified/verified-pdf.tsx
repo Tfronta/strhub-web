@@ -47,6 +47,7 @@ interface DatasetProvenance {
   doi?: string;
   license: string;
   loci: string[];
+  referenceGenome?: { assembly: string; mountPath: string };
 }
 
 const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
@@ -64,6 +65,7 @@ const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
       "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
     license: "Open access (1000 Genomes / HPRC). Research use.",
     loci: CODIS_CORE_LOCI,
+    referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
   "illumina-bam-hg38": {
     name: "1000 Genomes Illumina 30x — hg38 CODIS slice",
@@ -71,6 +73,7 @@ const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
       "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38",
     license: "Open access (1000 Genomes). Research use.",
     loci: CODIS_CORE_LOCI,
+    referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
 };
 
@@ -598,6 +601,14 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
                   <Text style={{ ...s.kvLabel, width: 60 }}>License</Text>
                   <Text style={s.datasetMeta}>{ds.license}</Text>
                 </View>
+                {ds.referenceGenome && (
+                  <View style={s.kvRow}>
+                    <Text style={{ ...s.kvLabel, width: 60 }}>Ref. genome</Text>
+                    <Text style={s.datasetMeta}>
+                      {ds.referenceGenome.assembly} ({ds.referenceGenome.mountPath})
+                    </Text>
+                  </View>
+                )}
                 <View style={{ ...s.kvRow, marginTop: 2 }}>
                   <Text style={{ ...s.kvLabel, width: 60 }}>Loci tested</Text>
                   <Text style={s.datasetMeta}>

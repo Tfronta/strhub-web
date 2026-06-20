@@ -233,9 +233,8 @@ export const submissionSchema = z
       .object({
         // Fase 3: assay type used to match a compatible external dataset.
         type: z.string().trim().max(80).optional(),
-        // Own fixture: either a path inside the engine repo (legacy) OR a remote
-        // BYOR pointer into the author's public repo (Fase 3).
-        fixture: z.union([z.string().trim().min(1).max(300), remoteFixtureSchema]),
+        // Own fixture: optional when the input type has a STRhub reference dataset.
+        fixture: z.union([z.string().trim().min(1).max(300), remoteFixtureSchema]).optional(),
       })
       .strict(),
     outputs: z.array(outputSchema).min(1).max(5),

@@ -98,14 +98,16 @@ export function buildManifestObject(sub: Submission, slug: string): Json {
 
   const inputs: Record<string, Json> = {};
   if (sub.inputs.type) inputs.type = sub.inputs.type;
-  if (isRemoteFixture(sub.inputs.fixture)) {
-    inputs.fixture = {
-      repo: sub.inputs.fixture.repo,
-      ref: sub.inputs.fixture.ref,
-      path: sub.inputs.fixture.path,
-    };
-  } else {
-    inputs.fixture = sub.inputs.fixture;
+  if (sub.inputs.fixture) {
+    if (isRemoteFixture(sub.inputs.fixture)) {
+      inputs.fixture = {
+        repo: sub.inputs.fixture.repo,
+        ref: sub.inputs.fixture.ref,
+        path: sub.inputs.fixture.path,
+      };
+    } else {
+      inputs.fixture = sub.inputs.fixture;
+    }
   }
 
   const outputs: Json[] = sub.outputs.map((o) => {
@@ -177,6 +179,7 @@ export function generateDockerfile(sub: Submission): string {
     sub.docker.language === "c-cpp"
       ? "RUN apt-get update && apt-get install -y --no-install-recommends \\\n" +
         "        build-essential cmake git ca-certificates \\\n" +
+        "        zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev \\\n" +
         "    && rm -rf /var/lib/apt/lists/*\n"
       : "RUN apt-get update && apt-get install -y --no-install-recommends \\\n" +
         "        git ca-certificates \\\n" +

@@ -40,6 +40,7 @@ interface DatasetProvenance {
   doi?: string;
   license: string;
   loci: string[];
+  referenceGenome?: { assembly: string; mountPath: string };
 }
 
 const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
@@ -57,6 +58,7 @@ const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
       "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
     license: "Open access (1000 Genomes / HPRC). Research use.",
     loci: CODIS_CORE_LOCI,
+    referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
   "illumina-bam-hg38": {
     name: "1000 Genomes Illumina 30x — hg38 CODIS slice",
@@ -64,6 +66,7 @@ const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
       "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38",
     license: "Open access (1000 Genomes). Research use.",
     loci: CODIS_CORE_LOCI,
+    referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
 };
 
@@ -308,6 +311,17 @@ export function VerifiedDetail({
                     )}
                     <dt className="text-muted-foreground">License</dt>
                     <dd className="text-muted-foreground">{ds.license}</dd>
+                    {ds.referenceGenome && (
+                      <>
+                        <dt className="text-muted-foreground">{t("verified.data.refGenome")}</dt>
+                        <dd>
+                          <span className="font-medium">{ds.referenceGenome.assembly}</span>
+                          <span className="text-muted-foreground ml-2">
+                            ({ds.referenceGenome.mountPath})
+                          </span>
+                        </dd>
+                      </>
+                    )}
                     <dt className="text-muted-foreground pt-1">{t("verified.data.lociTested")}</dt>
                     <dd className="pt-1">
                       <p className="text-xs text-muted-foreground mb-1">

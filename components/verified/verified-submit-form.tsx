@@ -173,6 +173,8 @@ export function VerifiedSubmitForm() {
     f.inputType === "__other__" ? f.inputTypeCustom : f.inputType;
 
   const selectedTypeInfo = INPUT_TYPES.find((t) => t.slug === f.inputType);
+  const selectedRefGenome = selectedTypeInfo?.referenceGenome ?? null;
+  const selectedCanonicalPaths = selectedTypeInfo?.canonicalPaths ?? null;
 
   function externalNoteMessage(): string | null {
     if (!resolvedInputType) return null;
@@ -579,9 +581,17 @@ export function VerifiedSubmitForm() {
                 onChange={set("cmd")}
                 rows={2}
                 className="font-mono text-xs"
-                placeholder="mytool --input /data/in/sample.fastq --out /data/out/result.tsv"
+                placeholder={
+                  selectedCanonicalPaths
+                    ? `mytool ${selectedCanonicalPaths.map((p) => p.startsWith("/data/ref/") ? `--fasta ${p}` : `--input ${p}`).join(" ")} --out /data/out/result.tsv`
+                    : "mytool --input /data/in/sample.fastq --out /data/out/result.tsv"
+                }
               />
-              <p className="text-xs text-muted-foreground mt-1">{t("verified.submit.cmdHint")}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {selectedRefGenome
+                  ? t("verified.submit.cmdHintWithRef", { mountPath: selectedRefGenome.mountPath })
+                  : t("verified.submit.cmdHint")}
+              </p>
               {err("run.cmd")}
             </Field>
             <Field label={t("verified.submit.timeout")}>
@@ -597,7 +607,7 @@ export function VerifiedSubmitForm() {
               <Info className="h-4 w-4 mt-0.5 shrink-0" />
               <div className="space-y-2">
                 <p className="font-medium text-foreground">{t("verified.submit.referenceDatasetsTitle")}</p>
-                <p>{t("verified.submit.referenceDatasetsIntro")}</p>
+                <p>{t("verified.submit.referenceDatasetsIntro3")}</p>
                 <ul className="list-disc space-y-1 pl-4">
                   <li>
                     <strong>Illumina STR FASTQ</strong>: {t("verified.submit.referenceDatasetIllumina")}{" "}
@@ -619,6 +629,17 @@ export function VerifiedSubmitForm() {
                       className="text-primary underline underline-offset-2"
                     >
                       1000 Genomes ONT
+                    </a>
+                  </li>
+                  <li>
+                    <strong>Illumina BAM (hg38)</strong>: {t("verified.submit.referenceDatasetIlluminaBamDesc")}{" "}
+                    <a
+                      href="https://www.internationalgenome.org/data-portal/data-collection/30x-grch38"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2"
+                    >
+                      1000 Genomes Illumina 30x
                     </a>
                   </li>
                 </ul>
@@ -690,6 +711,35 @@ export function VerifiedSubmitForm() {
               <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
                 <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
                 <span>{externalNoteMessage()}</span>
+              </div>
+            )}
+
+            {selectedCanonicalPaths && selectedCanonicalPaths.length > 0 && (
+              <div className="flex items-start gap-2 rounded-md border border-[#0099a3]/30 bg-[#0099a3]/5 px-3 py-3 text-xs">
+                <Info className="h-4 w-4 mt-0.5 shrink-0 text-[#0099a3]" />
+                <div className="space-y-2">
+                  <p className="font-medium text-foreground">
+                    {t("verified.submit.canonicalPathsTitle")}
+                  </p>
+                  <p className="text-muted-foreground">
+                    {t("verified.submit.canonicalPathsDescription")}
+                  </p>
+                  <div className="flex flex-col gap-1">
+                    {selectedCanonicalPaths.map((p) => (
+                      <code key={p} className="font-mono text-[11px] text-muted-foreground bg-muted/70 rounded px-2 py-1">
+                        {p}
+                      </code>
+                    ))}
+                    <code className="font-mono text-[11px] text-muted-foreground bg-muted/70 rounded px-2 py-1">
+                      /data/out/
+                    </code>
+                  </div>
+                  {selectedRefGenome && (
+                    <p className="text-muted-foreground text-[11px]">
+                      {t("verified.submit.refGenomeNote", { assembly: selectedRefGenome.assembly })}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
 

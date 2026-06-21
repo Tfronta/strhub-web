@@ -130,14 +130,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 4. Commit metadata + dispatch (overwrites manifest on re-submission).
+    // 4. Commit metadata + dispatch.
+    //    For re-submissions (manifest already exists), only dispatch — don't
+    //    overwrite files that may have been manually tuned (flags, fixture, etc).
     const dispatchId = newDispatchId();
-    const manifest = buildManifestYaml(sub, slug);
-    const dockerfile = generateDockerfile(sub);
-    const msg = `verified: add ${slug} (${sub.source.repo}@${sub.source.ref})`;
-
-    await putFile(`tools/${slug}/manifest.yml`, manifest, msg);
-    await putFile(`tools/${slug}/Dockerfile`, dockerfile, msg);
+    const alreadyExists = await pathExists(`tools/${slug}/manifest.yml`);
+    if (!alreadyExists) {
+      const manifest = buildManifestYaml(sub, slug);
+      const dockerfile = generateDockerfile(sub);
+      const msg = `verified: add ${slug} (${sub.source.repo}@${sub.source.ref})`;
+      await putFile(`tools/${slug}/manifest.yml`, manifest, msg);
+      await putFile(`tools/${slug}/Dockerfile`, dockerfile, msg);
+    }
     await dispatchWorkflow({ tool: slug, dispatch_id: dispatchId });
 
     await recordSubmission({

@@ -15,8 +15,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const report = await getVerifiedReport(params.slug);
   if (!report) return { title: "STRhub Verified" };
+  const repoName = report.source?.repo?.replace(/\/+$/, "").split("/").pop();
   return {
-    title: `${report.tool.name} — STRhub Verified`,
+    title: `${repoName || report.tool.name} — STRhub Verified`,
     description: report.scope,
   };
 }

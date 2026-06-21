@@ -59,7 +59,8 @@ function groupTools(entries: VerifiedIndexEntry[]): ToolGroup[] {
         (b.generated ?? "").localeCompare(a.generated ?? "")
     );
     const best = runs[0];
-    groups.push({ name: best.name, repo, bestLevel: best.level, runs });
+    const repoName = repo.replace(/\/+$/, "").split("/").pop() || best.name;
+    groups.push({ name: repoName, repo, bestLevel: best.level, runs });
   }
 
   groups.sort(

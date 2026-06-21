@@ -31,6 +31,9 @@ export default {
       contentFailNote:
         "Nota: A verificação \"Plausible Output\" não passou porque a saída não correspondeu completamente ao padrão esperado de genótipos. Isso pode ser devido a diferenças em parâmetros, versão da ferramenta ou configuração. Não indica necessariamente um erro grave.",
     },
+    log: {
+      view: "Ver log de execução",
+    },
     content: {
       heading: "Conteúdo da saída (evidência de plausibilidade)",
       records: "Registros de sequência",

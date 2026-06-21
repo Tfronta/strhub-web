@@ -93,6 +93,7 @@ export function VerifiedDetail({
   const level = VERIFIED_LEVELS[report.level] ?? VERIFIED_LEVELS.none;
   const stats = report.content_detail?.outputs?.[0]?.stats;
   const ref = report.source.ref_resolved ?? report.source.ref ?? "";
+  const logBaseUrl = staticPageUrl.replace(/\/[^/]+$/, "");
 
   const datasetTypes = new Set<string>();
   if (report.datasets) {
@@ -213,6 +214,24 @@ export function VerifiedDetail({
           <p className="mt-3 text-sm text-muted-foreground italic rounded-lg border-l-4 border-amber-400 bg-amber-50 dark:bg-amber-950/20 px-4 py-3">
             {t("verified.gate.contentFailNote")}
           </p>
+        )}
+
+        {/* Execution logs */}
+        {report.logs && Object.keys(report.logs).length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-3">
+            {Object.entries(report.logs).map(([leg, fname]) => (
+              <a
+                key={leg}
+                href={`${logBaseUrl}/${fname}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+                {t("verified.log.view")} ({leg === "own" ? t("verified.matrix.own") : t("verified.matrix.external")})
+              </a>
+            ))}
+          </div>
         )}
 
         {/* Output content evidence */}

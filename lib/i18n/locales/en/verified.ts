@@ -35,6 +35,9 @@ export default {
       contentFailNote:
         "Note: The \"Plausible Output\" check did not pass because the output did not fully match the expected genotype pattern. This may be due to differences in parameters, tool version, or configuration. It does not necessarily indicate a serious error.",
     },
+    log: {
+      view: "View execution log",
+    },
     content: {
       heading: "Output content (plausibility evidence)",
       records: "Sequence records",

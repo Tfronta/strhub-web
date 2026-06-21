@@ -403,7 +403,9 @@ export function VerifiedDetail({
                     </span>
                     <span className="font-medium">
                       {leg.leg === "own"
-                        ? t("verified.matrix.own")
+                        ? leg.fixture_source === "strhub"
+                          ? t("verified.matrix.strhubFixture")
+                          : t("verified.matrix.own")
                         : leg.leg === "external"
                         ? t("verified.matrix.external")
                         : leg.label}
@@ -424,6 +426,13 @@ export function VerifiedDetail({
                 );
               })}
             </div>
+            {report.datasets.some(
+              (leg) => leg.leg === "own" && leg.fixture_source === "strhub"
+            ) && (
+              <p className="mt-3 text-sm text-muted-foreground italic rounded-lg border-l-4 border-blue-400 bg-blue-50 dark:bg-blue-950/20 px-4 py-3">
+                {t("verified.matrix.strhubFixtureNote")}
+              </p>
+            )}
           </>
         )}
 

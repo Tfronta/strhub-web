@@ -51,6 +51,9 @@ export default {
       pass: "OK",
       fail: "Falha",
       dataset: "Dataset",
+      strhubFixture: "Fixture STRhub",
+      strhubFixtureNote:
+        "Esta ferramenta não inclui dados próprios de demo ou teste. A verificação usou um dataset fornecido pelo STRhub. Recomendamos incluir um pequeno arquivo de teste no repositório para uma verificação mais completa e autocontida.",
     },
     readme: {
       heading: "Checagem de README (informativo)",

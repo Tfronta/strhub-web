@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { getVerifiedIndex } from "@/lib/verified";
 import { VerifiedList } from "@/components/verified/verified-list";
 
-// Attestations are static snapshots; refresh at most hourly.
-export const revalidate = 3600;
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "STRhub Verified — Reproducible-execution attestations",

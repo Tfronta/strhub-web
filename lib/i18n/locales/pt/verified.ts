@@ -34,6 +34,10 @@ export default {
     log: {
       view: "Ver log de execução",
     },
+    diagnostics: {
+      heading: "Auto-diagnóstico",
+      note: "Problemas detectados automaticamente do log de execução. As sugestões podem ajudar a resolver falhas.",
+    },
     content: {
       heading: "Conteúdo da saída (evidência de plausibilidade)",
       records: "Registros de sequência",

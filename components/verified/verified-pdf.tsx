@@ -9,7 +9,7 @@ import {
   Link,
   StyleSheet,
 } from "@react-pdf/renderer";
-import type { VerifiedReport, VerifiedLevel } from "@/types/verified";
+import type { VerifiedReport, VerifiedLevel, VerifiedDiagnostic } from "@/types/verified";
 
 const TEAL = "#0099a3";
 const BODY = "#333";
@@ -18,6 +18,12 @@ const SUBTLE = "#888";
 const LINK = "#666";
 const BORDER = "#d0d0d0";
 const BG_LIGHT = "#f5f5f5";
+const DIAG_ERROR = "#dc2626";
+const DIAG_WARN = "#d97706";
+const DIAG_INFO = "#2563eb";
+const DIAG_ERROR_BG = "#fef2f2";
+const DIAG_WARN_BG = "#fffbeb";
+const DIAG_INFO_BG = "#eff6ff";
 
 const CODIS_CORE_LOCI = [
   "Amelogenin", "CSF1PO", "D1S1656", "D2S441", "D2S1338", "D3S1358",
@@ -272,12 +278,16 @@ const README_ITEMS: Record<string, string> = {
 };
 
 function sectionNumber(
+  hasDiagnostics: boolean,
   hasStats: boolean,
   hasProvenance: boolean,
   hasDatasets: boolean,
-  base: "data" | "matrix" | "scope"
+  base: "diagnostics" | "data" | "matrix" | "scope"
 ): number {
-  let n = 3;
+  let n = 2;
+  if (base === "diagnostics") return n + 1;
+  if (hasDiagnostics) n++;
+  n++;
   if (hasStats) n++;
   if (base === "data") return n;
   if (hasProvenance) n++;
@@ -319,6 +329,23 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
 
   const hasStats = !!stats;
   const hasDatasets = !!(report.datasets && report.datasets.length > 0);
+  const hasStrhubFixture = report.datasets?.some(
+    (d) => d.fixture_source === "strhub"
+  );
+
+  const dedupedDiagnostics: VerifiedDiagnostic[] = [];
+  if (report.diagnostics) {
+    const seen = new Set<string>();
+    for (const issues of Object.values(report.diagnostics)) {
+      for (const issue of issues) {
+        if (!seen.has(issue.id)) {
+          seen.add(issue.id);
+          dedupedDiagnostics.push(issue);
+        }
+      }
+    }
+  }
+  const hasDiagnostics = dedupedDiagnostics.length > 0;
 
   const datasetTypes = new Set<string>();
   if (report.datasets) {
@@ -473,10 +500,60 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
           </Text>
         )}
 
+        {/* Section: Diagnostics */}
+        {hasDiagnostics && (
+          <>
+            <Text style={s.sectionTitle}>
+              {sectionNumber(hasDiagnostics, hasStats, hasProvenance, hasDatasets, "diagnostics")}. Auto-diagnostics
+            </Text>
+            <Text style={{ fontSize: 8, color: SECONDARY, marginBottom: 4 }}>
+              Issues detected automatically from the execution log. Suggestions may help resolve failures.
+            </Text>
+            {hasStrhubFixture && (
+              <View style={{ ...s.scopeBox, borderLeftColor: "#38bdf8", backgroundColor: "#f0f9ff", marginBottom: 6, marginTop: 0 }}>
+                <Text style={{ fontSize: 7.5, color: SECONDARY, fontStyle: "italic", lineHeight: 1.4 }}>
+                  These messages reflect the behavior observed during verification with a small test BAM
+                  slice provided by STRhub. With full-coverage sequencing data, the tool is expected to
+                  genotype significantly more loci. The warnings do not indicate a problem with the tool itself.
+                </Text>
+              </View>
+            )}
+            {dedupedDiagnostics.map((issue) => (
+              <View
+                key={issue.id}
+                style={{
+                  marginBottom: 3,
+                  padding: 6,
+                  borderLeftWidth: 3,
+                  borderLeftColor:
+                    issue.severity === "error" ? DIAG_ERROR :
+                    issue.severity === "warning" ? DIAG_WARN : DIAG_INFO,
+                  backgroundColor:
+                    issue.severity === "error" ? DIAG_ERROR_BG :
+                    issue.severity === "warning" ? DIAG_WARN_BG : DIAG_INFO_BG,
+                }}
+              >
+                <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: BODY }}>
+                  {issue.severity === "error" ? "ERROR" : issue.severity === "warning" ? "WARNING" : "INFO"}
+                  {"  "}
+                  {issue.title}
+                </Text>
+                {issue.suggestion && (
+                  <Text style={{ fontSize: 7.5, color: SECONDARY, marginTop: 2 }}>
+                    {issue.suggestion}
+                  </Text>
+                )}
+              </View>
+            ))}
+          </>
+        )}
+
         {/* Section: Output evidence */}
         {stats && (
           <>
-            <Text style={s.sectionTitle}>3. Output Content Evidence</Text>
+            <Text style={s.sectionTitle}>
+              {hasDiagnostics ? 4 : 3}. Output Content Evidence
+            </Text>
             {ioOut && (
               <>
                 <View style={s.kvRow}>
@@ -577,7 +654,7 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
         {provenanceEntries.length > 0 && (
           <>
             <Text style={s.sectionTitle}>
-              {sectionNumber(hasStats, hasProvenance, hasDatasets, "data")}. Verification Data
+              {sectionNumber(hasDiagnostics, hasStats, hasProvenance, hasDatasets, "data")}. Verification Data
             </Text>
             <Text style={{ fontSize: 8, color: SECONDARY, marginBottom: 6 }}>
               The following reference datasets were used as input for this
@@ -647,7 +724,7 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
         {hasDatasets && (
           <>
             <Text style={s.sectionTitle}>
-              {sectionNumber(hasStats, hasProvenance, hasDatasets, "matrix")}. Verification
+              {sectionNumber(hasDiagnostics, hasStats, hasProvenance, hasDatasets, "matrix")}. Verification
               Matrix
             </Text>
             <View style={s.tableHeader}>
@@ -675,7 +752,11 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
                       fontFamily: "Helvetica-Bold",
                     }}
                   >
-                    {leg.leg === "own" ? "Author's data" : "External data"}
+                    {leg.leg === "own"
+                      ? leg.fixture_source === "strhub"
+                        ? "STRhub fixture"
+                        : "Author's data"
+                      : "External data"}
                   </Text>
                   <Text
                     style={{
@@ -734,7 +815,7 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
 
         {/* Section: Scope & Disclaimers */}
         <Text style={s.sectionTitle}>
-          {sectionNumber(hasStats, hasProvenance, hasDatasets, "scope")}. Scope and
+          {sectionNumber(hasDiagnostics, hasStats, hasProvenance, hasDatasets, "scope")}. Scope and
           Disclaimers
         </Text>
         <View style={s.scopeBox}>

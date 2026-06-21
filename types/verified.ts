@@ -97,10 +97,18 @@ export interface VerifiedReport {
   io_detail?: unknown;
   content_detail?: { outputs?: { stats?: VerifiedContentStats }[] };
   logs?: Record<string, string>;
+  diagnostics?: Record<string, VerifiedDiagnostic[]>;
   // Fase 3 additions (optional for backward compatibility with older reports).
   datasets?: VerifiedMatrixLeg[];
   readme_check?: VerifiedReadmeCheck | null;
   scope: string;
+}
+
+export interface VerifiedDiagnostic {
+  id: string;
+  severity: "error" | "warning" | "info";
+  title: string;
+  suggestion?: string;
 }
 
 /** Per-level presentation: human label + a Tailwind-friendly tone. */

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Check, Minus, ExternalLink } from "lucide-react";
+import { ArrowLeft, Check, Minus, ExternalLink, AlertTriangle, Info, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { SiteFooter } from "@/components/site-footer";
@@ -232,6 +232,53 @@ export function VerifiedDetail({
               </a>
             ))}
           </div>
+        )}
+
+        {/* Diagnostics */}
+        {report.diagnostics && Object.keys(report.diagnostics).length > 0 && (
+          <>
+            <h2 className="mt-10 text-xl font-semibold">
+              {t("verified.diagnostics.heading")}
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("verified.diagnostics.note")}
+            </p>
+            <div className="mt-3 space-y-2">
+              {Object.entries(report.diagnostics).flatMap(([leg, issues]) =>
+                issues.map((issue, i) => (
+                  <div
+                    key={`${leg}-${i}`}
+                    className={cn(
+                      "rounded-lg border-l-4 px-4 py-3 text-sm",
+                      issue.severity === "error"
+                        ? "border-red-500 bg-red-50 dark:bg-red-950/20"
+                        : issue.severity === "warning"
+                        ? "border-amber-400 bg-amber-50 dark:bg-amber-950/20"
+                        : "border-blue-400 bg-blue-50 dark:bg-blue-950/20"
+                    )}
+                  >
+                    <div className="flex items-start gap-2">
+                      {issue.severity === "error" ? (
+                        <XCircle className="h-4 w-4 mt-0.5 shrink-0 text-red-600" />
+                      ) : issue.severity === "warning" ? (
+                        <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-amber-600" />
+                      ) : (
+                        <Info className="h-4 w-4 mt-0.5 shrink-0 text-blue-600" />
+                      )}
+                      <div>
+                        <p className="font-medium">{issue.title}</p>
+                        {issue.suggestion && (
+                          <p className="mt-1 text-muted-foreground">
+                            {issue.suggestion}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </>
         )}
 
         {/* Output content evidence */}

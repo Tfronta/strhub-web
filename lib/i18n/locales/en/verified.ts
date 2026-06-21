@@ -38,6 +38,10 @@ export default {
     log: {
       view: "View execution log",
     },
+    diagnostics: {
+      heading: "Auto-diagnostics",
+      note: "Issues detected automatically from the execution log. Suggestions may help resolve failures.",
+    },
     content: {
       heading: "Output content (plausibility evidence)",
       records: "Sequence records",

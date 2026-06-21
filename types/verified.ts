@@ -72,6 +72,7 @@ export interface VerifiedMatrixLeg {
   passed?: boolean;
   type?: string | null;
   dataset?: string | null;
+  fixture_source?: "tool" | "strhub" | null;
 }
 
 /** The advisory README "minimum-to-run" check. Never gates the badge. */

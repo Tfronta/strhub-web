@@ -95,6 +95,15 @@ function getDiagnosticText(
   };
 }
 
+function extractToolDisplayName(report: VerifiedReport): string {
+  if (report.source?.repo) {
+    const segments = report.source.repo.replace(/\/+$/, "").split("/");
+    const last = segments[segments.length - 1];
+    if (last) return last;
+  }
+  return report.tool.name;
+}
+
 export function VerifiedDetail({
   report,
   slug,
@@ -105,6 +114,7 @@ export function VerifiedDetail({
   staticPageUrl: string;
 }) {
   const { t } = useLanguage();
+  const toolDisplayName = extractToolDisplayName(report);
   const level = VERIFIED_LEVELS[report.level] ?? VERIFIED_LEVELS.none;
   const stats = report.content_detail?.outputs?.[0]?.stats;
   const ref = report.source.ref_resolved ?? report.source.ref ?? "";
@@ -145,7 +155,7 @@ export function VerifiedDetail({
         <div className="mt-6 space-y-2">
           <Badge className={cn("w-fit", TONE[level.tone])}>{level.label}</Badge>
           <h1 className="text-3xl font-bold tracking-tight">
-            {report.tool.name}
+            {toolDisplayName}
           </h1>
           <p className="font-mono text-sm text-muted-foreground">{slug}</p>
         </div>

@@ -158,7 +158,7 @@ const BASE_IMAGE: Record<string, string> = {
 
 /** Parse owner/name out of a GitHub repo URL for the clone line. */
 function repoSlug(repoUrl: string): string {
-  return repoUrl.replace(/\.git$/, "").replace(/^https:\/\/github\.com\//, "");
+  return repoUrl.replace(/\/+$/, "").replace(/\.git$/, "").replace(/^https:\/\/github\.com\//, "");
 }
 
 /**
@@ -198,10 +198,12 @@ export function generateDockerfile(sub: Submission): string {
     `ARG TOOL_REF=${ref}\n` +
     `WORKDIR /opt\n` +
     `RUN git clone ${repo} tool \\\n` +
-    `    && cd tool && git checkout "\${TOOL_REF}"\n\n` +
+    `    && cd tool && git checkout "\${TOOL_REF}" \\\n` +
+    `    && git submodule update --init --recursive\n\n` +
     `WORKDIR /opt/tool\n` +
     `RUN ${buildCmd}\n` +
     checkBlock +
+    `\nENV PATH="/opt/tool:$PATH"\n` +
     `\n# Execution contract: the manifest cmd runs via bash -lc.\n` +
     `WORKDIR /work\n` +
     `ENTRYPOINT ["/bin/bash", "-lc"]\n`

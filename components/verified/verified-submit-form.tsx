@@ -66,6 +66,91 @@ function isCmdTemplate(cmd: string): boolean {
   return cmd === "" || cmd.startsWith(CMD_TEMPLATE_PREFIX);
 }
 
+/** Fetch the README from a GitHub repo and extract CLI command candidates. */
+async function fetchCmdFromReadme(
+  repoUrl: string,
+  ref: string,
+  toolName: string,
+  canonicalPaths: string[] | undefined,
+): Promise<string[]> {
+  const m = repoUrl.match(/github\.com\/([^/]+\/[^/]+)/);
+  if (!m) return [];
+  const slug = m[1].replace(/\.git$/, "");
+
+  let readme = "";
+  for (const name of ["README.md", "readme.md", "README.rst"]) {
+    try {
+      const res = await fetch(
+        `https://raw.githubusercontent.com/${slug}/${ref}/${name}`,
+      );
+      if (res.ok) {
+        readme = await res.text();
+        break;
+      }
+    } catch {
+      continue;
+    }
+  }
+  if (!readme) return [];
+
+  const rawLines: string[] = [];
+  const blockRe = /```[^\n]*\n([\s\S]*?)```/g;
+  let bm;
+  while ((bm = blockRe.exec(readme)) !== null) {
+    for (const l of bm[1].split("\n")) rawLines.push(l.replace(/^\$\s*/, ""));
+  }
+  for (const l of readme.split("\n")) {
+    if (/^( {4}|\t)\S/.test(l)) rawLines.push(l);
+  }
+  const lines: string[] = [];
+  for (const raw of rawLines) {
+    if (!raw.trim()) continue;
+    if (/^\s/.test(raw) && lines.length > 0) {
+      lines[lines.length - 1] += " " + raw.trim();
+    } else {
+      lines.push(raw.trim());
+    }
+  }
+
+  const tl = toolName.toLowerCase();
+  const seen = new Set<string>();
+  const candidates: string[] = [];
+  for (const raw of lines) {
+    if (!raw || raw.startsWith("#")) continue;
+    const lower = raw.toLowerCase();
+    if (!(lower.includes(tl) || lower.startsWith("./"))) continue;
+    if (!raw.includes("--")) continue;
+    if (seen.has(raw)) continue;
+    seen.add(raw);
+    candidates.push(raw);
+  }
+  if (!candidates.length) return [];
+
+  const bamPath = canonicalPaths?.find((p) => p.endsWith(".bam")) ?? "/data/in/input.bam";
+  const fqPath = canonicalPaths?.find((p) => p.endsWith(".fastq")) ?? "/data/in/sample.fastq";
+  const refPath = canonicalPaths?.find((p) => p.startsWith("/data/ref/")) ?? "";
+
+  const results: string[] = [];
+  const seenResult = new Set<string>();
+  for (const cmd of candidates) {
+    let a = cmd.replace(/^\.\//, "").replace(/\s{2,}/g, " ");
+    a = a.replace(/(--bams?\s+)\S+/gi, `$1${bamPath}`);
+    a = a.replace(/(--input\s+)\S+/gi, `$1${bamPath || fqPath}`);
+    if (refPath) {
+      a = a.replace(/(--fasta\s+)\S+/gi, `$1${refPath}`);
+      a = a.replace(/(--ref(?:erence)?\s+)\S+\.fa\S*/gi, `$1${refPath}`);
+    }
+    a = a.replace(/(--regions\s+)\S+/gi, "$1/data/in/regions.bed");
+    a = a.replace(/(--str-vcf\s+)\S+/gi, "$1/data/out/result.vcf");
+    a = a.replace(/(--vcf\s+)\S+/gi, "$1/data/out/result.vcf");
+    a = a.replace(/(--out(?:put)?\s+)\S+/gi, "$1/data/out/result.tsv");
+    a = a.replace(/(-o\s+)\S+\.\w+/gi, "$1/data/out/result.tsv");
+    if (!seenResult.has(a)) { seenResult.add(a); results.push(a); }
+    if (results.length >= 3) break;
+  }
+  return results;
+}
+
 function num(v: string): number | undefined {
   if (v.trim() === "") return undefined;
   const n = Number(v);
@@ -190,6 +275,23 @@ export function VerifiedSubmitForm() {
   const selectedCanonicalPaths = selectedTypeInfo?.canonicalPaths ?? null;
   const fixtureIsOptional = selectedTypeInfo?.hasExternalDataset === true;
   const cmdLooksLikeTemplate = f.cmd === "" || f.cmd.startsWith(CMD_TEMPLATE_PREFIX);
+
+  const [cmdSuggestions, setCmdSuggestions] = useState<string[]>([]);
+  const [fetchingReadme, setFetchingReadme] = useState(false);
+
+  useEffect(() => {
+    if (!f.repo || !f.ref || !f.inputType || !f.name) {
+      setCmdSuggestions([]);
+      return;
+    }
+    let cancelled = false;
+    setFetchingReadme(true);
+    fetchCmdFromReadme(f.repo, f.ref, f.name, selectedCanonicalPaths ?? undefined)
+      .then((s) => { if (!cancelled) setCmdSuggestions(s); })
+      .catch(() => { if (!cancelled) setCmdSuggestions([]); })
+      .finally(() => { if (!cancelled) setFetchingReadme(false); });
+    return () => { cancelled = true; };
+  }, [f.repo, f.ref, f.inputType, f.name, selectedCanonicalPaths]);
 
   function onInputTypeChange(value: string) {
     const entry = INPUT_TYPES.find((t) => t.slug === value);
@@ -874,6 +976,28 @@ export function VerifiedSubmitForm() {
                 <div className="mt-2 flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-400">
                   <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
                   <span>{t("verified.submit.cmdReplaceMytool")}</span>
+                </div>
+              )}
+              {fetchingReadme && (
+                <p className="mt-2 text-xs text-muted-foreground animate-pulse">
+                  {t("verified.submit.cmdFetchingReadme")}
+                </p>
+              )}
+              {cmdSuggestions.length > 0 && cmdLooksLikeTemplate && (
+                <div className="mt-2 space-y-1.5">
+                  <p className="text-xs font-medium text-muted-foreground">
+                    {t("verified.submit.cmdSuggestFromReadme")}
+                  </p>
+                  {cmdSuggestions.map((suggestion, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      className="block w-full text-left rounded-md border border-teal-600/30 bg-teal-600/5 px-3 py-2 font-mono text-xs hover:bg-teal-600/15 transition-colors cursor-pointer dark:border-teal-400/30 dark:bg-teal-400/5 dark:hover:bg-teal-400/15"
+                      onClick={() => setF((prev) => ({ ...prev, cmd: suggestion }))}
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
                 </div>
               )}
               {err("run.cmd")}

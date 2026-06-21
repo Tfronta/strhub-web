@@ -104,19 +104,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // 3. Slug uniqueness.
-    if (await pathExists(`tools/${slug}/manifest.yml`)) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: `A tool with slug "${slug}" already exists. Bump the version to create a distinct attestation.`,
-          slug,
-        },
-        { status: 409 }
-      );
-    }
-
-    // 4. New-repo gate: hold for admin approval.
+    // 3. New-repo gate: hold for admin approval.
     if (!(await isRepoApproved(sub.source.repo))) {
       await recordSubmission({
         slug,
@@ -139,7 +127,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 5. Commit metadata + dispatch.
+    // 4. Commit metadata + dispatch (overwrites manifest on re-submission).
     const dispatchId = newDispatchId();
     const manifest = buildManifestYaml(sub, slug);
     const dockerfile = generateDockerfile(sub);

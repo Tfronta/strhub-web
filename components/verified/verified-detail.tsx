@@ -208,6 +208,13 @@ export function VerifiedDetail({
           })}
         </div>
 
+        {/* Explanatory note when content gate fails */}
+        {report.gates?.content === false && (
+          <p className="mt-3 text-sm text-muted-foreground italic rounded-lg border-l-4 border-amber-400 bg-amber-50 dark:bg-amber-950/20 px-4 py-3">
+            {t("verified.gate.contentFailNote")}
+          </p>
+        )}
+
         {/* Output content evidence */}
         {stats && (
           <>

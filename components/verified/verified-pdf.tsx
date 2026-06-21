@@ -464,6 +464,14 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
         <Text style={s.levelBadge}>
           Overall attestation level: {LEVEL_LABELS[report.level]}
         </Text>
+        {report.gates?.content === false && (
+          <Text style={{ fontSize: 7, color: SECONDARY, marginTop: 4, fontStyle: "italic" }}>
+            Note: The &quot;Plausible Output&quot; check did not pass because the output did not
+            fully match the expected genotype pattern. This may be due to differences in
+            parameters, tool version, or configuration. It does not necessarily indicate a
+            serious error.
+          </Text>
+        )}
 
         {/* Section: Output evidence */}
         {stats && (

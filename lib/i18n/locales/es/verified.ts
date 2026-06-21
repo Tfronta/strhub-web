@@ -41,6 +41,8 @@ export default {
     diagnostics: {
       heading: "Auto-diagnóstico",
       note: "Problemas detectados automáticamente del log de ejecución. Las sugerencias pueden ayudar a resolver fallas.",
+      sampleNote:
+        "Estos mensajes reflejan el comportamiento observado durante la verificación con un pequeño slice de BAM de prueba provisto por STRhub. Con datos de secuenciación de cobertura completa, la herramienta debería genotipar significativamente más loci. Las advertencias no indican un problema con la herramienta en sí.",
     },
     content: {
       heading: "Contenido del output (evidencia de plausibilidad)",

@@ -235,19 +235,33 @@ export function VerifiedDetail({
         )}
 
         {/* Diagnostics */}
-        {report.diagnostics && Object.keys(report.diagnostics).length > 0 && (
-          <>
-            <h2 className="mt-10 text-xl font-semibold">
-              {t("verified.diagnostics.heading")}
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {t("verified.diagnostics.note")}
-            </p>
-            <div className="mt-3 space-y-2">
-              {Object.entries(report.diagnostics).flatMap(([leg, issues]) =>
-                issues.map((issue, i) => (
+        {report.diagnostics && Object.keys(report.diagnostics).length > 0 && (() => {
+          const seen = new Set<string>();
+          const deduped = Object.values(report.diagnostics).flat().filter((issue) => {
+            if (seen.has(issue.id)) return false;
+            seen.add(issue.id);
+            return true;
+          });
+          const hasStrhubFixture = report.datasets?.some(
+            (d) => d.fixture_source === "strhub"
+          );
+          return (
+            <>
+              <h2 className="mt-10 text-xl font-semibold">
+                {t("verified.diagnostics.heading")}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {t("verified.diagnostics.note")}
+              </p>
+              {hasStrhubFixture && (
+                <div className="mt-2 rounded-lg border-l-4 border-sky-400 bg-sky-50 dark:bg-sky-950/20 px-4 py-3 text-sm text-muted-foreground italic">
+                  {t("verified.diagnostics.sampleNote")}
+                </div>
+              )}
+              <div className="mt-3 space-y-2">
+                {deduped.map((issue) => (
                   <div
-                    key={`${leg}-${i}`}
+                    key={issue.id}
                     className={cn(
                       "rounded-lg border-l-4 px-4 py-3 text-sm",
                       issue.severity === "error"
@@ -275,11 +289,11 @@ export function VerifiedDetail({
                       </div>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
-          </>
-        )}
+                ))}
+              </div>
+            </>
+          );
+        })()}
 
         {/* Output content evidence */}
         {stats && (

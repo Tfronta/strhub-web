@@ -41,6 +41,8 @@ export default {
     diagnostics: {
       heading: "Auto-diagnostics",
       note: "Issues detected automatically from the execution log. Suggestions may help resolve failures.",
+      sampleNote:
+        "These messages reflect the behavior observed during verification with a small test BAM slice provided by STRhub. With full-coverage sequencing data, the tool is expected to genotype significantly more loci. The warnings do not indicate a problem with the tool itself.",
     },
     content: {
       heading: "Output content (plausibility evidence)",

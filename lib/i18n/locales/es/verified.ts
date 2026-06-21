@@ -35,6 +35,9 @@ export default {
       contentFailNote:
         "Nota: La verificación \"Plausible Output\" falló porque la salida no coincidió completamente con el patrón esperado de genotipos. Esto puede deberse a diferencias en parámetros, versión del tool, o configuración. No necesariamente indica un error grave.",
     },
+    log: {
+      view: "Ver log de ejecución",
+    },
     content: {
       heading: "Contenido del output (evidencia de plausibilidad)",
       records: "Registros de secuencia",

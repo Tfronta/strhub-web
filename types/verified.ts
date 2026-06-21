@@ -95,6 +95,7 @@ export interface VerifiedReport {
   level: VerifiedLevel;
   io_detail?: unknown;
   content_detail?: { outputs?: { stats?: VerifiedContentStats }[] };
+  logs?: Record<string, string>;
   // Fase 3 additions (optional for backward compatibility with older reports).
   datasets?: VerifiedMatrixLeg[];
   readme_check?: VerifiedReadmeCheck | null;

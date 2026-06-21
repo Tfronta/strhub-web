@@ -768,6 +768,16 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
               </Link>
             </View>
           )}
+          {report.logs && Object.entries(report.logs).map(([leg, fname]) => (
+            <View key={leg} style={s.kvRow}>
+              <Text style={s.kvLabel}>Log ({leg})</Text>
+              <Link src={`https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages/${fname}`}>
+                <Text style={{ fontSize: 7.5, color: LINK }}>
+                  {fname}
+                </Text>
+              </Link>
+            </View>
+          ))}
         </View>
 
         {/* Footer */}

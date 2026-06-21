@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Document,
   Page,
@@ -11,16 +9,18 @@ import {
 } from "@react-pdf/renderer";
 import type { VerifiedReport, VerifiedLevel, VerifiedDiagnostic } from "@/types/verified";
 
-const TEAL = "#0099a3";
-const BODY = "#333";
-const SECONDARY = "#555";
-const SUBTLE = "#888";
-const LINK = "#666";
-const BORDER = "#d0d0d0";
-const BG_LIGHT = "#f5f5f5";
-const DIAG_ERROR = "#dc2626";
-const DIAG_WARN = "#d97706";
-const DIAG_INFO = "#2563eb";
+// ── Palette: matches STRhub web (Tailwind grays + teal primary) ──
+const TEAL = "#0d9488";
+const EMERALD = "#059669";
+const BODY = "#374151";       // gray-700 — main text, never black
+const MUTED = "#6b7280";      // gray-500 — secondary text
+const SUBTLE = "#9ca3af";     // gray-400 — labels, captions
+const BORDER = "#e5e7eb";     // gray-200
+const BG = "#f9fafb";         // gray-50  — card/row backgrounds
+const LINK = "#0d9488";       // teal — same as primary
+const DIAG_ERROR_BORDER = "#ef4444";
+const DIAG_WARN_BORDER = "#f59e0b";
+const DIAG_INFO_BORDER = "#3b82f6";
 const DIAG_ERROR_BG = "#fef2f2";
 const DIAG_WARN_BG = "#fffbeb";
 const DIAG_INFO_BG = "#eff6ff";
@@ -90,158 +90,100 @@ const LEGACY_SLUG_DATASETS: Record<string, string[]> = {
 const s = StyleSheet.create({
   page: {
     paddingTop: 40,
-    paddingBottom: 50,
+    paddingBottom: 56,
     paddingHorizontal: 45,
     fontFamily: "Helvetica",
-    fontSize: 9,
+    fontSize: 8.5,
     color: BODY,
   },
   footer: {
     position: "absolute",
-    bottom: 25,
+    bottom: 20,
     left: 45,
     right: 45,
+    borderTopWidth: 0.5,
+    borderTopColor: BORDER,
+    paddingTop: 6,
     flexDirection: "row",
     justifyContent: "space-between",
     fontSize: 7,
     color: SUBTLE,
   },
 
-  // Header
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 4,
+    marginBottom: 2,
   },
-  logo: { width: 32, height: 32, marginRight: 10 },
-  headerTitle: { fontSize: 16, fontFamily: "Helvetica-Bold", color: TEAL },
-  headerSub: { fontSize: 10, color: SECONDARY, marginTop: 2 },
-  headerMeta: {
-    marginTop: 10,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: BORDER,
-    fontSize: 8,
-    color: SECONDARY,
-  },
+  logo: { width: 28, height: 28, marginRight: 8 },
+  headerTitle: { fontSize: 15, fontFamily: "Helvetica-Bold", color: TEAL },
+  headerSub: { fontSize: 9, color: MUTED, marginTop: 1 },
 
-  // Sections
   sectionTitle: {
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: "Helvetica-Bold",
     color: TEAL,
-    marginTop: 18,
-    marginBottom: 6,
+    marginTop: 16,
+    marginBottom: 5,
     paddingBottom: 3,
     borderBottomWidth: 0.5,
     borderBottomColor: BORDER,
   },
 
-  // Tables
-  tableHeader: {
-    flexDirection: "row",
-    backgroundColor: TEAL,
-    paddingVertical: 4,
-    paddingHorizontal: 6,
+  card: {
+    borderWidth: 0.5,
+    borderColor: BORDER,
+    borderRadius: 4,
+    padding: 10,
+    marginTop: 4,
+    marginBottom: 4,
   },
-  tableHeaderText: {
+  cardLabel: {
+    fontSize: 7,
     fontFamily: "Helvetica-Bold",
-    fontSize: 8,
-    color: "#fff",
+    color: SUBTLE,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: 3,
   },
+
   tableRow: {
     flexDirection: "row",
-    paddingVertical: 3,
+    paddingVertical: 3.5,
     paddingHorizontal: 6,
     borderBottomWidth: 0.5,
     borderBottomColor: BORDER,
   },
-  tableRowAlt: {
-    backgroundColor: BG_LIGHT,
-  },
+  tableRowAlt: { backgroundColor: BG },
 
-  // Key-value rows
-  kvRow: {
-    flexDirection: "row",
-    marginBottom: 2,
-  },
-  kvLabel: {
-    width: 140,
-    fontSize: 8,
-    color: SUBTLE,
-    fontFamily: "Helvetica-Bold",
-  },
+  kvRow: { flexDirection: "row", marginBottom: 2 },
+  kvLabel: { width: 110, fontSize: 8, color: MUTED },
   kvValue: { flex: 1, fontSize: 8, color: BODY },
-  kvMono: { flex: 1, fontSize: 7.5, color: SECONDARY },
 
-  // Scope block
-  scopeBox: {
+  noteBox: {
     marginTop: 4,
-    padding: 10,
-    backgroundColor: BG_LIGHT,
+    marginBottom: 6,
+    padding: 8,
+    backgroundColor: "#f0f9ff",
     borderLeftWidth: 3,
-    borderLeftColor: TEAL,
+    borderLeftColor: "#38bdf8",
+    borderRadius: 2,
   },
-  scopeText: { fontSize: 8, color: SECONDARY, lineHeight: 1.5 },
+  noteText: { fontSize: 7.5, color: MUTED, fontStyle: "italic", lineHeight: 1.4 },
 
-  // Disclaimer
-  disclaimerBlock: { marginTop: 10 },
-  disclaimerItem: {
-    fontSize: 7.5,
-    color: SECONDARY,
-    marginBottom: 3,
-    lineHeight: 1.4,
-  },
-
-  // Appendix
-  appendixTitle: {
-    fontSize: 9,
-    fontFamily: "Helvetica-Bold",
-    color: TEAL,
-    marginTop: 8,
-    marginBottom: 4,
-  },
-  lociGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  lociItem: {
-    fontSize: 7,
-    color: SECONDARY,
-    width: "25%",
-    marginBottom: 1,
-  },
-  snpItem: {
-    fontSize: 6.5,
-    color: SECONDARY,
-    width: "20%",
-    marginBottom: 1,
-  },
-
-  // Level badge (text)
-  levelBadge: {
-    fontSize: 9,
-    fontFamily: "Helvetica-Bold",
-    color: TEAL,
-    marginTop: 6,
-  },
-
-  // Dataset provenance
   datasetBox: {
     marginTop: 4,
     marginBottom: 4,
     padding: 8,
-    backgroundColor: BG_LIGHT,
+    backgroundColor: BG,
     borderLeftWidth: 2,
     borderLeftColor: BORDER,
+    borderRadius: 2,
   },
-  datasetName: {
-    fontSize: 8,
-    fontFamily: "Helvetica-Bold",
-    color: BODY,
-    marginBottom: 2,
-  },
-  datasetMeta: { fontSize: 7.5, color: SECONDARY, marginBottom: 1 },
+
+  lociGrid: { flexDirection: "row", flexWrap: "wrap" },
+  lociItem: { fontSize: 7, color: MUTED, width: "25%", marginBottom: 1 },
+  snpItem: { fontSize: 6.5, color: MUTED, width: "20%", marginBottom: 1 },
 });
 
 const GATE_LABELS: Record<string, string> = {
@@ -277,32 +219,23 @@ const README_ITEMS: Record<string, string> = {
   dependencies: "Dependencies / versions",
 };
 
-function sectionNumber(
-  hasDiagnostics: boolean,
-  hasStats: boolean,
-  hasProvenance: boolean,
-  hasDatasets: boolean,
-  base: "diagnostics" | "data" | "matrix" | "scope"
-): number {
-  let n = 3;
-  if (base === "diagnostics") return n + 1;
-  if (hasDiagnostics) n++;
-  n++;
-  if (hasStats) n++;
-  if (base === "data") return n;
-  if (hasProvenance) n++;
-  if (base === "matrix") return n;
-  if (hasDatasets) n++;
-  return n;
-}
-
 interface Props {
   report: VerifiedReport;
   slug: string;
   logoSrc?: string;
 }
 
+function extractToolDisplayName(report: VerifiedReport): string {
+  if (report.source?.repo) {
+    const segments = report.source.repo.replace(/\/+$/, "").split("/");
+    const last = segments[segments.length - 1];
+    if (last) return last;
+  }
+  return report.tool.name;
+}
+
 export function VerifiedPDF({ report, slug, logoSrc }: Props) {
+  const toolDisplayName = extractToolDisplayName(report);
   const ref = report.source.ref_resolved ?? report.source.ref ?? "";
   const stats = report.content_detail?.outputs?.[0]?.stats;
   const ioDetail = report.io_detail as
@@ -319,13 +252,8 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
   const dateStr = report.generated?.slice(0, 10) ?? "N/A";
   const permalink = `https://strhub.app/verified/${slug}`;
 
-  const gateOrder = [
-    "available",
-    "installs",
-    "runs",
-    "io",
-    "content",
-  ] as const;
+  const gateOrder = ["available", "installs", "runs", "io", "content"] as const;
+  const gatesPassed = gateOrder.filter((k) => report.gates?.[k]).length;
 
   const hasStats = !!stats;
   const hasDatasets = !!(report.datasets && report.datasets.length > 0);
@@ -357,12 +285,16 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
   } else if (LEGACY_SLUG_DATASETS[slug]) {
     for (const t of LEGACY_SLUG_DATASETS[slug]) datasetTypes.add(t);
   }
-
   const provenanceEntries = Array.from(datasetTypes)
     .map((t) => ({ type: t, ...DATASET_PROVENANCE[t] }))
     .filter((e) => e.name);
-
   const hasProvenance = provenanceEntries.length > 0;
+
+  const visibleLegs = report.datasets?.filter(
+    (leg) => leg.fixture_source !== "strhub"
+  ) ?? [];
+
+  let sn = 0;
 
   return (
     <Document
@@ -371,75 +303,33 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
       subject="Reproducible-execution attestation"
       producer="STRhub (strhub.app)"
     >
-      {/* Page 1: Main report */}
       <Page size="A4" style={s.page}>
-        {/* Header */}
+        {/* ── Header ── */}
         <View style={s.headerRow}>
           {logoSrc && <Image style={s.logo} src={logoSrc} />}
           <View>
             <Text style={s.headerTitle}>STRhub Verified</Text>
-            <Text style={s.headerSub}>
-              Reproducible-Execution Attestation Report
-            </Text>
+            <Text style={s.headerSub}>Reproducible-Execution Attestation Report</Text>
           </View>
         </View>
 
-        <View style={s.headerMeta}>
-          <View style={s.kvRow}>
-            <Text style={s.kvLabel}>Report date</Text>
-            <Text style={s.kvValue}>
-              {report.generated?.slice(0, 19).replace("T", " ")} UTC
-            </Text>
-          </View>
-          <View style={s.kvRow}>
-            <Text style={s.kvLabel}>Report identifier</Text>
-            <Text style={s.kvMono}>{slug}</Text>
-          </View>
-          <View style={s.kvRow}>
-            <Text style={s.kvLabel}>Permalink</Text>
-            <Link src={permalink}>
-              <Text style={{ ...s.kvValue, color: LINK }}>{permalink}</Text>
-            </Link>
-          </View>
-        </View>
-
-        {/* Section: Summary */}
-        <Text style={s.sectionTitle}>1. Summary</Text>
-        <View style={{ flexDirection: "row", marginBottom: 6 }}>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 7, color: SUBTLE, marginBottom: 2 }}>LEVEL</Text>
-            <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: TEAL }}>
-              {LEVEL_LABELS[report.level]}
-            </Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 7, color: SUBTLE, marginBottom: 2 }}>GATES</Text>
-            <Text style={{ fontSize: 8, color: SECONDARY }}>
-              {gateOrder.filter((k) => report.gates?.[k]).length}/{gateOrder.length} passed
-            </Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 7, color: SUBTLE, marginBottom: 2 }}>DATASETS</Text>
-            <Text style={{ fontSize: 8, color: SECONDARY }}>
-              {provenanceEntries.length > 0 ? `${provenanceEntries.length} reference` : "None"}
-            </Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 7, color: SUBTLE, marginBottom: 2 }}>VERIFIED ON</Text>
-            <Text style={{ fontSize: 8, color: SECONDARY }}>{dateStr}</Text>
-          </View>
-        </View>
-        {report.scope && (
-          <Text style={{ fontSize: 7.5, color: SECONDARY, lineHeight: 1.4 }}>
-            {report.scope}
+        {/* ── Tool hero ── */}
+        <View style={{ marginTop: 10, marginBottom: 6, paddingBottom: 10, borderBottomWidth: 0.5, borderBottomColor: BORDER }}>
+          <Text style={{ fontSize: 18, fontFamily: "Helvetica-Bold", color: TEAL }}>
+            {toolDisplayName}
           </Text>
-        )}
+          {report.tool.version && (
+            <Text style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>
+              Version {report.tool.version}
+            </Text>
+          )}
+        </View>
 
-        {/* Section: Tool */}
-        <Text style={s.sectionTitle}>2. Tool Under Verification</Text>
+        {/* ── 1. Tool Under Verification ── */}
+        <Text style={s.sectionTitle}>{++sn}. Tool Under Verification</Text>
         <View style={s.kvRow}>
-          <Text style={s.kvLabel}>Tool name</Text>
-          <Text style={s.kvValue}>{report.tool.name}</Text>
+          <Text style={s.kvLabel}>Tool</Text>
+          <Text style={{ ...s.kvValue, fontFamily: "Helvetica-Bold" }}>{toolDisplayName}</Text>
         </View>
         {report.tool.version && (
           <View style={s.kvRow}>
@@ -453,152 +343,191 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
             <Text style={s.kvValue}>{report.tool.maintainer}</Text>
           </View>
         )}
-        {report.tool.contact && (
-          <View style={s.kvRow}>
-            <Text style={s.kvLabel}>Contact</Text>
-            <Link src={report.tool.contact}>
-              <Text style={{ ...s.kvValue, color: LINK }}>
-                {report.tool.contact}
-              </Text>
-            </Link>
-          </View>
-        )}
         <View style={s.kvRow}>
-          <Text style={s.kvLabel}>Source repository</Text>
+          <Text style={s.kvLabel}>Repository</Text>
           <Link src={report.source.repo}>
-            <Text style={{ ...s.kvValue, color: LINK }}>
-              {report.source.repo}
-            </Text>
+            <Text style={{ fontSize: 8, color: LINK }}>{report.source.repo}</Text>
           </Link>
         </View>
         <View style={s.kvRow}>
-          <Text style={s.kvLabel}>Pinned commit</Text>
-          <Text style={s.kvMono}>{ref}</Text>
+          <Text style={s.kvLabel}>Commit</Text>
+          <Text style={{ flex: 1, fontSize: 7.5, color: MUTED, fontFamily: "Courier" }}>{ref}</Text>
         </View>
         {report.environment?.os && (
           <View style={s.kvRow}>
             <Text style={s.kvLabel}>Environment</Text>
-            <Text style={s.kvValue}>
-              {report.environment.os.join(", ")}
-            </Text>
+            <Text style={s.kvValue}>{report.environment.os.join(", ")}</Text>
+          </View>
+        )}
+        <View style={s.kvRow}>
+          <Text style={s.kvLabel}>Verified on</Text>
+          <Text style={s.kvValue}>{report.generated?.slice(0, 19).replace("T", " ")} UTC</Text>
+        </View>
+        {report.ci_run && (
+          <View style={s.kvRow}>
+            <Text style={s.kvLabel}>CI run</Text>
+            <Link src={report.ci_run}>
+              <Text style={{ fontSize: 8, color: LINK }}>{report.ci_run}</Text>
+            </Link>
           </View>
         )}
 
-        {/* Section: Gates */}
-        <Text style={s.sectionTitle}>3. Verification Gates</Text>
-        <View style={s.tableHeader}>
-          <Text style={{ ...s.tableHeaderText, width: 90 }}>Gate</Text>
-          <Text style={{ ...s.tableHeaderText, width: 50 }}>Result</Text>
-          <Text style={{ ...s.tableHeaderText, flex: 1 }}>Description</Text>
+        {/* ── 2. Summary ── */}
+        <Text style={s.sectionTitle}>{++sn}. Summary</Text>
+        <View style={s.card}>
+          <View style={{ flexDirection: "row" }}>
+            <View style={{ flex: 1, paddingRight: 8 }}>
+              <Text style={s.cardLabel}>Level</Text>
+              <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: EMERALD }}>
+                {LEVEL_LABELS[report.level]}
+              </Text>
+            </View>
+            <View style={{ flex: 1, paddingRight: 8 }}>
+              <Text style={s.cardLabel}>Gates</Text>
+              <Text style={{ fontSize: 8.5, color: MUTED }}>
+                {gatesPassed}/{gateOrder.length} passed
+              </Text>
+            </View>
+            <View style={{ flex: 1, paddingRight: 8 }}>
+              <Text style={s.cardLabel}>Datasets</Text>
+              <Text style={{ fontSize: 8.5, color: MUTED }}>
+                {provenanceEntries.length > 0 ? `${provenanceEntries.length} reference` : "None"}
+              </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={s.cardLabel}>Verified on</Text>
+              <Text style={{ fontSize: 8.5, color: MUTED }}>{dateStr}</Text>
+            </View>
+          </View>
+          {report.scope && (
+            <View style={{ borderTopWidth: 0.5, borderTopColor: BORDER, marginTop: 8, paddingTop: 6 }}>
+              <Text style={{ fontSize: 7.5, color: MUTED, lineHeight: 1.4 }}>
+                {report.scope}
+              </Text>
+            </View>
+          )}
         </View>
+
+        {/* ── 3. Verification Gates ── */}
+        <View wrap={false}>
+        <Text style={s.sectionTitle}>{++sn}. Verification Gates</Text>
         {gateOrder.map((key, i) => {
           const pass = report.gates?.[key];
           return (
-            <View
-              key={key}
-              style={[s.tableRow, i % 2 === 1 ? s.tableRowAlt : {}]}
-            >
-              <Text
-                style={{
-                  width: 90,
-                  fontSize: 8,
-                  fontFamily: "Helvetica-Bold",
-                }}
-              >
+            <View key={key} style={[s.tableRow, i % 2 === 0 ? s.tableRowAlt : {}]}>
+              <Text style={{ width: 85, fontSize: 8, fontFamily: "Helvetica-Bold", color: BODY }}>
                 {GATE_NAMES[key]}
               </Text>
-              <Text
-                style={{
-                  width: 50,
-                  fontSize: 8,
-                  fontFamily: "Helvetica-Bold",
-                }}
-              >
-                {pass ? "PASS" : "FAIL"}
-              </Text>
-              <Text style={{ flex: 1, fontSize: 8, color: SECONDARY }}>
+              <Text style={{ flex: 1, fontSize: 8, color: MUTED }}>
                 {GATE_LABELS[key]}
+              </Text>
+              <Text style={{ width: 30, fontSize: 8, textAlign: "right", color: pass ? EMERALD : MUTED }}>
+                {pass ? "PASS" : "—"}
               </Text>
             </View>
           );
         })}
-        <Text style={s.levelBadge}>
-          Overall attestation level: {LEVEL_LABELS[report.level]}
+        <Text style={{ fontSize: 8.5, fontFamily: "Helvetica-Bold", color: TEAL, marginTop: 6 }}>
+          Attestation level: {LEVEL_LABELS[report.level]}
         </Text>
         {report.gates?.content === false && (
-          <Text style={{ fontSize: 7, color: SECONDARY, marginTop: 4, fontStyle: "italic" }}>
-            Note: The &quot;Plausible Output&quot; check did not pass because the output did not
-            fully match the expected genotype pattern. This may be due to differences in
-            parameters, tool version, or configuration. It does not necessarily indicate a
-            serious error.
+          <Text style={{ fontSize: 7.5, color: MUTED, marginTop: 4, fontStyle: "italic", lineHeight: 1.4 }}>
+            Note: The "Plausible Output" check did not pass because the output did not fully match
+            the expected genotype pattern. This may be due to differences in parameters, tool version,
+            or configuration.
           </Text>
         )}
+        {report.logs && (() => {
+          const visLogs = Object.entries(report.logs).filter(([leg]) => {
+            const legData = report.datasets?.find((d) => d.leg === leg);
+            return legData?.fixture_source !== "strhub";
+          });
+          if (visLogs.length === 0) return null;
+          return (
+            <View style={{ marginTop: 4 }}>
+              {visLogs.map(([leg, fname]) => (
+                <View key={leg} style={s.kvRow}>
+                  <Text style={{ ...s.kvLabel, width: 80 }}>Execution log</Text>
+                  <Link src={`https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages/${fname}`}>
+                    <Text style={{ fontSize: 7.5, color: LINK }}>{fname}</Text>
+                  </Link>
+                </View>
+              ))}
+            </View>
+          );
+        })()}
+        </View>
 
-        {/* Section: Diagnostics */}
+        {/* ── 4. Auto-diagnostics ── */}
         {hasDiagnostics && (
-          <>
-            <Text style={s.sectionTitle}>
-              {sectionNumber(hasDiagnostics, hasStats, hasProvenance, hasDatasets, "diagnostics")}. Auto-diagnostics
-            </Text>
-            <Text style={{ fontSize: 8, color: SECONDARY, marginBottom: 4 }}>
-              Issues detected automatically from the execution log. Suggestions may help resolve failures.
-            </Text>
+          <View wrap={false}>
+            <Text style={s.sectionTitle}>{++sn}. Auto-diagnostics</Text>
             {hasStrhubFixture && (
-              <View style={{ ...s.scopeBox, borderLeftColor: "#38bdf8", backgroundColor: "#f0f9ff", marginBottom: 6, marginTop: 0 }}>
-                <Text style={{ fontSize: 7.5, color: SECONDARY, fontStyle: "italic", lineHeight: 1.4 }}>
+              <View style={{ marginBottom: 6, padding: 8, backgroundColor: "#f0fdfa", borderRadius: 2 }}>
+                <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: TEAL, marginBottom: 2 }}>
+                  STRHUB VERIFIED — NOTE
+                </Text>
+                <Text style={s.noteText}>
                   These messages reflect the behavior observed during verification with a small test BAM
                   slice provided by STRhub. With full-coverage sequencing data, the tool is expected to
                   genotype significantly more loci. The warnings do not indicate a problem with the tool itself.
                 </Text>
               </View>
             )}
-            {dedupedDiagnostics.map((issue) => (
-              <View
-                key={issue.id}
-                style={{
-                  marginBottom: 3,
-                  padding: 6,
-                  borderLeftWidth: 3,
-                  borderLeftColor:
-                    issue.severity === "error" ? DIAG_ERROR :
-                    issue.severity === "warning" ? DIAG_WARN : DIAG_INFO,
-                  backgroundColor:
-                    issue.severity === "error" ? DIAG_ERROR_BG :
-                    issue.severity === "warning" ? DIAG_WARN_BG : DIAG_INFO_BG,
-                }}
-              >
-                <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: BODY }}>
-                  {issue.severity === "error" ? "ERROR" : issue.severity === "warning" ? "WARNING" : "INFO"}
-                  {"  "}
-                  {issue.title}
-                </Text>
-                {issue.suggestion && (
-                  <Text style={{ fontSize: 7.5, color: SECONDARY, marginTop: 2 }}>
-                    {issue.suggestion}
-                  </Text>
-                )}
-              </View>
-            ))}
-          </>
+            <Text style={{ fontSize: 7.5, fontFamily: "Helvetica-Bold", color: MUTED, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 }}>
+              Issues from execution log
+            </Text>
+            {dedupedDiagnostics.map((issue) => {
+              const sevColor =
+                issue.severity === "error" ? DIAG_ERROR_BORDER :
+                issue.severity === "warning" ? DIAG_WARN_BORDER : DIAG_INFO_BORDER;
+              const sevBg =
+                issue.severity === "error" ? DIAG_ERROR_BG :
+                issue.severity === "warning" ? DIAG_WARN_BG : DIAG_INFO_BG;
+              return (
+                <View
+                  key={issue.id}
+                  style={{
+                    marginBottom: 4,
+                    paddingVertical: 5,
+                    paddingHorizontal: 8,
+                    backgroundColor: sevBg,
+                    flexDirection: "row",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <View style={{ width: 3, backgroundColor: sevColor, marginRight: 8, minHeight: 14, borderRadius: 1 }} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: BODY }}>
+                      {issue.title}
+                    </Text>
+                    {issue.suggestion && (
+                      <Text style={{ fontSize: 7.5, color: MUTED, marginTop: 2 }}>
+                        {issue.suggestion}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              );
+            })}
+          </View>
         )}
 
-        {/* Section: Output evidence */}
+        {/* ── Output Content Evidence ── */}
         {stats && (
-          <>
-            <Text style={s.sectionTitle}>
-              {hasDiagnostics ? 5 : 4}. Output Content Evidence
-            </Text>
+          <View wrap={false}>
+            <Text style={s.sectionTitle}>{++sn}. Output Content Evidence</Text>
             {ioOut && (
               <>
                 <View style={s.kvRow}>
                   <Text style={s.kvLabel}>Output file</Text>
-                  <Text style={s.kvMono}>{ioOut.resolved ?? "N/A"}</Text>
+                  <Text style={{ flex: 1, fontSize: 7.5, color: MUTED, fontFamily: "Courier" }}>
+                    {ioOut.resolved ?? "N/A"}
+                  </Text>
                 </View>
                 <View style={s.kvRow}>
                   <Text style={s.kvLabel}>Format</Text>
-                  <Text style={s.kvValue}>
-                    {(ioOut.format ?? "N/A").toUpperCase()}
-                  </Text>
+                  <Text style={s.kvValue}>{(ioOut.format ?? "N/A").toUpperCase()}</Text>
                 </View>
               </>
             )}
@@ -608,9 +537,7 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
             </View>
             <View style={s.kvRow}>
               <Text style={s.kvLabel}>Distinct STR loci</Text>
-              <Text style={s.kvValue}>
-                {stats.distinct_str_loci ?? stats.distinct_loci ?? 0}
-              </Text>
+              <Text style={s.kvValue}>{stats.distinct_str_loci ?? stats.distinct_loci ?? 0}</Text>
             </View>
             {(stats.distinct_snp_markers ?? 0) > 0 && (
               <View style={s.kvRow}>
@@ -619,339 +546,190 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
               </View>
             )}
             <View style={s.kvRow}>
-              <Text style={s.kvLabel}>Total reads across calls</Text>
+              <Text style={s.kvLabel}>Total reads</Text>
               <Text style={s.kvValue}>{stats.total_reads ?? 0}</Text>
             </View>
-            {stats.max_sequence_depth != null && (
-              <View style={s.kvRow}>
-                <Text style={s.kvLabel}>Max sequence depth</Text>
-                <Text style={s.kvValue}>{stats.max_sequence_depth}</Text>
-              </View>
-            )}
 
-            {stats.top_loci_by_depth &&
-              stats.top_loci_by_depth.length > 0 && (
-                <>
-                  <Text
-                    style={{
-                      fontSize: 8,
-                      fontFamily: "Helvetica-Bold",
-                      color: SECONDARY,
-                      marginTop: 8,
-                      marginBottom: 3,
-                    }}
-                  >
-                    Top loci by read depth
-                  </Text>
-                  <View style={s.tableHeader}>
-                    <Text style={{ ...s.tableHeaderText, flex: 1 }}>
-                      Locus
-                    </Text>
-                    <Text
-                      style={{
-                        ...s.tableHeaderText,
-                        width: 80,
-                        textAlign: "right",
-                      }}
-                    >
-                      Reads
-                    </Text>
+            {stats.top_loci_by_depth && stats.top_loci_by_depth.length > 0 && (
+              <>
+                <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: TEAL, marginTop: 8, marginBottom: 3 }}>
+                  Top loci by read depth
+                </Text>
+                {stats.top_loci_by_depth.map(([locus, depth], i) => (
+                  <View key={locus} style={[s.tableRow, i % 2 === 0 ? s.tableRowAlt : {}]}>
+                    <Text style={{ flex: 1, fontSize: 8, color: BODY }}>{locus}</Text>
+                    <Text style={{ width: 60, fontSize: 8, color: MUTED, textAlign: "right" }}>{depth}</Text>
                   </View>
-                  {stats.top_loci_by_depth.map(([locus, depth], i) => (
-                    <View
-                      key={locus}
-                      style={[
-                        s.tableRow,
-                        i % 2 === 1 ? s.tableRowAlt : {},
-                      ]}
-                    >
-                      <Text style={{ flex: 1, fontSize: 8, color: BODY }}>
-                        {locus}
-                      </Text>
-                      <Text
-                        style={{
-                          width: 80,
-                          fontSize: 8,
-                          textAlign: "right",
-                        }}
-                      >
-                        {depth}
-                      </Text>
-                    </View>
-                  ))}
-                </>
-              )}
-          </>
+                ))}
+              </>
+            )}
+          </View>
         )}
 
-        {/* Section: Verification Data (provenance) */}
-        {provenanceEntries.length > 0 && (
-          <>
-            <Text style={s.sectionTitle}>
-              {sectionNumber(hasDiagnostics, hasStats, hasProvenance, hasDatasets, "data")}. Verification Data
-            </Text>
-            <Text style={{ fontSize: 8, color: SECONDARY, marginBottom: 6 }}>
-              Public reference datasets used as input for this verification run.
-              Sourced from open-access repositories; see upstream licenses for terms of use.
+        {/* ── Verification Data (provenance) ── */}
+        {hasProvenance && (
+          <View wrap={false}>
+            <Text style={s.sectionTitle}>{++sn}. Verification Data</Text>
+            <Text style={{ fontSize: 8, color: MUTED, marginBottom: 4 }}>
+              Public reference datasets used as input. Sourced from open-access repositories;
+              see upstream licenses for terms of use.
             </Text>
             {hasStrhubFixture && (
-              <View style={{ ...s.scopeBox, borderLeftColor: "#60a5fa", backgroundColor: "#eff6ff", marginBottom: 6, marginTop: 0 }}>
-                <Text style={{ fontSize: 7.5, color: SECONDARY, fontStyle: "italic", lineHeight: 1.4 }}>
+              <View style={{ ...s.noteBox, borderLeftColor: "#60a5fa", marginBottom: 6 }}>
+                <Text style={s.noteText}>
                   This tool does not include its own demo or test data in its repository. STRhub ran
                   the verification using a pre-built slice from the public reference data listed below.
-                  Including a small test file in the repository is recommended for a stronger,
-                  self-contained verification.
                 </Text>
               </View>
             )}
             {provenanceEntries.map((ds) => (
               <View key={ds.type} style={s.datasetBox}>
-                <Text style={s.datasetName}>{ds.name}</Text>
+                <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: TEAL, marginBottom: 3 }}>
+                  {ds.name}
+                </Text>
                 <View style={s.kvRow}>
                   <Text style={{ ...s.kvLabel, width: 60 }}>Source</Text>
                   <Link src={ds.source}>
-                    <Text style={{ fontSize: 7.5, color: LINK }}>
-                      {ds.source}
-                    </Text>
+                    <Text style={{ fontSize: 7.5, color: LINK }}>{ds.source}</Text>
                   </Link>
                 </View>
                 {ds.doi && (
                   <View style={s.kvRow}>
                     <Text style={{ ...s.kvLabel, width: 60 }}>DOI</Text>
                     <Link src={`https://doi.org/${ds.doi}`}>
-                      <Text style={{ fontSize: 7.5, color: LINK }}>
-                        {ds.doi}
-                      </Text>
+                      <Text style={{ fontSize: 7.5, color: LINK }}>{ds.doi}</Text>
                     </Link>
                   </View>
                 )}
                 <View style={s.kvRow}>
                   <Text style={{ ...s.kvLabel, width: 60 }}>License</Text>
-                  <Text style={s.datasetMeta}>{ds.license}</Text>
+                  <Text style={{ flex: 1, fontSize: 7.5, color: MUTED }}>{ds.license}</Text>
                 </View>
                 {ds.referenceGenome && (
                   <View style={s.kvRow}>
                     <Text style={{ ...s.kvLabel, width: 60 }}>Ref. genome</Text>
-                    <Text style={s.datasetMeta}>
+                    <Text style={{ flex: 1, fontSize: 7.5, color: MUTED }}>
                       {ds.referenceGenome.assembly} ({ds.referenceGenome.mountPath})
                     </Text>
                   </View>
                 )}
                 <View style={{ ...s.kvRow, marginTop: 2 }}>
                   <Text style={{ ...s.kvLabel, width: 60 }}>Loci tested</Text>
-                  <Text style={s.datasetMeta}>
+                  <Text style={{ flex: 1, fontSize: 7.5, color: MUTED }}>
                     {ds.loci.length} forensic STR loci
                   </Text>
                 </View>
-                <Text style={{ fontSize: 6.5, color: SUBTLE, marginTop: 1 }}>
+                <Text style={{ fontSize: 6.5, color: SUBTLE, marginTop: 2 }}>
                   {ds.loci.join(", ")}
                 </Text>
               </View>
             ))}
-            <Text
-              style={{
-                fontSize: 7.5,
-                color: SECONDARY,
-                fontStyle: "italic",
-                marginTop: 4,
-              }}
-            >
-              This verification only covers the specific STR loci listed above.
-              The tool may support additional loci not tested by this reference
-              dataset.
-            </Text>
-          </>
+          </View>
         )}
 
-        {/* Section: Matrix (Fase 3) */}
-        {hasDatasets && (() => {
-          const visibleLegs = report.datasets!.filter(
-            (leg) => leg.fixture_source !== "strhub"
-          );
-          if (visibleLegs.length === 0) return null;
-          return (
-            <>
-              <Text style={s.sectionTitle}>
-                {sectionNumber(hasDiagnostics, hasStats, hasProvenance, hasDatasets, "matrix")}. Verification
-                Matrix
-              </Text>
-              <View style={s.tableHeader}>
-                <Text style={{ ...s.tableHeaderText, width: 100 }}>
-                  Data source
-                </Text>
-                <Text style={{ ...s.tableHeaderText, width: 50 }}>Result</Text>
-                <Text style={{ ...s.tableHeaderText, flex: 1 }}>Dataset</Text>
-              </View>
-              {visibleLegs.map((leg, i) => {
-                const state = !leg.available
-                  ? "N/A"
-                  : leg.passed
-                    ? "PASS"
-                    : "FAIL";
-                return (
-                  <View
-                    key={leg.leg}
-                    style={[s.tableRow, i % 2 === 1 ? s.tableRowAlt : {}]}
-                  >
-                    <Text
-                      style={{
-                        width: 100,
-                        fontSize: 8,
-                        fontFamily: "Helvetica-Bold",
-                      }}
-                    >
-                      {leg.leg === "own" ? "Tool test data" : "Reference dataset"}
-                    </Text>
-                    <Text
-                      style={{
-                        width: 50,
-                        fontSize: 8,
-                        fontFamily: "Helvetica-Bold",
-                      }}
-                    >
-                      {state}
-                    </Text>
-                    <Text
-                      style={{
-                        flex: 1,
-                        fontSize: 7.5,
-                        color: SECONDARY,
-                      }}
-                    >
-                      {leg.dataset ?? "--"}
-                    </Text>
-                  </View>
-                );
-              })}
-            </>
-          );
-        })()}
+        {/* ── Verification Matrix ── */}
+        {visibleLegs.length > 0 && (
+          <View wrap={false}>
+            <Text style={s.sectionTitle}>{++sn}. Verification Matrix</Text>
+            {visibleLegs.map((leg, i) => {
+              const state = !leg.available ? "N/A" : leg.passed ? "PASS" : "FAIL";
+              return (
+                <View key={leg.leg} style={[s.tableRow, i % 2 === 0 ? s.tableRowAlt : {}]}>
+                  <Text style={{ width: 30, fontSize: 8, color: state === "PASS" ? EMERALD : MUTED }}>
+                    {state}
+                  </Text>
+                  <Text style={{ width: 100, fontSize: 8, fontFamily: "Helvetica-Bold", color: BODY }}>
+                    {leg.leg === "own" ? "Tool test data" : "Reference dataset"}
+                  </Text>
+                  <Text style={{ flex: 1, fontSize: 7.5, color: MUTED }}>{leg.dataset ?? "—"}</Text>
+                </View>
+              );
+            })}
+          </View>
+        )}
 
-        {/* README check */}
+        {/* ── README check ── */}
         {report.readme_check && (
-          <>
-            <Text
-              style={{
-                fontSize: 8,
-                fontFamily: "Helvetica-Bold",
-                color: SECONDARY,
-                marginTop: 10,
-                marginBottom: 3,
-              }}
-            >
-              README minimum-to-run check (advisory,{" "}
-              {report.readme_check.score}/{report.readme_check.max})
+          <View wrap={false}>
+            <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: TEAL, marginTop: 12, marginBottom: 3 }}>
+              README check (advisory, {report.readme_check.score}/{report.readme_check.max})
             </Text>
             {Object.entries(README_ITEMS).map(([key, label]) => {
               const present = report.readme_check?.checks?.[key]?.present;
               return (
                 <View key={key} style={s.kvRow}>
-                  <Text style={{ ...s.kvLabel, width: 180 }}>{label}</Text>
-                  <Text
-                    style={{ fontSize: 8, fontFamily: "Helvetica-Bold" }}
-                  >
+                  <Text style={{ ...s.kvLabel, width: 160 }}>{label}</Text>
+                  <Text style={{ fontSize: 8, color: present ? EMERALD : MUTED }}>
                     {present ? "Present" : "Missing"}
                   </Text>
                 </View>
               );
             })}
-          </>
+          </View>
         )}
 
-        {/* Section: Scope & Disclaimers */}
-        <Text style={s.sectionTitle}>
-          {sectionNumber(hasDiagnostics, hasStats, hasProvenance, hasDatasets, "scope")}. Scope and
-          Disclaimers
+        {/* ── Scope and Disclaimers ── */}
+        <Text style={s.sectionTitle}>{++sn}. Scope and Disclaimers</Text>
+        <View style={{ padding: 8, backgroundColor: BG, borderLeftWidth: 3, borderLeftColor: TEAL, borderRadius: 2, marginBottom: 6 }}>
+          <Text style={{ fontSize: 8, color: MUTED, lineHeight: 1.5 }}>{report.scope}</Text>
+        </View>
+        <Text style={{ fontSize: 7.5, color: MUTED, marginBottom: 3, lineHeight: 1.4 }}>
+          This attestation concerns reproducible execution only. It is not a claim that the genotypes
+          produced are correct, nor that the tool is fit for casework or meets any regulatory standard.
         </Text>
-        <View style={s.scopeBox}>
-          <Text style={s.scopeText}>{report.scope}</Text>
-        </View>
+        <Text style={{ fontSize: 7.5, color: MUTED, marginBottom: 3, lineHeight: 1.4 }}>
+          Concordance against known truth is out of scope. The verification checks that the tool installs,
+          runs end-to-end, and produces output whose structure is plausible for genotype-bearing data.
+        </Text>
+        <Text style={{ fontSize: 7.5, color: MUTED, lineHeight: 1.4 }}>
+          Each result is a dated snapshot, verified on the tool's public repository at a pinned commit.
+          STRhub does not store tool source code.
+        </Text>
 
-        <View style={s.disclaimerBlock}>
-          <Text style={s.disclaimerItem}>
-            This attestation concerns reproducible execution only. It is not
-            a claim that the genotypes produced are correct, nor that the tool
-            is fit for casework or meets any regulatory standard.
-          </Text>
-          <Text style={s.disclaimerItem}>
-            Concordance against known truth is out of scope. The verification
-            checks that the tool installs, runs end-to-end, and produces
-            output whose structure is plausible for genotype-bearing data.
-          </Text>
-          <Text style={s.disclaimerItem}>
-            Each result is a dated snapshot, verified on the tool's public
-            repository at a pinned commit. The tool author may close the
-            repository after verification. STRhub does not store tool source
-            code.
-          </Text>
-          {report.ci_run && (
-            <View style={s.kvRow}>
-              <Text style={s.kvLabel}>CI run</Text>
-              <Link src={report.ci_run}>
-                <Text style={{ fontSize: 7.5, color: LINK }}>
-                  {report.ci_run}
-                </Text>
-              </Link>
-            </View>
-          )}
-          {report.logs && Object.entries(report.logs)
-            .filter(([leg]) => {
-              const legData = report.datasets?.find((d) => d.leg === leg);
-              return legData?.fixture_source !== "strhub";
-            })
-            .map(([leg, fname]) => (
-              <View key={leg} style={s.kvRow}>
-                <Text style={s.kvLabel}>Execution log</Text>
-                <Link src={`https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages/${fname}`}>
-                  <Text style={{ fontSize: 7.5, color: LINK }}>
-                    {fname}
-                  </Text>
-                </Link>
-              </View>
-            ))}
-        </View>
-
-        {/* Footer */}
+        {/* ── Footer ── */}
         <View style={s.footer} fixed>
-          <Text>
-            Generated by STRhub (strhub.app) -- This document was produced
-            automatically from verification data.
-          </Text>
-          <Text
-            render={({ pageNumber, totalPages }) =>
-              `${pageNumber} / ${totalPages}`
-            }
-          />
+          <View>
+            <Text>
+              {"Generated automatically by "}
+              <Link src="https://strhub.app">
+                <Text style={{ color: LINK }}>STRhub</Text>
+              </Link>
+              {" Verified"}
+            </Text>
+            <Link src={permalink}>
+              <Text style={{ color: LINK, marginTop: 1 }}>{permalink}</Text>
+            </Link>
+          </View>
+          <View style={{ alignItems: "flex-end" }}>
+            <Text>{dateStr}</Text>
+            <Text
+              render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
+              style={{ marginTop: 1 }}
+            />
+          </View>
         </View>
       </Page>
 
-      {/* Page 2+: Appendix — full loci lists */}
+      {/* ── Appendix: Detected Markers ── */}
       {stats &&
         ((stats.str_loci && stats.str_loci.length > 0) ||
           (stats.snp_markers && stats.snp_markers.length > 0)) && (
           <Page size="A4" style={s.page}>
-            <Text style={s.headerTitle}>Appendix — Detected Markers</Text>
-            <Text
-              style={{
-                fontSize: 8,
-                color: SECONDARY,
-                marginTop: 4,
-                marginBottom: 4,
-              }}
-            >
-              {report.tool.name} ({slug}) -- verified {dateStr}
+            <Text style={{ fontSize: 12, fontFamily: "Helvetica-Bold", color: TEAL }}>
+              Appendix — Detected Markers
+            </Text>
+            <Text style={{ fontSize: 8, color: MUTED, marginTop: 4, marginBottom: 8 }}>
+              {toolDisplayName} ({slug}) — verified {dateStr}
             </Text>
 
             {stats.str_loci && stats.str_loci.length > 0 && (
               <>
-                <Text style={s.appendixTitle}>
+                <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: TEAL, marginTop: 6, marginBottom: 4 }}>
                   STR Loci ({stats.str_loci.length})
                 </Text>
                 <View style={s.lociGrid}>
                   {stats.str_loci.map((l) => (
-                    <Text key={l} style={s.lociItem}>
-                      {l}
-                    </Text>
+                    <Text key={l} style={s.lociItem}>{l}</Text>
                   ))}
                 </View>
               </>
@@ -959,29 +737,37 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
 
             {stats.snp_markers && stats.snp_markers.length > 0 && (
               <>
-                <Text style={s.appendixTitle}>
+                <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: TEAL, marginTop: 10, marginBottom: 4 }}>
                   Identity SNP Markers ({stats.snp_markers.length})
                 </Text>
                 <View style={s.lociGrid}>
                   {stats.snp_markers.map((m) => (
-                    <Text key={m} style={s.snpItem}>
-                      {m}
-                    </Text>
+                    <Text key={m} style={s.snpItem}>{m}</Text>
                   ))}
                 </View>
               </>
             )}
 
             <View style={s.footer} fixed>
-              <Text>
-                Generated by STRhub (strhub.app) -- This document was
-                produced automatically from verification data.
-              </Text>
-              <Text
-                render={({ pageNumber, totalPages }) =>
-                  `${pageNumber} / ${totalPages}`
-                }
-              />
+              <View>
+                <Text>
+                  {"Generated automatically by "}
+                  <Link src="https://strhub.app">
+                    <Text style={{ color: LINK }}>STRhub</Text>
+                  </Link>
+                  {" Verified"}
+                </Text>
+                <Link src={permalink}>
+                  <Text style={{ color: LINK, marginTop: 1 }}>{permalink}</Text>
+                </Link>
+              </View>
+              <View style={{ alignItems: "flex-end" }}>
+                <Text>{dateStr}</Text>
+                <Text
+                  render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
+                  style={{ marginTop: 1 }}
+                />
+              </View>
             </View>
           </Page>
         )}

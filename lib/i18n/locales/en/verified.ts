@@ -3,6 +3,15 @@ export default {
     title: "STRhub Verified",
     description:
       "Independent, automated attestations that a forensic STR tool installs and runs end-to-end and produces plausible output, checked on its public source at a pinned commit. Not a claim of genotype accuracy or casework fitness.",
+    summary: {
+      heading: "Summary",
+      level: "Level",
+      datasets: "Datasets",
+      gatesPassed: "{passed}/{total} gates passed",
+      datasetsUsed: "{count} reference dataset(s)",
+      noDatasets: "No datasets",
+      verifiedDate: "Verified on {date}",
+    },
     empty: "No attestations published yet.",
     verifiedOn: "Verified on",
     backToList: "All verified tools",
@@ -41,8 +50,25 @@ export default {
     diagnostics: {
       heading: "Auto-diagnostics",
       note: "Issues detected automatically from the execution log. Suggestions may help resolve failures.",
+      strhubNoteLabel: "STRhub Verified — note",
+      logIssuesLabel: "Issues from execution log",
       sampleNote:
         "These messages reflect the behavior observed during verification with a small test BAM slice provided by STRhub. With full-coverage sequencing data, the tool is expected to genotype significantly more loci. The warnings do not indicate a problem with the tool itself.",
+      ids: {
+        too_few_reads: { title: "Loci skipped (too few reads)", suggestion: "Some loci had insufficient reads after quality filtering. Try lowering --min-reads or relaxing quality filters. The input BAM may also need more coverage at STR regions." },
+        low_bq_reads: { title: "Reads filtered by base quality", suggestion: "Many reads are being removed by the base quality filter. For HipSTR, use --read-qual-trim '!' to lower the quality trimming threshold." },
+        unpaired_reads: { title: "Reads filtered (no mate pair)", suggestion: "Reads without mate pairs are being filtered. This is common with BAM slices where mates fall outside the sliced region." },
+        no_read_groups: { title: "BAM/CRAM missing read groups (@RG)", suggestion: "Add read groups with: samtools addreplacerg -r '@RG\\tID:sample\\tSM:sample' input.bam -o output.bam" },
+        bad_bam: { title: "Invalid or truncated BAM file", suggestion: "The BAM file may be corrupted or incomplete. Re-download or re-index it." },
+        file_not_found: { title: "File not found", suggestion: "Check that the input path matches the manifest and that the fixture was staged correctly." },
+        cannot_open: { title: "Cannot open file", suggestion: "Verify the path exists and the file format is correct." },
+        segfault: { title: "Tool crashed (segmentation fault)", suggestion: "This may indicate incompatible input data, a bug in the tool, or insufficient memory." },
+        oom: { title: "Out of memory", suggestion: "Try reducing the input data size or increasing the timeout." },
+        cmd_not_found: { title: "Command not found", suggestion: "Check the Dockerfile installs it and the PATH includes its location." },
+        zero_genotyped: { title: "No loci were genotyped", suggestion: "All loci were filtered out. Check read quality filters, minimum read thresholds, and input data coverage." },
+        genotyping_summary: { title: "Genotyping summary", suggestion: "" },
+        bad_option: { title: "Unrecognized command-line option", suggestion: "Check the tool's --help or README for the correct option name." },
+      },
     },
     content: {
       heading: "Output content (plausibility evidence)",
@@ -54,16 +80,17 @@ export default {
     },
     data: {
       heading: "Verification data",
-      note: "Reference datasets used as input for this verification run. STRhub is not the data provider; see upstream sources for terms of use.",
+      note: "Public reference datasets used as input for this verification run. Sourced from open-access repositories; see upstream licenses for terms of use.",
       lociTested: "Loci tested",
       lociCount: "forensic STR loci",
       lociScope: "This verification only covers the specific STR loci listed above. The tool may support additional loci not tested by this reference dataset.",
       refGenome: "Ref. genome",
+      noOwnData: "This tool does not include its own demo or test data in its repository. STRhub ran the verification using a pre-built slice from public reference data (listed below). Including a small test file in the repository is recommended for a stronger, self-contained verification.",
     },
     matrix: {
       heading: "Verification matrix",
-      own: "Your data",
-      external: "External data",
+      own: "Tool test data",
+      external: "Reference dataset",
       readme: "README",
       na: "N/A",
       pass: "Pass",
@@ -71,7 +98,7 @@ export default {
       dataset: "Dataset",
       strhubFixture: "STRhub fixture",
       strhubFixtureNote:
-        "This tool does not include its own demo or test data. The verification used a dataset provided by STRhub. We recommend including a small test file in the repository for a stronger, self-contained verification.",
+        "This tool does not include its own demo or test data in its repository. STRhub ran the verification using a pre-built slice from public reference data.",
     },
     readme: {
       heading: "README check (advisory)",
@@ -182,9 +209,9 @@ export default {
       externalNoteIllumina:
         "STRhub will run two tests: on your file and on NIST mds2-2157 Illumina STR data. Our NIST reference covers ForenSeq and PowerSeq 46GY only. Use kit-matched reads in your own fixture.",
       externalNoteOnt:
-        "STRhub will run two tests: on your BAM and on a 1000 Genomes ONT hg38 CODIS slice (~30 MB).",
+        "STRhub will run two tests: on the test BAM from the tool's repository (if provided) and on a 1000 Genomes ONT hg38 CODIS slice (~30 MB).",
       externalNoteIlluminaBam:
-        "STRhub will run two tests: on your BAM and on a 1000 Genomes Illumina 30x hg38 CODIS slice. The reference dataset covers 27 core forensic STR loci only.",
+        "STRhub will run two tests: on the test BAM from the tool's repository (if provided) and on a 1000 Genomes Illumina 30x hg38 CODIS slice. The reference dataset covers 27 core forensic STR loci only.",
       externalNoteOwnOnly:
         "STRhub will run one test with your file only. There is no STRhub reference dataset for this input type (not a failure).",
       fixtureLabel: "Your test file (required)",

@@ -3,6 +3,15 @@ export default {
     title: "STRhub Verified",
     description:
       "Atestações independentes e automáticas de que uma ferramenta forense de STR instala, roda de ponta a ponta e produz uma saída plausível, verificado sobre seu código público em um commit fixado. Não afirma exatidão de genótipos nem aptidão para casework.",
+    summary: {
+      heading: "Resumo",
+      level: "Nível",
+      datasets: "Datasets",
+      gatesPassed: "{passed}/{total} portões passados",
+      datasetsUsed: "{count} dataset(s) de referência",
+      noDatasets: "Sem datasets",
+      verifiedDate: "Verificado em {date}",
+    },
     empty: "Nenhuma atestação publicada ainda.",
     verifiedOn: "Verificado em",
     backToList: "Todas as ferramentas verificadas",
@@ -17,6 +26,10 @@ export default {
     staticPage: "relatório estático",
     disclaimer:
       "Cada resultado é um instantâneo datado, verificado sobre o repositório público da ferramenta em um commit fixado. O STRhub não armazena código-fonte de nenhuma ferramenta.",
+    group: {
+      runs: "execuções de verificação",
+      runSingular: "1 execução de verificação",
+    },
     col: {
       strLoci: "loci STR",
       snps: "SNPs",
@@ -37,8 +50,25 @@ export default {
     diagnostics: {
       heading: "Auto-diagnóstico",
       note: "Problemas detectados automaticamente do log de execução. As sugestões podem ajudar a resolver falhas.",
+      strhubNoteLabel: "STRhub Verified — nota",
+      logIssuesLabel: "Issues do log de execução",
       sampleNote:
         "Estas mensagens refletem o comportamento observado durante a verificação com um pequeno slice de BAM de teste fornecido pelo STRhub. Com dados de sequenciamento de cobertura completa, a ferramenta deve genotipar significativamente mais loci. Os avisos não indicam um problema com a ferramenta em si.",
+      ids: {
+        too_few_reads: { title: "Loci omitidos (poucas leituras)", suggestion: "Alguns loci não tiveram leituras suficientes após a filtragem de qualidade. Tente reduzir --min-reads ou relaxar os filtros de qualidade. O BAM de entrada pode precisar de mais cobertura nas regiões STR." },
+        low_bq_reads: { title: "Leituras filtradas por qualidade de base", suggestion: "Muitas leituras estão sendo removidas pelo filtro de qualidade de base. Para HipSTR, use --read-qual-trim '!' para diminuir o limiar." },
+        unpaired_reads: { title: "Leituras filtradas (sem par)", suggestion: "Leituras sem pares estão sendo filtradas. Isso é comum com slices de BAM onde os pares ficam fora da região." },
+        no_read_groups: { title: "BAM/CRAM sem read groups (@RG)", suggestion: "Adicione read groups com: samtools addreplacerg -r '@RG\\tID:sample\\tSM:sample' input.bam -o output.bam" },
+        bad_bam: { title: "Arquivo BAM inválido ou truncado", suggestion: "O arquivo BAM pode estar corrompido ou incompleto. Faça o download novamente ou reindexe." },
+        file_not_found: { title: "Arquivo não encontrado", suggestion: "Verifique se o caminho do input corresponde ao manifesto e se o fixture foi carregado corretamente." },
+        cannot_open: { title: "Não foi possível abrir o arquivo", suggestion: "Verifique se o caminho existe e se o formato do arquivo está correto." },
+        segfault: { title: "A ferramenta travou (segmentation fault)", suggestion: "Pode indicar dados de entrada incompatíveis, um bug na ferramenta ou memória insuficiente." },
+        oom: { title: "Sem memória", suggestion: "Tente reduzir o tamanho dos dados de entrada ou aumentar o timeout." },
+        cmd_not_found: { title: "Comando não encontrado", suggestion: "Verifique se o Dockerfile o instala e se o PATH inclui sua localização." },
+        zero_genotyped: { title: "Nenhum locus foi genotipado", suggestion: "Todos os loci foram filtrados. Verifique filtros de qualidade de leitura, limiares mínimos e cobertura dos dados de entrada." },
+        genotyping_summary: { title: "Resumo de genotipagem", suggestion: "" },
+        bad_option: { title: "Opção de linha de comando não reconhecida", suggestion: "Verifique --help ou o README da ferramenta para o nome correto da opção." },
+      },
     },
     content: {
       heading: "Conteúdo da saída (evidência de plausibilidade)",
@@ -48,10 +78,19 @@ export default {
       totalReads: "Reads totais",
       strLociList: "Loci STR",
     },
+    data: {
+      heading: "Dados de verificação",
+      note: "Conjuntos de dados de referência públicos usados como entrada para esta execução de verificação. Provenientes de repositórios de acesso aberto; veja as licenças upstream para os termos de uso.",
+      lociTested: "Loci testados",
+      lociCount: "loci STR forenses",
+      lociScope: "Esta verificação cobre apenas os loci STR listados acima. A ferramenta pode suportar loci adicionais não incluídos neste dataset de referência.",
+      refGenome: "Genoma ref.",
+      noOwnData: "Esta ferramenta não inclui dados próprios de demo ou teste em seu repositório. O STRhub executou a verificação com um slice pré-construído de dados de referência públicos (listados abaixo). Recomendamos incluir um pequeno arquivo de teste no repositório para uma verificação mais completa e autocontida.",
+    },
     matrix: {
       heading: "Matriz de verificação",
-      own: "Seus dados",
-      external: "Dados externos",
+      own: "Dados de teste da ferramenta",
+      external: "Dataset de referência",
       readme: "README",
       na: "N/A",
       pass: "OK",
@@ -170,7 +209,9 @@ export default {
       externalNoteIllumina:
         "O STRhub rodará 2 testes: com seu arquivo e com dados Illumina STR do NIST mds2-2157. Nosso dataset NIST cobre apenas ForenSeq e PowerSeq 46GY. Use reads compatíveis com seu kit no seu próprio fixture.",
       externalNoteOnt:
-        "O STRhub rodará 2 testes: com seu BAM e com um slice CODIS 1000 Genomes ONT hg38 (~30 MB).",
+        "O STRhub rodará 2 testes: com o BAM de teste do repositório da ferramenta (se fornecido) e com um slice CODIS 1000 Genomes ONT hg38 (~30 MB).",
+      externalNoteIlluminaBam:
+        "O STRhub rodará 2 testes: com o BAM de teste do repositório da ferramenta (se fornecido) e com um slice CODIS 1000 Genomes Illumina 30x hg38. O dataset de referência cobre apenas 27 loci STR forenses centrais.",
       externalNoteOwnOnly:
         "O STRhub rodará 1 teste apenas com seu arquivo. Não há dataset STRhub para este tipo de input (não é falha).",
       fixtureLabel: "Seu arquivo de teste (obrigatório)",
@@ -228,6 +269,11 @@ export default {
       viewReport: "Ver atestação",
       errorGeneric: "Algo deu errado. Tente novamente.",
       errorValidation: "Corrija os campos destacados.",
+      pdfDownload: "Baixar relatório PDF",
+      pdfGenerating: "Gerando PDF…",
+      pdfDone: "PDF baixado",
+      pdfError: "PDF falhou — tentar novamente",
+      pdfErrorHint: "O relatório pode não estar publicado ainda. Tente novamente em alguns segundos.",
       resubmit: "Editar e reenviar",
       resubmitHint: "Voltar ao formulário com os mesmos parâmetros preenchidos.",
       paramsToggle: "Parâmetros do envio",

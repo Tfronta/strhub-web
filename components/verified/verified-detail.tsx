@@ -80,6 +80,21 @@ const TONE: Record<string, string> = {
   red: "bg-red-600 text-white border-transparent",
 };
 
+function getDiagnosticText(
+  t: (key: string) => string,
+  issue: { id: string; title: string; suggestion?: string },
+): { title: string; suggestion?: string } {
+  const i18nTitle = t(`verified.diagnostics.ids.${issue.id}.title`);
+  const i18nSuggestion = t(`verified.diagnostics.ids.${issue.id}.suggestion`);
+  const hasI18nTitle = i18nTitle !== `verified.diagnostics.ids.${issue.id}.title`;
+  return {
+    title: hasI18nTitle ? i18nTitle : issue.title,
+    suggestion: hasI18nTitle && i18nSuggestion !== `verified.diagnostics.ids.${issue.id}.suggestion`
+      ? i18nSuggestion
+      : issue.suggestion,
+  };
+}
+
 export function VerifiedDetail({
   report,
   slug,
@@ -107,6 +122,14 @@ export function VerifiedDetail({
     .map((dt) => ({ type: dt, ...DATASET_PROVENANCE[dt] }))
     .filter((e) => e.name);
 
+  const hasStrhubFixture = report.datasets?.some(
+    (d) => d.fixture_source === "strhub"
+  );
+
+  const gateKeys = VERIFIED_GATES.map((g) => g.key);
+  const gatesPassed = gateKeys.filter((k) => report.gates?.[k]).length;
+  const gatesTotal = gateKeys.length;
+
   return (
     <div className="flex flex-col min-h-[60vh]">
       <div className="container mx-auto px-4 py-8 flex-1 max-w-3xl">
@@ -127,7 +150,47 @@ export function VerifiedDetail({
           <p className="font-mono text-sm text-muted-foreground">{slug}</p>
         </div>
 
-        {/* Tool metadata card */}
+        {/* ── SUMMARY ── */}
+        <div className="mt-6 rounded-lg border bg-card p-5">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+            {t("verified.summary.heading")}
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("verified.summary.level")}</p>
+              <Badge className={cn("mt-1.5", TONE[level.tone])}>{level.label}</Badge>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("verified.gates")}</p>
+              <p className="text-sm text-muted-foreground tabular-nums mt-1.5">
+                {t("verified.summary.gatesPassed")
+                  .replace("{passed}", String(gatesPassed))
+                  .replace("{total}", String(gatesTotal))}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("verified.summary.datasets")}</p>
+              <p className="text-sm text-muted-foreground tabular-nums mt-1.5">
+                {provenanceEntries.length > 0
+                  ? t("verified.summary.datasetsUsed").replace("{count}", String(provenanceEntries.length))
+                  : t("verified.summary.noDatasets")}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("verified.verifiedOn")}</p>
+              <p className="text-sm text-muted-foreground mt-1.5">
+                {report.generated?.slice(0, 10)}
+              </p>
+            </div>
+          </div>
+          {report.scope && (
+            <p className="mt-4 text-sm text-muted-foreground border-t pt-3">
+              {report.scope}
+            </p>
+          )}
+        </div>
+
+        {/* ── SOURCE ── */}
         <div className="mt-8 rounded-lg border bg-card p-5">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
             {t("verified.source")}
@@ -180,7 +243,7 @@ export function VerifiedDetail({
           </dl>
         </div>
 
-        {/* Gates */}
+        {/* ── GATES ── */}
         <h2 className="mt-10 text-xl font-semibold">{t("verified.gates")}</h2>
         <div className="mt-3 divide-y rounded-lg border">
           {VERIFIED_GATES.map((g) => {
@@ -209,7 +272,6 @@ export function VerifiedDetail({
           })}
         </div>
 
-        {/* Explanatory note when content gate fails */}
         {report.gates?.content === false && (
           <p className="mt-3 text-sm text-muted-foreground italic rounded-lg border-l-4 border-amber-400 bg-amber-50 dark:bg-amber-950/20 px-4 py-3">
             {t("verified.gate.contentFailNote")}
@@ -217,85 +279,192 @@ export function VerifiedDetail({
         )}
 
         {/* Execution logs */}
-        {report.logs && Object.keys(report.logs).length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-3">
-            {Object.entries(report.logs).map(([leg, fname]) => (
-              <a
-                key={leg}
-                href={`${logBaseUrl}/${fname}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
-              >
-                <ExternalLink className="h-3.5 w-3.5" />
-                {t("verified.log.view")} ({leg === "own" ? t("verified.matrix.own") : t("verified.matrix.external")})
-              </a>
-            ))}
-          </div>
-        )}
-
-        {/* Diagnostics */}
-        {report.diagnostics && Object.keys(report.diagnostics).length > 0 && (() => {
-          const seen = new Set<string>();
-          const deduped = Object.values(report.diagnostics).flat().filter((issue) => {
-            if (seen.has(issue.id)) return false;
-            seen.add(issue.id);
-            return true;
+        {report.logs && Object.keys(report.logs).length > 0 && (() => {
+          const visibleLogs = Object.entries(report.logs).filter(([leg]) => {
+            if (!hasStrhubFixture) return true;
+            const legData = report.datasets?.find((d) => d.leg === leg);
+            return legData?.fixture_source !== "strhub";
           });
-          const hasStrhubFixture = report.datasets?.some(
-            (d) => d.fixture_source === "strhub"
+          if (visibleLogs.length === 0) return null;
+          return (
+            <div className="mt-4 flex flex-wrap gap-3">
+              {visibleLogs.map(([leg, fname]) => {
+                const legData = report.datasets?.find((d) => d.leg === leg);
+                const logLabel =
+                  leg === "own"
+                    ? t("verified.matrix.own")
+                    : t("verified.matrix.external");
+                return (
+                  <a
+                    key={leg}
+                    href={`${logBaseUrl}/${fname}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    {t("verified.log.view")}
+                    {visibleLogs.length > 1 ? ` (${logLabel})` : ""}
+                  </a>
+                );
+              })}
+            </div>
           );
+        })()}
+
+        {/* ── VERIFICATION MATRIX ── */}
+        {report.datasets && report.datasets.length > 0 && (() => {
+          const visibleLegs = report.datasets.filter(
+            (leg) => leg.fixture_source !== "strhub"
+          );
+          if (visibleLegs.length === 0) return null;
           return (
             <>
               <h2 className="mt-10 text-xl font-semibold">
-                {t("verified.diagnostics.heading")}
+                {t("verified.matrix.heading")}
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {t("verified.diagnostics.note")}
-              </p>
-              {hasStrhubFixture && (
-                <div className="mt-2 rounded-lg border-l-4 border-sky-400 bg-sky-50 dark:bg-sky-950/20 px-4 py-3 text-sm text-muted-foreground italic">
-                  {t("verified.diagnostics.sampleNote")}
-                </div>
-              )}
-              <div className="mt-3 space-y-2">
-                {deduped.map((issue) => (
-                  <div
-                    key={issue.id}
-                    className={cn(
-                      "rounded-lg border-l-4 px-4 py-3 text-sm",
-                      issue.severity === "error"
-                        ? "border-red-500 bg-red-50 dark:bg-red-950/20"
-                        : issue.severity === "warning"
-                        ? "border-amber-400 bg-amber-50 dark:bg-amber-950/20"
-                        : "border-blue-400 bg-blue-50 dark:bg-blue-950/20"
-                    )}
-                  >
-                    <div className="flex items-start gap-2">
-                      {issue.severity === "error" ? (
-                        <XCircle className="h-4 w-4 mt-0.5 shrink-0 text-red-600" />
-                      ) : issue.severity === "warning" ? (
-                        <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-amber-600" />
-                      ) : (
-                        <Info className="h-4 w-4 mt-0.5 shrink-0 text-blue-600" />
-                      )}
-                      <div>
-                        <p className="font-medium">{issue.title}</p>
-                        {issue.suggestion && (
-                          <p className="mt-1 text-muted-foreground">
-                            {issue.suggestion}
-                          </p>
+              <div className="mt-3 divide-y rounded-lg border">
+                {visibleLegs.map((leg) => {
+                  const state = !leg.available
+                    ? "na"
+                    : leg.passed
+                    ? "pass"
+                    : "fail";
+                  return (
+                    <div
+                      key={leg.leg}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm"
+                    >
+                      <span
+                        className={cn(
+                          "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
+                          state === "pass"
+                            ? "bg-emerald-600 text-white"
+                            : state === "fail"
+                            ? "bg-amber-500 text-white"
+                            : "bg-muted text-muted-foreground"
                         )}
-                      </div>
+                      >
+                        {state === "pass" ? (
+                          <Check className="h-3 w-3" />
+                        ) : (
+                          <Minus className="h-3 w-3" />
+                        )}
+                      </span>
+                      <span className="font-medium">
+                        {leg.leg === "own"
+                          ? t("verified.matrix.own")
+                          : leg.leg === "external"
+                          ? t("verified.matrix.external")
+                          : leg.label}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {state === "na"
+                          ? t("verified.matrix.na")
+                          : state === "pass"
+                          ? t("verified.matrix.pass")
+                          : t("verified.matrix.fail")}
+                      </span>
+                      {leg.dataset && (
+                        <span className="ml-auto truncate text-xs text-muted-foreground">
+                          {leg.dataset}
+                        </span>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </>
           );
         })()}
 
-        {/* Output content evidence */}
+        {/* ── VERIFICATION DATA (provenance) ── */}
+        {(provenanceEntries.length > 0 || hasStrhubFixture) && (
+          <>
+            <h2 className="mt-10 text-xl font-semibold">
+              {t("verified.data.heading")}
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("verified.data.note")}
+            </p>
+
+            {hasStrhubFixture && (
+              <p className="mt-3 text-sm text-muted-foreground italic rounded-lg border-l-4 border-blue-400 bg-blue-50 dark:bg-blue-950/20 px-4 py-3">
+                {t("verified.data.noOwnData")}
+              </p>
+            )}
+
+            {provenanceEntries.length > 0 && (
+              <>
+                <div className="mt-3 space-y-3">
+                  {provenanceEntries.map((ds) => (
+                    <div
+                      key={ds.type}
+                      className="rounded-lg border-l-4 border-border bg-muted/50 p-4"
+                    >
+                      <p className="text-sm font-medium">{ds.name}</p>
+                      <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
+                        <dt className="text-muted-foreground">Source</dt>
+                        <dd>
+                          <a
+                            href={ds.source}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline break-all"
+                          >
+                            {ds.source}
+                          </a>
+                        </dd>
+                        {ds.doi && (
+                          <>
+                            <dt className="text-muted-foreground">DOI</dt>
+                            <dd>
+                              <a
+                                href={`https://doi.org/${ds.doi}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline"
+                              >
+                                {ds.doi}
+                              </a>
+                            </dd>
+                          </>
+                        )}
+                        <dt className="text-muted-foreground">License</dt>
+                        <dd className="text-muted-foreground">{ds.license}</dd>
+                        {ds.referenceGenome && (
+                          <>
+                            <dt className="text-muted-foreground">{t("verified.data.refGenome")}</dt>
+                            <dd>
+                              <span className="font-medium">{ds.referenceGenome.assembly}</span>
+                              <span className="text-muted-foreground ml-2">
+                                ({ds.referenceGenome.mountPath})
+                              </span>
+                            </dd>
+                          </>
+                        )}
+                        <dt className="text-muted-foreground pt-1">{t("verified.data.lociTested")}</dt>
+                        <dd className="pt-1">
+                          <p className="text-xs text-muted-foreground mb-1">
+                            {ds.loci.length} {t("verified.data.lociCount")}
+                          </p>
+                          <p className="text-[10px] font-mono text-muted-foreground/70 leading-relaxed">
+                            {ds.loci.join(", ")}
+                          </p>
+                        </dd>
+                      </dl>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground italic">
+                  {t("verified.data.lociScope")}
+                </p>
+              </>
+            )}
+          </>
+        )}
+
+        {/* ── OUTPUT CONTENT ── */}
         {stats && (
           <>
             <h2 className="mt-10 text-xl font-semibold">
@@ -353,151 +522,83 @@ export function VerifiedDetail({
           </>
         )}
 
-        {/* Verification data (provenance) */}
-        {provenanceEntries.length > 0 && (
-          <>
-            <h2 className="mt-10 text-xl font-semibold">
-              {t("verified.data.heading")}
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {t("verified.data.note")}
-            </p>
-            <div className="mt-3 space-y-3">
-              {provenanceEntries.map((ds) => (
-                <div
-                  key={ds.type}
-                  className="rounded-lg border-l-4 border-border bg-muted/50 p-4"
-                >
-                  <p className="text-sm font-medium">{ds.name}</p>
-                  <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
-                    <dt className="text-muted-foreground">Source</dt>
-                    <dd>
-                      <a
-                        href={ds.source}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline break-all"
-                      >
-                        {ds.source}
-                      </a>
-                    </dd>
-                    {ds.doi && (
-                      <>
-                        <dt className="text-muted-foreground">DOI</dt>
-                        <dd>
-                          <a
-                            href={`https://doi.org/${ds.doi}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary hover:underline"
-                          >
-                            {ds.doi}
-                          </a>
-                        </dd>
-                      </>
-                    )}
-                    <dt className="text-muted-foreground">License</dt>
-                    <dd className="text-muted-foreground">{ds.license}</dd>
-                    {ds.referenceGenome && (
-                      <>
-                        <dt className="text-muted-foreground">{t("verified.data.refGenome")}</dt>
-                        <dd>
-                          <span className="font-medium">{ds.referenceGenome.assembly}</span>
-                          <span className="text-muted-foreground ml-2">
-                            ({ds.referenceGenome.mountPath})
-                          </span>
-                        </dd>
-                      </>
-                    )}
-                    <dt className="text-muted-foreground pt-1">{t("verified.data.lociTested")}</dt>
-                    <dd className="pt-1">
-                      <p className="text-xs text-muted-foreground mb-1">
-                        {ds.loci.length} {t("verified.data.lociCount")}
-                      </p>
-                      <p className="text-[10px] font-mono text-muted-foreground/70 leading-relaxed">
-                        {ds.loci.join(", ")}
-                      </p>
-                    </dd>
-                  </dl>
-                </div>
-              ))}
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground italic">
-              {t("verified.data.lociScope")}
-            </p>
-          </>
-        )}
-
-        {/* Verification matrix (Fase 3) */}
-        {report.datasets && report.datasets.length > 0 && (
-          <>
-            <h2 className="mt-10 text-xl font-semibold">
-              {t("verified.matrix.heading")}
-            </h2>
-            <div className="mt-3 divide-y rounded-lg border">
-              {report.datasets.map((leg) => {
-                const state = !leg.available
-                  ? "na"
-                  : leg.passed
-                  ? "pass"
-                  : "fail";
-                return (
-                  <div
-                    key={leg.leg}
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm"
-                  >
-                    <span
-                      className={cn(
-                        "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
-                        state === "pass"
-                          ? "bg-emerald-600 text-white"
-                          : state === "fail"
-                          ? "bg-amber-500 text-white"
-                          : "bg-muted text-muted-foreground"
-                      )}
-                    >
-                      {state === "pass" ? (
-                        <Check className="h-3 w-3" />
-                      ) : (
-                        <Minus className="h-3 w-3" />
-                      )}
-                    </span>
-                    <span className="font-medium">
-                      {leg.leg === "own"
-                        ? leg.fixture_source === "strhub"
-                          ? t("verified.matrix.strhubFixture")
-                          : t("verified.matrix.own")
-                        : leg.leg === "external"
-                        ? t("verified.matrix.external")
-                        : leg.label}
-                    </span>
-                    <span className="text-muted-foreground">
-                      {state === "na"
-                        ? t("verified.matrix.na")
-                        : state === "pass"
-                        ? t("verified.matrix.pass")
-                        : t("verified.matrix.fail")}
-                    </span>
-                    {leg.dataset && (
-                      <span className="ml-auto truncate text-xs text-muted-foreground">
-                        {leg.dataset}
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-            {report.datasets.some(
-              (leg) => leg.leg === "own" && leg.fixture_source === "strhub"
-            ) && (
-              <p className="mt-3 text-sm text-muted-foreground italic rounded-lg border-l-4 border-blue-400 bg-blue-50 dark:bg-blue-950/20 px-4 py-3">
-                {t("verified.matrix.strhubFixtureNote")}
+        {/* ── AUTO-DIAGNOSTICS ── */}
+        {report.diagnostics && Object.keys(report.diagnostics).length > 0 && (() => {
+          const HIDDEN_IDS = new Set(["genotyping_summary"]);
+          const seen = new Set<string>();
+          const deduped = Object.values(report.diagnostics).flat().filter((issue) => {
+            if (HIDDEN_IDS.has(issue.id)) return false;
+            if (seen.has(issue.id)) return false;
+            seen.add(issue.id);
+            return true;
+          });
+          if (deduped.length === 0 && !hasStrhubFixture) return null;
+          return (
+            <>
+              <h2 className="mt-10 text-xl font-semibold">
+                {t("verified.diagnostics.heading")}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {t("verified.diagnostics.note")}
               </p>
-            )}
-          </>
-        )}
+              {hasStrhubFixture && (
+                <div className="mt-3 rounded-lg border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-950/20 px-4 py-3">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-sky-700 dark:text-sky-400 mb-1">
+                    {t("verified.diagnostics.strhubNoteLabel")}
+                  </p>
+                  <p className="text-sm text-muted-foreground italic">
+                    {t("verified.diagnostics.sampleNote")}
+                  </p>
+                </div>
+              )}
+              {deduped.length > 0 && (
+                <>
+                  <p className="mt-4 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    {t("verified.diagnostics.logIssuesLabel")}
+                  </p>
+                  <div className="space-y-2">
+                    {deduped.map((issue) => {
+                      const txt = getDiagnosticText(t, issue);
+                      return (
+                        <div
+                          key={issue.id}
+                          className={cn(
+                            "rounded-lg border-l-4 px-4 py-3 text-sm",
+                            issue.severity === "error"
+                              ? "border-red-500 bg-red-50 dark:bg-red-950/20"
+                              : issue.severity === "warning"
+                              ? "border-amber-400 bg-amber-50 dark:bg-amber-950/20"
+                              : "border-blue-400 bg-blue-50 dark:bg-blue-950/20"
+                          )}
+                        >
+                          <div className="flex items-start gap-2">
+                            {issue.severity === "error" ? (
+                              <XCircle className="h-4 w-4 mt-0.5 shrink-0 text-red-600" />
+                            ) : issue.severity === "warning" ? (
+                              <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-amber-600" />
+                            ) : (
+                              <Info className="h-4 w-4 mt-0.5 shrink-0 text-blue-600" />
+                            )}
+                            <div>
+                              <p className="font-medium">{txt.title}</p>
+                              {txt.suggestion && (
+                                <p className="mt-1 text-muted-foreground">
+                                  {txt.suggestion}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </>
+          );
+        })()}
 
-        {/* README check (advisory) */}
+        {/* ── README CHECK ── */}
         {report.readme_check && (
           <>
             <h2 className="mt-10 text-xl font-semibold">
@@ -542,7 +643,7 @@ export function VerifiedDetail({
           </>
         )}
 
-        {/* Scope */}
+        {/* ── SCOPE ── */}
         <h2 className="mt-10 text-xl font-semibold">{t("verified.scope")}</h2>
         <div className="mt-3 rounded-lg border-l-4 border-emerald-600 bg-muted/50 p-4 text-sm">
           <p>{report.scope}</p>

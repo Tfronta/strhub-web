@@ -1,8 +1,36 @@
 {
   "approvedRepos": [
-    "https://github.com/ahhgust/straitrazor"
+    "https://github.com/ahhgust/straitrazor",
+    "https://github.com/tfwillems/hipstr"
   ],
   "submissions": [
+    {
+      "slug": "hipstr-v0-7",
+      "repo": "https://github.com/tfwillems/HipSTR",
+      "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+      "dispatchId": "sv_mqnt6v7l_lhl1uav4",
+      "createdAt": "2026-06-21T13:15:06.805Z",
+      "ip": "::1",
+      "status": "dispatched"
+    },
+    {
+      "slug": "hipstr-v0-7",
+      "repo": "https://github.com/tfwillems/HipSTR",
+      "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+      "dispatchId": "sv_mqmsy2bd_3dctc6py",
+      "createdAt": "2026-06-20T20:20:29.582Z",
+      "ip": "::1",
+      "status": "dispatched"
+    },
+    {
+      "slug": "hipstr-v0-7",
+      "repo": "https://github.com/tfwillems/HipSTR",
+      "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+      "dispatchId": "sv_mqmspzv1_ksdms6vz",
+      "createdAt": "2026-06-20T20:14:13.301Z",
+      "ip": "::1",
+      "status": "dispatched"
+    },
     {
       "slug": "straitrazor-v1-0-5",
       "repo": "https://github.com/Ahhgust/STRaitRazor",

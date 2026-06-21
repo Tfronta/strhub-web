@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, Loader2, CheckCircle2, XCircle, Info, Download } from "lucide-react";
+import { AlertTriangle, Loader2, CheckCircle2, XCircle, Info, Download, ChevronDown, ChevronRight, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,6 +52,61 @@ function inputTypeOptionLabel(
   suffixKey: "verified.submit.inputTypeSuffixWithReference" | "verified.submit.inputTypeSuffixOwnOnly",
 ): string {
   return `${label}${t(suffixKey)}`;
+}
+
+const FORM_STORAGE_KEY = "strhub-verified-submit-form";
+
+interface StoredFormState {
+  f: typeof INITIAL_F;
+  dockerMode: "generated" | "provided";
+  fixtureSource: "same" | "other";
+  showContent: boolean;
+}
+
+const INITIAL_F = {
+  name: "",
+  version: "",
+  maintainer: "",
+  contact: "",
+  repo: "",
+  ref: "",
+  dockerfile: "",
+  language: "python",
+  buildCmd: "",
+  checkCmd: "",
+  cmd: "",
+  timeout: "15",
+  inputType: "",
+  inputTypeCustom: "",
+  fixtureFilePath: "",
+  fixtureRepo: "",
+  fixtureRef: "",
+  outputPath: "",
+  outputFormat: "tsv",
+  minRecords: "1",
+  columns: "",
+  dnaColumn: "",
+  countColumns: "",
+  locusColumn: "",
+  minDistinctLoci: "",
+  expectLoci: "",
+  minTotalReads: "",
+};
+
+function saveFormState(state: StoredFormState) {
+  try {
+    sessionStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(state));
+  } catch { /* quota exceeded or SSR */ }
+}
+
+function loadFormState(): StoredFormState | null {
+  try {
+    const raw = sessionStorage.getItem(FORM_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as StoredFormState;
+  } catch {
+    return null;
+  }
 }
 
 const CMD_TEMPLATE_PREFIX = "mytool ";
@@ -141,7 +196,7 @@ async function fetchCmdFromReadme(
       a = a.replace(/(--ref(?:erence)?\s+)\S+\.fa\S*/gi, `$1${refPath}`);
     }
     a = a.replace(/(--regions\s+)\S+/gi, "$1/data/in/regions.bed");
-    a = a.replace(/(--str-vcf\s+)\S+/gi, "$1/data/out/result.vcf");
+    a = a.replace(/(--str-vcf\s+)\S+/gi, "$1/data/out/result.vcf.gz");
     a = a.replace(/(--vcf\s+)\S+/gi, "$1/data/out/result.vcf");
     a = a.replace(/(--out(?:put)?\s+)\S+/gi, "$1/data/out/result.tsv");
     a = a.replace(/(-o\s+)\S+\.\w+/gi, "$1/data/out/result.tsv");
@@ -224,6 +279,7 @@ export function VerifiedSubmitForm() {
   const [dockerMode, setDockerMode] = useState<"generated" | "provided">("generated");
   const [fixtureSource, setFixtureSource] = useState<"same" | "other">("same");
   const [showContent, setShowContent] = useState(false);
+  const [showParams, setShowParams] = useState(false);
 
   // Result state.
   const [slug, setSlug] = useState<string | null>(null);
@@ -234,36 +290,21 @@ export function VerifiedSubmitForm() {
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
 
   // Form fields (controlled).
-  const [f, setF] = useState({
-    name: "",
-    version: "",
-    maintainer: "",
-    contact: "",
-    repo: "",
-    ref: "",
-    dockerfile: "",
-    language: "python",
-    buildCmd: "",
-    checkCmd: "",
-    cmd: "",
-    timeout: "15",
-    inputType: "",
-    inputTypeCustom: "",
-    fixtureFilePath: "",
-    fixtureRepo: "",
-    fixtureRef: "",
-    outputPath: "",
-    outputFormat: "tsv",
-    minRecords: "1",
-    // content (advanced)
-    columns: "",
-    dnaColumn: "",
-    countColumns: "",
-    locusColumn: "",
-    minDistinctLoci: "",
-    expectLoci: "",
-    minTotalReads: "",
-  });
+  const [f, setF] = useState(INITIAL_F);
+
+  // Restore form state from sessionStorage on mount.
+  const didRestore = useRef(false);
+  useEffect(() => {
+    if (didRestore.current) return;
+    didRestore.current = true;
+    const stored = loadFormState();
+    if (stored) {
+      setF(stored.f);
+      setDockerMode(stored.dockerMode);
+      setFixtureSource(stored.fixtureSource);
+      setShowContent(stored.showContent);
+    }
+  }, []);
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setF((prev) => ({ ...prev, [k]: e.target.value }));
 
@@ -426,6 +467,7 @@ export function VerifiedSubmitForm() {
       return;
     }
 
+    saveFormState({ f, dockerMode, fixtureSource, showContent });
     setPhase("submitting");
     try {
       const res = await fetch("/api/verify/submit", {
@@ -460,6 +502,30 @@ export function VerifiedSubmitForm() {
     }
   }
 
+  function handleResubmit() {
+    if (pollRef.current) clearInterval(pollRef.current);
+    setPhase("form");
+    setFormError(null);
+    setErrors({});
+    setRunState("pending");
+    setConclusion(null);
+    setRunUrl(null);
+    setDispatchId(null);
+    setPendingMessage(null);
+    setPdfState("idle");
+    setShowParams(false);
+  }
+
+  const submissionParamsProps = {
+    f,
+    dockerMode,
+    fixtureSource,
+    showParams,
+    onToggle: () => setShowParams((v) => !v),
+    onResubmit: handleResubmit,
+    t,
+  };
+
   const err = (key: string) =>
     errors[key] ? <p className="mt-1 text-xs text-destructive">{errors[key]}</p> : null;
 
@@ -472,6 +538,7 @@ export function VerifiedSubmitForm() {
           <AlertTitle>{t("verified.submit.title")}</AlertTitle>
           <AlertDescription>{pendingMessage}</AlertDescription>
         </Alert>
+        <SubmissionParams {...submissionParamsProps} />
       </ResultShell>
     );
   }
@@ -557,6 +624,7 @@ export function VerifiedSubmitForm() {
             )}
           </CardContent>
         </Card>
+        <SubmissionParams {...submissionParamsProps} />
       </ResultShell>
     );
   }
@@ -1116,6 +1184,113 @@ function ResultShell({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col min-h-[60vh]">
       <div className="container mx-auto max-w-2xl px-4 py-12 flex-1">{children}</div>
       <SiteFooter />
+    </div>
+  );
+}
+
+function SubmissionParams({
+  f,
+  dockerMode,
+  fixtureSource,
+  showParams,
+  onToggle,
+  onResubmit,
+  t,
+}: {
+  f: typeof INITIAL_F;
+  dockerMode: "generated" | "provided";
+  fixtureSource: "same" | "other";
+  showParams: boolean;
+  onToggle: () => void;
+  onResubmit: () => void;
+  t: (key: string) => string;
+}) {
+  const resolvedInputType =
+    f.inputType === "__other__" ? f.inputTypeCustom : f.inputType;
+  const inputTypeLabel =
+    INPUT_TYPES.find((it) => it.slug === f.inputType)?.label ?? resolvedInputType;
+
+  const fixtureDisplay = f.fixtureFilePath
+    ? fixtureSource === "other" && f.fixtureRepo
+      ? `${f.fixtureRepo}@${f.fixtureRef}:${f.fixtureFilePath}`
+      : f.fixtureFilePath
+    : "—";
+
+  const buildDisplay =
+    dockerMode === "generated"
+      ? `${f.language} — ${f.buildCmd}`
+      : t("verified.submit.dockerProvided");
+
+  return (
+    <div className="space-y-3 mt-4">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+      >
+        {showParams ? (
+          <ChevronDown className="h-4 w-4" />
+        ) : (
+          <ChevronRight className="h-4 w-4" />
+        )}
+        {t("verified.submit.paramsToggle")}
+      </button>
+
+      {showParams && (
+        <Card>
+          <CardContent className="pt-4">
+            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
+              <dt className="text-muted-foreground">{t("verified.submit.paramsToolName")}</dt>
+              <dd className="font-medium">{f.name}</dd>
+
+              <dt className="text-muted-foreground">{t("verified.submit.paramsVersion")}</dt>
+              <dd>{f.version}</dd>
+
+              <dt className="text-muted-foreground">{t("verified.submit.paramsRepo")}</dt>
+              <dd className="break-all text-xs font-mono">{f.repo}</dd>
+
+              <dt className="text-muted-foreground">{t("verified.submit.paramsRef")}</dt>
+              <dd className="font-mono text-xs">{f.ref}</dd>
+
+              <dt className="text-muted-foreground">{t("verified.submit.paramsBuild")}</dt>
+              <dd className="font-mono text-xs break-all">{buildDisplay}</dd>
+
+              <dt className="text-muted-foreground">{t("verified.submit.paramsCmd")}</dt>
+              <dd className="font-mono text-xs break-all">{f.cmd}</dd>
+
+              <dt className="text-muted-foreground">{t("verified.submit.paramsTimeout")}</dt>
+              <dd>{f.timeout} min</dd>
+
+              {inputTypeLabel && (
+                <>
+                  <dt className="text-muted-foreground">{t("verified.submit.paramsInputType")}</dt>
+                  <dd>{inputTypeLabel}</dd>
+                </>
+              )}
+
+              <dt className="text-muted-foreground">{t("verified.submit.paramsFixture")}</dt>
+              <dd className="font-mono text-xs break-all">{fixtureDisplay}</dd>
+
+              <dt className="text-muted-foreground">{t("verified.submit.paramsOutput")}</dt>
+              <dd className="font-mono text-xs">
+                {f.outputPath} ({f.outputFormat})
+              </dd>
+            </dl>
+          </CardContent>
+        </Card>
+      )}
+
+      <button
+        type="button"
+        onClick={onResubmit}
+        className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted"
+      >
+        <RotateCcw className="h-4 w-4" />
+        {t("verified.submit.resubmit")}
+      </button>
+      <p className="text-xs text-muted-foreground">
+        {t("verified.submit.resubmitHint")}
+      </p>
     </div>
   );
 }

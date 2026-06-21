@@ -105,7 +105,10 @@ export async function POST(request: NextRequest) {
 
   try {
     // 3. New-repo gate: hold for admin approval.
-    if (!(await isRepoApproved(sub.source.repo))) {
+    //    Skip for re-submissions — if the tool already has a manifest in the
+    //    engine repo, the repo was implicitly approved on its first run.
+    const isResubmission = await pathExists(`tools/${slug}/manifest.yml`);
+    if (!isResubmission && !(await isRepoApproved(sub.source.repo))) {
       await recordSubmission({
         slug,
         repo: sub.source.repo,

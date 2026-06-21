@@ -142,6 +142,8 @@ export default {
         "Command STRhub runs inside the container at verification time. Input files are read-only under /data/in/; write outputs under /data/out/. Use container paths, not paths on your computer or in the GitHub tree.",
       cmdTooltipAria: "What the run command is and how paths work",
       cmdReplaceMytool: "Replace \"mytool\" with the actual binary or command that runs your tool (e.g. hipstr, strait_razor, toastr). The rest of the paths are correct.",
+      cmdFetchingReadme: "Reading your repo's README…",
+      cmdSuggestFromReadme: "Suggested from your README — click to use:",
       cmdHint: "Your tool reads input from /data/in/ and writes output to /data/out/.",
       cmdHintWithRef: "Your tool reads input from /data/in/, the reference genome from {mountPath}, and writes output to /data/out/.",
       refGenomeTitle: "Reference genome: {assembly}",

@@ -130,6 +130,8 @@ export default {
         "Comando que o STRhub executa dentro do contêiner na verificação. Os inputs ficam somente leitura em /data/in/; escreva outputs em /data/out/. Use caminhos do contêiner, não do seu computador nem da árvore do GitHub.",
       cmdTooltipAria: "O que é o comando de execução e como funcionam os caminhos",
       cmdReplaceMytool: "Substitua \"mytool\" pelo binário ou comando real da sua ferramenta (ex. hipstr, strait_razor, toastr). O restante dos caminhos está correto.",
+      cmdFetchingReadme: "Lendo o README do seu repo…",
+      cmdSuggestFromReadme: "Sugerido do seu README — clique para usar:",
       cmdHint: "Sua ferramenta lê os dados de /data/in/ e escreve a saída em /data/out/.",
       cmdHintWithRef: "Sua ferramenta lê os dados de /data/in/, o genoma de referência de {mountPath}, e escreve a saída em /data/out/.",
       refGenomeTitle: "Genoma de referência: {assembly}",

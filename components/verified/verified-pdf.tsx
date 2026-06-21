@@ -284,7 +284,7 @@ function sectionNumber(
   hasDatasets: boolean,
   base: "diagnostics" | "data" | "matrix" | "scope"
 ): number {
-  let n = 2;
+  let n = 3;
   if (base === "diagnostics") return n + 1;
   if (hasDiagnostics) n++;
   n++;
@@ -333,11 +333,13 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
     (d) => d.fixture_source === "strhub"
   );
 
+  const HIDDEN_IDS = new Set(["genotyping_summary"]);
   const dedupedDiagnostics: VerifiedDiagnostic[] = [];
   if (report.diagnostics) {
     const seen = new Set<string>();
     for (const issues of Object.values(report.diagnostics)) {
       for (const issue of issues) {
+        if (HIDDEN_IDS.has(issue.id)) continue;
         if (!seen.has(issue.id)) {
           seen.add(issue.id);
           dedupedDiagnostics.push(issue);
@@ -401,8 +403,40 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
           </View>
         </View>
 
+        {/* Section: Summary */}
+        <Text style={s.sectionTitle}>1. Summary</Text>
+        <View style={{ flexDirection: "row", marginBottom: 6 }}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 7, color: SUBTLE, marginBottom: 2 }}>LEVEL</Text>
+            <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: TEAL }}>
+              {LEVEL_LABELS[report.level]}
+            </Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 7, color: SUBTLE, marginBottom: 2 }}>GATES</Text>
+            <Text style={{ fontSize: 8, color: SECONDARY }}>
+              {gateOrder.filter((k) => report.gates?.[k]).length}/{gateOrder.length} passed
+            </Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 7, color: SUBTLE, marginBottom: 2 }}>DATASETS</Text>
+            <Text style={{ fontSize: 8, color: SECONDARY }}>
+              {provenanceEntries.length > 0 ? `${provenanceEntries.length} reference` : "None"}
+            </Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 7, color: SUBTLE, marginBottom: 2 }}>VERIFIED ON</Text>
+            <Text style={{ fontSize: 8, color: SECONDARY }}>{dateStr}</Text>
+          </View>
+        </View>
+        {report.scope && (
+          <Text style={{ fontSize: 7.5, color: SECONDARY, lineHeight: 1.4 }}>
+            {report.scope}
+          </Text>
+        )}
+
         {/* Section: Tool */}
-        <Text style={s.sectionTitle}>1. Tool Under Verification</Text>
+        <Text style={s.sectionTitle}>2. Tool Under Verification</Text>
         <View style={s.kvRow}>
           <Text style={s.kvLabel}>Tool name</Text>
           <Text style={s.kvValue}>{report.tool.name}</Text>
@@ -451,7 +485,7 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
         )}
 
         {/* Section: Gates */}
-        <Text style={s.sectionTitle}>2. Verification Gates</Text>
+        <Text style={s.sectionTitle}>3. Verification Gates</Text>
         <View style={s.tableHeader}>
           <Text style={{ ...s.tableHeaderText, width: 90 }}>Gate</Text>
           <Text style={{ ...s.tableHeaderText, width: 50 }}>Result</Text>
@@ -552,7 +586,7 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
         {stats && (
           <>
             <Text style={s.sectionTitle}>
-              {hasDiagnostics ? 4 : 3}. Output Content Evidence
+              {hasDiagnostics ? 5 : 4}. Output Content Evidence
             </Text>
             {ioOut && (
               <>
@@ -657,10 +691,19 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
               {sectionNumber(hasDiagnostics, hasStats, hasProvenance, hasDatasets, "data")}. Verification Data
             </Text>
             <Text style={{ fontSize: 8, color: SECONDARY, marginBottom: 6 }}>
-              The following reference datasets were used as input for this
-              verification run. STRhub is not the data provider; see upstream
-              sources for terms of use.
+              Public reference datasets used as input for this verification run.
+              Sourced from open-access repositories; see upstream licenses for terms of use.
             </Text>
+            {hasStrhubFixture && (
+              <View style={{ ...s.scopeBox, borderLeftColor: "#60a5fa", backgroundColor: "#eff6ff", marginBottom: 6, marginTop: 0 }}>
+                <Text style={{ fontSize: 7.5, color: SECONDARY, fontStyle: "italic", lineHeight: 1.4 }}>
+                  This tool does not include its own demo or test data in its repository. STRhub ran
+                  the verification using a pre-built slice from the public reference data listed below.
+                  Including a small test file in the repository is recommended for a stronger,
+                  self-contained verification.
+                </Text>
+              </View>
+            )}
             {provenanceEntries.map((ds) => (
               <View key={ds.type} style={s.datasetBox}>
                 <Text style={s.datasetName}>{ds.name}</Text>
@@ -721,66 +764,68 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
         )}
 
         {/* Section: Matrix (Fase 3) */}
-        {hasDatasets && (
-          <>
-            <Text style={s.sectionTitle}>
-              {sectionNumber(hasDiagnostics, hasStats, hasProvenance, hasDatasets, "matrix")}. Verification
-              Matrix
-            </Text>
-            <View style={s.tableHeader}>
-              <Text style={{ ...s.tableHeaderText, width: 100 }}>
-                Data source
+        {hasDatasets && (() => {
+          const visibleLegs = report.datasets!.filter(
+            (leg) => leg.fixture_source !== "strhub"
+          );
+          if (visibleLegs.length === 0) return null;
+          return (
+            <>
+              <Text style={s.sectionTitle}>
+                {sectionNumber(hasDiagnostics, hasStats, hasProvenance, hasDatasets, "matrix")}. Verification
+                Matrix
               </Text>
-              <Text style={{ ...s.tableHeaderText, width: 50 }}>Result</Text>
-              <Text style={{ ...s.tableHeaderText, flex: 1 }}>Dataset</Text>
-            </View>
-            {report.datasets!.map((leg, i) => {
-              const state = !leg.available
-                ? "N/A"
-                : leg.passed
-                  ? "PASS"
-                  : "FAIL";
-              return (
-                <View
-                  key={leg.leg}
-                  style={[s.tableRow, i % 2 === 1 ? s.tableRowAlt : {}]}
-                >
-                  <Text
-                    style={{
-                      width: 100,
-                      fontSize: 8,
-                      fontFamily: "Helvetica-Bold",
-                    }}
+              <View style={s.tableHeader}>
+                <Text style={{ ...s.tableHeaderText, width: 100 }}>
+                  Data source
+                </Text>
+                <Text style={{ ...s.tableHeaderText, width: 50 }}>Result</Text>
+                <Text style={{ ...s.tableHeaderText, flex: 1 }}>Dataset</Text>
+              </View>
+              {visibleLegs.map((leg, i) => {
+                const state = !leg.available
+                  ? "N/A"
+                  : leg.passed
+                    ? "PASS"
+                    : "FAIL";
+                return (
+                  <View
+                    key={leg.leg}
+                    style={[s.tableRow, i % 2 === 1 ? s.tableRowAlt : {}]}
                   >
-                    {leg.leg === "own"
-                      ? leg.fixture_source === "strhub"
-                        ? "STRhub fixture"
-                        : "Author's data"
-                      : "External data"}
-                  </Text>
-                  <Text
-                    style={{
-                      width: 50,
-                      fontSize: 8,
-                      fontFamily: "Helvetica-Bold",
-                    }}
-                  >
-                    {state}
-                  </Text>
-                  <Text
-                    style={{
-                      flex: 1,
-                      fontSize: 7.5,
-                      color: SECONDARY,
-                    }}
-                  >
-                    {leg.dataset ?? "--"}
-                  </Text>
-                </View>
-              );
-            })}
-          </>
-        )}
+                    <Text
+                      style={{
+                        width: 100,
+                        fontSize: 8,
+                        fontFamily: "Helvetica-Bold",
+                      }}
+                    >
+                      {leg.leg === "own" ? "Tool test data" : "Reference dataset"}
+                    </Text>
+                    <Text
+                      style={{
+                        width: 50,
+                        fontSize: 8,
+                        fontFamily: "Helvetica-Bold",
+                      }}
+                    >
+                      {state}
+                    </Text>
+                    <Text
+                      style={{
+                        flex: 1,
+                        fontSize: 7.5,
+                        color: SECONDARY,
+                      }}
+                    >
+                      {leg.dataset ?? "--"}
+                    </Text>
+                  </View>
+                );
+              })}
+            </>
+          );
+        })()}
 
         {/* README check */}
         {report.readme_check && (
@@ -849,16 +894,21 @@ export function VerifiedPDF({ report, slug, logoSrc }: Props) {
               </Link>
             </View>
           )}
-          {report.logs && Object.entries(report.logs).map(([leg, fname]) => (
-            <View key={leg} style={s.kvRow}>
-              <Text style={s.kvLabel}>Log ({leg})</Text>
-              <Link src={`https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages/${fname}`}>
-                <Text style={{ fontSize: 7.5, color: LINK }}>
-                  {fname}
-                </Text>
-              </Link>
-            </View>
-          ))}
+          {report.logs && Object.entries(report.logs)
+            .filter(([leg]) => {
+              const legData = report.datasets?.find((d) => d.leg === leg);
+              return legData?.fixture_source !== "strhub";
+            })
+            .map(([leg, fname]) => (
+              <View key={leg} style={s.kvRow}>
+                <Text style={s.kvLabel}>Execution log</Text>
+                <Link src={`https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages/${fname}`}>
+                  <Text style={{ fontSize: 7.5, color: LINK }}>
+                    {fname}
+                  </Text>
+                </Link>
+              </View>
+            ))}
         </View>
 
         {/* Footer */}

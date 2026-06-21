@@ -6,7 +6,7 @@ import {
 } from "@/lib/verified";
 import { VerifiedDetail } from "@/components/verified/verified-detail";
 
-export const revalidate = 3600;
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,

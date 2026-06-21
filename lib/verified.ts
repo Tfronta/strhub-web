@@ -10,8 +10,8 @@ const BASE =
   process.env.NEXT_PUBLIC_VERIFIED_BASE ??
   "https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages";
 
-// Revalidate at most hourly — attestations are static snapshots, not live data.
-const REVALIDATE_SECONDS = 3600;
+// Revalidate every 5 minutes — short enough to reflect new runs promptly.
+const REVALIDATE_SECONDS = 300;
 
 async function fetchJson<T>(url: string): Promise<T | null> {
   try {

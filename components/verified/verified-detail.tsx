@@ -613,7 +613,10 @@ export function VerifiedDetail({
             seen.add(issue.id);
             return true;
           });
-          if (deduped.length === 0 && !hasStrhubFixture) return null;
+          const hasActionable = deduped.some(
+            (i) => i.severity === "error" || i.severity === "warning"
+          );
+          if (!hasActionable) return null;
           return (
             <>
               <h2 className="mt-10 text-xl font-semibold">

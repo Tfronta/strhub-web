@@ -17,7 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const TONE: Record<string, string> = {
-  green: "bg-emerald-600 text-white border-transparent",
+  green: "bg-teal-600 text-white border-transparent",
   amber: "bg-amber-500 text-white border-transparent",
   red: "bg-red-600 text-white border-transparent",
 };

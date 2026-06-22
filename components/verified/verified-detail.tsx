@@ -149,6 +149,11 @@ export function VerifiedDetail({
   } else if (LEGACY_SLUG_DATASETS[slug]) {
     for (const t2 of LEGACY_SLUG_DATASETS[slug]) datasetTypes.add(t2);
   }
+
+  const isYstr = Array.from(datasetTypes).some((dt) => dt.endsWith("-y"));
+  const panelLabel = datasetTypes.size > 0
+    ? (isYstr ? t("verified.panel.ystr") : t("verified.panel.autosomal"))
+    : null;
   const provenanceEntries = Array.from(datasetTypes)
     .map((dt) => ({ type: dt, ...DATASET_PROVENANCE[dt] }))
     .filter((e) => e.name);
@@ -174,7 +179,14 @@ export function VerifiedDetail({
 
         {/* Header: badge + title */}
         <div className="mt-6 space-y-2">
-          <Badge className={cn("w-fit", TONE[level.tone])}>{level.label}</Badge>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Badge className={cn("w-fit", TONE[level.tone])}>{level.label}</Badge>
+            {panelLabel && (
+              <span className="inline-flex items-center text-xs border rounded-full px-2.5 py-0.5 text-muted-foreground">
+                {panelLabel}
+              </span>
+            )}
+          </div>
           <h1 className="text-3xl font-bold tracking-tight">
             {toolDisplayName}
           </h1>
@@ -272,6 +284,44 @@ export function VerifiedDetail({
               </>
             )}
           </dl>
+        </div>
+
+        {/* ── WHAT WAS VERIFIED / NOT VERIFIED ── */}
+        <div className="mt-6 rounded-lg border bg-card p-5">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2">
+                {t("verified.whatVerified.verifiedHeading")}
+              </p>
+              {[
+                "verified.whatVerified.sourceAvailable",
+                "verified.whatVerified.installation",
+                "verified.whatVerified.execution",
+                "verified.whatVerified.outputGenerated",
+              ].map((key) => (
+                <div key={key} className="flex items-center gap-1.5 py-0.5">
+                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                  <span className="text-muted-foreground">{t(key)}</span>
+                </div>
+              ))}
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                {t("verified.whatVerified.notHeading")}
+              </p>
+              {[
+                "verified.whatVerified.accuracy",
+                "verified.whatVerified.concordance",
+                "verified.whatVerified.forensicValidity",
+                "verified.whatVerified.regulatory",
+              ].map((key) => (
+                <div key={key} className="flex items-center gap-1.5 py-0.5">
+                  <Minus className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
+                  <span className="text-muted-foreground/70">{t(key)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* ── GATES ── */}

@@ -96,7 +96,7 @@ const LEGACY_SLUG_DATASETS: Record<string, string[]> = {
 };
 
 const TONE: Record<string, string> = {
-  green: "bg-emerald-600 text-white border-transparent",
+  green: "bg-teal-600 text-white border-transparent",
   amber: "bg-amber-500 text-white border-transparent",
   red: "bg-red-600 text-white border-transparent",
 };
@@ -283,6 +283,17 @@ export function VerifiedDetail({
                 </dd>
               </>
             )}
+            <dt className="text-muted-foreground">{t("verified.staticPage")}</dt>
+            <dd>
+              <a
+                href={staticPageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-primary hover:underline font-medium"
+              >
+                View full report <ExternalLink className="h-3 w-3" />
+              </a>
+            </dd>
           </dl>
         </div>
 
@@ -290,7 +301,7 @@ export function VerifiedDetail({
         <div className="mt-6 rounded-lg border bg-card p-5">
           <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-2">
                 {t("verified.whatVerified.verifiedHeading")}
               </p>
               {[
@@ -300,7 +311,7 @@ export function VerifiedDetail({
                 "verified.whatVerified.outputGenerated",
               ].map((key) => (
                 <div key={key} className="flex items-center gap-1.5 py-0.5">
-                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                  <Check className="h-3.5 w-3.5 text-teal-600 shrink-0" />
                   <span className="text-muted-foreground">{t(key)}</span>
                 </div>
               ))}
@@ -338,7 +349,7 @@ export function VerifiedDetail({
                   className={cn(
                     "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
                     pass
-                      ? "bg-emerald-600 text-white"
+                      ? "bg-teal-600 text-white"
                       : "bg-muted text-muted-foreground"
                   )}
                 >
@@ -420,7 +431,7 @@ export function VerifiedDetail({
                         className={cn(
                           "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
                           state === "pass"
-                            ? "bg-emerald-600 text-white"
+                            ? "bg-teal-600 text-white"
                             : state === "fail"
                             ? "bg-amber-500 text-white"
                             : "bg-muted text-muted-foreground"
@@ -709,7 +720,7 @@ export function VerifiedDetail({
                       className={cn(
                         "inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full",
                         present
-                          ? "bg-emerald-600 text-white"
+                          ? "bg-teal-600 text-white"
                           : "bg-muted text-muted-foreground"
                       )}
                     >
@@ -729,7 +740,7 @@ export function VerifiedDetail({
 
         {/* ── SCOPE ── */}
         <h2 className="mt-10 text-xl font-semibold">{t("verified.scope")}</h2>
-        <div className="mt-3 rounded-lg border-l-4 border-emerald-600 bg-muted/50 p-4 text-sm">
+        <div className="mt-3 rounded-lg border-l-4 border-teal-600 bg-muted/50 p-4 text-sm">
           <p>{report.scope}</p>
           <p className="mt-3 text-muted-foreground">{t("verified.scopeNote")}</p>
         </div>

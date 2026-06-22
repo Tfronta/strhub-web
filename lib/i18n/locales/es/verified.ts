@@ -30,6 +30,22 @@ export default {
       runs: "corridas de verificación",
       runSingular: "1 corrida de verificación",
     },
+    panel: {
+      autosomal: "STR autosómico",
+      ystr: "Y-STR",
+    },
+    whatVerified: {
+      verifiedHeading: "Qué se verificó",
+      notHeading: "No se verificó",
+      sourceAvailable: "Fuente disponible",
+      installation: "Instalación exitosa",
+      execution: "Ejecución completa",
+      outputGenerated: "Salida generada",
+      accuracy: "Precisión del genotipado",
+      concordance: "Concordancia con verdad conocida",
+      forensicValidity: "Validez forense",
+      regulatory: "Cumplimiento normativo",
+    },
     col: {
       strLoci: "loci STR",
       snps: "SNPs",

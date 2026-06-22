@@ -38,6 +38,8 @@ export interface VerifiedIndexEntry {
   external_state?: LegState;
   readme_score?: number | null;
   readme_max?: number | null;
+  // Input dataset types across all legs (e.g. ["illumina-bam-hg38-y"]).
+  dataset_types?: string[] | null;
   report: string;
   page: string;
 }

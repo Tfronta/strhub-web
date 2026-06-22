@@ -22,6 +22,15 @@ const TONE: Record<string, string> = {
   red: "bg-red-600 text-white border-transparent",
 };
 
+function getPanelLabel(
+  translate: (k: string) => string,
+  types: string[] | null | undefined
+): string | null {
+  if (!types || types.length === 0) return null;
+  if (types.some((t) => t.endsWith("-y"))) return translate("verified.panel.ystr");
+  return translate("verified.panel.autosomal");
+}
+
 const LEVEL_RANK: Record<VerifiedLevel, number> = {
   none: 0,
   available: 1,
@@ -166,13 +175,14 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                                   ? ` · ${run.total_reads} ${t("verified.col.reads")}`
                                   : "")
                               : null;
+                          const panelLabel = getPanelLabel(t, run.dataset_types);
                           return (
                             <Link
                               key={run.slug}
                               href={`/verified/${run.slug}`}
                               className="block rounded-md border px-3 py-2 transition-colors hover:border-primary hover:bg-muted/50"
                             >
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 flex-wrap">
                                 <Badge
                                   variant="outline"
                                   className={cn(
@@ -185,6 +195,11 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                                 <span className="font-mono text-xs text-muted-foreground truncate">
                                   {run.slug}
                                 </span>
+                                {panelLabel && (
+                                  <span className="text-[10px] border rounded px-1.5 py-0 text-muted-foreground shrink-0">
+                                    {panelLabel}
+                                  </span>
+                                )}
                               </div>
                               {markers && (
                                 <p className="mt-1 text-xs text-muted-foreground">

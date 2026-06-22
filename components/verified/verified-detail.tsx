@@ -34,6 +34,19 @@ const FORENSEQ_STR_LOCI = [
   "DYS635", "DYS643", "HPRTB", "Y-GATA-H4",
 ];
 
+const NA12878_AUTOSOMAL_LOCI = [
+  "CSF1PO", "D1S1656", "D2S441", "D2S1338", "D3S1358", "D5S818",
+  "D6S1043", "D7S820", "D8S1179", "D10S1248", "D12S391", "D13S317",
+  "D16S539", "D18S51", "D19S433", "D21S11", "D22S1045", "FGA",
+  "TH01", "TPOX", "vWA", "PentaD", "PentaE", "SE33",
+];
+
+const HG002_YSTR_LOCI = [
+  "DYS19", "DYS385a/b", "DYS389I", "DYS389II", "DYS390", "DYS391",
+  "DYS392", "DYS393", "DYS438", "DYS448", "DYS456", "DYS458",
+  "DYS635", "Y-GATA-H4", "Y-GATA-A10",
+];
+
 interface DatasetProvenance {
   name: string;
   source: string;
@@ -61,11 +74,19 @@ const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
     referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
   "illumina-bam-hg38": {
-    name: "1000 Genomes Illumina 30x — hg38 CODIS slice",
+    name: "GIAB NA12878 300x — hg38 autosomal forensic slice",
     source:
-      "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38",
-    license: "Open access (1000 Genomes). Research use.",
-    loci: CODIS_CORE_LOCI,
+      "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/",
+    license: "Open access (GIAB / NIST). Research use.",
+    loci: NA12878_AUTOSOMAL_LOCI,
+    referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
+  },
+  "illumina-bam-hg38-y": {
+    name: "GIAB HG002 300x — hg38 Y-STR slice",
+    source:
+      "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/",
+    license: "Open access (GIAB / NIST). Research use.",
+    loci: HG002_YSTR_LOCI,
     referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
 };

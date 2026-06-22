@@ -41,6 +41,7 @@ const INPUT_TYPE_DESC_KEYS: Record<string, string> = {
   "illumina-str-fastq": "verified.submit.inputTypeDescIlluminaStrFastq",
   "ont-bam-hg38": "verified.submit.inputTypeDescOntBamHg38",
   "illumina-bam-hg38": "verified.submit.inputTypeDescIlluminaBamHg38",
+  "illumina-bam-hg38-y": "verified.submit.inputTypeDescIlluminaBamHg38Y",
   "ont-fastq": "verified.submit.inputTypeDescOntFastq",
   "illumina-snp-fastq": "verified.submit.inputTypeDescIlluminaSnpFastq",
   "capillary-fsa": "verified.submit.inputTypeDescCapillaryFsa",
@@ -362,6 +363,7 @@ export function VerifiedSubmitForm() {
     if (resolvedInputType === "illumina-str-fastq") return t("verified.submit.externalNoteIllumina");
     if (resolvedInputType === "ont-bam-hg38") return t("verified.submit.externalNoteOnt");
     if (resolvedInputType === "illumina-bam-hg38") return t("verified.submit.externalNoteIlluminaBam");
+    if (resolvedInputType === "illumina-bam-hg38-y") return t("verified.submit.externalNoteIlluminaBamY");
     return t("verified.submit.externalNoteOwnOnly");
   }
 
@@ -791,7 +793,7 @@ export function VerifiedSubmitForm() {
               <Info className="h-4 w-4 mt-0.5 shrink-0" />
               <div className="space-y-2">
                 <p className="font-medium text-foreground">{t("verified.submit.referenceDatasetsTitle")}</p>
-                <p>{t("verified.submit.referenceDatasetsIntro3")}</p>
+                <p>{t("verified.submit.referenceDatasetsIntro4")}</p>
                 <ul className="list-disc space-y-1 pl-4">
                   <li>
                     <strong>Illumina STR FASTQ</strong>: {t("verified.submit.referenceDatasetIllumina")}{" "}
@@ -816,14 +818,25 @@ export function VerifiedSubmitForm() {
                     </a>
                   </li>
                   <li>
-                    <strong>Illumina BAM (hg38)</strong>: {t("verified.submit.referenceDatasetIlluminaBamDesc")}{" "}
+                    <strong>Illumina BAM (hg38) — autosomal</strong>: {t("verified.submit.referenceDatasetIlluminaBamDesc")}{" "}
                     <a
-                      href="https://www.internationalgenome.org/data-portal/data-collection/30x-grch38"
+                      href="https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary underline underline-offset-2"
                     >
-                      1000 Genomes Illumina 30x
+                      GIAB NA12878 300x
+                    </a>
+                  </li>
+                  <li>
+                    <strong>Illumina BAM (hg38) — Y-STR</strong>: {t("verified.submit.referenceDatasetIlluminaBamYDesc")}{" "}
+                    <a
+                      href="https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2"
+                    >
+                      GIAB HG002 300x
                     </a>
                   </li>
                 </ul>

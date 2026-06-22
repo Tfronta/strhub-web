@@ -133,12 +133,16 @@ export default {
         "Para tipos de assay compatíveis, o STRhub também testa sua ferramenta com um dataset STR de referência open source. Hoje existem dois:",
       referenceDatasetsIntro3:
         "Para tipos de assay compatíveis, o STRhub também testa sua ferramenta com um dataset STR de referência open source. Hoje existem três:",
+      referenceDatasetsIntro4:
+        "Para tipos de assay compatíveis, o STRhub também testa sua ferramenta com um dataset STR de referência open source. Hoje existem quatro:",
       referenceDatasetIllumina:
         "NIST Forensic DNA Open Dataset (ForenSeq e PowerSeq 46GY, uso pesquisa/educação)",
       referenceDatasetOnt:
         "slice CODIS 1000 Genomes ONT (open access na AWS)",
       referenceDatasetIlluminaBamDesc:
-        "slice CODIS 1000 Genomes Illumina 30x hg38 (open access, 27 loci)",
+        "slice GIAB NA12878 300x hg38 (open access, 24 loci autossômicos forenses)",
+      referenceDatasetIlluminaBamYDesc:
+        "slice GIAB HG002 300x hg38 (open access, 15 loci Y-STR)",
       referenceDatasetsScope:
         "Não há datasets de referência para painéis SNP, ONT FASTQ bruto ou capilar FSA/HID. Para esses tipos, a verificação usa apenas seu arquivo (não é falha). O STRhub não é custodiante de dados. Aplicam-se as licenças upstream.",
       inputTypeGroupWithReference: "Datasets STRhub de referência",
@@ -198,7 +202,8 @@ export default {
       inputTypeDescIlluminaStrFastq:
         "FASTQ Illumina MiSeq/MiniSeq STR: Verogen ForenSeq ou Promega PowerSeq 46GY (os únicos dois kits no nosso dataset NIST de referência por enquanto)",
       inputTypeDescOntBamHg38: "BAM Oxford Nanopore alinhado ao hg38 (regiões CODIS)",
-      inputTypeDescIlluminaBamHg38: "BAM Illumina WGS alinhado ao hg38 (regiões CODIS)",
+      inputTypeDescIlluminaBamHg38: "BAM Illumina WGS alinhado ao hg38 (loci STR autossômicos forenses)",
+      inputTypeDescIlluminaBamHg38Y: "BAM Illumina WGS alinhado ao hg38 (loci STR do cromossomo Y)",
       inputTypeDescOntFastq: "FASTQ bruto Oxford Nanopore",
       inputTypeDescIlluminaSnpFastq: "FASTQ Illumina para painéis SNP de identidade/ancestralidade",
       inputTypeDescCapillaryFsa: "Arquivos de eletroforese capilar ABI .fsa ou .hid",
@@ -211,7 +216,9 @@ export default {
       externalNoteOnt:
         "O STRhub rodará 2 testes: com o BAM de teste do repositório da ferramenta (se fornecido) e com um slice CODIS 1000 Genomes ONT hg38 (~30 MB).",
       externalNoteIlluminaBam:
-        "O STRhub rodará 2 testes: com o BAM de teste do repositório da ferramenta (se fornecido) e com um slice CODIS 1000 Genomes Illumina 30x hg38. O dataset de referência cobre apenas 27 loci STR forenses centrais.",
+        "O STRhub rodará 2 testes: com o BAM de teste do repositório da ferramenta (se fornecido) e com um slice GIAB NA12878 300x hg38. O dataset de referência cobre 24 loci STR autossômicos forenses (amostra feminina, sem marcadores Y).",
+      externalNoteIlluminaBamY:
+        "O STRhub rodará 2 testes: com o BAM de teste do repositório da ferramenta (se fornecido) e com um slice GIAB HG002 300x hg38. O dataset de referência cobre 15 loci Y-STR forenses (amostra masculina).",
       externalNoteOwnOnly:
         "O STRhub rodará 1 teste apenas com seu arquivo. Não há dataset STRhub para este tipo de input (não é falha).",
       fixtureLabel: "Seu arquivo de teste (obrigatório)",

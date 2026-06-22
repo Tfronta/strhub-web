@@ -77,13 +77,29 @@ export const INPUT_TYPES = [
   },
   {
     slug: "illumina-bam-hg38",
-    label: "Illumina BAM (hg38)",
-    description: "Illumina WGS BAM aligned to hg38 (CODIS regions)",
+    label: "Illumina BAM (hg38) — autosomal",
+    description: "Illumina WGS BAM aligned to hg38 (autosomal forensic STR loci)",
     hasExternalDataset: true,
     externalDataset: {
-      name: "1000 Genomes Illumina 30x, hg38 CODIS slice",
+      name: "GIAB NA12878 300x, hg38 autosomal forensic slice",
       sourceUrl:
-        "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38",
+        "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/",
+    },
+    referenceGenome: {
+      assembly: "GRCh38 / hg38",
+      mountPath: "/data/ref/hg38.fa",
+    },
+    canonicalPaths: ["/data/in/input.bam", "/data/ref/hg38.fa"],
+  },
+  {
+    slug: "illumina-bam-hg38-y",
+    label: "Illumina BAM (hg38) — Y-STR",
+    description: "Illumina WGS BAM aligned to hg38 (Y-chromosome STR loci)",
+    hasExternalDataset: true,
+    externalDataset: {
+      name: "GIAB HG002 300x, hg38 Y-STR slice",
+      sourceUrl:
+        "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/NIST_HiSeq_HG002_Homogeneity-10953946/",
     },
     referenceGenome: {
       assembly: "GRCh38 / hg38",

@@ -133,12 +133,16 @@ export default {
         "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently two:",
       referenceDatasetsIntro3:
         "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently three:",
+      referenceDatasetsIntro4:
+        "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently four:",
       referenceDatasetIllumina:
         "NIST Forensic DNA Open Dataset (ForenSeq & PowerSeq 46GY, research/training use)",
       referenceDatasetOnt:
         "1000 Genomes ONT CODIS slice (open access on AWS)",
       referenceDatasetIlluminaBamDesc:
-        "1000 Genomes Illumina 30x hg38 CODIS slice (open access, 27 loci)",
+        "GIAB NA12878 300x hg38 slice (open access, 24 autosomal forensic loci)",
+      referenceDatasetIlluminaBamYDesc:
+        "GIAB HG002 300x hg38 slice (open access, 15 Y-STR loci)",
       referenceDatasetsScope:
         "No reference datasets for SNP panels, raw ONT FASTQ, or capillary FSA/HID. For those types, verification uses only your test file (not a failure). STRhub is not a data custodian. See upstream licenses.",
       inputTypeGroupWithReference: "STRhub reference datasets",
@@ -198,7 +202,8 @@ export default {
       inputTypeDescIlluminaStrFastq:
         "Illumina MiSeq/MiniSeq STR FASTQ: Verogen ForenSeq or Promega PowerSeq 46GY (the only two kits in our NIST reference dataset for now)",
       inputTypeDescOntBamHg38: "Oxford Nanopore BAM aligned to hg38 (CODIS regions)",
-      inputTypeDescIlluminaBamHg38: "Illumina WGS BAM aligned to hg38 (CODIS regions)",
+      inputTypeDescIlluminaBamHg38: "Illumina WGS BAM aligned to hg38 (autosomal forensic STR loci)",
+      inputTypeDescIlluminaBamHg38Y: "Illumina WGS BAM aligned to hg38 (Y-chromosome STR loci)",
       inputTypeDescOntFastq: "Oxford Nanopore raw FASTQ reads",
       inputTypeDescIlluminaSnpFastq: "Illumina FASTQ for identity/ancestry SNP panels",
       inputTypeDescCapillaryFsa: "ABI .fsa or .hid capillary fragment analysis files",
@@ -211,7 +216,9 @@ export default {
       externalNoteOnt:
         "STRhub will run two tests: on the test BAM from the tool's repository (if provided) and on a 1000 Genomes ONT hg38 CODIS slice (~30 MB).",
       externalNoteIlluminaBam:
-        "STRhub will run two tests: on the test BAM from the tool's repository (if provided) and on a 1000 Genomes Illumina 30x hg38 CODIS slice. The reference dataset covers 27 core forensic STR loci only.",
+        "STRhub will run two tests: on the test BAM from the tool's repository (if provided) and on a GIAB NA12878 300x hg38 slice. The reference dataset covers 24 autosomal forensic STR loci (female sample, no Y markers).",
+      externalNoteIlluminaBamY:
+        "STRhub will run two tests: on the test BAM from the tool's repository (if provided) and on a GIAB HG002 300x hg38 slice. The reference dataset covers 15 Y-STR forensic loci (male sample).",
       externalNoteOwnOnly:
         "STRhub will run one test with your file only. There is no STRhub reference dataset for this input type (not a failure).",
       fixtureLabel: "Your test file (required)",

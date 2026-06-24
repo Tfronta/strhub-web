@@ -18,6 +18,8 @@ export interface SubmissionRecord {
   createdAt: string;
   ip: string;
   status: "dispatched" | "approved-pending" | "rejected";
+  toolName?: string;
+  payload?: string;
 }
 
 interface Store {
@@ -141,4 +143,44 @@ export async function getByDispatchId(
 ): Promise<SubmissionRecord | undefined> {
   const store = await load();
   return store.submissions.find((s) => s.dispatchId === dispatchId);
+}
+
+export async function getPendingSubmissions(): Promise<SubmissionRecord[]> {
+  const store = await load();
+  return store.submissions.filter((s) => s.status === "approved-pending");
+}
+
+export async function getRecentSubmissions(n = 20): Promise<SubmissionRecord[]> {
+  const store = await load();
+  return store.submissions.slice(0, n);
+}
+
+export async function getPendingBySlug(
+  slug: string
+): Promise<SubmissionRecord | undefined> {
+  const store = await load();
+  return store.submissions.find(
+    (s) => s.slug === slug && s.status === "approved-pending"
+  );
+}
+
+export async function updateSubmissionStatus(
+  slug: string,
+  fromStatus: SubmissionRecord["status"],
+  toStatus: SubmissionRecord["status"],
+  extra?: Partial<SubmissionRecord>
+): Promise<boolean> {
+  const store = await load();
+  const rec = store.submissions.find(
+    (s) => s.slug === slug && s.status === fromStatus
+  );
+  if (!rec) return false;
+  rec.status = toStatus;
+  if (extra) Object.assign(rec, extra);
+  await save(store);
+  return true;
+}
+
+export async function rejectSubmission(slug: string): Promise<boolean> {
+  return updateSubmissionStatus(slug, "approved-pending", "rejected");
 }

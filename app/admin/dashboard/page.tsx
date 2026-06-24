@@ -45,9 +45,25 @@ import {
   FileText,
   Users,
   BookOpen,
+  Shield,
+  CheckCircle,
+  XCircle,
+  Clock,
+  ExternalLink,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { MarkdownEditor } from "@/components/markdown-editor";
+
+interface VerifiedSubmission {
+  slug: string;
+  repo: string;
+  ref: string;
+  createdAt: string;
+  status: "dispatched" | "approved-pending" | "rejected";
+  toolName: string;
+  dispatchId: string;
+}
 
 interface ContentEntry {
   id: string;
@@ -60,6 +76,9 @@ interface ContentEntry {
 
 export default function AdminDashboard() {
   const [entries, setEntries] = useState<ContentEntry[]>([]);
+  const [verifiedSubmissions, setVerifiedSubmissions] = useState<VerifiedSubmission[]>([]);
+  const [approvingSlug, setApprovingSlug] = useState<string | null>(null);
+  const [rejectingSlug, setRejectingSlug] = useState<string | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<ContentEntry | null>(null);
@@ -80,6 +99,7 @@ export default function AdminDashboard() {
       return;
     }
     loadEntries();
+    loadVerifiedSubmissions();
   }, [router]);
 
   const loadEntries = async () => {
@@ -96,6 +116,65 @@ export default function AdminDashboard() {
       console.error("Failed to load entries:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadVerifiedSubmissions = async () => {
+    try {
+      const token = localStorage.getItem("admin_token") || "";
+      const res = await fetch("/api/verify/submissions", {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      const data = await res.json();
+      setVerifiedSubmissions(data.submissions || []);
+    } catch (error) {
+      console.error("Failed to load verified submissions:", error);
+    }
+  };
+
+  const handleApprove = async (sub: VerifiedSubmission) => {
+    setApprovingSlug(sub.slug);
+    try {
+      const token = localStorage.getItem("admin_token") || "";
+      const res = await fetch("/api/verify/approve", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ repo: sub.repo, slug: sub.slug }),
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error);
+      await loadVerifiedSubmissions();
+    } catch (err: any) {
+      alert("Error al aprobar: " + (err?.message || "Error desconocido"));
+    } finally {
+      setApprovingSlug(null);
+    }
+  };
+
+  const handleReject = async (sub: VerifiedSubmission) => {
+    if (!confirm(`¿Rechazar la submission de "${sub.toolName}"?`)) return;
+    setRejectingSlug(sub.slug);
+    try {
+      const token = localStorage.getItem("admin_token") || "";
+      const res = await fetch("/api/verify/reject", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ slug: sub.slug }),
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error);
+      await loadVerifiedSubmissions();
+    } catch (err: any) {
+      alert("Error al rechazar: " + (err?.message || "Error desconocido"));
+    } finally {
+      setRejectingSlug(null);
     }
   };
 
@@ -296,6 +375,143 @@ export default function AdminDashboard() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Verified Approvals */}
+        {(() => {
+          const pending = verifiedSubmissions.filter((s) => s.status === "approved-pending");
+          const recent = verifiedSubmissions.filter((s) => s.status !== "approved-pending").slice(0, 5);
+          return (
+            <Card className="mb-8 border-primary/30">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-5 w-5 text-primary" />
+                    <CardTitle>Verified — Aprobaciones pendientes</CardTitle>
+                    {pending.length > 0 && (
+                      <Badge variant="destructive" className="ml-1">
+                        {pending.length}
+                      </Badge>
+                    )}
+                  </div>
+                  <Button variant="outline" size="sm" onClick={loadVerifiedSubmissions}>
+                    Actualizar
+                  </Button>
+                </div>
+                <CardDescription>
+                  Tools nuevas que esperan tu aprobación. Al aprobar, se dispara el run automáticamente.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {pending.length === 0 ? (
+                  <p className="text-sm text-muted-foreground py-4 text-center">
+                    No hay submissions pendientes.
+                  </p>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Tool</TableHead>
+                        <TableHead>Repo</TableHead>
+                        <TableHead>Fecha</TableHead>
+                        <TableHead>Acciones</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {pending.map((sub) => (
+                        <TableRow key={sub.slug}>
+                          <TableCell>
+                            <div className="font-medium">{sub.toolName}</div>
+                            <div className="text-xs text-muted-foreground font-mono">{sub.slug}</div>
+                          </TableCell>
+                          <TableCell>
+                            <a
+                              href={sub.repo}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-sm text-primary hover:underline"
+                            >
+                              {sub.repo.replace("https://github.com/", "")}
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                            <div className="text-xs text-muted-foreground font-mono">@{sub.ref}</div>
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {new Date(sub.createdAt).toLocaleString("es-AR")}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => handleApprove(sub)}
+                                disabled={approvingSlug === sub.slug}
+                              >
+                                <CheckCircle className="h-4 w-4 mr-1" />
+                                {approvingSlug === sub.slug ? "Aprobando…" : "Aprobar & Run"}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleReject(sub)}
+                                disabled={rejectingSlug === sub.slug}
+                              >
+                                <XCircle className="h-4 w-4 mr-1" />
+                                Rechazar
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+
+                {recent.length > 0 && (
+                  <div className="mt-6">
+                    <h4 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
+                      <Clock className="h-4 w-4" />
+                      Runs recientes
+                    </h4>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Tool</TableHead>
+                          <TableHead>Estado</TableHead>
+                          <TableHead>Fecha</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {recent.map((sub) => (
+                          <TableRow key={sub.slug + sub.createdAt}>
+                            <TableCell>
+                              <div className="text-sm font-medium">{sub.toolName}</div>
+                              <div className="text-xs text-muted-foreground font-mono">{sub.slug}</div>
+                            </TableCell>
+                            <TableCell>
+                              {sub.status === "dispatched" ? (
+                                <Badge variant="outline" className="text-green-600 border-green-600">
+                                  <CheckCircle className="h-3 w-3 mr-1" />
+                                  Dispatched
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className="text-red-500 border-red-500">
+                                  <XCircle className="h-3 w-3 mr-1" />
+                                  Rechazado
+                                </Badge>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {new Date(sub.createdAt).toLocaleString("es-AR")}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })()}
+
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
           <Card>

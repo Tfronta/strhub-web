@@ -190,7 +190,10 @@ function Footer({ dateStr, permalink }: { dateStr: string; permalink: string }) 
   return (
     <View style={s.footer} fixed>
       <Text style={{ color: MUTED }}>
-        STRhub Verified · <Text style={{ color: LINK }}>{permalink}</Text>
+        <Text style={{ color: BODY, fontFamily: "Helvetica-Bold" }}>STR</Text>
+        <Text style={{ color: TEAL, fontFamily: "Helvetica-Bold" }}>hub</Text>
+        {" Verified · "}
+        <Text style={{ color: LINK }}>{permalink}</Text>
       </Text>
       <Text>
         {dateStr}{"  "}
@@ -292,10 +295,14 @@ export function VerifiedPDF({ report, slug, logoSrc }: {
 
           {/* Brand */}
           <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 5 }}>
-            {logoSrc && <Image style={{ width: 18, height: 18, marginRight: 7 }} src={logoSrc} />}
-            <Text style={{ fontSize: 10, fontFamily: "Helvetica-Bold", color: TEAL, letterSpacing: 0.6 }}>
-              STRhub VERIFIED
-            </Text>
+            {logoSrc && <Image style={{ width: 26, height: 26, marginRight: 9 }} src={logoSrc} />}
+            <View>
+              <Text style={{ fontSize: 13, fontFamily: "Helvetica-Bold", letterSpacing: 0.3 }}>
+                <Text style={{ color: BODY }}>STR</Text>
+                <Text style={{ color: TEAL }}>hub</Text>
+                <Text style={{ fontSize: 9, color: TEAL, letterSpacing: 0.6 }}> VERIFIED</Text>
+              </Text>
+            </View>
           </View>
           <Text style={{ fontSize: 8.5, color: MUTED, marginBottom: 34 }}>
             Technical Reproducibility Validation Report
@@ -389,7 +396,10 @@ export function VerifiedPDF({ report, slug, logoSrc }: {
           <View style={{ flexGrow: 1 }} />
 
           <Text style={{ fontSize: 7.5, color: SUBTLE, textAlign: "center", marginTop: 12 }}>
-            Generated automatically by STRhub · strhub.app · Each result is a dated snapshot verified at a pinned commit.
+            Generated automatically by{" "}
+            <Text style={{ color: BODY, fontFamily: "Helvetica-Bold" }}>STR</Text>
+            <Text style={{ color: TEAL, fontFamily: "Helvetica-Bold" }}>hub</Text>
+            {" · strhub.app · Each result is a dated snapshot verified at a pinned commit."}
           </Text>
         </View>
 
@@ -407,7 +417,9 @@ export function VerifiedPDF({ report, slug, logoSrc }: {
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 10.5, fontFamily: "Helvetica-Bold", color: BODY }}>{name}</Text>
             <Text style={{ fontSize: 8, color: SUBTLE, marginTop: 1 }}>
-              STRhub Verified · Technical Reproducibility Validation Report · {dateStr}
+              <Text style={{ color: BODY, fontFamily: "Helvetica-Bold" }}>STR</Text>
+              <Text style={{ color: TEAL, fontFamily: "Helvetica-Bold" }}>hub</Text>
+              {" Verified · Technical Reproducibility Validation Report · "}{dateStr}
             </Text>
           </View>
           <View style={{ backgroundColor: TEAL, borderRadius: 3, paddingHorizontal: 7, paddingVertical: 3 }}>
@@ -694,7 +706,9 @@ export function VerifiedPDF({ report, slug, logoSrc }: {
             Appendix — Detected Markers with Read Depth
           </Text>
           <Text style={{ fontSize: 8.5, color: SUBTLE, marginTop: 3, marginBottom: 14 }}>
-            {name} ({slug}) · verified {dateStr}
+            {name} ({slug}) · verified {dateStr} ·{" "}
+            <Text style={{ color: BODY, fontFamily: "Helvetica-Bold" }}>STR</Text>
+            <Text style={{ color: TEAL, fontFamily: "Helvetica-Bold" }}>hub</Text>
           </Text>
 
           {/* Loci table with depth */}

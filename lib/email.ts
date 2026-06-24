@@ -27,7 +27,7 @@ export async function notifyNewPendingSubmission(params: {
 
   const dashboardUrl = `${SITE_URL}/admin/dashboard`;
 
-  await client.emails.send({
+  const { error } = await client.emails.send({
     from: FROM,
     to: [ADMIN_EMAIL],
     subject: `[STRhub Verified] Nueva tool pendiente: ${params.toolName} ${params.toolVersion}`,
@@ -71,4 +71,5 @@ export async function notifyNewPendingSubmission(params: {
       </div>
     `,
   });
+  if (error) throw new Error(`Resend error: ${error.message}`);
 }

@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     );
   }
   const sub = parsed.data;
-  const slug = deriveSlug(sub.tool.name, sub.tool.version);
+  const slug = deriveSlug(sub.tool.name, sub.tool.version, sub.inputs.type);
   const ip = clientIp(request);
 
   // 1b. BYOR fixture must be publicly reachable at submit time.

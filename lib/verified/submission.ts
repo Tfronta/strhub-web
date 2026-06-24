@@ -262,15 +262,38 @@ export type Submission = z.infer<typeof submissionSchema>;
 export type SubmissionInput = z.input<typeof submissionSchema>;
 
 /**
- * Derive a stable, filesystem-safe slug from tool name + version. Used as the
- * directory under `tools/` and the report/badge filename stem.
+ * Short slug suffix appended to name-version when the input type is a variant
+ * of the default. Types listed here with "" are considered the canonical variant
+ * (no suffix). Unlisted types fall back to their last hyphen-segment.
  */
-export function deriveSlug(name: string, version: string): string {
-  const raw = `${name}-${version}`
+const TYPE_SLUG_SUFFIX: Record<string, string> = {
+  "illumina-bam-hg38":   "",       // canonical BAM — no suffix
+  "illumina-str-fastq":  "",       // canonical FASTQ — no suffix
+  "illumina-bam-hg38-y": "y",     // Y-STR variant
+  "ont-bam-hg38":        "ont",
+  "ont-fastq":           "ont",
+  "illumina-snp-fastq":  "snp",
+  "capillary-fsa":       "fsa",
+};
+
+/**
+ * Derive a stable, filesystem-safe slug from tool name + version + input type.
+ * Input type adds a short suffix for non-canonical variants (e.g. "-y" for Y-STR)
+ * so the same tool submitted for different assay types gets distinct directories.
+ */
+export function deriveSlug(name: string, version: string, inputType?: string): string {
+  const base = `${name}-${version}`
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
-  return raw || "tool";
+
+  let suffix = "";
+  if (inputType) {
+    const mapped = TYPE_SLUG_SUFFIX[inputType];
+    suffix = mapped !== undefined ? mapped : (inputType.split("-").pop() ?? "");
+  }
+
+  return (suffix ? `${base}-${suffix}` : base) || "tool";
 }
 
 export function isValidSlug(slug: string): boolean {

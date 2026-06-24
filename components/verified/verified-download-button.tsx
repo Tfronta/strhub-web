@@ -1,23 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { pdf } from "@react-pdf/renderer";
-import { VerifiedPDF } from "./verified-pdf";
+import { useState } from "react";
 import type { VerifiedReport } from "@/types/verified";
 
-async function fetchLogoAsDataUri(): Promise<string | undefined> {
-  try {
-    const res = await fetch("/strhub-logo-pdf.png");
-    const blob = await res.blob();
-    return await new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.readAsDataURL(blob);
-    });
-  } catch {
-    return undefined;
-  }
-}
+const VERIFIED_BASE =
+  process.env.NEXT_PUBLIC_VERIFIED_BASE ??
+  "https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages";
 
 interface Props {
   report: VerifiedReport;
@@ -25,18 +13,14 @@ interface Props {
 }
 
 export function VerifiedDownloadButton({ report, slug }: Props) {
-  const [generating, setGenerating] = useState(false);
-  const logoCache = useRef<string | undefined>(undefined);
+  const [downloading, setDownloading] = useState(false);
 
   async function handleDownload() {
-    setGenerating(true);
+    setDownloading(true);
     try {
-      if (!logoCache.current) {
-        logoCache.current = await fetchLogoAsDataUri();
-      }
-      const blob = await pdf(
-        <VerifiedPDF report={report} slug={slug} logoSrc={logoCache.current} />
-      ).toBlob();
+      const res = await fetch(`${VERIFIED_BASE}/${slug}.pdf`);
+      if (!res.ok) throw new Error(`PDF not found (${res.status})`);
+      const blob = await res.blob();
       const date = report.generated?.slice(0, 10) ?? "undated";
       const filename = `STRhub-Verified_${slug}_${date}.pdf`;
       const url = URL.createObjectURL(blob);
@@ -48,9 +32,9 @@ export function VerifiedDownloadButton({ report, slug }: Props) {
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 5000);
     } catch (err) {
-      console.error("PDF generation failed:", err);
+      console.error("PDF download failed:", err);
     } finally {
-      setGenerating(false);
+      setDownloading(false);
     }
   }
 
@@ -58,10 +42,10 @@ export function VerifiedDownloadButton({ report, slug }: Props) {
     <button
       type="button"
       onClick={handleDownload}
-      disabled={generating}
+      disabled={downloading}
       className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted disabled:opacity-50"
     >
-      {generating ? "Generating PDF..." : "Download attestation report (PDF)"}
+      {downloading ? "Downloading..." : "Download attestation report (PDF)"}
     </button>
   );
 }

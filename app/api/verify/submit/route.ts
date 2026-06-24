@@ -33,6 +33,7 @@ import {
   isRepoApproved,
   recordSubmission,
 } from "@/lib/verified/store";
+import { notifyNewPendingSubmission } from "@/lib/email";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -109,15 +110,25 @@ export async function POST(request: NextRequest) {
     //    engine repo, the repo was implicitly approved on its first run.
     const isResubmission = await pathExists(`tools/${slug}/manifest.yml`);
     if (!isResubmission && !(await isRepoApproved(sub.source.repo))) {
-      await recordSubmission({
+      const pendingRecord = {
         slug,
         repo: sub.source.repo,
         ref: sub.source.ref,
         dispatchId: newDispatchId(),
         createdAt: new Date().toISOString(),
         ip,
-        status: "approved-pending",
-      });
+        status: "approved-pending" as const,
+        toolName: sub.tool.name,
+        payload: JSON.stringify(parsed.data),
+      };
+      await recordSubmission(pendingRecord);
+      notifyNewPendingSubmission({
+        slug,
+        toolName: sub.tool.name,
+        toolVersion: sub.tool.version,
+        repo: sub.source.repo,
+        ip,
+      }).catch((err) => console.error("verify/submit email error:", err));
       return NextResponse.json(
         {
           ok: true,

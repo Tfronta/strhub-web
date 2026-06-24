@@ -78,6 +78,7 @@
     "recharts": "latest",
     "rehype-raw": "latest",
     "remark-gfm": "latest",
+    "resend": "^6.14.0",
     "server-only": "latest",
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.5.5",

@@ -234,29 +234,16 @@ async function downloadPdfForSlug(reportSlug: string) {
   const base =
     process.env.NEXT_PUBLIC_VERIFIED_BASE ??
     "https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages";
-  const res = await fetch(`${base}/${reportSlug}.json`);
-  if (!res.ok) throw new Error("Report not available yet");
-  const report = await res.json();
 
-  const [{ pdf }, { VerifiedPDF }] = await Promise.all([
-    import("@react-pdf/renderer"),
-    import("./verified-pdf"),
+  const [jsonRes, pdfRes] = await Promise.all([
+    fetch(`${base}/${reportSlug}.json`),
+    fetch(`${base}/${reportSlug}.pdf`),
   ]);
+  if (!jsonRes.ok) throw new Error("Report not available yet");
+  if (!pdfRes.ok) throw new Error("PDF not available yet");
 
-  let logoSrc: string | undefined;
-  try {
-    const logoRes = await fetch("/strhub-logo-pdf.png");
-    const logoBlob = await logoRes.blob();
-    logoSrc = await new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.readAsDataURL(logoBlob);
-    });
-  } catch { /* logo is optional */ }
-
-  const blob = await pdf(
-    <VerifiedPDF report={report} slug={reportSlug} logoSrc={logoSrc} />
-  ).toBlob();
+  const report = await jsonRes.json();
+  const blob = await pdfRes.blob();
   const date = report.generated?.slice(0, 10) ?? "undated";
   const filename = `STRhub-Verified_${reportSlug}_${date}.pdf`;
   const url = URL.createObjectURL(blob);

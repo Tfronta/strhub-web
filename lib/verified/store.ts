@@ -9,6 +9,7 @@
 import fs from "fs/promises";
 import path from "path";
 import os from "os";
+import { putFile, getFileContent, listDirectory, deleteFile, GitHubConfigError, GitHubApiError } from "./github";
 
 export interface SubmissionRecord {
   slug: string;
@@ -130,10 +131,31 @@ export async function checkRateLimit(
   return { ok: true };
 }
 
+const PENDING_DIR = "pending";
+
+function pendingPath(slug: string): string {
+  return `${PENDING_DIR}/${slug}.json`;
+}
+
 export async function recordSubmission(rec: SubmissionRecord): Promise<void> {
+  // Pending submissions are stored in the engine repo so they survive serverless restarts.
+  if (rec.status === "approved-pending") {
+    try {
+      await putFile(
+        pendingPath(rec.slug),
+        JSON.stringify(rec, null, 2),
+        `verified: pending submission ${rec.slug}`
+      );
+    } catch (e) {
+      if (e instanceof GitHubConfigError || e instanceof GitHubApiError) {
+        console.error("store: failed to write pending to GitHub:", e.message);
+      } else {
+        throw e;
+      }
+    }
+  }
   const store = await load();
   store.submissions.unshift(rec);
-  // Keep the store bounded.
   store.submissions = store.submissions.slice(0, 500);
   await save(store);
 }
@@ -146,8 +168,28 @@ export async function getByDispatchId(
 }
 
 export async function getPendingSubmissions(): Promise<SubmissionRecord[]> {
-  const store = await load();
-  return store.submissions.filter((s) => s.status === "approved-pending");
+  try {
+    const files = await listDirectory(PENDING_DIR);
+    const records = await Promise.all(
+      files.map(async (f) => {
+        const content = await getFileContent(`${PENDING_DIR}/${f.name}`);
+        if (!content) return null;
+        try {
+          return JSON.parse(content) as SubmissionRecord;
+        } catch {
+          return null;
+        }
+      })
+    );
+    return records.filter((r): r is SubmissionRecord => r !== null);
+  } catch (e) {
+    if (e instanceof GitHubConfigError || e instanceof GitHubApiError) {
+      // Fall back to local store if GitHub is unavailable.
+      const store = await load();
+      return store.submissions.filter((s) => s.status === "approved-pending");
+    }
+    throw e;
+  }
 }
 
 export async function getRecentSubmissions(n = 20): Promise<SubmissionRecord[]> {
@@ -158,6 +200,12 @@ export async function getRecentSubmissions(n = 20): Promise<SubmissionRecord[]> 
 export async function getPendingBySlug(
   slug: string
 ): Promise<SubmissionRecord | undefined> {
+  try {
+    const content = await getFileContent(pendingPath(slug));
+    if (content) return JSON.parse(content) as SubmissionRecord;
+  } catch (e) {
+    if (!(e instanceof GitHubConfigError) && !(e instanceof GitHubApiError)) throw e;
+  }
   const store = await load();
   return store.submissions.find(
     (s) => s.slug === slug && s.status === "approved-pending"
@@ -170,14 +218,26 @@ export async function updateSubmissionStatus(
   toStatus: SubmissionRecord["status"],
   extra?: Partial<SubmissionRecord>
 ): Promise<boolean> {
+  // Remove from GitHub pending dir when leaving approved-pending.
+  if (fromStatus === "approved-pending") {
+    try {
+      await deleteFile(
+        pendingPath(slug),
+        `verified: ${toStatus === "dispatched" ? "approved" : "rejected"} ${slug}`
+      );
+    } catch (e) {
+      if (!(e instanceof GitHubConfigError) && !(e instanceof GitHubApiError)) throw e;
+    }
+  }
   const store = await load();
   const rec = store.submissions.find(
     (s) => s.slug === slug && s.status === fromStatus
   );
-  if (!rec) return false;
-  rec.status = toStatus;
-  if (extra) Object.assign(rec, extra);
-  await save(store);
+  if (rec) {
+    rec.status = toStatus;
+    if (extra) Object.assign(rec, extra);
+    await save(store);
+  }
   return true;
 }
 

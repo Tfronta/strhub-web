@@ -175,6 +175,45 @@ export async function putFile(
   );
 }
 
+/** Get the decoded content of a file from the engine repo. Returns null if not found. */
+export async function getFileContent(path: string): Promise<string | null> {
+  try {
+    const data = await gh<{ content: string }>(
+      `/repos/${ENGINE_REPO}/contents/${encodeURIComponent(path).replace(/%2F/g, "/")}?ref=${ENGINE_BRANCH}`
+    );
+    return Buffer.from(data.content.replace(/\n/g, ""), "base64").toString("utf-8");
+  } catch (e) {
+    if (e instanceof GitHubApiError && e.status === 404) return null;
+    throw e;
+  }
+}
+
+/** List files in a directory of the engine repo. Returns [] if not found. */
+export async function listDirectory(path: string): Promise<{ name: string; sha: string }[]> {
+  try {
+    const data = await gh<{ name: string; sha: string; type: string }[]>(
+      `/repos/${ENGINE_REPO}/contents/${encodeURIComponent(path).replace(/%2F/g, "/")}?ref=${ENGINE_BRANCH}`
+    );
+    return Array.isArray(data) ? data.filter((f) => f.type === "file") : [];
+  } catch (e) {
+    if (e instanceof GitHubApiError && e.status === 404) return [];
+    throw e;
+  }
+}
+
+/** Delete a file from the engine repo. No-op if it doesn't exist. */
+export async function deleteFile(path: string, message: string): Promise<void> {
+  const sha = await fileSha(path);
+  if (!sha) return;
+  await gh(
+    `/repos/${ENGINE_REPO}/contents/${encodeURIComponent(path).replace(/%2F/g, "/")}`,
+    {
+      method: "DELETE",
+      body: JSON.stringify({ message, sha, branch: ENGINE_BRANCH }),
+    }
+  );
+}
+
 /** Dispatch the verify workflow with the given inputs. */
 export async function dispatchWorkflow(
   inputs: Record<string, string>

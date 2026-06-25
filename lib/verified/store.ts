@@ -181,7 +181,7 @@ export async function getPendingSubmissions(): Promise<SubmissionRecord[]> {
         }
       })
     );
-    return records.filter((r): r is SubmissionRecord => r !== null);
+    return records.filter((r): r is SubmissionRecord => r !== null && !!r.slug);
   } catch (e) {
     if (e instanceof GitHubConfigError || e instanceof GitHubApiError) {
       // Fall back to local store if GitHub is unavailable.

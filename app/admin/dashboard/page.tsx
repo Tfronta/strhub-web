@@ -122,7 +122,7 @@ export default function AdminDashboard() {
   const loadVerifiedSubmissions = async () => {
     try {
       const token = localStorage.getItem("admin_token") || "";
-      const res = await fetch("/api/verify/submissions", {
+      const res = await fetch("/api/verify/submissions?status=pending", {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
       });

@@ -1,999 +1,1907 @@
 {
-    "sample": "HG00097",
-    "dateProcessed": "2026-02-28",
-    "source": {
-      "primary": "HipSTR VCF",
-      "secondary_crosscheck": "haplotypes.tsv",
-      "notes": "Allele sequences reconstructed from REF/ALT + GT. Allelic Coverage derived from PDP (fractional read support).",
-      "allele_designation": "Allele calls computed from haplotype length and PERIOD (len(seq)//PERIOD, microvariants as .{remainder_bp}). Motifs for bracketed display are canonical per locus."
+ "sample": "HG00097",
+ "dateProcessed": "2026-02-28",
+ "source": {
+  "primary": "HipSTR VCF",
+  "secondary_crosscheck": "haplotypes.tsv",
+  "notes": "Allele sequences reconstructed from REF/ALT + GT. Allelic Coverage derived from PDP (fractional read support).",
+  "allele_designation": "Allele calls computed from haplotype length and PERIOD (len(seq)//PERIOD, microvariants as .{remainder_bp}). Motifs for bracketed display are canonical per locus."
+ },
+ "loci": [
+  {
+   "locus": "D1S1656",
+   "chrom": "chr1",
+   "pos": 230769616,
+   "filter": ".",
+   "gt": "1|2",
+   "allele_idx1": 1,
+   "allele_idx2": 2,
+   "allele_seq1": "CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+   "allele_seq2": "CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCATCTATCTATCTATCTA",
+   "DP": 49,
+   "coverage1": 26.02,
+   "coverage2": 22.98,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "15",
+   "allele_call2": "17.3",
+   "genotype_forense": "15/17.3",
+   "bracketed1": "AC[6] CTAT[14]",
+   "bracketed2": "AC[6] CTAT[13] CAT[1] CTAT[3]",
+   "hipstr_start": 230769616,
+   "hipstr_end": 230769683,
+   "motif_canonical": "TCTA",
+   "left_flank_hg38": "ATACATACAATTAAACACACACACA",
+   "right_flank_hg38": "CATCACACAGTTGACCCTTGAGCAA",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "ATACATACAATTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATCACACAGTTGACCCTTGAGCAA",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "ATACATACAATTAAACACACACACA",
+   "right_flank_in_full1": "CATCACACAGTTGACCCTTGAGCAA",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 85,
+   "repeat_seq1": "CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+   "motif_observed1": "CCTA",
+   "full_seq2": "ATACATACAATTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCATCTATCTATCTATCTACATCACACAGTTGACCCTTGAGCAA",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "ATACATACAATTAAACACACACACA",
+   "right_flank_in_full2": "CATCACACAGTTGACCCTTGAGCAA",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 96,
+   "repeat_seq2": "CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCATCTATCTATCTATCTA",
+   "motif_observed2": "CCTA",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "TTCAGAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAA",
+     "c": "f"
     },
-    "loci": [
-      {
-        "locus": "D1S1656",
-        "chrom": "chr1",
-        "pos": 230769616,
-        "filter": ".",
-        "gt": "1|2",
-        "allele_idx1": 1,
-        "allele_idx2": 2,
-        "allele_seq1": "CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
-        "allele_seq2": "CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCATCTATCTATCTATCTA",
-        "DP": 49,
-        "coverage1": 26.02,
-        "coverage2": 22.98,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "15",
-        "allele_call2": "17.3",
-        "genotype_forense": "15/17.3",
-        "bracketed1": "[TCTA]15",
-        "bracketed2": "[TCTA]17.3",
-        "hipstr_start": 230769616,
-        "hipstr_end": 230769683,
-        "motif_canonical": "TCTA",
-        "left_flank_hg38": "ATACATACAATTAAACACACACACA",
-        "right_flank_hg38": "CATCACACAGTTGACCCTTGAGCAA",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "ATACATACAATTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATCACACAGTTGACCCTTGAGCAA",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "ATACATACAATTAAACACACACACA",
-        "right_flank_in_full1": "CATCACACAGTTGACCCTTGAGCAA",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 85,
-        "repeat_seq1": "CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
-        "motif_observed1": "CCTA",
-        "full_seq2": "ATACATACAATTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCATCTATCTATCTATCTACATCACACAGTTGACCCTTGAGCAA",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "ATACATACAATTAAACACACACACA",
-        "right_flank_in_full2": "CATCACACAGTTGACCCTTGAGCAA",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 96,
-        "repeat_seq2": "CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCATCTATCTATCTATCTA",
-        "motif_observed2": "CCTA",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D10S1248",
-        "chrom": "chr10",
-        "pos": 129294244,
-        "filter": ".",
-        "gt": "1|1",
-        "allele_idx1": 1,
-        "allele_idx2": 1,
-        "allele_seq1": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
-        "allele_seq2": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
-        "DP": 38,
-        "coverage1": 19.0,
-        "coverage2": 19.0,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "15",
-        "allele_call2": "15",
-        "genotype_forense": "15/15",
-        "bracketed1": "[GGAA]15",
-        "bracketed2": "[GGAA]15",
-        "hipstr_start": 129294244,
-        "hipstr_end": 129294295,
-        "motif_canonical": "GGAA",
-        "left_flank_hg38": "TAATGAATTGAACAAATGAGTGAGT",
-        "right_flank_hg38": "ATGAAGACAATACAACCAGAGTTGT",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "TAATGAATTGAACAAATGAGTGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAATGAAGACAATACAACCAGAGTTGT",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 1,
-        "left_flank_in_full1": "TAATGAATTGAACAAATGAGTGAGT",
-        "right_flank_in_full1": "TGAAGACAATACAACCAGAGTTGT",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 85,
-        "repeat_seq1": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
-        "motif_observed1": "GGAA",
-        "full_seq2": "TAATGAATTGAACAAATGAGTGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAATGAAGACAATACAACCAGAGTTGT",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 1,
-        "left_flank_in_full2": "TAATGAATTGAACAAATGAGTGAGT",
-        "right_flank_in_full2": "TGAAGACAATACAACCAGAGTTGT",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 85,
-        "repeat_seq2": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
-        "motif_observed2": "GGAA",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "TH01",
-        "chrom": "chr11",
-        "pos": 2171088,
-        "filter": ".",
-        "gt": "0|1",
-        "allele_idx1": 0,
-        "allele_idx2": 1,
-        "allele_seq1": "AATGAATGAATGAATGAATGAATGAATG",
-        "allele_seq2": "AATGAATGAATGAATGAATGAATG",
-        "DP": 39,
-        "coverage1": 20.43,
-        "coverage2": 18.57,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "7",
-        "allele_call2": "6",
-        "genotype_forense": "6/7",
-        "bracketed1": "[AATG]7",
-        "bracketed2": "[AATG]6",
-        "hipstr_start": 2171088,
-        "hipstr_end": 2171115,
-        "motif_canonical": "AATG",
-        "left_flank_hg38": "CACAGGGAACACAGACTCCATGGTG",
-        "right_flank_hg38": "AGGGAAATAAGGGAGGAACAGGCCA",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "CACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAATGAGGGAAATAAGGGAGGAACAGGCCA",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "CACAGGGAACACAGACTCCATGGTG",
-        "right_flank_in_full1": "AGGGAAATAAGGGAGGAACAGGCCA",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 53,
-        "repeat_seq1": "AATGAATGAATGAATGAATGAATGAATG",
-        "motif_observed1": "AATG",
-        "full_seq2": "CACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAGGGAAATAAGGGAGGAACAGGCCA",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "CACAGGGAACACAGACTCCATGGTG",
-        "right_flank_in_full2": "AGGGAAATAAGGGAGGAACAGGCCA",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 49,
-        "repeat_seq2": "AATGAATGAATGAATGAATGAATG",
-        "motif_observed2": "AATG",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "vWA",
-        "chrom": "chr12",
-        "pos": 5983977,
-        "filter": ".",
-        "gt": "1|2",
-        "allele_idx1": 1,
-        "allele_idx2": 2,
-        "allele_seq1": "TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGATAGA",
-        "allele_seq2": "TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGATAGA",
-        "DP": 42,
-        "coverage1": 18.99,
-        "coverage2": 23.01,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "17",
-        "allele_call2": "17",
-        "genotype_forense": "17/17",
-        "bracketed1": "[TCTA]17",
-        "bracketed2": "[TCTA]17",
-        "hipstr_start": 5983977,
-        "hipstr_end": 5984044,
-        "motif_canonical": "TCTA",
-        "left_flank_hg38": "TACATAGGATGGATGGATAGATGGA",
-        "right_flank_hg38": "TCAATCCAAGTCACATACTGATTAT",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "TACATAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGATAGATCAATCCAAGTCACATACTGATTAT",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "TACATAGGATGGATGGATAGATGGA",
-        "right_flank_in_full1": "TCAATCCAAGTCACATACTGATTAT",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 93,
-        "repeat_seq1": "TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGATAGA",
-        "motif_observed1": "TAGA",
-        "full_seq2": "TACATAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGATAGATCAATCCAAGTCACATACTGATTAT",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "TACATAGGATGGATGGATAGATGGA",
-        "right_flank_in_full2": "TCAATCCAAGTCACATACTGATTAT",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 93,
-        "repeat_seq2": "TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGATAGA",
-        "motif_observed2": "TAGA",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D12S391",
-        "chrom": "chr12",
-        "pos": 12297020,
-        "filter": ".",
-        "gt": "1|2",
-        "allele_idx1": 1,
-        "allele_idx2": 2,
-        "allele_seq1": "AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGAC",
-        "allele_seq2": "AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGAT",
-        "DP": 52,
-        "coverage1": 25.09,
-        "coverage2": 26.91,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "22",
-        "allele_call2": "23",
-        "genotype_forense": "22/23",
-        "bracketed1": "[AGAT]22",
-        "bracketed2": "[AGAT]23",
-        "hipstr_start": 12297020,
-        "hipstr_end": 12297095,
-        "motif_canonical": "AGAT",
-        "left_flank_hg38": "CAACAGGATCAATGGATGCATAGGT",
-        "right_flank_hg38": "GAGAGGGGATTTATTAGAGGAATTA",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "CAACAGGATCAATGGATGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGACGAGAGGGGATTTATTAGAGGAATTA",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "CAACAGGATCAATGGATGCATAGGT",
-        "right_flank_in_full1": "GAGAGGGGATTTATTAGAGGAATTA",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 113,
-        "repeat_seq1": "AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGAC",
-        "motif_observed1": "AGAT",
-        "full_seq2": "CAACAGGATCAATGGATGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGATGAGAGGGGATTTATTAGAGGAATTA",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "CAACAGGATCAATGGATGCATAGGT",
-        "right_flank_in_full2": "GAGAGGGGATTTATTAGAGGAATTA",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 117,
-        "repeat_seq2": "AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGAT",
-        "motif_observed2": "AGAT",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D13S317",
-        "chrom": "chr13",
-        "pos": 82148025,
-        "filter": ".",
-        "gt": "0|1",
-        "allele_idx1": 0,
-        "allele_idx2": 1,
-        "allele_seq1": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
-        "allele_seq2": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
-        "DP": 42,
-        "coverage1": 20.49,
-        "coverage2": 21.51,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "11",
-        "allele_call2": "14",
-        "genotype_forense": "11/14",
-        "bracketed1": "[TATC]11",
-        "bracketed2": "[TATC]14",
-        "hipstr_start": 82148025,
-        "hipstr_end": 82148068,
-        "motif_canonical": "TATC",
-        "left_flank_hg38": "CGCCTATCTGTATTTACAAATACAT",
-        "right_flank_hg38": "AATCAATCATCTATCTATCTTTCTG",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "CGCCTATCTGTATTTACAAATACATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTG",
-        "overlap_left_bp_1": 1,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "CGCCTATCTGTATTTACAAATACA",
-        "right_flank_in_full1": "AATCAATCATCTATCTATCTTTCTG",
-        "repeat_start0_full1": 24,
-        "repeat_end0_full1": 68,
-        "repeat_seq1": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
-        "motif_observed1": "TATC",
-        "full_seq2": "CGCCTATCTGTATTTACAAATACATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTG",
-        "overlap_left_bp_2": 1,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "CGCCTATCTGTATTTACAAATACA",
-        "right_flank_in_full2": "AATCAATCATCTATCTATCTTTCTG",
-        "repeat_start0_full2": 24,
-        "repeat_end0_full2": 80,
-        "repeat_seq2": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
-        "motif_observed2": "TATC",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "PentaE",
-        "chrom": "chr15",
-        "pos": 96831015,
-        "filter": ".",
-        "gt": "1|1",
-        "allele_idx1": 1,
-        "allele_idx2": 1,
-        "allele_seq1": "TCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT",
-        "allele_seq2": "TCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT",
-        "DP": 42,
-        "coverage1": 21.0,
-        "coverage2": 21.0,
-        "period": 5,
-        "motif": null,
-        "allele_call1": "7",
-        "allele_call2": "7",
-        "genotype_forense": "7/7",
-        "bracketed1": "[TCTTT]7",
-        "bracketed2": "[TCTTT]7",
-        "hipstr_start": 96831015,
-        "hipstr_end": 96831039,
-        "motif_canonical": "TCTTT",
-        "left_flank_hg38": "TAATTGAGAAAACTCCTTACAATTT",
-        "right_flank_hg38": "GAGACTGAGTCTTGCTCAGTCGCCC",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "TAATTGAGAAAACTCCTTACAATTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGACTGAGTCTTGCTCAGTCGCCC",
-        "overlap_left_bp_1": 1,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "TAATTGAGAAAACTCCTTACAATT",
-        "right_flank_in_full1": "GAGACTGAGTCTTGCTCAGTCGCCC",
-        "repeat_start0_full1": 24,
-        "repeat_end0_full1": 59,
-        "repeat_seq1": "TCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT",
-        "motif_observed1": "TCTTT",
-        "full_seq2": "TAATTGAGAAAACTCCTTACAATTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGACTGAGTCTTGCTCAGTCGCCC",
-        "overlap_left_bp_2": 1,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "TAATTGAGAAAACTCCTTACAATT",
-        "right_flank_in_full2": "GAGACTGAGTCTTGCTCAGTCGCCC",
-        "repeat_start0_full2": 24,
-        "repeat_end0_full2": 59,
-        "repeat_seq2": "TCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT",
-        "motif_observed2": "TCTTT",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D16S539",
-        "chrom": "chr16",
-        "pos": 86352702,
-        "filter": ".",
-        "gt": "0|0",
-        "allele_idx1": 0,
-        "allele_idx2": 0,
-        "allele_seq1": "GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA",
-        "allele_seq2": "GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA",
-        "DP": 36,
-        "coverage1": 18.0,
-        "coverage2": 18.0,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "11",
-        "allele_call2": "11",
-        "genotype_forense": "11/11",
-        "bracketed1": "[GATA]11",
-        "bracketed2": "[GATA]11",
-        "hipstr_start": 86352702,
-        "hipstr_end": 86352745,
-        "motif_canonical": "GATA",
-        "left_flank_hg38": "ATCAATACAGACAGACAGACAGGTG",
-        "right_flank_hg38": "TCATTGAAAGACAAAACAGAGATGG",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "ATCAATACAGACAGACAGACAGGTGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCATTGAAAGACAAAACAGAGATGG",
-        "overlap_left_bp_1": 1,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "ATCAATACAGACAGACAGACAGGT",
-        "right_flank_in_full1": "TCATTGAAAGACAAAACAGAGATGG",
-        "repeat_start0_full1": 24,
-        "repeat_end0_full1": 68,
-        "repeat_seq1": "GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA",
-        "motif_observed1": "GATA",
-        "full_seq2": "ATCAATACAGACAGACAGACAGGTGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCATTGAAAGACAAAACAGAGATGG",
-        "overlap_left_bp_2": 1,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "ATCAATACAGACAGACAGACAGGT",
-        "right_flank_in_full2": "TCATTGAAAGACAAAACAGAGATGG",
-        "repeat_start0_full2": 24,
-        "repeat_end0_full2": 68,
-        "repeat_seq2": "GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA",
-        "motif_observed2": "GATA",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D18S51",
-        "chrom": "chr18",
-        "pos": 63281667,
-        "filter": ".",
-        "gt": "1|2",
-        "allele_idx1": 1,
-        "allele_idx2": 2,
-        "allele_seq1": "AGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAA",
-        "allele_seq2": "AGAAAGAAATAAACAAATAAAGAAACAAACAAACAAAGAAAGAAACCAACAAAGAA",
-        "DP": 49,
-        "coverage1": 45.07,
-        "coverage2": 3.93,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "14",
-        "allele_call2": "14",
-        "genotype_forense": "14/14",
-        "bracketed1": "[AGAA]14",
-        "bracketed2": "[AGAA]14",
-        "hipstr_start": 63281667,
-        "hipstr_end": 63281738,
-        "motif_canonical": "AGAA",
-        "left_flank_hg38": "GAGTGACAAATTGAGACCTTGTCTC",
-        "right_flank_hg38": "AAAGAGAGAGGAAAGAAAGAGAAAA",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "GAGTGACAAATTGAGACCTTGTCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAGAGGAAAGAAAGAGAAAA",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 2,
-        "left_flank_in_full1": "GAGTGACAAATTGAGACCTTGTCTC",
-        "right_flank_in_full1": "AGAGAGAGGAAAGAAAGAGAAAA",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 81,
-        "repeat_seq1": "AGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAA",
-        "motif_observed1": "AGAA",
-        "full_seq2": "GAGTGACAAATTGAGACCTTGTCTCAGAAAGAAATAAACAAATAAAGAAACAAACAAACAAAGAAAGAAACCAACAAAGAAAGAGAGAGGAAAGAAAGAGAAAA",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 2,
-        "left_flank_in_full2": "GAGTGACAAATTGAGACCTTGTCTC",
-        "right_flank_in_full2": "AGAGAGAGGAAAGAAAGAGAAAA",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 81,
-        "repeat_seq2": "AGAAAGAAATAAACAAATAAAGAAACAAACAAACAAAGAAAGAAACCAACAAAGAA",
-        "motif_observed2": "AGAA",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D19S433",
-        "chrom": "chr19",
-        "pos": 29926235,
-        "filter": ".",
-        "gt": "1|1",
-        "allele_idx1": 1,
-        "allele_idx2": 1,
-        "allele_seq1": "CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTT",
-        "allele_seq2": "CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTT",
-        "DP": 45,
-        "coverage1": 22.5,
-        "coverage2": 22.5,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "15",
-        "allele_call2": "15",
-        "genotype_forense": "15/15",
-        "bracketed1": "[CCTT]15",
-        "bracketed2": "[CCTT]15",
-        "hipstr_start": 29926235,
-        "hipstr_end": 29926298,
-        "motif_canonical": "CCTT",
-        "left_flank_hg38": "AAATCTTCTCTCTTTCTTCCTCTCT",
-        "right_flank_hg38": "CAACAGAATCTTATTCTGTTGCCCA",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "AAATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCA",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "AAATCTTCTCTCTTTCTTCCTCTCT",
-        "right_flank_in_full1": "CAACAGAATCTTATTCTGTTGCCCA",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 85,
-        "repeat_seq1": "CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTT",
-        "motif_observed1": "CCTT",
-        "full_seq2": "AAATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCA",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "AAATCTTCTCTCTTTCTTCCTCTCT",
-        "right_flank_in_full2": "CAACAGAATCTTATTCTGTTGCCCA",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 85,
-        "repeat_seq2": "CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTT",
-        "motif_observed2": "CCTT",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "TPOX",
-        "chrom": "chr2",
-        "pos": 1489653,
-        "filter": ".",
-        "gt": "0|1",
-        "allele_idx1": 0,
-        "allele_idx2": 1,
-        "allele_seq1": "AATGAATGAATGAATGAATGAATGAATGAATG",
-        "allele_seq2": "AATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATG",
-        "DP": 32,
-        "coverage1": 13.5,
-        "coverage2": 18.5,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "8",
-        "allele_call2": "11",
-        "genotype_forense": "8/11",
-        "bracketed1": "[AATG]8",
-        "bracketed2": "[AATG]11",
-        "hipstr_start": 1489653,
-        "hipstr_end": 1489684,
-        "motif_canonical": "AATG",
-        "left_flank_hg38": "ACAGGCACTTAGGGAACCCTCACTG",
-        "right_flank_hg38": "TTTGGGCAAATAAACGCTGACAAGG",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "ACAGGCACTTAGGGAACCCTCACTGAATGAATGAATGAATGAATGAATGAATGAATGTTTGGGCAAATAAACGCTGACAAGG",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "ACAGGCACTTAGGGAACCCTCACTG",
-        "right_flank_in_full1": "TTTGGGCAAATAAACGCTGACAAGG",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 57,
-        "repeat_seq1": "AATGAATGAATGAATGAATGAATGAATGAATG",
-        "motif_observed1": "AATG",
-        "full_seq2": "ACAGGCACTTAGGGAACCCTCACTGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGTTTGGGCAAATAAACGCTGACAAGG",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "ACAGGCACTTAGGGAACCCTCACTG",
-        "right_flank_in_full2": "TTTGGGCAAATAAACGCTGACAAGG",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 69,
-        "repeat_seq2": "AATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATG",
-        "motif_observed2": "AATG",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D2S441",
-        "chrom": "chr2",
-        "pos": 68011947,
-        "filter": ".",
-        "gt": "1|2",
-        "allele_idx1": 1,
-        "allele_idx2": 2,
-        "allele_seq1": "TCTATCTATCTATCTATCTATCTATCTATCTATCTGTCTA",
-        "allele_seq2": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTA",
-        "DP": 65,
-        "coverage1": 36.0,
-        "coverage2": 29.0,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "10",
-        "allele_call2": "14",
-        "genotype_forense": "10/14",
-        "bracketed1": "[TCTA]10",
-        "bracketed2": "[TCTA]14",
-        "hipstr_start": 68011947,
-        "hipstr_end": 68011994,
-        "motif_canonical": "TCTA",
-        "left_flank_hg38": "GAACTGTGGCTCATCTATGAAAACT",
-        "right_flank_hg38": "TATCATAACACCACAGCCACTTAGC",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "GAACTGTGGCTCATCTATGAAAACTCTATCTATCTATCTATCTATCTATCTATCTATCTGTCTATCATAACACCACAGCCACTTAGC",
-        "overlap_left_bp_1": 1,
-        "overlap_right_bp_1": 2,
-        "left_flank_in_full1": "GAACTGTGGCTCATCTATGAAAAC",
-        "right_flank_in_full1": "TCATAACACCACAGCCACTTAGC",
-        "repeat_start0_full1": 24,
-        "repeat_end0_full1": 64,
-        "repeat_seq1": "TCTATCTATCTATCTATCTATCTATCTATCTATCTGTCTA",
-        "motif_observed1": "TCTA",
-        "full_seq2": "GAACTGTGGCTCATCTATGAAAACTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTATCATAACACCACAGCCACTTAGC",
-        "overlap_left_bp_2": 1,
-        "overlap_right_bp_2": 2,
-        "left_flank_in_full2": "GAACTGTGGCTCATCTATGAAAAC",
-        "right_flank_in_full2": "TCATAACACCACAGCCACTTAGC",
-        "repeat_start0_full2": 24,
-        "repeat_end0_full2": 80,
-        "repeat_seq2": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTA",
-        "motif_observed2": "TCTA",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D2S1338",
-        "chrom": "chr2",
-        "pos": 218014859,
-        "filter": ".",
-        "gt": "1|2",
-        "allele_idx1": 1,
-        "allele_idx2": 2,
-        "allele_seq1": "GGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCA",
-        "allele_seq2": "GGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCA",
-        "DP": 54,
-        "coverage1": 27.98,
-        "coverage2": 26.02,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "22",
-        "allele_call2": "24",
-        "genotype_forense": "22/24",
-        "bracketed1": "[GGAA]22",
-        "bracketed2": "[GGAA]24",
-        "hipstr_start": 218014859,
-        "hipstr_end": 218014950,
-        "motif_canonical": "GGAA",
-        "left_flank_hg38": "TCAGTAAGTTAAAGGATTGCAGGAG",
-        "right_flank_hg38": "AGGCCAAGCCATTTCTGTTTCCAAA",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "TCAGTAAGTTAAAGGATTGCAGGAGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAGGCCAAGCCATTTCTGTTTCCAAA",
-        "overlap_left_bp_1": 1,
-        "overlap_right_bp_1": 1,
-        "left_flank_in_full1": "TCAGTAAGTTAAAGGATTGCAGGA",
-        "right_flank_in_full1": "GGCCAAGCCATTTCTGTTTCCAAA",
-        "repeat_start0_full1": 24,
-        "repeat_end0_full1": 112,
-        "repeat_seq1": "GGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCA",
-        "motif_observed1": "GGAA",
-        "full_seq2": "TCAGTAAGTTAAAGGATTGCAGGAGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAGGCCAAGCCATTTCTGTTTCCAAA",
-        "overlap_left_bp_2": 1,
-        "overlap_right_bp_2": 1,
-        "left_flank_in_full2": "TCAGTAAGTTAAAGGATTGCAGGA",
-        "right_flank_in_full2": "GGCCAAGCCATTTCTGTTTCCAAA",
-        "repeat_start0_full2": 24,
-        "repeat_end0_full2": 120,
-        "repeat_seq2": "GGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCA",
-        "motif_observed2": "GGAA",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "PentaD",
-        "chrom": "chr21",
-        "pos": 43636205,
-        "filter": ".",
-        "gt": "1|2",
-        "allele_idx1": 1,
-        "allele_idx2": 2,
-        "allele_seq1": "AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA",
-        "allele_seq2": "AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA",
-        "DP": 45,
-        "coverage1": 21.47,
-        "coverage2": 23.53,
-        "period": 5,
-        "motif": null,
-        "allele_call1": "9",
-        "allele_call2": "12",
-        "genotype_forense": "9/12",
-        "bracketed1": "[AAAGA]9",
-        "bracketed2": "[AAAGA]12",
-        "hipstr_start": 43636205,
-        "hipstr_end": 43636269,
-        "motif_canonical": "AAAGA",
-        "left_flank_hg38": "CACCATCTCAAGAAAGAAAAAAAAG",
-        "right_flank_hg38": "AAAAACGAAGGGGAAAAAAAGAGAA",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "CACCATCTCAAGAAAGAAAAAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAACGAAGGGGAAAAAAAGAGAA",
-        "overlap_left_bp_1": 4,
-        "overlap_right_bp_1": 1,
-        "left_flank_in_full1": "CACCATCTCAAGAAAGAAAAA",
-        "right_flank_in_full1": "AAAACGAAGGGGAAAAAAAGAGAA",
-        "repeat_start0_full1": 21,
-        "repeat_end0_full1": 66,
-        "repeat_seq1": "AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA",
-        "motif_observed1": "AAAGA",
-        "full_seq2": "CACCATCTCAAGAAAGAAAAAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAACGAAGGGGAAAAAAAGAGAA",
-        "overlap_left_bp_2": 4,
-        "overlap_right_bp_2": 1,
-        "left_flank_in_full2": "CACCATCTCAAGAAAGAAAAA",
-        "right_flank_in_full2": "AAAACGAAGGGGAAAAAAAGAGAA",
-        "repeat_start0_full2": 21,
-        "repeat_end0_full2": 81,
-        "repeat_seq2": "AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA",
-        "motif_observed2": "AAAGA",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D22S1045",
-        "chrom": "chr22",
-        "pos": 37140287,
-        "filter": ".",
-        "gt": "1|1",
-        "allele_idx1": 1,
-        "allele_idx2": 1,
-        "allele_seq1": "ATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATT",
-        "allele_seq2": "ATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATT",
-        "DP": 55,
-        "coverage1": 27.5,
-        "coverage2": 27.5,
-        "period": 3,
-        "motif": null,
-        "allele_call1": "16",
-        "allele_call2": "16",
-        "genotype_forense": "16/16",
-        "bracketed1": "[ATT]16",
-        "bracketed2": "[ATT]16",
-        "hipstr_start": 37140287,
-        "hipstr_end": 37140337,
-        "motif_canonical": "ATT",
-        "left_flank_hg38": "GATTTTCCCCGATGATAGTAGTCTC",
-        "right_flank_hg38": "GTTATAAAAATATTGCCAATCATAC",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "GATTTTCCCCGATGATAGTAGTCTCATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTATAAAAATATTGCCAATCATAC",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "GATTTTCCCCGATGATAGTAGTCTC",
-        "right_flank_in_full1": "GTTATAAAAATATTGCCAATCATAC",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 73,
-        "repeat_seq1": "ATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATT",
-        "motif_observed1": "ATT",
-        "full_seq2": "GATTTTCCCCGATGATAGTAGTCTCATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTATAAAAATATTGCCAATCATAC",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "GATTTTCCCCGATGATAGTAGTCTC",
-        "right_flank_in_full2": "GTTATAAAAATATTGCCAATCATAC",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 73,
-        "repeat_seq2": "ATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATT",
-        "motif_observed2": "ATT",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D3S1358",
-        "chrom": "chr3",
-        "pos": 45540739,
-        "filter": ".",
-        "gt": "1|2",
-        "allele_idx1": 1,
-        "allele_idx2": 2,
-        "allele_seq1": "TCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
-        "allele_seq2": "TCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
-        "DP": 55,
-        "coverage1": 25.16,
-        "coverage2": 29.84,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "15",
-        "allele_call2": "16",
-        "genotype_forense": "15/16",
-        "bracketed1": "[TCTA]15",
-        "bracketed2": "[TCTA]16",
-        "hipstr_start": 45540739,
-        "hipstr_end": 45540802,
-        "motif_canonical": "TCTA",
-        "left_flank_hg38": "TGAAATCAACAGAGGCTTGCATGTA",
-        "right_flank_hg38": "TGAGACAGGGTCTTGCTCTGTCACC",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "TGAAATCAACAGAGGCTTGCATGTATCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGACAGGGTCTTGCTCTGTCACC",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "TGAAATCAACAGAGGCTTGCATGTA",
-        "right_flank_in_full1": "TGAGACAGGGTCTTGCTCTGTCACC",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 85,
-        "repeat_seq1": "TCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
-        "motif_observed1": "TCTA",
-        "full_seq2": "TGAAATCAACAGAGGCTTGCATGTATCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGACAGGGTCTTGCTCTGTCACC",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "TGAAATCAACAGAGGCTTGCATGTA",
-        "right_flank_in_full2": "TGAGACAGGGTCTTGCTCTGTCACC",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 89,
-        "repeat_seq2": "TCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
-        "motif_observed2": "TCTA",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "FGA",
-        "chrom": "chr4",
-        "pos": 154587736,
-        "filter": ".",
-        "gt": "0|1",
-        "allele_idx1": 0,
-        "allele_idx2": 1,
-        "allele_seq1": "GGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA",
-        "allele_seq2": "GGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA",
-        "DP": 43,
-        "coverage1": 18.68,
-        "coverage2": 24.32,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "22",
-        "allele_call2": "23",
-        "genotype_forense": "22/23",
-        "bracketed1": "[GGAA]22",
-        "bracketed2": "[GGAA]23",
-        "hipstr_start": 154587736,
-        "hipstr_end": 154587823,
-        "motif_canonical": "GGAA",
-        "left_flank_hg38": "TGCCAGCAAAAAAGAAAGGAAGAAA",
-        "right_flank_hg38": "CTAGCTTGTAAATATGCCTAATTTT",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "TGCCAGCAAAAAAGAAAGGAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTAGCTTGTAAATATGCCTAATTTT",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "TGCCAGCAAAAAAGAAAGGAAGAAA",
-        "right_flank_in_full1": "CTAGCTTGTAAATATGCCTAATTTT",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 113,
-        "repeat_seq1": "GGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA",
-        "motif_observed1": "GGAA",
-        "full_seq2": "TGCCAGCAAAAAAGAAAGGAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTAGCTTGTAAATATGCCTAATTTT",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "TGCCAGCAAAAAAGAAAGGAAGAAA",
-        "right_flank_in_full2": "CTAGCTTGTAAATATGCCTAATTTT",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 117,
-        "repeat_seq2": "GGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA",
-        "motif_observed2": "GGAA",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D5S818",
-        "chrom": "chr5",
-        "pos": 123775556,
-        "filter": ".",
-        "gt": "0|0",
-        "allele_idx1": 0,
-        "allele_idx2": 0,
-        "allele_seq1": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
-        "allele_seq2": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
-        "DP": 43,
-        "coverage1": 21.5,
-        "coverage2": 21.5,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "11",
-        "allele_call2": "11",
-        "genotype_forense": "11/11",
-        "bracketed1": "[TCTA]11",
-        "bracketed2": "[TCTA]11",
-        "hipstr_start": 123775556,
-        "hipstr_end": 123775599,
-        "motif_canonical": "TCTA",
-        "left_flank_hg38": "TATCTGTATCCTTATTTATACCTCT",
-        "right_flank_hg38": "TCAAAATATTACATAAGGATACCAA",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "TATCTGTATCCTTATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTCAAAATATTACATAAGGATACCAA",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 1,
-        "left_flank_in_full1": "TATCTGTATCCTTATTTATACCTCT",
-        "right_flank_in_full1": "CAAAATATTACATAAGGATACCAA",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 69,
-        "repeat_seq1": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
-        "motif_observed1": "ATCT",
-        "full_seq2": "TATCTGTATCCTTATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTCAAAATATTACATAAGGATACCAA",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 1,
-        "left_flank_in_full2": "TATCTGTATCCTTATTTATACCTCT",
-        "right_flank_in_full2": "CAAAATATTACATAAGGATACCAA",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 69,
-        "repeat_seq2": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
-        "motif_observed2": "ATCT",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "CSF1PO",
-        "chrom": "chr5",
-        "pos": 150076324,
-        "filter": ".",
-        "gt": "1|1",
-        "allele_idx1": 1,
-        "allele_idx2": 1,
-        "allele_seq1": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
-        "allele_seq2": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
-        "DP": 45,
-        "coverage1": 22.5,
-        "coverage2": 22.5,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "12",
-        "allele_call2": "12",
-        "genotype_forense": "12/12",
-        "bracketed1": "[ATCT]12",
-        "bracketed2": "[ATCT]12",
-        "hipstr_start": 150076324,
-        "hipstr_end": 150076375,
-        "motif_canonical": "ATCT",
-        "left_flank_hg38": "TCAGACCCTGTTCTAAGTACTTCCT",
-        "right_flank_hg38": "AATCTATCTATCTTCTATCTATGAA",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "TCAGACCCTGTTCTAAGTACTTCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCTATCTATCTTCTATCTATGAA",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "TCAGACCCTGTTCTAAGTACTTCCT",
-        "right_flank_in_full1": "AATCTATCTATCTTCTATCTATGAA",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 73,
-        "repeat_seq1": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
-        "motif_observed1": "ATCT",
-        "full_seq2": "TCAGACCCTGTTCTAAGTACTTCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCTATCTATCTTCTATCTATGAA",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "TCAGACCCTGTTCTAAGTACTTCCT",
-        "right_flank_in_full2": "AATCTATCTATCTTCTATCTATGAA",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 73,
-        "repeat_seq2": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
-        "motif_observed2": "ATCT",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D7S820",
-        "chrom": "chr7",
-        "pos": 84160226,
-        "filter": ".",
-        "gt": "0|1",
-        "allele_idx1": 0,
-        "allele_idx2": 1,
-        "allele_seq1": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
-        "allele_seq2": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
-        "DP": 36,
-        "coverage1": 20.92,
-        "coverage2": 15.08,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "13",
-        "allele_call2": "10",
-        "genotype_forense": "10/13",
-        "bracketed1": "[TATC]13",
-        "bracketed2": "[TATC]10",
-        "hipstr_start": 84160226,
-        "hipstr_end": 84160277,
-        "motif_canonical": "TATC",
-        "left_flank_hg38": "GATTAAAAAAAACTATCAATCTGTC",
-        "right_flank_hg38": "GTTAGTTCGTTCTAAACTATGACAA",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "GATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTAGTTCGTTCTAAACTATGACAA",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "GATTAAAAAAAACTATCAATCTGTC",
-        "right_flank_in_full1": "GTTAGTTCGTTCTAAACTATGACAA",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 77,
-        "repeat_seq1": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
-        "motif_observed1": "TATC",
-        "full_seq2": "GATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTAGTTCGTTCTAAACTATGACAA",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "GATTAAAAAAAACTATCAATCTGTC",
-        "right_flank_in_full2": "GTTAGTTCGTTCTAAACTATGACAA",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 65,
-        "repeat_seq2": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
-        "motif_observed2": "TATC",
-        "flanks_status": "OK"
-      },
-      {
-        "locus": "D8S1179",
-        "chrom": "chr8",
-        "pos": 124894865,
-        "filter": ".",
-        "gt": "0|1",
-        "allele_idx1": 0,
-        "allele_idx2": 1,
-        "allele_seq1": "TCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
-        "allele_seq2": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
-        "DP": 33,
-        "coverage1": 14.02,
-        "coverage2": 18.98,
-        "period": 4,
-        "motif": null,
-        "allele_call1": "13",
-        "allele_call2": "10",
-        "genotype_forense": "10/13",
-        "bracketed1": "[TCTA]13",
-        "bracketed2": "[TCTA]10",
-        "hipstr_start": 124894865,
-        "hipstr_end": 124894916,
-        "motif_canonical": "TCTA",
-        "left_flank_hg38": "TTTGTATTTCATGTGTACATTCGTA",
-        "right_flank_hg38": "TTCCCCACAGTGAAAATAATCTACA",
-        "flank_size": 25,
-        "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-        "full_seq1": "TTTGTATTTCATGTGTACATTCGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCCCACAGTGAAAATAATCTACA",
-        "overlap_left_bp_1": 0,
-        "overlap_right_bp_1": 0,
-        "left_flank_in_full1": "TTTGTATTTCATGTGTACATTCGTA",
-        "right_flank_in_full1": "TTCCCCACAGTGAAAATAATCTACA",
-        "repeat_start0_full1": 25,
-        "repeat_end0_full1": 77,
-        "repeat_seq1": "TCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
-        "motif_observed1": "TCTA",
-        "full_seq2": "TTTGTATTTCATGTGTACATTCGTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCCCACAGTGAAAATAATCTACA",
-        "overlap_left_bp_2": 0,
-        "overlap_right_bp_2": 0,
-        "left_flank_in_full2": "TTTGTATTTCATGTGTACATTCGTA",
-        "right_flank_in_full2": "TTCCCCACAGTGAAAATAATCTACA",
-        "repeat_start0_full2": 25,
-        "repeat_end0_full2": 65,
-        "repeat_seq2": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
-        "motif_observed2": "TCTA",
-        "flanks_status": "OK"
-      }
-    ]
+    {
+     "t": "ACACACACACAC",
+     "c": "1"
+    },
+    {
+     "t": "CTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAT",
+     "c": "0"
+    },
+    {
+     "t": "CTA",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "TTCAGAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAA",
+     "c": "f"
+    },
+    {
+     "t": "ACACACACACAC",
+     "c": "1"
+    },
+    {
+     "t": "CTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAT",
+     "c": "0"
+    },
+    {
+     "t": "CAT",
+     "c": "f"
+    },
+    {
+     "t": "CTATCTATCTAT",
+     "c": "0"
+    },
+    {
+     "t": "CTA",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D10S1248",
+   "chrom": "chr10",
+   "pos": 129294244,
+   "filter": ".",
+   "gt": "1|1",
+   "allele_idx1": 1,
+   "allele_idx2": 1,
+   "allele_seq1": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
+   "allele_seq2": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
+   "DP": 38,
+   "coverage1": 19.0,
+   "coverage2": 19.0,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "15",
+   "allele_call2": "15",
+   "genotype_forense": "15/15",
+   "bracketed1": "GGAA[15]",
+   "bracketed2": "GGAA[15]",
+   "hipstr_start": 129294244,
+   "hipstr_end": 129294295,
+   "motif_canonical": "GGAA",
+   "left_flank_hg38": "TAATGAATTGAACAAATGAGTGAGT",
+   "right_flank_hg38": "ATGAAGACAATACAACCAGAGTTGT",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "TAATGAATTGAACAAATGAGTGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAATGAAGACAATACAACCAGAGTTGT",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 1,
+   "left_flank_in_full1": "TAATGAATTGAACAAATGAGTGAGT",
+   "right_flank_in_full1": "TGAAGACAATACAACCAGAGTTGT",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 85,
+   "repeat_seq1": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
+   "motif_observed1": "GGAA",
+   "full_seq2": "TAATGAATTGAACAAATGAGTGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAATGAAGACAATACAACCAGAGTTGT",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 1,
+   "left_flank_in_full2": "TAATGAATTGAACAAATGAGTGAGT",
+   "right_flank_in_full2": "TGAAGACAATACAACCAGAGTTGT",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 85,
+   "repeat_seq2": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
+   "motif_observed2": "GGAA",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "TTGAACAAATGAGTGAGT",
+     "c": "f"
+    },
+    {
+     "t": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
+     "c": "0"
+    },
+    {
+     "t": "ATGAAGACAATACAACCAGAGTT",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "TTGAACAAATGAGTGAGT",
+     "c": "f"
+    },
+    {
+     "t": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
+     "c": "0"
+    },
+    {
+     "t": "ATGAAGACAATACAACCAGAGTT",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "TH01",
+   "chrom": "chr11",
+   "pos": 2171088,
+   "filter": ".",
+   "gt": "0|1",
+   "allele_idx1": 0,
+   "allele_idx2": 1,
+   "allele_seq1": "AATGAATGAATGAATGAATGAATGAATG",
+   "allele_seq2": "AATGAATGAATGAATGAATGAATG",
+   "DP": 39,
+   "coverage1": 20.43,
+   "coverage2": 18.57,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "7",
+   "allele_call2": "6",
+   "genotype_forense": "6/7",
+   "bracketed1": "TGAA[7]",
+   "bracketed2": "TGAA[6]",
+   "hipstr_start": 2171088,
+   "hipstr_end": 2171115,
+   "motif_canonical": "AATG",
+   "left_flank_hg38": "CACAGGGAACACAGACTCCATGGTG",
+   "right_flank_hg38": "AGGGAAATAAGGGAGGAACAGGCCA",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "CACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAATGAGGGAAATAAGGGAGGAACAGGCCA",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "CACAGGGAACACAGACTCCATGGTG",
+   "right_flank_in_full1": "AGGGAAATAAGGGAGGAACAGGCCA",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 53,
+   "repeat_seq1": "AATGAATGAATGAATGAATGAATGAATG",
+   "motif_observed1": "AATG",
+   "full_seq2": "CACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAGGGAAATAAGGGAGGAACAGGCCA",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "CACAGGGAACACAGACTCCATGGTG",
+   "right_flank_in_full2": "AGGGAAATAAGGGAGGAACAGGCCA",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 49,
+   "repeat_seq2": "AATGAATGAATGAATGAATGAATG",
+   "motif_observed2": "AATG",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "TGCAGGTCACAGGGAACACAGACTCCATGG",
+     "c": "f"
+    },
+    {
+     "t": "TGAATGAATGAATGAATGAATGAATGAA",
+     "c": "0"
+    },
+    {
+     "t": "TGAGGGAAATAAGG",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "TGCAGGTCACAGGGAACACAGACTCCATGG",
+     "c": "f"
+    },
+    {
+     "t": "TGAATGAATGAATGAATGAATGAA",
+     "c": "0"
+    },
+    {
+     "t": "TGAGGGAAATAAGG",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "vWA",
+   "chrom": "chr12",
+   "pos": 5983977,
+   "filter": ".",
+   "gt": "1|2",
+   "allele_idx1": 1,
+   "allele_idx2": 2,
+   "allele_seq1": "TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGATAGA",
+   "allele_seq2": "TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGATAGA",
+   "DP": 42,
+   "coverage1": 18.99,
+   "coverage2": 23.01,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "17",
+   "allele_call2": "17",
+   "genotype_forense": "17/17",
+   "bracketed1": "GGAT[3] AGAT[1] GGAT[1] AGAT[11] AGAC[4] AGAT[2]",
+   "bracketed2": "GGAT[3] AGAT[1] GGAT[1] AGAT[12] AGAC[3] AGAT[2]",
+   "hipstr_start": 5983977,
+   "hipstr_end": 5984044,
+   "motif_canonical": "TCTA",
+   "left_flank_hg38": "TACATAGGATGGATGGATAGATGGA",
+   "right_flank_hg38": "TCAATCCAAGTCACATACTGATTAT",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "TACATAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGATAGATCAATCCAAGTCACATACTGATTAT",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "TACATAGGATGGATGGATAGATGGA",
+   "right_flank_in_full1": "TCAATCCAAGTCACATACTGATTAT",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 93,
+   "repeat_seq1": "TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGATAGA",
+   "motif_observed1": "TAGA",
+   "full_seq2": "TACATAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGATAGATCAATCCAAGTCACATACTGATTAT",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "TACATAGGATGGATGGATAGATGGA",
+   "right_flank_in_full2": "TCAATCCAAGTCACATACTGATTAT",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 93,
+   "repeat_seq2": "TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGATAGA",
+   "motif_observed2": "TAGA",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "AATACATA",
+     "c": "f"
+    },
+    {
+     "t": "GGATGGATGGAT",
+     "c": "2"
+    },
+    {
+     "t": "AGAT",
+     "c": "0"
+    },
+    {
+     "t": "GGAT",
+     "c": "2"
+    },
+    {
+     "t": "AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGAT",
+     "c": "0"
+    },
+    {
+     "t": "AGACAGACAGACAGAC",
+     "c": "1"
+    },
+    {
+     "t": "AGATAGAT",
+     "c": "0"
+    },
+    {
+     "t": "CAAT",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "AATACATA",
+     "c": "f"
+    },
+    {
+     "t": "GGATGGATGGAT",
+     "c": "2"
+    },
+    {
+     "t": "AGAT",
+     "c": "0"
+    },
+    {
+     "t": "GGAT",
+     "c": "2"
+    },
+    {
+     "t": "AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGAT",
+     "c": "0"
+    },
+    {
+     "t": "AGACAGACAGAC",
+     "c": "1"
+    },
+    {
+     "t": "AGATAGAT",
+     "c": "0"
+    },
+    {
+     "t": "CAAT",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D12S391",
+   "chrom": "chr12",
+   "pos": 12297020,
+   "filter": ".",
+   "gt": "1|2",
+   "allele_idx1": 1,
+   "allele_idx2": 2,
+   "allele_seq1": "AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGAC",
+   "allele_seq2": "AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGAT",
+   "DP": 52,
+   "coverage1": 25.09,
+   "coverage2": 26.91,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "22",
+   "allele_call2": "23",
+   "genotype_forense": "22/23",
+   "bracketed1": "TAGA[14] CAGA[8]",
+   "bracketed2": "TAGA[15] CAGA[8]",
+   "hipstr_start": 12297020,
+   "hipstr_end": 12297095,
+   "motif_canonical": "AGAT",
+   "left_flank_hg38": "CAACAGGATCAATGGATGCATAGGT",
+   "right_flank_hg38": "GAGAGGGGATTTATTAGAGGAATTA",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "CAACAGGATCAATGGATGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGACGAGAGGGGATTTATTAGAGGAATTA",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "CAACAGGATCAATGGATGCATAGGT",
+   "right_flank_in_full1": "GAGAGGGGATTTATTAGAGGAATTA",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 113,
+   "repeat_seq1": "AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGAC",
+   "motif_observed1": "AGAT",
+   "full_seq2": "CAACAGGATCAATGGATGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGATGAGAGGGGATTTATTAGAGGAATTA",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "CAACAGGATCAATGGATGCATAGGT",
+   "right_flank_in_full2": "GAGAGGGGATTTATTAGAGGAATTA",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 117,
+   "repeat_seq2": "AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGAT",
+   "motif_observed2": "AGAT",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "CAGAGAGAAAGAATCAACAGGATCAATGGATGCATAGG",
+     "c": "f"
+    },
+    {
+     "t": "TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGA",
+     "c": "0"
+    },
+    {
+     "t": "CAGACAGACAGACAGACAGACAGACAGACAGA",
+     "c": "1"
+    },
+    {
+     "t": "CGAGAGGGGATTTATTAGAGGAATTAGCTCAAGTGATATGGAGGCTGAAAAATCTCATGACAGTCCATCTGCAAGCTGGAGACCCAGGGACACTA",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "CAGAGAGAAAGAATCAACAGGATCAATGGATGCATAGG",
+     "c": "f"
+    },
+    {
+     "t": "TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGA",
+     "c": "0"
+    },
+    {
+     "t": "CAGACAGACAGACAGACAGACAGACAGACAGA",
+     "c": "1"
+    },
+    {
+     "t": "TGAGAGGGGATTTATTAGAGGAATTAGCTCAAGTGATATGGAGGCTGAAAAATCTCATGACAGTCCATCTGCAAGCTGGAGACCCAGGGACACTA",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D13S317",
+   "chrom": "chr13",
+   "pos": 82148025,
+   "filter": ".",
+   "gt": "0|1",
+   "allele_idx1": 0,
+   "allele_idx2": 1,
+   "allele_seq1": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+   "allele_seq2": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+   "DP": 42,
+   "coverage1": 20.49,
+   "coverage2": 21.51,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "11",
+   "allele_call2": "14",
+   "genotype_forense": "11/14",
+   "bracketed1": "TATC[11] AATC[2] ATCT[3]",
+   "bracketed2": "TATC[14] AATC[2] ATCT[3]",
+   "hipstr_start": 82148025,
+   "hipstr_end": 82148068,
+   "motif_canonical": "TATC",
+   "left_flank_hg38": "CGCCTATCTGTATTTACAAATACAT",
+   "right_flank_hg38": "AATCAATCATCTATCTATCTTTCTG",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "CGCCTATCTGTATTTACAAATACATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTG",
+   "overlap_left_bp_1": 1,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "CGCCTATCTGTATTTACAAATACA",
+   "right_flank_in_full1": "AATCAATCATCTATCTATCTTTCTG",
+   "repeat_start0_full1": 24,
+   "repeat_end0_full1": 68,
+   "repeat_seq1": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+   "motif_observed1": "TATC",
+   "full_seq2": "CGCCTATCTGTATTTACAAATACATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTG",
+   "overlap_left_bp_2": 1,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "CGCCTATCTGTATTTACAAATACA",
+   "right_flank_in_full2": "AATCAATCATCTATCTATCTTTCTG",
+   "repeat_start0_full2": 24,
+   "repeat_end0_full2": 80,
+   "repeat_seq2": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+   "motif_observed2": "TATC",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "TCTGACCCATCTAACGCCTATCTGTATTTACAAATACAT",
+     "c": "f"
+    },
+    {
+     "t": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+     "c": "0"
+    },
+    {
+     "t": "AATCAATC",
+     "c": "2"
+    },
+    {
+     "t": "ATCTATCTATCT",
+     "c": "1"
+    },
+    {
+     "t": "TTCTGTCTGTCTTTTTGGG",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "TCTGACCCATCTAACGCCTATCTGTATTTACAAATACAT",
+     "c": "f"
+    },
+    {
+     "t": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+     "c": "0"
+    },
+    {
+     "t": "AATCAATC",
+     "c": "2"
+    },
+    {
+     "t": "ATCTATCTATCT",
+     "c": "1"
+    },
+    {
+     "t": "TTCTGTCTGTCTTTTTGGG",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "PentaE",
+   "chrom": "chr15",
+   "pos": 96831015,
+   "filter": ".",
+   "gt": "1|1",
+   "allele_idx1": 1,
+   "allele_idx2": 1,
+   "allele_seq1": "TCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT",
+   "allele_seq2": "TCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT",
+   "DP": 42,
+   "coverage1": 21.0,
+   "coverage2": 21.0,
+   "period": 5,
+   "motif": null,
+   "allele_call1": "7",
+   "allele_call2": "7",
+   "genotype_forense": "7/7",
+   "bracketed1": "TTTTC[7]",
+   "bracketed2": "TTTTC[7]",
+   "hipstr_start": 96831015,
+   "hipstr_end": 96831039,
+   "motif_canonical": "TCTTT",
+   "left_flank_hg38": "TAATTGAGAAAACTCCTTACAATTT",
+   "right_flank_hg38": "GAGACTGAGTCTTGCTCAGTCGCCC",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "TAATTGAGAAAACTCCTTACAATTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGACTGAGTCTTGCTCAGTCGCCC",
+   "overlap_left_bp_1": 1,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "TAATTGAGAAAACTCCTTACAATT",
+   "right_flank_in_full1": "GAGACTGAGTCTTGCTCAGTCGCCC",
+   "repeat_start0_full1": 24,
+   "repeat_end0_full1": 59,
+   "repeat_seq1": "TCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT",
+   "motif_observed1": "TCTTT",
+   "full_seq2": "TAATTGAGAAAACTCCTTACAATTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGACTGAGTCTTGCTCAGTCGCCC",
+   "overlap_left_bp_2": 1,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "TAATTGAGAAAACTCCTTACAATT",
+   "right_flank_in_full2": "GAGACTGAGTCTTGCTCAGTCGCCC",
+   "repeat_start0_full2": 24,
+   "repeat_end0_full2": 59,
+   "repeat_seq2": "TCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT",
+   "motif_observed2": "TCTTT",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "AGAAAACTCCTTACAA",
+     "c": "f"
+    },
+    {
+     "t": "TTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTC",
+     "c": "0"
+    },
+    {
+     "t": "TTT",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "AGAAAACTCCTTACAA",
+     "c": "f"
+    },
+    {
+     "t": "TTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTC",
+     "c": "0"
+    },
+    {
+     "t": "TTT",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D16S539",
+   "chrom": "chr16",
+   "pos": 86352702,
+   "filter": ".",
+   "gt": "0|0",
+   "allele_idx1": 0,
+   "allele_idx2": 0,
+   "allele_seq1": "GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA",
+   "allele_seq2": "GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA",
+   "DP": 36,
+   "coverage1": 18.0,
+   "coverage2": 18.0,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "11",
+   "allele_call2": "11",
+   "genotype_forense": "11/11",
+   "bracketed1": "GATA[11]",
+   "bracketed2": "GATA[11]",
+   "hipstr_start": 86352702,
+   "hipstr_end": 86352745,
+   "motif_canonical": "GATA",
+   "left_flank_hg38": "ATCAATACAGACAGACAGACAGGTG",
+   "right_flank_hg38": "TCATTGAAAGACAAAACAGAGATGG",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "ATCAATACAGACAGACAGACAGGTGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCATTGAAAGACAAAACAGAGATGG",
+   "overlap_left_bp_1": 1,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "ATCAATACAGACAGACAGACAGGT",
+   "right_flank_in_full1": "TCATTGAAAGACAAAACAGAGATGG",
+   "repeat_start0_full1": 24,
+   "repeat_end0_full1": 68,
+   "repeat_seq1": "GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA",
+   "motif_observed1": "GATA",
+   "full_seq2": "ATCAATACAGACAGACAGACAGGTGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCATTGAAAGACAAAACAGAGATGG",
+   "overlap_left_bp_2": 1,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "ATCAATACAGACAGACAGACAGGT",
+   "right_flank_in_full2": "TCATTGAAAGACAAAACAGAGATGG",
+   "repeat_start0_full2": 24,
+   "repeat_end0_full2": 68,
+   "repeat_seq2": "GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA",
+   "motif_observed2": "GATA",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "TCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTG",
+     "c": "f"
+    },
+    {
+     "t": "GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA",
+     "c": "0"
+    },
+    {
+     "t": "TCATTGAAAGACAAAACAGAGATGGATGATAGATAC",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "TCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTG",
+     "c": "f"
+    },
+    {
+     "t": "GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA",
+     "c": "0"
+    },
+    {
+     "t": "TCATTGAAAGACAAAACAGAGATGGATGATAGATAC",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D18S51",
+   "chrom": "chr18",
+   "pos": 63281667,
+   "filter": ".",
+   "gt": "1|2",
+   "allele_idx1": 1,
+   "allele_idx2": 2,
+   "allele_seq1": "AGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAA",
+   "allele_seq2": "AGAAAGAAATAAACAAATAAAGAAACAAACAAACAAAGAAAGAAACCAACAAAGAA",
+   "DP": 49,
+   "coverage1": 45.07,
+   "coverage2": 3.93,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "14",
+   "allele_call2": "14",
+   "genotype_forense": "14/14",
+   "bracketed1": "GAAA[14] A[1] AG[4] GAAA[2]",
+   "bracketed2": "GAAA[2] TAAACAAATAAA[1] GAAA[1] CAAA[3] GAAA[2] CCAACAAA[1] GAAA[1] A[1] AG[4] GAAA[2]",
+   "hipstr_start": 63281667,
+   "hipstr_end": 63281738,
+   "motif_canonical": "AGAA",
+   "left_flank_hg38": "GAGTGACAAATTGAGACCTTGTCTC",
+   "right_flank_hg38": "AAAGAGAGAGGAAAGAAAGAGAAAA",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "GAGTGACAAATTGAGACCTTGTCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAGAGGAAAGAAAGAGAAAA",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 2,
+   "left_flank_in_full1": "GAGTGACAAATTGAGACCTTGTCTC",
+   "right_flank_in_full1": "AGAGAGAGGAAAGAAAGAGAAAA",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 81,
+   "repeat_seq1": "AGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAA",
+   "motif_observed1": "AGAA",
+   "full_seq2": "GAGTGACAAATTGAGACCTTGTCTCAGAAAGAAATAAACAAATAAAGAAACAAACAAACAAAGAAAGAAACCAACAAAGAAAGAGAGAGGAAAGAAAGAGAAAA",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 2,
+   "left_flank_in_full2": "GAGTGACAAATTGAGACCTTGTCTC",
+   "right_flank_in_full2": "AGAGAGAGGAAAGAAAGAGAAAA",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 81,
+   "repeat_seq2": "AGAAAGAAATAAACAAATAAAGAAACAAACAAACAAAGAAAGAAACCAACAAAGAA",
+   "motif_observed2": "AGAA",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "GTCTCA",
+     "c": "f"
+    },
+    {
+     "t": "GAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAA",
+     "c": "0"
+    },
+    {
+     "t": "A",
+     "c": "f"
+    },
+    {
+     "t": "AGAGAGAG",
+     "c": "1"
+    },
+    {
+     "t": "GAAAGAAA",
+     "c": "0"
+    },
+    {
+     "t": "GAGAAAAAGAAAAGAAATAGTAGCAACTGTTATTGTAAGA",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "GTCTCA",
+     "c": "f"
+    },
+    {
+     "t": "GAAAGAAA",
+     "c": "0"
+    },
+    {
+     "t": "TAAACAAATAAA",
+     "c": "f"
+    },
+    {
+     "t": "GAAA",
+     "c": "0"
+    },
+    {
+     "t": "CAAACAAACAAA",
+     "c": "f"
+    },
+    {
+     "t": "GAAAGAAA",
+     "c": "0"
+    },
+    {
+     "t": "CCAACAAA",
+     "c": "f"
+    },
+    {
+     "t": "GAAA",
+     "c": "0"
+    },
+    {
+     "t": "A",
+     "c": "f"
+    },
+    {
+     "t": "AGAGAGAG",
+     "c": "1"
+    },
+    {
+     "t": "GAAAGAAA",
+     "c": "0"
+    },
+    {
+     "t": "GAGAAAAAGAAAAGAAATAGTAGCAACTGTTATTGTAAGA",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D19S433",
+   "chrom": "chr19",
+   "pos": 29926235,
+   "filter": ".",
+   "gt": "1|1",
+   "allele_idx1": 1,
+   "allele_idx2": 1,
+   "allele_seq1": "CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTT",
+   "allele_seq2": "CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTT",
+   "DP": 45,
+   "coverage1": 22.5,
+   "coverage2": 22.5,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "13",
+   "allele_call2": "13",
+   "genotype_forense": "13/13",
+   "bracketed1": "TCCT[12]",
+   "bracketed2": "TCCT[12]",
+   "hipstr_start": 29926235,
+   "hipstr_end": 29926298,
+   "motif_canonical": "CCTT",
+   "left_flank_hg38": "AAATCTTCTCTCTTTCTTCCTCTCT",
+   "right_flank_hg38": "CAACAGAATCTTATTCTGTTGCCCA",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "AAATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCA",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "AAATCTTCTCTCTTTCTTCCTCTCT",
+   "right_flank_in_full1": "CAACAGAATCTTATTCTGTTGCCCA",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 85,
+   "repeat_seq1": "CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTT",
+   "motif_observed1": "CCTT",
+   "full_seq2": "AAATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCA",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "AAATCTTCTCTCTTTCTTCCTCTCT",
+   "right_flank_in_full2": "CAACAGAATCTTATTCTGTTGCCCA",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 85,
+   "repeat_seq2": "CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTT",
+   "motif_observed2": "CCTT",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "AATAAAAATCTTCTCTCTTTCTTCCTCTC",
+     "c": "f"
+    },
+    {
+     "t": "TCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCT",
+     "c": "0"
+    },
+    {
+     "t": "ACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGTGGTACAATTATAGCT",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "AATAAAAATCTTCTCTCTTTCTTCCTCTC",
+     "c": "f"
+    },
+    {
+     "t": "TCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCT",
+     "c": "0"
+    },
+    {
+     "t": "ACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGTGGTACAATTATAGCT",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "TPOX",
+   "chrom": "chr2",
+   "pos": 1489653,
+   "filter": ".",
+   "gt": "0|1",
+   "allele_idx1": 0,
+   "allele_idx2": 1,
+   "allele_seq1": "AATGAATGAATGAATGAATGAATGAATGAATG",
+   "allele_seq2": "AATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATG",
+   "DP": 32,
+   "coverage1": 13.5,
+   "coverage2": 18.5,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "8",
+   "allele_call2": "11",
+   "genotype_forense": "8/11",
+   "bracketed1": "TGAA[8]",
+   "bracketed2": "TGAA[11]",
+   "hipstr_start": 1489653,
+   "hipstr_end": 1489684,
+   "motif_canonical": "AATG",
+   "left_flank_hg38": "ACAGGCACTTAGGGAACCCTCACTG",
+   "right_flank_hg38": "TTTGGGCAAATAAACGCTGACAAGG",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "ACAGGCACTTAGGGAACCCTCACTGAATGAATGAATGAATGAATGAATGAATGAATGTTTGGGCAAATAAACGCTGACAAGG",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "ACAGGCACTTAGGGAACCCTCACTG",
+   "right_flank_in_full1": "TTTGGGCAAATAAACGCTGACAAGG",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 57,
+   "repeat_seq1": "AATGAATGAATGAATGAATGAATGAATGAATG",
+   "motif_observed1": "AATG",
+   "full_seq2": "ACAGGCACTTAGGGAACCCTCACTGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGTTTGGGCAAATAAACGCTGACAAGG",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "ACAGGCACTTAGGGAACCCTCACTG",
+   "right_flank_in_full2": "TTTGGGCAAATAAACGCTGACAAGG",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 69,
+   "repeat_seq2": "AATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATG",
+   "motif_observed2": "AATG",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "AATGAATGAATGAATGAATGAATGAATGAA",
+     "c": "f"
+    },
+    {
+     "t": "TGTTTGG",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "AATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAA",
+     "c": "f"
+    },
+    {
+     "t": "TGTTTGG",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D2S441",
+   "chrom": "chr2",
+   "pos": 68011947,
+   "filter": ".",
+   "gt": "1|2",
+   "allele_idx1": 1,
+   "allele_idx2": 2,
+   "allele_seq1": "TCTATCTATCTATCTATCTATCTATCTATCTATCTGTCTA",
+   "allele_seq2": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTA",
+   "DP": 65,
+   "coverage1": 36.0,
+   "coverage2": 29.0,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "10",
+   "allele_call2": "14",
+   "genotype_forense": "10/14",
+   "bracketed1": "TCTA[8] TCTG[1] TCTA[1]",
+   "bracketed2": "TCTA[11] TTTA[1] TCTA[2]",
+   "hipstr_start": 68011947,
+   "hipstr_end": 68011994,
+   "motif_canonical": "TCTA",
+   "left_flank_hg38": "GAACTGTGGCTCATCTATGAAAACT",
+   "right_flank_hg38": "TATCATAACACCACAGCCACTTAGC",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "GAACTGTGGCTCATCTATGAAAACTCTATCTATCTATCTATCTATCTATCTATCTATCTGTCTATCATAACACCACAGCCACTTAGC",
+   "overlap_left_bp_1": 1,
+   "overlap_right_bp_1": 2,
+   "left_flank_in_full1": "GAACTGTGGCTCATCTATGAAAAC",
+   "right_flank_in_full1": "TCATAACACCACAGCCACTTAGC",
+   "repeat_start0_full1": 24,
+   "repeat_end0_full1": 64,
+   "repeat_seq1": "TCTATCTATCTATCTATCTATCTATCTATCTATCTGTCTA",
+   "motif_observed1": "TCTA",
+   "full_seq2": "GAACTGTGGCTCATCTATGAAAACTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTATCATAACACCACAGCCACTTAGC",
+   "overlap_left_bp_2": 1,
+   "overlap_right_bp_2": 2,
+   "left_flank_in_full2": "GAACTGTGGCTCATCTATGAAAAC",
+   "right_flank_in_full2": "TCATAACACCACAGCCACTTAGC",
+   "repeat_start0_full2": 24,
+   "repeat_end0_full2": 80,
+   "repeat_seq2": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTA",
+   "motif_observed2": "TCTA",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "CCAGGAACTGTGGCTCATCTATGAAAACT",
+     "c": "f"
+    },
+    {
+     "t": "TCTATCTATCTATCTATCTATCTATCTATCTA",
+     "c": "0"
+    },
+    {
+     "t": "TCTG",
+     "c": "f"
+    },
+    {
+     "t": "TCTA",
+     "c": "0"
+    },
+    {
+     "t": "TATCATAACACCACAGCCACTTA",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "CCAGGAACTGTGGCTCATCTATGAAAACT",
+     "c": "f"
+    },
+    {
+     "t": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+     "c": "0"
+    },
+    {
+     "t": "TTTA",
+     "c": "f"
+    },
+    {
+     "t": "TCTATCTA",
+     "c": "0"
+    },
+    {
+     "t": "TATCATAACACCACAGCCACTTA",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D2S1338",
+   "chrom": "chr2",
+   "pos": 218014859,
+   "filter": ".",
+   "gt": "1|2",
+   "allele_idx1": 1,
+   "allele_idx2": 2,
+   "allele_seq1": "GGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCA",
+   "allele_seq2": "GGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCA",
+   "DP": 54,
+   "coverage1": 27.98,
+   "coverage2": 26.02,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "22",
+   "allele_call2": "24",
+   "genotype_forense": "22/24",
+   "bracketed1": "GGAA[2] GGAC[1] GGAA[12] GGCA[7]",
+   "bracketed2": "GGAA[2] GGAC[1] GGAA[14] GGCA[7]",
+   "hipstr_start": 218014859,
+   "hipstr_end": 218014950,
+   "motif_canonical": "GGAA",
+   "left_flank_hg38": "TCAGTAAGTTAAAGGATTGCAGGAG",
+   "right_flank_hg38": "AGGCCAAGCCATTTCTGTTTCCAAA",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "TCAGTAAGTTAAAGGATTGCAGGAGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAGGCCAAGCCATTTCTGTTTCCAAA",
+   "overlap_left_bp_1": 1,
+   "overlap_right_bp_1": 1,
+   "left_flank_in_full1": "TCAGTAAGTTAAAGGATTGCAGGA",
+   "right_flank_in_full1": "GGCCAAGCCATTTCTGTTTCCAAA",
+   "repeat_start0_full1": 24,
+   "repeat_end0_full1": 112,
+   "repeat_seq1": "GGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCA",
+   "motif_observed1": "GGAA",
+   "full_seq2": "TCAGTAAGTTAAAGGATTGCAGGAGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAGGCCAAGCCATTTCTGTTTCCAAA",
+   "overlap_left_bp_2": 1,
+   "overlap_right_bp_2": 1,
+   "left_flank_in_full2": "TCAGTAAGTTAAAGGATTGCAGGA",
+   "right_flank_in_full2": "GGCCAAGCCATTTCTGTTTCCAAA",
+   "repeat_start0_full2": 24,
+   "repeat_end0_full2": 120,
+   "repeat_seq2": "GGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCA",
+   "motif_observed2": "GGAA",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "GAG",
+     "c": "f"
+    },
+    {
+     "t": "GGAAGGAA",
+     "c": "0"
+    },
+    {
+     "t": "GGAC",
+     "c": "f"
+    },
+    {
+     "t": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
+     "c": "0"
+    },
+    {
+     "t": "GGCAGGCAGGCAGGCAGGCAGGCAGGCA",
+     "c": "1"
+    },
+    {
+     "t": "AGGCCAAGCCATTT",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "GAG",
+     "c": "f"
+    },
+    {
+     "t": "GGAAGGAA",
+     "c": "0"
+    },
+    {
+     "t": "GGAC",
+     "c": "f"
+    },
+    {
+     "t": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
+     "c": "0"
+    },
+    {
+     "t": "GGCAGGCAGGCAGGCAGGCAGGCAGGCA",
+     "c": "1"
+    },
+    {
+     "t": "AGGCCAAGCCATTT",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "PentaD",
+   "chrom": "chr21",
+   "pos": 43636205,
+   "filter": ".",
+   "gt": "1|2",
+   "allele_idx1": 1,
+   "allele_idx2": 2,
+   "allele_seq1": "AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA",
+   "allele_seq2": "AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA",
+   "DP": 45,
+   "coverage1": 21.47,
+   "coverage2": 23.53,
+   "period": 5,
+   "motif": null,
+   "allele_call1": "9",
+   "allele_call2": "12",
+   "genotype_forense": "9/12",
+   "bracketed1": "A[8] GAAAG[1] AAAAG[8] A[6] CGAAGGGG[1] A[7]",
+   "bracketed2": "A[8] GAAAG[1] AAAAG[11] A[6] CGAAGGGG[1] A[7]",
+   "hipstr_start": 43636205,
+   "hipstr_end": 43636269,
+   "motif_canonical": "AAAGA",
+   "left_flank_hg38": "CACCATCTCAAGAAAGAAAAAAAAG",
+   "right_flank_hg38": "AAAAACGAAGGGGAAAAAAAGAGAA",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "CACCATCTCAAGAAAGAAAAAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAACGAAGGGGAAAAAAAGAGAA",
+   "overlap_left_bp_1": 4,
+   "overlap_right_bp_1": 1,
+   "left_flank_in_full1": "CACCATCTCAAGAAAGAAAAA",
+   "right_flank_in_full1": "AAAACGAAGGGGAAAAAAAGAGAA",
+   "repeat_start0_full1": 21,
+   "repeat_end0_full1": 66,
+   "repeat_seq1": "AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA",
+   "motif_observed1": "AAAGA",
+   "full_seq2": "CACCATCTCAAGAAAGAAAAAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAACGAAGGGGAAAAAAAGAGAA",
+   "overlap_left_bp_2": 4,
+   "overlap_right_bp_2": 1,
+   "left_flank_in_full2": "CACCATCTCAAGAAAGAAAAA",
+   "right_flank_in_full2": "AAAACGAAGGGGAAAAAAAGAGAA",
+   "repeat_start0_full2": 21,
+   "repeat_end0_full2": 81,
+   "repeat_seq2": "AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA",
+   "motif_observed2": "AAAGA",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "GATCACTTGAGCCTGGAAGGTCGAAGCTGAAGTGAGCCATGATCACACCACTACACTCCAGCCTAGGTGACAGAGCAAGACACCATCTCAAGAAAG",
+     "c": "f"
+    },
+    {
+     "t": "AAAAAAAA",
+     "c": "1"
+    },
+    {
+     "t": "GAAAG",
+     "c": "f"
+    },
+    {
+     "t": "AAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAG",
+     "c": "0"
+    },
+    {
+     "t": "AAAAAA",
+     "c": "1"
+    },
+    {
+     "t": "CGAAGGGG",
+     "c": "f"
+    },
+    {
+     "t": "AAAAAAA",
+     "c": "1"
+    },
+    {
+     "t": "GAGAATCATAAACATAAATGTAAAATTTCTCAA",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "GATCACTTGAGCCTGGAAGGTCGAAGCTGAAGTGAGCCATGATCACACCACTACACTCCAGCCTAGGTGACAGAGCAAGACACCATCTCAAGAAAG",
+     "c": "f"
+    },
+    {
+     "t": "AAAAAAAA",
+     "c": "1"
+    },
+    {
+     "t": "GAAAG",
+     "c": "f"
+    },
+    {
+     "t": "AAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAG",
+     "c": "0"
+    },
+    {
+     "t": "AAAAAA",
+     "c": "1"
+    },
+    {
+     "t": "CGAAGGGG",
+     "c": "f"
+    },
+    {
+     "t": "AAAAAAA",
+     "c": "1"
+    },
+    {
+     "t": "GAGAATCATAAACATAAATGTAAAATTTCTCAA",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D22S1045",
+   "chrom": "chr22",
+   "pos": 37140287,
+   "filter": ".",
+   "gt": "1|1",
+   "allele_idx1": 1,
+   "allele_idx2": 1,
+   "allele_seq1": "ATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATT",
+   "allele_seq2": "ATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATT",
+   "DP": 55,
+   "coverage1": 27.5,
+   "coverage2": 27.5,
+   "period": 3,
+   "motif": null,
+   "allele_call1": "16",
+   "allele_call2": "16",
+   "genotype_forense": "16/16",
+   "bracketed1": "ATT[13] ACT[1] ATT[2]",
+   "bracketed2": "ATT[13] ACT[1] ATT[2]",
+   "hipstr_start": 37140287,
+   "hipstr_end": 37140337,
+   "motif_canonical": "ATT",
+   "left_flank_hg38": "GATTTTCCCCGATGATAGTAGTCTC",
+   "right_flank_hg38": "GTTATAAAAATATTGCCAATCATAC",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "GATTTTCCCCGATGATAGTAGTCTCATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTATAAAAATATTGCCAATCATAC",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "GATTTTCCCCGATGATAGTAGTCTC",
+   "right_flank_in_full1": "GTTATAAAAATATTGCCAATCATAC",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 73,
+   "repeat_seq1": "ATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATT",
+   "motif_observed1": "ATT",
+   "full_seq2": "GATTTTCCCCGATGATAGTAGTCTCATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTATAAAAATATTGCCAATCATAC",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "GATTTTCCCCGATGATAGTAGTCTC",
+   "right_flank_in_full2": "GTTATAAAAATATTGCCAATCATAC",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 73,
+   "repeat_seq2": "ATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATT",
+   "motif_observed2": "ATT",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "CGTTGGAATTCCCCAAACTGGCCAGTTCCTCTCCACCCTATAGACCCTGTCCTAGCCTTCTTATAGCTGCTATGGGGGCTAGATTTTCCCCGATGATAGTAGTCTC",
+     "c": "f"
+    },
+    {
+     "t": "ATTATTATTATTATTATTATTATTATTATTATTATTATT",
+     "c": "0"
+    },
+    {
+     "t": "ACT",
+     "c": "f"
+    },
+    {
+     "t": "ATTATT",
+     "c": "0"
+    },
+    {
+     "t": "GTTATAAAAATATTGCCAAT",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "CGTTGGAATTCCCCAAACTGGCCAGTTCCTCTCCACCCTATAGACCCTGTCCTAGCCTTCTTATAGCTGCTATGGGGGCTAGATTTTCCCCGATGATAGTAGTCTC",
+     "c": "f"
+    },
+    {
+     "t": "ATTATTATTATTATTATTATTATTATTATTATTATTATT",
+     "c": "0"
+    },
+    {
+     "t": "ACT",
+     "c": "f"
+    },
+    {
+     "t": "ATTATT",
+     "c": "0"
+    },
+    {
+     "t": "GTTATAAAAATATTGCCAAT",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D3S1358",
+   "chrom": "chr3",
+   "pos": 45540739,
+   "filter": ".",
+   "gt": "1|2",
+   "allele_idx1": 1,
+   "allele_idx2": 2,
+   "allele_seq1": "TCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+   "allele_seq2": "TCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+   "DP": 55,
+   "coverage1": 25.16,
+   "coverage2": 29.84,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "15",
+   "allele_call2": "16",
+   "genotype_forense": "15/16",
+   "bracketed1": "TATC[2] TGTC[2] TATC[11]",
+   "bracketed2": "TATC[2] TGTC[2] TATC[12]",
+   "hipstr_start": 45540739,
+   "hipstr_end": 45540802,
+   "motif_canonical": "TCTA",
+   "left_flank_hg38": "TGAAATCAACAGAGGCTTGCATGTA",
+   "right_flank_hg38": "TGAGACAGGGTCTTGCTCTGTCACC",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "TGAAATCAACAGAGGCTTGCATGTATCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGACAGGGTCTTGCTCTGTCACC",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "TGAAATCAACAGAGGCTTGCATGTA",
+   "right_flank_in_full1": "TGAGACAGGGTCTTGCTCTGTCACC",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 85,
+   "repeat_seq1": "TCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+   "motif_observed1": "TCTA",
+   "full_seq2": "TGAAATCAACAGAGGCTTGCATGTATCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGACAGGGTCTTGCTCTGTCACC",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "TGAAATCAACAGAGGCTTGCATGTA",
+   "right_flank_in_full2": "TGAGACAGGGTCTTGCTCTGTCACC",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 89,
+   "repeat_seq2": "TCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+   "motif_observed2": "TCTA",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "TTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATG",
+     "c": "f"
+    },
+    {
+     "t": "TATCTATC",
+     "c": "0"
+    },
+    {
+     "t": "TGTCTGTC",
+     "c": "f"
+    },
+    {
+     "t": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+     "c": "0"
+    },
+    {
+     "t": "TATGAGACAGGGTCTTGCTC",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "TTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATG",
+     "c": "f"
+    },
+    {
+     "t": "TATCTATC",
+     "c": "0"
+    },
+    {
+     "t": "TGTCTGTC",
+     "c": "f"
+    },
+    {
+     "t": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+     "c": "0"
+    },
+    {
+     "t": "TATGAGACAGGGTCTTGCTC",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "FGA",
+   "chrom": "chr4",
+   "pos": 154587736,
+   "filter": ".",
+   "gt": "0|1",
+   "allele_idx1": 0,
+   "allele_idx2": 1,
+   "allele_seq1": "GGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA",
+   "allele_seq2": "GGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA",
+   "DP": 43,
+   "coverage1": 18.68,
+   "coverage2": 24.32,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "22",
+   "allele_call2": "23",
+   "genotype_forense": "22/23",
+   "bracketed1": "AAAG[2] GAAG[1] AAAG[1] GAAG[2] GAG[1] AAAG[14] AGAAA[1] AAAG[3]",
+   "bracketed2": "AAAG[2] GAAG[1] AAAG[1] GAAG[2] GAG[1] AAAG[15] AGAAA[1] AAAG[3]",
+   "hipstr_start": 154587736,
+   "hipstr_end": 154587823,
+   "motif_canonical": "GGAA",
+   "left_flank_hg38": "TGCCAGCAAAAAAGAAAGGAAGAAA",
+   "right_flank_hg38": "CTAGCTTGTAAATATGCCTAATTTT",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "TGCCAGCAAAAAAGAAAGGAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTAGCTTGTAAATATGCCTAATTTT",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "TGCCAGCAAAAAAGAAAGGAAGAAA",
+   "right_flank_in_full1": "CTAGCTTGTAAATATGCCTAATTTT",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 113,
+   "repeat_seq1": "GGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA",
+   "motif_observed1": "GGAA",
+   "full_seq2": "TGCCAGCAAAAAAGAAAGGAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTAGCTTGTAAATATGCCTAATTTT",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "TGCCAGCAAAAAAGAAAGGAAGAAA",
+   "right_flank_in_full2": "CTAGCTTGTAAATATGCCTAATTTT",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 117,
+   "repeat_seq2": "GGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA",
+   "motif_observed2": "GGAA",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "CCAGCAAA",
+     "c": "f"
+    },
+    {
+     "t": "AAAGAAAG",
+     "c": "0"
+    },
+    {
+     "t": "GAAG",
+     "c": "1"
+    },
+    {
+     "t": "AAAG",
+     "c": "0"
+    },
+    {
+     "t": "GAAGGAAG",
+     "c": "1"
+    },
+    {
+     "t": "GAG",
+     "c": "f"
+    },
+    {
+     "t": "AAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAG",
+     "c": "0"
+    },
+    {
+     "t": "AGAAA",
+     "c": "f"
+    },
+    {
+     "t": "AAAGAAAGAAAG",
+     "c": "0"
+    },
+    {
+     "t": "AAACTAGCTTGTAAATATGC",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "CCAGCAAA",
+     "c": "f"
+    },
+    {
+     "t": "AAAGAAAG",
+     "c": "0"
+    },
+    {
+     "t": "GAAG",
+     "c": "1"
+    },
+    {
+     "t": "AAAG",
+     "c": "0"
+    },
+    {
+     "t": "GAAGGAAG",
+     "c": "1"
+    },
+    {
+     "t": "GAG",
+     "c": "f"
+    },
+    {
+     "t": "AAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAG",
+     "c": "0"
+    },
+    {
+     "t": "AGAAA",
+     "c": "f"
+    },
+    {
+     "t": "AAAGAAAGAAAG",
+     "c": "0"
+    },
+    {
+     "t": "AAACTAGCTTGTAAATATGC",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D5S818",
+   "chrom": "chr5",
+   "pos": 123775556,
+   "filter": ".",
+   "gt": "0|0",
+   "allele_idx1": 0,
+   "allele_idx2": 0,
+   "allele_seq1": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
+   "allele_seq2": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
+   "DP": 43,
+   "coverage1": 21.5,
+   "coverage2": 21.5,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "11",
+   "allele_call2": "11",
+   "genotype_forense": "11/11",
+   "bracketed1": "TCTA[11]",
+   "bracketed2": "TCTA[11]",
+   "hipstr_start": 123775556,
+   "hipstr_end": 123775599,
+   "motif_canonical": "TCTA",
+   "left_flank_hg38": "TATCTGTATCCTTATTTATACCTCT",
+   "right_flank_hg38": "TCAAAATATTACATAAGGATACCAA",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "TATCTGTATCCTTATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTCAAAATATTACATAAGGATACCAA",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 1,
+   "left_flank_in_full1": "TATCTGTATCCTTATTTATACCTCT",
+   "right_flank_in_full1": "CAAAATATTACATAAGGATACCAA",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 69,
+   "repeat_seq1": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
+   "motif_observed1": "ATCT",
+   "full_seq2": "TATCTGTATCCTTATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTCAAAATATTACATAAGGATACCAA",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 1,
+   "left_flank_in_full2": "TATCTGTATCCTTATTTATACCTCT",
+   "right_flank_in_full2": "CAAAATATTACATAAGGATACCAA",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 69,
+   "repeat_seq2": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
+   "motif_observed2": "ATCT",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "TATTTATACC",
+     "c": "f"
+    },
+    {
+     "t": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+     "c": "0"
+    },
+    {
+     "t": "TCTTCAAAAT",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "TATTTATACC",
+     "c": "f"
+    },
+    {
+     "t": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+     "c": "0"
+    },
+    {
+     "t": "TCTTCAAAAT",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "CSF1PO",
+   "chrom": "chr5",
+   "pos": 150076324,
+   "filter": ".",
+   "gt": "1|1",
+   "allele_idx1": 1,
+   "allele_idx2": 1,
+   "allele_seq1": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
+   "allele_seq2": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
+   "DP": 45,
+   "coverage1": 22.5,
+   "coverage2": 22.5,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "12",
+   "allele_call2": "12",
+   "genotype_forense": "12/12",
+   "bracketed1": "TCTA[12] ATCT[3]",
+   "bracketed2": "TCTA[12] ATCT[3]",
+   "hipstr_start": 150076324,
+   "hipstr_end": 150076375,
+   "motif_canonical": "ATCT",
+   "left_flank_hg38": "TCAGACCCTGTTCTAAGTACTTCCT",
+   "right_flank_hg38": "AATCTATCTATCTTCTATCTATGAA",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "TCAGACCCTGTTCTAAGTACTTCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCTATCTATCTTCTATCTATGAA",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "TCAGACCCTGTTCTAAGTACTTCCT",
+   "right_flank_in_full1": "AATCTATCTATCTTCTATCTATGAA",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 73,
+   "repeat_seq1": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
+   "motif_observed1": "ATCT",
+   "full_seq2": "TCAGACCCTGTTCTAAGTACTTCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCTATCTATCTTCTATCTATGAA",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "TCAGACCCTGTTCTAAGTACTTCCT",
+   "right_flank_in_full2": "AATCTATCTATCTTCTATCTATGAA",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 73,
+   "repeat_seq2": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
+   "motif_observed2": "ATCT",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "CTTCCTA",
+     "c": "f"
+    },
+    {
+     "t": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+     "c": "0"
+    },
+    {
+     "t": "ATCTATCTATCT",
+     "c": "1"
+    },
+    {
+     "t": "T",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "CTTCCTA",
+     "c": "f"
+    },
+    {
+     "t": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+     "c": "0"
+    },
+    {
+     "t": "ATCTATCTATCT",
+     "c": "1"
+    },
+    {
+     "t": "T",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D7S820",
+   "chrom": "chr7",
+   "pos": 84160226,
+   "filter": ".",
+   "gt": "0|1",
+   "allele_idx1": 0,
+   "allele_idx2": 1,
+   "allele_seq1": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+   "allele_seq2": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+   "DP": 36,
+   "coverage1": 20.92,
+   "coverage2": 15.08,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "13",
+   "allele_call2": "10",
+   "genotype_forense": "10/13",
+   "bracketed1": "A[8] CTAT[1] CAATCTGT[1] CTAT[13]",
+   "bracketed2": "A[8] CTAT[1] CAATCTGT[1] CTAT[10]",
+   "hipstr_start": 84160226,
+   "hipstr_end": 84160277,
+   "motif_canonical": "TATC",
+   "left_flank_hg38": "GATTAAAAAAAACTATCAATCTGTC",
+   "right_flank_hg38": "GTTAGTTCGTTCTAAACTATGACAA",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "GATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTAGTTCGTTCTAAACTATGACAA",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "GATTAAAAAAAACTATCAATCTGTC",
+   "right_flank_in_full1": "GTTAGTTCGTTCTAAACTATGACAA",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 77,
+   "repeat_seq1": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+   "motif_observed1": "TATC",
+   "full_seq2": "GATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTAGTTCGTTCTAAACTATGACAA",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "GATTAAAAAAAACTATCAATCTGTC",
+   "right_flank_in_full2": "GTTAGTTCGTTCTAAACTATGACAA",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 65,
+   "repeat_seq2": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+   "motif_observed2": "TATC",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "TATTTAGTGAGATT",
+     "c": "f"
+    },
+    {
+     "t": "AAAAAAAA",
+     "c": "1"
+    },
+    {
+     "t": "CTAT",
+     "c": "0"
+    },
+    {
+     "t": "CAATCTGT",
+     "c": "f"
+    },
+    {
+     "t": "CTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAT",
+     "c": "0"
+    },
+    {
+     "t": "CGTTAGTTCGTTCTAAACTAT",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "TATTTAGTGAGATT",
+     "c": "f"
+    },
+    {
+     "t": "AAAAAAAA",
+     "c": "1"
+    },
+    {
+     "t": "CTAT",
+     "c": "0"
+    },
+    {
+     "t": "CAATCTGT",
+     "c": "f"
+    },
+    {
+     "t": "CTATCTATCTATCTATCTATCTATCTATCTATCTATCTAT",
+     "c": "0"
+    },
+    {
+     "t": "CGTTAGTTCGTTCTAAACTAT",
+     "c": "f"
+    }
+   ]
+  },
+  {
+   "locus": "D8S1179",
+   "chrom": "chr8",
+   "pos": 124894865,
+   "filter": ".",
+   "gt": "0|1",
+   "allele_idx1": 0,
+   "allele_idx2": 1,
+   "allele_seq1": "TCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+   "allele_seq2": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+   "DP": 33,
+   "coverage1": 14.02,
+   "coverage2": 18.98,
+   "period": 4,
+   "motif": null,
+   "allele_call1": "13",
+   "allele_call2": "10",
+   "genotype_forense": "10/13",
+   "bracketed1": "TATC[2] TGTC[1] TATC[10]",
+   "bracketed2": "TATC[10]",
+   "hipstr_start": 124894865,
+   "hipstr_end": 124894916,
+   "motif_canonical": "TCTA",
+   "left_flank_hg38": "TTTGTATTTCATGTGTACATTCGTA",
+   "right_flank_hg38": "TTCCCCACAGTGAAAATAATCTACA",
+   "flank_size": 25,
+   "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
+   "full_seq1": "TTTGTATTTCATGTGTACATTCGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCCCACAGTGAAAATAATCTACA",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "TTTGTATTTCATGTGTACATTCGTA",
+   "right_flank_in_full1": "TTCCCCACAGTGAAAATAATCTACA",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 77,
+   "repeat_seq1": "TCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+   "motif_observed1": "TCTA",
+   "full_seq2": "TTTGTATTTCATGTGTACATTCGTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCCCACAGTGAAAATAATCTACA",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "TTTGTATTTCATGTGTACATTCGTA",
+   "right_flank_in_full2": "TTCCCCACAGTGAAAATAATCTACA",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 65,
+   "repeat_seq2": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
+   "motif_observed2": "TCTA",
+   "flanks_status": "OK",
+   "isfgSegments1": [
+    {
+     "t": "TCTATC",
+     "c": "f"
+    },
+    {
+     "t": "TGTC",
+     "c": "f"
+    },
+    {
+     "t": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+     "c": "0"
+    },
+    {
+     "t": "TATTCCC",
+     "c": "f"
+    }
+   ],
+   "isfgSegments2": [
+    {
+     "t": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+     "c": "f"
+    },
+    {
+     "t": "TATTCCC",
+     "c": "f"
+    }
+   ]
   }
+ ]
+}

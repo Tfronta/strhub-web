@@ -45,6 +45,8 @@ export type NGSRow = {
   fullSequence?: string | '—'; // columna de secuencia completa
   /** When set, UI highlights flank vs repeat region in full sequence */
   fullSequenceSegments?: FullSequenceSegments;
+  /** ISFG block-colorized sequence (from STRNaming). t = letters, c = "0"|"1"|"2" repeat block color class, or "f" flank/plain. */
+  isfgSegments?: Array<{ t: string; c: string }>;
   isIsoallele?: boolean;
   sequenceId?: string;         // Unique identifier for React keys (e.g., "12-0", "12-1")
 };

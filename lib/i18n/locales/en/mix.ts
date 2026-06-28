@@ -29,12 +29,15 @@ mixProfiles: {
   },
   ngs: {
     disclaimer:
-      "Individual haplotypes inferred from Illumina short-read NGS data using specialized STR genotyping software (HipSTR, hg38), displayed for educational purposes only.",
+      "Individual haplotypes inferred from Illumina short-read NGS data using specialized STR genotyping software (HipSTR, hg38), displayed for educational purposes only. Repeat-region sequences follow the ISFG STR sequence nomenclature recommendations (via STRNaming).",
+    isfgLinkText: "Read the original paper",
+    copySequence: "Copy full sequence",
+    copiedSequence: "Copied",
     tableAllele: "Allele",
-    tableCoverage: "Allelic Coverage (PDP)",
+    tableCoverage: "PDP",
     tableCoverageTooltipAria: "Explanation about allelic coverage",
     tableCoverageTooltip:
-      "Probabilistic read support per allele from HipSTR PDP (fractional values possible).",
+      "PDP (Probabilistic Allelic Coverage): probabilistic read support per allele from HipSTR; fractional values are possible.",
     tableRepeatSequence: "Repeat Sequence",
     axisLabelAllele: "Allele",
     axisLabelCoverage: "Allelic Coverage (PDP)",

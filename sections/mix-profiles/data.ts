@@ -956,6 +956,7 @@ export function cePeaksToNGSRowsWithSeq(
       let repeatSequence: string | '—' = '—'
       let fullSequence: string | '—' = '—'
       let fullSequenceSegments: { flank5?: string; repeat: string; flank3?: string } | undefined
+      let isfgSegments: Array<{ t: string; c: string }> | undefined
       let isIsoallele = copiesNeeded > 1 && i > 0
 
       let rowCoverage: number | null = null
@@ -964,6 +965,9 @@ export function cePeaksToNGSRowsWithSeq(
         if (entry) {
           const useFirst = source.alleleIndex === 0
           repeatSequence = (useFirst ? entry.bracketed1 : entry.bracketed2) ?? "—"
+          isfgSegments = (useFirst
+            ? (entry as { isfgSegments1?: Array<{ t: string; c: string }> }).isfgSegments1
+            : (entry as { isfgSegments2?: Array<{ t: string; c: string }> }).isfgSegments2) ?? undefined
           const alleleNum = useFirst ? 1 : 2
           const { displaySeq, segments } = getDisplaySequenceForAllele(entry, alleleNum)
           fullSequence = displaySeq ? displaySeq.replace(/\s+/g, " ").trim() : "—"
@@ -1018,6 +1022,7 @@ export function cePeaksToNGSRowsWithSeq(
         repeatSequence,
         fullSequence,
         fullSequenceSegments,
+        isfgSegments,
         isIsoallele: isIsoallele && meetsMinCoverage,
         sequenceId: `${alleleLabel}-${i}`,
       })

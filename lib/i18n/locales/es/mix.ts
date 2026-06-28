@@ -29,12 +29,15 @@ mixProfiles: {
   },
   ngs: {
     disclaimer:
-      "Haplotipos individuales inferidos a partir de datos NGS de lecturas cortas Illumina mediante software especializado de genotipado de STRs (HipSTR, hg38), mostrados únicamente con fines educativos.",
+      "Haplotipos individuales inferidos a partir de datos NGS de lecturas cortas Illumina mediante software especializado de genotipado de STRs (HipSTR, hg38), mostrados únicamente con fines educativos. Las secuencias de la región repetida siguen las recomendaciones de nomenclatura de secuencia de STRs de la ISFG (vía STRNaming).",
+    isfgLinkText: "Leer el paper original",
+    copySequence: "Copiar secuencia completa",
+    copiedSequence: "Copiado",
     tableAllele: "Alelo",
-    tableCoverage: "Cobertura alélica (PDP)",
+    tableCoverage: "PDP",
     tableCoverageTooltipAria: "Explicación sobre cobertura alélica",
     tableCoverageTooltip:
-      "Soporte probabilístico de lecturas por alelo derivado del PDP de HipSTR (valores fraccionales posibles).",
+      "PDP (Cobertura Alélica Probabilística): soporte probabilístico de lecturas por alelo derivado de HipSTR; pueden aparecer valores fraccionales.",
     tableRepeatSequence: "Secuencia de Repetición",
     axisLabelAllele: "Alelo",
     axisLabelCoverage: "Cobertura alélica (PDP)",

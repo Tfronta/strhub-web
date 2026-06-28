@@ -1115,7 +1115,16 @@ export default function MixProfilesDemo({
               {t("mixProfiles.charts.ngsTitle")}
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed pt-0.5 max-w-none">
-              {t("mixProfiles.ngs.disclaimer")}
+              {t("mixProfiles.ngs.disclaimer")}{" "}
+              <a
+                href="https://www.fsigenetics.com/article/S1872-4973(23)00121-7/fulltext"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline underline-offset-2 hover:text-primary/80"
+              >
+                {t("mixProfiles.ngs.isfgLinkText")}
+              </a>
+              .
             </p>
           </div>
           <Popover>

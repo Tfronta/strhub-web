@@ -154,6 +154,7 @@ Cuando en una misma posición hay tanto un pico verdadero como stutter:
 - Las **proporciones por alelo** se obtienen repartiendo el peso entre los alelos del contribuyente (sin desbalance heterocigótico explícito en la lógica base).
 - El **stutter en NGS** se modela con tasas más bajas (minus1, minus2, plus1 típicamente del orden de 0,001–0,01) y se suma como lecturas en la posición (padre − 1), etc.
 - Criterios de "llamado" NGS: mínimo de lecturas y fracción mínima respecto al total; solo se muestran alelos que superan ambos.
+- **Nomenclatura de secuencia (ISFG):** la región repetida de cada haplotipo NGS se nombra siguiendo las recomendaciones de la Comisión de ADN de la ISFG sobre nomenclatura de secuencia de STRs (FSI Genetics, 2023), generada de forma estandarizada con el algoritmo **STRNaming** (J. Hoogenboom). Se muestra la notación entre corchetes **multi-bloque** en el **formato STRNaming 2023** (`MOTIF[n]`, p. ej. vWA `GGAT[3] AGAT[1] GGAT[1] AGAT[11] AGAC[4] AGAT[2]` — **no** el formato histórico 2016 `[MOTIF]n`) y el *sequence string* sobre el rango UAS-FRR, coloreado por bloque. El número de alelo CE (longitud) se conserva junto a la designación de secuencia. Los **isoalelos** (mismo CE, secuencia distinta) se distinguen por su bracketing. Las **variantes de región flanqueante** quedan fuera de alcance (requieren los reads del BAM; los haplotipos usan flancos de referencia). El rango usado es UAS-FRR (única opción en STRNaming 1.2; el "ISFG minimum range" del FSSG v6 puede diferir levemente).
 
 ---
 
@@ -192,6 +193,7 @@ Cuando en una misma posición hay tanto un pico verdadero como stutter:
 - **Relación área/altura en CE:** rango 3,5–5,0 para condiciones típicas (Butler, 2015).
 - **Catálogo de alelos:** derivado del catálogo del proyecto (CODIS Core) para definir alelos válidos y microvariantes.
 - **Genotipos de muestra:** base de datos interna (p. ej. muestras 1000 Genomes u otras) para definir contribuyentes y sus alelos por locus.
+- **Nomenclatura de secuencia de STRs (ISFG):** Recomendaciones de la Comisión de ADN de la ISFG sobre nomenclatura de secuencia de STRs. *Forensic Science International: Genetics* (2023), DOI [10.1016/j.fsigen.2023.102946](https://www.fsigenetics.com/article/S1872-4973(23)00121-7/fulltext). Implementada vía STRNaming 1.2.0 (J. Hoogenboom).
 
 ---
 

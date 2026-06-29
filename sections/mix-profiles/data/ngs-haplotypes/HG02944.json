@@ -910,8 +910,8 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "AATGAATGAATGAATGAATGAATGAATGAA",
-     "c": "f"
+     "t": "TGAATGAATGAATGAATGAATGAATGAATGAA",
+     "c": "0"
     },
     {
      "t": "TGTTTGG",
@@ -920,8 +920,8 @@
    ],
    "isfgSegments2": [
     {
-     "t": "AATGAATGAATGAATGAATGAATGAATGAATGAA",
-     "c": "f"
+     "t": "TGAATGAATGAATGAATGAATGAATGAATGAATGAA",
+     "c": "0"
     },
     {
      "t": "TGTTTGG",
@@ -1844,8 +1844,8 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "TCTATC",
-     "c": "f"
+     "t": "TATCTATC",
+     "c": "0"
     },
     {
      "t": "TGTC",
@@ -1862,8 +1862,8 @@
    ],
    "isfgSegments2": [
     {
-     "t": "TCTATCTATC",
-     "c": "f"
+     "t": "TATCTATCTATC",
+     "c": "0"
     },
     {
      "t": "TGTC",

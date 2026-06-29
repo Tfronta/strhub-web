@@ -934,8 +934,8 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "AATGAATGAATGAATGAATGAATGAATGAA",
-     "c": "f"
+     "t": "TGAATGAATGAATGAATGAATGAATGAATGAA",
+     "c": "0"
     },
     {
      "t": "TGTTTGG",
@@ -944,8 +944,8 @@
    ],
    "isfgSegments2": [
     {
-     "t": "AATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAA",
-     "c": "f"
+     "t": "TGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAA",
+     "c": "0"
     },
     {
      "t": "TGTTTGG",
@@ -1876,8 +1876,8 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "TCTATC",
-     "c": "f"
+     "t": "TATCTATC",
+     "c": "0"
     },
     {
      "t": "TGTC",
@@ -1894,8 +1894,8 @@
    ],
    "isfgSegments2": [
     {
-     "t": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
-     "c": "f"
+     "t": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
+     "c": "0"
     },
     {
      "t": "TATTCCC",

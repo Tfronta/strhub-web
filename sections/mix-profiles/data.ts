@@ -253,22 +253,25 @@ export type LocusId = string;
 // Synthetic/demo-only samples (used by presets but hidden from the contributor dropdown)
 const SYNTHETIC_SAMPLES: ReadonlySet<string> = new Set(["SYN_TRI01"]);
 
-// Simulated NGS sequences for triallelic preset (SYN_TRI01 at TPOX); format "LEFT REPEAT RIGHT" for UI flank/repeat highlighting
-const SYN_TRI01_TPOX_NGS: Record<string, { bracketed: string; fullSequence: string }> = {
-  "8": {
-    bracketed: "[AATG]8",
-    fullSequence:
-      "CTGGCACAGAACAGGGAACCCTCACTG AATGAATGAATGAATGAATGAATGAATGAATG TTTGGGCAAATAAACGGACAGAAGGGC",
+// Simulated NGS sequences for the triallelic preset (synthetic sample SYN_TRI01
+// at TPOX and TH01). ISFG 2023 nomenclature (STRNaming MOTIF[n]) over the real
+// UAS-FRR reference window; isfgSegments give the block-colorized sequence.
+const SYN_TRI01_NGS: Record<
+  string,
+  Record<
+    string,
+    { bracketed: string; fullSequence: string; isfgSegments: Array<{ t: string; c: string }> }
+  >
+> = {
+  TPOX: {
+    "8": { bracketed: "TGAA[8]", fullSequence: "TGAATGAATGAATGAATGAATGAATGAATGAATGTTTGG", isfgSegments: [{ t: "TGAATGAATGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGTTTGG", c: "f" }] },
+    "9": { bracketed: "TGAA[9]", fullSequence: "TGAATGAATGAATGAATGAATGAATGAATGAATGAATGTTTGG", isfgSegments: [{ t: "TGAATGAATGAATGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGTTTGG", c: "f" }] },
+    "11": { bracketed: "TGAA[11]", fullSequence: "TGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGTTTGG", isfgSegments: [{ t: "TGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGTTTGG", c: "f" }] },
   },
-  "9": {
-    bracketed: "[AATG]9",
-    fullSequence:
-      "CTGGCACAGAACAGGGAACCCTCACTG AATGAATGAATGAATGAATGAATGAATGAATGAATG TTTGGGCAAATAAACGGACAGAAGGGC",
-  },
-  "11": {
-    bracketed: "[AATG]11",
-    fullSequence:
-      "CTGGCACAGAACAGGGAACCCTCACTG AATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATG TTTGGGCAAATAAACGGACAGAAGGGC",
+  TH01: {
+    "6": { bracketed: "TGAA[6]", fullSequence: "TGCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAGGGAAATAAGG", isfgSegments: [{ t: "TGCAGGTCACAGGGAACACAGACTCCATGG", c: "f" }, { t: "TGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGAGGGAAATAAGG", c: "f" }] },
+    "7": { bracketed: "TGAA[7]", fullSequence: "TGCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAATGAGGGAAATAAGG", isfgSegments: [{ t: "TGCAGGTCACAGGGAACACAGACTCCATGG", c: "f" }, { t: "TGAATGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGAGGGAAATAAGG", c: "f" }] },
+    "9.3": { bracketed: "TGAA[6] TGA[1] TGAA[3]", fullSequence: "TGCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGATGAATGAATGAATGAGGGAAATAAGG", isfgSegments: [{ t: "TGCAGGTCACAGGGAACACAGACTCCATGG", c: "f" }, { t: "TGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGA", c: "f" }, { t: "TGAATGAATGAA", c: "0" }, { t: "TGAGGGAAATAAGG", c: "f" }] },
   },
 };
 
@@ -982,14 +985,13 @@ export function cePeaksToNGSRowsWithSeq(
           }
         } else if (
           source.sampleId === "SYN_TRI01" &&
-          locusId === "TPOX"
+          SYN_TRI01_NGS[locusId]
         ) {
-          const simulated = SYN_TRI01_TPOX_NGS[alleleLabel]
+          const simulated = SYN_TRI01_NGS[locusId][alleleLabel]
           if (simulated) {
             repeatSequence = simulated.bracketed
-            fullSequence = simulated.fullSequence.replace(/\s+/g, " ").trim()
-            const segments = parseFullSeqSegments(simulated.fullSequence, undefined)
-            if (segments) fullSequenceSegments = segments
+            fullSequence = simulated.fullSequence
+            isfgSegments = simulated.isfgSegments
           }
         }
       }

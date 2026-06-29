@@ -4,7 +4,7 @@ mixProfiles: {
   subtitle: "beta",
   description: "Usando datos de demostración — puede cargar sus propias muestras cuando estén disponibles.",
   simulatorDescription:
-    "Este simulador muestra cómo dos o tres perfiles de ADN se comportan cuando se mezclan, tanto en electroforesis capilar (CE) como en NGS. Ayuda a comprender cómo cambian las alturas de los picos, cómo aparecen los artefactos de stutter y cómo los alelos minoritarios pueden quedar ocultos o confundidos con ruido, ilustrando la complejidad real de la interpretación de mezclas en genética forense. Los perfiles se derivan de muestras de acceso abierto del Proyecto 1000 Genomes, excepto el ejemplo simulado de patrón trialélico.",
+    "Este simulador muestra cómo dos o tres perfiles de ADN se comportan cuando se mezclan, tanto en electroforesis capilar (CE) como en NGS. Ayuda a comprender cómo cambian las alturas de los picos, cómo aparecen los artefactos de stutter y cómo los alelos minoritarios pueden quedar ocultos o confundidos con ruido, ilustrando la complejidad real de la interpretación de mezclas en genética forense. Los perfiles se derivan de muestras de acceso abierto del Proyecto 1000 Genomes. Solo con fines educativos, no validado para la interpretación de casos forenses.",
   controls: {
     locus: "Locus",
     sampleA: "Muestra A",

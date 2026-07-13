@@ -274,10 +274,14 @@ export default {
         text: "Plain text (lines, no table parser)",
       },
       minRecords: "Minimum records",
-      contentToggle: "Add content plausibility checks (advanced)",
+      contentToggle: "Check output content plausibility (recommended)",
       contentToggleTooltip:
-        "Optional. Extra checks on the output file: column layout, DNA characters, minimum loci or reads, and named loci you expect. Helps show the output looks like plausible genotype data, not just a non-empty file. Skip if basic format checks are enough.",
-      contentToggleTooltipAria: "What optional content plausibility checks do",
+        "Recommended. Checks that the output looks like plausible genotype data — enough recognizable loci, and any named loci you expect — not just a non-empty file. Passing this earns the stronger \"Plausible output\" badge. Uncheck to verify format only.",
+      contentToggleTooltipAria: "What the content plausibility check does",
+      contentDefaultsHint:
+        "Prefilled with sensible defaults for the selected output format and assay. Edit any field to match your tool, or clear one to skip that check.",
+      contentDefaultsAuto: "Auto-set from format & assay",
+      contentDefaultsReset: "Reset to recommended",
       submit: "Submit for verification",
       submitting: "Submitting…",
       statePendingApproval:

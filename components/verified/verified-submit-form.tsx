@@ -230,6 +230,62 @@ function numList(v: string): number[] | undefined {
   return items.length && items.every((n) => Number.isFinite(n)) ? items : undefined;
 }
 
+type ContentFields = Pick<
+  typeof INITIAL_F,
+  "columns" | "dnaColumn" | "countColumns" | "locusColumn" | "minDistinctLoci" | "expectLoci" | "minTotalReads"
+>;
+
+const EMPTY_CONTENT: ContentFields = {
+  columns: "",
+  dnaColumn: "",
+  countColumns: "",
+  locusColumn: "",
+  minDistinctLoci: "",
+  expectLoci: "",
+  minTotalReads: "",
+};
+
+const CONTENT_FIELD_KEYS = Object.keys(EMPTY_CONTENT) as (keyof ContentFields)[];
+
+function assayFamily(inputType: string): "autosomal" | "y-str" | "snp" | "other" {
+  if (inputType === "illumina-bam-hg38-y") return "y-str";
+  if (["illumina-str-fastq", "illumina-bam-hg38", "ont-bam-hg38", "ont-fastq"].includes(inputType))
+    return "autosomal";
+  if (inputType === "illumina-snp-fastq") return "snp";
+  return "other";
+}
+
+/**
+ * Recommended content-plausibility defaults for a given output format + assay.
+ * Deliberately conservative: it sets only checks that reliably pass on real STR
+ * output — the locus column (position depends on format), a modest distinct-loci
+ * floor (by assay family), and the universally-present core loci for known
+ * families. It never guesses tool-specific column layout
+ * (columns/dna_column/count_columns): a wrong guess there fails the gate
+ * spuriously. Authors can tighten any field; a blank field is skipped.
+ */
+function recommendedContent(format: string, inputType: string): ContentFields {
+  // JSON is not line/column parseable by the content harness → no defaults.
+  if (format === "json") return { ...EMPTY_CONTENT };
+  const family = assayFamily(inputType);
+  const isTable = format === "tsv" || format === "csv" || format === "text";
+  const locusColumn = format === "vcf" ? "2" : "0";
+  const minDistinctLoci =
+    family === "y-str" ? "5" : family === "snp" ? "1" : family === "autosomal" ? "8" : "5";
+  // expect_loci requires ALL listed to be present, so only prefill it for
+  // table formats (where the locus column carries the marker name) and known
+  // families, using the smallest universally-present core set.
+  const expectLoci =
+    !isTable
+      ? ""
+      : family === "autosomal"
+        ? "CSF1PO, TH01, TPOX, vWA, FGA"
+        : family === "y-str"
+          ? "DYS391, DYS390, DYS392, DYS393"
+          : "";
+  return { ...EMPTY_CONTENT, locusColumn, minDistinctLoci, expectLoci };
+}
+
 async function downloadPdfForSlug(reportSlug: string) {
   const base =
     process.env.NEXT_PUBLIC_VERIFIED_BASE ??
@@ -266,7 +322,14 @@ export function VerifiedSubmitForm() {
 
   const [dockerMode, setDockerMode] = useState<"generated" | "provided">("generated");
   const [fixtureSource, setFixtureSource] = useState<"same" | "other">("same");
-  const [showContent, setShowContent] = useState(false);
+  // Content plausibility checks are on by default with recommended defaults so
+  // authors earn the "Plausible output" badge without knowing STRhub internals.
+  const [showContent, setShowContent] = useState(true);
+  // Becomes true once the author edits a content field, so we stop
+  // auto-managing the recommended defaults and preserve their edits.
+  const [contentDirty, setContentDirty] = useState(false);
+  // Gate the defaults effect until sessionStorage restore has run.
+  const [hydrated, setHydrated] = useState(false);
   const [showParams, setShowParams] = useState(false);
 
   // Result state.
@@ -291,13 +354,38 @@ export function VerifiedSubmitForm() {
       setDockerMode(stored.dockerMode);
       setFixtureSource(stored.fixtureSource);
       setShowContent(stored.showContent);
+      // Treat restored non-empty content as author-owned so the defaults effect
+      // does not overwrite it.
+      if (CONTENT_FIELD_KEYS.some((k) => (stored.f[k] ?? "").trim() !== "")) {
+        setContentDirty(true);
+      }
     }
+    setHydrated(true);
   }, []);
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setF((prev) => ({ ...prev, [k]: e.target.value }));
 
+  // Editing any content field switches off auto-managed defaults.
+  const setContent = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setContentDirty(true);
+    setF((prev) => ({ ...prev, [k]: e.target.value }));
+  };
+
   const resolvedInputType =
     f.inputType === "__other__" ? f.inputTypeCustom : f.inputType;
+
+  // Keep content fields in sync with recommended defaults for the chosen output
+  // format + assay, until the author takes over (contentDirty) or turns the
+  // section off. Full overwrite so switching format/assay updates cleanly.
+  useEffect(() => {
+    if (!hydrated || !showContent || contentDirty) return;
+    setF((prev) => ({ ...prev, ...recommendedContent(prev.outputFormat, resolvedInputType) }));
+  }, [hydrated, showContent, contentDirty, f.outputFormat, resolvedInputType]);
+
+  const resetContentDefaults = () => {
+    setContentDirty(false);
+    setF((prev) => ({ ...prev, ...recommendedContent(prev.outputFormat, resolvedInputType) }));
+  };
 
   const selectedTypeInfo = INPUT_TYPES.find((t) => t.slug === f.inputType);
   const selectedRefGenome = selectedTypeInfo?.referenceGenome ?? null;
@@ -1130,35 +1218,55 @@ export function VerifiedSubmitForm() {
               />
             </div>
             {showContent && (
-              <div className="grid grid-cols-2 gap-3">
-                <Field label="columns">
-                  <Input type="number" value={f.columns} onChange={set("columns")} />
-                </Field>
-                <Field label="dna_column">
-                  <Input type="number" value={f.dnaColumn} onChange={set("dnaColumn")} />
-                </Field>
-                <Field label="count_columns">
-                  <Input value={f.countColumns} onChange={set("countColumns")} placeholder="3, 4" />
-                </Field>
-                <Field label="locus_column">
-                  <Input type="number" value={f.locusColumn} onChange={set("locusColumn")} />
-                </Field>
-                <Field label="min_distinct_loci">
-                  <Input type="number" value={f.minDistinctLoci} onChange={set("minDistinctLoci")} />
-                </Field>
-                <Field label="min_total_reads">
-                  <Input type="number" value={f.minTotalReads} onChange={set("minTotalReads")} />
-                </Field>
-                <div className="col-span-2">
-                  <Field label="expect_loci">
-                    <Input
-                      value={f.expectLoci}
-                      onChange={set("expectLoci")}
-                      placeholder="CSF1PO, TH01, TPOX, vWA, FGA"
-                    />
-                  </Field>
+              <>
+                <div className="flex items-start justify-between gap-3 -mt-1">
+                  <p className="text-xs text-muted-foreground">
+                    {t("verified.submit.contentDefaultsHint")}
+                  </p>
+                  {!contentDirty ? (
+                    <span className="shrink-0 text-xs text-muted-foreground italic">
+                      {t("verified.submit.contentDefaultsAuto")}
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={resetContentDefaults}
+                      className="shrink-0 text-xs text-primary underline underline-offset-2 hover:no-underline"
+                    >
+                      {t("verified.submit.contentDefaultsReset")}
+                    </button>
+                  )}
                 </div>
-              </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="columns">
+                    <Input type="number" value={f.columns} onChange={setContent("columns")} placeholder="5" />
+                  </Field>
+                  <Field label="dna_column">
+                    <Input type="number" value={f.dnaColumn} onChange={setContent("dnaColumn")} placeholder="2" />
+                  </Field>
+                  <Field label="count_columns">
+                    <Input value={f.countColumns} onChange={setContent("countColumns")} placeholder="3, 4" />
+                  </Field>
+                  <Field label="locus_column">
+                    <Input type="number" value={f.locusColumn} onChange={setContent("locusColumn")} />
+                  </Field>
+                  <Field label="min_distinct_loci">
+                    <Input type="number" value={f.minDistinctLoci} onChange={setContent("minDistinctLoci")} />
+                  </Field>
+                  <Field label="min_total_reads">
+                    <Input type="number" value={f.minTotalReads} onChange={setContent("minTotalReads")} placeholder="100" />
+                  </Field>
+                  <div className="col-span-2">
+                    <Field label="expect_loci">
+                      <Input
+                        value={f.expectLoci}
+                        onChange={setContent("expectLoci")}
+                        placeholder="CSF1PO, TH01, TPOX, vWA, FGA"
+                      />
+                    </Field>
+                  </div>
+                </div>
+              </>
             )}
           </Section>
 

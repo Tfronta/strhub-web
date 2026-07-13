@@ -274,10 +274,14 @@ export default {
         text: "Texto plano (líneas, sin tabla)",
       },
       minRecords: "Registros mínimos",
-      contentToggle: "Agregar chequeos de plausibilidad de contenido (avanzado)",
+      contentToggle: "Chequear plausibilidad del contenido (recomendado)",
       contentToggleTooltip:
-        "Opcional. Chequeos extra sobre el archivo de salida: columnas, caracteres DNA, mínimo de loci o reads, y loci esperados. Ayuda a mostrar que el output parece genotipos plausibles, no solo un archivo no vacío. Omitilo si alcanza con chequeos básicos de formato.",
-      contentToggleTooltipAria: "Qué hacen los chequeos opcionales de plausibilidad de contenido",
+        "Recomendado. Verifica que el output parezca genotipos plausibles —suficientes loci reconocibles y los loci que esperás— no solo un archivo no vacío. Pasarlo otorga el badge más fuerte \"Plausible output\". Desmarcalo para verificar solo el formato.",
+      contentToggleTooltipAria: "Qué hace el chequeo de plausibilidad de contenido",
+      contentDefaultsHint:
+        "Pre-rellenado con valores sensatos según el formato de salida y el assay elegidos. Editá cualquier campo para ajustarlo a tu herramienta, o vacialo para omitir ese chequeo.",
+      contentDefaultsAuto: "Auto-completado según formato y assay",
+      contentDefaultsReset: "Restaurar recomendados",
       submit: "Enviar para verificación",
       submitting: "Enviando…",
       statePendingApproval:

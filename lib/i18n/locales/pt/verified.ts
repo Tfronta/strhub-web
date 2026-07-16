@@ -158,7 +158,7 @@ export default {
       referenceDatasetIlluminaBamDesc:
         "slice GIAB NA12878 300x hg38 (open access, 24 loci autossômicos forenses)",
       referenceDatasetIlluminaBamYDesc:
-        "slice GIAB HG002 300x hg38 (open access, 15 loci Y-STR)",
+        "slice GIAB HG002 300x hg38 (open access, 14 loci Y-STR)",
       referenceDatasetsScope:
         "Não há datasets de referência para painéis SNP, ONT FASTQ bruto ou capilar FSA/HID. Para esses tipos, a verificação usa apenas seu arquivo (não é falha). O STRhub não é custodiante de dados. Aplicam-se as licenças upstream.",
       inputTypeGroupWithReference: "Datasets STRhub de referência",
@@ -234,7 +234,7 @@ export default {
       externalNoteIlluminaBam:
         "O STRhub rodará 2 testes: com o BAM de teste do repositório da ferramenta (se fornecido) e com um slice GIAB NA12878 300x hg38. O dataset de referência cobre 24 loci STR autossômicos forenses (amostra feminina, sem marcadores Y).",
       externalNoteIlluminaBamY:
-        "O STRhub rodará 2 testes: com o BAM de teste do repositório da ferramenta (se fornecido) e com um slice GIAB HG002 300x hg38. O dataset de referência cobre 15 loci Y-STR forenses (amostra masculina).",
+        "O STRhub rodará 2 testes: com o BAM de teste do repositório da ferramenta (se fornecido) e com um slice GIAB HG002 300x hg38. O dataset de referência cobre 14 loci Y-STR forenses (amostra masculina).",
       externalNoteOwnOnly:
         "O STRhub rodará 1 teste apenas com seu arquivo. Não há dataset STRhub para este tipo de input (não é falha).",
       fixtureLabel: "Seu arquivo de teste (obrigatório)",
@@ -254,6 +254,35 @@ export default {
       fixturePathHint: "Caminho relativo da raiz do repo, ex. test/data/sample.fastq",
       fixtureRepo: "URL do repo com dados de teste",
       fixtureRef: "Commit / tag",
+
+      // Regions BED — obrigatório para ferramentas que trabalham por coordenadas.
+      regionsLabel: "Seu arquivo BED de regiões",
+      regionsExplainer:
+        "Obrigatório para ferramentas que leem arquivos BAM. Cada ferramenta espera seu próprio formato de BED (HipSTR, GangSTR e outras usam colunas diferentes), então o BED é você quem define. O STRhub fornece as coordenadas: baixe o painel abaixo e converta para o formato da sua ferramenta.",
+      regionsRepo: "URL do repo com o BED",
+      regionsRef: "Commit / tag",
+      regionsPath: "Caminho do BED no repo",
+      regionsPathHint: "Caminho relativo à raiz do repo, ex. regions/forensic-str.bed",
+      supportedLociTitle: "Loci suportados pela nossa amostra ({count})",
+      supportedLociExplainer:
+        "Nossa amostra de teste é um recorte em torno destes loci forenses, não um genoma completo. Seu BED deve mirar dentro destas regiões: fora delas não há leituras e sua ferramenta não conseguiria chamar nada.",
+      supportedLociDownload: "Baixar coordenadas (BED, GRCh38)",
+      panelLoading: "Carregando os loci suportados…",
+      panelError:
+        "Não conseguimos carregar o painel de loci suportados. Você pode enviar mesmo assim: o STRhub valida seu BED antes de rodar.",
+      regionsChecking: "Verificando seu BED contra o painel…",
+      regionsFetchError:
+        "Não conseguimos ler esse arquivo. Verifique se o repo é público e se o caminho existe nesse commit/tag.",
+      regionsMalformed: "O BED tem formato inválido:",
+      regionsOk: "Seu BED cobre {covered} de {total} loci suportados. Pronto para verificar.",
+      regionsRejectedTitle: "Este BED aponta para fora da nossa amostra",
+      regionsRejectedExplainer:
+        "Estas regiões não estão cobertas pelo nosso recorte, então sua ferramenta não encontraria leituras ali. Não é um problema da sua ferramenta — ajuste o BED ao painel acima.",
+      regionsLinePrefix: "linha {line}:",
+      regionsAndMore: "…e mais {n}.",
+      regionsTooFewLoci:
+        "Seu BED cobre {covered} loci suportados; precisamos de pelo menos {min} para verificar.",
+      regionsRequiredError: "Informe seu arquivo BED de regiões para este tipo de input.",
       outputPath: "Nome do arquivo de saída (padrão)",
       outputPathHint:
         "O nome (ou padrão) do arquivo que sua ferramenta escreve em /data/out/, ex. *.allsequences.txt ou result.vcf.",
@@ -280,7 +309,6 @@ export default {
       contentToggleTooltipAria: "O que faz a checagem de plausibilidade de conteúdo",
       contentDefaultsHint:
         "Pré-preenchido com valores sensatos para o formato de saída e o assay escolhidos. Edite qualquer campo para ajustar à sua ferramenta, ou limpe um para pular aquela checagem.",
-      contentDefaultsAuto: "Auto-preenchido por formato e assay",
       contentDefaultsReset: "Restaurar recomendados",
       submit: "Enviar para verificação",
       submitting: "Enviando…",

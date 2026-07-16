@@ -309,7 +309,6 @@ export default {
       contentToggleTooltipAria: "What the content plausibility check does",
       contentDefaultsHint:
         "Prefilled with sensible defaults for the selected output format and assay. Edit any field to match your tool, or clear one to skip that check.",
-      contentDefaultsAuto: "Auto-set from format & assay",
       contentDefaultsReset: "Reset to recommended",
       submit: "Submit for verification",
       submitting: "Submitting…",

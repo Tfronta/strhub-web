@@ -1503,15 +1503,15 @@ export function VerifiedSubmitForm() {
             </div>
             {showContent && (
               <>
+                {/* The reset link only appears once the author edits a field. An
+                    "auto-set" status note used to sit here too, but it restated the
+                    hint beside it and, being muted text of the same size, ran into
+                    it as one unreadable line. */}
                 <div className="flex items-start justify-between gap-3 -mt-1">
                   <p className="text-xs text-muted-foreground">
                     {t("verified.submit.contentDefaultsHint")}
                   </p>
-                  {!contentDirty ? (
-                    <span className="shrink-0 text-xs text-muted-foreground italic">
-                      {t("verified.submit.contentDefaultsAuto")}
-                    </span>
-                  ) : (
+                  {contentDirty && (
                     <button
                       type="button"
                       onClick={resetContentDefaults}

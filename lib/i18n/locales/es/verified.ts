@@ -158,7 +158,7 @@ export default {
       referenceDatasetIlluminaBamDesc:
         "slice GIAB NA12878 300x hg38 (open access, 24 loci autosomales forenses)",
       referenceDatasetIlluminaBamYDesc:
-        "slice GIAB HG002 300x hg38 (open access, 15 loci Y-STR)",
+        "slice GIAB HG002 300x hg38 (open access, 14 loci Y-STR)",
       referenceDatasetsScope:
         "No hay datasets de referencia para paneles SNP, ONT FASTQ crudo ni capilar FSA/HID. Para esos tipos, la verificación usa solo tu archivo (no es un fallo). STRhub no es custodio de datos. Aplican las licencias upstream.",
       inputTypeGroupWithReference: "Datasets STRhub de referencia",
@@ -234,7 +234,7 @@ export default {
       externalNoteIlluminaBam:
         "STRhub correrá 2 pruebas: con el BAM de prueba del repositorio de la herramienta (si fue incluido) y con un slice GIAB NA12878 300x hg38. El dataset de referencia cubre 24 loci STR autosomales forenses (muestra femenina, sin marcadores Y).",
       externalNoteIlluminaBamY:
-        "STRhub correrá 2 pruebas: con el BAM de prueba del repositorio de la herramienta (si fue incluido) y con un slice GIAB HG002 300x hg38. El dataset de referencia cubre 15 loci Y-STR forenses (muestra masculina).",
+        "STRhub correrá 2 pruebas: con el BAM de prueba del repositorio de la herramienta (si fue incluido) y con un slice GIAB HG002 300x hg38. El dataset de referencia cubre 14 loci Y-STR forenses (muestra masculina).",
       externalNoteOwnOnly:
         "STRhub correrá 1 prueba solo con tu archivo. No hay dataset STRhub para este tipo de input (no es un fallo).",
       fixtureLabel: "Tu archivo de prueba (obligatorio)",
@@ -254,6 +254,35 @@ export default {
       fixturePathHint: "Ruta relativa desde la raíz del repo, ej. test/data/sample.fastq",
       fixtureRepo: "URL del repo con datos de prueba",
       fixtureRef: "Commit / tag",
+
+      // Regions BED — obligatorio para herramientas que trabajan por coordenadas.
+      regionsLabel: "Tu archivo BED de regiones",
+      regionsExplainer:
+        "Obligatorio para herramientas que trabajan sobre BAM. Cada herramienta espera su propio formato de BED (HipSTR, GangSTR y otras usan columnas distintas), así que el BED lo definís vos. STRhub aporta las coordenadas: descargá el panel de abajo y convertilo al formato de tu herramienta.",
+      regionsRepo: "URL del repo con el BED",
+      regionsRef: "Commit / tag",
+      regionsPath: "Ruta al BED en el repo",
+      regionsPathHint: "Ruta relativa desde la raíz del repo, ej. regions/forensic-str.bed",
+      supportedLociTitle: "Loci soportados por nuestra muestra ({count})",
+      supportedLociExplainer:
+        "Nuestra muestra de prueba es un recorte alrededor de estos loci forenses, no un genoma completo. Tu BED debe apuntar dentro de estas regiones: fuera de ellas no hay lecturas y tu herramienta no podría llamar nada.",
+      supportedLociDownload: "Descargar coordenadas (BED, GRCh38)",
+      panelLoading: "Cargando los loci soportados…",
+      panelError:
+        "No pudimos cargar el panel de loci soportados. Podés enviar igual: STRhub validará tu BED antes de correr.",
+      regionsChecking: "Verificando tu BED contra el panel…",
+      regionsFetchError:
+        "No pudimos leer ese archivo. Verificá que el repo sea público y que la ruta exista en ese commit/tag.",
+      regionsMalformed: "El BED tiene un formato inválido:",
+      regionsOk: "Tu BED cubre {covered} de {total} loci soportados. Listo para verificar.",
+      regionsRejectedTitle: "Este BED apunta fuera de nuestra muestra",
+      regionsRejectedExplainer:
+        "Estas regiones no están cubiertas por nuestro recorte, así que tu herramienta no encontraría lecturas ahí. No es un problema de tu herramienta: ajustá el BED al panel de arriba.",
+      regionsLinePrefix: "línea {line}:",
+      regionsAndMore: "…y {n} más.",
+      regionsTooFewLoci:
+        "Tu BED cubre {covered} loci soportados; necesitamos al menos {min} para verificar.",
+      regionsRequiredError: "Indicá tu archivo BED de regiones para este tipo de input.",
       outputPath: "Nombre del archivo de salida (patrón)",
       outputPathHint:
         "El nombre (o patrón) del archivo que tu herramienta escribe en /data/out/, ej. *.allsequences.txt o result.vcf.",

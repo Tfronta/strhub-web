@@ -7,7 +7,7 @@
  * generated Dockerfile only `git clone`s the public repo at build time.
  */
 import type { Submission } from "./submission";
-import { isRemoteFixture } from "./submission";
+import { isRemotePointer } from "./submission";
 
 /** Minimal, deterministic YAML emitter for plain JSON-like values. */
 type Json = string | number | boolean | null | Json[] | { [k: string]: Json };
@@ -99,7 +99,7 @@ export function buildManifestObject(sub: Submission, slug: string): Json {
   const inputs: Record<string, Json> = {};
   if (sub.inputs.type) inputs.type = sub.inputs.type;
   if (sub.inputs.fixture) {
-    if (isRemoteFixture(sub.inputs.fixture)) {
+    if (isRemotePointer(sub.inputs.fixture)) {
       inputs.fixture = {
         repo: sub.inputs.fixture.repo,
         ref: sub.inputs.fixture.ref,
@@ -107,6 +107,17 @@ export function buildManifestObject(sub: Submission, slug: string): Json {
       };
     } else {
       inputs.fixture = sub.inputs.fixture;
+    }
+  }
+  if (sub.inputs.regions) {
+    if (isRemotePointer(sub.inputs.regions)) {
+      inputs.regions = {
+        repo: sub.inputs.regions.repo,
+        ref: sub.inputs.regions.ref,
+        path: sub.inputs.regions.path,
+      };
+    } else {
+      inputs.regions = sub.inputs.regions;
     }
   }
 

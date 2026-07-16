@@ -18,7 +18,15 @@ import {
   deriveSlug,
   newDispatchId,
   isRemoteFixture,
+  isRemotePointer,
+  INPUT_TYPES,
 } from "@/lib/verified/submission";
+import {
+  parseBed3,
+  validateRegions,
+  fetchPanel,
+  authorRawUrl,
+} from "@/lib/verified/validate-regions";
 import { buildManifestYaml, generateDockerfile } from "@/lib/verified/manifest";
 import {
   ENGINE_REPO,
@@ -95,6 +103,82 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 }
       );
+    }
+  }
+
+  // 1c. Regions BED: required for coordinate-based tools, and it must fit the
+  //     slice's supported-loci panel. The form checks this live, but that is UX,
+  //     not enforcement — a direct POST must not get past it. Rejecting here also
+  //     spares a CI run that the harness pre-flight would only abort anyway.
+  const typeInfo = INPUT_TYPES.find((it) => it.slug === sub.inputs.type);
+  if (typeInfo?.requiresRegions) {
+    if (!sub.inputs.regions) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "This input type needs a regions BED: STRhub's reference BAM is a slice, so your tool must declare which supported loci to target.",
+        },
+        { status: 400 }
+      );
+    }
+    if (isRemotePointer(sub.inputs.regions)) {
+      const rg = sub.inputs.regions;
+      const url = authorRawUrl(rg.repo, rg.ref, rg.path);
+      const panel = url && sub.inputs.type ? await fetchPanel(sub.inputs.type) : null;
+
+      // No panel (or unreachable) → we cannot prove the BED is out of scope, so we
+      // do not reject; the harness pre-flight is the backstop.
+      if (url && panel) {
+        let bedText: string | null = null;
+        try {
+          const res = await fetch(url, { cache: "no-store" });
+          if (res.ok) bedText = await res.text();
+        } catch {
+          bedText = null;
+        }
+        if (bedText === null) {
+          return NextResponse.json(
+            {
+              ok: false,
+              error:
+                "Your regions BED is not publicly reachable at the pinned ref. Make the repo/file public and check the path.",
+            },
+            { status: 400 }
+          );
+        }
+        try {
+          const result = validateRegions(
+            parseBed3(bedText),
+            panel,
+            typeInfo.minLoci ?? 5
+          );
+          if (!result.ok) {
+            return NextResponse.json(
+              {
+                ok: false,
+                error: `Your regions BED targets coordinates our reference slice does not cover, so your tool would find no reads there — this is not a failure of your tool. ${result.reasons.join("; ")}.`,
+                regions: {
+                  outOfPanel: result.outOfPanel.map(
+                    (r) => `${r.chrom}:${r.start}-${r.end} (line ${r.line})`
+                  ),
+                  coveredLoci: result.coveredLoci,
+                  panelSize: result.panelSize,
+                },
+              },
+              { status: 400 }
+            );
+          }
+        } catch (e) {
+          return NextResponse.json(
+            {
+              ok: false,
+              error: `Your regions BED is malformed: ${e instanceof Error ? e.message : "unparseable"}.`,
+            },
+            { status: 400 }
+          );
+        }
+      }
     }
   }
 

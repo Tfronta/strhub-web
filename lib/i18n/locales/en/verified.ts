@@ -158,7 +158,7 @@ export default {
       referenceDatasetIlluminaBamDesc:
         "GIAB NA12878 300x hg38 slice (open access, 24 autosomal forensic loci)",
       referenceDatasetIlluminaBamYDesc:
-        "GIAB HG002 300x hg38 slice (open access, 15 Y-STR loci)",
+        "GIAB HG002 300x hg38 slice (open access, 14 Y-STR loci)",
       referenceDatasetsScope:
         "No reference datasets for SNP panels, raw ONT FASTQ, or capillary FSA/HID. For those types, verification uses only your test file (not a failure). STRhub is not a data custodian. See upstream licenses.",
       inputTypeGroupWithReference: "STRhub reference datasets",
@@ -234,7 +234,7 @@ export default {
       externalNoteIlluminaBam:
         "STRhub will run two tests: on the test BAM from the tool's repository (if provided) and on a GIAB NA12878 300x hg38 slice. The reference dataset covers 24 autosomal forensic STR loci (female sample, no Y markers).",
       externalNoteIlluminaBamY:
-        "STRhub will run two tests: on the test BAM from the tool's repository (if provided) and on a GIAB HG002 300x hg38 slice. The reference dataset covers 15 Y-STR forensic loci (male sample).",
+        "STRhub will run two tests: on the test BAM from the tool's repository (if provided) and on a GIAB HG002 300x hg38 slice. The reference dataset covers 14 Y-STR forensic loci (male sample).",
       externalNoteOwnOnly:
         "STRhub will run one test with your file only. There is no STRhub reference dataset for this input type (not a failure).",
       fixtureLabel: "Your test file (required)",
@@ -254,6 +254,35 @@ export default {
       fixturePathHint: "Relative path from the repo root, e.g. test/data/sample.fastq",
       fixtureRepo: "Test data repo URL",
       fixtureRef: "Commit / tag",
+
+      // Regions BED — required for coordinate-based tools.
+      regionsLabel: "Your regions BED file",
+      regionsExplainer:
+        "Required for tools that read BAM files. Every tool expects its own BED layout (HipSTR, GangSTR and others use different columns), so the BED is yours to define. STRhub supplies the coordinates: download the panel below and convert it to your tool's format.",
+      regionsRepo: "Repo URL holding the BED",
+      regionsRef: "Commit / tag",
+      regionsPath: "Path to the BED in the repo",
+      regionsPathHint: "Path relative to the repo root, e.g. regions/forensic-str.bed",
+      supportedLociTitle: "Loci our sample supports ({count})",
+      supportedLociExplainer:
+        "Our test sample is a slice around these forensic loci, not a whole genome. Your BED must target these regions: outside them there are no reads, so your tool could not call anything.",
+      supportedLociDownload: "Download coordinates (BED, GRCh38)",
+      panelLoading: "Loading supported loci…",
+      panelError:
+        "We couldn't load the supported-loci panel. You can still submit: STRhub validates your BED before running.",
+      regionsChecking: "Checking your BED against the panel…",
+      regionsFetchError:
+        "We couldn't read that file. Check that the repo is public and the path exists at that commit/tag.",
+      regionsMalformed: "The BED is malformed:",
+      regionsOk: "Your BED covers {covered} of {total} supported loci. Ready to verify.",
+      regionsRejectedTitle: "This BED targets regions outside our sample",
+      regionsRejectedExplainer:
+        "These regions aren't covered by our slice, so your tool would find no reads there. This is not a problem with your tool — adjust the BED to the panel above.",
+      regionsLinePrefix: "line {line}:",
+      regionsAndMore: "…and {n} more.",
+      regionsTooFewLoci:
+        "Your BED covers {covered} supported loci; we need at least {min} to verify.",
+      regionsRequiredError: "Provide your regions BED for this input type.",
       outputPath: "Output filename (pattern)",
       outputPathHint:
         "The name (or pattern) of the file your tool writes under /data/out/, e.g. *.allsequences.txt or result.vcf.",

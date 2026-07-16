@@ -33,6 +33,15 @@ import {
   type InputTypeEntry,
   type SubmissionInput,
 } from "@/lib/verified/submission";
+import {
+  parseBed3,
+  validateRegions,
+  fetchPanel,
+  panelUrl,
+  authorRawUrl,
+  type BedInterval,
+  type RegionsValidation,
+} from "@/lib/verified/validate-regions";
 
 type Phase = "form" | "submitting" | "pending" | "tracking" | "done";
 type RunState = "pending" | "queued" | "in_progress" | "completed";
@@ -61,6 +70,7 @@ interface StoredFormState {
   f: typeof INITIAL_F;
   dockerMode: "generated" | "provided";
   fixtureSource: "same" | "other";
+  regionsSource: "same" | "other";
   showContent: boolean;
 }
 
@@ -82,6 +92,9 @@ const INITIAL_F = {
   fixtureFilePath: "",
   fixtureRepo: "",
   fixtureRef: "",
+  regionsPath: "",
+  regionsRepo: "",
+  regionsRef: "",
   outputPath: "",
   outputFormat: "tsv",
   minRecords: "1",
@@ -322,6 +335,17 @@ export function VerifiedSubmitForm() {
 
   const [dockerMode, setDockerMode] = useState<"generated" | "provided">("generated");
   const [fixtureSource, setFixtureSource] = useState<"same" | "other">("same");
+  const [regionsSource, setRegionsSource] = useState<"same" | "other">("same");
+
+  // Supported-loci panel for the selected BAM dataset, plus the live check of the
+  // author's BED against it. Checking here — before dispatch — is what keeps a
+  // slice-incompatible BED from burning a CI run just to be told no.
+  const [panel, setPanel] = useState<BedInterval[] | null>(null);
+  const [panelState, setPanelState] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [regionsCheck, setRegionsCheck] = useState<RegionsValidation | null>(null);
+  const [regionsError, setRegionsError] = useState<string | null>(null);
+  const [checkingRegions, setCheckingRegions] = useState(false);
+
   // Content plausibility checks are on by default with recommended defaults so
   // authors earn the "Plausible output" badge without knowing STRhub internals.
   const [showContent, setShowContent] = useState(true);
@@ -353,6 +377,7 @@ export function VerifiedSubmitForm() {
       setF(stored.f);
       setDockerMode(stored.dockerMode);
       setFixtureSource(stored.fixtureSource);
+      if (stored.regionsSource) setRegionsSource(stored.regionsSource);
       setShowContent(stored.showContent);
       // Treat restored non-empty content as author-owned so the defaults effect
       // does not overwrite it.
@@ -393,6 +418,13 @@ export function VerifiedSubmitForm() {
   const fixtureIsOptional = selectedTypeInfo?.hasExternalDataset === true;
   const cmdLooksLikeTemplate = f.cmd === "" || f.cmd.startsWith(CMD_TEMPLATE_PREFIX);
 
+  // Coordinate-based tools (BAM in, HipSTR/GangSTR-style) must declare their own
+  // regions: only the author knows their tool's BED layout. STRhub supplies the
+  // coordinates; the author supplies the format.
+  const needsRegions = selectedTypeInfo?.requiresRegions === true;
+  const regionsRepoResolved = regionsSource === "same" ? f.repo : f.regionsRepo;
+  const regionsRefResolved = regionsSource === "same" ? f.ref : f.regionsRef;
+
   const [cmdSuggestions, setCmdSuggestions] = useState<string[]>([]);
   const [fetchingReadme, setFetchingReadme] = useState(false);
 
@@ -409,6 +441,71 @@ export function VerifiedSubmitForm() {
       .finally(() => { if (!cancelled) setFetchingReadme(false); });
     return () => { cancelled = true; };
   }, [f.repo, f.ref, f.inputType, f.name, selectedCanonicalPaths]);
+
+  // Load the supported-loci panel for the selected dataset. It drives the loci
+  // list, the download, and the live check below.
+  useEffect(() => {
+    if (!needsRegions || !f.inputType) {
+      setPanel(null);
+      setPanelState("idle");
+      return;
+    }
+    let cancelled = false;
+    setPanelState("loading");
+    fetchPanel(f.inputType)
+      .then((p) => {
+        if (cancelled) return;
+        setPanel(p);
+        setPanelState(p ? "ready" : "error");
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setPanel(null);
+        setPanelState("error");
+      });
+    return () => { cancelled = true; };
+  }, [needsRegions, f.inputType]);
+
+  // Check the author's BED against the panel as soon as it is reachable. Debounced
+  // because it fires on every keystroke of the path field.
+  useEffect(() => {
+    setRegionsCheck(null);
+    setRegionsError(null);
+    if (!needsRegions || !panel || !regionsRepoResolved || !regionsRefResolved || !f.regionsPath.trim()) {
+      return;
+    }
+    const url = authorRawUrl(regionsRepoResolved, regionsRefResolved, f.regionsPath.trim());
+    if (!url) return;
+
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      setCheckingRegions(true);
+      try {
+        const res = await fetch(url);
+        if (cancelled) return;
+        if (!res.ok) {
+          setRegionsError(t("verified.submit.regionsFetchError"));
+          return;
+        }
+        const text = await res.text();
+        if (cancelled) return;
+        const rows = parseBed3(text);
+        setRegionsCheck(validateRegions(rows, panel, selectedTypeInfo?.minLoci ?? 5));
+      } catch (e) {
+        if (!cancelled) {
+          setRegionsError(
+            e instanceof Error && e.message.startsWith("line ")
+              ? `${t("verified.submit.regionsMalformed")} ${e.message}`
+              : t("verified.submit.regionsFetchError"),
+          );
+        }
+      } finally {
+        if (!cancelled) setCheckingRegions(false);
+      }
+    }, 600);
+
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [needsRegions, panel, regionsRepoResolved, regionsRefResolved, f.regionsPath, selectedTypeInfo, t]);
 
   function onInputTypeChange(value: string) {
     const entry = INPUT_TYPES.find((t) => t.slug === value);
@@ -431,7 +528,14 @@ export function VerifiedSubmitForm() {
     !cmdLooksLikeTemplate &&
     f.inputType !== "" &&
     (fixtureIsOptional || f.fixtureFilePath.trim() !== "") &&
-    f.outputPath.trim() !== "";
+    f.outputPath.trim() !== "" &&
+    // A coordinate-based tool needs a regions BED, and it must clear the panel
+    // check. Blocking here spares the author a CI run that would only reject it.
+    (!needsRegions ||
+      (f.regionsPath.trim() !== "" &&
+        regionsRepoResolved.trim() !== "" &&
+        regionsRefResolved.trim() !== "" &&
+        regionsCheck?.ok === true));
 
   function externalNoteMessage(): string | null {
     if (!resolvedInputType) return null;
@@ -468,6 +572,11 @@ export function VerifiedSubmitForm() {
       ? { repo: fixtureRepo, ref: fixtureRef, path: f.fixtureFilePath }
       : undefined;
 
+    const regions =
+      needsRegions && f.regionsPath.trim() !== ""
+        ? { repo: regionsRepoResolved, ref: regionsRefResolved, path: f.regionsPath.trim() }
+        : undefined;
+
     return {
       tool: {
         name: f.name,
@@ -489,6 +598,7 @@ export function VerifiedSubmitForm() {
       inputs: {
         type: resolvedInputType || undefined,
         fixture,
+        regions,
       },
       outputs: [
         {
@@ -544,7 +654,7 @@ export function VerifiedSubmitForm() {
       return;
     }
 
-    saveFormState({ f, dockerMode, fixtureSource, showContent });
+    saveFormState({ f, dockerMode, fixtureSource, regionsSource, showContent });
     setPhase("submitting");
     try {
       const res = await fetch("/api/verify/submit", {
@@ -597,6 +707,7 @@ export function VerifiedSubmitForm() {
     f,
     dockerMode,
     fixtureSource,
+    regionsSource,
     showParams,
     onToggle: () => setShowParams((v) => !v),
     onResubmit: handleResubmit,
@@ -1015,6 +1126,179 @@ export function VerifiedSubmitForm() {
               </div>
             )}
 
+            {/* Regions BED — required for coordinate-based tools. STRhub owns the
+                coordinates (its BAM is a slice); the author owns the BED format. */}
+            {needsRegions && (
+              <div className="pt-2 border-t border-border space-y-4">
+                <Field label={t("verified.submit.regionsLabel")} required>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    {t("verified.submit.regionsExplainer")}
+                  </p>
+                </Field>
+
+                {/* The panel: what the slice actually covers, downloadable. */}
+                <div className="rounded-md border border-[#0099a3]/30 bg-[#0099a3]/5 px-3 py-3 text-xs space-y-2">
+                  <div className="flex items-start gap-2">
+                    <Info className="h-4 w-4 mt-0.5 shrink-0 text-[#0099a3]" />
+                    <div className="space-y-2 min-w-0 flex-1">
+                      <p className="font-medium text-foreground">
+                        {t("verified.submit.supportedLociTitle", {
+                          count: String(selectedTypeInfo?.supportedLoci?.length ?? 0),
+                        })}
+                      </p>
+                      <p className="text-muted-foreground">
+                        {t("verified.submit.supportedLociExplainer")}
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {(selectedTypeInfo?.supportedLoci ?? []).map((l) => (
+                          <code
+                            key={l}
+                            className="font-mono text-[10px] bg-muted/70 rounded px-1.5 py-0.5 text-muted-foreground"
+                          >
+                            {l}
+                          </code>
+                        ))}
+                      </div>
+                      <a
+                        href={panelUrl(f.inputType)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-primary hover:underline font-medium"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        {t("verified.submit.supportedLociDownload")}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="radio"
+                      checked={regionsSource === "same"}
+                      onChange={() => setRegionsSource("same")}
+                    />
+                    {t("verified.submit.fixtureSameRepo")}
+                  </label>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="radio"
+                      checked={regionsSource === "other"}
+                      onChange={() => setRegionsSource("other")}
+                    />
+                    {t("verified.submit.fixtureOtherRepo")}
+                  </label>
+                </div>
+
+                {regionsSource === "other" && (
+                  <>
+                    <Field label={t("verified.submit.regionsRepo")} required>
+                      <Input
+                        value={f.regionsRepo}
+                        onChange={set("regionsRepo")}
+                        placeholder="https://github.com/owner/tool"
+                      />
+                      {err("inputs.regions.repo")}
+                    </Field>
+                    <Field label={t("verified.submit.regionsRef")} required>
+                      <Input value={f.regionsRef} onChange={set("regionsRef")} placeholder="main" />
+                      {err("inputs.regions.ref")}
+                    </Field>
+                  </>
+                )}
+
+                <Field label={t("verified.submit.regionsPath")} required>
+                  <Input
+                    value={f.regionsPath}
+                    onChange={set("regionsPath")}
+                    placeholder="regions/forensic-str.bed"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {t("verified.submit.regionsPathHint")}
+                  </p>
+                  {err("inputs.regions.path")}
+                </Field>
+
+                {/* Live verdict against the panel. */}
+                {panelState === "loading" && (
+                  <p className="text-xs text-muted-foreground animate-pulse">
+                    {t("verified.submit.panelLoading")}
+                  </p>
+                )}
+                {panelState === "error" && (
+                  <Alert variant="destructive">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      {t("verified.submit.panelError")}
+                    </AlertDescription>
+                  </Alert>
+                )}
+                {checkingRegions && (
+                  <p className="text-xs text-muted-foreground animate-pulse">
+                    {t("verified.submit.regionsChecking")}
+                  </p>
+                )}
+                {regionsError && !checkingRegions && (
+                  <Alert variant="destructive">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertDescription className="text-xs">{regionsError}</AlertDescription>
+                  </Alert>
+                )}
+                {regionsCheck && !checkingRegions && !regionsError && (
+                  regionsCheck.ok ? (
+                    <div className="flex items-start gap-2 rounded-md border border-emerald-600/40 bg-emerald-600/10 px-3 py-2 text-xs text-emerald-800 dark:text-emerald-300">
+                      <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
+                      <span>
+                        {t("verified.submit.regionsOk", {
+                          covered: String(regionsCheck.coveredLoci.length),
+                          total: String(regionsCheck.panelSize),
+                        })}
+                      </span>
+                    </div>
+                  ) : (
+                    <Alert variant="destructive">
+                      <AlertTriangle className="h-4 w-4" />
+                      <AlertTitle className="text-sm">
+                        {t("verified.submit.regionsRejectedTitle")}
+                      </AlertTitle>
+                      <AlertDescription className="text-xs space-y-2">
+                        <p>{t("verified.submit.regionsRejectedExplainer")}</p>
+                        {regionsCheck.outOfPanel.length > 0 && (
+                          <div className="space-y-0.5">
+                            {/* Coordinates only, no col-4 label: in a tool's own BED
+                                that column is not a name (HipSTR puts the period
+                                there), and echoing it back reads as nonsense. */}
+                            {regionsCheck.outOfPanel.slice(0, 6).map((r) => (
+                              <code key={r.line} className="block font-mono text-[11px]">
+                                {t("verified.submit.regionsLinePrefix", { line: String(r.line) })}{" "}
+                                {r.chrom}:{r.start}-{r.end}
+                              </code>
+                            ))}
+                            {regionsCheck.outOfPanel.length > 6 && (
+                              <p className="text-[11px]">
+                                {t("verified.submit.regionsAndMore", {
+                                  n: String(regionsCheck.outOfPanel.length - 6),
+                                })}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                        {regionsCheck.coveredLoci.length < regionsCheck.minLoci && (
+                          <p>
+                            {t("verified.submit.regionsTooFewLoci", {
+                              covered: String(regionsCheck.coveredLoci.length),
+                              min: String(regionsCheck.minLoci),
+                            })}
+                          </p>
+                        )}
+                      </AlertDescription>
+                    </Alert>
+                  )
+                )}
+              </div>
+            )}
+
             {/* Fixture — test data (optional when STRhub has a reference dataset) */}
             <div className="pt-2 border-t border-border">
               <Field
@@ -1300,6 +1584,7 @@ function SubmissionParams({
   f,
   dockerMode,
   fixtureSource,
+  regionsSource,
   showParams,
   onToggle,
   onResubmit,
@@ -1308,6 +1593,7 @@ function SubmissionParams({
   f: typeof INITIAL_F;
   dockerMode: "generated" | "provided";
   fixtureSource: "same" | "other";
+  regionsSource: "same" | "other";
   showParams: boolean;
   onToggle: () => void;
   onResubmit: () => void;
@@ -1322,6 +1608,12 @@ function SubmissionParams({
     ? fixtureSource === "other" && f.fixtureRepo
       ? `${f.fixtureRepo}@${f.fixtureRef}:${f.fixtureFilePath}`
       : f.fixtureFilePath
+    : "—";
+
+  const regionsDisplay = f.regionsPath
+    ? regionsSource === "other" && f.regionsRepo
+      ? `${f.regionsRepo}@${f.regionsRef}:${f.regionsPath}`
+      : f.regionsPath
     : "—";
 
   const buildDisplay =
@@ -1378,6 +1670,13 @@ function SubmissionParams({
 
               <dt className="text-muted-foreground">{t("verified.submit.paramsFixture")}</dt>
               <dd className="font-mono text-xs break-all">{fixtureDisplay}</dd>
+
+              {f.regionsPath && (
+                <>
+                  <dt className="text-muted-foreground">{t("verified.submit.regionsLabel")}</dt>
+                  <dd className="font-mono text-xs break-all">{regionsDisplay}</dd>
+                </>
+              )}
 
               <dt className="text-muted-foreground">{t("verified.submit.paramsOutput")}</dt>
               <dd className="font-mono text-xs">

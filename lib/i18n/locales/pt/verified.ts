@@ -309,7 +309,6 @@ export default {
       contentToggleTooltipAria: "O que faz a checagem de plausibilidade de conteúdo",
       contentDefaultsHint:
         "Pré-preenchido com valores sensatos para o formato de saída e o assay escolhidos. Edite qualquer campo para ajustar à sua ferramenta, ou limpe um para pular aquela checagem.",
-      contentDefaultsAuto: "Auto-preenchido por formato e assay",
       contentDefaultsReset: "Restaurar recomendados",
       submit: "Enviar para verificação",
       submitting: "Enviando…",

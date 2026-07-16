@@ -35,6 +35,20 @@ export interface InputTypeEntry {
   referenceGenome?: ReferenceGenomeInfo;
   /** Standard input paths that the harness guarantees inside the container. */
   canonicalPaths?: string[];
+  /**
+   * Coordinate-based tools (HipSTR, GangSTR, ...) must supply their own regions
+   * BED. STRhub's reference BAM is a slice, so the BED must fall within the
+   * supported-loci panel below. When set, the form requires an `inputs.regions`.
+   */
+  requiresRegions?: boolean;
+  /**
+   * Loci names the slice guarantees (mirrors datasets/<type>/loci.bed in the
+   * engine repo). Shown in the form; the author's BED must cover >= minLoci of
+   * them. Source of truth is the engine's loci.bed — keep in sync.
+   */
+  supportedLoci?: string[];
+  /** Minimum distinct supported loci the author's BED must cover. */
+  minLoci?: number;
 }
 
 /**
@@ -74,6 +88,9 @@ export const INPUT_TYPES = [
       mountPath: "/data/ref/hg38.fa",
     },
     canonicalPaths: ["/data/in/input.bam", "/data/ref/hg38.fa"],
+    // requiresRegions intentionally unset: the ONT supported-loci panel
+    // (datasets/ont-bam-hg38/loci.bed) is not yet built — 4 loci lack STR
+    // coordinates (DXS8378, DXS7132, AMEL, AMEL_Y). Enable once loci.bed exists.
   },
   {
     slug: "illumina-bam-hg38",
@@ -90,6 +107,15 @@ export const INPUT_TYPES = [
       mountPath: "/data/ref/hg38.fa",
     },
     canonicalPaths: ["/data/in/input.bam", "/data/ref/hg38.fa"],
+    requiresRegions: true,
+    minLoci: 5,
+    // Mirrors datasets/illumina-bam-hg38/loci.bed (24 loci, floor 55x). Source of
+    // truth is that BED; keep in sync (harness/build_panel.py regenerates it).
+    supportedLoci: [
+      "D1S1656", "TPOX", "D2S441", "D2S1338", "D3S1358", "FGA", "D5S818", "CSF1PO",
+      "SE33", "D6S1043", "D7S820", "D8S1179", "D10S1248", "TH01", "vWA", "D12S391",
+      "D13S317", "PentaE", "D16S539", "D18S51", "D19S433", "D21S11", "PentaD", "D22S1045",
+    ],
   },
   {
     slug: "illumina-bam-hg38-y",
@@ -106,6 +132,16 @@ export const INPUT_TYPES = [
       mountPath: "/data/ref/hg38.fa",
     },
     canonicalPaths: ["/data/in/input.bam", "/data/ref/hg38.fa"],
+    requiresRegions: true,
+    minLoci: 5,
+    // Mirrors datasets/illumina-bam-hg38-y/loci.bed (14 loci, floor 10x). DYS385a
+    // is excluded: DYS385a/b are collapsed in the GIAB alignment, starving the 'a'
+    // copy to ~2-10x. Source of truth is that BED; keep in sync.
+    supportedLoci: [
+      "DYS393", "DYS456", "DYS458", "DYS19/DYS394", "DYS391", "DYS635",
+      "DYS389I/DYS389II", "DYS438", "DYS390", "Y-GATA-A10", "Y-GATA-H4",
+      "DYS385_2", "DYS392", "DYS448",
+    ],
   },
   {
     slug: "ont-fastq",
@@ -189,14 +225,18 @@ export const outputSchema = z
   })
   .strict();
 
-/** Fase 3: BYOR fixture living in the author's PUBLIC repo (repo + ref + path). */
-export const remoteFixtureSchema = z
+/** A file living in the author's PUBLIC repo (repo + ref + path). Used for both
+ *  the BYOR fixture and the regions BED so STRhub stores no author data. */
+export const remotePointerSchema = z
   .object({
     repo: githubRepoUrl,
     ref: z.string().trim().regex(SHA_OR_TAG, "Invalid git ref").min(1).max(100),
     path: z.string().trim().min(1).max(300),
   })
   .strict();
+
+/** @deprecated alias — use remotePointerSchema. Kept for existing imports. */
+export const remoteFixtureSchema = remotePointerSchema;
 
 export const submissionSchema = z
   .object({
@@ -251,6 +291,10 @@ export const submissionSchema = z
         type: z.string().trim().max(80).optional(),
         // Own fixture: optional when the input type has a STRhub reference dataset.
         fixture: z.union([z.string().trim().min(1).max(300), remoteFixtureSchema]).optional(),
+        // Regions BED for coordinate-based tools. Required by the form when the
+        // input type has `requiresRegions`. Coverage against the panel is checked
+        // separately (client + harness), not here — this is only shape validation.
+        regions: z.union([z.string().trim().min(1).max(300), remotePointerSchema]).optional(),
       })
       .strict(),
     outputs: z.array(outputSchema).min(1).max(5),
@@ -311,8 +355,12 @@ export function newDispatchId(): string {
   return `sv_${time}_${rand}`;
 }
 
-export function isRemoteFixture(
-  fixture: Submission["inputs"]["fixture"]
-): fixture is z.infer<typeof remoteFixtureSchema> {
-  return typeof fixture === "object" && fixture !== null && "repo" in fixture;
+/** True when a fixture/regions pointer is remote ({repo,ref,path}) vs a repo path. */
+export function isRemotePointer(
+  ref: string | z.infer<typeof remotePointerSchema> | undefined
+): ref is z.infer<typeof remotePointerSchema> {
+  return typeof ref === "object" && ref !== null && "repo" in ref;
 }
+
+/** @deprecated use isRemotePointer. */
+export const isRemoteFixture = isRemotePointer;

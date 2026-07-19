@@ -274,6 +274,10 @@ export default {
         "Não conseguimos carregar o painel de loci suportados. Você pode enviar mesmo assim: o STRhub valida seu BED antes de rodar.",
       regionsMalformed: "O BED tem formato inválido:",
       regionsMalformedGeneric: "Não conseguimos interpretar esse arquivo como um BED.",
+      regionsUnconverted:
+        "Isto parece o nosso painel de coordenadas, enviado como está. As coordenadas estão certas, mas as colunas ainda são as nossas — a maioria das ferramentas (HipSTR, GangSTR) espera seu próprio formato e o rejeitaria. Converta para o formato da sua ferramenta antes de rodar.",
+      regionsRepoTip:
+        "Dica: faça commit deste BED no repo da sua ferramenta (ex. regions/strhub-verified.bed) para que quem a usar tenha as regiões exatas desta atestação. O STRhub verifica o arquivo que você envia aqui, não a cópia do repo.",
       regionsOk: "Seu BED cobre {covered} de {total} loci suportados. Pronto para verificar.",
       regionsRejectedTitle: "Este BED aponta para fora da nossa amostra",
       regionsRejectedExplainer:

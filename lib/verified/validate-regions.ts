@@ -136,6 +136,30 @@ export function validateRegions(
   };
 }
 
+/**
+ * True when the upload looks like OUR panel handed back unconverted.
+ *
+ * We cannot know what a given tool's BED should look like — that surface is
+ * unbounded, and for a brand-new tool we'd have nothing to compare against. But
+ * we DO know our own panel, so we can catch the one specific, common mistake:
+ * downloading the panel and uploading it as-is, without converting its columns to
+ * the tool's format. The tell is column 4 (parsed into `name`): our panel puts the
+ * locus name there, so an unconverted upload's names match the panel's; a real
+ * tool BED puts something else there (HipSTR a period, GangSTR a period, ...).
+ *
+ * Advisory only: a genuine BED4 tool could legitimately carry locus names in
+ * column 4 and trip this. The caller should warn, never block.
+ */
+export function looksLikeUnconvertedPanel(
+  bed: BedInterval[],
+  panel: BedInterval[],
+): boolean {
+  if (bed.length === 0) return false;
+  const panelNames = new Set(panel.map((p) => p.name));
+  const matches = bed.filter((r) => panelNames.has(r.name)).length;
+  return matches / bed.length >= 0.5;
+}
+
 /** URL of a dataset's supported-loci panel — also what the download button serves. */
 export function panelUrl(inputType: string): string {
   return `${ENGINE_RAW_BASE}/datasets/${inputType}/loci.bed`;

@@ -153,11 +153,3 @@ export async function fetchPanel(inputType: string): Promise<BedInterval[] | nul
     return null;
   }
 }
-
-/** Raw URL of a file in the author's PUBLIC repo (repo + ref + path). */
-export function authorRawUrl(repo: string, ref: string, path: string): string | null {
-  const m = repo.match(/github\.com\/([^/]+\/[^/]+)/);
-  if (!m) return null;
-  const slug = m[1].replace(/\.git$/, "").replace(/\/$/, "");
-  return `https://raw.githubusercontent.com/${slug}/${ref}/${path.replace(/^\//, "")}`;
-}

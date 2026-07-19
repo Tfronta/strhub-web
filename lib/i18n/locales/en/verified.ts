@@ -258,11 +258,13 @@ export default {
       // Regions BED — required for coordinate-based tools.
       regionsLabel: "Your regions BED file",
       regionsExplainer:
-        "Required for tools that read BAM files. Every tool expects its own BED layout (HipSTR, GangSTR and others use different columns), so the BED is yours to define. STRhub supplies the coordinates: download the panel below and convert it to your tool's format.",
-      regionsRepo: "Repo URL holding the BED",
-      regionsRef: "Commit / tag",
-      regionsPath: "Path to the BED in the repo",
-      regionsPathHint: "Path relative to the repo root, e.g. regions/forensic-str.bed",
+        "Required for tools that read BAM files. Every tool expects its own BED layout (HipSTR, GangSTR and others use different columns), so the BED is yours to define. STRhub supplies the coordinates: download the panel below, convert it to your tool's format, and upload it.",
+      regionsUploadLabel: "Upload your BED",
+      regionsUploadPlaceholder: "Choose a .bed file…",
+      regionsUploadHint:
+        "The file you built from the panel above, in your tool's format. Plain-text .bed — not gzipped. Checked against the panel here before you submit.",
+      regionsGzip:
+        "That file is gzipped. Decompress it first (gunzip) and upload the plain-text .bed.",
       supportedLociTitle: "Loci our sample supports ({count})",
       supportedLociExplainer:
         "Our test sample is a slice around these forensic loci, not a whole genome. Your BED must target these regions: outside them there are no reads, so your tool could not call anything.",
@@ -270,10 +272,8 @@ export default {
       panelLoading: "Loading supported loci…",
       panelError:
         "We couldn't load the supported-loci panel. You can still submit: STRhub validates your BED before running.",
-      regionsChecking: "Checking your BED against the panel…",
-      regionsFetchError:
-        "We couldn't read that file. Check that the repo is public and the path exists at that commit/tag.",
       regionsMalformed: "The BED is malformed:",
+      regionsMalformedGeneric: "We couldn't parse that file as a BED.",
       regionsOk: "Your BED covers {covered} of {total} supported loci. Ready to verify.",
       regionsRejectedTitle: "This BED targets regions outside our sample",
       regionsRejectedExplainer:

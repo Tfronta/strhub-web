@@ -36,6 +36,7 @@ import {
 import {
   parseBed3,
   validateRegions,
+  looksLikeUnconvertedPanel,
   fetchPanel,
   panelUrl,
   type BedInterval,
@@ -342,6 +343,8 @@ export function VerifiedSubmitForm() {
   const [regionsBed, setRegionsBed] = useState<string>("");
   const [regionsFileName, setRegionsFileName] = useState<string>("");
   const [regionsCheck, setRegionsCheck] = useState<RegionsValidation | null>(null);
+  // Non-blocking: true when the upload looks like our panel handed back unconverted.
+  const [regionsUnconverted, setRegionsUnconverted] = useState(false);
   // Two owners on purpose: `regionsFileError` is the read stage (gzip/binary), set
   // by onRegionsFile; `regionsError` is the parse/panel stage, owned by the effect
   // below. Merging them let the effect wipe a gzip error when regionsBed reset to "".
@@ -470,10 +473,12 @@ export function VerifiedSubmitForm() {
   useEffect(() => {
     setRegionsCheck(null);
     setRegionsError(null);
+    setRegionsUnconverted(false);
     if (!needsRegions || !panel || !regionsBed) return;
     try {
       const rows = parseBed3(regionsBed);
       setRegionsCheck(validateRegions(rows, panel, selectedTypeInfo?.minLoci ?? 5));
+      setRegionsUnconverted(looksLikeUnconvertedPanel(rows, panel));
     } catch (e) {
       setRegionsError(
         e instanceof Error && e.message.startsWith("line ")
@@ -1181,6 +1186,14 @@ export function VerifiedSubmitForm() {
                   </p>
                 </Field>
 
+                {/* Nudge, not a requirement: keeping the BED in the tool's own repo
+                    helps the tool's future users. STRhub doesn't fetch or validate
+                    that copy — verification uses the upload above. */}
+                <div className="flex items-start gap-2 rounded-md bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+                  <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                  <span>{t("verified.submit.regionsRepoTip")}</span>
+                </div>
+
                 {/* Live verdict against the panel. */}
                 {panelState === "loading" && (
                   <p className="text-xs text-muted-foreground animate-pulse">
@@ -1202,6 +1215,16 @@ export function VerifiedSubmitForm() {
                       {regionsFileError || regionsError}
                     </AlertDescription>
                   </Alert>
+                )}
+                {/* Non-blocking: the coordinates are ours, so the check passes, but
+                    the columns are still ours too — the author hasn't converted to
+                    their tool's format. The real tool would reject it. Warn, don't
+                    block: a genuine BED4 tool could carry locus names legitimately. */}
+                {regionsUnconverted && !regionsFileError && !regionsError && (
+                  <div className="flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-800 dark:text-amber-300">
+                    <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
+                    <span>{t("verified.submit.regionsUnconverted")}</span>
+                  </div>
                 )}
                 {regionsCheck && !regionsFileError && !regionsError && (
                   regionsCheck.ok ? (

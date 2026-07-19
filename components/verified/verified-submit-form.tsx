@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, Loader2, CheckCircle2, XCircle, Info, Download, ChevronDown, ChevronRight, RotateCcw } from "lucide-react";
+import { AlertTriangle, Loader2, CheckCircle2, XCircle, Info, Download, Upload, ChevronDown, ChevronRight, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,7 +38,6 @@ import {
   validateRegions,
   fetchPanel,
   panelUrl,
-  authorRawUrl,
   type BedInterval,
   type RegionsValidation,
 } from "@/lib/verified/validate-regions";
@@ -70,7 +69,6 @@ interface StoredFormState {
   f: typeof INITIAL_F;
   dockerMode: "generated" | "provided";
   fixtureSource: "same" | "other";
-  regionsSource: "same" | "other";
   showContent: boolean;
 }
 
@@ -92,9 +90,6 @@ const INITIAL_F = {
   fixtureFilePath: "",
   fixtureRepo: "",
   fixtureRef: "",
-  regionsPath: "",
-  regionsRepo: "",
-  regionsRef: "",
   outputPath: "",
   outputFormat: "tsv",
   minRecords: "1",
@@ -335,16 +330,23 @@ export function VerifiedSubmitForm() {
 
   const [dockerMode, setDockerMode] = useState<"generated" | "provided">("generated");
   const [fixtureSource, setFixtureSource] = useState<"same" | "other">("same");
-  const [regionsSource, setRegionsSource] = useState<"same" | "other">("same");
-
   // Supported-loci panel for the selected BAM dataset, plus the live check of the
-  // author's BED against it. Checking here — before dispatch — is what keeps a
-  // slice-incompatible BED from burning a CI run just to be told no.
+  // author's uploaded BED against it. Checking here — before dispatch — is what
+  // keeps a slice-incompatible BED from burning a CI run just to be told no.
+  //
+  // The BED lives outside `f` (and out of sessionStorage): it can be large, and a
+  // File's contents don't survive a reload anyway, so persisting the name would
+  // only mislead.
   const [panel, setPanel] = useState<BedInterval[] | null>(null);
   const [panelState, setPanelState] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [regionsBed, setRegionsBed] = useState<string>("");
+  const [regionsFileName, setRegionsFileName] = useState<string>("");
   const [regionsCheck, setRegionsCheck] = useState<RegionsValidation | null>(null);
+  // Two owners on purpose: `regionsFileError` is the read stage (gzip/binary), set
+  // by onRegionsFile; `regionsError` is the parse/panel stage, owned by the effect
+  // below. Merging them let the effect wipe a gzip error when regionsBed reset to "".
+  const [regionsFileError, setRegionsFileError] = useState<string | null>(null);
   const [regionsError, setRegionsError] = useState<string | null>(null);
-  const [checkingRegions, setCheckingRegions] = useState(false);
 
   // Content plausibility checks are on by default with recommended defaults so
   // authors earn the "Plausible output" badge without knowing STRhub internals.
@@ -377,7 +379,6 @@ export function VerifiedSubmitForm() {
       setF(stored.f);
       setDockerMode(stored.dockerMode);
       setFixtureSource(stored.fixtureSource);
-      if (stored.regionsSource) setRegionsSource(stored.regionsSource);
       setShowContent(stored.showContent);
       // Treat restored non-empty content as author-owned so the defaults effect
       // does not overwrite it.
@@ -418,12 +419,10 @@ export function VerifiedSubmitForm() {
   const fixtureIsOptional = selectedTypeInfo?.hasExternalDataset === true;
   const cmdLooksLikeTemplate = f.cmd === "" || f.cmd.startsWith(CMD_TEMPLATE_PREFIX);
 
-  // Coordinate-based tools (BAM in, HipSTR/GangSTR-style) must declare their own
-  // regions: only the author knows their tool's BED layout. STRhub supplies the
-  // coordinates; the author supplies the format.
+  // Coordinate-based tools (BAM in, HipSTR/GangSTR-style) must supply their own
+  // regions BED: only the author knows their tool's column layout. STRhub supplies
+  // the coordinates (the downloadable panel); the author supplies the format.
   const needsRegions = selectedTypeInfo?.requiresRegions === true;
-  const regionsRepoResolved = regionsSource === "same" ? f.repo : f.regionsRepo;
-  const regionsRefResolved = regionsSource === "same" ? f.ref : f.regionsRef;
 
   const [cmdSuggestions, setCmdSuggestions] = useState<string[]>([]);
   const [fetchingReadme, setFetchingReadme] = useState(false);
@@ -466,46 +465,39 @@ export function VerifiedSubmitForm() {
     return () => { cancelled = true; };
   }, [needsRegions, f.inputType]);
 
-  // Check the author's BED against the panel as soon as it is reachable. Debounced
-  // because it fires on every keystroke of the path field.
+  // Check the uploaded BED against the panel. Local and synchronous now that the
+  // file's text is in hand — no fetch, no debounce.
   useEffect(() => {
     setRegionsCheck(null);
     setRegionsError(null);
-    if (!needsRegions || !panel || !regionsRepoResolved || !regionsRefResolved || !f.regionsPath.trim()) {
+    if (!needsRegions || !panel || !regionsBed) return;
+    try {
+      const rows = parseBed3(regionsBed);
+      setRegionsCheck(validateRegions(rows, panel, selectedTypeInfo?.minLoci ?? 5));
+    } catch (e) {
+      setRegionsError(
+        e instanceof Error && e.message.startsWith("line ")
+          ? `${t("verified.submit.regionsMalformed")} ${e.message}`
+          : t("verified.submit.regionsMalformedGeneric"),
+      );
+    }
+  }, [needsRegions, panel, regionsBed, selectedTypeInfo, t]);
+
+  /** Read a chosen BED file into state. Rejects binary/gzip early with a clear note. */
+  async function onRegionsFile(file: File | undefined) {
+    if (!file) return;
+    setRegionsFileName(file.name);
+    setRegionsFileError(null);
+    // gzip magic bytes 1f 8b — the single most common upload mistake (HipSTR ships
+    // its reference gzipped). Catch it before it reads as mojibake.
+    const head = new Uint8Array(await file.slice(0, 2).arrayBuffer());
+    if (head[0] === 0x1f && head[1] === 0x8b) {
+      setRegionsBed("");
+      setRegionsFileError(t("verified.submit.regionsGzip"));
       return;
     }
-    const url = authorRawUrl(regionsRepoResolved, regionsRefResolved, f.regionsPath.trim());
-    if (!url) return;
-
-    let cancelled = false;
-    const timer = setTimeout(async () => {
-      setCheckingRegions(true);
-      try {
-        const res = await fetch(url);
-        if (cancelled) return;
-        if (!res.ok) {
-          setRegionsError(t("verified.submit.regionsFetchError"));
-          return;
-        }
-        const text = await res.text();
-        if (cancelled) return;
-        const rows = parseBed3(text);
-        setRegionsCheck(validateRegions(rows, panel, selectedTypeInfo?.minLoci ?? 5));
-      } catch (e) {
-        if (!cancelled) {
-          setRegionsError(
-            e instanceof Error && e.message.startsWith("line ")
-              ? `${t("verified.submit.regionsMalformed")} ${e.message}`
-              : t("verified.submit.regionsFetchError"),
-          );
-        }
-      } finally {
-        if (!cancelled) setCheckingRegions(false);
-      }
-    }, 600);
-
-    return () => { cancelled = true; clearTimeout(timer); };
-  }, [needsRegions, panel, regionsRepoResolved, regionsRefResolved, f.regionsPath, selectedTypeInfo, t]);
+    setRegionsBed(await file.text());
+  }
 
   function onInputTypeChange(value: string) {
     const entry = INPUT_TYPES.find((t) => t.slug === value);
@@ -529,13 +521,9 @@ export function VerifiedSubmitForm() {
     f.inputType !== "" &&
     (fixtureIsOptional || f.fixtureFilePath.trim() !== "") &&
     f.outputPath.trim() !== "" &&
-    // A coordinate-based tool needs a regions BED, and it must clear the panel
+    // A coordinate-based tool needs an uploaded regions BED that clears the panel
     // check. Blocking here spares the author a CI run that would only reject it.
-    (!needsRegions ||
-      (f.regionsPath.trim() !== "" &&
-        regionsRepoResolved.trim() !== "" &&
-        regionsRefResolved.trim() !== "" &&
-        regionsCheck?.ok === true));
+    (!needsRegions || (regionsBed !== "" && regionsCheck?.ok === true));
 
   function externalNoteMessage(): string | null {
     if (!resolvedInputType) return null;
@@ -572,10 +560,7 @@ export function VerifiedSubmitForm() {
       ? { repo: fixtureRepo, ref: fixtureRef, path: f.fixtureFilePath }
       : undefined;
 
-    const regions =
-      needsRegions && f.regionsPath.trim() !== ""
-        ? { repo: regionsRepoResolved, ref: regionsRefResolved, path: f.regionsPath.trim() }
-        : undefined;
+    const regions_bed = needsRegions && regionsBed !== "" ? regionsBed : undefined;
 
     return {
       tool: {
@@ -598,7 +583,7 @@ export function VerifiedSubmitForm() {
       inputs: {
         type: resolvedInputType || undefined,
         fixture,
-        regions,
+        regions_bed,
       },
       outputs: [
         {
@@ -643,6 +628,11 @@ export function VerifiedSubmitForm() {
       return;
     }
 
+    if (needsRegions && !payload.inputs.regions_bed) {
+      setFormError(t("verified.submit.regionsRequiredError"));
+      return;
+    }
+
     const parsed = submissionSchema.safeParse(payload);
     if (!parsed.success) {
       const fieldErrors: Record<string, string> = {};
@@ -654,7 +644,7 @@ export function VerifiedSubmitForm() {
       return;
     }
 
-    saveFormState({ f, dockerMode, fixtureSource, regionsSource, showContent });
+    saveFormState({ f, dockerMode, fixtureSource, showContent });
     setPhase("submitting");
     try {
       const res = await fetch("/api/verify/submit", {
@@ -707,7 +697,7 @@ export function VerifiedSubmitForm() {
     f,
     dockerMode,
     fixtureSource,
-    regionsSource,
+    regionsFileName,
     showParams,
     onToggle: () => setShowParams((v) => !v),
     onResubmit: handleResubmit,
@@ -1172,52 +1162,23 @@ export function VerifiedSubmitForm() {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
-                  <label className="flex items-center gap-2 text-sm">
+                {/* Upload the converted BED. */}
+                <Field label={t("verified.submit.regionsUploadLabel")} required>
+                  <label className="flex items-center gap-3 cursor-pointer rounded-md border border-dashed border-border px-4 py-3 text-sm hover:bg-muted/40 transition-colors">
+                    <Upload className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    <span className="text-muted-foreground">
+                      {regionsFileName || t("verified.submit.regionsUploadPlaceholder")}
+                    </span>
                     <input
-                      type="radio"
-                      checked={regionsSource === "same"}
-                      onChange={() => setRegionsSource("same")}
+                      type="file"
+                      accept=".bed,.txt,text/plain"
+                      className="sr-only"
+                      onChange={(e) => onRegionsFile(e.target.files?.[0])}
                     />
-                    {t("verified.submit.fixtureSameRepo")}
                   </label>
-                  <label className="flex items-center gap-2 text-sm">
-                    <input
-                      type="radio"
-                      checked={regionsSource === "other"}
-                      onChange={() => setRegionsSource("other")}
-                    />
-                    {t("verified.submit.fixtureOtherRepo")}
-                  </label>
-                </div>
-
-                {regionsSource === "other" && (
-                  <>
-                    <Field label={t("verified.submit.regionsRepo")} required>
-                      <Input
-                        value={f.regionsRepo}
-                        onChange={set("regionsRepo")}
-                        placeholder="https://github.com/owner/tool"
-                      />
-                      {err("inputs.regions.repo")}
-                    </Field>
-                    <Field label={t("verified.submit.regionsRef")} required>
-                      <Input value={f.regionsRef} onChange={set("regionsRef")} placeholder="main" />
-                      {err("inputs.regions.ref")}
-                    </Field>
-                  </>
-                )}
-
-                <Field label={t("verified.submit.regionsPath")} required>
-                  <Input
-                    value={f.regionsPath}
-                    onChange={set("regionsPath")}
-                    placeholder="regions/forensic-str.bed"
-                  />
                   <p className="text-xs text-muted-foreground mt-1">
-                    {t("verified.submit.regionsPathHint")}
+                    {t("verified.submit.regionsUploadHint")}
                   </p>
-                  {err("inputs.regions.path")}
                 </Field>
 
                 {/* Live verdict against the panel. */}
@@ -1234,18 +1195,15 @@ export function VerifiedSubmitForm() {
                     </AlertDescription>
                   </Alert>
                 )}
-                {checkingRegions && (
-                  <p className="text-xs text-muted-foreground animate-pulse">
-                    {t("verified.submit.regionsChecking")}
-                  </p>
-                )}
-                {regionsError && !checkingRegions && (
+                {(regionsFileError || regionsError) && (
                   <Alert variant="destructive">
                     <AlertTriangle className="h-4 w-4" />
-                    <AlertDescription className="text-xs">{regionsError}</AlertDescription>
+                    <AlertDescription className="text-xs">
+                      {regionsFileError || regionsError}
+                    </AlertDescription>
                   </Alert>
                 )}
-                {regionsCheck && !checkingRegions && !regionsError && (
+                {regionsCheck && !regionsFileError && !regionsError && (
                   regionsCheck.ok ? (
                     <div className="flex items-start gap-2 rounded-md border border-emerald-600/40 bg-emerald-600/10 px-3 py-2 text-xs text-emerald-800 dark:text-emerald-300">
                       <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
@@ -1584,7 +1542,7 @@ function SubmissionParams({
   f,
   dockerMode,
   fixtureSource,
-  regionsSource,
+  regionsFileName,
   showParams,
   onToggle,
   onResubmit,
@@ -1593,7 +1551,7 @@ function SubmissionParams({
   f: typeof INITIAL_F;
   dockerMode: "generated" | "provided";
   fixtureSource: "same" | "other";
-  regionsSource: "same" | "other";
+  regionsFileName: string;
   showParams: boolean;
   onToggle: () => void;
   onResubmit: () => void;
@@ -1610,11 +1568,7 @@ function SubmissionParams({
       : f.fixtureFilePath
     : "—";
 
-  const regionsDisplay = f.regionsPath
-    ? regionsSource === "other" && f.regionsRepo
-      ? `${f.regionsRepo}@${f.regionsRef}:${f.regionsPath}`
-      : f.regionsPath
-    : "—";
+  const regionsDisplay = regionsFileName || "—";
 
   const buildDisplay =
     dockerMode === "generated"
@@ -1671,7 +1625,7 @@ function SubmissionParams({
               <dt className="text-muted-foreground">{t("verified.submit.paramsFixture")}</dt>
               <dd className="font-mono text-xs break-all">{fixtureDisplay}</dd>
 
-              {f.regionsPath && (
+              {regionsFileName && (
                 <>
                   <dt className="text-muted-foreground">{t("verified.submit.regionsLabel")}</dt>
                   <dd className="font-mono text-xs break-all">{regionsDisplay}</dd>

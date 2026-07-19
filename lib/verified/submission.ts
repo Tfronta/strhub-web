@@ -291,10 +291,18 @@ export const submissionSchema = z
         type: z.string().trim().max(80).optional(),
         // Own fixture: optional when the input type has a STRhub reference dataset.
         fixture: z.union([z.string().trim().min(1).max(300), remoteFixtureSchema]).optional(),
-        // Regions BED for coordinate-based tools. Required by the form when the
-        // input type has `requiresRegions`. Coverage against the panel is checked
-        // separately (client + harness), not here — this is only shape validation.
-        regions: z.union([z.string().trim().min(1).max(300), remotePointerSchema]).optional(),
+        // The author's regions BED, uploaded through the form as raw text.
+        //
+        // An earlier design took a pointer into the author's repo, but that meant
+        // chasing every tool's publishing habits: HipSTR's reference is a 78 MB
+        // gzipped genome-wide BED behind a /raw/ URL, and each tool differs again.
+        // The author already has the file locally; having them upload it ends the
+        // chase. STRhub commits it under the tool's assets/ and records that THEY
+        // chose the loci (see manifest inputs.regions.provided_by).
+        //
+        // 1 MB is far above any forensic panel (tens of rows) and far below a
+        // genome-wide reference, which cannot work against a slice anyway.
+        regions_bed: z.string().min(1).max(1_000_000).optional(),
       })
       .strict(),
     outputs: z.array(outputSchema).min(1).max(5),

@@ -258,11 +258,13 @@ export default {
       // Regions BED — obrigatório para ferramentas que trabalham por coordenadas.
       regionsLabel: "Seu arquivo BED de regiões",
       regionsExplainer:
-        "Obrigatório para ferramentas que leem arquivos BAM. Cada ferramenta espera seu próprio formato de BED (HipSTR, GangSTR e outras usam colunas diferentes), então o BED é você quem define. O STRhub fornece as coordenadas: baixe o painel abaixo e converta para o formato da sua ferramenta.",
-      regionsRepo: "URL do repo com o BED",
-      regionsRef: "Commit / tag",
-      regionsPath: "Caminho do BED no repo",
-      regionsPathHint: "Caminho relativo à raiz do repo, ex. regions/forensic-str.bed",
+        "Obrigatório para ferramentas que leem arquivos BAM. Cada ferramenta espera seu próprio formato de BED (HipSTR, GangSTR e outras usam colunas diferentes), então o BED é você quem define. O STRhub fornece as coordenadas: baixe o painel abaixo, converta para o formato da sua ferramenta e envie.",
+      regionsUploadLabel: "Envie seu BED",
+      regionsUploadPlaceholder: "Escolha um arquivo .bed…",
+      regionsUploadHint:
+        "O arquivo que você montou a partir do painel acima, no formato da sua ferramenta. Texto puro .bed — não compactado. Validado contra o painel aqui antes de enviar.",
+      regionsGzip:
+        "Esse arquivo está compactado (gzip). Descompacte primeiro (gunzip) e envie o .bed em texto puro.",
       supportedLociTitle: "Loci suportados pela nossa amostra ({count})",
       supportedLociExplainer:
         "Nossa amostra de teste é um recorte em torno destes loci forenses, não um genoma completo. Seu BED deve mirar dentro destas regiões: fora delas não há leituras e sua ferramenta não conseguiria chamar nada.",
@@ -270,10 +272,8 @@ export default {
       panelLoading: "Carregando os loci suportados…",
       panelError:
         "Não conseguimos carregar o painel de loci suportados. Você pode enviar mesmo assim: o STRhub valida seu BED antes de rodar.",
-      regionsChecking: "Verificando seu BED contra o painel…",
-      regionsFetchError:
-        "Não conseguimos ler esse arquivo. Verifique se o repo é público e se o caminho existe nesse commit/tag.",
       regionsMalformed: "O BED tem formato inválido:",
+      regionsMalformedGeneric: "Não conseguimos interpretar esse arquivo como um BED.",
       regionsOk: "Seu BED cobre {covered} de {total} loci suportados. Pronto para verificar.",
       regionsRejectedTitle: "Este BED aponta para fora da nossa amostra",
       regionsRejectedExplainer:

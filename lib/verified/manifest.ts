@@ -9,6 +9,13 @@
 import type { Submission } from "./submission";
 import { isRemotePointer } from "./submission";
 
+/**
+ * Where an uploaded regions BED is committed, relative to the tool's directory.
+ * prepare.py already stages `tools/<slug>/assets/*` into both legs, so an upload
+ * lands on a path the harness has always read — no engine plumbing needed.
+ */
+export const REGIONS_ASSET_PATH = "assets/regions.bed";
+
 /** Minimal, deterministic YAML emitter for plain JSON-like values. */
 type Json = string | number | boolean | null | Json[] | { [k: string]: Json };
 
@@ -109,16 +116,14 @@ export function buildManifestObject(sub: Submission, slug: string): Json {
       inputs.fixture = sub.inputs.fixture;
     }
   }
-  if (sub.inputs.regions) {
-    if (isRemotePointer(sub.inputs.regions)) {
-      inputs.regions = {
-        repo: sub.inputs.regions.repo,
-        ref: sub.inputs.regions.ref,
-        path: sub.inputs.regions.path,
-      };
-    } else {
-      inputs.regions = sub.inputs.regions;
-    }
+  // The author uploaded the BED; the API commits it here. `provided_by` keeps the
+  // choice of loci attributed to them — the file lives in our repo, but they picked
+  // the regions, and the report must not credit STRhub for that.
+  if (sub.inputs.regions_bed) {
+    inputs.regions = {
+      path: `tools/${slug}/${REGIONS_ASSET_PATH}`,
+      provided_by: "author",
+    };
   }
 
   const outputs: Json[] = sub.outputs.map((o) => {

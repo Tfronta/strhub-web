@@ -18,16 +18,18 @@ import {
   deriveSlug,
   newDispatchId,
   isRemoteFixture,
-  isRemotePointer,
   INPUT_TYPES,
 } from "@/lib/verified/submission";
 import {
   parseBed3,
   validateRegions,
   fetchPanel,
-  authorRawUrl,
 } from "@/lib/verified/validate-regions";
-import { buildManifestYaml, generateDockerfile } from "@/lib/verified/manifest";
+import {
+  buildManifestYaml,
+  generateDockerfile,
+  REGIONS_ASSET_PATH,
+} from "@/lib/verified/manifest";
 import {
   ENGINE_REPO,
   GitHubConfigError,
@@ -112,7 +114,7 @@ export async function POST(request: NextRequest) {
   //     spares a CI run that the harness pre-flight would only abort anyway.
   const typeInfo = INPUT_TYPES.find((it) => it.slug === sub.inputs.type);
   if (typeInfo?.requiresRegions) {
-    if (!sub.inputs.regions) {
+    if (!sub.inputs.regions_bed) {
       return NextResponse.json(
         {
           ok: false,
@@ -122,62 +124,40 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    if (isRemotePointer(sub.inputs.regions)) {
-      const rg = sub.inputs.regions;
-      const url = authorRawUrl(rg.repo, rg.ref, rg.path);
-      const panel = url && sub.inputs.type ? await fetchPanel(sub.inputs.type) : null;
-
-      // No panel (or unreachable) → we cannot prove the BED is out of scope, so we
-      // do not reject; the harness pre-flight is the backstop.
-      if (url && panel) {
-        let bedText: string | null = null;
-        try {
-          const res = await fetch(url, { cache: "no-store" });
-          if (res.ok) bedText = await res.text();
-        } catch {
-          bedText = null;
-        }
-        if (bedText === null) {
+    const panel = sub.inputs.type ? await fetchPanel(sub.inputs.type) : null;
+    // No panel for this type → we cannot prove the BED is out of scope, so we do
+    // not reject. The harness pre-flight is the backstop.
+    if (panel) {
+      try {
+        const result = validateRegions(
+          parseBed3(sub.inputs.regions_bed),
+          panel,
+          typeInfo.minLoci ?? 5
+        );
+        if (!result.ok) {
           return NextResponse.json(
             {
               ok: false,
-              error:
-                "Your regions BED is not publicly reachable at the pinned ref. Make the repo/file public and check the path.",
-            },
-            { status: 400 }
-          );
-        }
-        try {
-          const result = validateRegions(
-            parseBed3(bedText),
-            panel,
-            typeInfo.minLoci ?? 5
-          );
-          if (!result.ok) {
-            return NextResponse.json(
-              {
-                ok: false,
-                error: `Your regions BED targets coordinates our reference slice does not cover, so your tool would find no reads there — this is not a failure of your tool. ${result.reasons.join("; ")}.`,
-                regions: {
-                  outOfPanel: result.outOfPanel.map(
-                    (r) => `${r.chrom}:${r.start}-${r.end} (line ${r.line})`
-                  ),
-                  coveredLoci: result.coveredLoci,
-                  panelSize: result.panelSize,
-                },
+              error: `Your regions BED targets coordinates our reference slice does not cover, so your tool would find no reads there — this is not a failure of your tool. ${result.reasons.join("; ")}.`,
+              regions: {
+                outOfPanel: result.outOfPanel.map(
+                  (r) => `${r.chrom}:${r.start}-${r.end} (line ${r.line})`
+                ),
+                coveredLoci: result.coveredLoci,
+                panelSize: result.panelSize,
               },
-              { status: 400 }
-            );
-          }
-        } catch (e) {
-          return NextResponse.json(
-            {
-              ok: false,
-              error: `Your regions BED is malformed: ${e instanceof Error ? e.message : "unparseable"}.`,
             },
             { status: 400 }
           );
         }
+      } catch (e) {
+        return NextResponse.json(
+          {
+            ok: false,
+            error: `Your regions BED is malformed: ${e instanceof Error ? e.message : "unparseable"}.`,
+          },
+          { status: 400 }
+        );
       }
     }
   }
@@ -226,16 +206,22 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Commit metadata + dispatch.
-    //    For re-submissions (manifest already exists), only dispatch — don't
-    //    overwrite files that may have been manually tuned (flags, fixture, etc).
+    //    For re-submissions (manifest already exists), the manifest and Dockerfile
+    //    are left alone — they may have been tuned by hand (flags, fixture, etc).
+    //    The uploaded regions BED is the exception: it is re-committed every time,
+    //    because it is exactly what the author just uploaded and saw validated on
+    //    screen. Running against a stale BED would silently contradict that.
     const dispatchId = newDispatchId();
     const alreadyExists = await pathExists(`tools/${slug}/manifest.yml`);
+    const msg = `verified: ${alreadyExists ? "update" : "add"} ${slug} (${sub.source.repo}@${sub.source.ref})`;
     if (!alreadyExists) {
       const manifest = buildManifestYaml(sub, slug);
       const dockerfile = generateDockerfile(sub);
-      const msg = `verified: add ${slug} (${sub.source.repo}@${sub.source.ref})`;
       await putFile(`tools/${slug}/manifest.yml`, manifest, msg);
       await putFile(`tools/${slug}/Dockerfile`, dockerfile, msg);
+    }
+    if (sub.inputs.regions_bed) {
+      await putFile(`tools/${slug}/${REGIONS_ASSET_PATH}`, sub.inputs.regions_bed, msg);
     }
     await dispatchWorkflow({ tool: slug, dispatch_id: dispatchId });
 

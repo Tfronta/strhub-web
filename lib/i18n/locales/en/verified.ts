@@ -74,8 +74,10 @@ export default {
       affectedLabel: "Affected:",
       sliceCaveat:
         "Some of these errors occurred on STRhub's reference sample, which is a slice around the panel loci rather than a whole genome, so they may reflect the sample's coverage rather than the tool.",
+      structuralNote:
+        "Structural errors, such as a file that will not open, an unrecognized command-line flag, or an incomplete build, do not depend on the sample: a coverage-limited slice yields fewer reads, but it cannot cause them. These are not attributable to STRhub's reference sample.",
       demoDataRecommendation:
-        "For this reason we strongly recommend the tool ship its own demo or test data in its official repository, so it can be evaluated against complete data rather than a coverage-limited slice.",
+        "We recommend the tool ship its own demo or test data in its official repository, so it can be evaluated against the author's complete data as well as STRhub's slice.",
       sampleNote:
         "These messages reflect the behavior observed during verification with a small test BAM slice provided by STRhub. With full-coverage sequencing data, the tool is expected to genotype significantly more loci. The warnings do not indicate a problem with the tool itself.",
       ids: {

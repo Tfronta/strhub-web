@@ -11,6 +11,11 @@ import {
   type VerifiedReport,
 } from "@/types/verified";
 import { cn } from "@/lib/utils";
+import {
+  summarizeErrors,
+  hasReportedErrors,
+  externalLegHasErrors,
+} from "@/lib/verified/diagnostics";
 
 const CODIS_CORE_LOCI = [
   "Amelogenin", "CSF1PO", "D1S1656", "D2S441", "D2S1338", "D3S1358",
@@ -136,7 +141,18 @@ export function VerifiedDetail({
 }) {
   const { t } = useLanguage();
   const toolDisplayName = extractToolDisplayName(report);
-  const level = VERIFIED_LEVELS[report.level] ?? VERIFIED_LEVELS.none;
+  const baseLevel = VERIFIED_LEVELS[report.level] ?? VERIFIED_LEVELS.none;
+
+  // A run can clear its gates and still have reported errors (a tool that fails
+  // some loci, writes a partial file and exits 0). The badge is the first thing a
+  // reviewer sees, so a green level with errors is misleading: qualify it, exactly
+  // as the static report and shields badge do.
+  const errorSummary = summarizeErrors(report.diagnostics);
+  const runHadErrors = hasReportedErrors(report.diagnostics);
+  const level =
+    runHadErrors && baseLevel.tone === "green"
+      ? { label: `${baseLevel.label} ${t("verified.errorsBadgeSuffix")}`, tone: "amber" as const }
+      : baseLevel;
   const stats = report.content_detail?.outputs?.[0]?.stats;
   const ref = report.source.ref_resolved ?? report.source.ref ?? "";
   const logBaseUrl = staticPageUrl.replace(/\/[^/]+$/, "");
@@ -150,9 +166,18 @@ export function VerifiedDetail({
     for (const t2 of LEGACY_SLUG_DATASETS[slug]) datasetTypes.add(t2);
   }
 
-  const isYstr = Array.from(datasetTypes).some((dt) => dt.endsWith("-y"));
+  // The tag is derived from the dataset type. Y-STR ends in "-y"; ONT (CODIS)
+  // must not fall through to "autosomal" as it once did — STRspy's ont-bam-hg38
+  // run was mislabelled "Autosomal STR".
+  const types = Array.from(datasetTypes);
+  const isYstr = types.some((dt) => dt.endsWith("-y"));
+  const isOnt = types.some((dt) => dt.includes("ont"));
   const panelLabel = datasetTypes.size > 0
-    ? (isYstr ? t("verified.panel.ystr") : t("verified.panel.autosomal"))
+    ? isYstr
+      ? t("verified.panel.ystr")
+      : isOnt
+      ? t("verified.panel.ont")
+      : t("verified.panel.autosomal")
     : null;
   const provenanceEntries = Array.from(datasetTypes)
     .map((dt) => ({ type: dt, ...DATASET_PROVENANCE[dt] }))
@@ -654,6 +679,12 @@ export function VerifiedDetail({
                   <div className="space-y-2">
                     {deduped.map((issue) => {
                       const txt = getDiagnosticText(t, issue);
+                      // The scale and the affected items (which loci) are what a
+                      // reviewer needs; without them nine failed loci read as one
+                      // stray error. Both are already stored on the diagnostic.
+                      const summary = errorSummary.find((e) => e.id === issue.id);
+                      const items = summary?.items ?? [];
+                      const count = summary?.count ?? issue.count;
                       return (
                         <div
                           key={issue.id}
@@ -674,8 +705,20 @@ export function VerifiedDetail({
                             ) : (
                               <Info className="h-4 w-4 mt-0.5 shrink-0 text-blue-600" />
                             )}
-                            <div>
-                              <p className="font-medium">{txt.title}</p>
+                            <div className="min-w-0">
+                              <p className="font-medium">
+                                {txt.title}
+                                {count && count > 1 && (
+                                  <span className="ml-2 text-xs font-normal text-muted-foreground">
+                                    {t("verified.diagnostics.timesLabel").replace("{n}", String(count))}
+                                  </span>
+                                )}
+                              </p>
+                              {items.length > 0 && (
+                                <p className="mt-1 font-mono text-xs text-muted-foreground break-words">
+                                  {t("verified.diagnostics.affectedLabel")} {items.join(", ")}
+                                </p>
+                              )}
                               {txt.suggestion && (
                                 <p className="mt-1 text-muted-foreground">
                                   {txt.suggestion}
@@ -687,6 +730,12 @@ export function VerifiedDetail({
                       );
                     })}
                   </div>
+                  {externalLegHasErrors(report.diagnostics) && (
+                    <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+                      <p>{t("verified.diagnostics.sliceCaveat")}</p>
+                      <p>{t("verified.diagnostics.demoDataRecommendation")}</p>
+                    </div>
+                  )}
                 </>
               )}
             </>

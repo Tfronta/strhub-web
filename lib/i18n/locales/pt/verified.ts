@@ -32,6 +32,7 @@ export default {
     },
     panel: {
       autosomal: "STR autossômico",
+      ont: "ONT CODIS",
       ystr: "Y-STR",
     },
     whatVerified: {
@@ -63,11 +64,18 @@ export default {
     log: {
       view: "Ver log de execução",
     },
+    errorsBadgeSuffix: "(erros reportados)",
     diagnostics: {
       heading: "Auto-diagnóstico",
       note: "Problemas detectados automaticamente do log de execução. As sugestões podem ajudar a resolver falhas.",
-      strhubNoteLabel: "STRhub Verified — nota",
+      strhubNoteLabel: "STRhub Verified nota",
       logIssuesLabel: "Issues do log de execução",
+      timesLabel: "{n}×",
+      affectedLabel: "Afetados:",
+      sliceCaveat:
+        "Alguns destes erros ocorreram na amostra de referência do STRhub, que é um recorte em torno dos loci do painel e não um genoma completo, então podem refletir a cobertura da amostra em vez da ferramenta.",
+      demoDataRecommendation:
+        "Por isso recomendamos fortemente que a ferramenta inclua seus próprios dados de demo ou teste no repositório oficial, para que possa ser avaliada contra dados completos e não contra um recorte de cobertura limitada.",
       sampleNote:
         "Estas mensagens refletem o comportamento observado durante a verificação com um pequeno slice de BAM de teste fornecido pelo STRhub. Com dados de sequenciamento de cobertura completa, a ferramenta deve genotipar significativamente mais loci. Os avisos não indicam um problema com a ferramenta em si.",
       ids: {

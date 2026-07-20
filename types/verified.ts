@@ -26,6 +26,8 @@ export interface VerifiedIndexEntry {
   name: string;
   level: VerifiedLevel;
   label: string;
+  /** The run reported error-severity diagnostics (absent on older reports). */
+  errors_reported?: boolean;
   generated: string | null;
   source_repo: string | null;
   source_ref: string | null;

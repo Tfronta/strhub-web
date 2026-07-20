@@ -111,6 +111,10 @@ export interface VerifiedDiagnostic {
   severity: "error" | "warning" | "info";
   title: string;
   suggestion?: string;
+  /** How many log lines matched this rule (the scale of the failure). */
+  count?: number;
+  /** Distinct captured values, e.g. the per-locus files that failed to open. */
+  examples?: string[];
 }
 
 /** Per-level presentation: human label + a Tailwind-friendly tone. */

@@ -32,6 +32,7 @@ export default {
     },
     panel: {
       autosomal: "Autosomal STR",
+      ont: "ONT CODIS",
       ystr: "Y-STR",
     },
     whatVerified: {
@@ -63,11 +64,18 @@ export default {
     log: {
       view: "View execution log",
     },
+    errorsBadgeSuffix: "(errors reported)",
     diagnostics: {
       heading: "Auto-diagnostics",
       note: "Issues detected automatically from the execution log. Suggestions may help resolve failures.",
-      strhubNoteLabel: "STRhub Verified — note",
+      strhubNoteLabel: "STRhub Verified note",
       logIssuesLabel: "Issues from execution log",
+      timesLabel: "{n}×",
+      affectedLabel: "Affected:",
+      sliceCaveat:
+        "Some of these errors occurred on STRhub's reference sample, which is a slice around the panel loci rather than a whole genome, so they may reflect the sample's coverage rather than the tool.",
+      demoDataRecommendation:
+        "For this reason we strongly recommend the tool ship its own demo or test data in its official repository, so it can be evaluated against complete data rather than a coverage-limited slice.",
       sampleNote:
         "These messages reflect the behavior observed during verification with a small test BAM slice provided by STRhub. With full-coverage sequencing data, the tool is expected to genotype significantly more loci. The warnings do not indicate a problem with the tool itself.",
       ids: {

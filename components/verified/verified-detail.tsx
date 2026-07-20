@@ -15,6 +15,7 @@ import {
   summarizeErrors,
   hasReportedErrors,
   externalLegHasErrors,
+  errorAwareLevel,
 } from "@/lib/verified/diagnostics";
 
 const CODIS_CORE_LOCI = [
@@ -149,10 +150,7 @@ export function VerifiedDetail({
   // as the static report and shields badge do.
   const errorSummary = summarizeErrors(report.diagnostics);
   const runHadErrors = hasReportedErrors(report.diagnostics);
-  const level =
-    runHadErrors && baseLevel.tone === "green"
-      ? { label: `${baseLevel.label} ${t("verified.errorsBadgeSuffix")}`, tone: "amber" as const }
-      : baseLevel;
+  const level = errorAwareLevel(baseLevel, runHadErrors, t("verified.errorsBadgeSuffix"));
   const stats = report.content_detail?.outputs?.[0]?.stats;
   const ref = report.source.ref_resolved ?? report.source.ref ?? "";
   const logBaseUrl = staticPageUrl.replace(/\/[^/]+$/, "");

@@ -100,3 +100,19 @@ export function hasReportedErrors(
     issues.some((i) => i.severity === "error"),
   );
 }
+
+/**
+ * Qualify a level for display when the run reported errors: a green level with
+ * errors becomes amber and gains a suffix, so a partial-output run never reads as
+ * clean. Shared by the catalogue cards and the detail page so they never disagree.
+ */
+export function errorAwareLevel(
+  base: { label: string; tone: "green" | "amber" | "red" },
+  hadErrors: boolean,
+  suffix: string,
+): { label: string; tone: "green" | "amber" | "red" } {
+  if (hadErrors && base.tone === "green") {
+    return { label: `${base.label} ${suffix}`, tone: "amber" };
+  }
+  return base;
+}

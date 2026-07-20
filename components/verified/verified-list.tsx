@@ -15,6 +15,7 @@ import {
   type VerifiedLevel,
 } from "@/types/verified";
 import { cn } from "@/lib/utils";
+import { errorAwareLevel } from "@/lib/verified/diagnostics";
 
 const TONE: Record<string, string> = {
   green: "bg-teal-600 text-white border-transparent",
@@ -44,6 +45,7 @@ interface ToolGroup {
   name: string;
   repo: string;
   bestLevel: VerifiedLevel;
+  bestErrors: boolean;
   runs: VerifiedIndexEntry[];
 }
 
@@ -69,7 +71,13 @@ function groupTools(entries: VerifiedIndexEntry[]): ToolGroup[] {
     );
     const best = runs[0];
     const repoName = repo.replace(/\/+$/, "").split("/").pop() || best.name;
-    groups.push({ name: repoName, repo, bestLevel: best.level, runs });
+    groups.push({
+      name: repoName,
+      repo,
+      bestLevel: best.level,
+      bestErrors: best.errors_reported ?? false,
+      runs,
+    });
   }
 
   groups.sort(
@@ -113,8 +121,11 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
         ) : (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {groups.map((group) => {
-              const level =
-                VERIFIED_LEVELS[group.bestLevel] ?? VERIFIED_LEVELS.none;
+              const level = errorAwareLevel(
+                VERIFIED_LEVELS[group.bestLevel] ?? VERIFIED_LEVELS.none,
+                group.bestErrors,
+                t("verified.errorsBadgeSuffix"),
+              );
               const isOpen = expanded.has(group.repo);
 
               return (
@@ -162,9 +173,11 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                     <CardContent className="pt-0">
                       <div className="space-y-1.5 border-t pt-3 max-h-[280px] overflow-y-auto">
                         {group.runs.map((run) => {
-                          const runLevel =
-                            VERIFIED_LEVELS[run.level] ??
-                            VERIFIED_LEVELS.none;
+                          const runLevel = errorAwareLevel(
+                            VERIFIED_LEVELS[run.level] ?? VERIFIED_LEVELS.none,
+                            run.errors_reported ?? false,
+                            t("verified.errorsBadgeSuffix"),
+                          );
                           const markers =
                             run.distinct_str_loci != null
                               ? `${run.distinct_str_loci} ${t("verified.col.strLoci")}` +

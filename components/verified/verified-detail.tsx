@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import {
   summarizeErrors,
   hasReportedErrors,
-  externalLegHasErrors,
+  externalLegNoteKeys,
   errorAwareLevel,
 } from "@/lib/verified/diagnostics";
 
@@ -728,12 +728,17 @@ export function VerifiedDetail({
                       );
                     })}
                   </div>
-                  {externalLegHasErrors(report.diagnostics) && (
-                    <div className="mt-3 space-y-2 text-sm text-muted-foreground">
-                      <p>{t("verified.diagnostics.sliceCaveat")}</p>
-                      <p>{t("verified.diagnostics.demoDataRecommendation")}</p>
-                    </div>
-                  )}
+                  {(() => {
+                    const noteKeys = externalLegNoteKeys(report.diagnostics);
+                    if (noteKeys.length === 0) return null;
+                    return (
+                      <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+                        {noteKeys.map((key) => (
+                          <p key={key}>{t(`verified.diagnostics.${key}`)}</p>
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </>
               )}
             </>

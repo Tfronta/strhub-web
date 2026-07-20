@@ -83,12 +83,59 @@ export function summarizeErrors(
   }));
 }
 
-/** True when the STRhub reference leg reported errors: those may reflect the
- *  slice's coverage rather than the tool, so the report adds context. */
-export function externalLegHasErrors(
+// Error classes a coverage-limited reference slice could plausibly cause (too few
+// reads to call, a BAM STRhub's own slicing left short); we hedge on these.
+const SAMPLE_ATTRIBUTABLE = new Set([
+  "zero_genotyped",
+  "bad_bam",
+  "no_read_groups",
+]);
+
+// Structural failures — read depth cannot make a file fail to open, a flag be
+// unrecognized, or a build be incomplete — so the slice is not to blame and we
+// say so. Ids in neither set are ambiguous and get no note. Keep in step with
+// harness/diagnose_log.py.
+const STRUCTURAL = new Set([
+  "cannot_open",
+  "bad_option",
+  "vcf_gz_required",
+  "cmd_not_found",
+  "missing_module",
+  "import_error",
+]);
+
+/**
+ * Which slice-context notes the external leg's errors warrant, in render order.
+ * Whether an error reflects STRhub's slice depends on its KIND: a coverage-limited
+ * sample yields fewer reads but cannot make a file fail to open. So we hedge only
+ * on sample-attributable errors, state plainly that structural ones are not ours,
+ * and close with the demo-data ask when either applies. Mirror of
+ * harness/diagnose_log.py `external_leg_notes`.
+ */
+export type ExternalLegNoteKey =
+  | "sliceCaveat"
+  | "structuralNote"
+  | "demoDataRecommendation";
+
+export function externalLegNoteKeys(
   diagnostics: Record<string, VerifiedDiagnostic[]> | undefined,
-): boolean {
-  return (diagnostics?.external ?? []).some((i) => i.severity === "error");
+): ExternalLegNoteKey[] {
+  const errorIds = new Set(
+    (diagnostics?.external ?? [])
+      .filter((i) => i.severity === "error")
+      .map((i) => i.id),
+  );
+  if (errorIds.size === 0) return [];
+
+  const keys: ExternalLegNoteKey[] = [];
+  if ([...errorIds].some((id) => SAMPLE_ATTRIBUTABLE.has(id))) {
+    keys.push("sliceCaveat");
+  }
+  if ([...errorIds].some((id) => STRUCTURAL.has(id))) {
+    keys.push("structuralNote");
+  }
+  if (keys.length > 0) keys.push("demoDataRecommendation");
+  return keys;
 }
 
 /** Any error-severity diagnostic on any leg. */

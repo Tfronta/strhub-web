@@ -74,8 +74,10 @@ export default {
       affectedLabel: "Afetados:",
       sliceCaveat:
         "Alguns destes erros ocorreram na amostra de referência do STRhub, que é um recorte em torno dos loci do painel e não um genoma completo, então podem refletir a cobertura da amostra em vez da ferramenta.",
+      structuralNote:
+        "Erros estruturais, como um arquivo que não abre, um flag de linha de comando não reconhecido ou uma compilação incompleta, não dependem da amostra: um recorte de cobertura limitada gera menos reads, mas não pode causá-los. Não são atribuíveis à amostra de referência do STRhub.",
       demoDataRecommendation:
-        "Por isso recomendamos fortemente que a ferramenta inclua seus próprios dados de demo ou teste no repositório oficial, para que possa ser avaliada contra dados completos e não contra um recorte de cobertura limitada.",
+        "Recomendamos que a ferramenta inclua seus próprios dados de demo ou teste no repositório oficial, para que possa ser avaliada contra os dados completos do autor além do recorte do STRhub.",
       sampleNote:
         "Estas mensagens refletem o comportamento observado durante a verificação com um pequeno slice de BAM de teste fornecido pelo STRhub. Com dados de sequenciamento de cobertura completa, a ferramenta deve genotipar significativamente mais loci. Os avisos não indicam um problema com a ferramenta em si.",
       ids: {

@@ -114,6 +114,14 @@ communityHub: {
       Spain: "España",
       Germany: "Alemania",
     },
+    institutions: {
+      john_m_butler: "NIST",
+      melissa_gymrek: "UC San Diego",
+      sebastian_ganschow: "Oxford Nanopore Technologies",
+      parana_scientific_police: "Policía Científica de Paraná",
+      jonathan_king: "University of North Texas",
+      angel_carracedo_alvarez: "Universidad de Santiago de Compostela",
+    },
     disclaimer:
       "Las personas listadas abajo compartieron feedback, ideas o intercambios que ayudaron a dar forma a STRhub. Este reconocimiento no implica autoría del contenido ni de los materiales de STRhub. Gracias.",
   },

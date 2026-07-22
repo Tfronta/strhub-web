@@ -1,6 +1,7 @@
 export interface CommunityContributor {
   name: string;
-  institution: string;
+  /** Key under `communityHub.communityContributors.institutions` in locale files. */
+  institutionKey: string;
   country: string;
 }
 
@@ -33,41 +34,55 @@ export function compareContributorsByFirstSurname(
   );
 }
 
+export function getContributorInstitutionLabel(
+  contributor: CommunityContributor,
+  t: (key: string) => string
+): string {
+  return t(
+    `communityHub.communityContributors.institutions.${contributor.institutionKey}`
+  );
+}
+
 export const COMMUNITY_CONTRIBUTORS: CommunityContributor[] = [
   {
     name: "John M. Butler",
-    institution: "NIST",
+    institutionKey: "john_m_butler",
     country: "USA",
   },
   {
     name: "Melissa Gymrek",
-    institution: "UC San Diego",
+    institutionKey: "melissa_gymrek",
     country: "USA",
   },
   {
     name: "Sebastian Ganschow",
-    institution: "Oxford Nanopore Technologies",
+    institutionKey: "sebastian_ganschow",
     country: "Germany",
   },
   {
     name: "Luciellen Davila Giacomel Kobachuk",
-    institution: "Polícia Científica do Paraná",
+    institutionKey: "parana_scientific_police",
     country: "Brazil",
   },
   {
     name: "Marianna Maia Taulois do Rosário",
-    institution: "Polícia Científica do Paraná",
+    institutionKey: "parana_scientific_police",
     country: "Brazil",
   },
   {
     name: "Juliane Carlotto",
-    institution: "Polícia Científica do Paraná",
+    institutionKey: "parana_scientific_police",
     country: "Brazil",
   },
   {
     name: "Jonathan King",
-    institution: "University of North Texas",
+    institutionKey: "jonathan_king",
     country: "USA",
+  },
+  {
+    name: "Ángel Carracedo Álvarez",
+    institutionKey: "angel_carracedo_alvarez",
+    country: "Spain",
   },
 ];
 
@@ -76,6 +91,7 @@ const COMMUNITY_CONTRIBUTORS_FIRST_ROW_NAMES: readonly string[] = [
   "John M. Butler",
   "Sebastian Ganschow",
   "Melissa Gymrek",
+  "Ángel Carracedo Álvarez",
 ];
 
 export function getCommunityContributorsForGrid(): {

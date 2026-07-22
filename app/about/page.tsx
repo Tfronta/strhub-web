@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
 import { PageTitle } from "@/components/page-title";
-import { getCommunityContributorsForGrid } from "@/lib/communityContributors";
+import { getCommunityContributorsForGrid, getContributorInstitutionLabel } from "@/lib/communityContributors";
 
 export default function AboutPage() {
   const { language, t } = useLanguage();
@@ -106,7 +106,7 @@ export default function AboutPage() {
               {t("communityHub.communityContributors.disclaimer")}
             </p>
             <div className="mt-6 space-y-6">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
                 {firstRow.map((contributor) => (
                   <Card
                     key={contributor.name}
@@ -117,7 +117,7 @@ export default function AboutPage() {
                         {contributor.name}
                       </p>
                       <p className="text-sm leading-relaxed text-muted-foreground">
-                        {contributor.institution}
+                        {getContributorInstitutionLabel(contributor, t)}
                       </p>
                       <p className="text-sm text-muted-foreground">
                         {t(
@@ -140,7 +140,7 @@ export default function AboutPage() {
                           {contributor.name}
                         </p>
                         <p className="text-sm leading-relaxed text-muted-foreground">
-                          {contributor.institution}
+                          {getContributorInstitutionLabel(contributor, t)}
                         </p>
                         <p className="text-sm text-muted-foreground">
                           {t(

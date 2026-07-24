@@ -882,6 +882,57 @@ export function VerifiedSubmitForm() {
             </Field>
           </Section>
 
+          {/* ── PRE-FLIGHT (level-2 trigger A) ──
+              Second, right after naming the tool. It sat at the end at first, so
+              that a rarely-needed paid tier would not read as a normal route, but
+              that traded a presentation worry for a real cost: an author whose
+              tool needs a GPU filled in twenty fields before being told none of
+              it could run. Asking here costs them the tool name and nothing else.
+
+              Every question is about the TOOL, never about how the author is
+              getting on with this form. Form trouble is our bug to fix, and is
+              helped for free. */}
+          <Section
+            title={t("verified.submit.preflightTitle")}
+            hint={t("verified.submit.preflightHint")}
+          >
+            <div className="space-y-2">
+              {COMPATIBILITY_FLAGS.map((flag) => (
+                <label
+                  key={flag}
+                  className="flex cursor-pointer items-start gap-3 rounded-md p-2 text-sm hover:bg-muted/50"
+                >
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
+                    checked={Boolean(compat[flag])}
+                    onChange={(e) =>
+                      setCompat((prev) => ({ ...prev, [flag]: e.target.checked }))
+                    }
+                  />
+                  <span>{t(`verified.submit.preflight.${flag}`)}</span>
+                </label>
+              ))}
+            </div>
+
+            {preflightBlocks && (
+              <Alert>
+                <AlertTitle>{t("verified.submit.preflightBlockedTitle")}</AlertTitle>
+                <AlertDescription className="space-y-3">
+                  <p>{t("verified.submit.preflightBlockedBody")}</p>
+                  <Link
+                    href={`/verified/manual?declared=${encodeURIComponent(
+                      declaredIncompat[0],
+                    )}`}
+                    className="inline-flex font-medium text-primary hover:underline"
+                  >
+                    {t("verified.manual.cta")}
+                  </Link>
+                </AlertDescription>
+              </Alert>
+            )}
+          </Section>
+
           {/* ── 2. Source ────────────────────────────────────────────── */}
           <Section title={t("verified.submit.sectionSource")} hint={t("verified.submit.sectionSourceHint")}>
             <Field label={t("verified.submit.repo")} required>
@@ -1556,52 +1607,6 @@ export function VerifiedSubmitForm() {
                   </div>
                 </div>
               </>
-            )}
-          </Section>
-
-          {/* ── PRE-FLIGHT (level-2 trigger A) ──
-              Deliberately last: these are rare, and leading with them would
-              suggest the paid tier is a normal route. Every question is about
-              the TOOL, never about how the author is getting on with this form —
-              form trouble is our bug to fix, and is helped for free. */}
-          <Section
-            title={t("verified.submit.preflightTitle")}
-            hint={t("verified.submit.preflightHint")}
-          >
-            <div className="space-y-2">
-              {COMPATIBILITY_FLAGS.map((flag) => (
-                <label
-                  key={flag}
-                  className="flex cursor-pointer items-start gap-3 rounded-md p-2 text-sm hover:bg-muted/50"
-                >
-                  <input
-                    type="checkbox"
-                    className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
-                    checked={Boolean(compat[flag])}
-                    onChange={(e) =>
-                      setCompat((prev) => ({ ...prev, [flag]: e.target.checked }))
-                    }
-                  />
-                  <span>{t(`verified.submit.preflight.${flag}`)}</span>
-                </label>
-              ))}
-            </div>
-
-            {preflightBlocks && (
-              <Alert>
-                <AlertTitle>{t("verified.submit.preflightBlockedTitle")}</AlertTitle>
-                <AlertDescription className="space-y-3">
-                  <p>{t("verified.submit.preflightBlockedBody")}</p>
-                  <Link
-                    href={`/verified/manual?declared=${encodeURIComponent(
-                      declaredIncompat[0],
-                    )}`}
-                    className="inline-flex font-medium text-primary hover:underline"
-                  >
-                    {t("verified.manual.cta")}
-                  </Link>
-                </AlertDescription>
-              </Alert>
             )}
           </Section>
 

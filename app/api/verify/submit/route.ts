@@ -3,12 +3,15 @@
  *
  * Flow (see plan §5, §10):
  *   1. Validate the submission against the manifest-mirroring zod schema.
- *   2. Rate-limit per client + per repo.
- *   3. Reject if the slug is already taken in the engine repo.
- *   4. New repos require admin approval before their first run → recorded as
+ *   2. Rate-limit per client + per repo, BEFORE any outbound request.
+ *   3. Check the inputs that would otherwise waste a CI run: the BYOR fixture is
+ *      publicly reachable, and a regions BED fits the reference slice's panel.
+ *   4. Resolve who owns the slug, from the committed manifest. A different repo
+ *      is refused (409); only the same repo may overwrite and re-run.
+ *   5. New repos require admin approval before their first run → recorded as
  *      "approved-pending" and NOT dispatched until an admin approves the repo.
- *   5. Approved repos: commit manifest.yml + Dockerfile to tools/<slug>/ and
- *      dispatch the verify workflow with a unique dispatch_id for correlation.
+ *   6. Commit manifest.yml + Dockerfile to tools/<slug>/ (rebuilt from THIS
+ *      submission, so edits apply) and dispatch with a unique dispatch_id.
  *
  * STRhub never stores tool source code — only the verification metadata.
  */
@@ -57,11 +60,6 @@ function clientIp(request: NextRequest): string {
 }
 
 /**
- * The BYOR fixture must be PUBLIC at run time (§10). Verify the raw URL is
- * reachable before dispatching so the author gets a clear message instead of a
- * silently N/A "own" leg later.
- */
-/**
  * Which repository a slug already belongs to, read from its committed manifest.
  *
  * A slug is derived from the tool name, version and input type, all of which the
@@ -79,6 +77,11 @@ async function manifestOwner(slug: string): Promise<string | null> {
   return m ? m[1] : null;
 }
 
+/**
+ * The BYOR fixture must be PUBLIC at run time (§10). Verify the raw URL is
+ * reachable before dispatching so the author gets a clear message instead of a
+ * silently N/A "own" leg later.
+ */
 async function remoteFixtureReachable(
   repo: string,
   ref: string,
@@ -117,7 +120,16 @@ export async function POST(request: NextRequest) {
   const ip = clientIp(request);
   const clientHash = hashClient(ip);
 
-  // 1b. BYOR fixture must be publicly reachable at submit time.
+  // 1b. Rate limit BEFORE anything that costs us work. The checks below each make
+  //     an outbound request (a HEAD to raw.githubusercontent, a panel fetch), so
+  //     running them first let an unthrottled caller drive our outbound traffic
+  //     with requests that were going to be refused anyway.
+  const rate = await checkRateLimit(clientHash, sub.source.repo);
+  if (!rate.ok) {
+    return NextResponse.json({ ok: false, error: rate.reason }, { status: 429 });
+  }
+
+  // 1c. BYOR fixture must be publicly reachable at submit time.
   if (isRemoteFixture(sub.inputs.fixture)) {
     const fx = sub.inputs.fixture;
     if (!(await remoteFixtureReachable(fx.repo, fx.ref, fx.path))) {
@@ -132,7 +144,7 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // 1c. Regions BED: required for coordinate-based tools, and it must fit the
+  // 1d. Regions BED: required for coordinate-based tools, and it must fit the
   //     slice's supported-loci panel. The form checks this live, but that is UX,
   //     not enforcement — a direct POST must not get past it. Rejecting here also
   //     spares a CI run that the harness pre-flight would only abort anyway.
@@ -184,12 +196,6 @@ export async function POST(request: NextRequest) {
         );
       }
     }
-  }
-
-  // 2. Rate limit.
-  const rate = await checkRateLimit(clientHash, sub.source.repo);
-  if (!rate.ok) {
-    return NextResponse.json({ ok: false, error: rate.reason }, { status: 429 });
   }
 
   try {

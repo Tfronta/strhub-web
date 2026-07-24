@@ -135,7 +135,82 @@ export default {
       output: "Produced output",
       deps: "Dependencies / versions",
     },
+    manual: {
+      heading: "Manual verification available",
+      pageTitle: "Manual verification",
+      pageSubtitle:
+        "The automated verification could not be run for this tool. STRhub can run it by hand instead and issue a separate certificate.",
+      backToReport: "Back to the attestation",
+      whyHeading: "Why the automated run does not apply",
+      notAFault:
+        "This is a limit of the automated environment, not a fault found in your tool. The free automated check remains available and unchanged for tools it can run.",
+      whatItIs:
+        "Manual verification is a separate, paid service: STRhub runs the tool by hand and issues a certificate explicitly labelled as manually verified, never presented as an automated attestation.",
+      cta: "Request manual verification",
+      reasonCodeLabel: "Eligibility reason code:",
+      toolLabel: "Tool",
+      whatYouGetHeading: "What manual verification includes",
+      whatYouGet1:
+        "STRhub runs your tool by hand in an environment that meets its requirements, and records what was done.",
+      whatYouGet2:
+        "A certificate explicitly labelled manual verification, stating the environment, the data used, and the date.",
+      whatYouGet3:
+        "The same scope limits as the automated attestation: reproducible execution only, with no claim about genotype accuracy or casework fitness.",
+      emailCta: "Email a request",
+      emailHint:
+        "Opens your email client with the tool and reason code already filled in.",
+      mailSubject: "Manual verification request",
+      mailIntro:
+        "Hello, I would like to request manual verification for the tool below.",
+      notEligibleHeading: "The free automated verification still applies here",
+      notEligibleBody:
+        "This tool has not hit a limit of the automated environment, so manual verification does not apply. If a run failed, the report lists what went wrong and how to fix it. Corrections to a submission are free to re-run as often as you need.",
+      freeHelp:
+        "Stuck on the form or unsure what a field wants? That is our documentation to fix, not a reason to pay: write to us and we will help at no cost.",
+      freeHelpCta: "Ask for help (free)",
+      helpMailSubject: "Help with the STRhub Verified submission form",
+      reasons: {
+        requires_gui:
+          "The tool needs a graphical display or an interactive step. The automated runner is headless and runs unattended, so it cannot execute or evidence that step.",
+        requires_gpu:
+          "The tool needs GPU hardware. Public CI runners are CPU-only, so the automated environment cannot provide it.",
+        requires_runtime_network:
+          "The tool fetches data over the network while running. An attestation is a pinned snapshot, so anything downloaded at run time cannot be recorded or reproduced.",
+        requires_licensed_reference:
+          "The tool needs licensed or restricted reference data that cannot be published in a public verification run.",
+        requires_unsupported_os:
+          "The tool needs an operating system the automated runner does not provide.",
+        opaque_output_format:
+          "The tool writes a binary or proprietary output with no text or tabular export, so the automated IO and content checks cannot inspect it.",
+        oom: "The run exhausted the CI runner's memory. The automated environment has a fixed memory budget that cannot be raised from the form.",
+        disk_full:
+          "The run filled the CI runner's disk. The automated environment has a fixed disk budget that cannot be raised from the form.",
+        runtime_network:
+          "The tool reached for the network while running. An attestation is a pinned snapshot, so anything downloaded at run time cannot be recorded or reproduced.",
+        requires_license:
+          "The tool needs a license or licensed data that cannot be published in a public verification run.",
+      },
+    },
     submit: {
+      preflightTitle: "Does your tool need something we cannot provide?",
+      preflightHint:
+        "Only tick a box if it is true of your tool. These are things the automated runner genuinely cannot do: it is headless, CPU-only, and has fixed memory and disk. Leave them all unticked if none apply. If you are simply unsure about a field on this form, leave these alone and write to us: form questions are answered free.",
+      preflight: {
+        requires_gui:
+          "It needs a graphical display or an interactive step (it cannot run unattended).",
+        requires_gpu: "It needs a GPU (CUDA).",
+        requires_runtime_network:
+          "It downloads data over the network while running (build-time downloads are fine).",
+        requires_licensed_reference:
+          "It needs licensed or restricted reference data that cannot be made public.",
+        requires_unsupported_os:
+          "It needs Windows, macOS, or another OS other than Linux.",
+        opaque_output_format:
+          "Its output is binary or proprietary, with no text or tabular export.",
+      },
+      preflightBlockedTitle: "The automated run cannot verify this tool",
+      preflightBlockedBody:
+        "Based on what you ticked, the automated environment cannot run your tool, so submitting would only spend a run on a failure you have already described. Manual verification exists for exactly this case.",
       cta: "Verify a tool",
       title: "Verify a tool",
       subtitle:

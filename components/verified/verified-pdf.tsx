@@ -54,27 +54,27 @@ interface DatasetProvenance {
 }
 const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
   "illumina-str-fastq": {
-    name: "NIST mds2-2157 — Illumina STR (ForenSeq slice, donor NTD01)",
+    name: "NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01)",
     source: "https://data.nist.gov/od/id/mds2-2157", doi: "10.18434/M32157",
     license: "Research / training / education only (per NIST).",
     loci: FORENSEQ_STR_LOCI,
   },
   "ont-bam-hg38": {
-    name: "1000 Genomes ONT — hg38 CODIS slice (R10 SUP)",
+    name: "1000 Genomes ONT, hg38 CODIS slice (R10 SUP)",
     source: "https://s3.amazonaws.com/1000g-ont/index.html",
     license: "Open access (1000 Genomes / HPRC). Research use.",
     loci: CODIS_CORE_LOCI,
     referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
   "illumina-bam-hg38": {
-    name: "GIAB NA12878 300x — hg38 autosomal forensic slice",
+    name: "GIAB NA12878 300x, hg38 autosomal forensic slice",
     source: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/",
     license: "Open access (GIAB / NIST). Research use.",
     loci: NA12878_AUTOSOMAL_LOCI,
     referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
   "illumina-bam-hg38-y": {
-    name: "GIAB HG002 300x — hg38 Y-STR slice",
+    name: "GIAB HG002 300x, hg38 Y-STR slice",
     source: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/",
     license: "Open access (GIAB / NIST). Research use.",
     loci: HG002_YSTR_LOCI,

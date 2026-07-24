@@ -143,7 +143,16 @@ export function buildManifestObject(sub: Submission, slug: string): Json {
     return out;
   });
 
-  return {
+  // Pre-flight answers, carried into the manifest so the engine can stamp
+  // level-2 eligibility from the author's own declaration (trigger A) without
+  // the web having to decide anything. Only the ticked flags are emitted: an
+  // all-false block would be noise in every manifest.
+  const compatibility: Record<string, Json> = {};
+  for (const [flag, on] of Object.entries(sub.compatibility ?? {})) {
+    if (on) compatibility[flag] = true;
+  }
+
+  const manifest: Record<string, Json> = {
     tool,
     source: { repo: sub.source.repo, ref: sub.source.ref },
     report: { slug },
@@ -152,6 +161,8 @@ export function buildManifestObject(sub: Submission, slug: string): Json {
     inputs,
     outputs,
   };
+  if (Object.keys(compatibility).length) manifest.compatibility = compatibility;
+  return manifest;
 }
 
 export function buildManifestYaml(sub: Submission, slug: string): string {

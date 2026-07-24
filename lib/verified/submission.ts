@@ -94,7 +94,7 @@ export const INPUT_TYPES = [
   },
   {
     slug: "illumina-bam-hg38",
-    label: "Illumina BAM (hg38) — autosomal",
+    label: "Illumina BAM (hg38), autosomal",
     description: "Illumina WGS BAM aligned to hg38 (autosomal forensic STR loci)",
     hasExternalDataset: true,
     externalDataset: {
@@ -119,7 +119,7 @@ export const INPUT_TYPES = [
   },
   {
     slug: "illumina-bam-hg38-y",
-    label: "Illumina BAM (hg38) — Y-STR",
+    label: "Illumina BAM (hg38), Y-STR",
     description: "Illumina WGS BAM aligned to hg38 (Y-chromosome STR loci)",
     hasExternalDataset: true,
     externalDataset: {
@@ -238,6 +238,22 @@ export const remotePointerSchema = z
 /** @deprecated alias — use remotePointerSchema. Kept for existing imports. */
 export const remoteFixtureSchema = remotePointerSchema;
 
+/**
+ * Author-declared environment ceilings. Mirrors `compatibility` in the engine's
+ * schema/manifest.schema.json and COMPATIBILITY_FLAGS in ./manual.ts — all three
+ * must list the same keys.
+ */
+export const compatibilitySchema = z
+  .object({
+    requires_gui: z.boolean().optional(),
+    requires_gpu: z.boolean().optional(),
+    requires_runtime_network: z.boolean().optional(),
+    requires_licensed_reference: z.boolean().optional(),
+    requires_unsupported_os: z.boolean().optional(),
+    opaque_output_format: z.boolean().optional(),
+  })
+  .strict();
+
 export const submissionSchema = z
   .object({
     tool: z
@@ -307,6 +323,13 @@ export const submissionSchema = z
       .strict(),
     outputs: z.array(outputSchema).min(1).max(5),
     os: z.array(z.string().min(1)).min(1).default(["ubuntu-22.04"]),
+    // Pre-flight (level-2 trigger A). Each flag is a factual property of the
+    // tool that the free runner structurally cannot provide — headless, CPU-only,
+    // capped memory/disk, and a pinned snapshot that cannot fetch at run time.
+    // Ticking one routes the submission to manual verification instead of
+    // spending a CI run to discover the same thing. Difficulty with THIS FORM is
+    // deliberately not among them: that is ours to fix, and is handled for free.
+    compatibility: compatibilitySchema.optional(),
   })
   .strict();
 

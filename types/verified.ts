@@ -89,6 +89,26 @@ export interface VerifiedReadmeCheck {
   checks: Record<string, { present: boolean; matched?: string | null }>;
 }
 
+/** How a run became eligible for manual (level 2) verification. */
+export type ManualBasis = "declared" | "detected";
+
+/**
+ * The engine's verdict on whether this run may be offered manual verification.
+ *
+ * Level 2 is paid and human-run, so eligibility is never a judgement the web
+ * makes: `harness/diagnose_log.py` decides it mechanically from the run's own
+ * evidence and stamps a reason code here. The UI only reads it. A report with
+ * this field absent predates the check; `eligible: false` means it was checked
+ * and did not qualify.
+ */
+export interface VerifiedManualVerification {
+  eligible: boolean;
+  basis: ManualBasis | null;
+  /** e.g. "declared_incompat:requires_gpu" or "detected_incompat:oom". */
+  reason_code: string | null;
+  reason: string | null;
+}
+
 export interface VerifiedReport {
   schema: string;
   tool: { name: string; version?: string; maintainer?: string; contact?: string };
@@ -105,6 +125,8 @@ export interface VerifiedReport {
   // Fase 3 additions (optional for backward compatibility with older reports).
   datasets?: VerifiedMatrixLeg[];
   readme_check?: VerifiedReadmeCheck | null;
+  /** Level-2 eligibility. Absent on reports generated before the check existed. */
+  manual_verification?: VerifiedManualVerification | null;
   scope: string;
 }
 

@@ -135,7 +135,82 @@ export default {
       output: "Output producido",
       deps: "Dependencias / versiones",
     },
+    manual: {
+      heading: "Verificación manual disponible",
+      pageTitle: "Verificación manual",
+      pageSubtitle:
+        "La verificación automática no pudo ejecutarse para esta herramienta. STRhub puede correrla a mano y emitir un certificado aparte.",
+      backToReport: "Volver a la atestación",
+      whyHeading: "Por qué no aplica la corrida automática",
+      notAFault:
+        "Es un límite del entorno automático, no una falla encontrada en tu herramienta. La verificación automática gratuita sigue disponible y sin cambios para las herramientas que sí puede correr.",
+      whatItIs:
+        "La verificación manual es un servicio aparte y pago: STRhub corre la herramienta a mano y emite un certificado etiquetado explícitamente como verificación manual, nunca presentado como una atestación automática.",
+      cta: "Solicitar verificación manual",
+      reasonCodeLabel: "Código de elegibilidad:",
+      toolLabel: "Herramienta",
+      whatYouGetHeading: "Qué incluye la verificación manual",
+      whatYouGet1:
+        "STRhub corre tu herramienta a mano en un entorno que cumple sus requisitos, y deja registrado lo que se hizo.",
+      whatYouGet2:
+        "Un certificado etiquetado explícitamente como verificación manual, indicando el entorno, los datos usados y la fecha.",
+      whatYouGet3:
+        "Los mismos límites de alcance que la atestación automática: solo ejecución reproducible, sin afirmar exactitud de genotipos ni aptitud para casework.",
+      emailCta: "Enviar la solicitud por correo",
+      emailHint:
+        "Abre tu cliente de correo con la herramienta y el código de elegibilidad ya cargados.",
+      mailSubject: "Solicitud de verificación manual",
+      mailIntro:
+        "Hola, quisiera solicitar la verificación manual para la herramienta que figura abajo.",
+      notEligibleHeading: "Acá todavía aplica la verificación automática gratuita",
+      notEligibleBody:
+        "Esta herramienta no chocó contra un límite del entorno automático, así que la verificación manual no corresponde. Si una corrida falló, el reporte indica qué salió mal y cómo corregirlo. Las correcciones a un envío se pueden volver a correr gratis todas las veces que haga falta.",
+      freeHelp:
+        "¿Trabado con el formulario o no sabés qué pide un campo? Eso es documentación nuestra por mejorar, no un motivo para pagar: escribinos y te ayudamos sin costo.",
+      freeHelpCta: "Pedir ayuda (gratis)",
+      helpMailSubject: "Ayuda con el formulario de STRhub Verified",
+      reasons: {
+        requires_gui:
+          "La herramienta necesita una pantalla gráfica o un paso interactivo. El runner automático es headless y corre desatendido, así que no puede ejecutar ni evidenciar ese paso.",
+        requires_gpu:
+          "La herramienta necesita GPU. Los runners públicos de CI son solo CPU, así que el entorno automático no puede proveerla.",
+        requires_runtime_network:
+          "La herramienta descarga datos por red mientras corre. Una atestación es un snapshot fijado, así que lo que se baje en tiempo de ejecución no se puede registrar ni reproducir.",
+        requires_licensed_reference:
+          "La herramienta necesita datos de referencia licenciados o restringidos que no pueden publicarse en una corrida pública de verificación.",
+        requires_unsupported_os:
+          "La herramienta necesita un sistema operativo que el runner automático no provee.",
+        opaque_output_format:
+          "La herramienta escribe una salida binaria o propietaria sin exportación en texto o tabular, así que las compuertas automáticas de IO y contenido no pueden inspeccionarla.",
+        oom: "La corrida agotó la memoria del runner de CI. El entorno automático tiene un presupuesto de memoria fijo que no se puede subir desde el formulario.",
+        disk_full:
+          "La corrida llenó el disco del runner de CI. El entorno automático tiene un presupuesto de disco fijo que no se puede subir desde el formulario.",
+        runtime_network:
+          "La herramienta buscó la red mientras corría. Una atestación es un snapshot fijado, así que lo que se baje en tiempo de ejecución no se puede registrar ni reproducir.",
+        requires_license:
+          "La herramienta necesita una licencia o datos licenciados que no pueden publicarse en una corrida pública de verificación.",
+      },
+    },
     submit: {
+      preflightTitle: "¿Tu herramienta necesita algo que no podemos darle?",
+      preflightHint:
+        "Marcá una casilla solo si es cierto para tu herramienta. Son cosas que el runner automático genuinamente no puede hacer: es headless, solo CPU, y tiene memoria y disco fijos. Si no aplica ninguna, dejalas todas sin marcar. Si simplemente no estás seguro de algún campo de este formulario, no toques esto y escribinos: las dudas del formulario se responden gratis.",
+      preflight: {
+        requires_gui:
+          "Necesita una pantalla gráfica o un paso interactivo (no puede correr desatendida).",
+        requires_gpu: "Necesita GPU (CUDA).",
+        requires_runtime_network:
+          "Descarga datos por red mientras corre (descargar durante el build está bien).",
+        requires_licensed_reference:
+          "Necesita datos de referencia licenciados o restringidos que no pueden hacerse públicos.",
+        requires_unsupported_os:
+          "Necesita Windows, macOS u otro sistema operativo distinto de Linux.",
+        opaque_output_format:
+          "Su salida es binaria o propietaria, sin exportación en texto o tabular.",
+      },
+      preflightBlockedTitle: "La corrida automática no puede verificar esta herramienta",
+      preflightBlockedBody:
+        "Por lo que marcaste, el entorno automático no puede correr tu herramienta, así que enviar solo gastaría una corrida en la falla que ya describiste. La verificación manual existe exactamente para este caso.",
       cta: "Verificar una herramienta",
       title: "Verificar una herramienta",
       subtitle:

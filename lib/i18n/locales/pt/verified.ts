@@ -135,7 +135,82 @@ export default {
       output: "Output produzido",
       deps: "Dependências / versões",
     },
+    manual: {
+      heading: "Verificação manual disponível",
+      pageTitle: "Verificação manual",
+      pageSubtitle:
+        "A verificação automática não pôde ser executada para esta ferramenta. O STRhub pode executá-la manualmente e emitir um certificado separado.",
+      backToReport: "Voltar à atestação",
+      whyHeading: "Por que a execução automática não se aplica",
+      notAFault:
+        "É um limite do ambiente automático, não uma falha encontrada na sua ferramenta. A verificação automática gratuita continua disponível e inalterada para as ferramentas que ela consegue executar.",
+      whatItIs:
+        "A verificação manual é um serviço separado e pago: o STRhub executa a ferramenta manualmente e emite um certificado explicitamente rotulado como verificação manual, nunca apresentado como uma atestação automática.",
+      cta: "Solicitar verificação manual",
+      reasonCodeLabel: "Código de elegibilidade:",
+      toolLabel: "Ferramenta",
+      whatYouGetHeading: "O que a verificação manual inclui",
+      whatYouGet1:
+        "O STRhub executa sua ferramenta manualmente em um ambiente que atende aos seus requisitos, e registra o que foi feito.",
+      whatYouGet2:
+        "Um certificado explicitamente rotulado como verificação manual, indicando o ambiente, os dados usados e a data.",
+      whatYouGet3:
+        "Os mesmos limites de escopo da atestação automática: apenas execução reprodutível, sem afirmar exatidão de genótipos nem adequação para casework.",
+      emailCta: "Enviar solicitação por e-mail",
+      emailHint:
+        "Abre seu cliente de e-mail com a ferramenta e o código de elegibilidade já preenchidos.",
+      mailSubject: "Solicitação de verificação manual",
+      mailIntro:
+        "Olá, gostaria de solicitar a verificação manual para a ferramenta abaixo.",
+      notEligibleHeading: "Aqui a verificação automática gratuita ainda se aplica",
+      notEligibleBody:
+        "Esta ferramenta não esbarrou em um limite do ambiente automático, portanto a verificação manual não se aplica. Se uma execução falhou, o relatório indica o que deu errado e como corrigir. Correções em um envio podem ser reexecutadas gratuitamente quantas vezes for necessário.",
+      freeHelp:
+        "Travado no formulário ou sem saber o que um campo pede? Isso é documentação nossa a melhorar, não um motivo para pagar: escreva para nós e ajudamos sem custo.",
+      freeHelpCta: "Pedir ajuda (grátis)",
+      helpMailSubject: "Ajuda com o formulário do STRhub Verified",
+      reasons: {
+        requires_gui:
+          "A ferramenta precisa de uma tela gráfica ou de um passo interativo. O runner automático é headless e roda sem supervisão, então não pode executar nem evidenciar esse passo.",
+        requires_gpu:
+          "A ferramenta precisa de GPU. Os runners públicos de CI são apenas CPU, então o ambiente automático não pode fornecê-la.",
+        requires_runtime_network:
+          "A ferramenta baixa dados pela rede enquanto executa. Uma atestação é um snapshot fixado, então o que for baixado em tempo de execução não pode ser registrado nem reproduzido.",
+        requires_licensed_reference:
+          "A ferramenta precisa de dados de referência licenciados ou restritos que não podem ser publicados em uma execução pública de verificação.",
+        requires_unsupported_os:
+          "A ferramenta precisa de um sistema operacional que o runner automático não fornece.",
+        opaque_output_format:
+          "A ferramenta escreve uma saída binária ou proprietária sem exportação em texto ou tabular, então as comportas automáticas de IO e conteúdo não conseguem inspecioná-la.",
+        oom: "A execução esgotou a memória do runner de CI. O ambiente automático tem um orçamento de memória fixo que não pode ser aumentado pelo formulário.",
+        disk_full:
+          "A execução encheu o disco do runner de CI. O ambiente automático tem um orçamento de disco fixo que não pode ser aumentado pelo formulário.",
+        runtime_network:
+          "A ferramenta buscou a rede durante a execução. Uma atestação é um snapshot fixado, então o que for baixado em tempo de execução não pode ser registrado nem reproduzido.",
+        requires_license:
+          "A ferramenta precisa de uma licença ou de dados licenciados que não podem ser publicados em uma execução pública de verificação.",
+      },
+    },
     submit: {
+      preflightTitle: "Sua ferramenta precisa de algo que não podemos fornecer?",
+      preflightHint:
+        "Marque uma caixa apenas se for verdade para sua ferramenta. São coisas que o runner automático genuinamente não consegue fazer: ele é headless, apenas CPU, e tem memória e disco fixos. Se nenhuma se aplica, deixe todas desmarcadas. Se você apenas está em dúvida sobre algum campo deste formulário, não mexa aqui e escreva para nós: dúvidas do formulário são respondidas gratuitamente.",
+      preflight: {
+        requires_gui:
+          "Precisa de uma tela gráfica ou de um passo interativo (não pode rodar sem supervisão).",
+        requires_gpu: "Precisa de GPU (CUDA).",
+        requires_runtime_network:
+          "Baixa dados pela rede enquanto executa (baixar durante o build está ok).",
+        requires_licensed_reference:
+          "Precisa de dados de referência licenciados ou restritos que não podem ser tornados públicos.",
+        requires_unsupported_os:
+          "Precisa de Windows, macOS ou outro sistema operacional que não seja Linux.",
+        opaque_output_format:
+          "Sua saída é binária ou proprietária, sem exportação em texto ou tabular.",
+      },
+      preflightBlockedTitle: "A execução automática não pode verificar esta ferramenta",
+      preflightBlockedBody:
+        "Pelo que você marcou, o ambiente automático não consegue executar sua ferramenta, então enviar apenas gastaria uma execução na falha que você já descreveu. A verificação manual existe exatamente para este caso.",
       cta: "Verificar uma ferramenta",
       title: "Verificar uma ferramenta",
       subtitle:

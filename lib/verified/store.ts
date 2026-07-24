@@ -6,10 +6,33 @@
  * so it works on read-only deploys. This is intentionally simple; a real
  * deployment would back it with a database.
  */
+import crypto from "crypto";
 import fs from "fs/promises";
 import path from "path";
 import os from "os";
 import { putFile, getFileContent, listDirectory, deleteFile, GitHubConfigError, GitHubApiError } from "./github";
+
+/**
+ * Per-deployment salt for client identifiers. IPs are low-entropy (a bare SHA-256
+ * of one is trivially reversed by enumeration), so the hash is only meaningful
+ * with a secret salt. Falls back to a per-process random value: rate limiting then
+ * only holds within one instance, which is no worse than the file store already
+ * behaves on serverless, and it never degrades into a reversible digest.
+ */
+const CLIENT_SALT = process.env.RATE_LIMIT_SALT || crypto.randomBytes(32).toString("hex");
+
+/**
+ * Identify a client for rate limiting WITHOUT retaining their IP address.
+ *
+ * Records reach two public GitHub repositories: `data/verified-store.json` here,
+ * and `pending/<slug>.json` in the engine repo. An IP is personal data, and rate
+ * limiting only ever compares one client to another, so a salted digest does the
+ * whole job while leaving nothing to leak. The raw address stays in memory for
+ * the request and is passed only to the admin notification email.
+ */
+export function hashClient(ip: string): string {
+  return crypto.createHash("sha256").update(`${CLIENT_SALT}:${ip}`).digest("hex").slice(0, 32);
+}
 
 export interface SubmissionRecord {
   slug: string;
@@ -17,7 +40,8 @@ export interface SubmissionRecord {
   ref: string;
   dispatchId: string;
   createdAt: string;
-  ip: string;
+  /** Salted digest of the submitter's IP (see hashClient). Never the address. */
+  clientHash: string;
   status: "dispatched" | "approved-pending" | "rejected";
   toolName?: string;
   payload?: string;
@@ -111,7 +135,7 @@ export interface RateResult {
 }
 
 export async function checkRateLimit(
-  ip: string,
+  clientHash: string,
   repo: string
 ): Promise<RateResult> {
   const store = await load();
@@ -119,7 +143,7 @@ export async function checkRateLimit(
   const recent = store.submissions.filter(
     (s) => new Date(s.createdAt).getTime() >= since
   );
-  const byIp = recent.filter((s) => s.ip === ip).length;
+  const byIp = recent.filter((s) => s.clientHash === clientHash).length;
   if (byIp >= RATE_MAX_PER_IP) {
     return { ok: false, reason: "Too many submissions from this client. Try later." };
   }

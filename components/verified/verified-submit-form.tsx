@@ -42,6 +42,11 @@ import {
   type BedInterval,
   type RegionsValidation,
 } from "@/lib/verified/validate-regions";
+import {
+  COMPATIBILITY_FLAGS,
+  declaredIncompatibilities,
+  type CompatibilityAnswers,
+} from "@/lib/verified/manual";
 
 type Phase = "form" | "submitting" | "pending" | "tracking" | "done";
 type RunState = "pending" | "queued" | "in_progress" | "completed";
@@ -329,6 +334,10 @@ export function VerifiedSubmitForm() {
   const [formError, setFormError] = useState<string | null>(null);
   const [pdfState, setPdfState] = useState<"idle" | "generating" | "done" | "error">("idle");
 
+  // Pre-flight answers (level-2 trigger A). Defaults to all-unticked: the common
+  // case is a tool that runs fine, and nobody should have to opt out of a paid tier.
+  const [compat, setCompat] = useState<CompatibilityAnswers>({});
+
   const [dockerMode, setDockerMode] = useState<"generated" | "provided">("generated");
   const [fixtureSource, setFixtureSource] = useState<"same" | "other">("same");
   // Supported-loci panel for the selected BAM dataset, plus the live check of the
@@ -514,8 +523,17 @@ export function VerifiedSubmitForm() {
     }));
   }
 
+  // Pre-flight (level-2 trigger A). Each answer is a property of the TOOL that
+  // the free runner cannot provide, so a "yes" means the automated path is
+  // structurally impossible — not that the author needs help. Blocking submit
+  // here is the same courtesy as the regions check above: it spares them a CI
+  // run whose only possible outcome is the failure they just described.
+  const declaredIncompat = declaredIncompatibilities(compat);
+  const preflightBlocks = declaredIncompat.length > 0;
+
   const canSubmit =
     phase === "form" &&
+    !preflightBlocks &&
     f.name.trim() !== "" &&
     f.version.trim() !== "" &&
     f.repo.trim() !== "" &&
@@ -599,6 +617,12 @@ export function VerifiedSubmitForm() {
         },
       ],
       os: ["ubuntu-22.04"],
+      // Only the ticked flags travel; an all-false block would be noise in every
+      // manifest. Carried through so the engine can stamp level-2 eligibility
+      // from the author's own declaration rather than the web deciding it.
+      compatibility: preflightBlocks
+        ? Object.fromEntries(declaredIncompat.map((flag) => [flag, true]))
+        : undefined,
     };
   }
 
@@ -999,7 +1023,7 @@ export function VerifiedSubmitForm() {
                     </a>
                   </li>
                   <li>
-                    <strong>Illumina BAM (hg38) — autosomal</strong>: {t("verified.submit.referenceDatasetIlluminaBamDesc")}{" "}
+                    <strong>Illumina BAM (hg38), autosomal</strong>: {t("verified.submit.referenceDatasetIlluminaBamDesc")}{" "}
                     <a
                       href="https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/"
                       target="_blank"
@@ -1010,7 +1034,7 @@ export function VerifiedSubmitForm() {
                     </a>
                   </li>
                   <li>
-                    <strong>Illumina BAM (hg38) — Y-STR</strong>: {t("verified.submit.referenceDatasetIlluminaBamYDesc")}{" "}
+                    <strong>Illumina BAM (hg38), Y-STR</strong>: {t("verified.submit.referenceDatasetIlluminaBamYDesc")}{" "}
                     <a
                       href="https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/"
                       target="_blank"
@@ -1532,6 +1556,52 @@ export function VerifiedSubmitForm() {
                   </div>
                 </div>
               </>
+            )}
+          </Section>
+
+          {/* ── PRE-FLIGHT (level-2 trigger A) ──
+              Deliberately last: these are rare, and leading with them would
+              suggest the paid tier is a normal route. Every question is about
+              the TOOL, never about how the author is getting on with this form —
+              form trouble is our bug to fix, and is helped for free. */}
+          <Section
+            title={t("verified.submit.preflightTitle")}
+            hint={t("verified.submit.preflightHint")}
+          >
+            <div className="space-y-2">
+              {COMPATIBILITY_FLAGS.map((flag) => (
+                <label
+                  key={flag}
+                  className="flex cursor-pointer items-start gap-3 rounded-md p-2 text-sm hover:bg-muted/50"
+                >
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
+                    checked={Boolean(compat[flag])}
+                    onChange={(e) =>
+                      setCompat((prev) => ({ ...prev, [flag]: e.target.checked }))
+                    }
+                  />
+                  <span>{t(`verified.submit.preflight.${flag}`)}</span>
+                </label>
+              ))}
+            </div>
+
+            {preflightBlocks && (
+              <Alert>
+                <AlertTitle>{t("verified.submit.preflightBlockedTitle")}</AlertTitle>
+                <AlertDescription className="space-y-3">
+                  <p>{t("verified.submit.preflightBlockedBody")}</p>
+                  <Link
+                    href={`/verified/manual?declared=${encodeURIComponent(
+                      declaredIncompat[0],
+                    )}`}
+                    className="inline-flex font-medium text-primary hover:underline"
+                  >
+                    {t("verified.manual.cta")}
+                  </Link>
+                </AlertDescription>
+              </Alert>
             )}
           </Section>
 

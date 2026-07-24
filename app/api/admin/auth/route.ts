@@ -1,7 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+import { signAdminToken } from "@/lib/auth";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
@@ -24,6 +23,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: "Invalid credentials" }, { status: 401 });
   }
 
-  const token = jwt.sign({ admin: true }, JWT_SECRET, { expiresIn: "30d" });
+  // Signing and verification now share one secret with no fallback, so a deploy
+  // that never set JWT_SECRET refuses to issue tokens rather than issuing ones
+  // anybody could have forged.
+  let token: string;
+  try {
+    token = signAdminToken({ admin: true });
+  } catch {
+    return NextResponse.json(
+      { ok: false, error: "Admin authentication is not configured" },
+      { status: 503 }
+    );
+  }
   return NextResponse.json({ ok: true, token });
 }

@@ -26,6 +26,34 @@ export const WORKFLOW_FILE =
   process.env.VERIFIED_WORKFLOW_FILE || "verify.yml";
 
 export class GitHubConfigError extends Error {}
+
+/** The live engine. Writing here publishes to the real catalogue. */
+const PRODUCTION_ENGINE = "Tfronta/strhub-verified";
+
+/**
+ * Refuse to mutate the live engine from a non-production process.
+ *
+ * A dev server picks up `.env.local`, which holds the real GitHub App
+ * credentials, so a request to a local route reaches the production engine with
+ * full write access. That is not theoretical: a smoke test of the submit
+ * endpoint committed a tool directory, was approved, ran, and published an
+ * attestation for software that did not exist — visible in the public catalogue
+ * until it was removed by hand.
+ *
+ * Reads are untouched; only writes are gated, and only when the target is the
+ * live engine. Point `VERIFIED_ENGINE_REPO` at a scratch repo to develop against
+ * it, or set `ALLOW_PROD_ENGINE_WRITES=1` to say the risk is understood.
+ */
+function assertWritable(action: string): void {
+  if (process.env.NODE_ENV === "production") return;
+  if (ENGINE_REPO !== PRODUCTION_ENGINE) return;
+  if (process.env.ALLOW_PROD_ENGINE_WRITES === "1") return;
+  throw new GitHubConfigError(
+    `Refusing to ${action} on the production engine (${ENGINE_REPO}) from a ` +
+      `non-production process. Set VERIFIED_ENGINE_REPO to a scratch repo, or ` +
+      `ALLOW_PROD_ENGINE_WRITES=1 if this is intentional.`
+  );
+}
 export class GitHubApiError extends Error {
   status: number;
   constructor(message: string, status: number) {
@@ -157,6 +185,7 @@ export async function putFile(
   content: string,
   message: string
 ): Promise<void> {
+  assertWritable(`write ${path}`);
   const sha = await fileSha(path);
   await gh(
     `/repos/${ENGINE_REPO}/contents/${encodeURIComponent(path).replace(
@@ -203,6 +232,7 @@ export async function listDirectory(path: string): Promise<{ name: string; sha: 
 
 /** Delete a file from the engine repo. No-op if it doesn't exist. */
 export async function deleteFile(path: string, message: string): Promise<void> {
+  assertWritable(`delete ${path}`);
   const sha = await fileSha(path);
   if (!sha) return;
   await gh(
@@ -218,6 +248,7 @@ export async function deleteFile(path: string, message: string): Promise<void> {
 export async function dispatchWorkflow(
   inputs: Record<string, string>
 ): Promise<void> {
+  assertWritable("dispatch a verification run");
   await gh(
     `/repos/${ENGINE_REPO}/actions/workflows/${WORKFLOW_FILE}/dispatches`,
     {

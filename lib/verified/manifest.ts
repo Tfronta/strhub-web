@@ -19,16 +19,34 @@ export const REGIONS_ASSET_PATH = "assets/regions.bed";
 /** Minimal, deterministic YAML emitter for plain JSON-like values. */
 type Json = string | number | boolean | null | Json[] | { [k: string]: Json };
 
+// Control characters have no literal form in a YAML plain scalar. A newline in
+// particular used to slip through unquoted whenever the value happened to carry
+// no other special character, splitting one scalar across two lines and
+// committing a manifest the engine could not parse. They are matched here so
+// such a value is always quoted, and escaped below so it stays one scalar.
+const CONTROL_CHARS = /[\x00-\x1f\x7f]/;
+
 function needsQuote(s: string): boolean {
   if (s === "") return true;
   if (/^[\s]|[\s]$/.test(s)) return true;
+  if (CONTROL_CHARS.test(s)) return true;
   // Quote anything with YAML-special characters or that could be misread.
   return /[:#\-?,[\]{}&*!|>'"%@`]/.test(s) || /^(true|false|null|yes|no|~)$/i.test(s) || /^[\d.+-]/.test(s);
 }
 
 function quoteScalar(s: string): string {
   if (!needsQuote(s)) return s;
-  return `"${s.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+  const escaped = s
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "\\n")
+    .replace(/\r/g, "\\r")
+    .replace(/\t/g, "\\t")
+    // Anything else in the control range gets the \xNN form YAML defines for it.
+    .replace(/[\x00-\x1f\x7f]/g, (c) =>
+      `\\x${c.charCodeAt(0).toString(16).padStart(2, "0")}`,
+    );
+  return `"${escaped}"`;
 }
 
 function emit(value: Json, indent: number): string[] {

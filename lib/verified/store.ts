@@ -62,11 +62,36 @@ function candidates(): string[] {
   ];
 }
 
-async function load(): Promise<Store> {
+/**
+ * Canonical location of the store: a file in the ENGINE repo.
+ *
+ * The filesystem alone cannot hold this. On a serverless deploy `process.cwd()`
+ * is read-only, so every write fell through to `os.tmpdir()`, which is per
+ * instance and wiped on cold start. That silently broke the two things the store
+ * exists for: rate-limit counters reset to zero whenever a new instance served
+ * the request, and an approved repository could revert to "pending", trapping a
+ * legitimate author in a loop with no way to make progress.
+ *
+ * The engine repo is already the durable side of this system — pending
+ * submissions live there for exactly this reason — and the submit path already
+ * commits manifest.yml, Dockerfile and regions.bed per submission, so one more
+ * small file adds no meaningful traffic.
+ */
+const STATE_PATH = "state/verified-store.json";
+
+/**
+ * Very short-lived in-process cache. A single request calls load() three times
+ * (rate limit, approval check, record); without this each would be a separate
+ * API round-trip. Two seconds is far below any human retry interval, so it never
+ * masks a write from another instance for a user-visible length of time.
+ */
+let cache: { at: number; store: Store } | null = null;
+const CACHE_MS = 2000;
+
+async function loadLocal(): Promise<Store | null> {
   for (const file of candidates()) {
     try {
-      const data = await fs.readFile(file, "utf-8");
-      const parsed = JSON.parse(data) as Partial<Store>;
+      const parsed = JSON.parse(await fs.readFile(file, "utf-8")) as Partial<Store>;
       return {
         approvedRepos: parsed.approvedRepos ?? [],
         submissions: parsed.submissions ?? [],
@@ -75,11 +100,53 @@ async function load(): Promise<Store> {
       // try next candidate
     }
   }
-  return { ...EMPTY };
+  return null;
+}
+
+async function load(): Promise<Store> {
+  if (cache && Date.now() - cache.at < CACHE_MS) return cache.store;
+
+  let store: Store | null = null;
+  try {
+    const raw = await getFileContent(STATE_PATH);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<Store>;
+      store = {
+        approvedRepos: parsed.approvedRepos ?? [],
+        submissions: parsed.submissions ?? [],
+      };
+    }
+  } catch (e) {
+    if (!(e instanceof GitHubConfigError) && !(e instanceof GitHubApiError)) throw e;
+    // GitHub unreachable or unconfigured: fall through to the local copy so the
+    // route degrades instead of failing.
+  }
+
+  // No state file yet (first run after this change) — seed from the local copy,
+  // which still carries the approvals granted before the move. The next save()
+  // migrates them, so no manual step is needed.
+  store ??= (await loadLocal()) ?? { ...EMPTY };
+
+  cache = { at: Date.now(), store };
+  return store;
 }
 
 async function save(store: Store): Promise<void> {
   const payload = JSON.stringify(store, null, 2);
+  cache = { at: Date.now(), store };
+
+  let durable = false;
+  try {
+    await putFile(STATE_PATH, payload, "verified: update submission state");
+    durable = true;
+  } catch (e) {
+    if (!(e instanceof GitHubConfigError) && !(e instanceof GitHubApiError)) throw e;
+    console.error("store: could not persist state to the engine repo:", e.message);
+  }
+
+  // Local copy: a warm-instance cache and the fallback when GitHub is down. Best
+  // effort — on a read-only deploy both writes fail, which is why `durable` above
+  // is what actually matters.
   try {
     const dir = path.join(process.cwd(), "data");
     await fs.mkdir(dir, { recursive: true });
@@ -88,9 +155,13 @@ async function save(store: Store): Promise<void> {
   } catch {
     // fall back to /tmp
   }
-  const tmp = path.join(os.tmpdir(), "strhub-data");
-  await fs.mkdir(tmp, { recursive: true });
-  await fs.writeFile(path.join(tmp, FILE), payload, "utf-8");
+  try {
+    const tmp = path.join(os.tmpdir(), "strhub-data");
+    await fs.mkdir(tmp, { recursive: true });
+    await fs.writeFile(path.join(tmp, FILE), payload, "utf-8");
+  } catch {
+    if (!durable) console.error("store: state was not persisted anywhere");
+  }
 }
 
 /** Normalise a repo URL so "https://github.com/a/b" and ".git" compare equal. */

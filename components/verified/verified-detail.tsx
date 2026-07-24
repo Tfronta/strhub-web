@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Check, Minus, ExternalLink, AlertTriangle, Info, XCircle } from "lucide-react";
+import { ArrowLeft, Check, Minus, ExternalLink, AlertTriangle, Info, XCircle, LifeBuoy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { SiteFooter } from "@/components/site-footer";
@@ -17,6 +17,7 @@ import {
   externalLegNoteKeys,
   errorAwareLevel,
 } from "@/lib/verified/diagnostics";
+import { isManualEligible, reasonI18nKey } from "@/lib/verified/manual";
 
 const CODIS_CORE_LOCI = [
   "Amelogenin", "CSF1PO", "D1S1656", "D2S441", "D2S1338", "D3S1358",
@@ -64,7 +65,7 @@ interface DatasetProvenance {
 
 const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
   "illumina-str-fastq": {
-    name: "NIST mds2-2157 — Illumina STR (ForenSeq slice, donor NTD01)",
+    name: "NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01)",
     source: "https://data.nist.gov/od/id/mds2-2157",
     doi: "10.18434/M32157",
     license:
@@ -72,7 +73,7 @@ const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
     loci: FORENSEQ_STR_LOCI,
   },
   "ont-bam-hg38": {
-    name: "1000 Genomes ONT — hg38 CODIS slice (R10 SUP)",
+    name: "1000 Genomes ONT, hg38 CODIS slice (R10 SUP)",
     source:
       "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
     license: "Open access (1000 Genomes / HPRC). Research use.",
@@ -80,7 +81,7 @@ const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
     referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
   "illumina-bam-hg38": {
-    name: "GIAB NA12878 300x — hg38 autosomal forensic slice",
+    name: "GIAB NA12878 300x, hg38 autosomal forensic slice",
     source:
       "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/",
     license: "Open access (GIAB / NIST). Research use.",
@@ -88,7 +89,7 @@ const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
     referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
   "illumina-bam-hg38-y": {
-    name: "GIAB HG002 300x — hg38 Y-STR slice",
+    name: "GIAB HG002 300x, hg38 Y-STR slice",
     source:
       "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/",
     license: "Open access (GIAB / NIST). Research use.",
@@ -741,6 +742,57 @@ export function VerifiedDetail({
                   })()}
                 </>
               )}
+            </>
+          );
+        })()}
+
+        {/* ── MANUAL VERIFICATION (LEVEL 2) ──
+            Rendered only when the ENGINE marked the run eligible. There is no
+            path to this offer from the UI: an author who is merely stuck has no
+            report yet, and a report whose run produced its expected output never
+            carries the flag. So the paid tier cannot be reached by asking, only
+            by the automated path structurally failing to express the tool. */}
+        {isManualEligible(report) && (() => {
+          const manual = report.manual_verification!;
+          const key = reasonI18nKey(manual.reason_code);
+          const translated = key ? t(key) : null;
+          // Fall back to the engine's own wording when a reason id has no string
+          // yet, so a new engine rule degrades to plain English, not a raw key.
+          const reason =
+            translated && translated !== key ? translated : manual.reason ?? "";
+          return (
+            <>
+              <h2 className="mt-10 text-xl font-semibold">
+                {t("verified.manual.heading")}
+              </h2>
+              <div className="mt-3 rounded-lg border border-border bg-muted/40 p-4">
+                <div className="flex gap-3">
+                  <LifeBuoy className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+                  <div className="space-y-3 text-sm">
+                    <p>{reason}</p>
+                    <p className="text-muted-foreground">
+                      {t("verified.manual.notAFault")}
+                    </p>
+                    <p className="text-muted-foreground">
+                      {t("verified.manual.whatItIs")}
+                    </p>
+                    <Link
+                      href={`/verified/manual?slug=${encodeURIComponent(slug)}`}
+                      className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
+                    >
+                      {t("verified.manual.cta")}
+                      <ArrowLeft className="h-3.5 w-3.5 rotate-180" />
+                    </Link>
+                    <p className="pt-1 text-xs text-muted-foreground">
+                      {t("verified.manual.reasonCodeLabel")}{" "}
+                      <code className="rounded bg-muted px-1 py-0.5">
+                        {manual.reason_code}
+                      </code>{" "}
+                      ({manual.basis})
+                    </p>
+                  </div>
+                </div>
+              </div>
             </>
           );
         })()}

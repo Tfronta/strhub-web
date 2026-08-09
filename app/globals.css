@@ -22,7 +22,12 @@
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.9 0.005 240);
-  --input: oklch(1 0 0);
+  /* The border colour of form controls, per shadcn — not their background.
+     It was pure white here, which made every `border-input` a white line on a
+     white surface: inputs, selects and textareas all read as borderless.
+     Nothing in light mode uses `bg-input` (only `dark:bg-input/30`), so this
+     matches it to --border and touches no fill. */
+  --input: oklch(0.9 0.005 240);
   --ring: oklch(0.6 0.15 200 / 0.5);
   --chart-1: oklch(0.6 0.15 200);
   --chart-2: oklch(0.65 0.12 190);
@@ -66,7 +71,10 @@
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.95 0.005 240);
   --border: oklch(0.36 0 0);
-  --input: oklch(0.15 0.01 240);
+  /* Same fix in dark: it sat at 0.15, all but identical to the page behind it.
+     `dark:bg-input/30` reads this too, so the fill lightens from invisible to
+     the subtle wash shadcn's dark inputs have. */
+  --input: oklch(0.36 0 0);
   --ring: oklch(0.5 0 0 / 0.5);
   --chart-1: oklch(0.7 0.15 200);
   --chart-2: oklch(0.75 0.12 190);

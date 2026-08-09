@@ -255,12 +255,42 @@ export default {
       sectionOutputsHint:
         "Tell us what file your run command writes and what type of data it contains. You do not need to know STRhub internals, just match your tool's own documentation.",
       name: "Tool name",
-      version: "Version",
       maintainer: "Maintainer",
       contact: "Contact (issue tracker or email)",
       repo: "Public GitHub repo URL",
       ref: "Commit SHA or release tag (immutable)",
       refHint: "A specific commit hash or tag. Ensures we always test the exact same code.",
+      fetchLastSha: "Fetch last commit SHA",
+      useLatestTag: "Use the latest release tag ({tag})",
+      versionDerived: "Recorded on the attestation as version {version}.",
+      repoLookupLoading: "Reading the repository…",
+      repoLookupError:
+        "We couldn't read that repository. Check the URL — it must be a public GitHub repo. You can still fill the form in by hand.",
+      lockedUntilSource:
+        "Fill in the public source above first. The rest of this form is built from your repository and the commit you pin.",
+      prefillConflictTitle: "Keep what you typed, or use your repository's details?",
+      prefillConflictBody:
+        "These fields already had a value, so nothing was changed. Here is what we found:",
+      prefillAccept: "Use these values",
+      prefillKeep: "Keep mine",
+      preflightSummaryNone: "Nothing ticked — the automated run applies to this tool.",
+      preflightSummarySelected: "{n} ticked.",
+      reuseTitle: "Reuse a previous run",
+      reuseHint:
+        "This repository has been verified before. Bring those answers back and change only what moved.",
+      reuseGroup: {
+        env: "Environment",
+        inputs: "Input data",
+        run: "Execution",
+        outputs: "Expected output",
+      },
+      reuseApply: "Reuse",
+      reuseShowMore: "Show {n} more run(s)",
+      reuseApplied:
+        "Answers refilled from that run. Check them before submitting — the commit you pinned above is untouched.",
+      reuseUnavailable:
+        "We couldn't load that run's settings. It may predate saved submissions — fill the form in by hand.",
+      reuseRegionsFile: "regions.bed (reused from a previous run)",
       refTooltip:
         "On GitHub, open your public repository. For a release: go to Releases and copy the tag name (e.g. v3.0). For a commit: open Code, click a commit in the history, and copy the full SHA (40 characters) or the short hash shown at the top. Paste it here. STRhub will clone exactly that version every time.",
       refTooltipAria: "How to find a commit SHA or release tag on GitHub",
@@ -275,10 +305,14 @@ export default {
         "STRhub builds the Dockerfile from a template (camino B, pip/conda/make).",
       dockerfile: "Dockerfile contents",
       language: "Language / stack",
+      needsBuild: "My tool needs to be built from source code",
+      needsBuildHint:
+        "Tick this if your tool has to be compiled or installed before it can run — pip install, make, cargo build. Leave it unticked for a script or a committed binary that runs straight from the clone.",
       buildCmd: "Build / install command",
       buildCmdTooltip:
         "Command run while building the Docker image, after cloning your repo. Usually your install steps, e.g. pip install, make, or conda env create. If it fails, verification stops at the Installs gate.",
       buildCmdTooltipAria: "What the build or install command is for",
+      buildCmdNone: "no build step",
       checkCmd: "Build-time sanity check command",
       checkCmdTooltip:
         "Optional. A short command run once during the image build to confirm the install worked, e.g. mytool --help or mytool --version. Leave blank if you are not sure.",
@@ -331,6 +365,9 @@ export default {
       fixtureRequiredError: "A test file is required for this input type (no STRhub reference dataset available).",
       fixtureSameRepo: "It's in my tool's repo",
       fixtureOtherRepo: "It's in a different repo",
+      fixtureNone: "I don't have a test file",
+      fixtureNoneNote:
+        "STRhub will verify your tool on our reference dataset only. That is a valid result, just a narrower one: it shows your tool runs on our data, not on yours.",
       fixtureSameRepoNote: "Using repo {repo} at ref {ref}.",
       fixturePathInRepo: "Path to the test file in the repo",
       fixturePathInRepoTooltip:
@@ -392,6 +429,53 @@ export default {
         text: "Plain text (lines, no table parser)",
       },
       minRecords: "Minimum records",
+      detectTitle: "Detect this from a sample output file",
+      detectHint:
+        "If your tool has already produced a result, pick that file and we'll work out the format and the column layout for you. It is read in your browser and never uploaded.",
+      detectChoose: "Choose a sample output file…",
+      detectReading: "Reading the file…",
+      detectError: "We couldn't read that file. Pick a plain-text result file.",
+      detectGzip:
+        "That file is gzipped. Decompress it first (gunzip) and pick the plain-text file.",
+      detectResult: "Detected {format} — {rows} data rows.",
+      detectLoci: "Found {n} distinct markers: {sample}…",
+      detectNote: {
+        contentNeedsTabs:
+          "The content checks read tab-separated columns, so they can't inspect this format. The format itself is still verified.",
+        vcfColumnsVary:
+          "Columns per row was left blank: a VCF has one column per sample, and the verification run won't have the same number as your file.",
+        tooFewRows: "Too few rows to identify the sequence column with confidence.",
+        noLocusColumn:
+          "No column looked like marker names, so the marker checks were left blank.",
+        readsNotInferred:
+          "Minimum total reads was left blank on purpose: your file is a full run, while STRhub verifies against a small slice with far fewer reads.",
+        truncated: "Only the first part of the file was read.",
+      },
+      contentZeroBased:
+        "Column positions are counted from 0 — the first column is 0. Rows are split on tabs, and lines starting with # are ignored.",
+      contentField: {
+        columns: "Columns per row",
+        columnsTip:
+          "Every data row must have exactly this many tab-separated columns. A row with any other number counts as malformed and fails the check. Leave blank to skip it.",
+        dnaColumn: "Sequence column",
+        dnaColumnTip:
+          "Position of the column holding the DNA sequence. Every row's value must be only A, C, G, T or N — a single row that isn't fails the check. Positions start at 0.",
+        countColumns: "Read-count columns",
+        countColumnsTip:
+          "Positions of the integer read-count columns, comma-separated. They are added together to give each row's depth, which is what the total-reads check counts. Positions start at 0.",
+        locusColumn: "Marker name column",
+        locusColumnTip:
+          "Position of the column carrying the locus or marker name. Anything after the first colon is dropped, so \"TH01:9\" counts as TH01. Positions start at 0.",
+        minDistinctLoci: "Minimum distinct markers",
+        minDistinctLociTip:
+          "The run must report at least this many different markers. Keep it at or below what STRhub's reference slice covers — it is a floor, not a target.",
+        minTotalReads: "Minimum total reads",
+        minTotalReadsTip:
+          "The read-count columns, summed across every row, must reach at least this. Leave blank unless you know what STRhub's reference slice yields — it holds far fewer reads than a full run.",
+        expectLoci: "Markers that must appear",
+        expectLociTip:
+          "Comma-separated marker names. Every single one listed must be present or the check fails, so list only markers you are sure your tool reports on our reference data.",
+      },
       contentToggle: "Check output content plausibility (recommended)",
       contentToggleTooltip:
         "Recommended. Checks that the output looks like plausible genotype data — enough recognizable loci, and any named loci you expect — not just a non-empty file. Passing this earns the stronger \"Plausible output\" badge. Uncheck to verify format only.",
@@ -422,7 +506,6 @@ export default {
       resubmitHint: "Go back to the form with the same parameters pre-filled.",
       paramsToggle: "Submission parameters",
       paramsToolName: "Tool",
-      paramsVersion: "Version",
       paramsRepo: "Repository",
       paramsRef: "Ref",
       paramsCmd: "Run command",

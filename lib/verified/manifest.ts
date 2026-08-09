@@ -249,8 +249,15 @@ export function generateDockerfile(sub: Submission): string {
     `RUN ${buildCmd}\n` +
     checkBlock +
     `\nENV PATH="/opt/tool:$PATH"\n` +
-    `\n# Execution contract: the manifest cmd runs via bash -lc.\n` +
+    // `-c`, deliberately not `-lc`. A login shell sources /etc/profile, which on
+    // Debian sets PATH unconditionally — discarding the ENV PATH two lines above
+    // and with it /opt/tool. Every tool that runs from its clone rather than
+    // from an installed entry point then failed with "command not found",
+    // pointing the author at their own command when the image was at fault.
+    // Dropping -l keeps the declared PATH; redirects, pipes and && are features
+    // of `bash -c` too, so the execution contract is otherwise unchanged.
+    `\n# Execution contract: the manifest cmd runs via bash -c.\n` +
     `WORKDIR /work\n` +
-    `ENTRYPOINT ["/bin/bash", "-lc"]\n`
+    `ENTRYPOINT ["/bin/bash", "-c"]\n`
   );
 }

@@ -255,12 +255,42 @@ export default {
       sectionOutputsHint:
         "Indicá qué archivo escribe tu comando de ejecución y qué tipo de datos contiene. No hace falta conocer el motor de STRhub, solo la documentación de tu herramienta.",
       name: "Nombre de la herramienta",
-      version: "Versión",
       maintainer: "Mantenedor",
       contact: "Contacto (issue tracker o email)",
       repo: "URL del repo público de GitHub",
       ref: "Commit SHA o tag de release (inmutable)",
       refHint: "Un hash de commit específico o un tag. Asegura que siempre se teste exactamente el mismo código.",
+      fetchLastSha: "Traer el último commit SHA",
+      useLatestTag: "Usar el último tag de release ({tag})",
+      versionDerived: "Se registrará en la atestación como versión {version}.",
+      repoLookupLoading: "Leyendo el repositorio…",
+      repoLookupError:
+        "No pudimos leer ese repositorio. Revisá la URL: tiene que ser un repo público de GitHub. Igual podés completar el formulario a mano.",
+      lockedUntilSource:
+        "Completá primero el código público de arriba. El resto del formulario se arma a partir de tu repositorio y del commit que fijes.",
+      prefillConflictTitle: "¿Dejamos lo que escribiste o usamos los datos del repositorio?",
+      prefillConflictBody:
+        "Estos campos ya tenían un valor, así que no cambiamos nada. Esto es lo que encontramos:",
+      prefillAccept: "Usar estos valores",
+      prefillKeep: "Dejar los míos",
+      preflightSummaryNone: "Nada marcado: la verificación automática aplica a esta herramienta.",
+      preflightSummarySelected: "{n} marcado(s).",
+      reuseTitle: "Reutilizar una verificación anterior",
+      reuseHint:
+        "Este repositorio ya fue verificado antes. Traé esas respuestas y cambiá solo lo que se movió.",
+      reuseGroup: {
+        env: "Entorno",
+        inputs: "Datos de entrada",
+        run: "Ejecución",
+        outputs: "Salida esperada",
+      },
+      reuseApply: "Reutilizar",
+      reuseShowMore: "Ver {n} verificación(es) más",
+      reuseApplied:
+        "Respuestas recuperadas de esa verificación. Revisalas antes de enviar: el commit que fijaste arriba queda intacto.",
+      reuseUnavailable:
+        "No pudimos cargar la configuración de esa verificación. Puede ser anterior al guardado de envíos: completá el formulario a mano.",
+      reuseRegionsFile: "regions.bed (reutilizado de una verificación anterior)",
       refTooltip:
         "En GitHub, abrí tu repositorio público. Para una release: andá a Releases y copiá el nombre del tag (ej. v3.0). Para un commit: en Code, abrí el historial, elegí un commit y copiá el SHA completo (40 caracteres) o el hash corto que aparece arriba. Pegalo acá. STRhub clonará siempre esa versión exacta.",
       refTooltipAria: "Cómo encontrar un commit SHA o tag de release en GitHub",
@@ -275,10 +305,14 @@ export default {
         "STRhub arma el Dockerfile desde una plantilla (camino B, pip/conda/make).",
       dockerfile: "Contenido del Dockerfile",
       language: "Lenguaje / stack",
+      needsBuild: "Mi herramienta necesita compilarse desde el código fuente",
+      needsBuildHint:
+        "Marcalo si tu herramienta tiene que compilarse o instalarse antes de poder correr: pip install, make, cargo build. Dejalo sin marcar para un script o un binario ya commiteado que corre directo desde el clone.",
       buildCmd: "Comando de build / install",
       buildCmdTooltip:
         "Comando que STRhub ejecuta al construir la imagen Docker, después de clonar tu repo. Suele ser tu instalación: pip install, make, conda env create, etc. Si falla, la verificación se detiene en la compuerta Installs.",
       buildCmdTooltipAria: "Para qué sirve el comando de build o install",
+      buildCmdNone: "sin paso de build",
       checkCmd: "Comando de sanity check en build",
       checkCmdTooltip:
         "Opcional. Un comando corto que se corre una vez durante el build para confirmar que la instalación funcionó, ej. mytool --help o mytool --version. Dejalo vacío si no estás seguro.",
@@ -331,6 +365,9 @@ export default {
       fixtureRequiredError: "Se requiere un archivo de prueba para este tipo de input (no hay dataset de referencia STRhub disponible).",
       fixtureSameRepo: "Está en el repo de mi herramienta",
       fixtureOtherRepo: "Está en otro repo",
+      fixtureNone: "No tengo archivo de prueba",
+      fixtureNoneNote:
+        "STRhub verificará tu herramienta solo con nuestro dataset de referencia. Es un resultado válido, apenas más acotado: muestra que tu herramienta corre con nuestros datos, no con los tuyos.",
       fixtureSameRepoNote: "Usando repo {repo} en ref {ref}.",
       fixturePathInRepo: "Ruta al archivo de prueba en el repo",
       fixturePathInRepoTooltip:
@@ -392,6 +429,53 @@ export default {
         text: "Texto plano (líneas, sin tabla)",
       },
       minRecords: "Registros mínimos",
+      detectTitle: "Detectalo desde un archivo de salida de ejemplo",
+      detectHint:
+        "Si tu herramienta ya produjo un resultado, elegí ese archivo y deducimos el formato y la disposición de columnas por vos. Se lee en tu navegador y nunca se sube.",
+      detectChoose: "Elegí un archivo de salida de ejemplo…",
+      detectReading: "Leyendo el archivo…",
+      detectError: "No pudimos leer ese archivo. Elegí un archivo de resultados en texto plano.",
+      detectGzip:
+        "Ese archivo está comprimido con gzip. Descomprimilo primero (gunzip) y elegí el archivo en texto plano.",
+      detectResult: "Detectamos {format}: {rows} filas de datos.",
+      detectLoci: "Encontramos {n} marcadores distintos: {sample}…",
+      detectNote: {
+        contentNeedsTabs:
+          "Las verificaciones de contenido leen columnas separadas por tabulaciones, así que no pueden inspeccionar este formato. El formato en sí se sigue verificando.",
+        vcfColumnsVary:
+          "Dejamos en blanco las columnas por fila: un VCF tiene una columna por muestra, y la corrida de verificación no tendrá la misma cantidad que tu archivo.",
+        tooFewRows: "Muy pocas filas para identificar la columna de secuencia con confianza.",
+        noLocusColumn:
+          "Ninguna columna parecía contener nombres de marcadores, así que dejamos en blanco esas verificaciones.",
+        readsNotInferred:
+          "Dejamos en blanco el mínimo de reads totales a propósito: tu archivo es una corrida completa, mientras que STRhub verifica contra un recorte pequeño con muchos menos reads.",
+        truncated: "Solo se leyó la primera parte del archivo.",
+      },
+      contentZeroBased:
+        "Las posiciones de columna se cuentan desde 0: la primera columna es 0. Las filas se separan por tabulaciones y las líneas que empiezan con # se ignoran.",
+      contentField: {
+        columns: "Columnas por fila",
+        columnsTip:
+          "Cada fila de datos debe tener exactamente esta cantidad de columnas separadas por tabulaciones. Una fila con otra cantidad cuenta como malformada y hace fallar la verificación. Dejalo en blanco para omitirla.",
+        dnaColumn: "Columna de secuencia",
+        dnaColumnTip:
+          "Posición de la columna con la secuencia de ADN. El valor de cada fila debe ser solo A, C, G, T o N: basta una fila que no lo sea para que falle. Las posiciones empiezan en 0.",
+        countColumns: "Columnas de conteo de reads",
+        countColumnsTip:
+          "Posiciones de las columnas enteras con el conteo de reads, separadas por comas. Se suman para dar la profundidad de cada fila, que es lo que cuenta la verificación de reads totales. Las posiciones empiezan en 0.",
+        locusColumn: "Columna del nombre del marcador",
+        locusColumnTip:
+          "Posición de la columna con el nombre del locus o marcador. Se descarta todo lo que siga a los dos puntos, así que \"TH01:9\" cuenta como TH01. Las posiciones empiezan en 0.",
+        minDistinctLoci: "Marcadores distintos mínimos",
+        minDistinctLociTip:
+          "La corrida debe reportar al menos esta cantidad de marcadores diferentes. Mantenelo en o por debajo de lo que cubre el recorte de referencia de STRhub: es un piso, no una meta.",
+        minTotalReads: "Reads totales mínimos",
+        minTotalReadsTip:
+          "La suma de las columnas de conteo en todas las filas debe llegar al menos a esto. Dejalo en blanco salvo que sepas cuánto rinde el recorte de referencia de STRhub: tiene muchos menos reads que una corrida completa.",
+        expectLoci: "Marcadores que deben aparecer",
+        expectLociTip:
+          "Nombres de marcadores separados por comas. Todos y cada uno deben estar presentes o la verificación falla, así que listá solo los que estés seguro de que tu herramienta reporta sobre nuestros datos de referencia.",
+      },
       contentToggle: "Chequear plausibilidad del contenido (recomendado)",
       contentToggleTooltip:
         "Recomendado. Verifica que el output parezca genotipos plausibles —suficientes loci reconocibles y los loci que esperás— no solo un archivo no vacío. Pasarlo otorga el badge más fuerte \"Plausible output\". Desmarcalo para verificar solo el formato.",
@@ -422,7 +506,6 @@ export default {
       resubmitHint: "Volver al formulario con los mismos parámetros precargados.",
       paramsToggle: "Parámetros del envío",
       paramsToolName: "Herramienta",
-      paramsVersion: "Versión",
       paramsRepo: "Repositorio",
       paramsRef: "Ref",
       paramsCmd: "Comando de ejecución",

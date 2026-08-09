@@ -30,8 +30,10 @@ import {
 } from "@/lib/verified/validate-regions";
 import {
   buildManifestYaml,
+  buildSubmissionJson,
   generateDockerfile,
   REGIONS_ASSET_PATH,
+  SUBMISSION_ASSET_PATH,
 } from "@/lib/verified/manifest";
 import {
   ENGINE_REPO,
@@ -269,11 +271,24 @@ export async function POST(request: NextRequest) {
     //    slug belongs to this repository; a stranger never reaches this line.
     const dispatchId = newDispatchId();
     const alreadyExists = owner !== null;
+    const now = new Date().toISOString();
     const msg = `verified: ${alreadyExists ? "update" : "add"} ${slug} (${sub.source.repo}@${sub.source.ref})`;
     await putFile(`tools/${slug}/manifest.yml`, buildManifestYaml(sub, slug), msg);
     await putFile(`tools/${slug}/Dockerfile`, generateDockerfile(sub), msg);
     if (sub.inputs.regions_bed) {
       await putFile(`tools/${slug}/${REGIONS_ASSET_PATH}`, sub.inputs.regions_bed, msg);
+    }
+    // The answers behind the manifest, kept so a later submission from the same
+    // repository can refill the form instead of re-deriving twenty fields from
+    // a Dockerfile. Never fatal: a run must not be lost over a convenience file.
+    try {
+      await putFile(
+        `tools/${slug}/${SUBMISSION_ASSET_PATH}`,
+        buildSubmissionJson(sub, now),
+        msg
+      );
+    } catch (e) {
+      console.error("verify/submit: could not store submission.json:", e);
     }
     await dispatchWorkflow({ tool: slug, dispatch_id: dispatchId });
 

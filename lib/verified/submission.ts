@@ -289,7 +289,10 @@ export const submissionSchema = z
             mode: z.literal("generated"),
             // Camino B: engine builds the Dockerfile from a template.
             language: z.enum(BUILD_LANGUAGES),
-            build_cmd: z.string().trim().min(1).max(2000),
+            // Optional: a tool can be a script or a prebuilt binary that runs
+            // straight from the clone, with nothing to install. Requiring a
+            // command there forced authors to invent a no-op.
+            build_cmd: z.string().trim().max(2000).optional(),
             // Optional sanity-check command run during build (e.g. `tool --help`).
             check_cmd: z.string().trim().max(500).optional(),
           })
@@ -373,6 +376,27 @@ export function deriveSlug(name: string, version: string, inputType?: string): s
 
 export function isValidSlug(slug: string): boolean {
   return SLUG_RE.test(slug) && slug.length <= 100;
+}
+
+/** True when a ref looks like a commit SHA rather than a tag or branch. */
+export function isCommitSha(ref: string): boolean {
+  return /^[0-9a-f]{7,40}$/i.test(ref.trim());
+}
+
+/**
+ * The tool version, derived from the pinned ref.
+ *
+ * The form no longer asks for a version separately: the ref IS the identity of
+ * what was verified, and asking for both invited them to disagree (v3.0 pinned
+ * at a commit from v2.9). The engine's manifest schema still requires
+ * `tool.version`, and it is what readers see on the attestation, so it is
+ * derived here instead: a tag travels verbatim, a SHA is shortened to 7 —
+ * enough to identify the commit, short enough for the slug that becomes the
+ * report's permanent URL.
+ */
+export function versionFromRef(ref: string): string {
+  const r = ref.trim();
+  return isCommitSha(r) ? r.slice(0, 7).toLowerCase() : r;
 }
 
 /**

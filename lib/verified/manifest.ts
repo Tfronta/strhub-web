@@ -16,6 +16,21 @@ import { isRemotePointer } from "./submission";
  */
 export const REGIONS_ASSET_PATH = "assets/regions.bed";
 
+/**
+ * Where the submission that produced a run is stored, relative to the tool's
+ * directory.
+ *
+ * The manifest is not enough to refill the form from. It records the contract
+ * the engine executes, not the answers that built it: the whole Environment
+ * section (build path, language, build and check commands) exists only inside
+ * the generated Dockerfile, and reading it back out means parsing a file we
+ * generate for a different purpose. So the answers are kept as answers. Nothing
+ * here is new information — it is the same data already public in manifest.yml
+ * and the Dockerfile beside it — but in the shape the form asks for, so an
+ * author returning with a new commit refills exactly what they submitted.
+ */
+export const SUBMISSION_ASSET_PATH = "submission.json";
+
 /** Minimal, deterministic YAML emitter for plain JSON-like values. */
 type Json = string | number | boolean | null | Json[] | { [k: string]: Json };
 
@@ -191,6 +206,51 @@ export function buildManifestYaml(sub: Submission, slug: string): string {
   return header + toYaml(buildManifestObject(sub, slug));
 }
 
+/**
+ * The submission, as stored for reuse (see SUBMISSION_ASSET_PATH).
+ *
+ * The regions BED is replaced by a flag: it is already committed verbatim at
+ * REGIONS_ASSET_PATH, and inlining a second copy would double a file that can
+ * reach a megabyte.
+ */
+export interface StoredSubmission {
+  schema?: string;
+  saved?: string;
+  tool?: { name?: string; version?: string; maintainer?: string; contact?: string };
+  source?: { repo?: string; ref?: string };
+  docker?: {
+    mode?: "generated" | "provided";
+    language?: string;
+    build_cmd?: string;
+    check_cmd?: string;
+    dockerfile?: string;
+  };
+  run?: { cmd?: string; timeout_minutes?: number };
+  inputs?: {
+    type?: string;
+    fixture?: string | { repo?: string; ref?: string; path?: string };
+  };
+  outputs?: {
+    path?: string;
+    format?: string;
+    min_records?: number;
+    content?: Record<string, unknown>;
+  }[];
+  regions_asset?: boolean;
+}
+
+export function buildSubmissionJson(sub: Submission, savedAt: string): string {
+  const { inputs, ...rest } = sub;
+  const record = {
+    schema: "strhub-verified/submission/1",
+    saved: savedAt,
+    ...rest,
+    inputs: { type: inputs.type, fixture: inputs.fixture },
+    regions_asset: Boolean(inputs.regions_bed),
+  };
+  return JSON.stringify(record, null, 2) + "\n";
+}
+
 const BASE_IMAGE: Record<string, string> = {
   python: "python:3.11-slim",
   conda: "continuumio/miniconda3:latest",
@@ -217,7 +277,7 @@ export function generateDockerfile(sub: Submission): string {
   const base = BASE_IMAGE[sub.docker.language] ?? "ubuntu:22.04";
   const repo = `https://github.com/${repoSlug(sub.source.repo)}.git`;
   const ref = sub.source.ref;
-  const buildCmd = sub.docker.build_cmd;
+  const buildCmd = sub.docker.build_cmd?.trim();
   const checkCmd = sub.docker.check_cmd;
 
   const aptLine =
@@ -246,7 +306,10 @@ export function generateDockerfile(sub: Submission): string {
     `    && cd tool && git checkout "\${TOOL_REF}" \\\n` +
     `    && git submodule update --init --recursive\n\n` +
     `WORKDIR /opt/tool\n` +
-    `RUN ${buildCmd}\n` +
+    // No build command: the clone IS the install (a script, or a binary
+    // committed to the repo). The Installs gate then proves the checkout and
+    // the base image, which is all there is to prove.
+    (buildCmd ? `RUN ${buildCmd}\n` : "") +
     checkBlock +
     `\nENV PATH="/opt/tool:$PATH"\n` +
     // `-c`, deliberately not `-lc`. A login shell sources /etc/profile, which on

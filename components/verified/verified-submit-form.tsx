@@ -25,6 +25,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
 import {
   submissionSchema,
+  versionFromRef,
   OUTPUT_FORMATS,
   BUILD_LANGUAGES,
   INPUT_TYPES,
@@ -33,6 +34,8 @@ import {
   type InputTypeEntry,
   type SubmissionInput,
 } from "@/lib/verified/submission";
+import type { StoredSubmission } from "@/lib/verified/manifest";
+import { detectOutput, type OutputDetection } from "@/lib/verified/detect-output";
 import {
   parseBed3,
   validateRegions,
@@ -74,13 +77,71 @@ const FORM_STORAGE_KEY = "strhub-verified-submit-form";
 interface StoredFormState {
   f: typeof INITIAL_F;
   dockerMode: "generated" | "provided";
-  fixtureSource: "same" | "other";
+  needsBuild: boolean;
+  fixtureSource: FixtureSource;
   showContent: boolean;
 }
 
+/** One previous verification run of the repository being submitted. */
+interface PreviousRun {
+  slug: string;
+  name: string;
+  ref: string | null;
+  level: string;
+  label: string;
+  generated: string | null;
+  succeeded: boolean;
+}
+
+/** What /api/verify/repo-context knows about the pasted repository. */
+interface RepoContext {
+  repo: {
+    slug: string;
+    name: string;
+    description: string | null;
+    url: string;
+    defaultBranch: string;
+    issuesUrl: string | null;
+    maintainer: string;
+  };
+  latest: { sha: string | null; committedAt: string | null; tag: string | null };
+  previous: PreviousRun[];
+  previousTool: { slug: string; name?: string; maintainer?: string; contact?: string } | null;
+}
+
+/** The four groups of answers a previous run can refill. */
+const REUSE_GROUPS = ["env", "inputs", "run", "outputs"] as const;
+type ReuseGroup = (typeof REUSE_GROUPS)[number];
+/**
+ * Where the author's own test data lives — or that there isn't any.
+ *
+ * "none" is an answer, not an absence. It used to be expressed by leaving the
+ * path blank, which made "I have no test file" and "I have not filled this in
+ * yet" the same state: the form could not tell them apart, so it could not
+ * insist on a path for the author who did have one.
+ */
+type FixtureSource = "same" | "other" | "none";
+
+/** How many previous runs are listed at a time. */
+const REUSE_PAGE_SIZE = 3;
+
+/**
+ * How much of a sample output file is read for detection. Column layout is
+ * settled in the first rows; the rest of the budget goes to the locus list,
+ * which needs breadth. Far above any forensic result table, and a hard stop on
+ * someone picking a whole-genome VCF.
+ */
+const SAMPLE_READ_BYTES = 8 * 1024 * 1024;
+
+const ALL_REUSE_GROUPS: Record<ReuseGroup, boolean> = {
+  env: true,
+  inputs: true,
+  run: true,
+  outputs: true,
+};
+
 const INITIAL_F = {
   name: "",
-  version: "",
   maintainer: "",
   contact: "",
   repo: "",
@@ -118,10 +179,24 @@ function loadFormState(): StoredFormState | null {
   try {
     const raw = sessionStorage.getItem(FORM_STORAGE_KEY);
     if (!raw) return null;
-    return JSON.parse(raw) as StoredFormState;
+    const stored = JSON.parse(raw) as StoredFormState;
+    // Keep only fields the form still has. A session saved before the version
+    // field was folded into the ref would otherwise carry a dead key forward.
+    return { ...stored, f: pickFormFields(stored.f) };
   } catch {
     return null;
   }
+}
+
+/** Narrow an arbitrary object to the current form's fields, as strings. */
+function pickFormFields(source: Partial<Record<keyof typeof INITIAL_F, unknown>> | undefined) {
+  const out = { ...INITIAL_F };
+  if (!source) return out;
+  for (const key of Object.keys(INITIAL_F) as (keyof typeof INITIAL_F)[]) {
+    const value = source[key];
+    if (typeof value === "string") out[key] = value;
+  }
+  return out;
 }
 
 const CMD_TEMPLATE_PREFIX = "mytool ";
@@ -270,6 +345,19 @@ function assayFamily(inputType: string): "autosomal" | "y-str" | "snp" | "other"
 }
 
 /**
+ * The smallest set of loci every kit in an assay family reports, used as the
+ * `expect_loci` starting point. Kept apart from recommendedContent because
+ * detection can use it for formats that guessing cannot: once a sample file has
+ * been read, we know its marker names are really there.
+ */
+function coreLoci(inputType: string): string[] {
+  const family = assayFamily(inputType);
+  if (family === "autosomal") return ["CSF1PO", "TH01", "TPOX", "vWA", "FGA"];
+  if (family === "y-str") return ["DYS391", "DYS390", "DYS392", "DYS393"];
+  return [];
+}
+
+/**
  * Recommended content-plausibility defaults for a given output format + assay.
  * Deliberately conservative: it sets only checks that reliably pass on real STR
  * output — the locus column (position depends on format), a modest distinct-loci
@@ -289,15 +377,129 @@ function recommendedContent(format: string, inputType: string): ContentFields {
   // expect_loci requires ALL listed to be present, so only prefill it for
   // table formats (where the locus column carries the marker name) and known
   // families, using the smallest universally-present core set.
-  const expectLoci =
-    !isTable
-      ? ""
-      : family === "autosomal"
-        ? "CSF1PO, TH01, TPOX, vWA, FGA"
-        : family === "y-str"
-          ? "DYS391, DYS390, DYS392, DYS393"
-          : "";
+  const expectLoci = isTable ? coreLoci(inputType).join(", ") : "";
   return { ...EMPTY_CONTENT, locusColumn, minDistinctLoci, expectLoci };
+}
+
+/** Whether a URL points at the same GitHub repository, ignoring .git and case. */
+function sameRepo(a: string, b: string): boolean {
+  const norm = (u: string) => u.trim().toLowerCase().replace(/\.git$/, "").replace(/\/+$/, "");
+  return norm(a) === norm(b);
+}
+
+const GITHUB_REPO_RE = /^https:\/\/github\.com\/[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+$/;
+
+function isRepoUrl(value: string): boolean {
+  return GITHUB_REPO_RE.test(value.trim().replace(/\.git$/, "").replace(/\/+$/, ""));
+}
+
+/** A number the form holds as text; blank when the stored value is absent. */
+function numText(value: unknown): string {
+  return typeof value === "number" && Number.isFinite(value) ? String(value) : "";
+}
+
+function listText(value: unknown): string {
+  return Array.isArray(value) ? value.join(", ") : "";
+}
+
+/**
+ * Translate a stored submission back into form fields, one group at a time.
+ *
+ * Only the requested groups are returned, so the reuse checkboxes decide what is
+ * touched: an author reusing Execution but not Environment keeps the build
+ * commands they were in the middle of writing.
+ */
+function fieldsFromStored(
+  stored: StoredSubmission,
+  groups: Record<ReuseGroup, boolean>,
+  currentRepo: string,
+): {
+  fields: Partial<typeof INITIAL_F>;
+  dockerMode?: "generated" | "provided";
+  needsBuild?: boolean;
+  fixtureSource?: FixtureSource;
+  showContent?: boolean;
+  contentDirty?: boolean;
+} {
+  const fields: Partial<typeof INITIAL_F> = {};
+  let dockerMode: "generated" | "provided" | undefined;
+  let needsBuild: boolean | undefined;
+  let fixtureSource: FixtureSource | undefined;
+  let showContent: boolean | undefined;
+  let contentDirty: boolean | undefined;
+
+  if (groups.env && stored.docker) {
+    if (stored.docker.mode === "provided") {
+      dockerMode = "provided";
+      fields.dockerfile = stored.docker.dockerfile ?? "";
+    } else if (stored.docker.mode === "generated") {
+      dockerMode = "generated";
+      fields.language = stored.docker.language ?? "python";
+      fields.buildCmd = stored.docker.build_cmd ?? "";
+      fields.checkCmd = stored.docker.check_cmd ?? "";
+      // A stored run that carried a build command was, by definition, one that
+      // needed building — otherwise the box would leave the fields hidden while
+      // still holding their values.
+      needsBuild = Boolean(stored.docker.build_cmd?.trim());
+    }
+  }
+
+  if (groups.inputs && stored.inputs) {
+    const type = stored.inputs.type ?? "";
+    if (type && !INPUT_TYPES.some((it) => it.slug === type)) {
+      fields.inputType = "__other__";
+      fields.inputTypeCustom = type;
+    } else {
+      fields.inputType = type;
+      fields.inputTypeCustom = "";
+    }
+    const fixture = stored.inputs.fixture;
+    if (typeof fixture === "string") {
+      // Legacy shape: a bare path, always inside the tool's own repo.
+      fixtureSource = "same";
+      fields.fixtureFilePath = fixture;
+    } else if (fixture) {
+      const isSame = fixture.repo ? sameRepo(fixture.repo, currentRepo) : true;
+      fixtureSource = isSame ? "same" : "other";
+      fields.fixtureFilePath = fixture.path ?? "";
+      if (!isSame) {
+        fields.fixtureRepo = fixture.repo ?? "";
+        fields.fixtureRef = fixture.ref ?? "";
+      }
+    } else {
+      // The stored run carried no fixture, which is a decision the author made.
+      fixtureSource = "none";
+      fields.fixtureFilePath = "";
+    }
+  }
+
+  if (groups.run && stored.run) {
+    fields.cmd = stored.run.cmd ?? "";
+    fields.timeout = numText(stored.run.timeout_minutes) || "15";
+  }
+
+  if (groups.outputs && stored.outputs?.length) {
+    const out = stored.outputs[0];
+    fields.outputPath = out.path ?? "";
+    fields.outputFormat = out.format ?? "tsv";
+    fields.minRecords = numText(out.min_records) || "1";
+    const content = out.content;
+    showContent = Boolean(content && Object.keys(content).length);
+    if (content) {
+      fields.columns = numText(content.columns);
+      fields.dnaColumn = numText(content.dna_column);
+      fields.countColumns = listText(content.count_columns);
+      fields.locusColumn = numText(content.locus_column);
+      fields.minDistinctLoci = numText(content.min_distinct_loci);
+      fields.expectLoci = listText(content.expect_loci);
+      fields.minTotalReads = numText(content.min_total_reads);
+      // Reused values are the author's own, so the recommended-defaults effect
+      // must not overwrite them when the format or assay is reapplied.
+      contentDirty = true;
+    }
+  }
+
+  return { fields, dockerMode, needsBuild, fixtureSource, showContent, contentDirty };
 }
 
 async function downloadPdfForSlug(reportSlug: string) {
@@ -339,7 +541,16 @@ export function VerifiedSubmitForm() {
   const [compat, setCompat] = useState<CompatibilityAnswers>({});
 
   const [dockerMode, setDockerMode] = useState<"generated" | "provided">("generated");
-  const [fixtureSource, setFixtureSource] = useState<"same" | "other">("same");
+  /**
+   * Whether the tool has to be compiled or installed before it can run.
+   *
+   * Off by default, and the two build fields only exist while it is on. Making
+   * "nothing to install" the unticked default rather than an empty text box
+   * means a blank build command is always a stated answer: either the author
+   * says the tool needs building and then says how, or they say it does not.
+   */
+  const [needsBuild, setNeedsBuild] = useState(false);
+  const [fixtureSource, setFixtureSource] = useState<FixtureSource>("same");
   // Supported-loci panel for the selected BAM dataset, plus the live check of the
   // author's uploaded BED against it. Checking here — before dispatch — is what
   // keeps a slice-incompatible BED from burning a CI run just to be told no.
@@ -370,6 +581,40 @@ export function VerifiedSubmitForm() {
   const [hydrated, setHydrated] = useState(false);
   const [showParams, setShowParams] = useState(false);
 
+  // What GitHub and our own catalogue know about the repository the author
+  // pasted. Everything downstream — the SHA button, the Tool prefill, the reuse
+  // offer — reads from this one lookup.
+  const [repoContext, setRepoContext] = useState<RepoContext | null>(null);
+  const [repoState, setRepoState] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [repoError, setRepoError] = useState<string | null>(null);
+  // Prefill values that disagree with something the author already typed. Never
+  // applied silently: overwriting a field someone filled in by hand is the one
+  // way an autofill can lose work.
+  const [prefillConflicts, setPrefillConflicts] = useState<
+    { key: keyof typeof INITIAL_F; labelKey: string; current: string; next: string }[]
+  >([]);
+  const prefilledFor = useRef<string | null>(null);
+
+  // Pre-flight is collapsible, and folds itself away once the repo has a run
+  // that already proved nothing here applies.
+  const [preflightOpen, setPreflightOpen] = useState(true);
+  const preflightAutoCollapsed = useRef(false);
+
+  // Reuse of a previous run's answers.
+  const [reuseGroups, setReuseGroups] = useState<Record<ReuseGroup, boolean>>(ALL_REUSE_GROUPS);
+  const [reuseBusy, setReuseBusy] = useState<string | null>(null);
+  const [reuseApplied, setReuseApplied] = useState<string | null>(null);
+  const [reuseError, setReuseError] = useState<string | null>(null);
+  // A prolific repo can have a dozen runs; the recent ones are the ones worth
+  // starting from, so the rest are a click away rather than a wall.
+  const [visibleRuns, setVisibleRuns] = useState(REUSE_PAGE_SIZE);
+
+  // Output detection from a sample file the author already has.
+  const [detection, setDetection] = useState<OutputDetection | null>(null);
+  const [detectFileName, setDetectFileName] = useState("");
+  const [detectState, setDetectState] = useState<"idle" | "reading" | "done" | "error">("idle");
+  const [detectError, setDetectError] = useState<string | null>(null);
+
   // Result state.
   const [slug, setSlug] = useState<string | null>(null);
   const [dispatchId, setDispatchId] = useState<string | null>(null);
@@ -390,6 +635,9 @@ export function VerifiedSubmitForm() {
     if (stored) {
       setF(stored.f);
       setDockerMode(stored.dockerMode);
+      // Sessions saved before the checkbox existed have no flag; a build command
+      // in the restored fields is the same statement by other means.
+      setNeedsBuild(stored.needsBuild ?? stored.f.buildCmd.trim() !== "");
       setFixtureSource(stored.fixtureSource);
       setShowContent(stored.showContent);
       // Treat restored non-empty content as author-owned so the defaults effect
@@ -425,11 +673,172 @@ export function VerifiedSubmitForm() {
     setF((prev) => ({ ...prev, ...recommendedContent(prev.outputFormat, resolvedInputType) }));
   };
 
+  // Latest fields, readable from effects that must not re-run on every
+  // keystroke (the repo prefill below).
+  const fRef = useRef(f);
+  fRef.current = f;
+
+  const repoValid = isRepoUrl(f.repo);
+  /**
+   * Everything after the Source section stays inert until the repository and
+   * the ref are known. Most of the help this form offers is derived from those
+   * two answers — the commit lookup, the tool prefill, the reuse offer, the
+   * command suggestions read out of the README — so filling anything else first
+   * is work done in the dark, and often work done twice.
+   */
+  const sourceReady = repoValid && f.ref.trim() !== "";
+
+  // Look up the repository once the URL settles. Debounced: this runs while the
+  // author is still typing the URL.
+  useEffect(() => {
+    if (!repoValid) {
+      setRepoContext(null);
+      setRepoState("idle");
+      setRepoError(null);
+      return;
+    }
+    let cancelled = false;
+    setRepoState("loading");
+    setRepoError(null);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `/api/verify/repo-context?repo=${encodeURIComponent(f.repo.trim())}`,
+        );
+        const data = await res.json();
+        if (cancelled) return;
+        if (!data?.ok) {
+          setRepoContext(null);
+          setRepoState("error");
+          setRepoError(typeof data?.error === "string" ? data.error : null);
+          return;
+        }
+        setRepoContext(data as RepoContext);
+        setRepoState("ready");
+      } catch {
+        if (cancelled) return;
+        setRepoContext(null);
+        setRepoState("error");
+        setRepoError(null);
+      }
+    }, 600);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [f.repo, repoValid]);
+
+  // Prefill the Tool section from what we just learned. A previous run wins
+  // over the repository's own metadata: the author already chose how this tool
+  // is named and who answers for it, and the repo name is only a guess at that.
+  useEffect(() => {
+    if (repoState !== "ready" || !repoContext) return;
+    const key = repoContext.repo.slug.toLowerCase();
+    if (prefilledFor.current === key) return;
+    prefilledFor.current = key;
+
+    // A repo with a run that reached "Runs" has already demonstrated that none
+    // of the pre-flight limits apply to it, so the section folds away.
+    if (!preflightAutoCollapsed.current && repoContext.previous.some((p) => p.succeeded)) {
+      preflightAutoCollapsed.current = true;
+      setPreflightOpen(false);
+    }
+    // A different repository means a different run list, from the top.
+    setVisibleRuns(REUSE_PAGE_SIZE);
+
+    const prev = repoContext.previousTool;
+    const candidates = ([
+      {
+        key: "name",
+        labelKey: "verified.submit.name",
+        next: (prev?.name || repoContext.repo.name || "").trim(),
+      },
+      {
+        key: "maintainer",
+        labelKey: "verified.submit.maintainer",
+        next: (prev?.maintainer || repoContext.repo.maintainer || "").trim(),
+      },
+      {
+        key: "contact",
+        labelKey: "verified.submit.contact",
+        next: (prev?.contact || repoContext.repo.issuesUrl || "").trim(),
+      },
+    ] as { key: keyof typeof INITIAL_F; labelKey: string; next: string }[]).filter(
+      (c) => c.next !== "",
+    );
+
+    const current = fRef.current;
+    const fill: Partial<typeof INITIAL_F> = {};
+    const conflicts: typeof prefillConflicts = [];
+    for (const c of candidates) {
+      const held = (current[c.key] ?? "").trim();
+      if (held === "") fill[c.key] = c.next;
+      else if (held !== c.next) conflicts.push({ ...c, current: held });
+    }
+    if (Object.keys(fill).length) setF((p) => ({ ...p, ...fill }));
+    setPrefillConflicts(conflicts);
+  }, [repoState, repoContext]);
+
+  const acceptPrefill = () => {
+    const fill: Partial<typeof INITIAL_F> = {};
+    for (const c of prefillConflicts) fill[c.key] = c.next;
+    setF((p) => ({ ...p, ...fill }));
+    setPrefillConflicts([]);
+  };
+
+  /** Refill a group of answers from a previous run of this same repository. */
+  async function applyReuse(runSlug: string) {
+    setReuseBusy(runSlug);
+    setReuseError(null);
+    try {
+      const res = await fetch(
+        `/api/verify/repo-context?repo=${encodeURIComponent(f.repo.trim())}&slug=${encodeURIComponent(runSlug)}`,
+      );
+      const data = await res.json();
+      if (!data?.ok || !data.reuse) {
+        setReuseError(t("verified.submit.reuseUnavailable"));
+        return;
+      }
+      const applied = fieldsFromStored(
+        data.reuse.submission as StoredSubmission,
+        reuseGroups,
+        f.repo,
+      );
+      setF((p) => ({ ...p, ...applied.fields }));
+      if (applied.dockerMode) setDockerMode(applied.dockerMode);
+      if (applied.needsBuild !== undefined) setNeedsBuild(applied.needsBuild);
+      if (applied.fixtureSource) setFixtureSource(applied.fixtureSource);
+      if (applied.showContent !== undefined) setShowContent(applied.showContent);
+      if (applied.contentDirty) setContentDirty(true);
+      // The BED was already checked against the panel when it was submitted, so
+      // reusing it spares the author the one step of this form that needs a file
+      // from their machine.
+      if (reuseGroups.inputs && typeof data.reuse.regionsBed === "string" && data.reuse.regionsBed) {
+        setRegionsBed(data.reuse.regionsBed);
+        setRegionsFileName(t("verified.submit.reuseRegionsFile"));
+        setRegionsFileError(null);
+      }
+      setReuseApplied(runSlug);
+    } catch {
+      setReuseError(t("verified.submit.reuseUnavailable"));
+    } finally {
+      setReuseBusy(null);
+    }
+  }
+
   const selectedTypeInfo = INPUT_TYPES.find((t) => t.slug === f.inputType);
   const selectedRefGenome = selectedTypeInfo?.referenceGenome ?? null;
   const selectedCanonicalPaths = selectedTypeInfo?.canonicalPaths ?? null;
   const fixtureIsOptional = selectedTypeInfo?.hasExternalDataset === true;
   const cmdLooksLikeTemplate = f.cmd === "" || f.cmd.startsWith(CMD_TEMPLATE_PREFIX);
+
+  // Switching to an input type STRhub has no reference dataset for retracts the
+  // "I don't have a test file" answer: there would then be nothing to run on.
+  useEffect(() => {
+    if (fixtureSource === "none" && f.inputType !== "" && !fixtureIsOptional) {
+      setFixtureSource("same");
+    }
+  }, [fixtureSource, f.inputType, fixtureIsOptional]);
 
   // Coordinate-based tools (BAM in, HipSTR/GangSTR-style) must supply their own
   // regions BED: only the author knows their tool's column layout. STRhub supplies
@@ -497,6 +906,104 @@ export function VerifiedSubmitForm() {
     }
   }, [needsRegions, panel, regionsBed, selectedTypeInfo, t]);
 
+  /**
+   * Work out the output format and column layout from a file the tool has
+   * already produced, and fill the fields below in with it.
+   *
+   * The file is read here in the browser and never sent anywhere: it is the
+   * author's own result data, and nothing about detecting its shape requires us
+   * to hold it.
+   */
+  async function onSampleOutputFile(file: File | undefined) {
+    if (!file) return;
+    setDetectFileName(file.name);
+    setDetectError(null);
+    setDetection(null);
+    setDetectState("reading");
+    try {
+      const head = file.slice(0, SAMPLE_READ_BYTES);
+      const magic = new Uint8Array(await file.slice(0, 2).arrayBuffer());
+      if (magic[0] === 0x1f && magic[1] === 0x8b) {
+        setDetectError(t("verified.submit.detectGzip"));
+        setDetectState("error");
+        return;
+      }
+      const result = detectOutput(await head.text());
+      detectionAssay.current = resolvedInputType;
+      setDetection(result);
+      setDetectState("done");
+      applyDetection(result);
+    } catch {
+      setDetectError(t("verified.submit.detectError"));
+      setDetectState("error");
+    }
+  }
+
+  /**
+   * The marker thresholds a detection implies depend on the assay, and the
+   * output section sits below the input one, so an author who detects first and
+   * picks their assay after would otherwise keep thresholds derived from no
+   * assay at all. Re-deriving is safe: these two are the only detected values
+   * the assay bears on, and both are floors rather than measurements.
+   */
+  const detectionAssay = useRef<string | null>(null);
+  useEffect(() => {
+    if (!detection) return;
+    if (detectionAssay.current === resolvedInputType) return;
+    detectionAssay.current = resolvedInputType;
+    applyDetection(detection);
+    // applyDetection is stable for a given detection + assay.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detection, resolvedInputType]);
+
+  /** Push a detection into the form's fields. */
+  function applyDetection(result: OutputDetection) {
+    const rec = recommendedContent(result.format, resolvedInputType);
+    const { columns, dnaColumn, countColumns, locusColumn } = result.columns;
+
+    // The gate splits every row on TAB regardless of declared format, so for a
+    // format it cannot column-split, a leftover column index is not merely
+    // useless — it would be checked against nonsense. Clear rather than keep.
+    const structural =
+      result.format === "tsv" || result.format === "vcf"
+        ? {
+            columns: columns !== undefined ? String(columns) : "",
+            dnaColumn: dnaColumn !== undefined ? String(dnaColumn) : "",
+            countColumns: countColumns?.length ? countColumns.join(", ") : "",
+            locusColumn: locusColumn !== undefined ? String(locusColumn) : "",
+          }
+        : { columns: "", dnaColumn: "", countColumns: "", locusColumn: "" };
+
+    // Two values the sample can only bound, never fix. The author's file is a
+    // full run; verification runs against a slice around a handful of loci, so
+    // anything counted here is an upper bound on what the run can produce.
+    const recommendedMin = Number(rec.minDistinctLoci);
+    const detectedLoci = result.loci.length;
+    const minDistinctLoci = detectedLoci
+      ? String(Math.max(1, Math.min(detectedLoci, recommendedMin || detectedLoci)))
+      : rec.minDistinctLoci;
+
+    // expect_loci demands EVERY name listed, so it is narrowed to the markers
+    // this very file proves the tool reports. The core set is read straight from
+    // the assay rather than from `rec`, which withholds it for non-table formats
+    // on the grounds that the locus names might not be there — a doubt a file we
+    // have just read the names out of has already settled.
+    const expectLoci = detectedLoci
+      ? coreLoci(resolvedInputType)
+          .filter((l) => result.loci.includes(l))
+          .join(", ")
+      : rec.expectLoci;
+
+    setF((prev) => ({
+      ...prev,
+      outputFormat: result.format,
+      ...structural,
+      minDistinctLoci,
+      expectLoci,
+    }));
+    setContentDirty(true);
+  }
+
   /** Read a chosen BED file into state. Rejects binary/gzip early with a clear note. */
   async function onRegionsFile(file: File | undefined) {
     if (!file) return;
@@ -535,14 +1042,18 @@ export function VerifiedSubmitForm() {
     phase === "form" &&
     !preflightBlocks &&
     f.name.trim() !== "" &&
-    f.version.trim() !== "" &&
-    f.repo.trim() !== "" &&
-    f.ref.trim() !== "" &&
-    (dockerMode === "generated" ? f.buildCmd.trim() !== "" : f.dockerfile.trim().length >= 10) &&
+    sourceReady &&
+    (dockerMode === "generated"
+      ? // Declaring a build and then not naming it is not an answer either way.
+        !needsBuild || f.buildCmd.trim() !== ""
+      : f.dockerfile.trim().length >= 10) &&
     f.cmd.trim() !== "" &&
     !cmdLooksLikeTemplate &&
     f.inputType !== "" &&
-    (fixtureIsOptional || f.fixtureFilePath.trim() !== "") &&
+    // "none" is only an answer where STRhub has a reference dataset to fall back
+    // on; otherwise a path is the whole input. Saying the file is in a repo and
+    // then not naming it is not an answer either way.
+    (fixtureSource === "none" ? fixtureIsOptional : f.fixtureFilePath.trim() !== "") &&
     f.outputPath.trim() !== "" &&
     // A coordinate-based tool needs an uploaded regions BED that clears the panel
     // check. Blocking here spares the author a CI run that would only reject it.
@@ -578,7 +1089,7 @@ export function VerifiedSubmitForm() {
     const fixtureRepo = fixtureSource === "same" ? f.repo : f.fixtureRepo;
     const fixtureRef = fixtureSource === "same" ? f.ref : f.fixtureRef;
 
-    const hasFixture = f.fixtureFilePath.trim() !== "";
+    const hasFixture = fixtureSource !== "none" && f.fixtureFilePath.trim() !== "";
     const fixture = hasFixture
       ? { repo: fixtureRepo, ref: fixtureRef, path: f.fixtureFilePath }
       : undefined;
@@ -588,7 +1099,9 @@ export function VerifiedSubmitForm() {
     return {
       tool: {
         name: f.name,
-        version: f.version,
+        // Derived from the pinned ref rather than asked for separately, so the
+        // two can never disagree (see versionFromRef).
+        version: versionFromRef(f.ref),
         maintainer: f.maintainer || undefined,
         contact: f.contact || undefined,
       },
@@ -598,8 +1111,12 @@ export function VerifiedSubmitForm() {
           ? {
               mode: "generated",
               language: f.language as (typeof BUILD_LANGUAGES)[number],
-              build_cmd: f.buildCmd,
-              check_cmd: f.checkCmd || undefined,
+              // Gated on the checkbox, not just on the text: unticking hides the
+              // fields but keeps what was typed, so that a change of mind is
+              // reversible. Sending it anyway would submit a value the author
+              // can no longer see.
+              build_cmd: needsBuild ? f.buildCmd.trim() || undefined : undefined,
+              check_cmd: needsBuild ? f.checkCmd.trim() || undefined : undefined,
             }
           : { mode: "provided", dockerfile: f.dockerfile },
       run: { cmd: f.cmd, timeout_minutes: num(f.timeout) ?? 15 },
@@ -673,7 +1190,7 @@ export function VerifiedSubmitForm() {
       return;
     }
 
-    saveFormState({ f, dockerMode, fixtureSource, showContent });
+    saveFormState({ f, dockerMode, needsBuild, fixtureSource, showContent });
     setPhase("submitting");
     try {
       const res = await fetch("/api/verify/submit", {
@@ -725,6 +1242,7 @@ export function VerifiedSubmitForm() {
   const submissionParamsProps = {
     f,
     dockerMode,
+    needsBuild,
     fixtureSource,
     regionsFileName,
     showParams,
@@ -864,15 +1382,139 @@ export function VerifiedSubmitForm() {
         )}
 
         <form onSubmit={onSubmit} className="mt-6 space-y-8">
-          {/* ── 1. Tool ─────────────────────────────────────────────── */}
-          <Section title={t("verified.submit.sectionTool")}>
+          {/* ── 1. Public source ─────────────────────────────────────
+              First, and alone until it is answered. Everything below is derived
+              from these two fields: which commit gets pinned, what the tool is
+              called and who answers for it, and which previous run of this same
+              repository the author can start from instead of retyping it. */}
+          <Section
+            title={t("verified.submit.sectionSource")}
+            hint={t("verified.submit.sectionSourceHint")}
+          >
+            <Field label={t("verified.submit.repo")} required>
+              <Input
+                value={f.repo}
+                onChange={set("repo")}
+                placeholder="https://github.com/owner/tool"
+              />
+              {repoState === "loading" && (
+                <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  {t("verified.submit.repoLookupLoading")}
+                </p>
+              )}
+              {repoState === "error" && (
+                <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
+                  {repoError ?? t("verified.submit.repoLookupError")}
+                </p>
+              )}
+              {repoState === "ready" && repoContext && (
+                <p className="mt-1 text-xs text-muted-foreground break-words">
+                  <span className="font-mono">{repoContext.repo.slug}</span>
+                  {repoContext.repo.description ? ` — ${repoContext.repo.description}` : ""}
+                </p>
+              )}
+              {err("source.repo")}
+            </Field>
+            <Field
+              label={t("verified.submit.ref")}
+              required
+              infoTooltip={t("verified.submit.refTooltip")}
+              infoTooltipAria={t("verified.submit.refTooltipAria")}
+            >
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <Input
+                  className="sm:flex-1"
+                  value={f.ref}
+                  onChange={set("ref")}
+                  placeholder="b618e93… or v3.0"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="shrink-0"
+                  disabled={repoState !== "ready" || !repoContext?.latest.sha}
+                  onClick={() => {
+                    const sha = repoContext?.latest.sha;
+                    if (sha) setF((prev) => ({ ...prev, ref: sha }));
+                  }}
+                >
+                  {repoState === "loading" && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  {t("verified.submit.fetchLastSha")}
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">{t("verified.submit.refHint")}</p>
+              {/* A tag is offered alongside the SHA because the ref is now the
+                  tool's version too, and "v3.0" reads better on an attestation
+                  than seven hex digits. */}
+              {repoContext?.latest.tag && f.ref.trim() !== repoContext.latest.tag && (
+                <button
+                  type="button"
+                  className="mt-1 text-xs text-primary underline underline-offset-2 hover:no-underline"
+                  onClick={() =>
+                    setF((prev) => ({ ...prev, ref: repoContext.latest.tag as string }))
+                  }
+                >
+                  {t("verified.submit.useLatestTag", { tag: repoContext.latest.tag })}
+                </button>
+              )}
+              {f.ref.trim() !== "" && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {t("verified.submit.versionDerived", { version: versionFromRef(f.ref) })}
+                </p>
+              )}
+              {err("source.ref")}
+            </Field>
+          </Section>
+
+          {/* An autofill that overwrites a field somebody filled in by hand is
+              the one way this can cost work rather than save it, so a
+              disagreement is shown and asked about instead of resolved. */}
+          {prefillConflicts.length > 0 && (
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertTitle>{t("verified.submit.prefillConflictTitle")}</AlertTitle>
+              <AlertDescription className="space-y-3">
+                <p>{t("verified.submit.prefillConflictBody")}</p>
+                <dl className="space-y-2 text-xs">
+                  {prefillConflicts.map((c) => (
+                    <div key={c.key} className="grid grid-cols-[7rem_1fr] gap-x-3">
+                      <dt className="font-medium">{t(c.labelKey)}</dt>
+                      <dd className="min-w-0 space-y-0.5">
+                        <p className="break-all text-muted-foreground line-through">{c.current}</p>
+                        <p className="break-all font-medium">{c.next}</p>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+                <div className="flex flex-wrap gap-2">
+                  <Button type="button" size="sm" onClick={acceptPrefill}>
+                    {t("verified.submit.prefillAccept")}
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setPrefillConflicts([])}
+                  >
+                    {t("verified.submit.prefillKeep")}
+                  </Button>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* ── 2. Tool ─────────────────────────────────────────────── */}
+          <Section
+            title={t("verified.submit.sectionTool")}
+            hint={sourceReady ? undefined : t("verified.submit.lockedUntilSource")}
+            disabled={!sourceReady}
+          >
             <Field label={t("verified.submit.name")} required>
               <Input value={f.name} onChange={set("name")} placeholder="STRait Razor" />
               {err("tool.name")}
-            </Field>
-            <Field label={t("verified.submit.version")} required>
-              <Input value={f.version} onChange={set("version")} placeholder="v3.0" />
-              {err("tool.version")}
             </Field>
             <Field label={t("verified.submit.maintainer")} optional>
               <Input value={f.maintainer} onChange={set("maintainer")} />
@@ -895,6 +1537,19 @@ export function VerifiedSubmitForm() {
           <Section
             title={t("verified.submit.preflightTitle")}
             hint={t("verified.submit.preflightHint")}
+            disabled={!sourceReady}
+            collapsible
+            // Forced open while a ticked box is blocking submit: the reason the
+            // button is dead must never be folded out of sight.
+            open={preflightOpen || preflightBlocks}
+            onToggle={() => setPreflightOpen((v) => !v)}
+            summary={
+              declaredIncompat.length === 0
+                ? t("verified.submit.preflightSummaryNone")
+                : t("verified.submit.preflightSummarySelected", {
+                    n: String(declaredIncompat.length),
+                  })
+            }
           >
             <div className="space-y-2">
               {COMPATIBILITY_FLAGS.map((flag) => (
@@ -933,30 +1588,105 @@ export function VerifiedSubmitForm() {
             )}
           </Section>
 
-          {/* ── 2. Source ────────────────────────────────────────────── */}
-          <Section title={t("verified.submit.sectionSource")} hint={t("verified.submit.sectionSourceHint")}>
-            <Field label={t("verified.submit.repo")} required>
-              <Input
-                value={f.repo}
-                onChange={set("repo")}
-                placeholder="https://github.com/owner/tool"
-              />
-              {err("source.repo")}
-            </Field>
-            <Field
-              label={t("verified.submit.ref")}
-              required
-              infoTooltip={t("verified.submit.refTooltip")}
-              infoTooltipAria={t("verified.submit.refTooltipAria")}
+          {/* ── 3. Reuse a previous run ──────────────────────────────
+              Everything below this point is the same twenty answers the author
+              already gave the last time they verified this repository. The only
+              thing that usually changes between runs is the commit. */}
+          {repoContext && repoContext.previous.length > 0 && (
+            <Section
+              title={t("verified.submit.reuseTitle")}
+              hint={t("verified.submit.reuseHint")}
+              disabled={!sourceReady}
             >
-              <Input value={f.ref} onChange={set("ref")} placeholder="b618e93… or v3.0" />
-              <p className="text-xs text-muted-foreground mt-1">{t("verified.submit.refHint")}</p>
-              {err("source.ref")}
-            </Field>
-          </Section>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {REUSE_GROUPS.map((g) => (
+                  <label key={g} className="flex cursor-pointer items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 shrink-0 accent-primary"
+                      checked={reuseGroups[g]}
+                      onChange={(e) =>
+                        setReuseGroups((prev) => ({ ...prev, [g]: e.target.checked }))
+                      }
+                    />
+                    {t(`verified.submit.reuseGroup.${g}`)}
+                  </label>
+                ))}
+              </div>
 
-          {/* ── 3. Environment ───────────────────────────────────────── */}
-          <Section title={t("verified.submit.sectionEnv")}>
+              <div className="space-y-2">
+                {repoContext.previous.slice(0, visibleRuns).map((run) => (
+                  <div
+                    key={run.slug}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border px-3 py-2"
+                  >
+                    <div className="min-w-0">
+                      <p className="flex items-center gap-2 text-sm font-medium">
+                        {run.succeeded && (
+                          <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
+                        )}
+                        <span className="truncate">{run.name}</span>
+                        {run.ref && (
+                          <code className="font-mono text-[11px] text-muted-foreground">
+                            {run.ref.slice(0, 12)}
+                          </code>
+                        )}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {run.label}
+                        {run.generated ? ` · ${run.generated.slice(0, 10)}` : ""}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled={
+                        reuseBusy !== null || !REUSE_GROUPS.some((g) => reuseGroups[g])
+                      }
+                      onClick={() => applyReuse(run.slug)}
+                    >
+                      {reuseBusy === run.slug ? (
+                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <RotateCcw className="mr-2 h-3.5 w-3.5" />
+                      )}
+                      {t("verified.submit.reuseApply")}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              {visibleRuns < repoContext.previous.length && (
+                <button
+                  type="button"
+                  onClick={() => setVisibleRuns((n) => n + REUSE_PAGE_SIZE)}
+                  className="flex items-center gap-1.5 text-sm text-primary underline underline-offset-2 hover:no-underline"
+                >
+                  <ChevronDown className="h-3.5 w-3.5" />
+                  {t("verified.submit.reuseShowMore", {
+                    n: String(
+                      Math.min(
+                        REUSE_PAGE_SIZE,
+                        repoContext.previous.length - visibleRuns,
+                      ),
+                    ),
+                  })}
+                </button>
+              )}
+
+              {reuseApplied && !reuseError && (
+                <p className="flex items-start gap-2 text-xs text-emerald-700 dark:text-emerald-400">
+                  <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                  {t("verified.submit.reuseApplied")}
+                </p>
+              )}
+              {reuseError && <p className="text-xs text-destructive">{reuseError}</p>}
+            </Section>
+          )}
+
+          {/* ── 4. Environment ───────────────────────────────────────── */}
+          <Section title={t("verified.submit.sectionEnv")} disabled={!sourceReady}>
             <Field
               label={t("verified.submit.dockerMode")}
               infoTooltip={t("verified.submit.dockerModeTooltip")}
@@ -989,7 +1719,7 @@ export function VerifiedSubmitForm() {
                 </p>
                 <Field label={t("verified.submit.language")} required>
                   <Select value={f.language} onValueChange={(v) => setF((prev) => ({ ...prev, language: v }))}>
-                    <SelectTrigger className="h-11 text-base">
+                    <SelectTrigger className="h-11">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1001,27 +1731,46 @@ export function VerifiedSubmitForm() {
                     </SelectContent>
                   </Select>
                 </Field>
-                <Field
-                  label={t("verified.submit.buildCmd")}
-                  required
-                  infoTooltip={t("verified.submit.buildCmdTooltip")}
-                  infoTooltipAria={t("verified.submit.buildCmdTooltipAria")}
-                >
-                  <Input
-                    value={f.buildCmd}
-                    onChange={set("buildCmd")}
-                    placeholder="pip install -r requirements.txt && pip install ."
-                  />
-                  {err("docker.build_cmd")}
-                </Field>
-                <Field
-                  label={t("verified.submit.checkCmd")}
-                  optional
-                  infoTooltip={t("verified.submit.checkCmdTooltip")}
-                  infoTooltipAria={t("verified.submit.checkCmdTooltipAria")}
-                >
-                  <Input value={f.checkCmd} onChange={set("checkCmd")} placeholder="mytool --help" />
-                </Field>
+                <div className="space-y-1.5">
+                  <label className="flex cursor-pointer items-start gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
+                      checked={needsBuild}
+                      onChange={(e) => setNeedsBuild(e.target.checked)}
+                    />
+                    {t("verified.submit.needsBuild")}
+                  </label>
+                  <p className="pl-6 text-xs text-muted-foreground">
+                    {t("verified.submit.needsBuildHint")}
+                  </p>
+                </div>
+
+                {needsBuild && (
+                  <>
+                    <Field
+                      label={t("verified.submit.buildCmd")}
+                      required
+                      infoTooltip={t("verified.submit.buildCmdTooltip")}
+                      infoTooltipAria={t("verified.submit.buildCmdTooltipAria")}
+                    >
+                      <Input
+                        value={f.buildCmd}
+                        onChange={set("buildCmd")}
+                        placeholder="pip install -r requirements.txt && pip install ."
+                      />
+                      {err("docker.build_cmd")}
+                    </Field>
+                    <Field
+                      label={t("verified.submit.checkCmd")}
+                      optional
+                      infoTooltip={t("verified.submit.checkCmdTooltip")}
+                      infoTooltipAria={t("verified.submit.checkCmdTooltipAria")}
+                    >
+                      <Input value={f.checkCmd} onChange={set("checkCmd")} placeholder="mytool --help" />
+                    </Field>
+                  </>
+                )}
               </>
             ) : (
               <>
@@ -1042,8 +1791,12 @@ export function VerifiedSubmitForm() {
             )}
           </Section>
 
-          {/* ── 4. Input data (before Execution so user sees canonical paths first) */}
-          <Section title={t("verified.submit.sectionInputs")} hint={t("verified.submit.sectionInputsHint")}>
+          {/* ── 5. Input data (before Execution so user sees canonical paths first) */}
+          <Section
+            title={t("verified.submit.sectionInputs")}
+            hint={t("verified.submit.sectionInputsHint")}
+            disabled={!sourceReady}
+          >
             {/* STRhub reference datasets callout */}
             <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-3 py-3 text-xs text-muted-foreground">
               <Info className="h-4 w-4 mt-0.5 shrink-0" />
@@ -1106,7 +1859,7 @@ export function VerifiedSubmitForm() {
                 value={f.inputType || undefined}
                 onValueChange={onInputTypeChange}
               >
-                <SelectTrigger className="h-11 text-base">
+                <SelectTrigger className="h-11">
                   <SelectValue placeholder={t("verified.submit.inputTypeSelect")} />
                 </SelectTrigger>
                 <SelectContent className="max-h-80">
@@ -1384,10 +2137,28 @@ export function VerifiedSubmitForm() {
                     />
                     {t("verified.submit.fixtureOtherRepo")}
                   </label>
+                  {/* Offered only where STRhub has a reference dataset to run
+                      instead. For the other types it would be a route with no
+                      destination: no fixture means nothing to run at all. */}
+                  {fixtureIsOptional && (
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="radio"
+                        checked={fixtureSource === "none"}
+                        onChange={() => setFixtureSource("none")}
+                      />
+                      {t("verified.submit.fixtureNone")}
+                    </label>
+                  )}
                 </div>
               </Field>
 
-              {fixtureSource === "same" ? (
+              {fixtureSource === "none" ? (
+                <div className="flex items-start gap-2 rounded-md bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+                  <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                  <span>{t("verified.submit.fixtureNoneNote")}</span>
+                </div>
+              ) : fixtureSource === "same" ? (
                 <>
                   {f.repo && (
                     <div className="flex items-start gap-2 rounded-md bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
@@ -1397,8 +2168,7 @@ export function VerifiedSubmitForm() {
                   )}
                   <Field
                     label={t("verified.submit.fixturePathInRepo")}
-                    required={!fixtureIsOptional}
-                    optional={fixtureIsOptional}
+                    required
                     infoTooltip={t("verified.submit.fixturePathInRepoTooltip")}
                     infoTooltipAria={t("verified.submit.fixturePathInRepoTooltipAria")}
                   >
@@ -1413,7 +2183,7 @@ export function VerifiedSubmitForm() {
                 </>
               ) : (
                 <>
-                  <Field label={t("verified.submit.fixtureRepo")} required={!fixtureIsOptional} optional={fixtureIsOptional}>
+                  <Field label={t("verified.submit.fixtureRepo")} required>
                     <Input
                       value={f.fixtureRepo}
                       onChange={set("fixtureRepo")}
@@ -1421,14 +2191,13 @@ export function VerifiedSubmitForm() {
                     />
                     {err("inputs.fixture.repo")}
                   </Field>
-                  <Field label={t("verified.submit.fixtureRef")} required={!fixtureIsOptional} optional={fixtureIsOptional}>
+                  <Field label={t("verified.submit.fixtureRef")} required>
                     <Input value={f.fixtureRef} onChange={set("fixtureRef")} placeholder="main" />
                     {err("inputs.fixture.ref")}
                   </Field>
                   <Field
                     label={t("verified.submit.fixturePathInRepo")}
-                    required={!fixtureIsOptional}
-                    optional={fixtureIsOptional}
+                    required
                     infoTooltip={t("verified.submit.fixturePathInRepoTooltip")}
                     infoTooltipAria={t("verified.submit.fixturePathInRepoTooltipAria")}
                   >
@@ -1444,8 +2213,8 @@ export function VerifiedSubmitForm() {
             </div>
           </Section>
 
-          {/* ── 5. Execution ─────────────────────────────────────────── */}
-          <Section title={t("verified.submit.sectionRun")}>
+          {/* ── 6. Execution ─────────────────────────────────────────── */}
+          <Section title={t("verified.submit.sectionRun")} disabled={!sourceReady}>
             <Field
               label={t("verified.submit.cmd")}
               required
@@ -1504,8 +2273,76 @@ export function VerifiedSubmitForm() {
             </Field>
           </Section>
 
-          {/* ── 6. Outputs ───────────────────────────────────────────── */}
-          <Section title={t("verified.submit.sectionOutputs")} hint={t("verified.submit.sectionOutputsHint")}>
+          {/* ── 7. Outputs ───────────────────────────────────────────── */}
+          <Section
+            title={t("verified.submit.sectionOutputs")}
+            hint={t("verified.submit.sectionOutputsHint")}
+            disabled={!sourceReady}
+          >
+            {/* Detection from a real file. Everything this section asks for is a
+                fact about a file the author already has; hand-counting column
+                positions off a screen is the part they get wrong. */}
+            <div className="rounded-md border border-[#0099a3]/30 bg-[#0099a3]/5 px-3 py-3 space-y-2">
+              <div className="flex items-start gap-2">
+                <Info className="h-4 w-4 mt-0.5 shrink-0 text-[#0099a3]" />
+                <div className="min-w-0 flex-1 space-y-2">
+                  <p className="text-sm font-medium text-foreground">
+                    {t("verified.submit.detectTitle")}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("verified.submit.detectHint")}
+                  </p>
+                  <label className="flex cursor-pointer items-center gap-3 rounded-md border border-dashed border-border bg-background px-3 py-2 text-sm transition-colors hover:bg-muted/40">
+                    <Upload className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    <span className="min-w-0 truncate text-muted-foreground">
+                      {detectFileName || t("verified.submit.detectChoose")}
+                    </span>
+                    <input
+                      type="file"
+                      className="sr-only"
+                      onChange={(e) => onSampleOutputFile(e.target.files?.[0])}
+                    />
+                  </label>
+
+                  {detectState === "reading" && (
+                    <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      {t("verified.submit.detectReading")}
+                    </p>
+                  )}
+                  {detectState === "error" && (
+                    <p className="text-xs text-destructive">
+                      {detectError ?? t("verified.submit.detectError")}
+                    </p>
+                  )}
+                  {detectState === "done" && detection && (
+                    <div className="space-y-1.5 text-xs">
+                      <p className="flex items-start gap-1.5 font-medium text-emerald-700 dark:text-emerald-400">
+                        <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                        {t("verified.submit.detectResult", {
+                          format: t(`verified.submit.outputFormatOptions.${detection.format}`),
+                          rows: detection.rows.toLocaleString(),
+                        })}
+                      </p>
+                      {detection.loci.length > 0 && (
+                        <p className="text-muted-foreground">
+                          {t("verified.submit.detectLoci", {
+                            n: String(detection.loci.length),
+                            sample: detection.loci.slice(0, 6).join(", "),
+                          })}
+                        </p>
+                      )}
+                      {detection.notes.map((note) => (
+                        <p key={note} className="text-muted-foreground">
+                          · {t(`verified.submit.detectNote.${note}`)}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <Field
               label={t("verified.submit.outputPath")}
               required
@@ -1526,7 +2363,7 @@ export function VerifiedSubmitForm() {
                 value={f.outputFormat}
                 onValueChange={(v) => setF((prev) => ({ ...prev, outputFormat: v }))}
               >
-                <SelectTrigger className="h-11 text-base">
+                <SelectTrigger className="h-11">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -1577,27 +2414,58 @@ export function VerifiedSubmitForm() {
                     </button>
                   )}
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <Field label="columns">
+                <p className="text-xs text-muted-foreground">
+                  {t("verified.submit.contentZeroBased")}
+                </p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field
+                    label={t("verified.submit.contentField.columns")}
+                    code="columns"
+                    infoTooltip={t("verified.submit.contentField.columnsTip")}
+                  >
                     <Input type="number" value={f.columns} onChange={setContent("columns")} placeholder="5" />
                   </Field>
-                  <Field label="dna_column">
+                  <Field
+                    label={t("verified.submit.contentField.dnaColumn")}
+                    code="dna_column"
+                    infoTooltip={t("verified.submit.contentField.dnaColumnTip")}
+                  >
                     <Input type="number" value={f.dnaColumn} onChange={setContent("dnaColumn")} placeholder="2" />
                   </Field>
-                  <Field label="count_columns">
+                  <Field
+                    label={t("verified.submit.contentField.countColumns")}
+                    code="count_columns"
+                    infoTooltip={t("verified.submit.contentField.countColumnsTip")}
+                  >
                     <Input value={f.countColumns} onChange={setContent("countColumns")} placeholder="3, 4" />
                   </Field>
-                  <Field label="locus_column">
-                    <Input type="number" value={f.locusColumn} onChange={setContent("locusColumn")} />
+                  <Field
+                    label={t("verified.submit.contentField.locusColumn")}
+                    code="locus_column"
+                    infoTooltip={t("verified.submit.contentField.locusColumnTip")}
+                  >
+                    <Input type="number" value={f.locusColumn} onChange={setContent("locusColumn")} placeholder="0" />
                   </Field>
-                  <Field label="min_distinct_loci">
-                    <Input type="number" value={f.minDistinctLoci} onChange={setContent("minDistinctLoci")} />
+                  <Field
+                    label={t("verified.submit.contentField.minDistinctLoci")}
+                    code="min_distinct_loci"
+                    infoTooltip={t("verified.submit.contentField.minDistinctLociTip")}
+                  >
+                    <Input type="number" value={f.minDistinctLoci} onChange={setContent("minDistinctLoci")} placeholder="8" />
                   </Field>
-                  <Field label="min_total_reads">
+                  <Field
+                    label={t("verified.submit.contentField.minTotalReads")}
+                    code="min_total_reads"
+                    infoTooltip={t("verified.submit.contentField.minTotalReadsTip")}
+                  >
                     <Input type="number" value={f.minTotalReads} onChange={setContent("minTotalReads")} placeholder="100" />
                   </Field>
-                  <div className="col-span-2">
-                    <Field label="expect_loci">
+                  <div className="sm:col-span-2">
+                    <Field
+                      label={t("verified.submit.contentField.expectLoci")}
+                      code="expect_loci"
+                      infoTooltip={t("verified.submit.contentField.expectLociTip")}
+                    >
                       <Input
                         value={f.expectLoci}
                         onChange={setContent("expectLoci")}
@@ -1639,6 +2507,7 @@ function ResultShell({ children }: { children: React.ReactNode }) {
 function SubmissionParams({
   f,
   dockerMode,
+  needsBuild,
   fixtureSource,
   regionsFileName,
   showParams,
@@ -1648,7 +2517,8 @@ function SubmissionParams({
 }: {
   f: typeof INITIAL_F;
   dockerMode: "generated" | "provided";
-  fixtureSource: "same" | "other";
+  needsBuild: boolean;
+  fixtureSource: FixtureSource;
   regionsFileName: string;
   showParams: boolean;
   onToggle: () => void;
@@ -1660,17 +2530,22 @@ function SubmissionParams({
   const inputTypeLabel =
     INPUT_TYPES.find((it) => it.slug === f.inputType)?.label ?? resolvedInputType;
 
-  const fixtureDisplay = f.fixtureFilePath
-    ? fixtureSource === "other" && f.fixtureRepo
-      ? `${f.fixtureRepo}@${f.fixtureRef}:${f.fixtureFilePath}`
+  const fixtureDisplay =
+    fixtureSource === "none"
+      ? t("verified.submit.fixtureNone")
       : f.fixtureFilePath
-    : "—";
+        ? fixtureSource === "other" && f.fixtureRepo
+          ? `${f.fixtureRepo}@${f.fixtureRef}:${f.fixtureFilePath}`
+          : f.fixtureFilePath
+        : "—";
 
   const regionsDisplay = regionsFileName || "—";
 
   const buildDisplay =
     dockerMode === "generated"
-      ? `${f.language} — ${f.buildCmd}`
+      ? needsBuild && f.buildCmd.trim()
+        ? `${f.language} — ${f.buildCmd}`
+        : `${f.language} — ${t("verified.submit.buildCmdNone")}`
       : t("verified.submit.dockerProvided");
 
   return (
@@ -1694,9 +2569,6 @@ function SubmissionParams({
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
               <dt className="text-muted-foreground">{t("verified.submit.paramsToolName")}</dt>
               <dd className="font-medium">{f.name}</dd>
-
-              <dt className="text-muted-foreground">{t("verified.submit.paramsVersion")}</dt>
-              <dd>{f.version}</dd>
 
               <dt className="text-muted-foreground">{t("verified.submit.paramsRepo")}</dt>
               <dd className="break-all text-xs font-mono">{f.repo}</dd>
@@ -1754,12 +2626,67 @@ function SubmissionParams({
   );
 }
 
-function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+/**
+ * A form section.
+ *
+ * `disabled` uses the native fieldset behaviour, so every control inside is
+ * genuinely inert rather than merely dimmed — including the Radix triggers,
+ * which render as buttons. The legend is exempt by spec, which is what lets a
+ * collapsible section still be unfolded while its contents are gated.
+ */
+function Section({
+  title,
+  hint,
+  disabled,
+  collapsible,
+  open,
+  onToggle,
+  summary,
+  children,
+}: {
+  title: string;
+  hint?: string;
+  disabled?: boolean;
+  collapsible?: boolean;
+  open?: boolean;
+  onToggle?: () => void;
+  /** One line shown in place of the body while collapsed. */
+  summary?: string;
+  children: React.ReactNode;
+}) {
+  const expanded = !collapsible || open !== false;
   return (
-    <fieldset className="space-y-4">
-      <legend className="text-lg font-semibold">{title}</legend>
-      {hint && <p className="text-sm text-muted-foreground -mt-2">{hint}</p>}
-      {children}
+    <fieldset
+      disabled={disabled}
+      className={`space-y-4 ${disabled ? "opacity-50" : ""}`}
+    >
+      <legend className="text-lg font-semibold">
+        {collapsible ? (
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-expanded={expanded}
+            className="flex items-center gap-1.5 text-left transition-colors hover:text-primary"
+          >
+            {expanded ? (
+              <ChevronDown className="h-4 w-4 shrink-0" />
+            ) : (
+              <ChevronRight className="h-4 w-4 shrink-0" />
+            )}
+            {title}
+          </button>
+        ) : (
+          title
+        )}
+      </legend>
+      {expanded ? (
+        <>
+          {hint && <p className="text-sm text-muted-foreground -mt-2">{hint}</p>}
+          {children}
+        </>
+      ) : (
+        summary && <p className="text-sm text-muted-foreground -mt-2">{summary}</p>
+      )}
     </fieldset>
   );
 }
@@ -1785,6 +2712,7 @@ function InfoTooltipIcon({ tooltip, ariaLabel }: { tooltip: string; ariaLabel?: 
 
 function Field({
   label,
+  code,
   required,
   optional,
   infoTooltip,
@@ -1792,6 +2720,13 @@ function Field({
   children,
 }: {
   label: string;
+  /**
+   * The manifest key this field writes, shown beside the label. The content
+   * fields used to be labelled with the key alone — `dna_column`, `count_columns` —
+   * which named the destination but never said what to put there, or that the
+   * positions are counted from zero.
+   */
+  code?: string;
   required?: boolean;
   optional?: boolean;
   infoTooltip?: string;
@@ -1801,7 +2736,7 @@ function Field({
   const { t } = useLanguage();
   return (
     <div className="space-y-1.5">
-      <Label className="text-sm inline-flex items-center gap-1.5">
+      <Label className="text-sm inline-flex flex-wrap items-center gap-1.5">
         <span>
           {label}
           {required && <span className="ml-1 text-destructive">*</span>}
@@ -1811,6 +2746,11 @@ function Field({
             </span>
           )}
         </span>
+        {code && (
+          <code className="font-mono text-[11px] font-normal text-muted-foreground">
+            {code}
+          </code>
+        )}
         {infoTooltip && (
           <InfoTooltipIcon tooltip={infoTooltip} ariaLabel={infoTooltipAria} />
         )}

@@ -148,6 +148,50 @@ async function gh<T>(
   return (await res.json()) as T;
 }
 
+/**
+ * Read a PUBLIC repository that is not the engine — the author's own repo.
+ *
+ * Prefilling the form from the repo the author just pasted means a request per
+ * keystroke-settled URL, and unauthenticated GitHub allows 60 an hour PER
+ * CLIENT IP: on a deploy behind a proxy that is 60 an hour for everyone
+ * together. The installation token raises that to 5,000, so it is used when the
+ * App is configured, and the call falls back to unauthenticated when it is not
+ * (local development) or when the installation cannot see the resource.
+ *
+ * Returns null for 404 so a missing release or a typo'd URL is a value, not an
+ * exception — every caller here treats "not there" as ordinary.
+ */
+export async function ghPublic<T>(path: string): Promise<T | null> {
+  const headers: Record<string, string> = {
+    Accept: "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+  let token: string | null = null;
+  try {
+    token = await getInstallationToken();
+  } catch {
+    token = null; // App not configured — public reads still work unauthenticated.
+  }
+
+  const attempt = async (auth: string | null): Promise<Response> =>
+    fetch(`${API}${path}`, {
+      headers: auth ? { ...headers, Authorization: `Bearer ${auth}` } : headers,
+      cache: "no-store",
+    });
+
+  let res = await attempt(token);
+  // The installation is scoped to the engine repo; if that scope is refused for
+  // someone else's public repo, the anonymous read still succeeds.
+  if (token && (res.status === 401 || res.status === 403)) {
+    res = await attempt(null);
+  }
+  if (res.status === 404) return null;
+  if (!res.ok) {
+    throw new GitHubApiError(`GET ${path} → ${res.status}`, res.status);
+  }
+  return (await res.json()) as T;
+}
+
 /** Whether a path already exists in the engine repo (e.g. slug already taken). */
 export async function pathExists(path: string): Promise<boolean> {
   try {

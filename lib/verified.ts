@@ -10,8 +10,10 @@ const BASE =
   process.env.NEXT_PUBLIC_VERIFIED_BASE ??
   "https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages";
 
-// The catalogue listing tolerates being a few minutes behind: it is a directory,
-// and a tool appearing late costs nobody anything.
+// Kept for any future listing that is genuinely just a directory. The catalogue
+// is not one: its cards carry the badge level, the locus count and the read
+// total, so a stale card states a superseded result about a named tool exactly
+// the way a stale detail page does.
 const REVALIDATE_SECONDS = 300;
 
 /**
@@ -45,7 +47,7 @@ function isCatalogueGhost(entry: VerifiedIndex["tools"][number]): boolean {
 }
 
 export async function getVerifiedIndex(): Promise<VerifiedIndex> {
-  const data = await fetchJson<VerifiedIndex>(`${BASE}/index.json`);
+  const data = await fetchJson<VerifiedIndex>(`${BASE}/index.json`, true);
   if (!data) {
     return {
       schema: "strhub-verified/index/1",

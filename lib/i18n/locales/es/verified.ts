@@ -297,6 +297,10 @@ export default {
       refGenomeNote: "El genoma de referencia ({assembly}) se descarga, indexa y monta automáticamente por STRhub.",
       canonicalPathsTitle: "Usá estas rutas estándar en tu comando de ejecución",
       canonicalPathsDescription: "STRhub renombra todos los archivos de entrada a nombres estándar para que el mismo comando funcione tanto con tus datos como con nuestro dataset de referencia. Usá exactamente estas rutas:",
+      sliceNoticeTitle: "Nuestra muestra de referencia es un slice, no un genoma completo",
+      sliceNoticeBody:
+        "STRhub no aloja genomas completos. Los datos de referencia de este tipo de entrada son un extracto pequeño alrededor de marcadores STR forenses. Una herramienta apuntada fuera de esos marcadores no encuentra lecturas ahí, así que la corrida no dice nada sobre la herramienta.",
+      sliceNoticeDownload: "Descargar las coordenadas soportadas (BED, GRCh38)",
       timeout: "Timeout (minutos)",
       inputType: "¿Qué tipo de datos recibe tu herramienta?",
       inputTypeSelect: "Seleccioná el tipo de input",

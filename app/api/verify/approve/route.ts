@@ -11,7 +11,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/auth";
 import { approveRepo, normalizeRepo, getPendingBySlug, updateSubmissionStatus } from "@/lib/verified/store";
 import { submissionSchema, newDispatchId } from "@/lib/verified/submission";
-import { buildManifestYaml, generateDockerfile } from "@/lib/verified/manifest";
+import { buildManifestYaml, generateDockerfile, REGIONS_ASSET_PATH } from "@/lib/verified/manifest";
 import { putFile, dispatchWorkflow, GitHubConfigError, GitHubApiError } from "@/lib/verified/github";
 
 export const runtime = "nodejs";
@@ -52,6 +52,14 @@ export async function POST(request: NextRequest) {
           const msg = `verified: add ${slug} (${sub.source.repo}@${sub.source.ref})`;
           await putFile(`tools/${slug}/manifest.yml`, buildManifestYaml(sub, slug), msg);
           await putFile(`tools/${slug}/Dockerfile`, generateDockerfile(sub), msg);
+          // The manifest names this path, so omitting it aborts the run at the
+          // pre-flight with "uploaded regions BED not found". Approval is the
+          // FIRST run of every coordinate-based tool, so leaving it out made that
+          // first run fail every time and pass only on re-submission, which is
+          // exactly the kind of fault that hides for months.
+          if (sub.inputs.regions_bed) {
+            await putFile(`tools/${slug}/${REGIONS_ASSET_PATH}`, sub.inputs.regions_bed, msg);
+          }
           await dispatchWorkflow({ tool: slug, dispatch_id: dispatchId });
           await updateSubmissionStatus(slug, "approved-pending", "dispatched", { dispatchId });
           return NextResponse.json({

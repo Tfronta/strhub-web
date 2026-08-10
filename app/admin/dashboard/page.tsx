@@ -74,9 +74,36 @@ interface ContentEntry {
   published: boolean;
 }
 
+/** Carries the HTTP status out of a failed load so the banner can name the cause. */
+class HttpError extends Error {
+  status: number;
+  constructor(status: number) {
+    super(`HTTP ${status}`);
+    this.status = status;
+  }
+}
+
+/**
+ * A failed admin load must never render as an empty list.
+ *
+ * Both loaders used to do `setX(data.items || [])` without checking `res.ok`. A
+ * 401 body parses fine, so an expired token produced exactly the same screen as
+ * "nothing pending" — a tool waiting for approval looked like no tool at all, and
+ * the only signal was in the console.
+ */
+function loadErrorMessage(error: unknown): string {
+  if (error instanceof HttpError && error.status === 401) {
+    return "Tu sesión expiró o el token ya no es válido. Cierra sesión y vuelve a entrar.";
+  }
+  const detail = error instanceof HttpError ? ` (HTTP ${error.status})` : "";
+  return `No se pudieron cargar los datos${detail}. Esto NO significa que la lista esté vacía.`;
+}
+
 export default function AdminDashboard() {
   const [entries, setEntries] = useState<ContentEntry[]>([]);
+  const [entriesError, setEntriesError] = useState<string | null>(null);
   const [verifiedSubmissions, setVerifiedSubmissions] = useState<VerifiedSubmission[]>([]);
+  const [verifiedError, setVerifiedError] = useState<string | null>(null);
   const [approvingSlug, setApprovingSlug] = useState<string | null>(null);
   const [rejectingSlug, setRejectingSlug] = useState<string | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -109,11 +136,15 @@ export default function AdminDashboard() {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
       });
+      if (!res.ok) throw new HttpError(res.status);
       const raw = await res.text();
       const data = JSON.parse(raw);
       setEntries(data.entries || []);
+      setEntriesError(null);
     } catch (error) {
       console.error("Failed to load entries:", error);
+      setEntries([]);
+      setEntriesError(loadErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
@@ -126,10 +157,14 @@ export default function AdminDashboard() {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
       });
+      if (!res.ok) throw new HttpError(res.status);
       const data = await res.json();
       setVerifiedSubmissions(data.submissions || []);
+      setVerifiedError(null);
     } catch (error) {
       console.error("Failed to load verified submissions:", error);
+      setVerifiedSubmissions([]);
+      setVerifiedError(loadErrorMessage(error));
     }
   };
 
@@ -401,7 +436,11 @@ export default function AdminDashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {pending.length === 0 ? (
+                {verifiedError ? (
+                  <p className="text-sm text-destructive py-4 text-center">
+                    {verifiedError}
+                  </p>
+                ) : pending.length === 0 ? (
                   <p className="text-sm text-muted-foreground py-4 text-center">
                     No hay submissions pendientes.
                   </p>
@@ -645,7 +684,13 @@ export default function AdminDashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {entries.length === 0 ? (
+                {entriesError ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center py-8 text-destructive">
+                      {entriesError}
+                    </TableCell>
+                  </TableRow>
+                ) : entries.length === 0 ? (
                   <TableRow>
                     <TableCell
                       colSpan={4}

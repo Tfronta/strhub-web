@@ -203,6 +203,29 @@ const RATE_MAX_PER_REPO = 3;
 export interface RateResult {
   ok: boolean;
   reason?: string;
+  /** Seconds until the next slot frees. Present whenever `ok` is false. */
+  retryAfterSeconds?: number;
+}
+
+/**
+ * Milliseconds until this key drops below its limit.
+ *
+ * The window is rolling, so the wait is not "an hour": it ends when enough of
+ * the counted submissions age out. With `count` in the window and a ceiling of
+ * `max`, one more than the excess has to leave, and the last of those to go is
+ * the one at index `count - max` once they are sorted oldest first.
+ */
+function msUntilSlotFrees(timestamps: number[], max: number, now: number): number {
+  const sorted = [...timestamps].sort((a, b) => a - b);
+  const blocking = sorted[sorted.length - max];
+  return Math.max(0, blocking + RATE_WINDOW_MS - now);
+}
+
+/** "in under a minute" / "in about 7 minutes" — enough to decide whether to wait. */
+function humanWait(ms: number): string {
+  const minutes = Math.ceil(ms / 60_000);
+  if (minutes <= 1) return "in under a minute";
+  return `in about ${minutes} minutes`;
 }
 
 export async function checkRateLimit(
@@ -210,19 +233,37 @@ export async function checkRateLimit(
   repo: string
 ): Promise<RateResult> {
   const store = await load();
-  const since = Date.now() - RATE_WINDOW_MS;
-  const recent = store.submissions.filter(
-    (s) => new Date(s.createdAt).getTime() >= since
-  );
-  const byIp = recent.filter((s) => s.clientHash === clientHash).length;
-  if (byIp >= RATE_MAX_PER_IP) {
-    return { ok: false, reason: "Too many submissions from this client. Try later." };
+  const now = Date.now();
+  const since = now - RATE_WINDOW_MS;
+  const recent = store.submissions
+    .map((s) => ({ ...s, at: new Date(s.createdAt).getTime() }))
+    .filter((s) => s.at >= since);
+
+  // Both branches used to end in "Try later", which tells someone to retry
+  // without saying when — so they retry blind, get refused again, and the only
+  // way to find the answer is to read this file. The timestamps needed to
+  // compute it are already in hand.
+  const byIp = recent.filter((s) => s.clientHash === clientHash);
+  if (byIp.length >= RATE_MAX_PER_IP) {
+    const ms = msUntilSlotFrees(byIp.map((s) => s.at), RATE_MAX_PER_IP, now);
+    return {
+      ok: false,
+      reason: `Too many submissions from this client. Try again ${humanWait(ms)}.`,
+      retryAfterSeconds: Math.ceil(ms / 1000),
+    };
   }
+
   const repoKey = normalizeRepo(repo);
-  const byRepo = recent.filter((s) => normalizeRepo(s.repo) === repoKey).length;
-  if (byRepo >= RATE_MAX_PER_REPO) {
-    return { ok: false, reason: "Too many submissions for this repository. Try later." };
+  const byRepo = recent.filter((s) => normalizeRepo(s.repo) === repoKey);
+  if (byRepo.length >= RATE_MAX_PER_REPO) {
+    const ms = msUntilSlotFrees(byRepo.map((s) => s.at), RATE_MAX_PER_REPO, now);
+    return {
+      ok: false,
+      reason: `Too many submissions for this repository. Try again ${humanWait(ms)}.`,
+      retryAfterSeconds: Math.ceil(ms / 1000),
+    };
   }
+
   return { ok: true };
 }
 

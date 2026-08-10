@@ -128,7 +128,17 @@ export async function POST(request: NextRequest) {
   //     with requests that were going to be refused anyway.
   const rate = await checkRateLimit(clientHash, sub.source.repo);
   if (!rate.ok) {
-    return NextResponse.json({ ok: false, error: rate.reason }, { status: 429 });
+    return NextResponse.json(
+      { ok: false, error: rate.reason, retryAfterSeconds: rate.retryAfterSeconds },
+      {
+        status: 429,
+        // The standard header for this, so a client that reads it does not have
+        // to parse the sentence.
+        headers: rate.retryAfterSeconds
+          ? { "Retry-After": String(rate.retryAfterSeconds) }
+          : undefined,
+      }
+    );
   }
 
   // 1c. BYOR fixture must be publicly reachable at submit time.

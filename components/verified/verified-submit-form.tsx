@@ -829,6 +829,9 @@ export function VerifiedSubmitForm() {
   const selectedTypeInfo = INPUT_TYPES.find((t) => t.slug === f.inputType);
   const selectedRefGenome = selectedTypeInfo?.referenceGenome ?? null;
   const selectedCanonicalPaths = selectedTypeInfo?.canonicalPaths ?? null;
+  // Read off the un-narrowed union: only some input types carry a panel, and
+  // narrowing on hasExternalDataset first collapses the property to `never`.
+  const selectedSupportedLoci: readonly string[] = selectedTypeInfo?.supportedLoci ?? [];
   const fixtureIsOptional = selectedTypeInfo?.hasExternalDataset === true;
   const cmdLooksLikeTemplate = f.cmd === "" || f.cmd.startsWith(CMD_TEMPLATE_PREFIX);
 
@@ -1917,6 +1920,40 @@ export function VerifiedSubmitForm() {
               <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
                 <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
                 <span>{externalNoteMessage()}</span>
+              </div>
+            )}
+
+            {/* Every reference dataset here is a SLICE. That used to be said only
+                inside the regions block below, which appears for the two types
+                that require a BED — so an author picking ONT or FASTQ was never
+                told, and had no way to know their tool was being pointed at an
+                extract rather than a genome. Shown for every type that runs
+                against our reference data; the richer regions block supersedes
+                it where a BED is actually required. */}
+            {selectedTypeInfo?.hasExternalDataset && !needsRegions && (
+              <div className="flex items-start gap-2 rounded-md border border-[#0099a3]/30 bg-[#0099a3]/5 px-3 py-3 text-xs">
+                <Info className="h-4 w-4 mt-0.5 shrink-0 text-[#0099a3]" />
+                <div className="space-y-2 min-w-0 flex-1">
+                  <p className="font-medium text-foreground">
+                    {t("verified.submit.sliceNoticeTitle")}
+                  </p>
+                  <p className="text-muted-foreground">
+                    {t("verified.submit.sliceNoticeBody")}
+                  </p>
+                  {/* Only when a panel exists: panelUrl() builds a raw URL for any
+                      type, but datasets without a loci.bed would 404 on it. */}
+                  {selectedSupportedLoci.length > 0 && (
+                    <a
+                      href={panelUrl(f.inputType)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-primary hover:underline font-medium"
+                    >
+                      <Download className="h-3.5 w-3.5" />
+                      {t("verified.submit.sliceNoticeDownload")}
+                    </a>
+                  )}
+                </div>
               </div>
             )}
 

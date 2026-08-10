@@ -7,7 +7,10 @@ import { Resend } from "resend";
 
 const ADMIN_EMAIL = "tfronta@gmail.com";
 const FROM = process.env.RESEND_FROM_EMAIL || "STRhub <onboarding@resend.dev>";
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://strhub.io";
+// Fallback must be the real host: the approve button in the notification is the
+// only link in it, and pointing it at a domain we do not serve turns a delivered
+// email into a dead end.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://strhub.app";
 
 function getClient(): Resend | null {
   const key = process.env.RESEND_API_KEY;

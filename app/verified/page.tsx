@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { getVerifiedIndex } from "@/lib/verified";
 import { VerifiedList } from "@/components/verified/verified-list";
 
-export const revalidate = 300;
+// Same reason as the detail page: these cards show each tool's badge level,
+// locus count and read total, so an ISR window makes the catalogue assert a
+// superseded result about a named tool.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "STRhub Verified — Reproducible-execution attestations",

@@ -6,7 +6,11 @@ import {
 } from "@/lib/verified";
 import { VerifiedDetail } from "@/components/verified/verified-detail";
 
-export const revalidate = 300;
+// Always render from the live report. `revalidate = 300` here made the page
+// serve a stale attestation to anyone arriving just after a run finished (see
+// the note on fetchJson in lib/verified.ts). The listing keeps its ISR window;
+// this page is the one that makes a claim about a specific tool.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

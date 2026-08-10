@@ -297,6 +297,10 @@ export default {
       refGenomeNote: "The reference genome ({assembly}) is automatically downloaded, indexed, and mounted by STRhub.",
       canonicalPathsTitle: "Use these standard paths in your run command",
       canonicalPathsDescription: "STRhub renames all input files to standard names so the same command works for both your data and our reference dataset. Use exactly these paths:",
+      sliceNoticeTitle: "Our reference sample is a slice, not a whole genome",
+      sliceNoticeBody:
+        "STRhub does not host full genomes. The reference data for this input type is a small extract around forensic STR markers. A tool aimed outside those markers finds no reads there, so the run says nothing about the tool.",
+      sliceNoticeDownload: "Download the supported coordinates (BED, GRCh38)",
       timeout: "Timeout (minutes)",
       inputType: "What kind of data does your tool take?",
       inputTypeSelect: "Select input type",

@@ -215,17 +215,24 @@ export interface RateResult {
  * `max`, one more than the excess has to leave, and the last of those to go is
  * the one at index `count - max` once they are sorted oldest first.
  */
-function msUntilSlotFrees(timestamps: number[], max: number, now: number): number {
+export function msUntilSlotFrees(
+  timestamps: number[],
+  max: number,
+  now: number,
+  windowMs: number = RATE_WINDOW_MS,
+): number {
   const sorted = [...timestamps].sort((a, b) => a - b);
   const blocking = sorted[sorted.length - max];
-  return Math.max(0, blocking + RATE_WINDOW_MS - now);
+  return Math.max(0, blocking + windowMs - now);
 }
 
 /** "in under a minute" / "in about 7 minutes" — enough to decide whether to wait. */
-function humanWait(ms: number): string {
+export function humanWait(ms: number): string {
   const minutes = Math.ceil(ms / 60_000);
   if (minutes <= 1) return "in under a minute";
-  return `in about ${minutes} minutes`;
+  const hours = Math.round(minutes / 60);
+  if (minutes < 90) return `in about ${minutes} minutes`;
+  return `in about ${hours} hour${hours === 1 ? "" : "s"}`;
 }
 
 export async function checkRateLimit(

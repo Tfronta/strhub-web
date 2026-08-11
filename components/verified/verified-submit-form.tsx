@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, Loader2, CheckCircle2, XCircle, Info, Download, Upload, ChevronDown, ChevronRight, RotateCcw } from "lucide-react";
+import { AlertTriangle, Loader2, CheckCircle2, XCircle, Info, Download, Upload, ChevronDown, ChevronRight, RotateCcw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,6 +50,14 @@ import {
   declaredIncompatibilities,
   type CompatibilityAnswers,
 } from "@/lib/verified/manual";
+import {
+  fieldsFromAutoConfig,
+  type AutoConfigFields,
+  type AutoConfigGroup,
+} from "@/lib/verified/autoconfig-apply";
+import type { AutoConfigEntry } from "@/lib/verified/autoconfig-store";
+import { PROMPT_VERSION } from "@/lib/verified/autoconfig-version";
+import { AutoConfigDialog } from "@/components/verified/auto-config-dialog";
 
 type Phase = "form" | "submitting" | "pending" | "tracking" | "done";
 type RunState = "pending" | "queued" | "in_progress" | "completed";
@@ -124,6 +132,22 @@ type FixtureSource = "same" | "other" | "none";
 
 /** How many previous runs are listed at a time. */
 const REUSE_PAGE_SIZE = 3;
+
+const AUTOCONFIG_LABEL_KEYS: Record<keyof AutoConfigFields, string> = {
+  name: "verified.submit.name",
+  maintainer: "verified.submit.maintainer",
+  contact: "verified.submit.contact",
+  language: "verified.submit.language",
+  buildCmd: "verified.submit.buildCmd",
+  checkCmd: "verified.submit.checkCmd",
+  cmd: "verified.submit.cmd",
+  timeout: "verified.submit.timeout",
+  inputType: "verified.submit.inputType",
+  inputTypeCustom: "verified.submit.inputType",
+  fixtureFilePath: "verified.submit.fixturePathInRepo",
+  outputPath: "verified.submit.outputPath",
+  outputFormat: "verified.submit.outputFormat",
+};
 
 /**
  * How much of a sample output file is read for detection. Column layout is
@@ -609,6 +633,18 @@ export function VerifiedSubmitForm() {
   // starting from, so the rest are a click away rather than a wall.
   const [visibleRuns, setVisibleRuns] = useState(REUSE_PAGE_SIZE);
 
+  // Automatic configuration: generated from the repository, applied only after
+  // the author has reviewed it.
+  const [autoConfigEntry, setAutoConfigEntry] = useState<AutoConfigEntry | null>(null);
+  const [autoConfigOpen, setAutoConfigOpen] = useState(false);
+  const [autoConfigBusy, setAutoConfigBusy] = useState(false);
+  const [autoConfigError, setAutoConfigError] = useState<string | null>(null);
+  const [autoConfigApplied, setAutoConfigApplied] = useState(false);
+  const [savedConfigs, setSavedConfigs] = useState<AutoConfigEntry[]>([]);
+  const [savedListOpen, setSavedListOpen] = useState(false);
+  const [currentFingerprint, setCurrentFingerprint] = useState<string | null>(null);
+  const [autoConfigSectionOpen, setAutoConfigSectionOpen] = useState(true);
+
   // Output detection from a sample file the author already has.
   const [detection, setDetection] = useState<OutputDetection | null>(null);
   const [detectFileName, setDetectFileName] = useState("");
@@ -824,6 +860,125 @@ export function VerifiedSubmitForm() {
     } finally {
       setReuseBusy(null);
     }
+  }
+
+  // List what has already been generated for this repository. Free, and it is
+  // what lets an author on a new tag skip the model call entirely.
+  useEffect(() => {
+    if (!sourceReady) {
+      setSavedConfigs([]);
+      setCurrentFingerprint(null);
+      return;
+    }
+    let cancelled = false;
+    // Debounced: sourceReady turns true on the first character of the ref, and
+    // the staleness check behind this costs a GitHub request.
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams({ repo: f.repo.trim(), ref: f.ref.trim() });
+      fetch(`/api/verify/autoconfig?${params.toString()}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (cancelled || !data?.ok) return;
+          setSavedConfigs(data.entries as AutoConfigEntry[]);
+          setCurrentFingerprint(
+            typeof data.currentFingerprint === "string" ? data.currentFingerprint : null,
+          );
+        })
+        .catch(() => {
+          // The feature is optional; a failed listing just hides the button.
+        });
+    }, 600);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [sourceReady, f.repo, f.ref]);
+
+  function autoConfigErrorMessage(code: string): string {
+    const known: Record<string, string> = {
+      repo_not_found: "verified.submit.autoConfigRepoNotFound",
+      ref_not_found: "verified.submit.autoConfigRefNotFound",
+      empty_repo: "verified.submit.autoConfigEmptyRepo",
+      declined: "verified.submit.autoConfigDeclined",
+      disabled: "verified.submit.autoConfigDisabled",
+    };
+    return known[code] ? t(known[code]) : code;
+  }
+
+  async function generateAutoConfig() {
+    setAutoConfigBusy(true);
+    setAutoConfigError(null);
+    setAutoConfigApplied(false);
+    try {
+      const res = await fetch("/api/verify/autoconfig", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          repo: f.repo.trim(),
+          ref: f.ref.trim(),
+          dockerfileProvided: dockerMode === "provided",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.ok) {
+        // 429 carries a human-readable reason; the rest are codes.
+        setAutoConfigError(
+          res.status === 429 && typeof data?.error === "string"
+            ? data.error
+            : autoConfigErrorMessage(String(data?.error ?? "upstream")),
+        );
+        return;
+      }
+      const entry = data.entry as AutoConfigEntry;
+      setAutoConfigEntry(entry);
+      setSavedConfigs((prev) => [entry, ...prev.filter((e) => e.ref !== entry.ref)]);
+      setAutoConfigOpen(true);
+    } catch {
+      setAutoConfigError(t("verified.submit.autoConfigFailed"));
+    } finally {
+      setAutoConfigBusy(false);
+    }
+  }
+
+  /**
+   * Push a reviewed configuration into the form. Anything the author already
+   * typed goes through the same conflict prompt the repository prefill uses,
+   * rather than being overwritten.
+   */
+  function applyAutoConfig(groups: Record<AutoConfigGroup, boolean>) {
+    if (!autoConfigEntry) return;
+    const applied = fieldsFromAutoConfig(autoConfigEntry.config, groups);
+
+    // A sample results file was read from the author's own output, so it beats a
+    // format inferred from the filename's extension.
+    if (detection) delete applied.fields.outputFormat;
+
+    const conflicts: typeof prefillConflicts = [];
+    const safe: Partial<typeof INITIAL_F> = {};
+    for (const [key, next] of Object.entries(applied.fields) as [
+      keyof AutoConfigFields,
+      string,
+    ][]) {
+      const current = fRef.current[key];
+      if (current.trim() !== "" && current !== next) {
+        conflicts.push({
+          key,
+          labelKey: AUTOCONFIG_LABEL_KEYS[key],
+          current,
+          next,
+        });
+      } else {
+        safe[key] = next;
+      }
+    }
+
+    setF((prev) => ({ ...prev, ...safe }));
+    if (applied.needsBuild !== undefined) setNeedsBuild(applied.needsBuild);
+    if (applied.compat) setCompat(applied.compat);
+    setPrefillConflicts(conflicts);
+    setAutoConfigApplied(true);
+    setAutoConfigOpen(false);
+    setSavedListOpen(false);
   }
 
   const selectedTypeInfo = INPUT_TYPES.find((t) => t.slug === f.inputType);
@@ -1508,6 +1663,170 @@ export function VerifiedSubmitForm() {
               </AlertDescription>
             </Alert>
           )}
+
+          {/* ── AUTOMATIC CONFIGURATION ──
+              Optional, and placed here because the repository and the ref are
+              its only inputs — the same two answers everything else is derived
+              from. Nothing it produces is applied without review. */}
+          <Section
+            title={t("verified.submit.autoConfigTitle")}
+            hint={t("verified.submit.autoConfigHint")}
+            disabled={!sourceReady}
+            collapsible
+            open={autoConfigSectionOpen}
+            onToggle={() => setAutoConfigSectionOpen((v) => !v)}
+            summary={
+              autoConfigApplied
+                ? t("verified.submit.autoConfigSummaryApplied")
+                : t("verified.submit.autoConfigSummaryIdle")
+            }
+          >
+            <label className="flex cursor-pointer items-start gap-3 text-sm">
+              <input
+                type="checkbox"
+                className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
+                checked={dockerMode === "provided"}
+                onChange={(e) =>
+                  setDockerMode(e.target.checked ? "provided" : "generated")
+                }
+              />
+              <span>{t("verified.submit.autoConfigOwnDockerfile")}</span>
+            </label>
+
+            {dockerMode === "provided" && (
+              <Field label={t("verified.submit.dockerfile")} required>
+                <Textarea
+                  value={f.dockerfile}
+                  onChange={set("dockerfile")}
+                  rows={10}
+                  className="font-mono text-xs"
+                  placeholder={"FROM python:3.11-slim\n..."}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {t("verified.submit.autoConfigDockerfileHint")}
+                </p>
+                {err("docker.dockerfile")}
+              </Field>
+            )}
+
+            <Field label={t("verified.submit.autoConfigSampleLabel")} optional>
+              <input
+                type="file"
+                className="block w-full text-sm file:mr-3 file:rounded-md file:border file:border-border file:bg-muted file:px-3 file:py-1.5 file:text-sm"
+                onChange={(e) => onSampleOutputFile(e.target.files?.[0])}
+              />
+              <p className="text-xs text-muted-foreground">
+                {t("verified.submit.autoConfigLocalOnly")}
+              </p>
+              {detectFileName && detectState === "done" && (
+                <p className="flex items-start gap-2 text-xs text-emerald-700 dark:text-emerald-400">
+                  <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                  {t("verified.submit.autoConfigSampleApplied", { file: detectFileName })}
+                </p>
+              )}
+              {detectError && <p className="text-xs text-destructive">{detectError}</p>}
+            </Field>
+
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                disabled={!sourceReady || autoConfigBusy}
+                onClick={generateAutoConfig}
+              >
+                {autoConfigBusy ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Sparkles className="mr-2 h-4 w-4" />
+                )}
+                {t("verified.submit.autoConfigGenerate")}
+              </Button>
+
+              {savedConfigs.length > 0 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setSavedListOpen((v) => !v)}
+                >
+                  {t("verified.submit.autoConfigUseSaved", {
+                    n: String(savedConfigs.length),
+                  })}
+                </Button>
+              )}
+            </div>
+
+            <p className="text-xs text-muted-foreground">
+              {t("verified.submit.autoConfigWhatIsSent")}
+            </p>
+
+            {autoConfigBusy && (
+              <p className="text-xs text-muted-foreground" role="status">
+                {t("verified.submit.autoConfigWorking")}
+              </p>
+            )}
+            {autoConfigError && (
+              <p className="text-xs text-destructive">{autoConfigError}</p>
+            )}
+            {autoConfigApplied && !autoConfigError && (
+              <p className="flex items-start gap-2 text-xs text-emerald-700 dark:text-emerald-400">
+                <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                {t("verified.submit.autoConfigAppliedNote")}
+              </p>
+            )}
+
+            {savedListOpen && savedConfigs.length > 0 && (
+              <div className="space-y-2">
+                {savedConfigs.map((entry) => {
+                  const exact = entry.ref === f.ref.trim();
+                  const stale =
+                    currentFingerprint !== null &&
+                    currentFingerprint !== entry.manifestFingerprint;
+                  const outdated = entry.promptVersion < PROMPT_VERSION;
+                  const notes = [
+                    entry.createdAt.slice(0, 10),
+                    stale ? t("verified.submit.autoConfigMayBeStale") : "",
+                    outdated ? t("verified.submit.autoConfigOldVersion") : "",
+                  ].filter(Boolean);
+                  return (
+                    <div
+                      key={entry.ref}
+                      className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border px-3 py-2"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium">
+                          {exact
+                            ? t("verified.submit.autoConfigExactRef")
+                            : t("verified.submit.autoConfigFromRef", { ref: entry.ref })}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {notes.join(" · ")}
+                        </p>
+                      </div>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setAutoConfigEntry(entry);
+                          setAutoConfigOpen(true);
+                        }}
+                      >
+                        {t("verified.submit.autoConfigReview")}
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </Section>
+
+          <AutoConfigDialog
+            entry={autoConfigEntry}
+            open={autoConfigOpen}
+            currentRef={f.ref.trim()}
+            currentFingerprint={currentFingerprint}
+            onOpenChange={setAutoConfigOpen}
+            onApply={applyAutoConfig}
+          />
 
           {/* ── 2. Tool ─────────────────────────────────────────────── */}
           <Section

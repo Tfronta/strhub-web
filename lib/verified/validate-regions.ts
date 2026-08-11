@@ -46,40 +46,129 @@ export function normChrom(c: string): string {
   return /^chr/i.test(s) ? s : `chr${s}`;
 }
 
+/** Rows inspected when working out which columns hold the coordinates. */
+const SNIFF_ROWS = 50;
+/** Share of inspected rows a column triple must satisfy to be believed. */
+const SNIFF_AGREEMENT = 0.8;
+
+function splitRow(raw: string): string[] {
+  return raw.includes("\t") ? raw.split("\t") : raw.trim().split(/\s+/);
+}
+
+function isDataLine(raw: string): boolean {
+  const s = raw.trim();
+  return (
+    s !== "" && !s.startsWith("#") && !s.startsWith("track") && !s.startsWith("browser")
+  );
+}
+
+function isInteger(value: string | undefined): boolean {
+  return value !== undefined && /^\d+$/.test(value.trim());
+}
+
+/** A chromosome, in any of the spellings real files use: chr1, 1, chrX, X, MT. */
+function looksLikeChrom(value: string | undefined): boolean {
+  return value !== undefined && /^(chr)?([0-9]{1,2}|[XYxy]|MT?|mt?)$/.test(value.trim());
+}
+
 /**
- * Read columns 1-3 of a BED. Extra columns are ignored, which is what makes this
- * work for every tool's format. Throws on malformed input so the caller can show
- * the author the exact line.
+ * Which column holds the chromosome, given that the two after it hold the
+ * coordinates.
+ *
+ * Columns 0,1,2 is the BED convention and nearly always right, so it is tried
+ * first and only displaced if it does not hold. Everything else is a genuine
+ * tool-specific layout — the alternative to sniffing is telling the author their
+ * file is malformed when it is merely arranged differently.
+ */
+function sniffChromColumn(rows: string[][]): number | null {
+  const sample = rows.slice(0, SNIFF_ROWS);
+  if (sample.length === 0) return null;
+  const width = Math.max(...sample.map((f) => f.length));
+
+  const candidates = [0, ...Array.from({ length: width }, (_, i) => i).filter((i) => i !== 0)];
+  for (const c of candidates) {
+    if (c + 2 >= width + 1) continue;
+    // Ordering is deliberately not part of the test. A file whose end precedes
+    // its start is a coordinate mistake the author needs told about by name, not
+    // a reason to decide these were never the coordinate columns.
+    const agreeing = sample.filter(
+      (f) => looksLikeChrom(f[c]) && isInteger(f[c + 1]) && isInteger(f[c + 2]),
+    ).length;
+    if (agreeing / sample.length >= SNIFF_AGREEMENT) return c;
+  }
+  return null;
+}
+
+/**
+ * Read a BED's chromosome and coordinate columns.
+ *
+ * Only three values are ever needed, so every tool's layout works: extra
+ * columns are ignored, a header row is skipped, and the coordinate columns are
+ * located rather than assumed. Throws on input where they cannot be found, so
+ * the caller can show the author the line that defeated it.
+ *
+ * Mirrored by `harness/validate_bed.py` in the engine, which runs the same
+ * checks as a pre-flight. The two must agree: a BED accepted here and rejected
+ * there aborts the run with no report, which is a far worse failure than being
+ * told about it in the form.
  */
 export function parseBed3(text: string): BedInterval[] {
-  const rows: BedInterval[] = [];
   const lines = text.split(/\r?\n/);
-
+  const dataLines: { raw: string; line: number }[] = [];
   for (let i = 0; i < lines.length; i++) {
-    const raw = lines[i];
-    const s = raw.trim();
-    if (!s || s.startsWith("#") || s.startsWith("track") || s.startsWith("browser")) {
-      continue;
+    if (isDataLine(lines[i])) dataLines.push({ raw: lines[i], line: i + 1 });
+  }
+  if (dataLines.length === 0) return [];
+
+  let split = dataLines.map((d) => splitRow(d.raw));
+  let first = dataLines[0];
+
+  // A header names the columns, so it cannot carry coordinates. Dropping it is
+  // safe precisely because a real data row would have failed this test.
+  const headerish =
+    split.length > 1 && !isInteger(split[0][1]) && !isInteger(split[0][2]);
+  if (headerish) {
+    dataLines.shift();
+    split = split.slice(1);
+    first = dataLines[0];
+  }
+
+  const chromColumn = sniffChromColumn(split);
+  if (chromColumn === null) {
+    const shown = first.raw.trim().slice(0, 120);
+    throw new Error(
+      `line ${first.line}: could not find chromosome, start and end columns in "${shown}"`,
+    );
+  }
+
+  const rows: BedInterval[] = [];
+  for (let i = 0; i < split.length; i++) {
+    const f = split[i];
+    const lineNumber = dataLines[i].line;
+    if (f.length < chromColumn + 3) {
+      throw new Error(
+        `line ${lineNumber}: expected at least ${chromColumn + 3} columns, got ${f.length}`,
+      );
     }
-    const f = raw.includes("\t") ? raw.split("\t") : raw.split(/\s+/);
-    if (f.length < 3) {
-      throw new Error(`line ${i + 1}: expected at least 3 columns, got ${f.length}`);
-    }
-    const start = Number(f[1]);
-    const end = Number(f[2]);
+    const start = Number(f[chromColumn + 1]);
+    const end = Number(f[chromColumn + 2]);
     if (!Number.isInteger(start) || !Number.isInteger(end)) {
-      throw new Error(`line ${i + 1}: non-integer coordinates`);
+      throw new Error(`line ${lineNumber}: non-integer coordinates`);
     }
     if (end <= start) {
-      throw new Error(`line ${i + 1}: end must be greater than start`);
+      throw new Error(`line ${lineNumber}: end must be greater than start`);
     }
-    const named = f.length > 3 && f[3] !== "" && f[3] !== ".";
+    // The name column is only ever cosmetic here: coverage is credited to the
+    // panel window a row overlaps, never to what the author called it.
+    const nameColumn = chromColumn + 3;
+    const named =
+      f.length > nameColumn && f[nameColumn] !== "" && f[nameColumn] !== ".";
     rows.push({
-      chrom: normChrom(f[0]),
+      chrom: normChrom(f[chromColumn]),
       start,
       end,
-      name: named ? f[3] : `${normChrom(f[0])}:${start}-${end}`,
-      line: i + 1,
+      name: named ? f[nameColumn] : `${normChrom(f[chromColumn])}:${start}-${end}`,
+      line: lineNumber,
     });
   }
   return rows;

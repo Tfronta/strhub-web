@@ -89,6 +89,14 @@ export default {
       developerBody:
         "Um resultado descreve um ambiente, e um software que funciona na máquina onde foi escrito pode parar aqui mesmo assim. Essa lacuna costuma ser a parte útil: é o que um usuário novo encontra no primeiro dia. Cada resultado traz o log completo e os comandos exatos, então pode ser reproduzido localmente.",
     },
+    needed: {
+      heading: "O que esta execução precisou além do repositório",
+      note: "O resultado acima descreve uma execução configurada assim. Quem quiser repeti-la precisa das mesmas coisas.",
+    },
+    caveats: {
+      heading: "Notas da leitura do repositório",
+      note: "Registradas automaticamente a partir dos arquivos públicos da ferramenta ao configurar esta execução. Não verificadas por execução, e não fazem parte dos portões acima. Úteis para saber o que conferir à mão.",
+    },
     log: {
       view: "Ver log de execução",
     },

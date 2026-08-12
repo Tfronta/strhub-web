@@ -154,10 +154,25 @@ export const VERIFIED_LEVELS: Record<
   none: { label: "Not run", tone: "red" },
 };
 
-export const VERIFIED_GATES: { key: VerifiedLevel; meaningKey: string }[] = [
-  { key: "available", meaningKey: "verified.gate.available" },
-  { key: "installs", meaningKey: "verified.gate.installs" },
-  { key: "runs", meaningKey: "verified.gate.runs" },
-  { key: "io", meaningKey: "verified.gate.io" },
-  { key: "content", meaningKey: "verified.gate.content" },
+/**
+ * A gate is one check; a level is how far the run got. They are different things
+ * and now read as different things.
+ *
+ * The gate rows used to borrow the LEVEL labels, so the last check appeared as
+ * "Runs + Plausible output" on the site while the PDF called the same check
+ * "Output Structure Validation". A reviewer can have both open at once, and two
+ * names for one thing is two things. Short names here; the cumulative label stays
+ * on the badge, where the accumulation is the point. Keep in step with
+ * GATE_DISPLAY in harness/generate_pdf.py.
+ */
+export const VERIFIED_GATES: {
+  key: VerifiedLevel;
+  label: string;
+  meaningKey: string;
+}[] = [
+  { key: "available", label: "Available", meaningKey: "verified.gate.available" },
+  { key: "installs", label: "Installs", meaningKey: "verified.gate.installs" },
+  { key: "runs", label: "Runs", meaningKey: "verified.gate.runs" },
+  { key: "io", label: "Expected IO", meaningKey: "verified.gate.io" },
+  { key: "content", label: "Plausible Output", meaningKey: "verified.gate.content" },
 ];

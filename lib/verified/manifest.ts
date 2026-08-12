@@ -271,9 +271,21 @@ export function buildSubmissionJson(sub: Submission, savedAt: string): string {
   return JSON.stringify(record, null, 2) + "\n";
 }
 
+/**
+ * Every entry carries a version. `conda` was `:latest`, in a file whose own first
+ * line calls itself a pinned environment, and it drifted underneath a tool: the
+ * same pinned commit built one day and failed the next when the tag moved to a
+ * Python new enough that the tool's dependency versions no longer resolved. An
+ * attestation that changes with the calendar is not an attestation.
+ *
+ * The conda tag is deliberately not the newest published. Bioconda builds trail
+ * the newest Python by months, and a base that runs ahead of them reproduces the
+ * failure this pin exists to prevent. Bump it when bioconda has caught up, not
+ * when a new tag appears.
+ */
 const BASE_IMAGE: Record<string, string> = {
   python: "python:3.11-slim",
-  conda: "continuumio/miniconda3:latest",
+  conda: "continuumio/miniconda3:25.1.1-2",
   "c-cpp": "ubuntu:22.04",
   rust: "rust:1-slim",
   go: "golang:1-bookworm",

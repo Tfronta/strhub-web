@@ -89,6 +89,10 @@ export default {
       developerBody:
         "Un resultado describe un entorno, y un software que funciona en la máquina donde se escribió puede detenerse igual acá. Esa brecha suele ser la parte útil: es lo que se encuentra un usuario nuevo el primer día. Cada resultado enlaza el log completo y los comandos exactos, así que se puede reproducir en local.",
     },
+    caveats: {
+      heading: "Notas de la lectura del repositorio",
+      note: "Registradas automáticamente al configurar esta corrida, por {origin} leyendo los archivos públicos de la herramienta. No verificadas por ejecución, y no forman parte de los gates de arriba. Sirven para saber qué revisar a mano.",
+    },
     log: {
       view: "Ver log de ejecución",
     },

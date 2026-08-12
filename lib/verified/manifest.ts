@@ -195,6 +195,17 @@ export function buildManifestObject(sub: Submission, slug: string): Json {
     outputs,
   };
   if (Object.keys(compatibility).length) manifest.compatibility = compatibility;
+  // Carried through with their provenance. These are read off the repository when
+  // the configuration is inferred, never established by running anything, so the
+  // engine can label them as unverified rather than mixing them into the gates.
+  if (sub.caveats?.items.length) {
+    manifest.caveats = {
+      source: sub.caveats.source,
+      model: sub.caveats.model,
+      prompt_version: sub.caveats.prompt_version,
+      items: sub.caveats.items,
+    };
+  }
   return manifest;
 }
 

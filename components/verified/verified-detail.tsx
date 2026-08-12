@@ -860,6 +860,34 @@ export function VerifiedDetail({
           </>
         )}
 
+        {/* ── WHAT THIS RUN NEEDED BEYOND THE REPOSITORY ──
+            Held next to the ladder on purpose. A green ladder reads as a property
+            of the software and quietly folds in the work it took to get there:
+            for one tool that was a configuration file built by hand over half a
+            day against a repository that ships only an incompatible example. */}
+        {report.needed_beyond_repo?.length ? (
+          <>
+            <h2 className="mt-10 text-xl font-semibold">
+              {t("verified.needed.heading")}
+            </h2>
+            <div className="mt-3 rounded-lg border bg-muted/40 p-4">
+              <p className="text-sm text-muted-foreground">
+                {t("verified.needed.note")}
+              </p>
+              <ul className="mt-3 space-y-2">
+                {report.needed_beyond_repo.map((item) => (
+                  <li key={item} className="flex gap-2 text-sm">
+                    <span aria-hidden="true" className="text-muted-foreground">
+                      &ndash;
+                    </span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        ) : null}
+
         {/* ── NOTES FROM READING THE REPOSITORY ──
             Kept apart from the gates and the diagnostics, which record what
             running the tool established. Nothing here was run: it was read off
@@ -873,11 +901,12 @@ export function VerifiedDetail({
               {t("verified.caveats.heading")}
             </h2>
             <div className="mt-3 rounded-lg border bg-muted/40 p-4">
+              {/* The model id stays in the report JSON for auditing and out of
+                  the prose: it means nothing to a reviewer, and naming it here
+                  suggests the report was written by one when the gates above were
+                  measured by running the tool. */}
               <p className="text-sm text-muted-foreground">
-                {t("verified.caveats.note").replace(
-                  "{origin}",
-                  report.caveats.model || report.caveats.source
-                )}
+                {t("verified.caveats.note")}
               </p>
               <ul className="mt-3 space-y-2">
                 {report.caveats.items.map((item) => (

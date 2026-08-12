@@ -189,7 +189,16 @@ export function buildManifestObject(sub: Submission, slug: string): Json {
     tool,
     source: { repo: sub.source.repo, ref: sub.source.ref },
     report: { slug },
-    environment: { dockerfile: "Dockerfile", os: sub.os },
+    // `source` says where the container definition came from. The engine could
+    // not tell before: STRhub commits a Dockerfile for every tool, so from its
+    // side they all looked alike, and a report could not say whether the
+    // environment was the submitter's or one built from declared steps. That is
+    // part of what a run needed beyond the repository, so it has to be recorded.
+    environment: {
+      dockerfile: "Dockerfile",
+      os: sub.os,
+      source: sub.docker.mode === "provided" ? "submitted" : "generated",
+    },
     run: { cmd: sub.run.cmd, timeout_minutes: sub.run.timeout_minutes ?? 15 },
     inputs,
     outputs,

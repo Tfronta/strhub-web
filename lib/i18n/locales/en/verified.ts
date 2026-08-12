@@ -60,6 +60,34 @@ export default {
       content: "its output looks like plausible genotype-bearing data",
       contentFailNote:
         "Note: The \"Plausible Output\" check did not pass because the output did not fully match the expected genotype pattern. This may be due to differences in parameters, tool version, or configuration. It does not necessarily indicate a serious error.",
+      stoppedEarlyNote:
+        "Stopping at this step is not a finding that the software is faulty. It records how far this particular attempt got. Software can stop early because a dependency it names is no longer available, because it expects input arranged differently from the reference sample, or because the automated environment cannot supply something it needs.",
+      howToReadLink: "How to read this result",
+    },
+    howToRead: {
+      title: "How to read a result",
+      lede:
+        "A result is a dated record of what happened when STRhub installed a piece of forensic STR software and ran it, at one fixed version of the source code, on reference data the developer did not choose. It is produced automatically, and anyone can repeat it.",
+      stoppedHeading: "When a result stops early",
+      stoppedBody:
+        "A result below the top step is not a finding that the software is faulty. It records how far this particular attempt got. Software can stop early because a dependency it names is no longer available, because it expects input arranged differently from the reference sample, or because the automated environment cannot provide something it needs, such as commercially licensed components.",
+      stoppedBody2:
+        "Every result names where it stopped and shows the messages on screen when it did. That detail is the point. The step reached is only the headline.",
+      canHeading: "Questions a result can answer",
+      can1: "Is the code public at the version the manuscript cites, today?",
+      can2: "Can somebody other than the authors install it from the instructions given?",
+      can3: "Does it run to completion on data the authors did not select?",
+      can4: "Does it return output that looks like real marker calls?",
+      can5: "What did it need that a standard environment could not supply?",
+      cannotHeading: "Questions it cannot answer",
+      cannot1: "Are the genotypes correct?",
+      cannot2: "Does it agree with a reference profile or another method?",
+      cannot3: "Is it suitable for casework, or accredited for it?",
+      cannot4: "Is it better or worse than another tool?",
+      cannot5: "Does it perform as reported in the manuscript?",
+      developerHeading: "For a developer",
+      developerBody:
+        "A result describes one environment, and software that works on the machine it was written on can still stop here. That gap is usually the useful part: it is what a new user meets on their first day. Every result links the full log and the exact commands used, so a result can be reproduced locally.",
     },
     log: {
       view: "View execution log",
@@ -77,7 +105,7 @@ export default {
       structuralNote:
         "Structural errors, such as a file that will not open, an unrecognized command-line flag, or an incomplete build, do not depend on the sample: a coverage-limited slice yields fewer reads, but it cannot cause them. These are not attributable to STRhub's reference sample.",
       demoDataRecommendation:
-        "We recommend the tool ship its own demo or test data in its official repository, so it can be evaluated against the author's complete data as well as STRhub's slice.",
+        "A small test file in the tool's own repository lets a new user run it on their first day and see it working before trusting it with their own data, and it lets a verification run against the author's sample as well as STRhub's slice. Publishing the output that file should produce helps just as much: it shows what the results are meant to look like, which is what a reader needs to tell a correct run from one that merely finished.",
       sampleNote:
         "These messages reflect the behavior observed during verification with a small test BAM slice provided by STRhub. With full-coverage sequencing data, the tool is expected to genotype significantly more loci. The warnings do not indicate a problem with the tool itself.",
       ids: {
@@ -111,7 +139,7 @@ export default {
       lociCount: "forensic STR loci",
       lociScope: "This verification only covers the specific STR loci listed above. The tool may support additional loci not tested by this reference dataset.",
       refGenome: "Ref. genome",
-      noOwnData: "This tool does not include its own demo or test data in its repository. STRhub ran the verification using a pre-built slice from public reference data (listed below). Including a small test file in the repository is recommended for a stronger, self-contained verification.",
+      noOwnData: "This tool does not include its own demo or test data in its repository. STRhub ran the verification using a pre-built slice from public reference data (listed below). A small test file in the repository lets a new user run the tool on their first day and see it working before trusting it with their own data, and it lets a verification run against the author's own sample as well as this one. Publishing the output that file should produce helps just as much: it shows what the results are meant to look like.",
     },
     matrix: {
       heading: "Verification matrix",

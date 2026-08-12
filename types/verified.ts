@@ -127,6 +127,28 @@ export interface VerifiedReport {
   readme_check?: VerifiedReadmeCheck | null;
   /** Level-2 eligibility. Absent on reports generated before the check existed. */
   manual_verification?: VerifiedManualVerification | null;
+  /**
+   * Notes taken while reading the repository to work out the configuration.
+   *
+   * Deliberately separate from `gates` and `diagnostics`, which record what
+   * running the tool established. Nothing here was run, so the provenance travels
+   * with it and the view has to label it as unverified.
+   */
+  caveats?: {
+    source: string;
+    model?: string;
+    prompt_version?: number;
+    items: string[];
+  } | null;
+  /**
+   * What the run needed that the repository does not provide.
+   *
+   * A ladder reads as a property of the software and silently absorbs whatever it
+   * took to get there — a configuration file built by hand, an environment
+   * written for the run. Stating the requirements keeps the badge meaning what it
+   * measured, and answers the question an adopter actually has.
+   */
+  needed_beyond_repo?: string[] | null;
   scope: string;
 }
 

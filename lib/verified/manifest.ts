@@ -189,12 +189,32 @@ export function buildManifestObject(sub: Submission, slug: string): Json {
     tool,
     source: { repo: sub.source.repo, ref: sub.source.ref },
     report: { slug },
-    environment: { dockerfile: "Dockerfile", os: sub.os },
+    // `source` says where the container definition came from. The engine could
+    // not tell before: STRhub commits a Dockerfile for every tool, so from its
+    // side they all looked alike, and a report could not say whether the
+    // environment was the submitter's or one built from declared steps. That is
+    // part of what a run needed beyond the repository, so it has to be recorded.
+    environment: {
+      dockerfile: "Dockerfile",
+      os: sub.os,
+      source: sub.docker.mode === "provided" ? "submitted" : "generated",
+    },
     run: { cmd: sub.run.cmd, timeout_minutes: sub.run.timeout_minutes ?? 15 },
     inputs,
     outputs,
   };
   if (Object.keys(compatibility).length) manifest.compatibility = compatibility;
+  // Carried through with their provenance. These are read off the repository when
+  // the configuration is inferred, never established by running anything, so the
+  // engine can label them as unverified rather than mixing them into the gates.
+  if (sub.caveats?.items.length) {
+    manifest.caveats = {
+      source: sub.caveats.source,
+      model: sub.caveats.model,
+      prompt_version: sub.caveats.prompt_version,
+      items: sub.caveats.items,
+    };
+  }
   return manifest;
 }
 

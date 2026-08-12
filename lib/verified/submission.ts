@@ -333,6 +333,31 @@ export const submissionSchema = z
     // spending a CI run to discover the same thing. Difficulty with THIS FORM is
     // deliberately not among them: that is ours to fix, and is handled for free.
     compatibility: compatibilitySchema.optional(),
+    /**
+     * What reading the repository turned up while working out this configuration.
+     *
+     * The model that infers a configuration already records these, and they are
+     * often the most useful thing it produces: for STRsearch it noted that
+     * `--ref_bed` takes an 11-column file rather than a plain BED, that the
+     * example coordinates are hg19, that `usearch` is licensed and fetched from a
+     * personal license URL, and that the pinned dependency versions might not
+     * resolve — which is exactly what later happened. Every one of them was
+     * discarded when the dialog closed.
+     *
+     * They travel with their provenance because they are machine-extracted from
+     * the repository, NOT established by running anything. A reader has to be able
+     * to tell them apart from the gates, so the model and prompt version ride
+     * along and the report labels them as unverified.
+     */
+    caveats: z
+      .object({
+        source: z.literal("autoconfig"),
+        model: z.string().trim().min(1).max(80),
+        prompt_version: z.number().int().min(1).max(999),
+        items: z.array(z.string().trim().min(1).max(300)).min(1).max(8),
+      })
+      .strict()
+      .optional(),
   })
   .strict();
 

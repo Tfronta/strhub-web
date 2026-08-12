@@ -127,6 +127,19 @@ export interface VerifiedReport {
   readme_check?: VerifiedReadmeCheck | null;
   /** Level-2 eligibility. Absent on reports generated before the check existed. */
   manual_verification?: VerifiedManualVerification | null;
+  /**
+   * Notes taken while reading the repository to work out the configuration.
+   *
+   * Deliberately separate from `gates` and `diagnostics`, which record what
+   * running the tool established. Nothing here was run, so the provenance travels
+   * with it and the view has to label it as unverified.
+   */
+  caveats?: {
+    source: string;
+    model?: string;
+    prompt_version?: number;
+    items: string[];
+  } | null;
   scope: string;
 }
 

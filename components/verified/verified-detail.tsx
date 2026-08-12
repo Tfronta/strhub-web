@@ -860,6 +860,39 @@ export function VerifiedDetail({
           </>
         )}
 
+        {/* ── NOTES FROM READING THE REPOSITORY ──
+            Kept apart from the gates and the diagnostics, which record what
+            running the tool established. Nothing here was run: it was read off
+            the repository when the configuration was worked out, so the origin is
+            named and the block says plainly that it is unverified. Last before
+            the scope statement, where a reader has already seen what was
+            actually tested. */}
+        {report.caveats?.items?.length ? (
+          <>
+            <h2 className="mt-10 text-xl font-semibold">
+              {t("verified.caveats.heading")}
+            </h2>
+            <div className="mt-3 rounded-lg border bg-muted/40 p-4">
+              <p className="text-sm text-muted-foreground">
+                {t("verified.caveats.note").replace(
+                  "{origin}",
+                  report.caveats.model || report.caveats.source
+                )}
+              </p>
+              <ul className="mt-3 space-y-2">
+                {report.caveats.items.map((item) => (
+                  <li key={item} className="flex gap-2 text-sm">
+                    <span aria-hidden="true" className="text-muted-foreground">
+                      &ndash;
+                    </span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        ) : null}
+
         {/* ── SCOPE ── */}
         <h2 className="mt-10 text-xl font-semibold">{t("verified.scope")}</h2>
         <div className="mt-3 rounded-lg border-l-4 border-teal-600 bg-muted/50 p-4 text-sm">

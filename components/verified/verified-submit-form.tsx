@@ -1298,6 +1298,21 @@ export function VerifiedSubmitForm() {
       compatibility: preflightBlocks
         ? Object.fromEntries(declaredIncompat.map((flag) => [flag, true]))
         : undefined,
+      // What reading the repository turned up, carried into the manifest so the
+      // report can show it. These used to end at this dialog: for STRsearch the
+      // model noted that the pinned dependency versions might not resolve, which
+      // is exactly what later happened, and nobody downstream ever saw it. Sent
+      // with the model and prompt version because they are read off the
+      // repository, not established by running anything.
+      caveats:
+        autoConfigEntry && autoConfigEntry.config.caveats.length
+          ? {
+              source: "autoconfig" as const,
+              model: autoConfigEntry.model,
+              prompt_version: autoConfigEntry.promptVersion,
+              items: autoConfigEntry.config.caveats,
+            }
+          : undefined,
     };
   }
 

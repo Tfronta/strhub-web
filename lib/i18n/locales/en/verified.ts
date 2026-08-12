@@ -89,9 +89,13 @@ export default {
       developerBody:
         "A result describes one environment, and software that works on the machine it was written on can still stop here. That gap is usually the useful part: it is what a new user meets on their first day. Every result links the full log and the exact commands used, so a result can be reproduced locally.",
     },
+    needed: {
+      heading: "What this run needed beyond the repository",
+      note: "The result above describes a run configured as follows. Anyone repeating it needs the same things.",
+    },
     caveats: {
       heading: "Notes from reading the repository",
-      note: "Recorded automatically when this run was configured, by {origin} reading the tool's public files. Not verified by execution, and not part of the gates above. Useful for what to check by hand.",
+      note: "Recorded automatically from the tool's public files when this run was configured. Not verified by execution, and not part of the gates above. Useful for what to check by hand.",
     },
     log: {
       view: "View execution log",

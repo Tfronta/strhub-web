@@ -140,6 +140,15 @@ export interface VerifiedReport {
     prompt_version?: number;
     items: string[];
   } | null;
+  /**
+   * What the run needed that the repository does not provide.
+   *
+   * A ladder reads as a property of the software and silently absorbs whatever it
+   * took to get there — a configuration file built by hand, an environment
+   * written for the run. Stating the requirements keeps the badge meaning what it
+   * measured, and answers the question an adopter actually has.
+   */
+  needed_beyond_repo?: string[] | null;
   scope: string;
 }
 

@@ -60,6 +60,34 @@ export default {
       content: "sua saída parece dados de genótipos plausíveis",
       contentFailNote:
         "Nota: A verificação \"Plausible Output\" não passou porque a saída não correspondeu completamente ao padrão esperado de genótipos. Isso pode ser devido a diferenças em parâmetros, versão da ferramenta ou configuração. Não indica necessariamente um erro grave.",
+      stoppedEarlyNote:
+        "Parar nesta etapa não é uma constatação de que o software esteja defeituoso. Registra até onde esta tentativa em particular chegou. Um software pode parar antes porque uma dependência que ele declara não está mais disponível, porque espera a entrada organizada de forma diferente da amostra de referência, ou porque o ambiente automático não consegue fornecer algo de que ele precisa.",
+      howToReadLink: "Como ler este resultado",
+    },
+    howToRead: {
+      title: "Como ler um resultado",
+      lede:
+        "Um resultado é um registro datado do que aconteceu quando o STRhub instalou uma ferramenta forense de STR e a executou, em uma versão fixa do código, sobre dados de referência que o desenvolvedor não escolheu. É produzido automaticamente e qualquer pessoa pode repeti-lo.",
+      stoppedHeading: "Quando um resultado para antes",
+      stoppedBody:
+        "Um resultado abaixo da etapa mais alta não é uma constatação de que o software esteja defeituoso. Registra até onde esta tentativa em particular chegou. Um software pode parar antes porque uma dependência que ele declara não está mais disponível, porque espera a entrada organizada de forma diferente da amostra de referência, ou porque o ambiente automático não consegue fornecer algo de que ele precisa, como componentes com licença comercial.",
+      stoppedBody2:
+        "Cada resultado indica onde parou e mostra as mensagens que estavam na tela naquele momento. Esse detalhe é o que importa. A etapa alcançada é apenas a manchete.",
+      canHeading: "Perguntas que um resultado responde",
+      can1: "O código está público na versão que o manuscrito cita, hoje?",
+      can2: "Alguém fora dos autores consegue instalá-lo com as instruções dadas?",
+      can3: "Executa até o fim sobre dados que os autores não selecionaram?",
+      can4: "Devolve uma saída que parece chamadas de marcadores reais?",
+      can5: "Do que precisou que um ambiente padrão não pôde fornecer?",
+      cannotHeading: "Perguntas que não responde",
+      cannot1: "Os genótipos estão corretos?",
+      cannot2: "Concorda com um perfil de referência ou com outro método?",
+      cannot3: "É adequado para casework, ou acreditado para isso?",
+      cannot4: "É melhor ou pior que outra ferramenta?",
+      cannot5: "Tem o desempenho relatado no manuscrito?",
+      developerHeading: "Para um desenvolvedor",
+      developerBody:
+        "Um resultado descreve um ambiente, e um software que funciona na máquina onde foi escrito pode parar aqui mesmo assim. Essa lacuna costuma ser a parte útil: é o que um usuário novo encontra no primeiro dia. Cada resultado traz o log completo e os comandos exatos, então pode ser reproduzido localmente.",
     },
     log: {
       view: "Ver log de execução",
@@ -77,7 +105,7 @@ export default {
       structuralNote:
         "Erros estruturais, como um arquivo que não abre, um flag de linha de comando não reconhecido ou uma compilação incompleta, não dependem da amostra: um recorte de cobertura limitada gera menos reads, mas não pode causá-los. Não são atribuíveis à amostra de referência do STRhub.",
       demoDataRecommendation:
-        "Recomendamos que a ferramenta inclua seus próprios dados de demo ou teste no repositório oficial, para que possa ser avaliada contra os dados completos do autor além do recorte do STRhub.",
+        "Um arquivo de teste pequeno no repositório da ferramenta permite que um usuário novo a execute no primeiro dia e a veja funcionando antes de confiar nela com seus próprios dados, e permite ainda verificá-la contra a amostra do autor e não apenas contra o recorte do STRhub. Publicar a saída que esse arquivo deveria produzir ajuda tanto quanto: mostra como os resultados devem ser, que é o que se precisa para distinguir uma execução correta de uma que apenas terminou.",
       sampleNote:
         "Estas mensagens refletem o comportamento observado durante a verificação com um pequeno slice de BAM de teste fornecido pelo STRhub. Com dados de sequenciamento de cobertura completa, a ferramenta deve genotipar significativamente mais loci. Os avisos não indicam um problema com a ferramenta em si.",
       ids: {
@@ -111,7 +139,7 @@ export default {
       lociCount: "loci STR forenses",
       lociScope: "Esta verificação cobre apenas os loci STR listados acima. A ferramenta pode suportar loci adicionais não incluídos neste dataset de referência.",
       refGenome: "Genoma ref.",
-      noOwnData: "Esta ferramenta não inclui dados próprios de demo ou teste em seu repositório. O STRhub executou a verificação com um slice pré-construído de dados de referência públicos (listados abaixo). Recomendamos incluir um pequeno arquivo de teste no repositório para uma verificação mais completa e autocontida.",
+      noOwnData: "Esta ferramenta não inclui dados próprios de demo ou teste em seu repositório. O STRhub executou a verificação com um slice pré-construído de dados de referência públicos (listados abaixo). Um arquivo de teste pequeno no repositório permite que um usuário novo execute a ferramenta no primeiro dia e a veja funcionando antes de confiar nela com seus próprios dados, e permite ainda verificá-la contra a amostra do próprio autor e não apenas contra esta. Publicar a saída que esse arquivo deveria produzir ajuda tanto quanto: mostra como os resultados devem ser.",
     },
     matrix: {
       heading: "Matriz de verificação",

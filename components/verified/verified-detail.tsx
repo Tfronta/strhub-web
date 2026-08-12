@@ -379,20 +379,38 @@ export function VerifiedDetail({
                 >
                   {pass ? <Check className="h-3 w-3" /> : <Minus className="h-3 w-3" />}
                 </span>
-                <span className="font-medium whitespace-nowrap">
-                  {VERIFIED_LEVELS[g.key]?.label ?? g.key}
-                </span>
+                <span className="font-medium whitespace-nowrap">{g.label}</span>
                 <span className="text-muted-foreground">{t(g.meaningKey)}</span>
               </div>
             );
           })}
         </div>
 
-        {report.gates?.content === false && (
-          <p className="mt-3 text-sm text-muted-foreground italic rounded-lg border-l-4 border-amber-400 bg-amber-50 dark:bg-amber-950/20 px-4 py-3">
-            {t("verified.gate.contentFailNote")}
-          </p>
-        )}
+        {/* A run that stopped before the top step used to say nothing at all
+            unless it was the content gate specifically. A reviewer then read the
+            ladder as a verdict on the software, which is the one thing it is not
+            entitled to be. The specific note wins where it applies; otherwise the
+            general one covers stopping anywhere earlier. */}
+        {(() => {
+          const failed = VERIFIED_GATES.filter((g) => !report.gates?.[g.key]);
+          if (failed.length === 0) return null;
+          const onlyContent = failed.length === 1 && failed[0].key === "content";
+          return (
+            <p className="mt-3 text-sm text-muted-foreground italic rounded-lg border-l-4 border-amber-400 bg-amber-50 dark:bg-amber-950/20 px-4 py-3">
+              {t(
+                onlyContent
+                  ? "verified.gate.contentFailNote"
+                  : "verified.gate.stoppedEarlyNote"
+              )}{" "}
+              <Link
+                href="/verified/how-to-read"
+                className="not-italic font-medium text-foreground underline underline-offset-2"
+              >
+                {t("verified.gate.howToReadLink")}
+              </Link>
+            </p>
+          );
+        })()}
 
         {/* Execution logs */}
         {report.logs && Object.keys(report.logs).length > 0 && (() => {

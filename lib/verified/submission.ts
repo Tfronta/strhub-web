@@ -187,7 +187,7 @@ export const BUILD_LANGUAGES = [
 ] as const;
 export type BuildLanguage = (typeof BUILD_LANGUAGES)[number];
 
-const SHA_OR_TAG = /^[0-9a-zA-Z._\-/]+$/;
+export const SHA_OR_TAG = /^[0-9a-zA-Z._\-/]+$/;
 const SLUG_RE = /^[a-z0-9][a-z0-9._-]*$/;
 
 const httpsUrl = z
@@ -196,7 +196,7 @@ const httpsUrl = z
   .url()
   .refine((u) => u.startsWith("https://"), "Must be an https:// URL");
 
-const githubRepoUrl = httpsUrl.refine(
+export const githubRepoUrl = httpsUrl.refine(
   (u) => /^https:\/\/github\.com\/[^/]+\/[^/]+\/?$/.test(u.replace(/\.git$/, "")),
   "Must be a public GitHub repo URL (https://github.com/owner/name)"
 );

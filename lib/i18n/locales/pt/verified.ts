@@ -319,6 +319,56 @@ export default {
       reuseUnavailable:
         "Não conseguimos carregar as configurações dessa verificação. Ela pode ser anterior ao armazenamento de envios — preencha o formulário à mão.",
       reuseRegionsFile: "regions.bed (reutilizado de uma verificação anterior)",
+      autoConfigTitle: "Configuração automática",
+      autoConfigHint:
+        "Opcional. Lemos o teu repositório no commit que fixaste e propomos as respostas abaixo. Nada é preenchido até teres revisto.",
+      autoConfigSummaryIdle: "Sem usar — preenche o formulário à mão, ou deixa-nos propor as respostas.",
+      autoConfigSummaryApplied: "Aplicada. Verifica cada campo antes de submeter.",
+      autoConfigOwnDockerfile: "Sou eu que forneço o Dockerfile",
+      autoConfigDockerfileHint:
+        "Cola o Dockerfile completo. O STRhub compila-o sem alterações, por isso nada sobre o teu ambiente é adivinhado.",
+      autoConfigSampleLabel: "Ficheiro de resultados de uma execução anterior",
+      autoConfigLocalOnly:
+        "Lido no teu navegador para deduzir o formato de saída e a disposição das colunas. O ficheiro nunca é enviado.",
+      autoConfigSampleApplied: "Lido {file} — a secção de saída esperada fica preenchida.",
+      autoConfigGenerate: "Configurar automaticamente",
+      autoConfigUseSaved: "Usar uma configuração guardada ({n})",
+      autoConfigWorking: "A ler o repositório e a deduzir como a tua ferramenta compila e corre. Pode demorar alguns minutos.",
+      autoConfigAppliedNote:
+        "Respostas preenchidas a partir da configuração automática. Verifica-as antes de submeter — o commit que fixaste acima não é tocado.",
+      autoConfigReview: "Rever",
+      autoConfigReviewHint:
+        "Tudo isto foi lido do teu repositório. Marca os grupos que quiseres, verifica os valores e preenche o formulário.",
+      autoConfigExactRef: "Este mesmo commit",
+      autoConfigFromRef: "Gerada a partir de {ref}",
+      autoConfigMayBeStale: "pode estar desatualizada",
+      autoConfigOldVersion: "gerada por uma versão anterior",
+      autoConfigWhatIsSent:
+        "Para o nosso servidor só são enviados o URL do repositório e o commit. O teu ficheiro de resultados e o teu Dockerfile são lidos no navegador e ficam por lá.",
+      autoConfigStaleTitle: "Os ficheiros de compilação mudaram desde que isto foi gerado",
+      autoConfigStaleBody:
+        "Um Dockerfile, manifesto ou Makefile é diferente no commit que fixaste. As respostas de ambiente podem já não estar certas — verifica-as, ou configura de novo.",
+      autoConfigNotFound: "Não consta do repositório",
+      autoConfigApplies: "Aplica-se a esta ferramenta",
+      autoConfigCaveats: "Vale a pena verificar à mão",
+      autoConfigApply: "Preencher o formulário",
+      autoConfigCancel: "Cancelar",
+      autoConfigHigh: "Com citação",
+      autoConfigLow: "Incerto",
+      autoConfigGroup: {
+        tool: "Ferramenta",
+        env: "Ambiente",
+        run: "Execução",
+        inputs: "Dados de entrada",
+        outputs: "Saída esperada",
+        compat: "Limitações",
+      },
+      autoConfigRepoNotFound: "Não conseguimos ler esse repositório. Confirma que é público e que o URL está certo.",
+      autoConfigRefNotFound: "Esse commit ou tag não existe no repositório.",
+      autoConfigEmptyRepo: "Esse repositório parece vazio no commit que fixaste.",
+      autoConfigDeclined: "Não conseguimos configurar este repositório automaticamente. Preenche o formulário à mão.",
+      autoConfigDisabled: "A configuração automática não está disponível de momento.",
+      autoConfigFailed: "A configuração automática falhou. Tenta de novo, ou preenche o formulário à mão.",
       refTooltip:
         "No GitHub, abra seu repositório público. Para uma release: vá em Releases e copie o nome da tag (ex. v3.0). Para um commit: em Code, abra o histórico, escolha um commit e copie o SHA completo (40 caracteres) ou o hash curto no topo. Cole aqui. O STRhub clonará sempre essa versão exata.",
       refTooltipAria: "Como encontrar um commit SHA ou tag de release no GitHub",

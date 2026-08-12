@@ -319,6 +319,56 @@ export default {
       reuseUnavailable:
         "No pudimos cargar la configuración de esa verificación. Puede ser anterior al guardado de envíos: completá el formulario a mano.",
       reuseRegionsFile: "regions.bed (reutilizado de una verificación anterior)",
+      autoConfigTitle: "Configuración automática",
+      autoConfigHint:
+        "Opcional. Leemos tu repositorio en el commit que fijaste y proponemos las respuestas de abajo. No se rellena nada hasta que lo hayas revisado.",
+      autoConfigSummaryIdle: "Sin usar — rellena el formulario a mano, o deja que propongamos las respuestas.",
+      autoConfigSummaryApplied: "Aplicada. Revisa cada campo antes de enviar.",
+      autoConfigOwnDockerfile: "Yo aporto el Dockerfile",
+      autoConfigDockerfileHint:
+        "Pega el Dockerfile completo. STRhub lo construye sin modificarlo, así que no se supone nada sobre tu entorno.",
+      autoConfigSampleLabel: "Archivo de resultados de una ejecución anterior",
+      autoConfigLocalOnly:
+        "Se lee en tu navegador para deducir el formato de salida y la disposición de columnas. El archivo no se sube nunca.",
+      autoConfigSampleApplied: "Leído {file} — la sección de salida esperada queda rellenada.",
+      autoConfigGenerate: "Configurar automáticamente",
+      autoConfigUseSaved: "Usar una configuración guardada ({n})",
+      autoConfigWorking: "Leyendo el repositorio y deduciendo cómo se compila y se ejecuta tu herramienta. Puede tardar un par de minutos.",
+      autoConfigAppliedNote:
+        "Respuestas rellenadas desde la configuración automática. Revísalas antes de enviar — el commit que fijaste arriba no se toca.",
+      autoConfigReview: "Revisar",
+      autoConfigReviewHint:
+        "Todo esto se ha leído de tu repositorio. Marca los grupos que quieras, comprueba los valores y rellena el formulario.",
+      autoConfigExactRef: "Este mismo commit",
+      autoConfigFromRef: "Generada desde {ref}",
+      autoConfigMayBeStale: "puede estar desactualizada",
+      autoConfigOldVersion: "generada por una versión anterior",
+      autoConfigWhatIsSent:
+        "A nuestro servidor solo se envían la URL del repositorio y el commit. Tu archivo de resultados y tu Dockerfile se leen en tu navegador y no salen de ahí.",
+      autoConfigStaleTitle: "Los archivos de compilación han cambiado desde que se generó",
+      autoConfigStaleBody:
+        "Un Dockerfile, manifiesto o Makefile es distinto en el commit que fijaste. Las respuestas de entorno pueden haber dejado de ser correctas — revísalas, o vuelve a configurar.",
+      autoConfigNotFound: "No aparece en el repositorio",
+      autoConfigApplies: "Se aplica a esta herramienta",
+      autoConfigCaveats: "Conviene comprobarlo a mano",
+      autoConfigApply: "Rellenar el formulario",
+      autoConfigCancel: "Cancelar",
+      autoConfigHigh: "Con cita",
+      autoConfigLow: "Incierto",
+      autoConfigGroup: {
+        tool: "Herramienta",
+        env: "Entorno",
+        run: "Ejecución",
+        inputs: "Datos de entrada",
+        outputs: "Salida esperada",
+        compat: "Limitaciones",
+      },
+      autoConfigRepoNotFound: "No hemos podido leer ese repositorio. Comprueba que es público y que la URL es correcta.",
+      autoConfigRefNotFound: "Ese commit o etiqueta no existe en el repositorio.",
+      autoConfigEmptyRepo: "Ese repositorio parece vacío en el commit que fijaste.",
+      autoConfigDeclined: "No hemos podido configurar este repositorio automáticamente. Rellena el formulario a mano.",
+      autoConfigDisabled: "La configuración automática no está disponible ahora mismo.",
+      autoConfigFailed: "La configuración automática ha fallado. Inténtalo de nuevo, o rellena el formulario a mano.",
       refTooltip:
         "En GitHub, abrí tu repositorio público. Para una release: andá a Releases y copiá el nombre del tag (ej. v3.0). Para un commit: en Code, abrí el historial, elegí un commit y copiá el SHA completo (40 caracteres) o el hash corto que aparece arriba. Pegalo acá. STRhub clonará siempre esa versión exacta.",
       refTooltipAria: "Cómo encontrar un commit SHA o tag de release en GitHub",

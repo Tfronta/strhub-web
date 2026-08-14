@@ -6,7 +6,10 @@
  * The author's repo is never modified and its source code is never stored — the
  * generated Dockerfile only `git clone`s the public repo at build time.
  */
-import type { Submission } from "./submission";
+// QueuedSubmission, not Submission: everything here also serves the approval
+// queue, which can hold a payload written before the submitter question existed.
+// See queuedSubmissionSchema.
+import type { QueuedSubmission } from "./submission";
 import { isRemotePointer } from "./submission";
 
 /**
@@ -128,7 +131,7 @@ export function toYaml(value: Json): string {
 }
 
 /** Assemble the manifest object (schema-shaped) from a validated submission. */
-export function buildManifestObject(sub: Submission, slug: string): Json {
+export function buildManifestObject(sub: QueuedSubmission, slug: string): Json {
   const tool: Record<string, Json> = {
     name: sub.tool.name,
     version: sub.tool.version,
@@ -188,6 +191,17 @@ export function buildManifestObject(sub: Submission, slug: string): Json {
   const manifest: Record<string, Json> = {
     tool,
     source: { repo: sub.source.repo, ref: sub.source.ref },
+    // Who filled in the form. Kept apart from `tool.maintainer`, which names the
+    // person answering for the software: the two coincide only when a tool's own
+    // maintainer submits it, and the engine had no way to tell those cases apart.
+    // Everything the submission carries — the command, the environment, the
+    // regions BED — was chosen by whoever this says, so a report that attributes
+    // any of it needs this line to attribute it correctly.
+    //
+    // Omitted, never defaulted, when the queue hands back a payload from before
+    // the question existed: a manifest that guessed here would be the same
+    // mistake in a new place.
+    ...(sub.submitter ? { submission: { by: sub.submitter.role } } : {}),
     report: { slug },
     // `source` says where the container definition came from. The engine could
     // not tell before: STRhub commits a Dockerfile for every tool, so from its
@@ -218,7 +232,7 @@ export function buildManifestObject(sub: Submission, slug: string): Json {
   return manifest;
 }
 
-export function buildManifestYaml(sub: Submission, slug: string): string {
+export function buildManifestYaml(sub: QueuedSubmission, slug: string): string {
   const header =
     `# STRhub Verified manifest — generated from a self-service submission.\n` +
     `# Verification metadata only; STRhub stores no tool source code. The\n` +
@@ -237,6 +251,12 @@ export interface StoredSubmission {
   schema?: string;
   saved?: string;
   tool?: { name?: string; version?: string; maintainer?: string; contact?: string };
+  /**
+   * Deliberately not among the reuse groups: a previous run's relationship to
+   * the tool is the previous submitter's, and reusing their answers must not
+   * quietly reuse their identity.
+   */
+  submitter?: { role?: string };
   source?: { repo?: string; ref?: string };
   docker?: {
     mode?: "generated" | "provided";
@@ -259,7 +279,7 @@ export interface StoredSubmission {
   regions_asset?: boolean;
 }
 
-export function buildSubmissionJson(sub: Submission, savedAt: string): string {
+export function buildSubmissionJson(sub: QueuedSubmission, savedAt: string): string {
   const { inputs, ...rest } = sub;
   const record = {
     schema: "strhub-verified/submission/1",
@@ -303,7 +323,7 @@ function repoSlug(repoUrl: string): string {
  * minimal toolchain, `git clone` the author's repo at the immutable ref, then
  * run the author's build command. The build IS the "Installs" gate.
  */
-export function generateDockerfile(sub: Submission): string {
+export function generateDockerfile(sub: QueuedSubmission): string {
   if (sub.docker.mode === "provided") return sub.docker.dockerfile;
 
   const base = BASE_IMAGE[sub.docker.language] ?? "ubuntu:22.04";

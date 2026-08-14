@@ -105,6 +105,8 @@ interface PreviousRun {
   label: string;
   generated: string | null;
   succeeded: boolean;
+  /** Assay types the run covered — what tells two legs of one tool apart. */
+  datasetTypes?: string[] | null;
 }
 
 /** What /api/verify/repo-context knows about the pasted repository. */
@@ -1249,13 +1251,31 @@ export function VerifiedSubmitForm() {
     // check. Blocking here spares the author a CI run that would only reject it.
     (!needsRegions || (regionsBed !== "" && regionsCheck?.ok === true));
 
+  /**
+   * What will actually be run, given both answers.
+   *
+   * This used to promise "two tests" unconditionally, which was wrong for
+   * exactly the author who had just said there is no test file in the
+   * repository: for them one verification runs, on our data. The number of runs
+   * comes from the fixture answer; the dataset named comes from the assay. Both
+   * were already on screen — the sentence just did not read them.
+   */
   function externalNoteMessage(): string | null {
     if (!resolvedInputType) return null;
-    if (resolvedInputType === "illumina-str-fastq") return t("verified.submit.externalNoteIllumina");
-    if (resolvedInputType === "ont-bam-hg38") return t("verified.submit.externalNoteOnt");
-    if (resolvedInputType === "illumina-bam-hg38") return t("verified.submit.externalNoteIlluminaBam");
-    if (resolvedInputType === "illumina-bam-hg38-y") return t("verified.submit.externalNoteIlluminaBamY");
-    return t("verified.submit.externalNoteOwnOnly");
+    const DETAIL_KEYS: Record<string, string> = {
+      "illumina-str-fastq": "verified.submit.externalDetailIllumina",
+      "ont-bam-hg38": "verified.submit.externalDetailOnt",
+      "illumina-bam-hg38": "verified.submit.externalDetailIlluminaBam",
+      "illumina-bam-hg38-y": "verified.submit.externalDetailIlluminaBamY",
+    };
+    const detailKey = DETAIL_KEYS[resolvedInputType] ?? "";
+    // No STRhub dataset for this assay: their file is the only thing to run on.
+    if (!detailKey) return t("verified.submit.externalNoteOwnOnly");
+    const runs =
+      fixtureSource === "none"
+        ? t("verified.submit.externalRunsOurs")
+        : t("verified.submit.externalRunsBoth");
+    return `${runs} ${t(detailKey)}`;
   }
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -2156,9 +2176,26 @@ export function VerifiedSubmitForm() {
                           </code>
                         )}
                       </p>
+                      {/* Two runs of one tool at one commit — an autosomal and a
+                          Y-STR leg, say — were identical rows: same name, same
+                          ref, same level, and no way to tell which button you
+                          were about to press. The assay says what they are; the
+                          slug is the identity of last resort, and it is also the
+                          permanent link the run was published at. */}
                       <p className="text-xs text-muted-foreground">
                         {run.label}
                         {run.generated ? ` · ${run.generated.slice(0, 10)}` : ""}
+                        {run.datasetTypes?.length
+                          ? ` · ${run.datasetTypes
+                              .map(
+                                (dt) =>
+                                  INPUT_TYPES.find((it) => it.slug === dt)?.label ?? dt,
+                              )
+                              .join(", ")}`
+                          : ""}
+                      </p>
+                      <p className="font-mono text-[11px] text-muted-foreground truncate">
+                        {run.slug}
                       </p>
                     </div>
                     <Button

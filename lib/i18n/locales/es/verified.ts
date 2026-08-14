@@ -489,6 +489,18 @@ export default {
       inputTypeCustom: "Slug personalizado del tipo de input",
       inputTypeCustomHint:
         "Un identificador corto, ej. 'pacbio-hifi-bam'. No hay dataset STRhub para tipos custom.",
+      externalRunsBoth:
+        "STRhub va a correr dos verificaciones: una sobre tu archivo de prueba y otra sobre nuestro dataset de referencia.",
+      externalRunsOurs:
+        "STRhub va a correr una sola verificación, sobre nuestro dataset de referencia: dijiste que el repositorio no tiene archivo de prueba.",
+      externalDetailIllumina:
+        "La referencia es NIST mds2-2157, datos STR de Illumina que cubren solo ForenSeq y PowerSeq 46GY; usá reads del mismo kit en tu propio fixture.",
+      externalDetailOnt:
+        "La referencia es un slice CODIS hg38 de 1000 Genomes ONT (~30 MB).",
+      externalDetailIlluminaBam:
+        "La referencia es un slice GIAB NA12878 300x hg38 que cubre 24 loci STR forenses autosómicos (muestra femenina, sin marcadores Y).",
+      externalDetailIlluminaBamY:
+        "La referencia es un slice GIAB HG002 300x hg38 que cubre 14 loci Y-STR forenses (muestra masculina).",
       externalNoteIllumina:
         "STRhub correrá 2 pruebas: con tu archivo y con datos Illumina STR del NIST mds2-2157. Nuestro dataset NIST cubre solo ForenSeq y PowerSeq 46GY. Usá reads que coincidan con tu kit en tu propio fixture.",
       externalNoteOnt:

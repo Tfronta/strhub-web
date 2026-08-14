@@ -21,6 +21,8 @@ export default {
       maintainer: "The tool's maintainer",
       third_party: "A third party (not the tool's maintainer)",
     },
+    thirdPartyShortfall:
+      "This run was configured by a third party, not by the tool's maintainer. A result that stops short of the top step may reflect that configuration rather than the software itself.",
     submittedByThirdPartyNote:
       "This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Any maintainer named above is who answers for the software — not who asked for this report, and not an endorsement of it.",
     commit: "Commit",
@@ -110,6 +112,27 @@ export default {
       view: "View execution log",
     },
     errorsBadgeSuffix: "(errors reported)",
+    upstream: {
+      head: "This is the head of {branch} today.",
+      behind: "{n} commit(s) have landed on {branch} since. That is context, not a fault — a pinned release is often meant to sit behind.",
+      refGone: "This commit is no longer reachable in the repository. The result still describes what ran, but the source cannot be fetched to repeat it.",
+      repoGone: "The public repository is no longer reachable at this URL, so nothing here can be re-checked against its source.",
+    },
+    install: {
+      heading: "Why the environment did not build",
+      note: "The container could not be built from the declared install steps, so nothing below the Installs gate ran.",
+      faultStrhub:
+        "At least one cause is STRhub's, not the tool's: the container recipe for a generated environment is ours. Nothing here is a finding about the software, and nothing needs fixing on the author's side.",
+      faultHarness:
+        "At least one cause is a ceiling of the free automated environment rather than a fault in the tool.",
+      faultAuthor:
+        "Every cause identified sits in what the submission declared — its pinned versions, package names or build steps. These are correctable, and re-verifying afterwards is free.",
+      faultAuthorThirdParty:
+        "Every cause identified sits in what the submission declared — its pinned versions, package names or build steps — and that submission came from a third party, not from the tool's maintainer. They are faults in how the tool was set up here rather than in the software. Re-verifying after correcting them is free.",
+      faultUnknown:
+        "The cause could not be classified automatically. The full build output is linked below.",
+      viewBuildLog: "View build log",
+    },
     diagnostics: {
       heading: "Auto-diagnostics",
       note: "Issues detected automatically from the execution log. Suggestions may help resolve failures.",

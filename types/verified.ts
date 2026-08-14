@@ -131,7 +131,43 @@ export interface VerifiedReport {
   ci_run?: string;
   gates: Record<VerifiedLevel, boolean>;
   level: VerifiedLevel;
+  /**
+   * Where the pinned commit sits in its repository now.
+   *
+   * The attestation stays true about the commit it names — later work does not
+   * make it false — but a reviewer holding a manuscript wants to know whether
+   * what was verified is what they are looking at. `ref_exists: false` is the
+   * one that is a finding rather than context: a force-push or a deleted branch
+   * strands an attestation against source nobody can fetch, and being fetchable
+   * is the first thing the badge claims. Absent when the check could not be
+   * made, and then the view says nothing rather than guessing.
+   */
+  upstream?: {
+    checked?: string;
+    repo_exists?: boolean;
+    ref_exists?: boolean;
+    default_branch?: string;
+    status?: string;
+    behind_by?: number;
+  } | null;
   io_detail?: unknown;
+  /**
+   * Why the environment did not build, when it did not.
+   *
+   * Kept apart from `diagnostics`, which is keyed by verification leg and means
+   * "errors the tool reported while running": a build failure happens before any
+   * run, and the build log used to be discarded entirely — so a tool that failed
+   * to build was published as "Installs — did not pass" with no cause and no
+   * side. `faults` says whose: 'author' is correctable and free to re-verify,
+   * 'strhub' is ours (we choose the base image of a generated container) and must
+   * never read as a finding about the software, 'harness' is a ceiling of the
+   * free environment. Empty means the log named nothing we could classify.
+   */
+  install_detail?: {
+    passed?: boolean;
+    diagnostics?: VerifiedDiagnostic[];
+    faults?: ("author" | "strhub" | "harness")[];
+  } | null;
   content_detail?: { outputs?: { stats?: VerifiedContentStats }[] };
   logs?: Record<string, string>;
   diagnostics?: Record<string, VerifiedDiagnostic[]>;

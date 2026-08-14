@@ -17,6 +17,31 @@ export interface ErrorSummary {
   items: string[];
 }
 
+/**
+ * Which sentence names the side a failed build falls on.
+ *
+ * Ours wins over every other, and is said plainly: a reader who has just been
+ * told a tool did not build will otherwise take that as a fact about the
+ * software, and the only thing worse than no explanation is a wrong one. Mirrors
+ * harness/diagnose_log.py::install_fault_sentence — keep the two in step.
+ */
+export function installFaultKey(
+  faults: string[] | undefined,
+  submittedBy?: string | null,
+): string {
+  if (faults?.includes("strhub")) return "verified.install.faultStrhub";
+  if (faults?.includes("harness")) return "verified.install.faultHarness";
+  if (faults?.includes("author")) {
+    // "What the submission declared" is the tool's maintainer only when they
+    // submitted it. When a third party did, the declaration is the third
+    // party's, and the unqualified sentence reads as a fault in the software.
+    return submittedBy === "third_party"
+      ? "verified.install.faultAuthorThirdParty"
+      : "verified.install.faultAuthor";
+  }
+  return "verified.install.faultUnknown";
+}
+
 /** Longest suffix shared by every string. */
 function commonSuffix(values: string[]): string {
   if (values.length < 2) return "";

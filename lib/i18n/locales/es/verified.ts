@@ -16,6 +16,13 @@ export default {
     verifiedOn: "Verificado el",
     backToList: "Todas las herramientas verificadas",
     source: "Código",
+    submittedBy: "Enviado por",
+    submittedByValue: {
+      maintainer: "El mantenedor de la herramienta",
+      third_party: "Un tercero (no el mantenedor de la herramienta)",
+    },
+    submittedByThirdPartyNote:
+      "Esta herramienta fue enviada a verificación por alguien que no es su mantenedor. El mantenedor no participó en la corrida ni aportó nada de lo que usó: el comando, el entorno y las regiones objetivo los eligió quien la envió. Si arriba figura un mantenedor, es quien responde por el software, no quien pidió este reporte, y no implica su respaldo.",
     commit: "Commit",
     environment: "Entorno",
     ciRun: "Run de CI",
@@ -79,12 +86,14 @@ export default {
       can3: "¿Corre hasta el final sobre datos que los autores no eligieron?",
       can4: "¿Devuelve una salida que parece llamadas de marcadores reales?",
       can5: "¿Qué necesitó que un entorno estándar no pudo proveer?",
+      can6: "¿Quién la envió a verificar: su mantenedor u otra persona?",
       cannotHeading: "Preguntas que no responde",
       cannot1: "¿Los genotipos son correctos?",
       cannot2: "¿Coincide con un perfil de referencia o con otro método?",
       cannot3: "¿Es apto para casework, o está acreditado para eso?",
       cannot4: "¿Es mejor o peor que otra herramienta?",
       cannot5: "¿Rinde como dice el manuscrito?",
+      cannot6: "¿Su mantenedor respalda este resultado?",
       developerHeading: "Para un desarrollador",
       developerBody:
         "Un resultado describe un entorno, y un software que funciona en la máquina donde se escribió puede detenerse igual acá. Esa brecha suele ser la parte útil: es lo que se encuentra un usuario nuevo el primer día. Cada resultado enlaza el log completo y los comandos exactos, así que se puede reproducir en local.",
@@ -291,7 +300,23 @@ export default {
       sectionOutputsHint:
         "Indicá qué archivo escribe tu comando de ejecución y qué tipo de datos contiene. No hace falta conocer el motor de STRhub, solo la documentación de tu herramienta.",
       name: "Nombre de la herramienta",
+      submitterRole: "Tu relación con esta herramienta",
+      submitterRoleTooltip:
+        "Todo lo que sigue —el comando, el entorno, las regiones— se publica como parte de la atestación, y esto es lo que dice de quién fueron esas decisiones. Una cuenta de GitHub dice quién es dueño de un repositorio; nunca dice quién completó este formulario.",
+      submitterRoleOption: {
+        maintainer: "Mantengo esta herramienta",
+        third_party: "No soy su mantenedor",
+      },
+      submitterRoleDesc: {
+        maintainer:
+          "La escribiste vos o respondés por ella. La atestación registra que la envió su mantenedor.",
+        third_party:
+          "Estás verificando una herramienta ajena. La atestación lo dice, y registra que su mantenedor no participó ni aportó la configuración.",
+      },
       maintainer: "Mantenedor",
+      maintainerThirdParty: "Mantenedor de la herramienta (no vos)",
+      maintainerThirdPartyNote:
+        "Se publica como la persona que responde por el software, junto con la aclaración de que no participó en esta verificación.",
       contact: "Contacto (issue tracker o email)",
       repo: "URL del repo público de GitHub",
       ref: "Commit SHA o tag de release (inmutable)",

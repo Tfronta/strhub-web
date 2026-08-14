@@ -16,6 +16,13 @@ export default {
     verifiedOn: "Verified on",
     backToList: "All verified tools",
     source: "Source",
+    submittedBy: "Submitted by",
+    submittedByValue: {
+      maintainer: "The tool's maintainer",
+      third_party: "A third party (not the tool's maintainer)",
+    },
+    submittedByThirdPartyNote:
+      "This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Any maintainer named above is who answers for the software — not who asked for this report, and not an endorsement of it.",
     commit: "Commit",
     environment: "Environment",
     ciRun: "CI run",
@@ -79,12 +86,14 @@ export default {
       can3: "Does it run to completion on data the authors did not select?",
       can4: "Does it return output that looks like real marker calls?",
       can5: "What did it need that a standard environment could not supply?",
+      can6: "Who submitted it for verification — its maintainer, or somebody else?",
       cannotHeading: "Questions it cannot answer",
       cannot1: "Are the genotypes correct?",
       cannot2: "Does it agree with a reference profile or another method?",
       cannot3: "Is it suitable for casework, or accredited for it?",
       cannot4: "Is it better or worse than another tool?",
       cannot5: "Does it perform as reported in the manuscript?",
+      cannot6: "Does its maintainer stand behind this result?",
       developerHeading: "For a developer",
       developerBody:
         "A result describes one environment, and software that works on the machine it was written on can still stop here. That gap is usually the useful part: it is what a new user meets on their first day. Every result links the full log and the exact commands used, so a result can be reproduced locally.",
@@ -291,7 +300,23 @@ export default {
       sectionOutputsHint:
         "Tell us what file your run command writes and what type of data it contains. You do not need to know STRhub internals, just match your tool's own documentation.",
       name: "Tool name",
+      submitterRole: "Your relationship to this tool",
+      submitterRoleTooltip:
+        "Everything below — the command, the environment, the target regions — is published as part of the attestation, and this is what says whose choices they were. A GitHub account tells us who owns a repository; it never tells us who filled in this form.",
+      submitterRoleOption: {
+        maintainer: "I maintain this tool",
+        third_party: "I am not its maintainer",
+      },
+      submitterRoleDesc: {
+        maintainer:
+          "You wrote it, or you answer for it. The attestation records that its maintainer submitted it.",
+        third_party:
+          "You are verifying somebody else's tool. The attestation says so, and records that its maintainer was not involved and did not supply the configuration.",
+      },
       maintainer: "Maintainer",
+      maintainerThirdParty: "Maintainer of the tool (not you)",
+      maintainerThirdPartyNote:
+        "Published as the person who answers for the software, alongside a note that they took no part in this verification.",
       contact: "Contact (issue tracker or email)",
       repo: "Public GitHub repo URL",
       ref: "Commit SHA or release tag (immutable)",

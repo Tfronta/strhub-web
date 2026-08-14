@@ -109,9 +109,22 @@ export interface VerifiedManualVerification {
   reason: string | null;
 }
 
+/** Whether the tool's own maintainer submitted it, or somebody else did. */
+export type SubmittedBy = "maintainer" | "third_party";
+
 export interface VerifiedReport {
   schema: string;
   tool: { name: string; version?: string; maintainer?: string; contact?: string };
+  /**
+   * Who submitted the tool for verification.
+   *
+   * Distinct from `tool.maintainer`, which names whoever answers for the
+   * software: the two are the same person only when a tool's own maintainer
+   * submits it. Absent on reports generated before the form asked, and in that
+   * case the view must claim nothing — not fall back to the maintainer, which is
+   * the assumption this field exists to retire.
+   */
+  submission?: { by?: SubmittedBy } | null;
   source: { repo: string; ref?: string; ref_resolved?: string };
   environment: { dockerfile?: string; os?: string[] };
   generated: string;

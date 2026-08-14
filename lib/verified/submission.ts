@@ -167,6 +167,21 @@ export type InputTypeSlug = (typeof INPUT_TYPES)[number]["slug"];
 export const INPUT_TYPES_WITH_REFERENCE = INPUT_TYPES.filter((t) => t.hasExternalDataset);
 export const INPUT_TYPES_OWN_ONLY = INPUT_TYPES.filter((t) => !t.hasExternalDataset);
 
+/**
+ * Who is submitting: the tool's own maintainer, or somebody else.
+ *
+ * Nothing else in the form establishes this, and everything downstream assumed
+ * the first. A report therefore credited a repository's owner with a regions BED
+ * that STRhub wrote — a file that decides which loci the tool is asked for, and
+ * so decides much of the result. The person who wrote it was not the person the
+ * report named.
+ *
+ * It is asked rather than guessed because it cannot be derived: a GitHub login
+ * says who owns a repository, never who filled in this form.
+ */
+export const SUBMITTER_ROLES = ["maintainer", "third_party"] as const;
+export type SubmitterRole = (typeof SUBMITTER_ROLES)[number];
+
 /** Output formats the engine's IO gate understands. */
 export const OUTPUT_FORMATS = ["vcf", "csv", "tsv", "json", "text"] as const;
 export type OutputFormat = (typeof OUTPUT_FORMATS)[number];
@@ -262,6 +277,16 @@ export const submissionSchema = z
         version: z.string().trim().min(1).max(60),
         maintainer: z.string().trim().max(200).optional(),
         contact: z.string().trim().max(300).optional(),
+      })
+      .strict(),
+    /**
+     * The submitter's relationship to the tool. Required, and with no default:
+     * an unanswered box would land back on the assumption this field exists to
+     * remove.
+     */
+    submitter: z
+      .object({
+        role: z.enum(SUBMITTER_ROLES),
       })
       .strict(),
     source: z
@@ -363,6 +388,23 @@ export const submissionSchema = z
 
 export type Submission = z.infer<typeof submissionSchema>;
 export type SubmissionInput = z.input<typeof submissionSchema>;
+
+/**
+ * A submission read back out of the approval queue.
+ *
+ * Identical to the above except that `submitter` may be missing, because the
+ * queue can hold payloads written before the question was asked. Those are still
+ * theirs to approve: rejecting them at the gate would strand a submission for a
+ * field its author was never shown. Nothing is inferred in their place — the
+ * manifest omits the line, and the report says nothing rather than guessing.
+ *
+ * New submissions never take this path: they arrive at /api/verify/submit, which
+ * validates against `submissionSchema` and requires the answer.
+ */
+export const queuedSubmissionSchema = submissionSchema.extend({
+  submitter: submissionSchema.shape.submitter.optional(),
+});
+export type QueuedSubmission = z.infer<typeof queuedSubmissionSchema>;
 
 /**
  * Short slug suffix appended to name-version when the input type is a variant

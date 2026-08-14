@@ -156,6 +156,11 @@ export function VerifiedDetail({
   const ref = report.source.ref_resolved ?? report.source.ref ?? "";
   const logBaseUrl = staticPageUrl.replace(/\/[^/]+$/, "");
 
+  // Narrowed rather than trusted: the report is fetched JSON, and an unexpected
+  // value must render nothing rather than a missing translation key.
+  const by = report.submission?.by;
+  const submittedBy = by === "maintainer" || by === "third_party" ? by : null;
+
   const datasetTypes = new Set<string>();
   if (report.datasets) {
     for (const leg of report.datasets) {
@@ -269,6 +274,16 @@ export function VerifiedDetail({
                 <dd>{report.tool.maintainer}</dd>
               </>
             )}
+            {/* Who asked for the run, kept next to who answers for the software
+                so the first is never read as the second. Absent on reports from
+                before the submission form asked, and then nothing is shown:
+                there is no answer to fall back on. */}
+            {submittedBy && (
+              <>
+                <dt className="text-muted-foreground">{t("verified.submittedBy")}</dt>
+                <dd>{t(`verified.submittedByValue.${submittedBy}`)}</dd>
+              </>
+            )}
             <dt className="text-muted-foreground">Repository</dt>
             <dd>
               <a
@@ -319,6 +334,15 @@ export function VerifiedDetail({
               </a>
             </dd>
           </dl>
+          {/* Said in full only for a third-party submission. The other case is
+              what a reader already assumes, so the row above carries it; this one
+              contradicts the assumption and has to say so where the maintainer's
+              name is, not further down the page. */}
+          {submittedBy === "third_party" && (
+            <p className="mt-3 border-t pt-3 text-sm text-muted-foreground">
+              {t("verified.submittedByThirdPartyNote")}
+            </p>
+          )}
         </div>
 
         {/* ── WHAT WAS VERIFIED / NOT VERIFIED ── */}

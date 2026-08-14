@@ -261,6 +261,16 @@ export function VerifiedDetail({
               {report.scope}
             </p>
           )}
+          {/* A result that stops short, on a run somebody else configured, is
+              read as a verdict on the software unless this says otherwise. The
+              error is asymmetric: a bad configuration produces false negatives,
+              almost never false positives — so a green result needs no such
+              line, and a short one does. */}
+          {submittedBy === "third_party" && report.gates?.content !== true && (
+            <p className="mt-3 text-sm text-muted-foreground border-t pt-3">
+              {t("verified.thirdPartyShortfall")}
+            </p>
+          )}
         </div>
 
         {/* ── SOURCE ── */}
@@ -360,7 +370,7 @@ export function VerifiedDetail({
               {t("verified.install.note")}
             </p>
             <p className="mt-2 text-sm">
-              {t(installFaultKey(report.install_detail.faults))}
+              {t(installFaultKey(report.install_detail.faults, submittedBy))}
             </p>
             <ul className="mt-3 space-y-2 border-t border-amber-300/60 dark:border-amber-800/60 pt-3">
               {report.install_detail.diagnostics.map((issue) => (

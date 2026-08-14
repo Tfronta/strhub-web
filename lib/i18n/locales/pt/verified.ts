@@ -21,6 +21,8 @@ export default {
       maintainer: "O mantenedor da ferramenta",
       third_party: "Um terceiro (não o mantenedor da ferramenta)",
     },
+    thirdPartyShortfall:
+      "Esta execução foi configurada por um terceiro, não por quem mantém a ferramenta. Um resultado que para antes do degrau mais alto pode refletir essa configuração, e não o software em si.",
     submittedByThirdPartyNote:
       "Esta ferramenta foi enviada para verificação por alguém que não é seu mantenedor. O mantenedor não participou da execução nem forneceu nada do que ela usou: o comando, o ambiente e as regiões alvo foram escolhidos por quem a enviou. Se houver um mantenedor citado acima, é quem responde pelo software — não quem pediu este relatório, e não implica endosso dele.",
     commit: "Commit",
@@ -119,6 +121,8 @@ export default {
         "Ao menos uma causa é um teto do ambiente automático gratuito, não uma falha da ferramenta.",
       faultAuthor:
         "Todas as causas identificadas estão no que a submission declarou — suas versões fixadas, nomes de pacotes ou passos de build. São corrigíveis, e re-verificar depois é grátis.",
+      faultAuthorThirdParty:
+        "Todas as causas identificadas estão no que a submission declarou — suas versões fixadas, nomes de pacotes ou passos de build — e essa submission veio de um terceiro, não de quem mantém a ferramenta. São falhas em como a ferramenta foi configurada aqui, não no software. Re-verificar depois de corrigi-las é grátis.",
       faultUnknown:
         "A causa não pôde ser classificada automaticamente. Abaixo está o log completo do build.",
       viewBuildLog: "Ver log do build",

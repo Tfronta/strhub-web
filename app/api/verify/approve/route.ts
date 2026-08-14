@@ -10,7 +10,10 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/auth";
 import { approveRepo, normalizeRepo, getPendingBySlug, updateSubmissionStatus } from "@/lib/verified/store";
-import { submissionSchema, newDispatchId } from "@/lib/verified/submission";
+// The queue's own schema, not the submit endpoint's: a payload sitting here may
+// predate a field that is now required, and an approval must not be refused over
+// a question its author was never asked (see queuedSubmissionSchema).
+import { queuedSubmissionSchema, newDispatchId } from "@/lib/verified/submission";
 import { buildManifestYaml, generateDockerfile, REGIONS_ASSET_PATH } from "@/lib/verified/manifest";
 import { putFile, dispatchWorkflow, GitHubConfigError, GitHubApiError } from "@/lib/verified/github";
 
@@ -44,7 +47,7 @@ export async function POST(request: NextRequest) {
     const pending = await getPendingBySlug(body.slug);
     if (pending?.payload) {
       try {
-        const parsed = submissionSchema.safeParse(JSON.parse(pending.payload));
+        const parsed = queuedSubmissionSchema.safeParse(JSON.parse(pending.payload));
         if (parsed.success) {
           const sub = parsed.data;
           const slug = pending.slug;

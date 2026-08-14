@@ -112,6 +112,12 @@ export default {
       view: "Ver log de ejecución",
     },
     errorsBadgeSuffix: "(errores reportados)",
+    upstream: {
+      head: "Hoy es la cabeza de {branch}.",
+      behind: "Desde entonces entraron {n} commit(s) en {branch}. Es contexto, no una falla: una release fijada suele estar por detrás a propósito.",
+      refGone: "Este commit ya no es alcanzable en el repositorio. El resultado sigue describiendo lo que corrió, pero no se puede traer el código para repetirlo.",
+      repoGone: "El repositorio público ya no es alcanzable en esta URL, así que nada de esto se puede volver a chequear contra su código.",
+    },
     install: {
       heading: "Por qué no se pudo construir el entorno",
       note: "El contenedor no se pudo construir con los pasos de instalación declarados, así que nada por debajo de la compuerta Installs llegó a correr.",

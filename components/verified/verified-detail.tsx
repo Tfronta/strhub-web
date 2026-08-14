@@ -296,6 +296,14 @@ export function VerifiedDetail({
             {t("verified.source")}
           </h2>
           <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+            {report.tool.variant && (
+              <>
+                {/* Two cards for one tool otherwise differ by a few characters
+                    of URL, which is not a distinction to make a reader squint at. */}
+                <dt className="text-muted-foreground">{t("verified.variant")}</dt>
+                <dd>{report.tool.variant}</dd>
+              </>
+            )}
             {report.tool.maintainer && (
               <>
                 <dt className="text-muted-foreground">Maintainer</dt>

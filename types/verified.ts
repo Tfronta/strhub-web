@@ -114,7 +114,14 @@ export type SubmittedBy = "maintainer" | "third_party";
 
 export interface VerifiedReport {
   schema: string;
-  tool: { name: string; version?: string; maintainer?: string; contact?: string };
+  tool: {
+    name: string;
+    version?: string;
+    /** Which kit or configuration this attestation is about, when a tool has several. */
+    variant?: string;
+    maintainer?: string;
+    contact?: string;
+  };
   /**
    * Who submitted the tool for verification.
    *

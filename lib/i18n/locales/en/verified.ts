@@ -110,6 +110,19 @@ export default {
       view: "View execution log",
     },
     errorsBadgeSuffix: "(errors reported)",
+    install: {
+      heading: "Why the environment did not build",
+      note: "The container could not be built from the declared install steps, so nothing below the Installs gate ran.",
+      faultStrhub:
+        "At least one cause is STRhub's, not the tool's: the container recipe for a generated environment is ours. Nothing here is a finding about the software, and nothing needs fixing on the author's side.",
+      faultHarness:
+        "At least one cause is a ceiling of the free automated environment rather than a fault in the tool.",
+      faultAuthor:
+        "Every cause identified sits in what the submission declared — its pinned versions, package names or build steps. These are correctable, and re-verifying afterwards is free.",
+      faultUnknown:
+        "The cause could not be classified automatically. The full build output is linked below.",
+      viewBuildLog: "View build log",
+    },
     diagnostics: {
       heading: "Auto-diagnostics",
       note: "Issues detected automatically from the execution log. Suggestions may help resolve failures.",

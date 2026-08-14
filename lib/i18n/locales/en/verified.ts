@@ -112,6 +112,12 @@ export default {
       view: "View execution log",
     },
     errorsBadgeSuffix: "(errors reported)",
+    upstream: {
+      head: "This is the head of {branch} today.",
+      behind: "{n} commit(s) have landed on {branch} since. That is context, not a fault — a pinned release is often meant to sit behind.",
+      refGone: "This commit is no longer reachable in the repository. The result still describes what ran, but the source cannot be fetched to repeat it.",
+      repoGone: "The public repository is no longer reachable at this URL, so nothing here can be re-checked against its source.",
+    },
     install: {
       heading: "Why the environment did not build",
       note: "The container could not be built from the declared install steps, so nothing below the Installs gate ran.",

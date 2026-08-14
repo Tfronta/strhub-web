@@ -131,6 +131,25 @@ export interface VerifiedReport {
   ci_run?: string;
   gates: Record<VerifiedLevel, boolean>;
   level: VerifiedLevel;
+  /**
+   * Where the pinned commit sits in its repository now.
+   *
+   * The attestation stays true about the commit it names — later work does not
+   * make it false — but a reviewer holding a manuscript wants to know whether
+   * what was verified is what they are looking at. `ref_exists: false` is the
+   * one that is a finding rather than context: a force-push or a deleted branch
+   * strands an attestation against source nobody can fetch, and being fetchable
+   * is the first thing the badge claims. Absent when the check could not be
+   * made, and then the view says nothing rather than guessing.
+   */
+  upstream?: {
+    checked?: string;
+    repo_exists?: boolean;
+    ref_exists?: boolean;
+    default_branch?: string;
+    status?: string;
+    behind_by?: number;
+  } | null;
   io_detail?: unknown;
   /**
    * Why the environment did not build, when it did not.

@@ -162,6 +162,23 @@ export function VerifiedDetail({
   const by = report.submission?.by;
   const submittedBy = by === "maintainer" || by === "third_party" ? by : null;
 
+  // Mirrors harness/upstream.py::note. Empty when the check could not be made,
+  // and then nothing is shown — a guess about how current somebody's software
+  // is would be worse than the silence it replaces.
+  const up = report.upstream;
+  const upstreamNote = !up
+    ? ""
+    : up.repo_exists === false
+      ? t("verified.upstream.repoGone")
+      : up.ref_exists === false
+        ? t("verified.upstream.refGone")
+        : (up.behind_by ?? 0) > 0
+          ? t("verified.upstream.behind", {
+              n: String(up.behind_by),
+              branch: up.default_branch ?? "",
+            })
+          : t("verified.upstream.head", { branch: up.default_branch ?? "" });
+
   const datasetTypes = new Set<string>();
   if (report.datasets) {
     for (const leg of report.datasets) {
@@ -309,6 +326,22 @@ export function VerifiedDetail({
             <dt className="text-muted-foreground">{t("verified.commit")}</dt>
             <dd>
               <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{ref}</code>
+              {/* Where that commit sits now. Context for a reviewer comparing
+                  the attestation against the version a manuscript cites — and,
+                  when the ref has vanished, a finding: being fetchable is the
+                  first thing the badge claims. */}
+              {upstreamNote && (
+                <span
+                  className={cn(
+                    "mt-1 block text-xs",
+                    report.upstream?.ref_exists === false
+                      ? "text-amber-700 dark:text-amber-500"
+                      : "text-muted-foreground",
+                  )}
+                >
+                  {upstreamNote}
+                </span>
+              )}
             </dd>
             {report.environment?.os && (
               <>

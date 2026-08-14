@@ -607,6 +607,13 @@ export default {
       stateInProgress: "Rodando os portões…",
       statePolling: "Consultando status…",
       stateCompletedSuccess: "A verificação terminou com sucesso.",
+      rejectStoppedTitle: "Paramos antes de executar sua ferramenta",
+      rejectOursTitle: "Este é nosso, não da sua ferramenta",
+      rejectNotJudged:
+        "Nenhum portão foi avaliado, então isto não diz nada sobre sua ferramenta: ela não chegou a rodar.",
+      rejectCoverage:
+        "Seu BED cobre {covered} de {total} loci suportados (são necessários pelo menos {min}).",
+      rejectOutOfPanel: "{n} intervalo(s) caem fora do painel:",
       stateCompletedFailure: "A execução terminou mas não passou em todos os portões.",
       viewRun: "Ver execução de CI",
       viewReport: "Ver atestação",

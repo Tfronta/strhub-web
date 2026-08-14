@@ -16,6 +16,7 @@ import {
   hasReportedErrors,
   externalLegNoteKeys,
   errorAwareLevel,
+  installFaultKey,
 } from "@/lib/verified/diagnostics";
 import { isManualEligible, reasonI18nKey } from "@/lib/verified/manual";
 
@@ -344,6 +345,48 @@ export function VerifiedDetail({
             </p>
           )}
         </div>
+
+        {/* ── WHY THE BUILD FAILED ──
+            Directly under the source block, because nothing below it ran. A
+            "Installs — did not pass" with no cause tells a reviewer nothing they
+            can act on and its maintainer nothing they can fix, and it used to be
+            all we published: the build log was thrown away. */}
+        {report.install_detail?.diagnostics?.length ? (
+          <div className="mt-6 rounded-lg border border-amber-300 dark:border-amber-800 bg-amber-50/60 dark:bg-amber-950/20 p-5">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-500">
+              {t("verified.install.heading")}
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t("verified.install.note")}
+            </p>
+            <p className="mt-2 text-sm">
+              {t(installFaultKey(report.install_detail.faults))}
+            </p>
+            <ul className="mt-3 space-y-2 border-t border-amber-300/60 dark:border-amber-800/60 pt-3">
+              {report.install_detail.diagnostics.map((issue) => (
+                <li key={issue.id + issue.title} className="text-sm">
+                  <span className="font-medium">{issue.title}</span>
+                  {issue.suggestion && (
+                    <span className="mt-0.5 block text-xs text-muted-foreground">
+                      {issue.suggestion}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+            {report.logs?.build && (
+              <a
+                href={`${logBaseUrl}/${report.logs.build}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1 text-sm text-primary hover:underline"
+              >
+                {t("verified.install.viewBuildLog")}
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            )}
+          </div>
+        ) : null}
 
         {/* ── WHAT WAS VERIFIED / NOT VERIFIED ── */}
         <div className="mt-6 rounded-lg border bg-card p-5">

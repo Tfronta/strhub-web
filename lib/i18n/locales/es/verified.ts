@@ -110,6 +110,19 @@ export default {
       view: "Ver log de ejecución",
     },
     errorsBadgeSuffix: "(errores reportados)",
+    install: {
+      heading: "Por qué no se pudo construir el entorno",
+      note: "El contenedor no se pudo construir con los pasos de instalación declarados, así que nada por debajo de la compuerta Installs llegó a correr.",
+      faultStrhub:
+        "Al menos una causa es de STRhub, no de la herramienta: la receta del contenedor de un entorno generado es nuestra. Nada de esto es un hallazgo sobre el software, y no hay nada que arreglar del lado de quien lo mantiene.",
+      faultHarness:
+        "Al menos una causa es un techo del entorno automático gratuito, no una falla de la herramienta.",
+      faultAuthor:
+        "Todas las causas identificadas están en lo que declaró la submission: sus versiones fijadas, nombres de paquetes o pasos de build. Son corregibles, y re-verificar después es gratis.",
+      faultUnknown:
+        "La causa no se pudo clasificar automáticamente. Abajo está el log completo del build.",
+      viewBuildLog: "Ver log del build",
+    },
     diagnostics: {
       heading: "Auto-diagnóstico",
       note: "Problemas detectados automáticamente del log de ejecución. Las sugerencias pueden ayudar a resolver fallas.",

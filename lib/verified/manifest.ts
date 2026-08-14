@@ -136,6 +136,10 @@ export function buildManifestObject(sub: QueuedSubmission, slug: string): Json {
     name: sub.tool.name,
     version: sub.tool.version,
   };
+  // Named on the attestation, not only encoded in the slug: two STRait Razor
+  // cards differing by seven characters of URL is not a distinction a reader
+  // should have to squint at.
+  if (sub.tool.variant) tool.variant = sub.tool.variant;
   if (sub.tool.maintainer) tool.maintainer = sub.tool.maintainer;
   if (sub.tool.contact) tool.contact = sub.tool.contact;
 
@@ -250,7 +254,7 @@ export function buildManifestYaml(sub: QueuedSubmission, slug: string): string {
 export interface StoredSubmission {
   schema?: string;
   saved?: string;
-  tool?: { name?: string; version?: string; maintainer?: string; contact?: string };
+  tool?: { name?: string; version?: string; variant?: string; maintainer?: string; contact?: string };
   /**
    * Deliberately not among the reuse groups: a previous run's relationship to
    * the tool is the previous submitter's, and reusing their answers must not

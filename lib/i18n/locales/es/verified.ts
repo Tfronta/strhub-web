@@ -16,6 +16,7 @@ export default {
     verifiedOn: "Verificado el",
     backToList: "Todas las herramientas verificadas",
     source: "Código",
+    variant: "Kit / variante",
     submittedBy: "Enviado por",
     submittedByValue: {
       maintainer: "El mantenedor de la herramienta",
@@ -323,6 +324,10 @@ export default {
       sectionOutputsHint:
         "Indicá qué archivo escribe tu comando de ejecución y qué tipo de datos contiene. No hace falta conocer el motor de STRhub, solo la documentación de tu herramienta.",
       name: "Nombre de la herramienta",
+      variant: "Kit o variante de configuración",
+      variantTooltip:
+        "Usalo cuando la misma herramienta, en el mismo commit, se verifica más de una vez con configuraciones distintas: STRait Razor con ForenSeq y con PowerSeq, por ejemplo. Cada variante recibe su propia atestación y su propio enlace permanente. Dejalo vacío si hay una sola.",
+      slugPreview: "Se va a publicar en",
       submitterRole: "Tu relación con esta herramienta",
       submitterRoleTooltip:
         "Todo lo que sigue —el comando, el entorno, las regiones— se publica como parte de la atestación, y esto es lo que dice de quién fueron esas decisiones. Una cuenta de GitHub dice quién es dueño de un repositorio; nunca dice quién completó este formulario.",
@@ -484,6 +489,18 @@ export default {
       inputTypeCustom: "Slug personalizado del tipo de input",
       inputTypeCustomHint:
         "Un identificador corto, ej. 'pacbio-hifi-bam'. No hay dataset STRhub para tipos custom.",
+      externalRunsBoth:
+        "STRhub va a correr dos verificaciones: una sobre tu archivo de prueba y otra sobre nuestro dataset de referencia.",
+      externalRunsOurs:
+        "STRhub va a correr una sola verificación, sobre nuestro dataset de referencia: dijiste que el repositorio no tiene archivo de prueba.",
+      externalDetailIllumina:
+        "La referencia es NIST mds2-2157, datos STR de Illumina que cubren solo ForenSeq y PowerSeq 46GY; usá reads del mismo kit en tu propio fixture.",
+      externalDetailOnt:
+        "La referencia es un slice CODIS hg38 de 1000 Genomes ONT (~30 MB).",
+      externalDetailIlluminaBam:
+        "La referencia es un slice GIAB NA12878 300x hg38 que cubre 24 loci STR forenses autosómicos (muestra femenina, sin marcadores Y).",
+      externalDetailIlluminaBamY:
+        "La referencia es un slice GIAB HG002 300x hg38 que cubre 14 loci Y-STR forenses (muestra masculina).",
       externalNoteIllumina:
         "STRhub correrá 2 pruebas: con tu archivo y con datos Illumina STR del NIST mds2-2157. Nuestro dataset NIST cubre solo ForenSeq y PowerSeq 46GY. Usá reads que coincidan con tu kit en tu propio fixture.",
       externalNoteOnt:

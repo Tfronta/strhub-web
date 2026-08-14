@@ -115,7 +115,12 @@ export async function POST(request: NextRequest) {
     );
   }
   const sub = parsed.data;
-  const slug = deriveSlug(sub.tool.name, sub.tool.version, sub.inputs.type);
+  const slug = deriveSlug(
+    sub.tool.name,
+    sub.tool.version,
+    sub.inputs.type,
+    sub.tool.variant,
+  );
   // The raw address never leaves this request: records go to public repos, so
   // only the salted digest is stored. The address itself is used solely for the
   // admin notification email.

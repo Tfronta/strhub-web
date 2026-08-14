@@ -275,6 +275,16 @@ export const submissionSchema = z
       .object({
         name: z.string().trim().min(1).max(120),
         version: z.string().trim().min(1).max(60),
+        /**
+         * The kit or configuration this run targets, when one tool has several.
+         *
+         * STRait Razor is the case that forced it: ForenSeq and PowerSeq are the
+         * same tool at the same commit reading the same input type, and differ
+         * only by a config file — yet they are two different claims, and each
+         * deserves its own attestation. Without this they derive one slug, and
+         * the second submission silently overwrites the first.
+         */
+        variant: z.string().trim().max(40).optional(),
         maintainer: z.string().trim().max(200).optional(),
         contact: z.string().trim().max(300).optional(),
       })
@@ -422,12 +432,23 @@ const TYPE_SLUG_SUFFIX: Record<string, string> = {
 };
 
 /**
- * Derive a stable, filesystem-safe slug from tool name + version + input type.
- * Input type adds a short suffix for non-canonical variants (e.g. "-y" for Y-STR)
- * so the same tool submitted for different assay types gets distinct directories.
+ * Derive a stable, filesystem-safe slug from tool name + version + variant +
+ * input type. Input type adds a short suffix for non-canonical assays (e.g. "-y"
+ * for Y-STR), and the variant separates two kits of the same tool, so each
+ * distinct claim gets its own directory and its own permanent link.
  */
-export function deriveSlug(name: string, version: string, inputType?: string): string {
-  const base = `${name}-${version}`
+export function deriveSlug(
+  name: string,
+  version: string,
+  inputType?: string,
+  variant?: string,
+): string {
+  // The variant sits between the version and the assay suffix, so two kits of
+  // one tool at one commit get separate directories — and therefore separate
+  // permanent links — instead of the second overwriting the first.
+  const base = [name, version, variant?.trim() || null]
+    .filter(Boolean)
+    .join("-")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");

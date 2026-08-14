@@ -25,10 +25,20 @@ export interface ErrorSummary {
  * software, and the only thing worse than no explanation is a wrong one. Mirrors
  * harness/diagnose_log.py::install_fault_sentence — keep the two in step.
  */
-export function installFaultKey(faults: string[] | undefined): string {
+export function installFaultKey(
+  faults: string[] | undefined,
+  submittedBy?: string | null,
+): string {
   if (faults?.includes("strhub")) return "verified.install.faultStrhub";
   if (faults?.includes("harness")) return "verified.install.faultHarness";
-  if (faults?.includes("author")) return "verified.install.faultAuthor";
+  if (faults?.includes("author")) {
+    // "What the submission declared" is the tool's maintainer only when they
+    // submitted it. When a third party did, the declaration is the third
+    // party's, and the unqualified sentence reads as a fault in the software.
+    return submittedBy === "third_party"
+      ? "verified.install.faultAuthorThirdParty"
+      : "verified.install.faultAuthor";
+  }
   return "verified.install.faultUnknown";
 }
 

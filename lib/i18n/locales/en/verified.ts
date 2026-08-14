@@ -21,6 +21,8 @@ export default {
       maintainer: "The tool's maintainer",
       third_party: "A third party (not the tool's maintainer)",
     },
+    thirdPartyShortfall:
+      "This run was configured by a third party, not by the tool's maintainer. A result that stops short of the top step may reflect that configuration rather than the software itself.",
     submittedByThirdPartyNote:
       "This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Any maintainer named above is who answers for the software — not who asked for this report, and not an endorsement of it.",
     commit: "Commit",
@@ -119,6 +121,8 @@ export default {
         "At least one cause is a ceiling of the free automated environment rather than a fault in the tool.",
       faultAuthor:
         "Every cause identified sits in what the submission declared — its pinned versions, package names or build steps. These are correctable, and re-verifying afterwards is free.",
+      faultAuthorThirdParty:
+        "Every cause identified sits in what the submission declared — its pinned versions, package names or build steps — and that submission came from a third party, not from the tool's maintainer. They are faults in how the tool was set up here rather than in the software. Re-verifying after correcting them is free.",
       faultUnknown:
         "The cause could not be classified automatically. The full build output is linked below.",
       viewBuildLog: "View build log",

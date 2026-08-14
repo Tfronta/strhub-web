@@ -110,6 +110,7 @@ export default {
       note: "Recorded automatically from the tool's public files when this run was configured. Not verified by execution, and not part of the gates above. Useful for what to check by hand.",
     },
     log: {
+      build: "Build",
       view: "View execution log",
     },
     errorsBadgeSuffix: "(errors reported)",

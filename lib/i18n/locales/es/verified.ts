@@ -110,6 +110,7 @@ export default {
       note: "Registradas automáticamente a partir de los archivos públicos de la herramienta al configurar esta corrida. No verificadas por ejecución, y no forman parte de los gates de arriba. Sirven para saber qué revisar a mano.",
     },
     log: {
+      build: "Build",
       view: "Ver log de ejecución",
     },
     errorsBadgeSuffix: "(errores reportados)",

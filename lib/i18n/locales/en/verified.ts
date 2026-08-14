@@ -16,6 +16,7 @@ export default {
     verifiedOn: "Verified on",
     backToList: "All verified tools",
     source: "Source",
+    variant: "Kit / variant",
     submittedBy: "Submitted by",
     submittedByValue: {
       maintainer: "The tool's maintainer",
@@ -323,6 +324,10 @@ export default {
       sectionOutputsHint:
         "Tell us what file your run command writes and what type of data it contains. You do not need to know STRhub internals, just match your tool's own documentation.",
       name: "Tool name",
+      variant: "Kit or configuration variant",
+      variantTooltip:
+        "Use this when the same tool at the same commit is verified more than once with different configurations — STRait Razor with ForenSeq and with PowerSeq, for example. Each variant gets its own attestation and its own permanent link. Leave it blank if there is only one.",
+      slugPreview: "This will be published at",
       submitterRole: "Your relationship to this tool",
       submitterRoleTooltip:
         "Everything below — the command, the environment, the target regions — is published as part of the attestation, and this is what says whose choices they were. A GitHub account tells us who owns a repository; it never tells us who filled in this form.",

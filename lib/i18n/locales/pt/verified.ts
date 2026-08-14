@@ -16,6 +16,7 @@ export default {
     verifiedOn: "Verificado em",
     backToList: "Todas as ferramentas verificadas",
     source: "Código",
+    variant: "Kit / variante",
     submittedBy: "Enviado por",
     submittedByValue: {
       maintainer: "O mantenedor da ferramenta",
@@ -323,6 +324,10 @@ export default {
       sectionOutputsHint:
         "Indique qual arquivo seu comando de execução escreve e que tipo de dados ele contém. Não precisa conhecer o motor do STRhub, só a documentação da sua ferramenta.",
       name: "Nome da ferramenta",
+      variant: "Kit ou variante de configuração",
+      variantTooltip:
+        "Use quando a mesma ferramenta, no mesmo commit, é verificada mais de uma vez com configurações diferentes: STRait Razor com ForenSeq e com PowerSeq, por exemplo. Cada variante recebe sua própria atestação e seu próprio link permanente. Deixe em branco se houver só uma.",
+      slugPreview: "Será publicado em",
       submitterRole: "Sua relação com esta ferramenta",
       submitterRoleTooltip:
         "Tudo o que vem abaixo — o comando, o ambiente, as regiões — é publicado como parte da atestação, e é isto que diz de quem foram essas escolhas. Uma conta do GitHub diz quem é dono de um repositório; nunca diz quem preencheu este formulário.",

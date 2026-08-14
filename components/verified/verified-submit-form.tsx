@@ -26,6 +26,7 @@ import { useLanguage } from "@/contexts/language-context";
 import {
   submissionSchema,
   versionFromRef,
+  deriveSlug,
   OUTPUT_FORMATS,
   BUILD_LANGUAGES,
   INPUT_TYPES,
@@ -171,6 +172,7 @@ const ALL_REUSE_GROUPS: Record<ReuseGroup, boolean> = {
 
 const INITIAL_F = {
   name: "",
+  variant: "",
   maintainer: "",
   contact: "",
   repo: "",
@@ -1287,6 +1289,9 @@ export function VerifiedSubmitForm() {
     return {
       tool: {
         name: f.name,
+        // Only when given. An empty variant would put a stray hyphen in the
+        // slug, which is a permanent link.
+        variant: f.variant.trim() || undefined,
         // Derived from the pinned ref rather than asked for separately, so the
         // two can never disagree (see versionFromRef).
         version: versionFromRef(f.ref),
@@ -1991,6 +1996,36 @@ export function VerifiedSubmitForm() {
                 ))}
               </div>
               {err("submitter.role")}
+            </Field>
+
+            {/* One tool, several kits. STRait Razor reads the same input type
+                at the same commit for ForenSeq and for PowerSeq, and the two are
+                different claims — but they derive one slug, so without this the
+                second submission overwrites the first. */}
+            <Field
+              label={t("verified.submit.variant")}
+              optional
+              infoTooltip={t("verified.submit.variantTooltip")}
+            >
+              <Input
+                value={f.variant}
+                onChange={set("variant")}
+                placeholder="ForenSeq v1.27"
+              />
+              {f.name.trim() && f.ref.trim() && (
+                <p className="text-xs text-muted-foreground">
+                  {t("verified.submit.slugPreview")}{" "}
+                  <code className="font-mono">
+                    /verified/
+                    {deriveSlug(
+                      f.name,
+                      versionFromRef(f.ref),
+                      resolvedInputType || undefined,
+                      f.variant,
+                    )}
+                  </code>
+                </p>
+              )}
             </Field>
 
             <Field

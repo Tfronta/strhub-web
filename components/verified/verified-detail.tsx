@@ -542,10 +542,16 @@ export function VerifiedDetail({
             <div className="mt-4 flex flex-wrap gap-3">
               {visibleLogs.map(([leg, fname]) => {
                 const legData = report.datasets?.find((d) => d.leg === leg);
+                // Not every log is a verification leg. The build log joined this
+                // map so a reader could open it, and fell into the `else`, which
+                // labelled it as the reference dataset — two links, same name,
+                // different files.
                 const logLabel =
-                  leg === "own"
-                    ? t("verified.matrix.own")
-                    : t("verified.matrix.external");
+                  leg === "build"
+                    ? t("verified.log.build")
+                    : leg === "own"
+                      ? t("verified.matrix.own")
+                      : t("verified.matrix.external");
                 return (
                   <a
                     key={leg}

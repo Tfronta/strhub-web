@@ -110,6 +110,7 @@ export default {
       note: "Registradas automaticamente a partir dos arquivos públicos da ferramenta ao configurar esta execução. Não verificadas por execução, e não fazem parte dos portões acima. Úteis para saber o que conferir à mão.",
     },
     log: {
+      build: "Build",
       view: "Ver log de execução",
     },
     errorsBadgeSuffix: "(erros reportados)",

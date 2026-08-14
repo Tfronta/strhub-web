@@ -1278,6 +1278,21 @@ export function VerifiedSubmitForm() {
     return `${runs} ${t(detailKey)}`;
   }
 
+  /**
+   * A refused submission has to reach the person who pressed the button.
+   *
+   * The banner lives at the top of the form and the button at the bottom, so a
+   * rejection — a rate limit, a field the schema refuses — set a message two
+   * thousand pixels above the eyes that were on the button. From there the
+   * button simply flickered and nothing happened, which is the worst thing a
+   * form can do: it reads as broken, and the explanation was already written.
+   */
+  const formErrorRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!formError) return;
+    formErrorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [formError]);
+
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => () => {
     if (pollRef.current) clearInterval(pollRef.current);
@@ -1676,10 +1691,12 @@ export function VerifiedSubmitForm() {
         </div>
 
         {formError && (
-          <Alert variant="destructive" className="mt-4">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>{formError}</AlertDescription>
-          </Alert>
+          <div ref={formErrorRef}>
+            <Alert variant="destructive" className="mt-4">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>{formError}</AlertDescription>
+            </Alert>
+          </div>
         )}
 
         <form onSubmit={onSubmit} className="mt-6 space-y-8">
@@ -3072,6 +3089,13 @@ export function VerifiedSubmitForm() {
               </>
             )}
           </Section>
+
+          {formError && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>{formError}</AlertDescription>
+            </Alert>
+          )}
 
           <Button type="submit" disabled={!canSubmit} className="w-full sm:w-auto">
             {phase === "submitting" ? (

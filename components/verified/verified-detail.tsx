@@ -16,6 +16,7 @@ import {
   hasReportedErrors,
   externalLegNoteKeys,
   errorAwareLevel,
+  installFaultKey,
 } from "@/lib/verified/diagnostics";
 import { isManualEligible, reasonI18nKey } from "@/lib/verified/manual";
 
@@ -161,6 +162,23 @@ export function VerifiedDetail({
   const by = report.submission?.by;
   const submittedBy = by === "maintainer" || by === "third_party" ? by : null;
 
+  // Mirrors harness/upstream.py::note. Empty when the check could not be made,
+  // and then nothing is shown — a guess about how current somebody's software
+  // is would be worse than the silence it replaces.
+  const up = report.upstream;
+  const upstreamNote = !up
+    ? ""
+    : up.repo_exists === false
+      ? t("verified.upstream.repoGone")
+      : up.ref_exists === false
+        ? t("verified.upstream.refGone")
+        : (up.behind_by ?? 0) > 0
+          ? t("verified.upstream.behind", {
+              n: String(up.behind_by),
+              branch: up.default_branch ?? "",
+            })
+          : t("verified.upstream.head", { branch: up.default_branch ?? "" });
+
   const datasetTypes = new Set<string>();
   if (report.datasets) {
     for (const leg of report.datasets) {
@@ -260,6 +278,16 @@ export function VerifiedDetail({
               {report.scope}
             </p>
           )}
+          {/* A result that stops short, on a run somebody else configured, is
+              read as a verdict on the software unless this says otherwise. The
+              error is asymmetric: a bad configuration produces false negatives,
+              almost never false positives — so a green result needs no such
+              line, and a short one does. */}
+          {submittedBy === "third_party" && report.gates?.content !== true && (
+            <p className="mt-3 text-sm text-muted-foreground border-t pt-3">
+              {t("verified.thirdPartyShortfall")}
+            </p>
+          )}
         </div>
 
         {/* ── SOURCE ── */}
@@ -298,6 +326,22 @@ export function VerifiedDetail({
             <dt className="text-muted-foreground">{t("verified.commit")}</dt>
             <dd>
               <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{ref}</code>
+              {/* Where that commit sits now. Context for a reviewer comparing
+                  the attestation against the version a manuscript cites — and,
+                  when the ref has vanished, a finding: being fetchable is the
+                  first thing the badge claims. */}
+              {upstreamNote && (
+                <span
+                  className={cn(
+                    "mt-1 block text-xs",
+                    report.upstream?.ref_exists === false
+                      ? "text-amber-700 dark:text-amber-500"
+                      : "text-muted-foreground",
+                  )}
+                >
+                  {upstreamNote}
+                </span>
+              )}
             </dd>
             {report.environment?.os && (
               <>
@@ -344,6 +388,48 @@ export function VerifiedDetail({
             </p>
           )}
         </div>
+
+        {/* ── WHY THE BUILD FAILED ──
+            Directly under the source block, because nothing below it ran. A
+            "Installs — did not pass" with no cause tells a reviewer nothing they
+            can act on and its maintainer nothing they can fix, and it used to be
+            all we published: the build log was thrown away. */}
+        {report.install_detail?.diagnostics?.length ? (
+          <div className="mt-6 rounded-lg border border-amber-300 dark:border-amber-800 bg-amber-50/60 dark:bg-amber-950/20 p-5">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-500">
+              {t("verified.install.heading")}
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t("verified.install.note")}
+            </p>
+            <p className="mt-2 text-sm">
+              {t(installFaultKey(report.install_detail.faults, submittedBy))}
+            </p>
+            <ul className="mt-3 space-y-2 border-t border-amber-300/60 dark:border-amber-800/60 pt-3">
+              {report.install_detail.diagnostics.map((issue) => (
+                <li key={issue.id + issue.title} className="text-sm">
+                  <span className="font-medium">{issue.title}</span>
+                  {issue.suggestion && (
+                    <span className="mt-0.5 block text-xs text-muted-foreground">
+                      {issue.suggestion}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+            {report.logs?.build && (
+              <a
+                href={`${logBaseUrl}/${report.logs.build}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1 text-sm text-primary hover:underline"
+              >
+                {t("verified.install.viewBuildLog")}
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            )}
+          </div>
+        ) : null}
 
         {/* ── WHAT WAS VERIFIED / NOT VERIFIED ── */}
         <div className="mt-6 rounded-lg border bg-card p-5">

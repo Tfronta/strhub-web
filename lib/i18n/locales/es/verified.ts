@@ -21,6 +21,8 @@ export default {
       maintainer: "El mantenedor de la herramienta",
       third_party: "Un tercero (no el mantenedor de la herramienta)",
     },
+    thirdPartyShortfall:
+      "Esta corrida la configuró un tercero, no quien mantiene la herramienta. Un resultado que no llega al escalón más alto puede reflejar esa configuración y no el software en sí.",
     submittedByThirdPartyNote:
       "Esta herramienta fue enviada a verificación por alguien que no es su mantenedor. El mantenedor no participó en la corrida ni aportó nada de lo que usó: el comando, el entorno y las regiones objetivo los eligió quien la envió. Si arriba figura un mantenedor, es quien responde por el software, no quien pidió este reporte, y no implica su respaldo.",
     commit: "Commit",
@@ -110,6 +112,27 @@ export default {
       view: "Ver log de ejecución",
     },
     errorsBadgeSuffix: "(errores reportados)",
+    upstream: {
+      head: "Hoy es la cabeza de {branch}.",
+      behind: "Desde entonces entraron {n} commit(s) en {branch}. Es contexto, no una falla: una release fijada suele estar por detrás a propósito.",
+      refGone: "Este commit ya no es alcanzable en el repositorio. El resultado sigue describiendo lo que corrió, pero no se puede traer el código para repetirlo.",
+      repoGone: "El repositorio público ya no es alcanzable en esta URL, así que nada de esto se puede volver a chequear contra su código.",
+    },
+    install: {
+      heading: "Por qué no se pudo construir el entorno",
+      note: "El contenedor no se pudo construir con los pasos de instalación declarados, así que nada por debajo de la compuerta Installs llegó a correr.",
+      faultStrhub:
+        "Al menos una causa es de STRhub, no de la herramienta: la receta del contenedor de un entorno generado es nuestra. Nada de esto es un hallazgo sobre el software, y no hay nada que arreglar del lado de quien lo mantiene.",
+      faultHarness:
+        "Al menos una causa es un techo del entorno automático gratuito, no una falla de la herramienta.",
+      faultAuthor:
+        "Todas las causas identificadas están en lo que declaró la submission: sus versiones fijadas, nombres de paquetes o pasos de build. Son corregibles, y re-verificar después es gratis.",
+      faultAuthorThirdParty:
+        "Todas las causas identificadas están en lo que declaró la submission —sus versiones fijadas, nombres de paquetes o pasos de build— y esa submission la hizo un tercero, no quien mantiene la herramienta. Son fallas en cómo se configuró la herramienta acá, no en el software. Re-verificar después de corregirlas es gratis.",
+      faultUnknown:
+        "La causa no se pudo clasificar automáticamente. Abajo está el log completo del build.",
+      viewBuildLog: "Ver log del build",
+    },
     diagnostics: {
       heading: "Auto-diagnóstico",
       note: "Problemas detectados automáticamente del log de ejecución. Las sugerencias pueden ayudar a resolver fallas.",

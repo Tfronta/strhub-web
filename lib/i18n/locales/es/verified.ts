@@ -607,6 +607,13 @@ export default {
       stateInProgress: "Corriendo las compuertas…",
       statePolling: "Consultando estado…",
       stateCompletedSuccess: "La verificación terminó con éxito.",
+      rejectStoppedTitle: "Paramos antes de correr tu herramienta",
+      rejectOursTitle: "Esto es nuestro, no de tu herramienta",
+      rejectNotJudged:
+        "No se evaluó ninguna compuerta, así que esto no dice nada de tu herramienta: no llegó a correr.",
+      rejectCoverage:
+        "Tu BED cubre {covered} de {total} loci soportados (hacen falta al menos {min}).",
+      rejectOutOfPanel: "{n} intervalo(s) caen fuera del panel:",
       stateCompletedFailure: "El run terminó pero no pasó todas las compuertas.",
       viewRun: "Ver run de CI",
       viewReport: "Ver atestación",

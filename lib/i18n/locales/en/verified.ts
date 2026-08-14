@@ -607,6 +607,13 @@ export default {
       stateInProgress: "Running gates…",
       statePolling: "Checking status…",
       stateCompletedSuccess: "Verification completed successfully.",
+      rejectStoppedTitle: "We stopped before running your tool",
+      rejectOursTitle: "This one is on us, not on your tool",
+      rejectNotJudged:
+        "No gate was judged, so this says nothing about your tool: it was not run.",
+      rejectCoverage:
+        "Your BED covers {covered} of {total} supported loci (at least {min} are needed).",
+      rejectOutOfPanel: "{n} interval(s) fall outside the panel:",
       stateCompletedFailure: "The run finished but did not pass all gates.",
       viewRun: "View CI run",
       viewReport: "View attestation",

@@ -7,6 +7,9 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["**/*.test.ts"],
-    exclude: ["node_modules/**", ".next/**"],
+    // .claude holds agent worktrees — full checkouts of this repo. Without this
+    // every test in one is collected a second time, and the run reports twice
+    // the tests this working tree actually has.
+    exclude: ["node_modules/**", ".next/**", ".claude/**"],
   },
 });

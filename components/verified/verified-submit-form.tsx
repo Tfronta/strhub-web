@@ -58,6 +58,7 @@ import {
   type AutoConfigGroup,
 } from "@/lib/verified/autoconfig-apply";
 import type { AutoConfigEntry } from "@/lib/verified/autoconfig-store";
+import type { VerifiedRejection } from "@/lib/verified/rejection";
 import { PROMPT_VERSION } from "@/lib/verified/autoconfig-version";
 import { AutoConfigDialog } from "@/components/verified/auto-config-dialog";
 
@@ -671,6 +672,14 @@ export function VerifiedSubmitForm() {
   const [dispatchId, setDispatchId] = useState<string | null>(null);
   const [runState, setRunState] = useState<RunState>("pending");
   const [conclusion, setConclusion] = useState<string | null>(null);
+  /**
+   * Why a run stopped before any gate was judged, when that is what happened.
+   *
+   * The engine has always written this — with the fault named, so an author is
+   * never told to fix a file of ours — committed it, and uploaded it as an
+   * artifact. It was never shown to the one person it was written for.
+   */
+  const [rejection, setRejection] = useState<VerifiedRejection | null>(null);
   const [runUrl, setRunUrl] = useState<string | null>(null);
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
 
@@ -1351,6 +1360,7 @@ export function VerifiedSubmitForm() {
       if (data.slug) setSlug(data.slug);
       if (data.state === "completed") {
         setConclusion(data.conclusion ?? null);
+        setRejection((data.rejection as VerifiedRejection | null) ?? null);
         setPhase("done");
         if (pollRef.current) clearInterval(pollRef.current);
       }
@@ -1480,7 +1490,14 @@ export function VerifiedSubmitForm() {
               {phase === "done"
                 ? success
                   ? t("verified.submit.stateCompletedSuccess")
-                  : t("verified.submit.stateCompletedFailure")
+                  : // "did not pass all gates" is the wrong sentence for a run
+                    // that was stopped before a single gate was judged: it says
+                    // the tool was measured and fell short, when it never ran.
+                    rejection
+                    ? rejection.fault === "strhub"
+                      ? t("verified.submit.rejectOursTitle")
+                      : t("verified.submit.rejectStoppedTitle")
+                    : t("verified.submit.stateCompletedFailure")
                 : runState === "queued"
                 ? t("verified.submit.stateQueued")
                 : runState === "in_progress"
@@ -1496,6 +1513,67 @@ export function VerifiedSubmitForm() {
                 {dispatchId}
               </p>
             )}
+
+            {/* Why the run stopped, in the words the engine wrote when it did.
+                The heading and labels are translated; the notice's own title,
+                detail and next step are shown verbatim, because they are written
+                per reason by the engine and paraphrasing them here would be a
+                second place for the same explanation to drift.
+
+                Nothing in this block is styled as a fault of the tool. It was
+                not judged — that is the first thing it says. */}
+            {failure && rejection && (
+              <div
+                className={`space-y-2 rounded-md border-l-4 p-3 ${
+                  rejection.fault === "strhub"
+                    ? "border-l-primary bg-muted/50"
+                    : "border-l-amber-500 bg-amber-50/60 dark:bg-amber-950/20"
+                }`}
+              >
+                <p className="text-sm font-medium">{rejection.title}</p>
+                {rejection.detail && (
+                  <p className="font-mono text-xs break-all text-muted-foreground">
+                    {rejection.detail}
+                  </p>
+                )}
+                <p className="text-sm text-muted-foreground">
+                  {t("verified.submit.rejectNotJudged")}
+                </p>
+                {rejection.next_step && (
+                  <p className="text-sm">{rejection.next_step}</p>
+                )}
+
+                {/* What the check actually measured, for the one reason that
+                    measures anything. A submitter rebuilding a BED needs the
+                    numbers, not just the verdict. */}
+                {rejection.validation && (
+                  <ul className="space-y-1 border-t pt-2 text-xs text-muted-foreground">
+                    {typeof rejection.validation.covered_count === "number" &&
+                      typeof rejection.validation.panel_size === "number" && (
+                        <li>
+                          {t("verified.submit.rejectCoverage", {
+                            covered: String(rejection.validation.covered_count),
+                            total: String(rejection.validation.panel_size),
+                            min: String(rejection.validation.min_loci ?? ""),
+                          })}
+                        </li>
+                      )}
+                    {rejection.validation.out_of_panel?.length ? (
+                      <li>
+                        {t("verified.submit.rejectOutOfPanel", {
+                          n: String(rejection.validation.out_of_panel.length),
+                        })}{" "}
+                        <span className="font-mono break-all">
+                          {rejection.validation.out_of_panel.slice(0, 5).join(", ")}
+                          {rejection.validation.out_of_panel.length > 5 ? " …" : ""}
+                        </span>
+                      </li>
+                    ) : null}
+                  </ul>
+                )}
+              </div>
+            )}
+
             <div className="flex flex-wrap gap-3">
               {runUrl && (
                 <a

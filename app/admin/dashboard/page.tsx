@@ -54,6 +54,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { MarkdownEditor } from "@/components/markdown-editor";
+import { IssueDraftDialog } from "@/components/verified/issue-draft-dialog";
 
 interface VerifiedSubmission {
   slug: string;
@@ -64,6 +65,20 @@ interface VerifiedSubmission {
   toolName: string;
   dispatchId: string;
 }
+
+/** One published attestation, as the public catalogue lists it. */
+interface CatalogueEntry {
+  slug: string;
+  name: string;
+  level: string;
+  label: string;
+  generated: string | null;
+  errors_reported?: boolean;
+}
+
+const VERIFIED_BASE =
+  process.env.NEXT_PUBLIC_VERIFIED_BASE ??
+  "https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages";
 
 interface ContentEntry {
   id: string;
@@ -110,6 +125,12 @@ export default function AdminDashboard() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<ContentEntry | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  // Every published attestation, for the issue drafts below. Read from the same
+  // public catalogue the site itself renders, not from the submissions store:
+  // the tools worth writing to a maintainer about are mostly ones STRhub
+  // submitted by hand, which never passed through the form.
+  const [catalogue, setCatalogue] = useState<CatalogueEntry[]>([]);
+  const [draftSlug, setDraftSlug] = useState<string | null>(null);
   const router = useRouter();
 
   // Form state
@@ -127,7 +148,19 @@ export default function AdminDashboard() {
     }
     loadEntries();
     loadVerifiedSubmissions();
+    loadCatalogue();
   }, [router]);
+
+  const loadCatalogue = async () => {
+    try {
+      const res = await fetch(`${VERIFIED_BASE}/index.json`, { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      setCatalogue(Array.isArray(data.tools) ? data.tools : []);
+    } catch {
+      // Optional: without it the drafts card simply has nothing to list.
+    }
+  };
 
   const loadEntries = async () => {
     try {
@@ -550,6 +583,76 @@ export default function AdminDashboard() {
             </Card>
           );
         })()}
+
+        {/* Issue drafts. Deliberately a drafting table and nothing more: the
+            "Abrir en GitHub" button in the dialog prefills GitHub's own form in
+            your session, and you press Submit. Nothing here posts to anybody's
+            repository, and nothing should ever be added that does. */}
+        {catalogue.length > 0 && (
+          <Card className="mb-8">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
+                <CardTitle>Verified — Borradores de issue</CardTitle>
+              </div>
+              <CardDescription>
+                Lo que una corrida encontró, redactado para quien mantiene la
+                herramienta. Se revisa acá y se manda a mano, o no se manda.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Herramienta</TableHead>
+                    <TableHead>Resultado</TableHead>
+                    <TableHead>Verificado</TableHead>
+                    <TableHead>Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {catalogue.map((entry) => (
+                    <TableRow key={entry.slug}>
+                      <TableCell>
+                        <div className="text-sm font-medium">{entry.name}</div>
+                        <div className="font-mono text-xs text-muted-foreground">
+                          {entry.slug}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {entry.label}
+                        {entry.errors_reported && (
+                          <Badge variant="outline" className="ml-2 border-amber-500 text-amber-600">
+                            errores
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {entry.generated?.slice(0, 10) ?? "—"}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setDraftSlug(entry.slug)}
+                        >
+                          <FileText className="mr-1 h-4 w-4" />
+                          Redactar issue
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
+
+        <IssueDraftDialog
+          slug={draftSlug}
+          open={draftSlug !== null}
+          onOpenChange={(open) => !open && setDraftSlug(null)}
+        />
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">

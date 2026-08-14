@@ -16,8 +16,12 @@ import { SiteFooter } from "@/components/site-footer";
 export function VerifiedHowToRead() {
   const { t } = useLanguage();
 
-  const can = ["can1", "can2", "can3", "can4", "can5"];
-  const cannot = ["cannot1", "cannot2", "cannot3", "cannot4", "cannot5"];
+  // can6/cannot6 are the two halves of the same question. A report says who
+  // submitted a tool, which is not the same as the tool's maintainer having
+  // anything to do with it — and a reviewer who conflates the two reads the
+  // whole page as carrying a weight it never claimed.
+  const can = ["can1", "can2", "can3", "can4", "can5", "can6"];
+  const cannot = ["cannot1", "cannot2", "cannot3", "cannot4", "cannot5", "cannot6"];
 
   return (
     <div className="min-h-screen bg-background">

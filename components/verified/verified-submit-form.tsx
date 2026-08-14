@@ -31,8 +31,10 @@ import {
   INPUT_TYPES,
   INPUT_TYPES_OWN_ONLY,
   INPUT_TYPES_WITH_REFERENCE,
+  SUBMITTER_ROLES,
   type InputTypeEntry,
   type SubmissionInput,
+  type SubmitterRole,
 } from "@/lib/verified/submission";
 import type { StoredSubmission } from "@/lib/verified/manifest";
 import { detectOutput, type OutputDetection } from "@/lib/verified/detect-output";
@@ -88,6 +90,8 @@ interface StoredFormState {
   needsBuild: boolean;
   fixtureSource: FixtureSource;
   showContent: boolean;
+  /** "" until answered — see SubmitterRoleState below. */
+  submitterRole: SubmitterRole | "";
 }
 
 /** One previous verification run of the repository being submitted. */
@@ -564,6 +568,17 @@ export function VerifiedSubmitForm() {
   // case is a tool that runs fine, and nobody should have to opt out of a paid tier.
   const [compat, setCompat] = useState<CompatibilityAnswers>({});
 
+  /**
+   * The submitter's relationship to the tool.
+   *
+   * Starts unanswered and blocks submit until it is answered, rather than
+   * defaulting either way. A default here is a guess about a person, and it was
+   * the guess — that whoever submits a tool speaks for it — that put a
+   * repository owner's name on a configuration STRhub wrote. Two clicks is a
+   * cheap price for the one fact nothing else in this form can establish.
+   */
+  const [submitterRole, setSubmitterRole] = useState<SubmitterRole | "">("");
+
   const [dockerMode, setDockerMode] = useState<"generated" | "provided">("generated");
   /**
    * Whether the tool has to be compiled or installed before it can run.
@@ -676,6 +691,11 @@ export function VerifiedSubmitForm() {
       setNeedsBuild(stored.needsBuild ?? stored.f.buildCmd.trim() !== "");
       setFixtureSource(stored.fixtureSource);
       setShowContent(stored.showContent);
+      // Sessions saved before the question existed have no answer, and there is
+      // none to infer: they stay unanswered and the box asks.
+      if (stored.submitterRole === "maintainer" || stored.submitterRole === "third_party") {
+        setSubmitterRole(stored.submitterRole);
+      }
       // Treat restored non-empty content as author-owned so the defaults effect
       // does not overwrite it.
       if (CONTENT_FIELD_KEYS.some((k) => (stored.f[k] ?? "").trim() !== "")) {
@@ -1200,6 +1220,7 @@ export function VerifiedSubmitForm() {
     phase === "form" &&
     !preflightBlocks &&
     f.name.trim() !== "" &&
+    submitterRole !== "" &&
     sourceReady &&
     (dockerMode === "generated"
       ? // Declaring a build and then not naming it is not an answer either way.
@@ -1263,6 +1284,10 @@ export function VerifiedSubmitForm() {
         maintainer: f.maintainer || undefined,
         contact: f.contact || undefined,
       },
+      // Sent even though the schema would reject a blank: `canSubmit` already
+      // holds the button, and an empty string reaching the API is a bug worth
+      // failing loudly on rather than one worth papering over with a default.
+      submitter: { role: submitterRole as SubmitterRole },
       source: { repo: f.repo, ref: f.ref },
       docker:
         dockerMode === "generated"
@@ -1363,7 +1388,7 @@ export function VerifiedSubmitForm() {
       return;
     }
 
-    saveFormState({ f, dockerMode, needsBuild, fixtureSource, showContent });
+    saveFormState({ f, dockerMode, needsBuild, fixtureSource, showContent, submitterRole });
     setPhase("submitting");
     try {
       const res = await fetch("/api/verify/submit", {
@@ -1853,8 +1878,57 @@ export function VerifiedSubmitForm() {
               <Input value={f.name} onChange={set("name")} placeholder="STRait Razor" />
               {err("tool.name")}
             </Field>
-            <Field label={t("verified.submit.maintainer")} optional>
+
+            {/* Who is submitting. Asked here, right after the tool is named,
+                because every answer below it — the command, the environment, the
+                regions BED — is a choice made by whoever this says, and the
+                report has to attribute those choices to the right person. */}
+            <Field
+              label={t("verified.submit.submitterRole")}
+              required
+              infoTooltip={t("verified.submit.submitterRoleTooltip")}
+            >
+              <div className="space-y-2">
+                {SUBMITTER_ROLES.map((role) => (
+                  <label
+                    key={role}
+                    className="flex cursor-pointer items-start gap-3 rounded-md border border-border p-2.5 text-sm hover:bg-muted/50"
+                  >
+                    <input
+                      type="radio"
+                      name="submitter-role"
+                      className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
+                      checked={submitterRole === role}
+                      onChange={() => setSubmitterRole(role)}
+                    />
+                    <span>
+                      <span className="font-medium">
+                        {t(`verified.submit.submitterRoleOption.${role}`)}
+                      </span>
+                      <span className="mt-0.5 block text-xs text-muted-foreground">
+                        {t(`verified.submit.submitterRoleDesc.${role}`)}
+                      </span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+              {err("submitter.role")}
+            </Field>
+
+            <Field
+              label={
+                submitterRole === "third_party"
+                  ? t("verified.submit.maintainerThirdParty")
+                  : t("verified.submit.maintainer")
+              }
+              optional
+            >
               <Input value={f.maintainer} onChange={set("maintainer")} />
+              {submitterRole === "third_party" && (
+                <p className="text-xs text-muted-foreground">
+                  {t("verified.submit.maintainerThirdPartyNote")}
+                </p>
+              )}
             </Field>
             <Field label={t("verified.submit.contact")} optional>
               <Input value={f.contact} onChange={set("contact")} placeholder="https://github.com/owner/tool/issues" />

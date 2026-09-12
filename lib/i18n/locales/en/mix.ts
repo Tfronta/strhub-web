@@ -29,7 +29,7 @@ mixProfiles: {
   },
   ngs: {
     disclaimer:
-      "Individual haplotypes inferred from Illumina short-read NGS data using specialized STR genotyping software (HipSTR, hg38), displayed for educational purposes only. Repeat-region sequences follow the ISFG STR sequence nomenclature recommendations (via STRNaming).",
+      "Individual haplotypes inferred from Illumina short-read NGS data using specialized STR genotyping software (HipSTR, hg38), displayed for educational purposes only. Repeat-region sequences follow the current ISFG STR sequence nomenclature recommendations (2024), via STRNaming.",
     isfgLinkText: "Read the original paper",
     copySequence: "Copy full sequence",
     copyRepeat: "Copy STRNaming name",

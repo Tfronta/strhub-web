@@ -254,8 +254,8 @@ export type LocusId = string;
 const SYNTHETIC_SAMPLES: ReadonlySet<string> = new Set(["SYN_TRI01"]);
 
 // Simulated NGS sequences for the triallelic preset (synthetic sample SYN_TRI01
-// at TPOX and TH01). ISFG 2023 nomenclature (STRNaming MOTIF[n]) over the real
-// UAS-FRR reference window; isfgSegments give the block-colorized sequence.
+// at TPOX and TH01). ISFG 2024 nomenclature (STRNaming MOTIF[n]) over the real
+// reference window; isfgSegments give the block-colorized sequence.
 const SYN_TRI01_NGS: Record<
   string,
   Record<

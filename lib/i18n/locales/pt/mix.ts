@@ -29,7 +29,7 @@ mixProfiles: {
   },
   ngs: {
     disclaimer:
-      "Haplótipos individuais inferidos a partir de dados NGS de leituras curtas Illumina usando software especializado de genotipagem de STRs (HipSTR, hg38), exibidos apenas para fins educacionais. As sequências da região repetida seguem as recomendações de nomenclatura de sequência de STRs da ISFG (via STRNaming).",
+      "Haplótipos individuais inferidos a partir de dados NGS de leituras curtas Illumina usando software especializado de genotipagem de STRs (HipSTR, hg38), exibidos apenas para fins educacionais. As sequências da região repetida seguem as recomendações vigentes de nomenclatura de sequência de STRs da ISFG (2024), via STRNaming.",
     isfgLinkText: "Ler o artigo original",
     copySequence: "Copiar sequência completa",
     copyRepeat: "Copiar nome STRNaming",

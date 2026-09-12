@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Grid3x3, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -14,285 +14,179 @@ import {
 } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
-import { StrKitData, StrKitType } from "./utils/motifData";
-import { MotifVisualization } from "./components/MotifVisualization";
-import { markerRefs } from "@/lib/markerRefs-from-data";
-import strKitsData from "@/data/str_kits.json";
+import {
+  FSSG_MARKERS,
+  DISPLAY_MARKERS,
+  FSSG_SOURCE,
+  markerClass,
+} from "./data/fssgData";
+import { MotifStructure } from "./components/MotifStructure";
+import { InfoTip } from "@/components/InfoTip";
 
-type GenericRecord = Record<string, unknown>;
-
-const mergeDeep = (
-  base: GenericRecord,
-  override?: GenericRecord
-): GenericRecord => {
-  if (!override) {
-    return { ...base };
-  }
-
-  const result: GenericRecord = { ...base };
-
-  Object.keys(override).forEach((key) => {
-    const overrideValue = override[key];
-    if (overrideValue === undefined) {
-      return;
-    }
-
-    const baseValue = base[key];
-    const isBaseObject =
-      baseValue && typeof baseValue === "object" && !Array.isArray(baseValue);
-    const isOverrideObject =
-      overrideValue &&
-      typeof overrideValue === "object" &&
-      !Array.isArray(overrideValue);
-
-    if (isBaseObject && isOverrideObject) {
-      result[key] = mergeDeep(
-        baseValue as GenericRecord,
-        overrideValue as GenericRecord
+// Read a nested string from the active locale, falling back to English.
+function useStrings() {
+  const { language } = useLanguage();
+  const en = translations.en.motifExplorerPage as Record<string, unknown>;
+  const loc = (translations[language] as { motifExplorerPage?: Record<string, unknown> })
+    .motifExplorerPage;
+  return (path: string): string => {
+    const get = (obj: Record<string, unknown> | undefined) =>
+      path.split(".").reduce<unknown>(
+        (cur, key) =>
+          cur && typeof cur === "object"
+            ? (cur as Record<string, unknown>)[key]
+            : undefined,
+        obj
       );
-    } else if (!isBaseObject && isOverrideObject) {
-      result[key] = mergeDeep({}, overrideValue as GenericRecord);
-    } else {
-      result[key] = overrideValue;
-    }
-  });
+    return (get(loc) as string) ?? (get(en) as string) ?? path;
+  };
+}
 
-  return result;
+const GROUP_LABEL: Record<string, string> = {
+  autosomal: "Autosomal",
+  x: "X-STR",
+  y: "Y-STR",
 };
 
 export default function MotifExplorerPage() {
-  const [selectedMarkerId, setSelectedMarkerId] =
-    useState<keyof typeof strKitsData>("CSF1PO");
-  const [selectedKitId, setSelectedKitId] = useState<StrKitType | null>(null);
-  const { language } = useLanguage();
-  const languageContent = translations[language] as (typeof translations)["en"];
-  const defaultPageContent = translations.en.motifExplorerPage;
-  const localizedContent = languageContent?.motifExplorerPage;
-  const pageContent = mergeDeep(
-    defaultPageContent as GenericRecord,
-    localizedContent as GenericRecord | undefined
-  ) as typeof defaultPageContent;
+  const t = useStrings();
+  const [selectedMarkerId, setSelectedMarkerId] = useState<string>("CSF1PO");
 
-  const selectedMarker = strKitsData[selectedMarkerId];
+  const marker = FSSG_MARKERS[selectedMarkerId];
 
-  // Get marker info from markerRefs
-  const markerKey = selectedMarkerId.toUpperCase();
-  const markerInfo = markerRefs[markerKey];
+  // Group markers for the selector.
+  const grouped = useMemo(() => {
+    const groups: Record<string, string[]> = { autosomal: [], x: [], y: [] };
+    DISPLAY_MARKERS.forEach((m) => groups[markerClass(m)].push(m));
+    return groups;
+  }, []);
 
-  // Use the selected marker ID
-  const markerId = selectedMarkerId;
-
-  const kitsForMarker = Object.keys(
-    strKitsData[selectedMarkerId]
-  ) as StrKitType[];
-
-  // Ensure selectedKitId is always valid when the marker changes
-  useEffect(() => {
-    if (!kitsForMarker.length) {
-      setSelectedKitId(null);
-      return;
-    }
-    if (!selectedKitId || !kitsForMarker.includes(selectedKitId)) {
-      setSelectedKitId(kitsForMarker[0]);
-    }
-  }, [markerId, kitsForMarker.join(","), selectedKitId]);
-
-  const markerData = selectedMarker[
-    selectedKitId as keyof typeof selectedMarker
-  ] as StrKitData | undefined;
-
-  const formatTemplate = (
-    template?: string,
-    params: Record<string, string> = {}
-  ) => {
-    if (!template) return "";
-    return Object.entries(params).reduce(
-      (acc, [key, value]) => acc.replace(`{${key}}`, value),
-      template
-    );
+  const structureStrings = {
+    ceLabel: t("marker.ce"),
+    minimumRangeLabel: t("marker.minimumRange"),
+    strandLabel: t("marker.strand"),
+    canonicalTitle: t("canonical.title"),
+    canonicalAltForms: t("canonical.altForms"),
+    historicalTitle: t("historical.title"),
+    historicalNone: t("historical.none"),
+    sequenceTitle: t("sequence.title"),
+    sequenceNote: t("sequence.note"),
+    legendRepeat: t("sequence.legendRepeat"),
+    legendMinorRepeat: t("sequence.legendMinorRepeat"),
+    legendInterruption: t("sequence.legendInterruption"),
+    legendFlank: t("sequence.legendFlank"),
+    flankMotifLabel: t("sequence.flankMotifLabel"),
+    repeatTooltip: t("sequence.repeatTooltip"),
+    minorRepeatTooltip: t("sequence.minorRepeatTooltip"),
+    interruptionTooltip: t("sequence.interruptionTooltip"),
+    flankTooltip: t("sequence.flankTooltip"),
+    phaseNote: t("sequence.phaseNote"),
+    notAlignedNote: t("sequence.notAligned"),
   };
-
-  const configurationContent =
-    pageContent.cards?.configuration ?? defaultPageContent.cards?.configuration;
-  const visualizationContent =
-    pageContent.cards?.visualization ?? defaultPageContent.cards?.visualization;
-  const headerContent = pageContent.header ?? defaultPageContent.header;
-  const visualizationTitle =
-    formatTemplate(visualizationContent?.title, {
-      marker: selectedMarkerId,
-    }) || `Exploring the structure of ${selectedMarkerId}`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/40">
       <section className="px-4 pt-12">
         <div className="container mx-auto flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
             <Grid3x3 className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-3xl font-bold text-gradient">
-            {pageContent.title}
-          </span>
+          <span className="text-3xl font-bold text-gradient">{t("title")}</span>
         </div>
       </section>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-5xl mx-auto">
-          {/* Page Header */}
-          <div className="text-center mb-8">
-            <p className="text-base text-muted-foreground max-w-2xl mx-auto text-lg">
-              {pageContent.subtitle}
-            </p>
-          </div>
+      <div className="container mx-auto px-4 pb-12 pt-6">
+        <div className="mx-auto max-w-6xl">
+          <p className="mb-8 text-lg text-muted-foreground">
+            {t("subtitle")}
+          </p>
 
-          <div className="grid lg:grid-cols-[35%_65%] gap-6">
-            {/* Configuration Panel */}
-            <Card className="border-0 bg-card/70 backdrop-blur-sm shadow-lg">
+          <div className="grid gap-6 lg:grid-cols-[30%_70%]">
+            {/* Configuration */}
+            <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm">
               <CardHeader className="space-y-1.5 pb-4">
                 <CardTitle className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
                   <Settings className="h-5 w-5" />
-                  {configurationContent?.title ??
-                    defaultPageContent.cards?.configuration?.title ??
-                    "Configuration"}
+                  {t("configuration.title")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6 pt-0">
                 <div className="space-y-2">
-                  <Label
-                    htmlFor="marker-select"
-                    className="text-base font-semibold text-foreground"
-                  >
-                    {pageContent.fields?.marker?.label ??
-                      defaultPageContent.fields?.marker?.label ??
-                      "STR Marker"}
+                  <Label className="text-base font-semibold text-foreground">
+                    {t("configuration.markerLabel")}
                   </Label>
                   <Select
                     value={selectedMarkerId}
-                    onValueChange={(value) =>
-                      setSelectedMarkerId(value as keyof typeof strKitsData)
-                    }
+                    onValueChange={setSelectedMarkerId}
                   >
                     <SelectTrigger className="h-11 text-base">
-                      <SelectValue
-                        placeholder={
-                          configurationContent?.markerPlaceholder ??
-                          defaultPageContent.cards?.configuration
-                            ?.markerPlaceholder ??
-                          "Select a marker"
-                        }
-                      />
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {Object.keys(strKitsData).map((marker) => (
-                        <SelectItem
-                          key={marker}
-                          value={marker}
-                          className="text-base"
-                        >
-                          {marker}
-                        </SelectItem>
-                      ))}
+                      {(["autosomal", "x", "y"] as const).map((g) =>
+                        grouped[g].length ? (
+                          <div key={g}>
+                            <div className="px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                              {GROUP_LABEL[g]}
+                            </div>
+                            {grouped[g].map((m) => (
+                              <SelectItem key={m} value={m} className="text-base">
+                                {m}
+                              </SelectItem>
+                            ))}
+                          </div>
+                        ) : null
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
 
-                {kitsForMarker.length > 0 && (
-                  <div className="space-y-2">
-                    <Label className="text-base font-semibold text-foreground">
-                      {configurationContent?.kitLabel ??
-                        defaultPageContent.cards?.configuration?.kitLabel ??
-                        "Kit / reference sequence"}
-                    </Label>
-                    <Select
-                      value={selectedKitId || ""}
-                      onValueChange={(value) =>
-                        setSelectedKitId(value as StrKitType)
-                      }
-                    >
-                      <SelectTrigger className="h-11 text-base">
-                        <SelectValue
-                          placeholder={
-                            configurationContent?.kitPlaceholder ??
-                            defaultPageContent.cards?.configuration
-                              ?.kitPlaceholder ??
-                            "Select a kit"
-                          }
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {kitsForMarker.map((kit) => (
-                          <SelectItem
-                            key={kit}
-                            value={kit}
-                            className="text-base"
-                          >
-                            {kit}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-
-                <div className="pt-4 border-t">
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                    {pageContent.help.general}
+                <div className="border-t pt-4">
+                  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                    {t("help.general")}
                   </p>
-                  {pageContent.scientificNote && (
-                    <>
-                      <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
-                        {pageContent.scientificNote}
-                      </p>
-                      <div className="mt-3 flex items-center justify-between gap-2 text-xs text-muted-foreground">
-                        <span className="italic">
-                          {pageContent.sourceLabel}: STRidER
-                        </span>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-7 px-3 text-xs"
-                          asChild
-                        >
-                          <a
-                            href="https://www.isfg.org/files/db9864824b44997f1014a62a0321f0d25ef6cf98.bodner2016_strider.pdf"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {pageContent.sourceButtonLabel}
-                          </a>
-                        </Button>
-                      </div>
-                    </>
-                  )}
+                  <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                    {t("scientificNote")}
+                  </p>
+                  <div className="mt-3 flex items-center justify-between gap-2 text-xs text-muted-foreground">
+                    <span className="italic">
+                      {t("sourceLabel")}: {FSSG_SOURCE.name}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 px-3 text-xs"
+                      asChild
+                    >
+                      <a href={FSSG_SOURCE.url} target="_blank" rel="noreferrer">
+                        {t("sourceButtonLabel")}
+                      </a>
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Visualization Panel */}
-            <Card className="border-0 bg-card/70 backdrop-blur-sm shadow-lg">
+            {/* Visualization */}
+            <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm">
               <CardHeader className="space-y-1.5 pb-2">
                 <CardTitle className="text-2xl font-semibold tracking-tight">
-                  {visualizationTitle}
+                  {t("visualizationTitle").replace("{marker}", selectedMarkerId)}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pt-0">
-                {selectedMarker && selectedKitId && markerData ? (
-                  <MotifVisualization
-                    markerId={selectedMarkerId}
-                    marker={markerData}
-                    pageContent={pageContent}
-                    markerInfo={markerInfo}
-                    // motifAllele={motifAllele}
-                    selectedKitId={selectedKitId ?? undefined}
-                  />
+              <CardContent className="space-y-8 pt-2">
+                {marker ? (
+                  <>
+                    <MotifStructure marker={marker} strings={structureStrings} />
+                    <div className="flex items-start gap-1.5 border-t pt-4 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                      <span>{t("kits.note")}</span>
+                      <InfoTip term="kitRange" />
+                    </div>
+                  </>
                 ) : (
-                  <div className="text-center py-12 text-base text-muted-foreground">
-                    <Grid3x3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>
-                      {configurationContent?.emptyState ??
-                        defaultPageContent.cards?.configuration?.emptyState ??
-                        "Please select a marker from the configuration panel."}
-                    </p>
+                  <div className="py-12 text-center text-base text-muted-foreground">
+                    <Grid3x3 className="mx-auto mb-4 h-12 w-12 opacity-50" />
+                    <p>{t("configuration.emptyState")}</p>
                   </div>
                 )}
               </CardContent>

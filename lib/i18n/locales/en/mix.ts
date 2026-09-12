@@ -33,6 +33,12 @@ mixProfiles: {
     isfgLinkText: "Read the original paper",
     copySequence: "Copy full sequence",
     copyRepeat: "Copy STRNaming name",
+    ceExplainAria: "Why the repeat count differs from the allele number",
+    ceExplainTitle: "Why doesn't adding up the repeats always give the allele?",
+    ceExplainBody:
+      "The allele number (CE) is the classic length-based designation. At some loci it includes a fixed offset that comes from how the original allelic ladders were calibrated. For vWA, for example, the 19 repeat blocks minus 5 give CE 14. STRNaming reports the CE number together with the full sequence structure.",
+    ceExplainPaperLink: "Read the full explanation in the original paper",
+    ceExplainToolLink: "Try it in STRNaming",
     copiedSequence: "Copied",
     tableAllele: "Allele",
     tableCoverage: "PDP",

@@ -33,6 +33,12 @@ mixProfiles: {
     isfgLinkText: "Ler o artigo original",
     copySequence: "Copiar sequência completa",
     copyRepeat: "Copiar nome STRNaming",
+    ceExplainAria: "Por que a soma das repetições difere do número do alelo",
+    ceExplainTitle: "Por que somar as repetições nem sempre dá o alelo?",
+    ceExplainBody:
+      "O número do alelo (CE) é a designação clássica por comprimento. Em alguns loci inclui um deslocamento fixo que vem da calibração das escadas alélicas originais. No vWA, por exemplo, os 19 blocos de repetição menos 5 dão CE 14. O STRNaming reporta o número CE junto com a estrutura completa da sequência.",
+    ceExplainPaperLink: "Leia a explicação completa no paper original",
+    ceExplainToolLink: "Experimente no STRNaming",
     copiedSequence: "Copiado",
     tableAllele: "Alelo",
     tableCoverage: "PDP",

@@ -16,7 +16,8 @@ export type GlossaryTermKey =
   | "isoallele"
   | "coreRepeat"
   | "flankingRegion"
-  | "strbaseSequence";
+  | "strbaseSequence"
+  | "alleleRange";
 
 type Entry = { term: string; short: string; anchor: string };
 
@@ -70,6 +71,11 @@ export const NOMENCLATURE_GLOSSARY: Record<GlossaryTermKey, Record<Language, Ent
     en: { term: "STRbase sequence", anchor: "mps-allele", short: "Full allele sequences catalogued by STRbase (NIST), reported over STRbase's own sequence window, which can differ from the ISFG minimum range used for STRNaming names. Ranges can vary between databases, so compare alleles with the sequence range in mind." },
     es: { term: "Secuencia STRbase", anchor: "mps-allele", short: "Secuencias completas del alelo catalogadas por STRbase (NIST), reportadas sobre la ventana propia de STRbase, que puede diferir del ISFG minimum range que usan los nombres STRNaming. Los rangos pueden variar entre bases de datos, así que compará los alelos teniendo en cuenta el rango de secuencia." },
     pt: { term: "Sequência STRbase", anchor: "mps-allele", short: "Sequências completas do alelo catalogadas pelo STRbase (NIST), reportadas sobre a janela do próprio STRbase, que pode diferir do ISFG minimum range usado pelos nomes STRNaming. Os intervalos podem variar entre bases de dados, então compare os alelos considerando o intervalo de sequência." },
+  },
+  alleleRange: {
+    en: { term: "Allele range", anchor: "ce-allele", short: "The range of allele sizes (length-based, CE) reported for this marker. It reflects the alleles seen in the reference data and can vary by population and kit, so treat it as typical rather than an absolute limit." },
+    es: { term: "Rango de alelos", anchor: "ce-allele", short: "El rango de tamaños de alelo (por longitud, CE) reportado para este marcador. Refleja los alelos vistos en los datos de referencia y puede variar por población y kit, así que tomalo como típico y no como un límite absoluto." },
+    pt: { term: "Faixa de alelos", anchor: "ce-allele", short: "A faixa de tamanhos de alelo (por comprimento, CE) reportada para este marcador. Reflete os alelos vistos nos dados de referência e pode variar por população e kit, então trate-a como típica e não como um limite absoluto." },
   },
 };
 

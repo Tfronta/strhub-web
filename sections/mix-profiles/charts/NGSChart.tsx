@@ -29,7 +29,7 @@ import {
   shouldShowIsoBadgeOnMinorRow,
   ISOALLELE_MIN_COVERAGE,
 } from "@/lib/strFormatting";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 
 type Props = {
   bars: NGSChartBar[];
@@ -89,20 +89,51 @@ function isfgBlockLabel(seq: string): string {
   return seq;
 }
 
-// Render a MOTIF[n] bracketed string with at most 3 repeat blocks per line.
+// Render a STRNaming allele name: "CE<n>_MOTIF[a]MOTIF[b]..._<variant>...".
+// The CE designation + repeat blocks stay on one line (the column sizes to this
+// line, so the whole name is visible); any trailing sequence variants get their
+// own muted line. Legacy space-separated bracketed strings render as one line.
 function renderRepeatBlocks(s: string) {
-  const blocks = s.trim().split(/\s+/).filter(Boolean);
-  if (blocks.length <= 1) return s;
-  const lines: string[] = [];
-  for (let i = 0; i < blocks.length; i += 3) {
-    lines.push(blocks.slice(i, i + 3).join(" "));
+  const str = s.trim();
+  if (!str) return str;
+
+  // STRNaming format: CE<n>_<structure>[_<variant>...]
+  const m = str.match(/^(CE[\d.]+)_(.*)$/);
+  if (!m) {
+    return <span className="whitespace-nowrap">{str}</span>;
   }
-  return lines.map((ln, i) => <div key={i}>{ln}</div>);
+  const [, ce, rest] = m;
+  const segments = rest.split("_");
+  const structure = segments[0] ?? "";
+  const variants = segments.slice(1).filter(Boolean);
+  const blocks = structure.match(/[A-Za-z]+\[\d+\]/g) ?? [structure];
+
+  return (
+    <div className="leading-relaxed">
+      <div className="whitespace-nowrap">
+        <span className="text-muted-foreground">{ce}_</span> {blocks.join(" ")}
+      </div>
+      {variants.length > 0 ? (
+        <div className="whitespace-nowrap text-muted-foreground">
+          {variants.join(" ")}
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
-// Discreet button to copy the complete sequence string to the clipboard.
-function CopyButton({ text, t }: { text: string; t: (key: string) => string }) {
+// Discreet button to copy a sequence/name string to the clipboard.
+function CopyButton({
+  text,
+  t,
+  label,
+}: {
+  text: string;
+  t: (key: string) => string;
+  label?: string;
+}) {
   const [copied, setCopied] = useState(false);
+  const idleLabel = label ?? t("mixProfiles.ngs.copySequence");
   return (
     <button
       type="button"
@@ -114,12 +145,8 @@ function CopyButton({ text, t }: { text: string; t: (key: string) => string }) {
         });
       }}
       className="shrink-0 mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded text-muted-foreground hover:text-foreground transition-colors"
-      aria-label={t("mixProfiles.ngs.copySequence")}
-      title={
-        copied
-          ? t("mixProfiles.ngs.copiedSequence")
-          : t("mixProfiles.ngs.copySequence")
-      }
+      aria-label={idleLabel}
+      title={copied ? t("mixProfiles.ngs.copiedSequence") : idleLabel}
     >
       {copied ? (
         <Check className="h-3.5 w-3.5 text-emerald-600" />
@@ -127,6 +154,28 @@ function CopyButton({ text, t }: { text: string; t: (key: string) => string }) {
         <Copy className="h-3.5 w-3.5" />
       )}
     </button>
+  );
+}
+
+// Compact horizontal-scroll viewport for a full sequence, with a copy button.
+// Keeps the wide amplicon out of the layout: the cell stays narrow and the
+// sequence scrolls sideways, while the copy button yields the complete string.
+function ScrollSeq({
+  copyText,
+  t,
+  children,
+}: {
+  copyText: string;
+  t: (key: string) => string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex items-start gap-1.5">
+      <CopyButton text={copyText} t={t} />
+      <div className="min-w-0 flex-1 overflow-x-auto pb-2 [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/30">
+        <span className="whitespace-nowrap">{children}</span>
+      </div>
+    </div>
   );
 }
 
@@ -255,7 +304,7 @@ export default function NGSChart({
     <div className="space-y-4">
       {/* Tabla */}
       <div className="overflow-x-auto rounded-xl border">
-        <table className="w-full min-w-[46rem] text-sm table-fixed">
+        <table className="w-full min-w-[38rem] text-sm">
           <thead className="bg-muted/40">
             <tr>
               <th className="px-2.5 py-2 text-center w-20">
@@ -284,10 +333,10 @@ export default function NGSChart({
                   </UITooltip>
                 </div>
               </th>
-              <th className="px-2.5 py-2 text-left w-52">
+              <th className="px-2.5 py-2 text-left">
                 {t("mixProfiles.ngs.tableRepeatSequence")}
               </th>
-              <th className="px-2.5 py-2 text-left">
+              <th className="px-2.5 py-2 text-left w-full">
                 <div className="flex items-center gap-1">
                   {t("mixProfiles.ngs.fullSequenceColumnLabel")}
                   <UITooltip>
@@ -396,13 +445,24 @@ export default function NGSChart({
                     </span>
                   </td>
                   <td className="px-2.5 py-2 text-left font-mono text-xs break-words align-top">
-                    {r.repeatSequence && r.repeatSequence !== "—"
-                      ? renderRepeatBlocks(r.repeatSequence)
-                      : motif
-                        ? formatMicrovariant(String(r.allele), motif)
-                        : "—"}
+                    {r.repeatSequence && r.repeatSequence !== "—" ? (
+                      <div className="flex items-start gap-1.5">
+                        <CopyButton
+                          text={r.repeatSequence}
+                          t={t}
+                          label={t("mixProfiles.ngs.copyRepeat")}
+                        />
+                        <div className="min-w-0">
+                          {renderRepeatBlocks(r.repeatSequence)}
+                        </div>
+                      </div>
+                    ) : motif ? (
+                      formatMicrovariant(String(r.allele), motif)
+                    ) : (
+                      "—"
+                    )}
                   </td>
-                  <td className="px-2.5 py-2 text-left font-mono text-xs break-words">
+                  <td className="px-2.5 py-2 text-left font-mono text-xs align-top">
                     {(() => {
                       const raw = String(r.fullSequence ?? "").trim();
                       const segs = r.fullSequenceSegments;
@@ -421,7 +481,13 @@ export default function NGSChart({
                           segs.flank3 != null)
                       ) {
                         return (
-                          <span className="inline">
+                          <ScrollSeq
+                            copyText={
+                              raw ||
+                              `${segs.flank5 ?? ""}${segs.repeat ?? ""}${segs.flank3 ?? ""}`
+                            }
+                            t={t}
+                          >
                             {segs.flank5 != null && segs.flank5.length > 0 ? (
                               <TooltipProvider>
                                 <UITooltip>
@@ -470,7 +536,7 @@ export default function NGSChart({
                                 </UITooltip>
                               </TooltipProvider>
                             ) : null}
-                          </span>
+                          </ScrollSeq>
                         );
                       }
                       const { continuous, repeatStart, repeatEnd } =
@@ -481,7 +547,7 @@ export default function NGSChart({
                         repeatEnd != null &&
                         repeatStart < repeatEnd;
                       return (
-                        <span className="inline">
+                        <ScrollSeq copyText={continuous} t={t}>
                           {hasHighlight ? (
                             <>
                               {continuous.slice(0, repeatStart!).length > 0 ? (
@@ -541,7 +607,7 @@ export default function NGSChart({
                           ) : (
                             continuous
                           )}
-                        </span>
+                        </ScrollSeq>
                       );
                     })()}
                   </td>

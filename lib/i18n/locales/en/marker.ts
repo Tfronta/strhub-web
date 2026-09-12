@@ -228,8 +228,6 @@ marker: {
   noVariantsForMarker: "No variant alleles have been reported in STRbase for this marker yet.",
   addNewVariant: "Add a new variant",
   alleleDesignation: "Allele Designation",
-  strNaming: "STRnaming",
-  repeatStructure: "Repeat Structure",
   sequence: "Sequence",
   noFrequenciesMessage:
     "No data available. Population frequencies for this locus are being curated.",

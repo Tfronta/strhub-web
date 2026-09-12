@@ -264,14 +264,14 @@ const SYN_TRI01_NGS: Record<
   >
 > = {
   TPOX: {
-    "8": { bracketed: "TGAA[8]", fullSequence: "TGAATGAATGAATGAATGAATGAATGAATGAATGTTTGG", isfgSegments: [{ t: "TGAATGAATGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGTTTGG", c: "f" }] },
-    "9": { bracketed: "TGAA[9]", fullSequence: "TGAATGAATGAATGAATGAATGAATGAATGAATGAATGTTTGG", isfgSegments: [{ t: "TGAATGAATGAATGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGTTTGG", c: "f" }] },
-    "11": { bracketed: "TGAA[11]", fullSequence: "TGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGTTTGG", isfgSegments: [{ t: "TGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGTTTGG", c: "f" }] },
+    "8": { bracketed: "CE8_TGAA[8]", fullSequence: "TGAATGAATGAATGAATGAATGAATGAATGAATGTTTGG", isfgSegments: [{ t: "TGAATGAATGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGTTTGG", c: "f" }] },
+    "9": { bracketed: "CE9_TGAA[9]", fullSequence: "TGAATGAATGAATGAATGAATGAATGAATGAATGAATGTTTGG", isfgSegments: [{ t: "TGAATGAATGAATGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGTTTGG", c: "f" }] },
+    "11": { bracketed: "CE11_TGAA[11]", fullSequence: "TGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGTTTGG", isfgSegments: [{ t: "TGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGTTTGG", c: "f" }] },
   },
   TH01: {
-    "6": { bracketed: "TGAA[6]", fullSequence: "TGCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAGGGAAATAAGG", isfgSegments: [{ t: "TGCAGGTCACAGGGAACACAGACTCCATGG", c: "f" }, { t: "TGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGAGGGAAATAAGG", c: "f" }] },
-    "7": { bracketed: "TGAA[7]", fullSequence: "TGCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAATGAGGGAAATAAGG", isfgSegments: [{ t: "TGCAGGTCACAGGGAACACAGACTCCATGG", c: "f" }, { t: "TGAATGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGAGGGAAATAAGG", c: "f" }] },
-    "9.3": { bracketed: "TGAA[6] TGA[1] TGAA[3]", fullSequence: "TGCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGATGAATGAATGAATGAGGGAAATAAGG", isfgSegments: [{ t: "TGCAGGTCACAGGGAACACAGACTCCATGG", c: "f" }, { t: "TGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGA", c: "f" }, { t: "TGAATGAATGAA", c: "0" }, { t: "TGAGGGAAATAAGG", c: "f" }] },
+    "6": { bracketed: "CE6_TGAA[6]", fullSequence: "TGCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAGGGAAATAAGG", isfgSegments: [{ t: "TGCAGGTCACAGGGAACACAGACTCCATGG", c: "f" }, { t: "TGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGAGGGAAATAAGG", c: "f" }] },
+    "7": { bracketed: "CE7_TGAA[7]", fullSequence: "TGCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGAATGAGGGAAATAAGG", isfgSegments: [{ t: "TGCAGGTCACAGGGAACACAGACTCCATGG", c: "f" }, { t: "TGAATGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGAGGGAAATAAGG", c: "f" }] },
+    "9.3": { bracketed: "CE9.3_TGAA[6]TGA[1]TGAA[3]", fullSequence: "TGCAGGTCACAGGGAACACAGACTCCATGGTGAATGAATGAATGAATGAATGAATGATGAATGAATGAATGAGGGAAATAAGG", isfgSegments: [{ t: "TGCAGGTCACAGGGAACACAGACTCCATGG", c: "f" }, { t: "TGAATGAATGAATGAATGAATGAA", c: "0" }, { t: "TGA", c: "f" }, { t: "TGAATGAATGAA", c: "0" }, { t: "TGAGGGAAATAAGG", c: "f" }] },
   },
 };
 
@@ -968,17 +968,29 @@ export function cePeaksToNGSRowsWithSeq(
         if (entry) {
           const useFirst = source.alleleIndex === 0
           repeatSequence = (useFirst ? entry.bracketed1 : entry.bracketed2) ?? "—"
-          isfgSegments = (useFirst
-            ? (entry as { isfgSegments1?: Array<{ t: string; c: string }> }).isfgSegments1
-            : (entry as { isfgSegments2?: Array<{ t: string; c: string }> }).isfgSegments2) ?? undefined
           const alleleNum = useFirst ? 1 : 2
-          const { displaySeq, segments } = getDisplaySequenceForAllele(entry, alleleNum)
-          fullSequence = displaySeq ? displaySeq.replace(/\s+/g, " ").trim() : "—"
-          if (segments) fullSequenceSegments = segments
-          else if (fullSequence !== "—") {
-            const repeatSeq = useFirst ? entry.repeat_seq1 : entry.repeat_seq2
-            const parsed = parseFullSeqSegments(fullSequence, repeatSeq ?? undefined)
-            if (parsed) fullSequenceSegments = parsed
+          // Prefer the exact STRNaming input (ISFG reported-range window): this
+          // is the sequence that reproduces repeatSequence on STRNaming, so the
+          // displayed Full Sequence and the STRNaming name are consistent. Its
+          // isfgSegments give the per-block colouring + MOTIF[N] hover tooltips.
+          const isfgSeq = useFirst ? entry.isfg_seq1 : entry.isfg_seq2
+          if (isfgSeq) {
+            fullSequence = isfgSeq
+            isfgSegments = (useFirst
+              ? (entry as { isfgSegments1?: Array<{ t: string; c: string }> }).isfgSegments1
+              : (entry as { isfgSegments2?: Array<{ t: string; c: string }> }).isfgSegments2) ?? undefined
+          } else {
+            isfgSegments = (useFirst
+              ? (entry as { isfgSegments1?: Array<{ t: string; c: string }> }).isfgSegments1
+              : (entry as { isfgSegments2?: Array<{ t: string; c: string }> }).isfgSegments2) ?? undefined
+            const { displaySeq, segments } = getDisplaySequenceForAllele(entry, alleleNum)
+            fullSequence = displaySeq ? displaySeq.replace(/\s+/g, " ").trim() : "—"
+            if (segments) fullSequenceSegments = segments
+            else if (fullSequence !== "—") {
+              const repeatSeq = useFirst ? entry.repeat_seq1 : entry.repeat_seq2
+              const parsed = parseFullSeqSegments(fullSequence, repeatSeq ?? undefined)
+              if (parsed) fullSequenceSegments = parsed
+            }
           }
           if (typeof entry.coverage1 === "number" && typeof entry.coverage2 === "number") {
             rowCoverage = useFirst ? entry.coverage1 : entry.coverage2
@@ -1000,8 +1012,10 @@ export function cePeaksToNGSRowsWithSeq(
           ? variantsForAllele[i % variantsForAllele.length]
           : null
         if (variant) {
-          repeatSequence = variant.repeatSequence ?? '—'
-          fullSequence = variant.fullSequence ?? '—'
+          // Only fall back for the full DNA sequence. The catalog `pattern` is a
+          // STRbase bracketed string, NOT a STRNaming name, so it must not
+          // populate the STRNaming "Repeat Sequence" column.
+          if (fullSequence === '—') fullSequence = variant.fullSequence ?? '—'
           isIsoallele = variant.isIsoallele || (copiesNeeded > 1 && i > 0)
         }
       }

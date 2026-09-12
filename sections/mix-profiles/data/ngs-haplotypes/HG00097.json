@@ -26,8 +26,8 @@
    "allele_call1": "15",
    "allele_call2": "17.3",
    "genotype_forense": "15/17.3",
-   "bracketed1": "AC[6] CTAT[14]",
-   "bracketed2": "AC[6] CTAT[13] CAT[1] CTAT[3]",
+   "bracketed1": "CE15_AC[6]CTAT[14]",
+   "bracketed2": "CE17.3_AC[6]CTAT[13]CAT[1]CTAT[3]",
    "hipstr_start": 230769616,
    "hipstr_end": 230769683,
    "motif_canonical": "TCTA",
@@ -56,7 +56,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "TTCAGAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAA",
+     "t": "TTAA",
      "c": "f"
     },
     {
@@ -68,13 +68,13 @@
      "c": "0"
     },
     {
-     "t": "CTA",
+     "t": "CTACATC",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "TTCAGAGAAATAGAATCACTAGGGAACCAAATATATATACATACAATTAA",
+     "t": "TTAA",
      "c": "f"
     },
     {
@@ -87,17 +87,23 @@
     },
     {
      "t": "CAT",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "CTATCTATCTAT",
      "c": "0"
     },
     {
-     "t": "CTA",
+     "t": "CTACATC",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "TTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATC",
+   "isfg_repeat_start0_1": 4,
+   "isfg_repeat_end0_1": 72,
+   "isfg_seq2": "TTAAACACACACACACCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCATCTATCTATCTATCTACATC",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 83
   },
   {
    "locus": "D10S1248",
@@ -117,8 +123,8 @@
    "allele_call1": "15",
    "allele_call2": "15",
    "genotype_forense": "15/15",
-   "bracketed1": "GGAA[15]",
-   "bracketed2": "GGAA[15]",
+   "bracketed1": "CE15_GGAA[15]_+1ATG>TGA",
+   "bracketed2": "CE15_GGAA[15]_+1ATG>TGA",
    "hipstr_start": 129294244,
    "hipstr_end": 129294295,
    "motif_canonical": "GGAA",
@@ -147,7 +153,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "TTGAACAAATGAGTGAGT",
+     "t": "TGAGT",
      "c": "f"
     },
     {
@@ -155,13 +161,13 @@
      "c": "0"
     },
     {
-     "t": "ATGAAGACAATACAACCAGAGTT",
+     "t": "TGAA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "TTGAACAAATGAGTGAGT",
+     "t": "TGAGT",
      "c": "f"
     },
     {
@@ -169,10 +175,16 @@
      "c": "0"
     },
     {
-     "t": "ATGAAGACAATACAACCAGAGTT",
+     "t": "TGAA",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "TGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAATGAA",
+   "isfg_repeat_start0_1": 5,
+   "isfg_repeat_end0_1": 65,
+   "isfg_seq2": "TGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAATGAA",
+   "isfg_repeat_start0_2": 5,
+   "isfg_repeat_end0_2": 65
   },
   {
    "locus": "TH01",
@@ -192,8 +204,8 @@
    "allele_call1": "7",
    "allele_call2": "6",
    "genotype_forense": "6/7",
-   "bracketed1": "TGAA[7]",
-   "bracketed2": "TGAA[6]",
+   "bracketed1": "CE7_TGAA[7]",
+   "bracketed2": "CE6_TGAA[6]",
    "hipstr_start": 2171088,
    "hipstr_end": 2171115,
    "motif_canonical": "AATG",
@@ -222,7 +234,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "TGCAGGTCACAGGGAACACAGACTCCATGG",
+     "t": "ATGG",
      "c": "f"
     },
     {
@@ -230,13 +242,13 @@
      "c": "0"
     },
     {
-     "t": "TGAGGGAAATAAGG",
+     "t": "TGAGGGA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "TGCAGGTCACAGGGAACACAGACTCCATGG",
+     "t": "ATGG",
      "c": "f"
     },
     {
@@ -244,10 +256,16 @@
      "c": "0"
     },
     {
-     "t": "TGAGGGAAATAAGG",
+     "t": "TGAGGGA",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "ATGGTGAATGAATGAATGAATGAATGAATGAATGAGGGA",
+   "isfg_repeat_start0_1": 4,
+   "isfg_repeat_end0_1": 32,
+   "isfg_seq2": "ATGGTGAATGAATGAATGAATGAATGAATGAGGGA",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 28
   },
   {
    "locus": "vWA",
@@ -267,8 +285,8 @@
    "allele_call1": "17",
    "allele_call2": "17",
    "genotype_forense": "17/17",
-   "bracketed1": "GGAT[3] AGAT[1] GGAT[1] AGAT[11] AGAC[4] AGAT[2]",
-   "bracketed2": "GGAT[3] AGAT[1] GGAT[1] AGAT[12] AGAC[3] AGAT[2]",
+   "bracketed1": "CE17_GGAT[3]AGAT[1]GGAT[1]AGAT[11]AGAC[4]AGAT[2]",
+   "bracketed2": "CE17_GGAT[3]AGAT[1]GGAT[1]AGAT[12]AGAC[3]AGAT[2]",
    "hipstr_start": 5983977,
    "hipstr_end": 5984044,
    "motif_canonical": "TCTA",
@@ -297,7 +315,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "AATACATA",
+     "t": "CATA",
      "c": "f"
     },
     {
@@ -331,7 +349,7 @@
    ],
    "isfgSegments2": [
     {
-     "t": "AATACATA",
+     "t": "CATA",
      "c": "f"
     },
     {
@@ -362,7 +380,13 @@
      "t": "CAAT",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "CATAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGATAGATCAAT",
+   "isfg_repeat_start0_1": 4,
+   "isfg_repeat_end0_1": 92,
+   "isfg_seq2": "CATAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGATAGATCAAT",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 92
   },
   {
    "locus": "D12S391",
@@ -382,8 +406,8 @@
    "allele_call1": "22",
    "allele_call2": "23",
    "genotype_forense": "22/23",
-   "bracketed1": "TAGA[14] CAGA[8]",
-   "bracketed2": "TAGA[15] CAGA[8]",
+   "bracketed1": "CE22_TAGA[14]CAGA[8]_+1T>C",
+   "bracketed2": "CE23_TAGA[15]CAGA[8]",
    "hipstr_start": 12297020,
    "hipstr_end": 12297095,
    "motif_canonical": "AGAT",
@@ -412,7 +436,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "CAGAGAGAAAGAATCAACAGGATCAATGGATGCATAGG",
+     "t": "TGCATAGG",
      "c": "f"
     },
     {
@@ -424,13 +448,13 @@
      "c": "1"
     },
     {
-     "t": "CGAGAGGGGATTTATTAGAGGAATTAGCTCAAGTGATATGGAGGCTGAAAAATCTCATGACAGTCCATCTGCAAGCTGGAGACCCAGGGACACTA",
+     "t": "CGAGA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "CAGAGAGAAAGAATCAACAGGATCAATGGATGCATAGG",
+     "t": "TGCATAGG",
      "c": "f"
     },
     {
@@ -442,10 +466,16 @@
      "c": "1"
     },
     {
-     "t": "TGAGAGGGGATTTATTAGAGGAATTAGCTCAAGTGATATGGAGGCTGAAAAATCTCATGACAGTCCATCTGCAAGCTGGAGACCCAGGGACACTA",
+     "t": "TGAGA",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "TGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGACGAGA",
+   "isfg_repeat_start0_1": 8,
+   "isfg_repeat_end0_1": 96,
+   "isfg_seq2": "TGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGATGAGA",
+   "isfg_repeat_start0_2": 8,
+   "isfg_repeat_end0_2": 100
   },
   {
    "locus": "D13S317",
@@ -465,8 +495,8 @@
    "allele_call1": "11",
    "allele_call2": "14",
    "genotype_forense": "11/14",
-   "bracketed1": "TATC[11] AATC[2] ATCT[3]",
-   "bracketed2": "TATC[14] AATC[2] ATCT[3]",
+   "bracketed1": "CE11_TATC[11]AATC[2]ATCT[3]_-1T>-_-4.1->T",
+   "bracketed2": "CE14_TATC[14]AATC[2]ATCT[3]_-1T>-_-4.1->T",
    "hipstr_start": 82148025,
    "hipstr_end": 82148068,
    "motif_canonical": "TATC",
@@ -495,7 +525,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "TCTGACCCATCTAACGCCTATCTGTATTTACAAATACAT",
+     "t": "TACA",
      "c": "f"
     },
     {
@@ -511,13 +541,13 @@
      "c": "1"
     },
     {
-     "t": "TTCTGTCTGTCTTTTTGGG",
+     "t": "TTCTGTCTGTCTTTTT",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "TCTGACCCATCTAACGCCTATCTGTATTTACAAATACAT",
+     "t": "TACA",
      "c": "f"
     },
     {
@@ -533,10 +563,16 @@
      "c": "1"
     },
     {
-     "t": "TTCTGTCTGTCTTTTTGGG",
+     "t": "TTCTGTCTGTCTTTTT",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "TACATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTGTCTGTCTTTTT",
+   "isfg_repeat_start0_1": 4,
+   "isfg_repeat_end0_1": 68,
+   "isfg_seq2": "TACATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTGTCTGTCTTTTT",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 80
   },
   {
    "locus": "PentaE",
@@ -556,8 +592,8 @@
    "allele_call1": "7",
    "allele_call2": "7",
    "genotype_forense": "7/7",
-   "bracketed1": "TTTTC[7]",
-   "bracketed2": "TTTTC[7]",
+   "bracketed1": "CE7_TTTC[1]TTTTC[6]_-4.1->T",
+   "bracketed2": "CE7_TTTC[1]TTTTC[6]_-4.1->T",
    "hipstr_start": 96831015,
    "hipstr_end": 96831039,
    "motif_canonical": "TCTTT",
@@ -586,32 +622,46 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "AGAAAACTCCTTACAA",
+     "t": "TACAA",
      "c": "f"
     },
     {
-     "t": "TTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTC",
+     "t": "TTTC",
+     "c": "2"
+    },
+    {
+     "t": "TTTTCTTTTCTTTTCTTTTCTTTTCTTTTC",
      "c": "0"
     },
     {
-     "t": "TTT",
+     "t": "TTTGAGAC",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "AGAAAACTCCTTACAA",
+     "t": "TACAA",
      "c": "f"
     },
     {
-     "t": "TTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTC",
+     "t": "TTTC",
+     "c": "2"
+    },
+    {
+     "t": "TTTTCTTTTCTTTTCTTTTCTTTTCTTTTC",
      "c": "0"
     },
     {
-     "t": "TTT",
+     "t": "TTTGAGAC",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "TACAATTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGAC",
+   "isfg_repeat_start0_1": 5,
+   "isfg_repeat_end0_1": 39,
+   "isfg_seq2": "TACAATTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGAC",
+   "isfg_repeat_start0_2": 5,
+   "isfg_repeat_end0_2": 39
   },
   {
    "locus": "D16S539",
@@ -631,8 +681,8 @@
    "allele_call1": "11",
    "allele_call2": "11",
    "genotype_forense": "11/11",
-   "bracketed1": "GATA[11]",
-   "bracketed2": "GATA[11]",
+   "bracketed1": "CE11_GATA[11]_-2TG>GT_-4G>A",
+   "bracketed2": "CE11_GATA[11]_-2TG>GT_-4G>A",
    "hipstr_start": 86352702,
    "hipstr_end": 86352745,
    "motif_canonical": "GATA",
@@ -661,7 +711,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "TCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTG",
+     "t": "AGGT",
      "c": "f"
     },
     {
@@ -669,13 +719,13 @@
      "c": "0"
     },
     {
-     "t": "TCATTGAAAGACAAAACAGAGATGGATGATAGATAC",
+     "t": "TCAT",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "TCCTCTTCCCTAGATCAATACAGACAGACAGACAGGTG",
+     "t": "AGGT",
      "c": "f"
     },
     {
@@ -683,10 +733,16 @@
      "c": "0"
     },
     {
-     "t": "TCATTGAAAGACAAAACAGAGATGGATGATAGATAC",
+     "t": "TCAT",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "AGGTGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCAT",
+   "isfg_repeat_start0_1": 4,
+   "isfg_repeat_end0_1": 48,
+   "isfg_seq2": "AGGTGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCAT",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 48
   },
   {
    "locus": "D18S51",
@@ -706,8 +762,8 @@
    "allele_call1": "14",
    "allele_call2": "14",
    "genotype_forense": "14/14",
-   "bracketed1": "GAAA[14] A[1] AG[4] GAAA[2]",
-   "bracketed2": "GAAA[2] TAAACAAATAAA[1] GAAA[1] CAAA[3] GAAA[2] CCAACAAA[1] GAAA[1] A[1] AG[4] GAAA[2]",
+   "bracketed1": "CE14_GAAA[14]G[1]AG[3]GAAA[2]GA[1]",
+   "bracketed2": "CE14_GAAA[2]TAAACAAATAAA[1]GAAA[1]CAAA[3]GAAA[2]CCAACAAA[1]GAAA[1]G[1]AG[3]GAAA[2]GA[1]",
    "hipstr_start": 63281667,
    "hipstr_end": 63281738,
    "motif_canonical": "AGAA",
@@ -736,7 +792,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "GTCTCA",
+     "t": "TCTCA",
      "c": "f"
     },
     {
@@ -744,11 +800,11 @@
      "c": "0"
     },
     {
-     "t": "A",
-     "c": "f"
+     "t": "G",
+     "c": "2"
     },
     {
-     "t": "AGAGAGAG",
+     "t": "AGAGAG",
      "c": "1"
     },
     {
@@ -756,13 +812,13 @@
      "c": "0"
     },
     {
-     "t": "GAGAAAAAGAAAAGAAATAGTAGCAACTGTTATTGTAAGA",
-     "c": "f"
+     "t": "GA",
+     "c": "0"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "GTCTCA",
+     "t": "TCTCA",
      "c": "f"
     },
     {
@@ -771,7 +827,7 @@
     },
     {
      "t": "TAAACAAATAAA",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "GAAA",
@@ -779,7 +835,7 @@
     },
     {
      "t": "CAAACAAACAAA",
-     "c": "f"
+     "c": "0"
     },
     {
      "t": "GAAAGAAA",
@@ -787,18 +843,18 @@
     },
     {
      "t": "CCAACAAA",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "GAAA",
      "c": "0"
     },
     {
-     "t": "A",
-     "c": "f"
+     "t": "G",
+     "c": "1"
     },
     {
-     "t": "AGAGAGAG",
+     "t": "AGAGAG",
      "c": "1"
     },
     {
@@ -806,10 +862,16 @@
      "c": "0"
     },
     {
-     "t": "GAGAAAAAGAAAAGAAATAGTAGCAACTGTTATTGTAAGA",
-     "c": "f"
+     "t": "GA",
+     "c": "0"
     }
-   ]
+   ],
+   "isfg_seq1": "TCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAGAGGAAAGAAAGA",
+   "isfg_repeat_start0_1": 5,
+   "isfg_repeat_end0_1": 78,
+   "isfg_seq2": "TCTCAGAAAGAAATAAACAAATAAAGAAACAAACAAACAAAGAAAGAAACCAACAAAGAAAGAGAGAGGAAAGAAAGA",
+   "isfg_repeat_start0_2": 5,
+   "isfg_repeat_end0_2": 78
   },
   {
    "locus": "D19S433",
@@ -829,8 +891,8 @@
    "allele_call1": "13",
    "allele_call2": "13",
    "genotype_forense": "13/13",
-   "bracketed1": "TCCT[12]",
-   "bracketed2": "TCCT[12]",
+   "bracketed1": "CE13_TCCT[12]",
+   "bracketed2": "CE13_TCCT[12]",
    "hipstr_start": 29926235,
    "hipstr_end": 29926298,
    "motif_canonical": "CCTT",
@@ -859,7 +921,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "AATAAAAATCTTCTCTCTTTCTTCCTCTC",
+     "t": "ATCTTCTCTCTTTCTTCCTCTC",
      "c": "f"
     },
     {
@@ -867,13 +929,13 @@
      "c": "0"
     },
     {
-     "t": "ACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGTGGTACAATTATAGCT",
+     "t": "ACCTTCTTTCCTTCAACA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "AATAAAAATCTTCTCTCTTTCTTCCTCTC",
+     "t": "ATCTTCTCTCTTTCTTCCTCTC",
      "c": "f"
     },
     {
@@ -881,10 +943,16 @@
      "c": "0"
     },
     {
-     "t": "ACCTTCTTTCCTTCAACAGAATCTTATTCTGTTGCCCAGGCTGGAGTGCAGTGGTACAATTATAGCT",
+     "t": "ACCTTCTTTCCTTCAACA",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "ATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACA",
+   "isfg_repeat_start0_1": 22,
+   "isfg_repeat_end0_1": 70,
+   "isfg_seq2": "ATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACA",
+   "isfg_repeat_start0_2": 22,
+   "isfg_repeat_end0_2": 70
   },
   {
    "locus": "TPOX",
@@ -904,8 +972,8 @@
    "allele_call1": "8",
    "allele_call2": "11",
    "genotype_forense": "8/11",
-   "bracketed1": "TGAA[8]",
-   "bracketed2": "TGAA[11]",
+   "bracketed1": "CE8_TGAA[8]",
+   "bracketed2": "CE11_TGAA[11]",
    "hipstr_start": 1489653,
    "hipstr_end": 1489684,
    "motif_canonical": "AATG",
@@ -934,24 +1002,38 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
+     "t": "TCAC",
+     "c": "f"
+    },
+    {
      "t": "TGAATGAATGAATGAATGAATGAATGAATGAA",
      "c": "0"
     },
     {
-     "t": "TGTTTGG",
+     "t": "TGTTTGGGCA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
+     "t": "TCAC",
+     "c": "f"
+    },
+    {
      "t": "TGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAA",
      "c": "0"
     },
     {
-     "t": "TGTTTGG",
+     "t": "TGTTTGGGCA",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "TCACTGAATGAATGAATGAATGAATGAATGAATGAATGTTTGGGCA",
+   "isfg_repeat_start0_1": 4,
+   "isfg_repeat_end0_1": 36,
+   "isfg_seq2": "TCACTGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGAATGTTTGGGCA",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 48
   },
   {
    "locus": "D2S441",
@@ -971,8 +1053,8 @@
    "allele_call1": "10",
    "allele_call2": "14",
    "genotype_forense": "10/14",
-   "bracketed1": "TCTA[8] TCTG[1] TCTA[1]",
-   "bracketed2": "TCTA[11] TTTA[1] TCTA[2]",
+   "bracketed1": "CE10_TCTA[8]TCTG[1]TCTA[1]_-2CT>AC_+2ATC>CAT",
+   "bracketed2": "CE14_TCTA[11]TTTA[1]TCTA[2]_-2CT>AC_+2ATC>CAT",
    "hipstr_start": 68011947,
    "hipstr_end": 68011994,
    "motif_canonical": "TCTA",
@@ -1001,7 +1083,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "CCAGGAACTGTGGCTCATCTATGAAAACT",
+     "t": "AAAC",
      "c": "f"
     },
     {
@@ -1010,20 +1092,20 @@
     },
     {
      "t": "TCTG",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "TCTA",
      "c": "0"
     },
     {
-     "t": "TATCATAACACCACAGCCACTTA",
+     "t": "TCATA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "CCAGGAACTGTGGCTCATCTATGAAAACT",
+     "t": "AAAC",
      "c": "f"
     },
     {
@@ -1032,17 +1114,23 @@
     },
     {
      "t": "TTTA",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "TCTATCTA",
      "c": "0"
     },
     {
-     "t": "TATCATAACACCACAGCCACTTA",
+     "t": "TCATA",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "AAACTCTATCTATCTATCTATCTATCTATCTATCTATCTGTCTATCATA",
+   "isfg_repeat_start0_1": 4,
+   "isfg_repeat_end0_1": 44,
+   "isfg_seq2": "AAACTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTATCATA",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 60
   },
   {
    "locus": "D2S1338",
@@ -1062,8 +1150,8 @@
    "allele_call1": "22",
    "allele_call2": "24",
    "genotype_forense": "22/24",
-   "bracketed1": "GGAA[2] GGAC[1] GGAA[12] GGCA[7]",
-   "bracketed2": "GGAA[2] GGAC[1] GGAA[14] GGCA[7]",
+   "bracketed1": "CE22_GGAA[2]GGAC[1]GGAA[12]GGCA[7]_-2AG>GA_-4G>A_+1A>G_+3G>C",
+   "bracketed2": "CE24_GGAA[2]GGAC[1]GGAA[14]GGCA[7]_-2AG>GA_-4G>A_+1A>G_+3G>C",
    "hipstr_start": 218014859,
    "hipstr_end": 218014950,
    "motif_canonical": "GGAA",
@@ -1092,7 +1180,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "GAG",
+     "t": "AGGA",
      "c": "f"
     },
     {
@@ -1101,7 +1189,7 @@
     },
     {
      "t": "GGAC",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
@@ -1112,13 +1200,13 @@
      "c": "1"
     },
     {
-     "t": "AGGCCAAGCCATTT",
+     "t": "GGCC",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "GAG",
+     "t": "AGGA",
      "c": "f"
     },
     {
@@ -1127,7 +1215,7 @@
     },
     {
      "t": "GGAC",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
@@ -1138,10 +1226,16 @@
      "c": "1"
     },
     {
-     "t": "AGGCCAAGCCATTT",
+     "t": "GGCC",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "AGGAGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAGGCC",
+   "isfg_repeat_start0_1": 4,
+   "isfg_repeat_end0_1": 92,
+   "isfg_seq2": "AGGAGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAGGCC",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 100
   },
   {
    "locus": "PentaD",
@@ -1161,8 +1255,8 @@
    "allele_call1": "9",
    "allele_call2": "12",
    "genotype_forense": "9/12",
-   "bracketed1": "A[8] GAAAG[1] AAAAG[8] A[6] CGAAGGGG[1] A[7]",
-   "bracketed2": "A[8] GAAAG[1] AAAAG[11] A[6] CGAAGGGG[1] A[7]",
+   "bracketed1": "CE9_A[4]AAAAG[9]A[5]_-11.1->ACCA_+8.1->A",
+   "bracketed2": "CE12_A[4]AAAAG[12]A[5]_-11.1->ACCA_+8.1->A",
    "hipstr_start": 43636205,
    "hipstr_end": 43636269,
    "motif_canonical": "AAAGA",
@@ -1191,72 +1285,54 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "GATCACTTGAGCCTGGAAGGTCGAAGCTGAAGTGAGCCATGATCACACCACTACACTCCAGCCTAGGTGACAGAGCAAGACACCATCTCAAGAAAG",
+     "t": "ACCATCTCAAGAAAG",
      "c": "f"
     },
     {
-     "t": "AAAAAAAA",
+     "t": "AAAA",
      "c": "1"
     },
     {
-     "t": "GAAAG",
-     "c": "f"
-    },
-    {
-     "t": "AAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAG",
+     "t": "AAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAG",
      "c": "0"
     },
     {
-     "t": "AAAAAA",
+     "t": "AAAAA",
      "c": "1"
     },
     {
-     "t": "CGAAGGGG",
-     "c": "f"
-    },
-    {
-     "t": "AAAAAAA",
-     "c": "1"
-    },
-    {
-     "t": "GAGAATCATAAACATAAATGTAAAATTTCTCAA",
+     "t": "CGAAGGGGA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "GATCACTTGAGCCTGGAAGGTCGAAGCTGAAGTGAGCCATGATCACACCACTACACTCCAGCCTAGGTGACAGAGCAAGACACCATCTCAAGAAAG",
+     "t": "ACCATCTCAAGAAAG",
      "c": "f"
     },
     {
-     "t": "AAAAAAAA",
+     "t": "AAAA",
      "c": "1"
     },
     {
-     "t": "GAAAG",
-     "c": "f"
-    },
-    {
-     "t": "AAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAG",
+     "t": "AAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAG",
      "c": "0"
     },
     {
-     "t": "AAAAAA",
+     "t": "AAAAA",
      "c": "1"
     },
     {
-     "t": "CGAAGGGG",
-     "c": "f"
-    },
-    {
-     "t": "AAAAAAA",
-     "c": "1"
-    },
-    {
-     "t": "GAGAATCATAAACATAAATGTAAAATTTCTCAA",
+     "t": "CGAAGGGGA",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "ACCATCTCAAGAAAGAAAAAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAACGAAGGGGA",
+   "isfg_repeat_start0_1": 15,
+   "isfg_repeat_end0_1": 69,
+   "isfg_seq2": "ACCATCTCAAGAAAGAAAAAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAACGAAGGGGA",
+   "isfg_repeat_start0_2": 15,
+   "isfg_repeat_end0_2": 84
   },
   {
    "locus": "D22S1045",
@@ -1276,8 +1352,8 @@
    "allele_call1": "16",
    "allele_call2": "16",
    "genotype_forense": "16/16",
-   "bracketed1": "ATT[13] ACT[1] ATT[2]",
-   "bracketed2": "ATT[13] ACT[1] ATT[2]",
+   "bracketed1": "CE16_ATT[13]ACT[1]ATT[2]",
+   "bracketed2": "CE16_ATT[13]ACT[1]ATT[2]",
    "hipstr_start": 37140287,
    "hipstr_end": 37140337,
    "motif_canonical": "ATT",
@@ -1306,7 +1382,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "CGTTGGAATTCCCCAAACTGGCCAGTTCCTCTCCACCCTATAGACCCTGTCCTAGCCTTCTTATAGCTGCTATGGGGGCTAGATTTTCCCCGATGATAGTAGTCTC",
+     "t": "TCTC",
      "c": "f"
     },
     {
@@ -1315,20 +1391,20 @@
     },
     {
      "t": "ACT",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "ATTATT",
      "c": "0"
     },
     {
-     "t": "GTTATAAAAATATTGCCAAT",
+     "t": "GTTA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "CGTTGGAATTCCCCAAACTGGCCAGTTCCTCTCCACCCTATAGACCCTGTCCTAGCCTTCTTATAGCTGCTATGGGGGCTAGATTTTCCCCGATGATAGTAGTCTC",
+     "t": "TCTC",
      "c": "f"
     },
     {
@@ -1337,17 +1413,23 @@
     },
     {
      "t": "ACT",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "ATTATT",
      "c": "0"
     },
     {
-     "t": "GTTATAAAAATATTGCCAAT",
+     "t": "GTTA",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "TCTCATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTA",
+   "isfg_repeat_start0_1": 4,
+   "isfg_repeat_end0_1": 52,
+   "isfg_seq2": "TCTCATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTA",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 52
   },
   {
    "locus": "D3S1358",
@@ -1367,8 +1449,8 @@
    "allele_call1": "15",
    "allele_call2": "16",
    "genotype_forense": "15/16",
-   "bracketed1": "TATC[2] TGTC[2] TATC[11]",
-   "bracketed2": "TATC[2] TGTC[2] TATC[12]",
+   "bracketed1": "CE15_TATC[2]TGTC[2]TATC[11]",
+   "bracketed2": "CE16_TATC[2]TGTC[2]TATC[12]",
    "hipstr_start": 45540739,
    "hipstr_end": 45540802,
    "motif_canonical": "TCTA",
@@ -1397,7 +1479,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "TTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATG",
+     "t": "CATG",
      "c": "f"
     },
     {
@@ -1406,20 +1488,20 @@
     },
     {
      "t": "TGTCTGTC",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
      "c": "0"
     },
     {
-     "t": "TATGAGACAGGGTCTTGCTC",
+     "t": "TATGAGA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "TTTGGGGGCATCTCTTATACTCATGAAATCAACAGAGGCTTGCATG",
+     "t": "CATG",
      "c": "f"
     },
     {
@@ -1428,17 +1510,23 @@
     },
     {
      "t": "TGTCTGTC",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
      "c": "0"
     },
     {
-     "t": "TATGAGACAGGGTCTTGCTC",
+     "t": "TATGAGA",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "CATGTATCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGA",
+   "isfg_repeat_start0_1": 4,
+   "isfg_repeat_end0_1": 64,
+   "isfg_seq2": "CATGTATCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGA",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 68
   },
   {
    "locus": "FGA",
@@ -1458,8 +1546,8 @@
    "allele_call1": "22",
    "allele_call2": "23",
    "genotype_forense": "22/23",
-   "bracketed1": "AAAG[2] GAAG[1] AAAG[1] GAAG[2] GAG[1] AAAG[14] AGAAA[1] AAAG[3]",
-   "bracketed2": "AAAG[2] GAAG[1] AAAG[1] GAAG[2] GAG[1] AAAG[15] AGAAA[1] AAAG[3]",
+   "bracketed1": "CE22_GAAG[1]AAAG[1]GAAG[2]GAG[1]AAAG[14]AGAAA[1]AAAG[3]",
+   "bracketed2": "CE23_GAAG[1]AAAG[1]GAAG[2]GAG[1]AAAG[15]AGAAA[1]AAAG[3]",
    "hipstr_start": 154587736,
    "hipstr_end": 154587823,
    "motif_canonical": "GGAA",
@@ -1488,14 +1576,6 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "CCAGCAAA",
-     "c": "f"
-    },
-    {
-     "t": "AAAGAAAG",
-     "c": "0"
-    },
-    {
      "t": "GAAG",
      "c": "1"
     },
@@ -1509,7 +1589,7 @@
     },
     {
      "t": "GAG",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "AAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAG",
@@ -1517,26 +1597,18 @@
     },
     {
      "t": "AGAAA",
-     "c": "f"
+     "c": "0"
     },
     {
      "t": "AAAGAAAGAAAG",
      "c": "0"
     },
     {
-     "t": "AAACTAGCTTGTAAATATGC",
+     "t": "AAACTAG",
      "c": "f"
     }
    ],
    "isfgSegments2": [
-    {
-     "t": "CCAGCAAA",
-     "c": "f"
-    },
-    {
-     "t": "AAAGAAAG",
-     "c": "0"
-    },
     {
      "t": "GAAG",
      "c": "1"
@@ -1551,7 +1623,7 @@
     },
     {
      "t": "GAG",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "AAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAG",
@@ -1559,17 +1631,23 @@
     },
     {
      "t": "AGAAA",
-     "c": "f"
+     "c": "0"
     },
     {
      "t": "AAAGAAAGAAAG",
      "c": "0"
     },
     {
-     "t": "AAACTAGCTTGTAAATATGC",
+     "t": "AAACTAG",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "GAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTAG",
+   "isfg_repeat_start0_1": 0,
+   "isfg_repeat_end0_1": 92,
+   "isfg_seq2": "GAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTAG",
+   "isfg_repeat_start0_2": 0,
+   "isfg_repeat_end0_2": 96
   },
   {
    "locus": "D5S818",
@@ -1589,8 +1667,8 @@
    "allele_call1": "11",
    "allele_call2": "11",
    "genotype_forense": "11/11",
-   "bracketed1": "TCTA[11]",
-   "bracketed2": "TCTA[11]",
+   "bracketed1": "CE11_TCTA[11]_+4TC>CA",
+   "bracketed2": "CE11_TCTA[11]_+4TC>CA",
    "hipstr_start": 123775556,
    "hipstr_end": 123775599,
    "motif_canonical": "TCTA",
@@ -1619,7 +1697,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "TATTTATACC",
+     "t": "ATACC",
      "c": "f"
     },
     {
@@ -1627,13 +1705,13 @@
      "c": "0"
     },
     {
-     "t": "TCTTCAAAAT",
+     "t": "TCTCAAA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "TATTTATACC",
+     "t": "ATACC",
      "c": "f"
     },
     {
@@ -1641,10 +1719,16 @@
      "c": "0"
     },
     {
-     "t": "TCTTCAAAAT",
+     "t": "TCTCAAA",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "ATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTCAAA",
+   "isfg_repeat_start0_1": 5,
+   "isfg_repeat_end0_1": 49,
+   "isfg_seq2": "ATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTCAAA",
+   "isfg_repeat_start0_2": 5,
+   "isfg_repeat_end0_2": 49
   },
   {
    "locus": "CSF1PO",
@@ -1664,8 +1748,8 @@
    "allele_call1": "12",
    "allele_call2": "12",
    "genotype_forense": "12/12",
-   "bracketed1": "TCTA[12] ATCT[3]",
-   "bracketed2": "TCTA[12] ATCT[3]",
+   "bracketed1": "CE12_TCTA[12]",
+   "bracketed2": "CE12_TCTA[12]",
    "hipstr_start": 150076324,
    "hipstr_end": 150076375,
    "motif_canonical": "ATCT",
@@ -1702,11 +1786,7 @@
      "c": "0"
     },
     {
-     "t": "ATCTATCTATCT",
-     "c": "1"
-    },
-    {
-     "t": "T",
+     "t": "ATCT",
      "c": "f"
     }
    ],
@@ -1720,14 +1800,16 @@
      "c": "0"
     },
     {
-     "t": "ATCTATCTATCT",
-     "c": "1"
-    },
-    {
-     "t": "T",
+     "t": "ATCT",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "CTTCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCT",
+   "isfg_repeat_start0_1": 7,
+   "isfg_repeat_end0_1": 55,
+   "isfg_seq2": "CTTCCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAATCT",
+   "isfg_repeat_start0_2": 7,
+   "isfg_repeat_end0_2": 55
   },
   {
    "locus": "D7S820",
@@ -1747,8 +1829,8 @@
    "allele_call1": "13",
    "allele_call2": "10",
    "genotype_forense": "10/13",
-   "bracketed1": "A[8] CTAT[1] CAATCTGT[1] CTAT[13]",
-   "bracketed2": "A[8] CTAT[1] CAATCTGT[1] CTAT[10]",
+   "bracketed1": "CE13_A[8]CTAT[1]CAATCTGT[1]CTAT[13]",
+   "bracketed2": "CE10_A[8]CTAT[1]CAATCTGT[1]CTAT[10]",
    "hipstr_start": 84160226,
    "hipstr_end": 84160277,
    "motif_canonical": "TATC",
@@ -1777,7 +1859,7 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "TATTTAGTGAGATT",
+     "t": "AGATT",
      "c": "f"
     },
     {
@@ -1790,20 +1872,20 @@
     },
     {
      "t": "CAATCTGT",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "CTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTAT",
      "c": "0"
     },
     {
-     "t": "CGTTAGTTCGTTCTAAACTAT",
+     "t": "CGTTA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "TATTTAGTGAGATT",
+     "t": "AGATT",
      "c": "f"
     },
     {
@@ -1816,17 +1898,23 @@
     },
     {
      "t": "CAATCTGT",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "CTATCTATCTATCTATCTATCTATCTATCTATCTATCTAT",
      "c": "0"
     },
     {
-     "t": "CGTTAGTTCGTTCTAAACTAT",
+     "t": "CGTTA",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "AGATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTA",
+   "isfg_repeat_start0_1": 5,
+   "isfg_repeat_end0_1": 77,
+   "isfg_seq2": "AGATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTA",
+   "isfg_repeat_start0_2": 5,
+   "isfg_repeat_end0_2": 65
   },
   {
    "locus": "D8S1179",
@@ -1846,8 +1934,8 @@
    "allele_call1": "13",
    "allele_call2": "10",
    "genotype_forense": "10/13",
-   "bracketed1": "TATC[2] TGTC[1] TATC[10]",
-   "bracketed2": "TATC[10]",
+   "bracketed1": "CE13_TATC[2]TGTC[1]TATC[10]",
+   "bracketed2": "CE10_TATC[10]",
    "hipstr_start": 124894865,
    "hipstr_end": 124894916,
    "motif_canonical": "TCTA",
@@ -1876,32 +1964,46 @@
    "flanks_status": "OK",
    "isfgSegments1": [
     {
+     "t": "TTCG",
+     "c": "f"
+    },
+    {
      "t": "TATCTATC",
      "c": "0"
     },
     {
      "t": "TGTC",
-     "c": "f"
+     "c": "2"
     },
     {
      "t": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
      "c": "0"
     },
     {
-     "t": "TATTCCC",
+     "t": "TATTCCCC",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
+     "t": "TTCG",
+     "c": "f"
+    },
+    {
      "t": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
      "c": "0"
     },
     {
-     "t": "TATTCCC",
+     "t": "TATTCCCC",
      "c": "f"
     }
-   ]
+   ],
+   "isfg_seq1": "TTCGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCCC",
+   "isfg_repeat_start0_1": 4,
+   "isfg_repeat_end0_1": 56,
+   "isfg_seq2": "TTCGTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCCC",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 44
   }
  ]
 }

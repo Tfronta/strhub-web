@@ -228,8 +228,6 @@ marker: {
   noVariantsForMarker: "Ainda não há variantes alélicas reportadas na STRbase para este marcador.",
   addNewVariant: "Adicionar uma nova variante",
   alleleDesignation: "Designação do Alelo",
-  strNaming: "STRnaming",
-  repeatStructure: "Estrutura de Repetição",
   sequence: "Sequência",
   noFrequenciesMessage:
     "Nenhum dado disponível. As frequências populacionais para este locus estão sendo curadas.",

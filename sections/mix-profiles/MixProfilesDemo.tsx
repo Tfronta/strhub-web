@@ -1115,7 +1115,26 @@ export default function MixProfilesDemo({
               {t("mixProfiles.charts.ngsTitle")}
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed pt-0.5 max-w-none">
-              {t("mixProfiles.ngs.disclaimer")}{" "}
+              {/* Link the word "STRNaming" (same in en/es/pt) straight to the tool. */}
+              {(() => {
+                const text = t("mixProfiles.ngs.disclaimer");
+                const [before, after] = text.split("STRNaming");
+                if (after === undefined) return text;
+                return (
+                  <>
+                    {before}
+                    <a
+                      href="https://fdstools.nl/strnaming/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2 hover:text-primary/80"
+                    >
+                      STRNaming
+                    </a>
+                    {after}
+                  </>
+                );
+              })()}{" "}
               <a
                 href="https://www.fsigenetics.com/article/S1872-4973(23)00121-7/fulltext"
                 target="_blank"

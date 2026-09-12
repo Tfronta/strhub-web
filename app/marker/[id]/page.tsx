@@ -866,8 +866,9 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         </div>
                       )}
                     <div className="space-y-1">
-                      <Label className="text-xs font-normal text-muted-foreground">
+                      <Label className="inline-flex items-center gap-1 text-xs font-normal text-muted-foreground">
                         {t("marker.alleleRange")}
+                        <InfoTip term="alleleRange" />
                       </Label>
                       <p className="text-sm font-normal text-foreground">
                         {computedAlleleRange}

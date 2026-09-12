@@ -70,6 +70,7 @@ import {
   DEFAULT_MARKER_TOOL_VIEW,
 } from "@/lib/tools";
 import { ToolCardCompact } from "@/components/tools/ToolCardCompact";
+import { InfoTip } from "@/components/InfoTip";
 import { LATAMCatalog, type LatamSubpop } from "@/lib/latamCatalog";
 import { getDatasetConfig } from "./datasetConfig";
 import { cn } from "@/lib/utils";
@@ -739,7 +740,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
               <span className="text-foreground">{marker.chromosome}</span>
             </span>
             <span className="border-l border-border pl-4 font-mono text-foreground">
-              [{marker.motif}]n
+              {marker.motif}
             </span>
             <span className="border-l border-border pl-4 text-muted-foreground">
               {getTranslatedType(marker.type)}
@@ -806,7 +807,6 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
               <Card className="border rounded-md shadow-none bg-card">
                 <CardHeader className="pb-3 px-4">
                   <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                    <Info className="h-4 w-4 text-muted-foreground" />
                     {t("marker.basicInfo")}
                   </CardTitle>
                 </CardHeader>
@@ -835,7 +835,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                         {t("marker.motif")}
                       </Label>
                       <p className="text-sm font-normal font-mono text-foreground">
-                        [{marker.motif}]n
+                        {marker.motif}
                       </p>
                     </div>
                     <div className="space-y-1">
@@ -859,7 +859,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 variant="outline"
                                 className="font-mono text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
                               >
-                                [{motif}]n
+                                {motif}
                               </Badge>
                             ))}
                           </div>
@@ -2071,7 +2071,10 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 {t("marker.alleleDesignation")}
                               </th>
                               <th className="text-left px-3 py-2 text-xs font-semibold text-foreground">
-                                {t("marker.sequence")}
+                                <span className="inline-flex items-center gap-1">
+                                  {t("marker.sequence")}
+                                  <InfoTip term="strbaseSequence" />
+                                </span>
                               </th>
                             </tr>
                           </thead>

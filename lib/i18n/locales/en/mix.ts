@@ -45,7 +45,9 @@ mixProfiles: {
     fullSequenceColumnLabel: "Full Sequence",
     fullSequenceTooltipAria: "Explanation about full amplicon sequence",
     fullSequenceNote:
-      "Complete amplicon haplotype sequence inferred from NGS data, including flanking regions (hg38), repeat region, and internal variants. Total length may differ between alleles even with similar repeat counts.",
+      "Sequence over the ISFG reported range (GRCh38) that STRNaming uses: the repeat region plus its immediate flanks. This is exactly the input that produces the Repeat Sequence name.",
+    strnamingVerifyNote:
+      "To reproduce the name, paste this sequence into STRNaming with the ISFG range:",
     fullSequenceDidacticNote:
       "Flanks do not count toward the CE allele call; the repeat region is what is used for allele calling.",
     isoTooltip:

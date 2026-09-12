@@ -39,6 +39,34 @@ type Props = {
   interpretationThreshold?: number;
 };
 
+// ISFG reported ranges (GRCh38, forward '+' strand) used to generate the
+// STRNaming names. The displayed Full Sequence is exactly this window, so
+// pasting it into STRNaming (fdstools.nl) with this range reproduces the name.
+const ISFG_RANGES: Record<string, string> = {
+  CSF1PO: "chr5:150076318-150076380",
+  D10S1248: "chr10:129294239-129294299",
+  D12S391: "chr12:12297011-12297099",
+  D13S317: "chr13:82148021-82148104",
+  D16S539: "chr16:86352698-86352749",
+  D18S51: "chr18:63281663-63281756",
+  D19S433: "chr19:29926212-29926303",
+  D1S1656: "chr1:230769601-230769687",
+  D21S11: "chr21:19181969-19182105",
+  D22S1045: "chr22:37140283-37140341",
+  D2S1338: "chr2:218014855-218014954",
+  D2S441: "chr2:68011943-68011999",
+  D3S1358: "chr3:45540733-45540807",
+  D5S818: "chr5:123775548-123775603",
+  D7S820: "chr7:84160200-84160281",
+  D8S1179: "chr8:124894859-124894922",
+  FGA: "chr4:154587729-154587827",
+  PentaD: "chr21:43636185-43636282",
+  PentaE: "chr15:96831008-96831044",
+  TH01: "chr11:2171082-2171120",
+  TPOX: "chr2:1489647-1489692",
+  vWA: "chr12:5983954-5984049",
+};
+
 // Resuelve una CSS var a color real (rgb/hex). Intenta varias vars por si una no existe.
 function resolveThemeColor(fallback: string): string {
   if (typeof window === "undefined") return fallback;
@@ -355,6 +383,23 @@ export default function NGSChart({
                       <p className="text-xs">
                         {t("mixProfiles.ngs.fullSequenceNote")}
                       </p>
+                      {locusId && ISFG_RANGES[locusId] ? (
+                        <p className="text-xs mt-2">
+                          {t("mixProfiles.ngs.strnamingVerifyNote")}{" "}
+                          <span className="font-mono">
+                            {ISFG_RANGES[locusId]}
+                          </span>{" "}
+                          (GRCh38, + strand) —{" "}
+                          <a
+                            href="https://fdstools.nl/strnaming/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline"
+                          >
+                            fdstools.nl/strnaming
+                          </a>
+                        </p>
+                      ) : null}
                     </TooltipContent>
                   </UITooltip>
                 </div>

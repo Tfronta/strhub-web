@@ -27,6 +27,15 @@ export type LocusRecord = {
   left_flank_in_full2?: string;
   right_flank_in_full1?: string;
   right_flank_in_full2?: string;
+  // Exact STRNaming input over the ISFG reported range (forward, reads in the
+  // naming orientation) plus the repeat-region offsets within it. This is the
+  // sequence that reproduces bracketed{idx} on STRNaming with the ISFG range.
+  isfg_seq1?: string;
+  isfg_seq2?: string;
+  isfg_repeat_start0_1?: number;
+  isfg_repeat_start0_2?: number;
+  isfg_repeat_end0_1?: number;
+  isfg_repeat_end0_2?: number;
   coverage1?: number;
   coverage2?: number;
   [key: string]: unknown;

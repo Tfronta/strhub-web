@@ -45,7 +45,9 @@ mixProfiles: {
     fullSequenceColumnLabel: "Secuencia completa",
     fullSequenceTooltipAria: "Explicación sobre la secuencia completa del amplicón",
     fullSequenceNote:
-      "Secuencia completa del haplotipo del amplicón inferida a partir de datos NGS, incluyendo regiones flanqueadoras (hg38), región repetitiva y variantes internas. Alelos con números similares de repeticiones pueden presentar longitudes totales diferentes.",
+      "Secuencia sobre el rango reportado ISFG (GRCh38) que usa STRNaming: la región repetitiva más sus flancos inmediatos. Es exactamente el input que produce el nombre de Repeat Sequence.",
+    strnamingVerifyNote:
+      "Para reproducir el nombre, pegá esta secuencia en STRNaming con el rango ISFG:",
     fullSequenceDidacticNote:
       "Los flancos no cuentan para el alelo CE; la región repetitiva es la utilizada para el llamado del alelo.",
     isoTooltip:

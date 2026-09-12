@@ -45,7 +45,9 @@ mixProfiles: {
     fullSequenceColumnLabel: "Sequência completa",
     fullSequenceTooltipAria: "Explicação sobre a sequência completa do amplicon",
     fullSequenceNote:
-      "Sequência completa do haplótipo do amplicon inferida a partir de dados NGS, incluindo regiões flanqueadoras (hg38), região repetitiva e variantes internas. Alelos com números semelhantes de repetições podem apresentar comprimentos totais diferentes.",
+      "Sequência no intervalo reportado ISFG (GRCh38) usado pelo STRNaming: a região repetitiva mais os flancos imediatos. É exatamente a entrada que produz o nome em Repeat Sequence.",
+    strnamingVerifyNote:
+      "Para reproduzir o nome, cole esta sequência no STRNaming com o intervalo ISFG:",
     fullSequenceDidacticNote:
       "Os flancos não contam para o alelo CE; a região repetitiva é a utilizada para a chamada do alelo.",
     isoTooltip:

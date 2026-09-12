@@ -1,0 +1,86 @@
+// Single source of truth for STR nomenclature glossary terms.
+// Used by the <InfoTip> component (short, on-hover definitions) and, when the
+// Foundations article is published, deep-linked to its glossary section.
+//
+// Keep definitions short (1-2 lines): they render inside a tooltip.
+
+import type { Language } from "@/lib/translations";
+
+export type GlossaryTermKey =
+  | "ceAllele"
+  | "mpsAllele"
+  | "strnamingName"
+  | "minimumRange"
+  | "kitRange"
+  | "lengthAdjustment"
+  | "isoallele"
+  | "coreRepeat"
+  | "flankingRegion"
+  | "strbaseSequence";
+
+type Entry = { term: string; short: string; anchor: string };
+
+export const NOMENCLATURE_GLOSSARY: Record<GlossaryTermKey, Record<Language, Entry>> = {
+  ceAllele: {
+    en: { term: "CE allele", anchor: "ce-allele", short: "Length-based allele number from capillary electrophoresis (fragment size). The traditional, kit-independent designation, e.g. 8 or 9.3." },
+    es: { term: "Alelo CE", anchor: "ce-allele", short: "Número de alelo por longitud (electroforesis capilar). La designación tradicional, independiente del kit, ej. 8 o 9.3." },
+    pt: { term: "Alelo CE", anchor: "ce-allele", short: "Número de alelo por comprimento (eletroforese capilar). A designação tradicional, independente do kit, ex. 8 ou 9.3." },
+  },
+  mpsAllele: {
+    en: { term: "Sequence-based (MPS) allele", anchor: "mps-allele", short: "Allele defined by its actual sequence, not only length. Two alleles of the same CE size can differ in sequence." },
+    es: { term: "Alelo por secuencia (MPS)", anchor: "mps-allele", short: "Alelo definido por su secuencia real, no solo por longitud. Dos alelos del mismo tamaño CE pueden diferir en secuencia." },
+    pt: { term: "Alelo por sequência (MPS)", anchor: "mps-allele", short: "Alelo definido pela sua sequência real, não só pelo comprimento. Dois alelos do mesmo tamanho CE podem diferir na sequência." },
+  },
+  strnamingName: {
+    en: { term: "STRNaming name", anchor: "strnaming-name", short: "Standardized sequence allele name: CE<n>_ plus the repeat structure in MOTIF[n] blocks, plus any sequence variants." },
+    es: { term: "Nombre STRNaming", anchor: "strnaming-name", short: "Nombre estandarizado del alelo por secuencia: CE<n>_ más la estructura en bloques MOTIF[n], más las variantes de secuencia." },
+    pt: { term: "Nome STRNaming", anchor: "strnaming-name", short: "Nome padronizado do alelo por sequência: CE<n>_ mais a estrutura em blocos MOTIF[n], mais as variantes de sequência." },
+  },
+  minimumRange: {
+    en: { term: "ISFG minimum range", anchor: "minimum-range", short: "The minimum genomic window the ISFG 2024 recommendations define for reporting a locus. It is the region common to all kits, so names stay comparable. STRhub reports on it." },
+    es: { term: "ISFG minimum range", anchor: "minimum-range", short: "La ventana genómica mínima que la recomendación ISFG 2024 define para reportar un locus. Es la región común a todos los kits, así los nombres son comparables. STRhub reporta sobre ella." },
+    pt: { term: "ISFG minimum range", anchor: "minimum-range", short: "A janela genômica mínima que a recomendação ISFG 2024 define para reportar um locus. É a região comum a todos os kits, mantendo os nomes comparáveis. O STRhub reporta sobre ela." },
+  },
+  kitRange: {
+    en: { term: "Kit range", anchor: "kit-range", short: "The window a specific MPS kit actually sequences. It varies by kit and usually differs from the minimum range, so raw kit output can look longer or shorter." },
+    es: { term: "Kit range", anchor: "kit-range", short: "La ventana que realmente secuencia un kit MPS. Varía por kit y suele diferir del minimum range, por eso la salida cruda puede verse más larga o corta." },
+    pt: { term: "Kit range", anchor: "kit-range", short: "A janela que um kit MPS realmente sequencia. Varia por kit e costuma diferir do minimum range, por isso a saída bruta pode parecer maior ou menor." },
+  },
+  lengthAdjustment: {
+    en: { term: "Length adjustment", anchor: "length-adjustment", short: "A fixed per-locus offset (historical ladder calibration) that makes the CE number differ from the raw block count, e.g. vWA subtracts 5 repeats." },
+    es: { term: "Length adjustment", anchor: "length-adjustment", short: "Un offset fijo por locus (calibración histórica de la escalera) que hace que el número CE difiera del conteo crudo de bloques, ej. vWA resta 5 repeticiones." },
+    pt: { term: "Length adjustment", anchor: "length-adjustment", short: "Um deslocamento fixo por locus (calibração histórica da escada) que faz o número CE diferir da contagem bruta de blocos, ex. vWA subtrai 5 repetições." },
+  },
+  isoallele: {
+    en: { term: "Isoallele", anchor: "isoallele", short: "Two alleles with the same CE number but a different sequence within the reported range." },
+    es: { term: "Isoalelo", anchor: "isoallele", short: "Dos alelos con el mismo número CE pero secuencia distinta dentro del rango reportado." },
+    pt: { term: "Isoalelo", anchor: "isoallele", short: "Dois alelos com o mesmo número CE mas sequência diferente dentro do intervalo reportado." },
+  },
+  coreRepeat: {
+    en: { term: "Core repeat region", anchor: "core-repeat", short: "The run of repeat units that defines the allele. Only these count toward the allele designation." },
+    es: { term: "Región core de repetición", anchor: "core-repeat", short: "El bloque de repeticiones que define el alelo. Solo estas cuentan para la designación." },
+    pt: { term: "Região core de repetição", anchor: "core-repeat", short: "O bloco de repetições que define o alelo. Apenas estas contam para a designação." },
+  },
+  flankingRegion: {
+    en: { term: "Flanking region", anchor: "flanking-region", short: "Sequence just outside the core repeat. It is not counted in the allele size, but it can carry variants named by position." },
+    es: { term: "Región flanqueante", anchor: "flanking-region", short: "Secuencia justo por fuera del core. No cuenta para el tamaño del alelo, pero puede llevar variantes nombradas por posición." },
+    pt: { term: "Região flanqueadora", anchor: "flanking-region", short: "Sequência logo fora do core. Não conta para o tamanho do alelo, mas pode carregar variantes nomeadas por posição." },
+  },
+  strbaseSequence: {
+    en: { term: "STRbase sequence", anchor: "mps-allele", short: "Full allele sequences catalogued by STRbase (NIST), reported over STRbase's own sequence window, which can differ from the ISFG minimum range used for STRNaming names. Ranges can vary between databases, so compare alleles with the sequence range in mind." },
+    es: { term: "Secuencia STRbase", anchor: "mps-allele", short: "Secuencias completas del alelo catalogadas por STRbase (NIST), reportadas sobre la ventana propia de STRbase, que puede diferir del ISFG minimum range que usan los nombres STRNaming. Los rangos pueden variar entre bases de datos, así que compará los alelos teniendo en cuenta el rango de secuencia." },
+    pt: { term: "Sequência STRbase", anchor: "mps-allele", short: "Sequências completas do alelo catalogadas pelo STRbase (NIST), reportadas sobre a janela do próprio STRbase, que pode diferir do ISFG minimum range usado pelos nomes STRNaming. Os intervalos podem variar entre bases de dados, então compare os alelos considerando o intervalo de sequência." },
+  },
+};
+
+// Foundations article that will host the full glossary. Flip
+// GLOSSARY_ARTICLE_PUBLISHED to true (and confirm the slug) once the Contentful
+// article exists, so the "learn more" link appears in tooltips and deep-links
+// to each term anchor.
+export const GLOSSARY_ARTICLE_SLUG = "str-sequence-nomenclature";
+export const GLOSSARY_ARTICLE_PUBLISHED = false;
+
+export function glossaryArticleHref(language: Language, anchor?: string): string {
+  const base = `/basics/${language}/${GLOSSARY_ARTICLE_SLUG}`;
+  return anchor ? `${base}#${anchor}` : base;
+}

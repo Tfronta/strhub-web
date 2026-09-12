@@ -531,7 +531,10 @@ export default function NGSChart({
                     </span>
                   </td>
                   <td className="px-2.5 py-2 text-left font-mono text-xs break-words align-top">
-                    {r.repeatSequence && r.repeatSequence !== "—" ? (
+                    {/* Only present a real STRNaming name (CE<n>_...) as such.
+                        A bare bracketed pattern must never appear under the
+                        "Copy STRNaming name" action. */}
+                    {r.repeatSequence && /^CE[\d.]+_/.test(r.repeatSequence) ? (
                       <div className="flex items-start gap-1.5">
                         <CopyButton
                           text={r.repeatSequence}

@@ -1012,8 +1012,10 @@ export function cePeaksToNGSRowsWithSeq(
           ? variantsForAllele[i % variantsForAllele.length]
           : null
         if (variant) {
-          repeatSequence = variant.repeatSequence ?? '—'
-          fullSequence = variant.fullSequence ?? '—'
+          // Only fall back for the full DNA sequence. The catalog `pattern` is a
+          // STRbase bracketed string, NOT a STRNaming name, so it must not
+          // populate the STRNaming "Repeat Sequence" column.
+          if (fullSequence === '—') fullSequence = variant.fullSequence ?? '—'
           isIsoallele = variant.isIsoallele || (copiesNeeded > 1 && i > 0)
         }
       }

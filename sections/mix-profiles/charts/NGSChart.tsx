@@ -104,9 +104,10 @@ const ISFG_BLOCK_CLASS: Record<string, string> = {
   "2": "bg-amber-500/25 text-amber-950 dark:text-amber-100 rounded",
 };
 
-// Derive ISFG (2023 STRNaming) block label "MOTIF[N]" from a clean repeat-block
-// string. NOTE: 2023 format is MOTIF[N] (e.g. GGAT[3]), NOT the deprecated 2016
-// [MOTIF]N. See ISFG 2023 recommendations (FSI Genetics, fsigen.2023.102946).
+// Derive the ISFG STRNaming block label "MOTIF[N]" from a clean repeat-block
+// string. NOTE: the current format is MOTIF[N] (e.g. GGAT[3]), NOT the
+// deprecated 2016 [MOTIF]N. See the ISFG 2024 recommendations (FSI Genetics 68,
+// fsigen.2023.102946).
 function isfgBlockLabel(seq: string): string {
   for (let u = 1; u <= seq.length; u++) {
     if (seq.length % u === 0) {

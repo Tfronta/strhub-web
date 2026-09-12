@@ -479,95 +479,62 @@ fastaGeneratorPage: {
 },
 motifExplorerPage: {
   title: "Explorador de Motivos STR",
-  subtitle: "Visualize motivos repetitivos STR canônicos e interrupções para marcadores selecionados.",
-  header: {
-    backLink: "← Voltar ao STRhub",
-  },
-  fields: {
-    marker: {
-      label: "Marcador STR",
-    },
-    viewMode: {
-      sequence: "Destaque de sequência",
-      schematic: "Esquema de motivo",
-      text: "Descrição do motivo",
-    },
-  },
-  cards: {
-    configuration: {
-      title: "Configuração",
-      kitLabel: "Kit / sequência de referência",
-      markerPlaceholder: "Selecione um marcador",
-      kitPlaceholder: "Selecione um kit",
-      emptyState: "Selecione um marcador no painel de configuração.",
-    },
-    visualization: {
-      title: "Explorando a estrutura de {marker}",
-    },
-  },
-  states: {
-    noSequence: "O modo de destaque de sequência não está disponível para este marcador.",
+  subtitle:
+    "Esta seção ajuda a entender a estrutura interna de cada marcador STR ao longo da sequência do genoma de referência HG38, sobre o ISFG minimum range. Mostra que nem todo locus é uma sequência contínua do seu motivo canônico, e destaca a complexidade dos loci compostos e interrompidos.",
+  visualizationTitle: "Estrutura de {marker}",
+  configuration: {
+    title: "Configuração",
+    markerLabel: "Marcador STR",
+    rangeLabel: "Destacar intervalo",
+    allRanges: "Todos os intervalos",
+    emptyState: "Selecione um marcador no painel de configuração.",
   },
   help: {
     general:
-      "Exibe a sequência completa do alelo STR com flancos, unidades repetitivas e variantes internas destacadas.",
+      "Escolha um marcador para ver sua sequência de referência sobre o ISFG minimum range e seu motivo canônico de repetição.",
   },
   scientificNote:
-    "Nota científica: Apenas o bloco contínuo de repetições canônicas contribui para a designação do alelo. Cópias semelhantes ao motivo nos flancos ou interrupções são indicativos visuais e não alteram o tamanho do alelo.",
+    "Nota sobre nomenclatura: STRNaming e as recomendações ISFG reportam a estrutura de repetição sobre o minimum range. O bracketing histórico de 2016 costumava ser definido sobre uma janela mais ampla (STRbase / NIST), por isso ambos podem parecer diferentes para o mesmo alelo.",
   sourceLabel: "Fonte",
-  sourceButtonLabel: "Abrir publicação original",
-  labels: {
-    canonicalPattern: "Padrão repetitivo canônico:",
+  sourceButtonLabel: "Abrir STRidER",
+  marker: {
+    ce: "Equivalente CE",
+    minimumRange: "ISFG minimum range",
+    strand: "Fita",
   },
-  legend: {
-    repeat: "Unidade repetitiva",
-    interruption: "Interrupção / variante interna",
-    other: "Outro / elemento esquemático",
-    flank: "Região flanqueadora",
-    flankingMotifLike:
-      "Unidade do motivo na região flanqueadora, excluída da nomenclatura do alelo.",
+  canonical: {
+    title: "STRNaming Formatted ISFG Minimum Range for Common Alleles (2024 onward)",
+    altForms: "Outras formas válidas",
+    variant: "Variante de sequência",
   },
-  summary: {
-    caption:
-      "Resumo da estrutura repetitiva: unidades repetitivas são mostradas como MOTIF[n]; 'flank' marca regiões não repetitivas.",
+  historical: {
+    title: "GRCh38 Historical bracketing (2016-2023)",
+    none: "Não disponível",
   },
-  explanation: {
-    generic: "",
+  sequence: {
+    title: "Sequência de referência (ISFG minimum range)",
+    note: "Os blocos verdes são as unidades canônicas de repetição sobre o minimum range. Os blocos âmbar são interrupções ou variantes internas. As bases cinzas são a sequência flanqueadora residual dentro da janela reportada e não contam para o alelo.",
+    legendRepeat: "Unidade de repetição",
+    legendMinorRepeat: "Repetição secundária (minúscula)",
+    legendInterruption: "Interrupção / variante interna",
+    legendFlank: "Região flanqueadora",
+    flankMotifLabel: "Unidade de motivo na região flanqueadora, excluída da chamada de alelo.",
+    repeatTooltip: "Repetição canônica que conta para o tamanho do alelo.",
+    minorRepeatTooltip: "Bloco de repetição secundário / variante: repete, mas não é o motivo principal que nomeia o alelo.",
+    interruptionTooltip: "Interrupção / variante interna; não soma repetições.",
+    flankTooltip: "Sequência flanqueadora, não conta para o alelo.",
+    phaseNote:
+      "A estrutura da sequência (repeat, interrupção, flanco) segue o Forensic Sequence Structure Guide do STRidER (FSSG v6.1); o nome ISFG / STRNaming acima é uma vista complementar, não uma reimplementação das regras de nomenclatura. Esta seção será atualizada conforme o STRidER e o guia oficial de nomenclatura ISFG forem revisados.",
+    notAligned:
+      "Este locus tem uma estrutura complexa que não encaixa de forma limpa; a sequência é mostrada sem coloração por unidade. O bracketing canônico acima continua sendo a referência.",
   },
-  sequenceInterpretationTitle: "Como interpretar a sequência acima?",
-  sequenceExample: {
-    tooltip: {
-      repeat: "Motivo repetitivo (ocorrência do motivo canônico; ver nota abaixo)",
-      flank: "Região flanqueadora — não conta para o alelo",
-      interruption: "Interrupção / variante interna dentro da região repetitiva",
-    },
-    note: "Observação: nem toda ocorrência do motivo repetitivo é contabilizada para o tamanho do alelo. Apenas o bloco repetitivo central definido pela estrutura do motivo contribui para a designação do alelo.",
-  },
-  sequenceSection: {
-    representativeTitle:
-      "Estrutura interna representativa do alelo {allele} ({kit})",
-    note:
-      "Observação: Apenas o bloco contínuo de repetições canônicas contribui para a designação do alelo. Cópias semelhantes ao motivo fora desse bloco não são contabilizadas no tamanho do alelo.",
-    structureLabel: "Estrutura",
-    flankLabel: "flanco",
-    legendTitle: "Legenda:",
-  },
-  tooltipsShort: {
-    repeat: "Repetição canônica que conta para o tamanho do alelo.",
-    internal: "Variação interna no bloco repetitivo; não adiciona repetições.",
-    flanking: "Região flanqueadora",
-    flankingMotifLike:
-      "Unidade do motivo na região flanqueadora, excluída da nomenclatura do alelo.",
-  },
-  tooltipsLong: {
-    repeat:
-      "Estas repetições canônicas compõem o tamanho do alelo. Cada repetição contínua contribui integralmente para a designação do alelo.",
-    internal:
-      "Interrupções ou inserções dentro do bloco repetitivo são úteis para nomenclatura por sequência, mas não aumentam a contagem de repetições.",
-    flanking:
-      "As regiões flanqueadoras delimitam o lócus STR. Elas ajudam no desenho do ensaio, porém não são contabilizadas no tamanho do alelo.",
-    flankingMotifLike:
-      "Unidade do motivo na região flanqueadora, excluída da nomenclatura do alelo.",
+  kits: {
+    title: "Intervalos de kits vs o minimum range",
+    minimumRangeLabel: "ISFG minimum range",
+    note: "Os kits MPS costumam sequenciar uma janela mais ampla que o ISFG minimum range, por isso o mesmo alelo pode parecer maior ou menor na saída bruta enquanto seu nome STRNaming permanece comparável.",
+    clipped: "Estende-se além da janela de referência armazenada.",
+    empty: "Não há informação de intervalos de kits para este marcador.",
+    bp: "pb",
   },
 },
 } as const

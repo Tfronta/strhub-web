@@ -478,94 +478,62 @@ fastaGeneratorPage: {
 },
 motifExplorerPage: {
   title: "STR Motif Explorer",
-  subtitle: "Visualize canonical STR repeat motifs and interruptions for selected markers.",
-  header: {
-    backLink: "← Back to STRhub",
-  },
-  fields: {
-    marker: {
-      label: "STR Marker",
-    },
-    viewMode: {
-      sequence: "Sequence highlight",
-      schematic: "Motif schematic",
-      text: "Motif description",
-    },
-  },
-  cards: {
-    configuration: {
-      title: "Configuration",
-      kitLabel: "Kit / reference sequence",
-      markerPlaceholder: "Select a marker",
-      kitPlaceholder: "Select a kit",
-      emptyState: "Please select a marker from the configuration panel.",
-    },
-    visualization: {
-      title: "Exploring the structure of {marker}",
-    },
-  },
-  states: {
-    noSequence: "Sequence highlight mode is not available for this marker.",
+  subtitle:
+    "This section helps you understand the internal structure of each STR marker along the HG38 reference sequence, over the ISFG minimum range. It shows that not every locus is a continuous run of its canonical motif, and highlights the complexity of compound and interrupted loci.",
+  visualizationTitle: "Structure of {marker}",
+  configuration: {
+    title: "Configuration",
+    markerLabel: "STR marker",
+    rangeLabel: "Highlight range",
+    allRanges: "All ranges",
+    emptyState: "Please select a marker from the configuration panel.",
   },
   help: {
     general:
-      "Displays the full STR allele sequence with flanking regions, repeat units, and internal variants highlighted.",
+      "Pick a marker to see its reference sequence over the ISFG minimum range and its canonical repeat motif.",
   },
   scientificNote:
-    "Scientific note: Only the uninterrupted canonical repeat block contributes to the allele designation. Motif-like copies in the flanks or interruptions are visual cues and do not change the allele size.",
+    "Naming note: STRNaming and the ISFG recommendations report the repeat structure over the minimum range. Older 2016 bracketing was often defined over a wider window (STRbase / NIST), so the two can look different for the same allele.",
   sourceLabel: "Source",
-  sourceButtonLabel: "Open original publication",
-  labels: {
-    canonicalPattern: "Canonical repeat pattern:",
+  sourceButtonLabel: "Open STRidER",
+  marker: {
+    ce: "CE equivalent",
+    minimumRange: "ISFG minimum range",
+    strand: "Strand",
   },
-  legend: {
-    repeat: "Repeat unit",
-    interruption: "Interruption / internal variant",
-    other: "Other / schematic element",
-    flank: "Flanking region",
-    flankingMotifLike: "Motif unit in flanking region, excluded from allele calling.",
+  canonical: {
+    title: "STRNaming Formatted ISFG Minimum Range for Common Alleles (2024 onward)",
+    altForms: "Other valid forms",
+    variant: "Sequence variant",
   },
-  summary: {
-    caption:
-      "Summary of repeat structure: repeat units are shown as MOTIF[n]; 'flank' marks non-repetitive regions.",
+  historical: {
+    title: "GRCh38 Historical bracketing (2016-2023)",
+    none: "Not available",
   },
-  explanation: {
-    generic: "",
+  sequence: {
+    title: "Reference sequence (ISFG minimum range)",
+    note: "Green blocks are the canonical repeat units over the minimum range. Amber blocks are interruptions or internal variants. Grey bases are the residual flanking sequence inside the reported window and are not counted toward the allele.",
+    legendRepeat: "Repeat unit",
+    legendMinorRepeat: "Secondary repeat (lowercase)",
+    legendInterruption: "Interruption / internal variant",
+    legendFlank: "Flanking region",
+    flankMotifLabel: "Motif unit in flanking region, excluded from allele calling.",
+    repeatTooltip: "Canonical repeat that counts toward the allele size.",
+    minorRepeatTooltip: "Secondary / variant repeat block: it repeats, but it is not the primary motif that names the allele.",
+    interruptionTooltip: "Interruption / internal variant; does not add repeats.",
+    flankTooltip: "Flanking sequence, not counted toward the allele.",
+    phaseNote:
+      "The sequence structure (repeat, interruption, flank) follows STRidER's Forensic Sequence Structure Guide (FSSG v6.1); the ISFG / STRNaming name above is a complementary view, not a re-implementation of the naming rules. This section will be updated as STRidER and the official ISFG nomenclature guidance are revised.",
+    notAligned:
+      "This locus has a complex structure that does not tile cleanly; the sequence is shown without per-unit coloring. The canonical bracketing above remains authoritative.",
   },
-  sequenceInterpretationTitle: "How to interpret the sequence above?",
-  sequenceExample: {
-    tooltip: {
-      repeat: "Repeat motif (occurrence of the canonical motif; see note below)",
-      flank: "Flanking region — not counted",
-      interruption: "Interruption / internal variant inside the repeat region",
-    },
-    note: "Note: Not every occurrence of the repeat motif is counted for the allele size. Only the core repeat block defined by the motif structure contributes to the allele designation.",
-  },
-  sequenceSection: {
-    representativeTitle:
-      "Representative internal sequence structure of allele {allele} ({kit})",
-    note:
-      "Note: Only the core continuous repeat block contributes to the allele designation. Additional motif-like copies outside this block are not counted in the allele size.",
-    structureLabel: "Structure",
-    flankLabel: "flank",
-    legendTitle: "Legend:",
-  },
-  tooltipsShort: {
-    repeat: "Canonical repeat that counts toward the allele size.",
-    internal: "Internal variant inside the repeat block; does not add repeats.",
-    flanking: "Flanking region",
-    flankingMotifLike:
-      "Motif unit in flanking region, excluded from allele calling.",
-  },
-  tooltipsLong: {
-    repeat:
-      "These canonical repeats make up the allele size. Each uninterrupted repeat contributes fully to the allele designation.",
-    internal:
-      "Interruptions or insertions occur within the repeat block. They are informative for sequence-based alleles but do not increase the repeat count.",
-    flanking:
-      "Flanking regions are upstream or downstream DNA that frame the STR locus. They stabilize the assay but are not counted toward the allele.",
-    flankingMotifLike:
-      "Motif unit in flanking region, excluded from allele calling.",
+  kits: {
+    title: "Kit ranges vs the minimum range",
+    minimumRangeLabel: "ISFG minimum range",
+    note: "MPS kits usually sequence a wider window than the ISFG minimum range, so the same allele can look longer or shorter in raw kit output while its STRNaming name stays comparable.",
+    clipped: "Extends beyond the stored reference window.",
+    empty: "No kit range information for this marker.",
+    bp: "bp",
   },
 },
 } as const

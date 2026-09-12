@@ -17,7 +17,9 @@ export type GlossaryTermKey =
   | "coreRepeat"
   | "flankingRegion"
   | "strbaseSequence"
-  | "alleleRange";
+  | "alleleRange"
+  | "canonicalMotif"
+  | "historicalMotif";
 
 type Entry = { term: string; short: string; anchor: string };
 
@@ -76,6 +78,16 @@ export const NOMENCLATURE_GLOSSARY: Record<GlossaryTermKey, Record<Language, Ent
     en: { term: "Allele range", anchor: "ce-allele", short: "The range of allele sizes (length-based, CE) reported for this marker. It reflects the alleles seen in the reference data and can vary by population and kit, so treat it as typical rather than an absolute limit." },
     es: { term: "Rango de alelos", anchor: "ce-allele", short: "El rango de tamaños de alelo (por longitud, CE) reportado para este marcador. Refleja los alelos vistos en los datos de referencia y puede variar por población y kit, así que tomalo como típico y no como un límite absoluto." },
     pt: { term: "Faixa de alelos", anchor: "ce-allele", short: "A faixa de tamanhos de alelo (por comprimento, CE) reportada para este marcador. Reflete os alelos vistos nos dados de referência e pode variar por população e kit, então trate-a como típica e não como um limite absoluto." },
+  },
+  canonicalMotif: {
+    en: { term: "Canonical motif (2024)", anchor: "canonical-motif", short: "The repeat structure of the ISFG minimum range written in STRNaming (2024) format as MOTIF[n] blocks. This is the current standard bracketing and can differ from older schemes." },
+    es: { term: "Motivo canónico (2024)", anchor: "canonical-motif", short: "La estructura de repetición del ISFG minimum range en formato STRNaming (2024), como bloques MOTIF[n]. Es el bracketing estándar actual y puede diferir de esquemas anteriores." },
+    pt: { term: "Motivo canônico (2024)", anchor: "canonical-motif", short: "A estrutura de repetição do ISFG minimum range no formato STRNaming (2024), como blocos MOTIF[n]. É o bracketing padrão atual e pode diferir de esquemas anteriores." },
+  },
+  historicalMotif: {
+    en: { term: "Historical bracketing (2016)", anchor: "historical-motif", short: "The 2016-2023 bracketing (STRbase / NIST style, e.g. [AATG]8), often defined over a wider window than the ISFG minimum range. Shown for continuity with legacy reports." },
+    es: { term: "Bracketing histórico (2016)", anchor: "historical-motif", short: "El bracketing 2016-2023 (estilo STRbase / NIST, ej. [AATG]8), a menudo definido sobre una ventana más ancha que el ISFG minimum range. Se muestra para continuidad con reportes previos." },
+    pt: { term: "Bracketing histórico (2016)", anchor: "historical-motif", short: "O bracketing 2016-2023 (estilo STRbase / NIST, ex. [AATG]8), muitas vezes definido sobre uma janela mais ampla que o ISFG minimum range. Mostrado para continuidade com relatórios anteriores." },
   },
 };
 

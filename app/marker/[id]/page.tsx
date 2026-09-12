@@ -2071,9 +2071,6 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                                 {t("marker.alleleDesignation")}
                               </th>
                               <th className="text-left px-3 py-2 text-xs font-semibold text-foreground">
-                                {t("marker.strNaming")}
-                              </th>
-                              <th className="text-left px-3 py-2 text-xs font-semibold text-foreground">
                                 {t("marker.sequence")}
                               </th>
                             </tr>
@@ -2090,9 +2087,6 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                               >
                                 <td className="px-3 py-2 font-mono font-normal text-xs text-foreground">
                                   {seq.allele}
-                                </td>
-                                <td className="px-3 py-2 text-xs font-normal text-foreground">
-                                  {seq.pattern || "—"}
                                 </td>
                                 <td className="px-3 py-2">
                                   <div className="font-mono text-xs font-normal break-all leading-relaxed text-foreground">
@@ -2114,12 +2108,10 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           const csvContent = [
                             [
                               t("marker.alleleDesignation"),
-                              t("marker.strNaming"),
                               t("marker.sequence"),
                             ],
                             ...marker.sequences.map((seq) => [
                               seq.allele,
-                              seq.pattern || "",
                               seq.sequence,
                             ]),
                           ]

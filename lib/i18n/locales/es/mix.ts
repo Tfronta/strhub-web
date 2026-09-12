@@ -32,6 +32,13 @@ mixProfiles: {
       "Haplotipos individuales inferidos a partir de datos NGS de lecturas cortas Illumina mediante software especializado de genotipado de STRs (HipSTR, hg38), mostrados únicamente con fines educativos. Las secuencias de la región repetida siguen las recomendaciones de nomenclatura de secuencia de STRs de la ISFG (vía STRNaming).",
     isfgLinkText: "Leer el paper original",
     copySequence: "Copiar secuencia completa",
+    copyRepeat: "Copiar nombre STRNaming",
+    ceExplainAria: "Por qué la suma de repeticiones difiere del número de alelo",
+    ceExplainTitle: "¿Por qué sumar las repeticiones no siempre da el número de alelo?",
+    ceExplainBody:
+      "El número de alelo (CE) es la designación clásica por longitud. En algunos loci incluye un desfase fijo que viene de cómo se calibraron las escaleras alélicas originales. En vWA, por ejemplo, los 19 bloques de repetición menos 5 dan CE 14. STRNaming reporta el número CE junto con la estructura completa de la secuencia.",
+    ceExplainPaperLink: "Leé la explicación completa en el paper original",
+    ceExplainToolLink: "Probalo en STRNaming",
     copiedSequence: "Copiado",
     tableAllele: "Alelo",
     tableCoverage: "PDP",
@@ -44,7 +51,9 @@ mixProfiles: {
     fullSequenceColumnLabel: "Secuencia completa",
     fullSequenceTooltipAria: "Explicación sobre la secuencia completa del amplicón",
     fullSequenceNote:
-      "Secuencia completa del haplotipo del amplicón inferida a partir de datos NGS, incluyendo regiones flanqueadoras (hg38), región repetitiva y variantes internas. Alelos con números similares de repeticiones pueden presentar longitudes totales diferentes.",
+      "Secuencia sobre el rango reportado ISFG (GRCh38) que usa STRNaming: la región repetitiva más sus flancos inmediatos. Es exactamente el input que produce el nombre de Repeat Sequence.",
+    strnamingVerifyNote:
+      "Para reproducir el nombre, pegá esta secuencia en STRNaming con el rango ISFG:",
     fullSequenceDidacticNote:
       "Los flancos no cuentan para el alelo CE; la región repetitiva es la utilizada para el llamado del alelo.",
     isoTooltip:

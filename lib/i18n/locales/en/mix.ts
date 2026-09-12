@@ -32,6 +32,13 @@ mixProfiles: {
       "Individual haplotypes inferred from Illumina short-read NGS data using specialized STR genotyping software (HipSTR, hg38), displayed for educational purposes only. Repeat-region sequences follow the ISFG STR sequence nomenclature recommendations (via STRNaming).",
     isfgLinkText: "Read the original paper",
     copySequence: "Copy full sequence",
+    copyRepeat: "Copy STRNaming name",
+    ceExplainAria: "Why the repeat count differs from the allele number",
+    ceExplainTitle: "Why doesn't adding up the repeats always give the allele?",
+    ceExplainBody:
+      "The allele number (CE) is the classic length-based designation. At some loci it includes a fixed offset that comes from how the original allelic ladders were calibrated. For vWA, for example, the 19 repeat blocks minus 5 give CE 14. STRNaming reports the CE number together with the full sequence structure.",
+    ceExplainPaperLink: "Read the full explanation in the original paper",
+    ceExplainToolLink: "Try it in STRNaming",
     copiedSequence: "Copied",
     tableAllele: "Allele",
     tableCoverage: "PDP",
@@ -44,7 +51,9 @@ mixProfiles: {
     fullSequenceColumnLabel: "Full Sequence",
     fullSequenceTooltipAria: "Explanation about full amplicon sequence",
     fullSequenceNote:
-      "Complete amplicon haplotype sequence inferred from NGS data, including flanking regions (hg38), repeat region, and internal variants. Total length may differ between alleles even with similar repeat counts.",
+      "Sequence over the ISFG reported range (GRCh38) that STRNaming uses: the repeat region plus its immediate flanks. This is exactly the input that produces the Repeat Sequence name.",
+    strnamingVerifyNote:
+      "To reproduce the name, paste this sequence into STRNaming with the ISFG range:",
     fullSequenceDidacticNote:
       "Flanks do not count toward the CE allele call; the repeat region is what is used for allele calling.",
     isoTooltip:

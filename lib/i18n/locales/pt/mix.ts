@@ -32,6 +32,13 @@ mixProfiles: {
       "Haplótipos individuais inferidos a partir de dados NGS de leituras curtas Illumina usando software especializado de genotipagem de STRs (HipSTR, hg38), exibidos apenas para fins educacionais. As sequências da região repetida seguem as recomendações de nomenclatura de sequência de STRs da ISFG (via STRNaming).",
     isfgLinkText: "Ler o artigo original",
     copySequence: "Copiar sequência completa",
+    copyRepeat: "Copiar nome STRNaming",
+    ceExplainAria: "Por que a soma das repetições difere do número do alelo",
+    ceExplainTitle: "Por que somar as repetições nem sempre dá o alelo?",
+    ceExplainBody:
+      "O número do alelo (CE) é a designação clássica por comprimento. Em alguns loci inclui um deslocamento fixo que vem da calibração das escadas alélicas originais. No vWA, por exemplo, os 19 blocos de repetição menos 5 dão CE 14. O STRNaming reporta o número CE junto com a estrutura completa da sequência.",
+    ceExplainPaperLink: "Leia a explicação completa no paper original",
+    ceExplainToolLink: "Experimente no STRNaming",
     copiedSequence: "Copiado",
     tableAllele: "Alelo",
     tableCoverage: "PDP",
@@ -44,7 +51,9 @@ mixProfiles: {
     fullSequenceColumnLabel: "Sequência completa",
     fullSequenceTooltipAria: "Explicação sobre a sequência completa do amplicon",
     fullSequenceNote:
-      "Sequência completa do haplótipo do amplicon inferida a partir de dados NGS, incluindo regiões flanqueadoras (hg38), região repetitiva e variantes internas. Alelos com números semelhantes de repetições podem apresentar comprimentos totais diferentes.",
+      "Sequência no intervalo reportado ISFG (GRCh38) usado pelo STRNaming: a região repetitiva mais os flancos imediatos. É exatamente a entrada que produz o nome em Repeat Sequence.",
+    strnamingVerifyNote:
+      "Para reproduzir o nome, cole esta sequência no STRNaming com o intervalo ISFG:",
     fullSequenceDidacticNote:
       "Os flancos não contam para o alelo CE; a região repetitiva é a utilizada para a chamada do alelo.",
     isoTooltip:

@@ -29,7 +29,7 @@ import {
   shouldShowIsoBadgeOnMinorRow,
   ISOALLELE_MIN_COVERAGE,
 } from "@/lib/strFormatting";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 
 type Props = {
   bars: NGSChartBar[];
@@ -37,6 +37,34 @@ type Props = {
   locusId?: string;
   analyticalThreshold?: number;
   interpretationThreshold?: number;
+};
+
+// ISFG reported ranges (GRCh38, forward '+' strand) used to generate the
+// STRNaming names. The displayed Full Sequence is exactly this window, so
+// pasting it into STRNaming (fdstools.nl) with this range reproduces the name.
+const ISFG_RANGES: Record<string, string> = {
+  CSF1PO: "chr5:150076318-150076380",
+  D10S1248: "chr10:129294239-129294299",
+  D12S391: "chr12:12297011-12297099",
+  D13S317: "chr13:82148021-82148104",
+  D16S539: "chr16:86352698-86352749",
+  D18S51: "chr18:63281663-63281756",
+  D19S433: "chr19:29926212-29926303",
+  D1S1656: "chr1:230769601-230769687",
+  D21S11: "chr21:19181969-19182105",
+  D22S1045: "chr22:37140283-37140341",
+  D2S1338: "chr2:218014855-218014954",
+  D2S441: "chr2:68011943-68011999",
+  D3S1358: "chr3:45540733-45540807",
+  D5S818: "chr5:123775548-123775603",
+  D7S820: "chr7:84160200-84160281",
+  D8S1179: "chr8:124894859-124894922",
+  FGA: "chr4:154587729-154587827",
+  PentaD: "chr21:43636185-43636282",
+  PentaE: "chr15:96831008-96831044",
+  TH01: "chr11:2171082-2171120",
+  TPOX: "chr2:1489647-1489692",
+  vWA: "chr12:5983954-5984049",
 };
 
 // Resuelve una CSS var a color real (rgb/hex). Intenta varias vars por si una no existe.
@@ -89,20 +117,49 @@ function isfgBlockLabel(seq: string): string {
   return seq;
 }
 
-// Render a MOTIF[n] bracketed string with at most 3 repeat blocks per line.
+// Render a STRNaming allele name: "CE<n>_MOTIF[a]MOTIF[b]..._<variant>...".
+// The visible text is the exact STRNaming string (no spaces inserted), kept on
+// one line so the column sizes to the whole name. The CE prefix and any
+// trailing "_<variant>" edits are muted; the repeat structure stays prominent.
 function renderRepeatBlocks(s: string) {
-  const blocks = s.trim().split(/\s+/).filter(Boolean);
-  if (blocks.length <= 1) return s;
-  const lines: string[] = [];
-  for (let i = 0; i < blocks.length; i += 3) {
-    lines.push(blocks.slice(i, i + 3).join(" "));
+  const str = s.trim();
+  if (!str) return str;
+
+  // STRNaming format: CE<n>_<structure>[_<variant>...]
+  const m = str.match(/^(CE[\d.]+)_(.*)$/);
+  if (!m) {
+    return <span className="whitespace-nowrap">{str}</span>;
   }
-  return lines.map((ln, i) => <div key={i}>{ln}</div>);
+  const [, ce, rest] = m;
+  const segments = rest.split("_");
+  const structure = segments[0] ?? "";
+  const variants = segments.slice(1).filter(Boolean);
+
+  return (
+    <span className="whitespace-nowrap leading-relaxed">
+      <span className="text-muted-foreground">{ce}_</span>
+      {structure}
+      {variants.length > 0 ? (
+        <span className="text-muted-foreground">
+          {variants.map((v) => `_${v}`).join("")}
+        </span>
+      ) : null}
+    </span>
+  );
 }
 
-// Discreet button to copy the complete sequence string to the clipboard.
-function CopyButton({ text, t }: { text: string; t: (key: string) => string }) {
+// Discreet button to copy a sequence/name string to the clipboard.
+function CopyButton({
+  text,
+  t,
+  label,
+}: {
+  text: string;
+  t: (key: string) => string;
+  label?: string;
+}) {
   const [copied, setCopied] = useState(false);
+  const idleLabel = label ?? t("mixProfiles.ngs.copySequence");
   return (
     <button
       type="button"
@@ -114,12 +171,8 @@ function CopyButton({ text, t }: { text: string; t: (key: string) => string }) {
         });
       }}
       className="shrink-0 mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded text-muted-foreground hover:text-foreground transition-colors"
-      aria-label={t("mixProfiles.ngs.copySequence")}
-      title={
-        copied
-          ? t("mixProfiles.ngs.copiedSequence")
-          : t("mixProfiles.ngs.copySequence")
-      }
+      aria-label={idleLabel}
+      title={copied ? t("mixProfiles.ngs.copiedSequence") : idleLabel}
     >
       {copied ? (
         <Check className="h-3.5 w-3.5 text-emerald-600" />
@@ -127,6 +180,28 @@ function CopyButton({ text, t }: { text: string; t: (key: string) => string }) {
         <Copy className="h-3.5 w-3.5" />
       )}
     </button>
+  );
+}
+
+// Compact horizontal-scroll viewport for a full sequence, with a copy button.
+// Keeps the wide amplicon out of the layout: the cell stays narrow and the
+// sequence scrolls sideways, while the copy button yields the complete string.
+function ScrollSeq({
+  copyText,
+  t,
+  children,
+}: {
+  copyText: string;
+  t: (key: string) => string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex items-start gap-1.5">
+      <CopyButton text={copyText} t={t} />
+      <div className="min-w-0 flex-1 overflow-x-auto pb-2 [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/30">
+        <span className="whitespace-nowrap">{children}</span>
+      </div>
+    </div>
   );
 }
 
@@ -255,7 +330,7 @@ export default function NGSChart({
     <div className="space-y-4">
       {/* Tabla */}
       <div className="overflow-x-auto rounded-xl border">
-        <table className="w-full min-w-[46rem] text-sm table-fixed">
+        <table className="w-full min-w-[38rem] text-sm">
           <thead className="bg-muted/40">
             <tr>
               <th className="px-2.5 py-2 text-center w-20">
@@ -284,10 +359,53 @@ export default function NGSChart({
                   </UITooltip>
                 </div>
               </th>
-              <th className="px-2.5 py-2 text-left w-52">
-                {t("mixProfiles.ngs.tableRepeatSequence")}
-              </th>
               <th className="px-2.5 py-2 text-left">
+                <div className="flex items-center gap-1">
+                  {t("mixProfiles.ngs.tableRepeatSequence")}
+                  <UITooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        className="inline-flex items-center justify-center rounded-full h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label={t("mixProfiles.ngs.ceExplainAria")}
+                      >
+                        <Info className="h-3.5 w-3.5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent className="w-max max-w-sm">
+                      {/* Hook: why the repeat count and the CE allele differ. */}
+                      <p className="text-xs font-semibold">
+                        {t("mixProfiles.ngs.ceExplainTitle")}
+                      </p>
+                      <p className="text-xs mt-1">
+                        {t("mixProfiles.ngs.ceExplainBody")}
+                      </p>
+                      <p className="text-xs mt-2">
+                        <a
+                          href="https://www.fsigenetics.com/article/S1872-4973(23)00121-7/fulltext"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline"
+                        >
+                          {t("mixProfiles.ngs.ceExplainPaperLink")}
+                        </a>
+                        {" · "}
+                        <a
+                          href="https://fdstools.nl/strnaming/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline"
+                        >
+                          {t("mixProfiles.ngs.ceExplainToolLink")}
+                        </a>
+                      </p>
+                      {/* TODO: once the Foundations article exists, add a link to
+                          https://strhub.app/basics here (mixProfiles.ngs.ceExplainBasicsLink). */}
+                    </TooltipContent>
+                  </UITooltip>
+                </div>
+              </th>
+              <th className="px-2.5 py-2 text-left w-full">
                 <div className="flex items-center gap-1">
                   {t("mixProfiles.ngs.fullSequenceColumnLabel")}
                   <UITooltip>
@@ -306,6 +424,23 @@ export default function NGSChart({
                       <p className="text-xs">
                         {t("mixProfiles.ngs.fullSequenceNote")}
                       </p>
+                      {locusId && ISFG_RANGES[locusId] ? (
+                        <p className="text-xs mt-2">
+                          {t("mixProfiles.ngs.strnamingVerifyNote")}{" "}
+                          <span className="font-mono">
+                            {ISFG_RANGES[locusId]}
+                          </span>{" "}
+                          (GRCh38, + strand).{" "}
+                          <a
+                            href="https://fdstools.nl/strnaming/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline"
+                          >
+                            fdstools.nl/strnaming
+                          </a>
+                        </p>
+                      ) : null}
                     </TooltipContent>
                   </UITooltip>
                 </div>
@@ -396,13 +531,27 @@ export default function NGSChart({
                     </span>
                   </td>
                   <td className="px-2.5 py-2 text-left font-mono text-xs break-words align-top">
-                    {r.repeatSequence && r.repeatSequence !== "—"
-                      ? renderRepeatBlocks(r.repeatSequence)
-                      : motif
-                        ? formatMicrovariant(String(r.allele), motif)
-                        : "—"}
+                    {/* Only present a real STRNaming name (CE<n>_...) as such.
+                        A bare bracketed pattern must never appear under the
+                        "Copy STRNaming name" action. */}
+                    {r.repeatSequence && /^CE[\d.]+_/.test(r.repeatSequence) ? (
+                      <div className="flex items-start gap-1.5">
+                        <CopyButton
+                          text={r.repeatSequence}
+                          t={t}
+                          label={t("mixProfiles.ngs.copyRepeat")}
+                        />
+                        <div className="min-w-0">
+                          {renderRepeatBlocks(r.repeatSequence)}
+                        </div>
+                      </div>
+                    ) : motif ? (
+                      formatMicrovariant(String(r.allele), motif)
+                    ) : (
+                      "—"
+                    )}
                   </td>
-                  <td className="px-2.5 py-2 text-left font-mono text-xs break-words">
+                  <td className="px-2.5 py-2 text-left font-mono text-xs align-top">
                     {(() => {
                       const raw = String(r.fullSequence ?? "").trim();
                       const segs = r.fullSequenceSegments;
@@ -421,7 +570,13 @@ export default function NGSChart({
                           segs.flank3 != null)
                       ) {
                         return (
-                          <span className="inline">
+                          <ScrollSeq
+                            copyText={
+                              raw ||
+                              `${segs.flank5 ?? ""}${segs.repeat ?? ""}${segs.flank3 ?? ""}`
+                            }
+                            t={t}
+                          >
                             {segs.flank5 != null && segs.flank5.length > 0 ? (
                               <TooltipProvider>
                                 <UITooltip>
@@ -470,7 +625,7 @@ export default function NGSChart({
                                 </UITooltip>
                               </TooltipProvider>
                             ) : null}
-                          </span>
+                          </ScrollSeq>
                         );
                       }
                       const { continuous, repeatStart, repeatEnd } =
@@ -481,7 +636,7 @@ export default function NGSChart({
                         repeatEnd != null &&
                         repeatStart < repeatEnd;
                       return (
-                        <span className="inline">
+                        <ScrollSeq copyText={continuous} t={t}>
                           {hasHighlight ? (
                             <>
                               {continuous.slice(0, repeatStart!).length > 0 ? (
@@ -541,7 +696,7 @@ export default function NGSChart({
                           ) : (
                             continuous
                           )}
-                        </span>
+                        </ScrollSeq>
                       );
                     })()}
                   </td>

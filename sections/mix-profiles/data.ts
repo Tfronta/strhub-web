@@ -971,18 +971,14 @@ export function cePeaksToNGSRowsWithSeq(
           const alleleNum = useFirst ? 1 : 2
           // Prefer the exact STRNaming input (ISFG reported-range window): this
           // is the sequence that reproduces repeatSequence on STRNaming, so the
-          // displayed Full Sequence and the STRNaming name are consistent.
+          // displayed Full Sequence and the STRNaming name are consistent. Its
+          // isfgSegments give the per-block colouring + MOTIF[N] hover tooltips.
           const isfgSeq = useFirst ? entry.isfg_seq1 : entry.isfg_seq2
           if (isfgSeq) {
             fullSequence = isfgSeq
-            const rs0 = (useFirst ? entry.isfg_repeat_start0_1 : entry.isfg_repeat_start0_2) ?? 0
-            const re0 = (useFirst ? entry.isfg_repeat_end0_1 : entry.isfg_repeat_end0_2) ?? isfgSeq.length
-            fullSequenceSegments = {
-              flank5: rs0 > 0 ? isfgSeq.slice(0, rs0) : undefined,
-              repeat: isfgSeq.slice(rs0, re0),
-              flank3: re0 < isfgSeq.length ? isfgSeq.slice(re0) : undefined,
-            }
-            isfgSegments = undefined
+            isfgSegments = (useFirst
+              ? (entry as { isfgSegments1?: Array<{ t: string; c: string }> }).isfgSegments1
+              : (entry as { isfgSegments2?: Array<{ t: string; c: string }> }).isfgSegments2) ?? undefined
           } else {
             isfgSegments = (useFirst
               ? (entry as { isfgSegments1?: Array<{ t: string; c: string }> }).isfgSegments1

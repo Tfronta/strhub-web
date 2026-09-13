@@ -322,9 +322,11 @@ export function GlobalHeader() {
                 <NavigationMenuItem key={entry.labelKey}>
                   <NavigationMenuTrigger
                     className={cn(
-                      "h-9 bg-transparent px-3 text-base font-medium text-foreground",
-                      "hover:bg-transparent hover:text-primary focus:bg-transparent focus:text-primary",
-                      "data-[state=open]:bg-transparent data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:text-primary",
+                      // Every state stays transparent: the default trigger paints
+                      // bg-accent (teal) with the same teal text on open/focus.
+                      "h-9 px-3 text-base font-medium !bg-transparent text-foreground",
+                      "hover:text-primary focus:text-primary active:text-primary",
+                      "data-[state=open]:text-primary",
                       groupIsActive(pathname, entry.items) && "text-primary"
                     )}
                   >
@@ -338,7 +340,10 @@ export function GlobalHeader() {
                             <Link
                               href={item.href}
                               className={cn(
-                                "flex items-start gap-3 rounded-md px-3 py-2.5 transition-colors hover:bg-muted focus:bg-muted",
+                                // Row layout and neutral hover: the default link is
+                                // flex-col with bg-accent + white text on hover.
+                                "flex flex-row items-start gap-3 rounded-md px-3 py-2.5 transition-colors",
+                                "text-foreground hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground",
                                 isActive(pathname, item.href) && "bg-muted/60"
                               )}
                             >
@@ -349,7 +354,7 @@ export function GlobalHeader() {
                                 />
                               )}
                               <span className="flex flex-col gap-0.5">
-                                <span className="text-sm font-medium leading-none">
+                                <span className="text-sm font-medium leading-none text-foreground">
                                   {t(item.labelKey)}
                                 </span>
                                 {item.descriptionKey && (

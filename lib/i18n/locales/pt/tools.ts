@@ -217,10 +217,9 @@ tools: {
     dataIntegrationMid: "para visualização genômica interativa e dados de alinhamento de amostras do",
     dataIntegrationPost: "Os arquivos BAM/BAI de demonstração são recursos de dados abertos, utilizados aqui para fins educacionais e de pesquisa.",
     genomesLabel: "Projeto 1000 Genomas",
-    openDataTag: "IGV · Projeto 1000 Genomas (dados abertos)",
     igvStatusLabel: "Status do IGV:",
     igvStatusReady: "Pronto",
-    igvStatusIdle: "Inativo (clique em Iniciar Visualizador IGV)",
+    igvStatusIdle: "Não iniciado",
     igvErrorAlert: "O IGV não pôde ser carregado. Verifique o console do navegador para detalhes.",
   },
   commands: {

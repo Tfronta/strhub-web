@@ -8,7 +8,7 @@ import { VerifiedList } from "@/components/verified/verified-list";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "STRhub Verified — Reproducible-execution attestations",
+  title: { absolute: "STRhub Verified: reproducible-execution attestations" },
   description:
     "Independent, automated attestations that forensic STR tools install and run end-to-end, producing plausible output — verified on public source at a pinned commit.",
 };

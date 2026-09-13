@@ -837,6 +837,7 @@ export default function MixProfilesDemo({
                         min={0}
                         max={100}
                         step={0.5}
+                        aria-label={`${t("mixProfiles.contributor", { label: contributor.label })} %`}
                         className="flex-1 rounded-md border px-2 py-1 text-sm focus:outline-hidden focus:ring-2 focus:ring-ring"
                         value={contributor.proportion}
                         onChange={(event) =>
@@ -875,6 +876,7 @@ export default function MixProfilesDemo({
                   min={0}
                   step={5}
                   className="mt-2 w-full rounded-md border px-2 py-1 text-sm"
+                  aria-label={t("mixProfiles.parameters.at")}
                   value={AT}
                   onChange={(e) => setAT(Number(e.target.value))}
                 />
@@ -898,6 +900,7 @@ export default function MixProfilesDemo({
                   min={0}
                   step={10}
                   className="mt-2 w-full rounded-md border px-2 py-1 text-sm"
+                  aria-label={t("mixProfiles.parameters.st")}
                   value={IT}
                   onChange={(e) => setIT(Number(e.target.value))}
                 />
@@ -922,6 +925,7 @@ export default function MixProfilesDemo({
                   max={0.03}
                   step={0.001}
                   className="mt-2 w-full rounded-md border px-2 py-1 text-sm"
+                  aria-label={t("mixProfiles.parameters.degradationK")}
                   value={kDeg}
                   onChange={(e) => setKDeg(Number(e.target.value))}
                 />
@@ -945,6 +949,7 @@ export default function MixProfilesDemo({
                   min={0}
                   step={1}
                   className="mt-2 w-full rounded-md border px-2 py-1 text-sm"
+                  aria-label={t("mixProfiles.parameters.noiseBase")}
                   value={noise}
                   onChange={(e) => setNoise(Number(e.target.value))}
                 />
@@ -969,6 +974,7 @@ export default function MixProfilesDemo({
                   max={2.0}
                   step={0.1}
                   className="mt-2 w-full rounded-md border px-2 py-1 text-sm"
+                  aria-label={t("mixProfiles.parameters.stutterLevel")}
                   value={stutterScale}
                   onChange={(e) => setStutterScale(Number(e.target.value))}
                 />

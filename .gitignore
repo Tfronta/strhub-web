@@ -15,7 +15,7 @@ yarn-error.log*
 pnpm-debug.log*
 package-lock.json
 yarn.lock
-pnpm-lock.yaml
+# pnpm-lock.yaml is tracked on purpose: pnpm is the package manager and Vercel installs from it.
 
 # Editor folders and settings
 .vscode/
@@ -70,3 +70,6 @@ yarn-error.log*
 next-env.d.ts.DS_Store
 
 /plans
+
+# Claude Code local session data
+.claude/

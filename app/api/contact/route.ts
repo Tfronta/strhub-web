@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "contentful-management";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
+
+// 5 messages per hour per client, 60 per hour overall.
+const CONTACT_MAX_PER_CLIENT = 5;
+const CONTACT_MAX_GLOBAL = 60;
+const CONTACT_WINDOW_MS = 60 * 60 * 1000;
+const MAX_BODY_BYTES = 8 * 1024;
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,8 +25,42 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
-    const { name, email, subject, message } = body;
+    const rawBody = await request.text();
+    if (rawBody.length > MAX_BODY_BYTES) {
+      return NextResponse.json({ error: "Request too large" }, { status: 413 });
+    }
+
+    const ip = clientIp(request);
+    const perClient = rateLimit(`contact:${ip}`, CONTACT_MAX_PER_CLIENT, CONTACT_WINDOW_MS);
+    const global = perClient.ok
+      ? rateLimit("contact:global", CONTACT_MAX_GLOBAL, CONTACT_WINDOW_MS)
+      : perClient;
+    if (!perClient.ok || !global.ok) {
+      const retry = perClient.ok ? global.retryAfterSeconds : perClient.retryAfterSeconds;
+      return NextResponse.json(
+        { error: "Too many messages. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(retry) } }
+      );
+    }
+
+    let body: Record<string, unknown>;
+    try {
+      body = JSON.parse(rawBody);
+      if (!body || typeof body !== "object") throw new Error("not an object");
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    }
+
+    // Honeypot: real users never fill this field. Answer as if it succeeded so
+    // bots do not learn they were filtered.
+    if (typeof body.website === "string" && body.website.trim() !== "") {
+      return NextResponse.json({ success: true }, { status: 201 });
+    }
+
+    const name = typeof body.name === "string" ? body.name.trim() : "";
+    const email = typeof body.email === "string" ? body.email.trim() : "";
+    const subject = typeof body.subject === "string" ? body.subject.trim() : "";
+    const message = typeof body.message === "string" ? body.message.trim() : "";
 
     // Validate required fields
     if (!name || !email || !subject || !message) {
@@ -94,18 +135,10 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
-    console.error("Error creating contact entry:", error);
-    
-    // Handle Contentful-specific errors
-    if (error.response?.data) {
-      return NextResponse.json(
-        { error: error.response.data.message || "Failed to create contact entry" },
-        { status: error.response.status || 500 }
-      );
-    }
-
+    // Log details server-side only; never echo Contentful's error to the client.
+    console.error("Error creating contact entry:", error?.message || error);
     return NextResponse.json(
-      { error: error.message || "Failed to create contact entry" },
+      { error: "Failed to send the message. Please try again later." },
       { status: 500 }
     );
   }

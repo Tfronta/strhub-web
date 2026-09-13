@@ -49,10 +49,10 @@ export default function HomePageClient() {
       <section className="relative py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10" />
         <div className="container mx-auto text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
             {t("home.subtitle")}{" "}
             <span className="text-gradient">Short Tandem Repeats</span> (STRs)
-          </h2>
+          </h1>
           <p className="text-lg md:text-xl text-muted-foreground/80 mb-2 max-w-3xl mx-auto">
             {t("home.tagline")}
           </p>
@@ -87,9 +87,9 @@ export default function HomePageClient() {
       {/* Explore STRhub Section */}
       <section className="py-16 px-4 bg-muted/30">
         <div className="container mx-auto">
-          <h3 className="text-3xl font-bold text-center mb-12">
+          <h2 className="text-3xl font-bold text-center mb-12">
             {t("home.exploreSectionTitle")}
-          </h3>
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* 1. Back to Basics */}
             <Link href="/basics">
@@ -234,9 +234,9 @@ export default function HomePageClient() {
       {/* Platform Features */}
       <section className="py-16 px-4">
         <div className="container mx-auto">
-          <h3 className="text-3xl font-bold text-center mb-12">
+          <h2 className="text-3xl font-bold text-center mb-12">
             {t("home.featuresSectionTitle")}
-          </h3>
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* 1. Integrated STR Database */}
             <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 h-full">

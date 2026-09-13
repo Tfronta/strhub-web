@@ -21,7 +21,7 @@ export async function generateMetadata({
   if (!report) return { title: "STRhub Verified" };
   const repoName = report.source?.repo?.replace(/\/+$/, "").split("/").pop();
   return {
-    title: `${repoName || report.tool.name} — STRhub Verified`,
+    title: { absolute: `${repoName || report.tool.name} | STRhub Verified` },
     description: report.scope,
   };
 }

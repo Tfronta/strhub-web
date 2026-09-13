@@ -94,11 +94,6 @@ export const COMMUNITY_CONTRIBUTORS: CommunityContributor[] = [
     institutionKey: "walther_parson",
     country: "Austria",
   },
-  {
-    name: "Celso Teixeira Mendes Junior",
-    institutionKey: "ffclrp_usp",
-    country: "Brazil",
-  },
 ];
 
 /** Shown first, same row (md+), left to right. Must match `name` in `COMMUNITY_CONTRIBUTORS`. */
@@ -114,7 +109,6 @@ const COMMUNITY_CONTRIBUTORS_SECOND_ROW_NAMES: readonly string[] = [
   "Katherine Butler Gettings",
   "Walther Parson",
   "Jonathan King",
-  "Celso Teixeira Mendes Junior",
 ];
 
 export function getCommunityContributorsForGrid(): {

@@ -217,10 +217,9 @@ tools: {
     dataIntegrationMid: "library for interactive genomic visualization and sample alignment data from the",
     dataIntegrationPost: "Demo BAM/BAI files are open data resources, used here for educational and research purposes.",
     genomesLabel: "1000 Genomes Project",
-    openDataTag: "IGV · 1000 Genomes Project (open data)",
     igvStatusLabel: "IGV status:",
     igvStatusReady: "Ready",
-    igvStatusIdle: "Idle (click Launch IGV Viewer)",
+    igvStatusIdle: "Not started",
     igvErrorAlert: "IGV could not load. Check browser console for details.",
   },
   commands: {

@@ -438,7 +438,30 @@ export default function IgvViewerPage() {
           {/* Viewer */}
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle>{t("tools.igvViewer.viewerTitle")}</CardTitle>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <CardTitle>{t("tools.igvViewer.viewerTitle")}</CardTitle>
+                {/* Viewer state, announced to assistive tech when it changes. */}
+                <span
+                  role="status"
+                  aria-live="polite"
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${
+                    igvLoaded
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-300"
+                      : "border-border bg-muted text-muted-foreground"
+                  }`}
+                >
+                  <span
+                    aria-hidden
+                    className={`h-1.5 w-1.5 rounded-full ${
+                      igvLoaded ? "bg-emerald-500" : "bg-muted-foreground/60"
+                    }`}
+                  />
+                  {t("tools.igvViewer.igvStatusLabel")}{" "}
+                  {igvLoaded
+                    ? t("tools.igvViewer.igvStatusReady")
+                    : t("tools.igvViewer.igvStatusIdle")}
+                </span>
+              </div>
             </CardHeader>
             <CardContent className="p-0">
               <div className="border rounded-xl overflow-visible">
@@ -473,16 +496,6 @@ export default function IgvViewerPage() {
                     (internationalgenome.org)
                   </a>
                   . {t("tools.igvViewer.dataIntegrationPost")}
-                </p>
-                <p className="mt-1 text-[11px] text-muted-foreground">
-                  {t("tools.igvViewer.openDataTag")}
-                </p>
-                <p className="mt-1 text-[11px] text-muted-foreground">
-                  {t("tools.igvViewer.igvStatusLabel")}{" "}
-                  {igvLoaded
-                    ? t("tools.igvViewer.igvStatusReady")
-                    : t("tools.igvViewer.igvStatusIdle")}
-                  .
                 </p>
               </div>
             </CardContent>

@@ -6,7 +6,9 @@ import {
   ExternalLink,
   FlaskConical,
   Github,
+  Lightbulb,
   Mail,
+  Microscope,
   MessageSquare,
   Share2,
 } from "lucide-react";
@@ -94,11 +96,8 @@ export default function AboutPage() {
             {/* Project lead */}
             <Card className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 py-0">
               <CardContent className="flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-start sm:gap-5">
-                <div
-                  className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground"
-                  aria-hidden
-                >
-                  TF
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary">
+                  <Lightbulb className="h-5 w-5 text-primary-foreground" aria-hidden />
                 </div>
                 <div className="min-w-0 flex-1 space-y-1.5">
                   <p className="text-xs font-semibold uppercase tracking-wide text-primary">
@@ -139,16 +138,21 @@ export default function AboutPage() {
 
             {/* Academic support */}
             <Card className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 py-0">
-              <CardContent className="px-5 py-4 space-y-1">
-                <p className="text-lg font-bold text-foreground leading-snug">
-                  {t("about.people.supportName")}
-                </p>
-                <p className="text-sm leading-snug text-muted-foreground">
-                  {t("about.people.affiliation")}. {t("about.people.country")}
-                </p>
-                <p className="pt-1 text-sm leading-relaxed text-muted-foreground">
-                  {t("about.people.supportBio")}
-                </p>
+              <CardContent className="flex gap-4 px-5 py-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary">
+                  <Microscope className="h-5 w-5 text-primary-foreground" aria-hidden />
+                </div>
+                <div className="min-w-0 space-y-1">
+                  <p className="text-lg font-bold text-foreground leading-snug">
+                    {t("about.people.supportName")}
+                  </p>
+                  <p className="text-sm leading-snug text-muted-foreground">
+                    {t("about.people.affiliation")}. {t("about.people.country")}
+                  </p>
+                  <p className="pt-1 text-sm leading-relaxed text-muted-foreground">
+                    {t("about.people.supportBio")}
+                  </p>
+                </div>
               </CardContent>
             </Card>
             </div>

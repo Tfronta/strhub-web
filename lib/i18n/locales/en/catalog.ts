@@ -110,6 +110,7 @@ globalFrequencies: {
   selectPopulationsToView: "Please select at least one population to view frequencies.",
   selectMarker: "Select Marker",
   selectMarkerPlaceholder: "Select a marker...",
+  openMarkerPage: "Open marker page",
   searchMarkers: "Search markers...",
   datasetInfo: "Dataset Information",
   datasetName: "Dataset Name",

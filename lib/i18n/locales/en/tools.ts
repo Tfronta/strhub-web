@@ -432,6 +432,9 @@ fastaGeneratorPage: {
     allelesPlaceholder: "e.g. 10-12 or 9,10,11",
     flankingLabel: "Flanking Region (bp per side)",
     outputLabel: "Output Type",
+    referenceLabel: "Reference genome",
+    referenceHint: "Flanking sequence is cut from the plus strand of this assembly.",
+    comingSoon: "coming soon",
     generateButton: "Generate Sequence",
   },
   output: {
@@ -441,6 +444,7 @@ fastaGeneratorPage: {
       'Select a marker and click "Generate Sequence" to begin',
     copyButton: "Copy",
     downloadButton: "Download FASTA",
+    referenceLine: "Reference: {build}, plus strand. Exported window: {region}. Verified against UCSC {ucsc}.",
   },
   messages: {
     enterAlleles: "Please enter alleles (e.g. 10-12 or 9,10,11)",

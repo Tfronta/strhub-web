@@ -15,14 +15,35 @@ function requireBase() {
   return BASE.replace(/\/+$/, "") + "/"; // asegura una sola barra final
 }
 
+export interface SliceRegion {
+  chrom: string;
+  /** 1-based, inclusive, as written in the slice header. */
+  start: number;
+  end: number;
+  strand: "+" | "-";
+}
+
+/** Parse "CSF1PO_|chr5:150076125-150076575(+)" into its region. */
+export function parseSliceHeader(header: string): SliceRegion | null {
+  const m = header.match(/(chr[0-9XYM]+):(\d+)-(\d+)\(([+-])\)/i);
+  if (!m) return null;
+  return {
+    chrom: m[1],
+    start: Number(m[2]),
+    end: Number(m[3]),
+    strand: m[4] as "+" | "-",
+  };
+}
+
 /**
- * Descarga un archivo FASTA de slice y devuelve { header, seq, url }.
+ * Descarga un archivo FASTA de slice y devuelve { header, seq, url, region }.
  * - `markerName` debe coincidir con el nombre del archivo: <markerName>__slice.fa
- *   Ej: "D21S11" -> .../D21S11__slice.fa
+ *   Ej: "D21S11" -> .../D21S11__slice.fa   (se respeta el caso: "vWA" -> vWA__slice.fa)
+ * - `slicesDir` es el subdirectorio del ensamblado ("" para GRCh38, "GRCh37/", ...).
  */
-export async function fetchSliceFA(markerName: string) {
-  const base = requireBase();
-  const file = `${markerName.toUpperCase()}__slice.fa`;
+export async function fetchSliceFA(markerName: string, slicesDir = "") {
+  const base = requireBase() + slicesDir;
+  const file = `${markerName}__slice.fa`;
   const url = `${base}${file}`;
 
   // Importante para Next.js en cliente/servidor: usar fetch nativo
@@ -48,13 +69,13 @@ export async function fetchSliceFA(markerName: string) {
     console.warn(`[fetchSliceFA] Advertencia: caracteres no-ACGTN detectados en ${file}`);
   }
 
-  return { header, seq, url };
+  return { header, seq, url, region: parseSliceHeader(header) };
 }
 
 /**
  * (Opcional) helper: arma la URL absoluta al slice por si la querés mostrar o linkear.
  */
-export function sliceUrlFor(markerName: string) {
-  const base = requireBase();
+export function sliceUrlFor(markerName: string, slicesDir = "") {
+  const base = requireBase() + slicesDir;
   return `${base}${markerName}__slice.fa`;
 }

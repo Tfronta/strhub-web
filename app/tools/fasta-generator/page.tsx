@@ -23,7 +23,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { parseAlleles, type ExportType } from "@/lib/fasta-export";
-import { generateContentFromSlice } from "@/lib/fasta-export-from-slice";
+import {
+  generateContentFromSlice,
+  type SliceExportInfo,
+} from "@/lib/fasta-export-from-slice";
+import {
+  DEFAULT_REFERENCE_GENOME,
+  getReferenceGenome,
+  REFERENCE_GENOMES,
+  type ReferenceGenomeId,
+} from "@/lib/reference-genomes";
 import { markerData } from "@/lib/markerData";
 import { useLanguage } from "@/contexts/language-context";
 import { translations, type Language } from "@/lib/translations";
@@ -40,6 +49,10 @@ export default function FastaGeneratorPage() {
   const [flankingRegion, setFlankingRegion] = useState("100");
   const [outputFormat, setOutputFormat] = useState<ExportType>("reference");
   const [generatedSequence, setGeneratedSequence] = useState("");
+  const [generatedInfo, setGeneratedInfo] = useState<SliceExportInfo | null>(null);
+  const [referenceGenome, setReferenceGenome] = useState<ReferenceGenomeId>(
+    DEFAULT_REFERENCE_GENOME
+  );
   const { language } = useLanguage();
   const languageContent = translations[language] as (typeof translations)["en"];
   const defaultPageContent = translations.en.fastaGeneratorPage;
@@ -118,16 +131,19 @@ export default function FastaGeneratorPage() {
       const motif: string = data?.motif ?? "[AGAT]n"; // fallback seguro
 
       // 3) Generar a partir del slice (usa detector robusto + normaliza nombre internamente)
-      const { fasta } = await generateContentFromSlice(
-        selectedMarker,
+      const { fasta, info } = await generateContentFromSlice(
+        markerName,
         motif,
         alleles,
         Number(flankingRegion) || 0,
-        outputFormat
+        outputFormat,
+        referenceGenome
       );
 
       setGeneratedSequence(fasta);
+      setGeneratedInfo(info);
     } catch (e: any) {
+      setGeneratedInfo(null);
       setGeneratedSequence(
         `${messages.errorPrefix}: ${e?.message ?? String(e)}`
       );
@@ -143,7 +159,8 @@ export default function FastaGeneratorPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${selectedMarker}_sequence.fasta`;
+    const ext = outputFormat === "tabular" ? "csv" : "fasta";
+    a.download = `${generatedInfo?.marker ?? selectedMarker}_${referenceGenome}.${ext}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -242,6 +259,39 @@ export default function FastaGeneratorPage() {
 
                 <div className="space-y-2">
                   <Label
+                    htmlFor="reference-genome"
+                    className="text-base font-semibold text-foreground"
+                  >
+                    {configContent.referenceLabel}
+                  </Label>
+                  <Select
+                    value={referenceGenome}
+                    onValueChange={(v) => setReferenceGenome(v as ReferenceGenomeId)}
+                  >
+                    <SelectTrigger id="reference-genome" className="h-11 text-base">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {REFERENCE_GENOMES.map((genome) => (
+                        <SelectItem
+                          key={genome.id}
+                          value={genome.id}
+                          disabled={!genome.available}
+                          className="text-base"
+                        >
+                          {genome.label}
+                          {!genome.available && ` (${configContent.comingSoon})`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-sm text-muted-foreground">
+                    {configContent.referenceHint}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label
                     htmlFor="output-format"
                     className="text-base font-semibold text-foreground"
                   >
@@ -301,6 +351,19 @@ export default function FastaGeneratorPage() {
                       className="font-mono text-base min-h-[320px] max-h-[520px] resize-y rounded-xl border border-border bg-gradient-to-br from-background via-muted/40 to-background shadow-inner focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:border-primary/80 transition-colors"
                       placeholder={outputContent.description}
                     />
+                    {generatedInfo && (
+                      <p className="text-sm text-muted-foreground">
+                        {outputContent.referenceLine
+                          .replace("{build}", getReferenceGenome(generatedInfo.build).label)
+                          .replace(
+                            "{region}",
+                            generatedInfo.window
+                              ? `${generatedInfo.window.chrom}:${generatedInfo.window.start.toLocaleString("en-US")}-${generatedInfo.window.end.toLocaleString("en-US")} (${generatedInfo.window.strand})`
+                              : "n/a"
+                          )
+                          .replace("{ucsc}", getReferenceGenome(generatedInfo.build).ucsc)}
+                      </p>
+                    )}
                     <div className="flex flex-wrap gap-2">
                       <Button
                         onClick={copyToClipboard}

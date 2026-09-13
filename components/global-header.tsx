@@ -306,19 +306,19 @@ export function GlobalHeader() {
             {NAV.map((entry) =>
               entry.kind === "link" ? (
                 <NavigationMenuItem key={entry.href}>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      href={entry.href}
-                      className={cn(
-                        // Same as the triggers: the default link paints bg-accent
-                        // on hover/focus, which hides teal text after a click.
-                        "inline-flex h-9 items-center rounded-md px-3 text-base font-medium transition-colors !bg-transparent text-foreground",
-                        "hover:text-primary focus:text-primary active:text-primary data-[active=true]:text-primary",
-                        isActive(pathname, entry.href) && "text-primary"
-                      )}
-                    >
-                      {t(entry.labelKey)}
-                    </Link>
+                  {/* Classes go on NavigationMenuLink (not the child Link) so they
+                      are merged against the component defaults instead of being
+                      appended after them: otherwise its text-sm and bg-accent win. */}
+                  <NavigationMenuLink
+                    asChild
+                    className={cn(
+                      "inline-flex h-9 items-center rounded-md px-3 text-base font-medium transition-colors bg-transparent text-foreground",
+                      "hover:bg-transparent hover:text-primary focus:bg-transparent focus:text-primary active:text-primary",
+                      "data-[active=true]:bg-transparent data-[active=true]:text-primary",
+                      isActive(pathname, entry.href) && "text-primary"
+                    )}
+                  >
+                    <Link href={entry.href}>{t(entry.labelKey)}</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               ) : (
@@ -339,17 +339,17 @@ export function GlobalHeader() {
                     <ul className="grid w-72 gap-1 p-1">
                       {entry.items.map((item) => (
                         <li key={item.href}>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              href={item.href}
-                              className={cn(
-                                // Row layout and neutral hover: the default link is
-                                // flex-col with bg-accent + white text on hover.
-                                "flex flex-row items-start gap-3 rounded-md px-3 py-2.5 transition-colors",
-                                "text-foreground hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground",
-                                isActive(pathname, item.href) && "bg-muted/60"
-                              )}
-                            >
+                          <NavigationMenuLink
+                            asChild
+                            className={cn(
+                              // Row layout and neutral hover: the default link is
+                              // flex-col with bg-accent + white text on hover.
+                              "flex flex-row items-start gap-3 rounded-md px-3 py-2.5 text-sm transition-colors",
+                              "text-foreground hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground",
+                              isActive(pathname, item.href) && "bg-muted/60"
+                            )}
+                          >
+                            <Link href={item.href}>
                               {item.icon && (
                                 <item.icon
                                   className="mt-0.5 h-4 w-4 shrink-0 text-primary"

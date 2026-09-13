@@ -57,6 +57,7 @@ about: {
   support: "Suporte",
 },
 communityHub: {
+  getInvolved: "Participe",
   hero: {
     title: "Conectar, aprender, colaborar",
     subtitle:
@@ -123,6 +124,7 @@ communityHub: {
       angel_carracedo_alvarez: "Universidade de Santiago de Compostela",
       katherine_butler_gettings: "NIST",
       walther_parson: "Medical University of Innsbruck",
+      ffclrp_usp: "FFCLRP, Universidade de São Paulo",
     },
     disclaimer:
       "As pessoas listadas abaixo compartilharam feedback, ideias ou conversas que ajudaram a moldar o STRhub. Esse reconhecimento não significa autoria do conteúdo ou dos materiais do STRhub. Agradecemos.",

@@ -115,7 +115,6 @@ const NAV: NavEntry[] = [
     ],
   },
   { kind: "link", href: "/mix-profiles", labelKey: "nav.mixProfiles" },
-  { kind: "link", href: "/community", labelKey: "nav.blog" },
   { kind: "link", href: "/about", labelKey: "nav.about" },
 ];
 

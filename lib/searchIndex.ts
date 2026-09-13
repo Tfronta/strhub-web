@@ -171,10 +171,10 @@ export function buildSearchIndex(t: (key: string) => string, language: Language 
     },
     {
       id: "community",
-      title: t("nav.blog"),
+      title: t("communityHub.getInvolved"),
       description: t("home.explore.communityHub.description"),
-      tags: ["community", "blog", "news", "updates"],
-      href: "/community",
+      tags: ["community", "discussion", "contribute", "feedback", "github"],
+      href: "/about#get-involved",
     },
     {
       id: "projects",

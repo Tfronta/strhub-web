@@ -311,19 +311,21 @@ export default function HomePageClient() {
             </Card>
 
             {/* 6. Community & Collaboration */}
-            <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/50 h-full">
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
-                  <Users className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <CardTitle>
-                  {t("home.features.communityCollaboration.title")}
-                </CardTitle>
-                <CardDescription>
-                  {t("home.features.communityCollaboration.description")}
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            <Link href="/about#get-involved">
+              <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 h-full">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+                    <Users className="h-6 w-6 text-primary-foreground" />
+                  </div>
+                  <CardTitle>
+                    {t("home.features.communityCollaboration.title")}
+                  </CardTitle>
+                  <CardDescription>
+                    {t("home.features.communityCollaboration.description")}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
           </div>
         </div>
       </section>

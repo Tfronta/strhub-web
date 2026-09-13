@@ -15,6 +15,15 @@ export function middleware(request: NextRequest) {
     url.pathname = LOCALES.has(segment) ? "/basics" : `/basics/en/${segment}`;
     return NextResponse.redirect(url, 308);
   }
+  // Tell the root layout which language this article is in, so <html lang>
+  // matches the URL instead of the visitor's cookie.
+  const article = pathname.match(/^\/basics\/(en|es|pt)\/[^/]+/);
+  if (article) {
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-strhub-locale", article[1]);
+    return NextResponse.next({ request: { headers: requestHeaders } });
+  }
+
   return NextResponse.next();
 }
 

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { ArrowLeft, Check, Minus, ExternalLink, AlertTriangle, Info, XCircle, LifeBuoy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
-import { SiteFooter } from "@/components/site-footer";
 import {
   VERIFIED_LEVELS,
   VERIFIED_GATES,
@@ -1066,7 +1065,6 @@ export function VerifiedDetail({
           </a>
         </p>
       </div>
-      <SiteFooter />
     </div>
   );
 }

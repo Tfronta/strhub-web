@@ -1,11 +1,12 @@
 import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LanguageProvider } from "@/contexts/language-context";
 import type { Language } from "@/lib/translations";
 import { GlobalHeader } from "@/components/global-header";
+import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -92,11 +93,14 @@ export default function RootLayout({
 }>) {
   const cookieStore = cookies();
   const cookieLanguage = cookieStore.get("strhub-language")?.value;
+  // Set by middleware.ts on /basics/<locale>/<slug>: the URL wins over the cookie.
+  const routeLanguage = headers().get("x-strhub-locale");
   const supportedLanguages: Language[] = ["en", "es", "pt"];
-  const initialLanguage =
-    cookieLanguage && supportedLanguages.includes(cookieLanguage as Language)
-      ? (cookieLanguage as Language)
+  const pick = (value: string | null | undefined) =>
+    value && supportedLanguages.includes(value as Language)
+      ? (value as Language)
       : undefined;
+  const initialLanguage = pick(routeLanguage) ?? pick(cookieLanguage);
   const htmlLanguage = initialLanguage ?? "en";
 
   return (
@@ -110,6 +114,7 @@ export default function RootLayout({
               <div className="min-h-screen bg-background flex flex-col">
                 <GlobalHeader />
                 <main className="flex-1">{children}</main>
+                <SiteFooter />
                 <Toaster />
               </div>
             </TooltipProvider>

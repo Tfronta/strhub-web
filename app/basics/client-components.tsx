@@ -7,6 +7,13 @@ import {
   type BackToBasicsPost,
 } from "@/components/back-to-basics/BackToBasicsCard";
 import { Button } from "@/components/ui/button";
+import type { Language } from "@/lib/translations";
+
+type GridProps = {
+  /** Cards rendered on the server for `initialLanguage`. */
+  initialPosts?: BackToBasicsPost[];
+  initialLanguage?: Language;
+};
 
 export function ClientReadTime() {
   const { t } = useLanguage();
@@ -57,14 +64,24 @@ const prioritizePosts = (posts: BackToBasicsPost[]) => {
   });
 };
 
-export function ClientBackToBasicsGrid() {
+export function ClientBackToBasicsGrid({
+  initialPosts,
+  initialLanguage,
+}: GridProps = {}) {
   const { language, t } = useLanguage();
-  const [posts, setPosts] = useState<BackToBasicsPost[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const hasInitial = initialPosts !== undefined;
+  const [posts, setPosts] = useState<BackToBasicsPost[]>(() =>
+    hasInitial ? prioritizePosts(initialPosts) : [],
+  );
+  const [isLoading, setIsLoading] = useState(!hasInitial);
   const [error, setError] = useState<string | null>(null);
   const [refreshIndex, setRefreshIndex] = useState(0);
 
   useEffect(() => {
+    // The server already rendered this language; only refetch on a change.
+    if (hasInitial && refreshIndex === 0 && language === initialLanguage) {
+      return;
+    }
     let isMounted = true;
     const controller = new AbortController();
 
@@ -114,6 +131,7 @@ export function ClientBackToBasicsGrid() {
       isMounted = false;
       controller.abort();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language, refreshIndex]);
 
   const handleRetry = () => setRefreshIndex((value) => value + 1);
@@ -156,14 +174,24 @@ export function ClientBackToBasicsGrid() {
   );
 }
 
-export function ClientCoreConceptsGrid() {
+export function ClientCoreConceptsGrid({
+  initialPosts,
+  initialLanguage,
+}: GridProps = {}) {
   const { language, t } = useLanguage();
-  const [posts, setPosts] = useState<BackToBasicsPost[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const hasInitial = initialPosts !== undefined;
+  const [posts, setPosts] = useState<BackToBasicsPost[]>(() =>
+    hasInitial ? prioritizePosts(initialPosts) : [],
+  );
+  const [isLoading, setIsLoading] = useState(!hasInitial);
   const [error, setError] = useState<string | null>(null);
   const [refreshIndex, setRefreshIndex] = useState(0);
 
   useEffect(() => {
+    // The server already rendered this language; only refetch on a change.
+    if (hasInitial && refreshIndex === 0 && language === initialLanguage) {
+      return;
+    }
     let isMounted = true;
     const controller = new AbortController();
 
@@ -213,6 +241,7 @@ export function ClientCoreConceptsGrid() {
       isMounted = false;
       controller.abort();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language, refreshIndex]);
 
   const handleRetry = () => setRefreshIndex((value) => value + 1);

@@ -61,7 +61,7 @@ communityHub: {
   hero: {
     title: "Conectar, aprender, colaborar",
     subtitle:
-      "O STRhub é utilizado por pesquisadores, estudantes e laboratórios forenses em mais de 7 países. Este espaço existe para fazer perguntas, compartilhar experiências, relatar o que funciona e o que não funciona, e ajudar a construir o que vem a seguir.",
+      "Este espaço existe para fazer perguntas, compartilhar experiências, relatar o que funciona e o que não funciona, e ajudar a construir o que vem a seguir.",
     reality:
       "A análise de STRs com NGS ainda é um campo em desenvolvimento. Nenhuma ferramenta é perfeita, nenhum pipeline é universal. A contribuição mais valiosa que você pode fazer é a sua experiência real: uma pergunta que outros ainda não fizeram, um caso de uso que revela um comportamento inesperado, ou um feedback que torna a plataforma mais útil para todos.",
     cta: "Participar como colaborador(a) inicial",

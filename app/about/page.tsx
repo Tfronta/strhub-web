@@ -205,9 +205,6 @@ export default function AboutPage() {
             <p className="mt-3 text-base leading-relaxed text-muted-foreground">
               {t("communityHub.hero.subtitle")}
             </p>
-            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-              {t("communityHub.hero.reality")}
-            </p>
 
             <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,2fr)]">
               {/* GitHub Discussions */}
@@ -243,9 +240,6 @@ export default function AboutPage() {
                   <CardTitle className="text-2xl">
                     {t("communityHub.howToJoin.title")}
                   </CardTitle>
-                  <CardDescription className="mt-2 text-base leading-relaxed">
-                    {t("communityHub.howToJoin.intro")}
-                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="grid gap-4 sm:grid-cols-3">

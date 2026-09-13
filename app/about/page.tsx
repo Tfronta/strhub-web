@@ -21,6 +21,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
@@ -70,7 +75,7 @@ export default function AboutPage() {
         <PageTitle title={t("about.title")} />
         <div className="space-y-8">
           {/* Mission: short intro, no card, so People is visible without scrolling */}
-          <section className="max-w-4xl">
+          <section>
             <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
               {trans.mission}
             </h2>
@@ -135,10 +140,7 @@ export default function AboutPage() {
             {/* Academic support */}
             <Card className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 py-0">
               <CardContent className="px-5 py-4 space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-                  {t("about.people.support")}
-                </p>
-                <p className="font-bold text-foreground leading-snug">
+                <p className="text-lg font-bold text-foreground leading-snug">
                   {t("about.people.supportName")}
                 </p>
                 <p className="text-sm leading-snug text-muted-foreground">
@@ -152,10 +154,10 @@ export default function AboutPage() {
             </div>
 
             {/* Community contributors */}
-            <h3 className="mt-8 text-lg font-semibold tracking-tight">
+            <h3 className="mt-8 text-xl font-semibold tracking-tight sm:text-2xl">
               {t("communityHub.communityContributors.title")}
             </h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-2 text-base leading-relaxed text-muted-foreground">
               {t("communityHub.communityContributors.subtitle")}{" "}
               {t("communityHub.communityContributors.disclaimer")}
             </p>
@@ -218,58 +220,58 @@ export default function AboutPage() {
               {t("communityHub.hero.subtitle")}
             </p>
 
-            <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,2fr)]">
-              {/* GitHub Discussions */}
-              <Card className="border-0 bg-gradient-to-br from-card to-card/50 flex flex-col">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary">
-                      <Github className="h-5 w-5 text-primary-foreground" aria-hidden />
-                    </div>
-                    <CardTitle className="text-2xl">{t("communityHub.discussion.title")}</CardTitle>
-                  </div>
-                  <CardDescription className="mt-2 text-base leading-relaxed">
-                    {t("communityHub.discussion.body")}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="mt-auto">
-                  <Button className="w-full" asChild>
-                    <a
-                      href={GITHUB_DISCUSSIONS_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Github className="h-4 w-4" aria-hidden />
-                      {t("communityHub.discussion.cta")}
-                    </a>
-                  </Button>
-                </CardContent>
-              </Card>
-
-              {/* How you can be part of this */}
-              <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-                <CardHeader>
-                  <CardTitle className="text-2xl">
-                    {t("communityHub.howToJoin.title")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="grid gap-4 sm:grid-cols-3">
-                    {HOW_TO_JOIN.map(({ key, icon: Icon }) => (
-                      <li key={key} className="flex flex-col gap-2">
-                        <Icon className="h-5 w-5 text-primary" aria-hidden />
-                        <p className="font-semibold text-foreground">
+            {/* Ways to take part: one tile each, details on hover/focus */}
+            <ul className="mt-5 grid gap-3 sm:grid-cols-3">
+              {HOW_TO_JOIN.map(({ key, icon: Icon }) => (
+                <li key={key}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        tabIndex={0}
+                        className="flex h-full items-center gap-3 rounded-lg border border-border bg-gradient-to-br from-card to-card/50 px-4 py-3 transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      >
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/10">
+                          <Icon className="h-4 w-4 text-primary" aria-hidden />
+                        </span>
+                        <span className="font-medium text-foreground">
                           {t(`communityHub.howToJoin.cards.${key}.title`)}
-                        </p>
-                        <p className="text-sm leading-relaxed text-muted-foreground">
-                          {t(`communityHub.howToJoin.cards.${key}.body`)}
-                        </p>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
+                        </span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-xs text-sm leading-relaxed">
+                      {t(`communityHub.howToJoin.cards.${key}.body`)}
+                    </TooltipContent>
+                  </Tooltip>
+                </li>
+              ))}
+            </ul>
+
+            {/* GitHub Discussions, one row */}
+            <Card className="mt-4 border-0 bg-gradient-to-br from-card to-card/50 py-0">
+              <CardContent className="flex flex-col gap-4 px-5 py-4 md:flex-row md:items-center">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary">
+                  <Github className="h-5 w-5 text-primary-foreground" aria-hidden />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-lg font-semibold text-foreground">
+                    {t("communityHub.discussion.title")}
+                  </p>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {t("communityHub.discussion.body")}
+                  </p>
+                </div>
+                <Button className="shrink-0" asChild>
+                  <a
+                    href={GITHUB_DISCUSSIONS_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Github className="h-4 w-4" aria-hidden />
+                    {t("communityHub.discussion.cta")}
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
           </section>
 
           {/* Contact */}
@@ -277,23 +279,25 @@ export default function AboutPage() {
             {/* Contact (single form for the whole site) */}
             <Card
               id="contact"
-              className="scroll-mt-24 border-0 bg-gradient-to-br from-card to-card/50 flex flex-col lg:max-w-3xl"
+              className="scroll-mt-24 border-0 bg-gradient-to-br from-card to-card/50"
             >
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary">
-                    <MessageSquare className="h-5 w-5 text-primary-foreground" aria-hidden />
+              <CardContent className="grid gap-6 px-6 py-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-10">
+                <div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary">
+                      <MessageSquare className="h-5 w-5 text-primary-foreground" aria-hidden />
+                    </div>
+                    <CardTitle className="text-2xl">
+                      {t("communityHub.contact.title")}
+                    </CardTitle>
                   </div>
-                  <CardTitle className="text-2xl">{t("communityHub.contact.title")}</CardTitle>
+                  <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+                    {t("communityHub.contact.intro")}
+                  </p>
                 </div>
-                <CardDescription className="mt-2 text-base leading-relaxed">
-                  {t("communityHub.contact.intro")}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-1 flex-col">
                 <form
                   onSubmit={handleSubmit}
-                  className="flex flex-1 flex-col space-y-4"
+                  className="flex flex-col space-y-4"
                   noValidate
                 >
                   <div className="space-y-2">
@@ -321,7 +325,7 @@ export default function AboutPage() {
                       required
                     />
                   </div>
-                  <Button type="submit" className="mt-auto w-full">
+                  <Button type="submit" className="w-full sm:w-auto sm:self-end">
                     <Mail className="h-4 w-4 shrink-0" aria-hidden />
                     {trans.formSend}
                   </Button>

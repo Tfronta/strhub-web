@@ -83,12 +83,14 @@ export function LanguageProvider({
   children,
   initialLanguage,
 }: LanguageProviderProps) {
-  const [language, setLanguageState] = useState<Language>(() => {
-    if (initialLanguage && supportedLanguages.includes(initialLanguage)) {
-      return initialLanguage;
-    }
-    return getStoredLanguage() ?? "en";
-  });
+  // The first client render must match the server (which only knows the
+  // cookie). Reading localStorage here caused hydration errors whenever the
+  // cookie was missing but localStorage still held a language.
+  const [language, setLanguageState] = useState<Language>(() =>
+    initialLanguage && supportedLanguages.includes(initialLanguage)
+      ? initialLanguage
+      : "en",
+  );
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
@@ -99,9 +101,12 @@ export function LanguageProvider({
   };
 
   useEffect(() => {
+    // After hydration, honour a language saved in localStorage and refresh the
+    // cookie so the next server render already uses it.
     const storedLanguage = getStoredLanguage();
     if (storedLanguage && storedLanguage !== language) {
       setLanguageState(storedLanguage);
+      persistLanguageCookie(storedLanguage);
     }
     // We intentionally run this only once on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps

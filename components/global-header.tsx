@@ -312,7 +312,9 @@ export function GlobalHeader() {
                   <NavigationMenuLink
                     asChild
                     className={cn(
-                      "inline-flex h-9 items-center rounded-md px-3 text-base font-medium transition-colors bg-transparent text-foreground",
+                      // flex-row: the component default is flex-col, which left the
+                      // label at the top of the box instead of vertically centred.
+                      "inline-flex flex-row h-9 items-center justify-center rounded-md px-3 text-base font-medium transition-colors bg-transparent text-foreground",
                       "hover:bg-transparent hover:text-primary focus:bg-transparent focus:text-primary active:text-primary",
                       "data-[active=true]:bg-transparent data-[active=true]:text-primary",
                       isActive(pathname, entry.href) && "text-primary"

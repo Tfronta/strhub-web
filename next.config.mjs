@@ -48,7 +48,18 @@ const nextConfig = {
         destination: '/strhub-isologo.svg',
         permanent: false,
       },
+      // Global Frequencies merged into the Data section (Explore tab).
       {
+        source: '/global-frequencies',
+        destination: '/datasets?tab=explore',
+        permanent: true,
+      },
+      // The STRBase page was a placeholder; STRBase data lives in the catalog.
+      {
+        source: '/strbase',
+        destination: '/catalog',
+        permanent: true,
+      },      {
         source: '/blog',
         destination: '/community',
         permanent: true,

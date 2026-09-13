@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { pageMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 
 export const metadata: Metadata = pageMetadata("/datasets", {
-  title: "STR Datasets",
+  title: "STR Allele Frequency Data",
   description:
-    "Download curated STR allele frequency and genotype datasets in standard formats, kept separate by technology (CE and NGS) with consistent allele nomenclature.",
+    "Explore STR allele frequency variation across populations in charts, or download curated frequency and genotype datasets in standard formats, kept separate by technology (CE and NGS).",
 });
 
 export default function DatasetsLayout({
@@ -21,13 +22,14 @@ export default function DatasetsLayout({
           "@type": "Dataset",
           name: "STRhub STR allele frequency and genotype datasets",
           description:
-            "Curated STR allele frequency and genotype datasets for forensic loci, kept separate by technology (capillary electrophoresis and NGS), downloadable in standard formats.",
+            "Curated STR allele frequency and genotype datasets for forensic loci (pop.STR for CE, sequence-based datasets for NGS), organized by technology and study design, explorable in charts and downloadable in standard formats.",
           url: "https://strhub.app/datasets",
           isAccessibleForFree: true,
           creator: { "@type": "Organization", name: "STRhub", url: "https://strhub.app" },
         }}
       />
-      {children}
+      {/* The page reads ?tab= on the client. */}
+      <Suspense fallback={null}>{children}</Suspense>
     </>
   );
 }

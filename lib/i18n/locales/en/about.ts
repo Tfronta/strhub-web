@@ -61,7 +61,7 @@ communityHub: {
   hero: {
     title: "Connect, Learn, Collaborate",
     subtitle:
-      "STRhub is used by researchers, students, and forensic labs across more than 7 countries. This space exists to ask questions, share experiences, report what works and what doesn't, and help shape what gets built next.",
+      "This space exists to ask questions, share experiences, report what works and what doesn't, and help shape what gets built next.",
     reality:
       "STR analysis with NGS is still a developing field. No tool is perfect, no pipeline is universal. The most valuable thing you can contribute is your real experience: a question that others haven't asked yet, a use case that reveals an edge case, or feedback that makes the platform more useful for everyone.",
     cta: "Join as an early contributor",

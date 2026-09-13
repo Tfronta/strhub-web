@@ -1,10 +1,15 @@
 import type { MetadataRoute } from "next";
-import { fetchAllBasicsSlugs } from "@/lib/back-to-basics-server";
+import { fetchAllBasicsArticles } from "@/lib/back-to-basics-server";
+import { getVerifiedIndex } from "@/lib/verified";
+import { markerData } from "@/lib/markerData";
 import {
   BASICS_LOCALES,
   basicsArticlePath,
   SITE_URL,
 } from "@/lib/seo";
+
+// Contentful and the Verified index change without a redeploy; refresh hourly.
+export const revalidate = 3600;
 
 const STATIC_ROUTES: Array<{
   path: string;
@@ -27,11 +32,19 @@ const STATIC_ROUTES: Array<{
   { path: "/community", changeFrequency: "weekly", priority: 0.7 },
   { path: "/projects", changeFrequency: "monthly", priority: 0.6 },
   { path: "/about", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/strbase", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/global-frequencies", changeFrequency: "monthly", priority: 0.7 },
+  { path: "/verified", changeFrequency: "weekly", priority: 0.7 },
+  { path: "/verified/how-to-read", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/verified/submit", changeFrequency: "monthly", priority: 0.5 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const slugs = await fetchAllBasicsSlugs();
+  const [articles, verified] = await Promise.all([
+    fetchAllBasicsArticles(),
+    getVerifiedIndex({ fresh: false }).catch(() => null),
+  ]);
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(
     ({ path, changeFrequency, priority }) => ({
@@ -42,15 +55,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
-  const articleEntries: MetadataRoute.Sitemap = BASICS_LOCALES.flatMap(
-    (locale) =>
-      slugs.map((slug) => ({
-        url: `${SITE_URL}${basicsArticlePath(locale, slug)}`,
-        lastModified: now,
-        changeFrequency: "monthly" as const,
-        priority: 0.7,
-      }))
+  const articleEntries: MetadataRoute.Sitemap = articles.flatMap((article) =>
+    BASICS_LOCALES.map((locale) => ({
+      url: `${SITE_URL}${basicsArticlePath(locale, article.slugs[locale])}`,
+      lastModified: article.updatedAt ? new Date(article.updatedAt) : now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }))
   );
 
-  return [...staticEntries, ...articleEntries];
+  const markerEntries: MetadataRoute.Sitemap = Object.keys(markerData).map(
+    (id) => ({
+      url: `${SITE_URL}/marker/${id}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })
+  );
+
+  const verifiedEntries: MetadataRoute.Sitemap = (verified?.tools ?? [])
+    .filter((tool) => /^[A-Za-z0-9._-]+$/.test(tool.slug))
+    .map((tool) => ({
+      url: `${SITE_URL}/verified/${tool.slug}`,
+      lastModified: tool.generated ? new Date(tool.generated) : now,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    }));
+
+  return [
+    ...staticEntries,
+    ...articleEntries,
+    ...markerEntries,
+    ...verifiedEntries,
+  ];
 }

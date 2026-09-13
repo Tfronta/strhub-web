@@ -13,6 +13,11 @@ common: {
   english: "Inglés",
   portuguese: "Portugués",
   spanish: "Español",
+  notFoundPage: {
+    title: "Página no encontrada",
+    description: "La página que buscás no existe o fue movida.",
+    backToCatalog: "Ver el catálogo",
+  },
 },
 projects: {
   title: "Proyectos Internacionales",

@@ -29,6 +29,15 @@ import {
   type SearchResultsByType,
 } from "@/lib/search";
 
+/** Search index item type to the translation key under search.types. */
+const SEARCH_TYPE_KEY: Record<string, string> = {
+  marker: "markers",
+  "marker-section": "markerSections",
+  tool: "tools",
+  blog: "blog",
+  page: "page",
+};
+
 function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
@@ -92,7 +101,7 @@ function SearchResults() {
                 variant="secondary"
                 className="bg-primary/10 text-primary border-primary/20 shrink-0"
               >
-                {t(`search.types.${item.type === "blog" ? "blog" : item.type}`)}
+                {t(`search.types.${SEARCH_TYPE_KEY[item.type] ?? "page"}`)}
               </Badge>
             )}
           </div>

@@ -1,5 +1,5 @@
 export type BasicsArticle = {
-  sys: { id: string };
+  sys: { id: string; updatedAt?: string };
   fields: {
     title?: string;
     summary?: string;
@@ -9,4 +9,6 @@ export type BasicsArticle = {
     slug?: string;
     authors?: Array<{ name?: string }>;
   };
+  /** Localized slug per site locale, when known. */
+  slugs?: Record<"en" | "es" | "pt", string>;
 };

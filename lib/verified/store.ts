@@ -11,15 +11,16 @@ import fs from "fs/promises";
 import path from "path";
 import os from "os";
 import { putFile, getFileContent, listDirectory, deleteFile, GitHubConfigError, GitHubApiError } from "./github";
+import { clientHashSalt } from "@/lib/rate-limit";
 
 /**
  * Per-deployment salt for client identifiers. IPs are low-entropy (a bare SHA-256
  * of one is trivially reversed by enumeration), so the hash is only meaningful
- * with a secret salt. Falls back to a per-process random value: rate limiting then
- * only holds within one instance, which is no worse than the file store already
- * behaves on serverless, and it never degrades into a reversible digest.
+ * with a secret salt. `clientHashSalt` prefers RATE_LIMIT_SALT, then a value
+ * derived from JWT_SECRET (stable across instances), and only then a per-process
+ * random value, so the digest never degrades into a reversible one.
  */
-const CLIENT_SALT = process.env.RATE_LIMIT_SALT || crypto.randomBytes(32).toString("hex");
+const CLIENT_SALT = clientHashSalt();
 
 /**
  * Identify a client for rate limiting WITHOUT retaining their IP address.

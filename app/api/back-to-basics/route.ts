@@ -1,6 +1,7 @@
 // app/api/back-to-basics/route.ts
 import { NextResponse } from "next/server"
-import { getContentfulClient, buildIncludesMaps, resolveAuthor, CONTENTFUL_ACCESS_TOKEN } from "@/lib/contentful"
+import { getContentfulClient, buildIncludesMaps, resolveAuthor } from "@/lib/contentful"
+import { isAuthenticated } from "@/lib/auth"
 
 export const dynamic = "auto" // deja que el proxy de Vercel maneje el cache
 // o usa 'auto' y solo confía en los headers de cache abajo
@@ -9,7 +10,8 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const locale = searchParams.get("locale") || undefined
-    const preview = searchParams.get("preview") === "1"
+    // Draft content is only for authenticated admins.
+    const preview = searchParams.get("preview") === "1" && isAuthenticated(request)
     const tags = searchParams
       .getAll("tags")
       .flatMap((value) => value.split(","))
@@ -25,7 +27,6 @@ export async function GET(request: Request) {
       locale: locale === "en" ? undefined : locale,
       select:
         "sys.id,fields.title,fields.summary,fields.postReadMinutes,fields.keywords,fields.bodyMd,fields.authors,fields.slug",
-      access_token: CONTENTFUL_ACCESS_TOKEN,
     }
 
     // Contentful supports filtering by metadata tags as well, but this project

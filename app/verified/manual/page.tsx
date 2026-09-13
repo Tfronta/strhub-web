@@ -20,7 +20,7 @@ import { VerifiedManualRequest } from "@/components/verified/verified-manual-req
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Manual verification — STRhub Verified",
+  title: { absolute: "Manual verification | STRhub Verified" },
 };
 
 export default async function VerifiedManualPage({

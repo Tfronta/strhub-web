@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 import { type NextRequest, NextResponse } from "next/server";
+import { isAuthenticated } from "@/lib/auth";
 
 type Category = "Blog" | "Projects" | "Educational";
 interface ContentEntry {
@@ -24,8 +25,7 @@ function getStore(): ContentEntry[] {
 }
 
 function isAuthOk(req: NextRequest) {
-  const auth = req.headers.get("authorization") || "";
-  return /^Bearer\s+\S+/.test(auth);
+  return isAuthenticated(req);
 }
 
 // PUT: actualizar

@@ -13,6 +13,11 @@ common: {
   english: "English",
   portuguese: "Portuguese",
   spanish: "Spanish",
+  notFoundPage: {
+    title: "Page not found",
+    description: "The page you are looking for does not exist or has been moved.",
+    backToCatalog: "Browse the catalog",
+  },
 },
 projects: {
   title: "International Projects",

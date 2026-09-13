@@ -769,34 +769,34 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
           onValueChange={(value) => setActiveTab(value as TabValue)}
           className="space-y-6"
         >
-          <TabsList className="grid w-full grid-cols-5 h-9 bg-muted/50 p-0 rounded-md border-0">
+          <TabsList className="flex w-full h-9 justify-start overflow-x-auto [scrollbar-width:thin] md:grid md:grid-cols-5 bg-muted/50 p-0 rounded-md border-0">
             <TabsTrigger
               value="overview"
-              className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
+              className="shrink-0 whitespace-nowrap px-3 text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
             >
               {t("marker.tabs.overview")}
             </TabsTrigger>
             <TabsTrigger
               value="frequencies"
-              className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
+              className="shrink-0 whitespace-nowrap px-3 text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
             >
               {t("marker.tabs.frequencies")}
             </TabsTrigger>
             <TabsTrigger
               value="statistics"
-              className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
+              className="shrink-0 whitespace-nowrap px-3 text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
             >
               {t("marker.tabs.statistics")}
             </TabsTrigger>
             <TabsTrigger
               value="variants"
-              className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
+              className="shrink-0 whitespace-nowrap px-3 text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
             >
               {t("marker.variantAlleles")}
             </TabsTrigger>
             <TabsTrigger
               value="tools"
-              className="text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
+              className="shrink-0 whitespace-nowrap px-3 text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
             >
               {t("marker.tabs.tools")}
             </TabsTrigger>

@@ -46,8 +46,16 @@ function isCatalogueGhost(entry: VerifiedIndex["tools"][number]): boolean {
   return entry.slug === "index" || entry.report === "index.json";
 }
 
-export async function getVerifiedIndex(): Promise<VerifiedIndex> {
-  const data = await fetchJson<VerifiedIndex>(`${BASE}/index.json`, true);
+/**
+ * @param options.fresh Bypass the fetch cache (default). The Verified pages
+ *   must always show the latest attestation (see above); the sitemap does not
+ *   need that and passes `fresh: false` so it can be served from ISR.
+ */
+export async function getVerifiedIndex(
+  options: { fresh?: boolean } = {}
+): Promise<VerifiedIndex> {
+  const fresh = options.fresh ?? true;
+  const data = await fetchJson<VerifiedIndex>(`${BASE}/index.json`, fresh);
   if (!data) {
     return {
       schema: "strhub-verified/index/1",

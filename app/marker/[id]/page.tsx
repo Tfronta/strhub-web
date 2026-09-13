@@ -59,6 +59,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { markerData } from "@/lib/markerData";
+import { IGV_MARKER_IDS } from "@/app/tools/igv-viewer/markers";
 import { useLanguage } from "@/contexts/language-context";
 import { markerFrequenciesCE, markerFrequenciesNGS } from "./markerFrequencies";
 import { markerStatisticsCE } from "./markerStatisticsCE";
@@ -141,6 +142,7 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
   const markerId = params.id.toLowerCase();
   const marker = markerData[markerId as keyof typeof markerData];
   const isMarkerInMotifExplorer = motifExplorerMarkerIds.has(markerId);
+  const isMarkerInIgv = IGV_MARKER_IDS.has(markerId);
 
   // Helper function to translate marker descriptions
   const getTranslatedDescription = (description: string): string => {
@@ -904,6 +906,28 @@ export default function MarkerPage({ params }: { params: { id: string } }) {
                           href={`/tools/str-motif-explorer?marker=${marker.name}`}
                         >
                           {t("overview.motifExplorer.button")}
+                        </Link>
+                      </Button>
+                    </div>
+                  )}
+                  {isMarkerInIgv && (
+                    <div className="pt-4 border-t border-border space-y-3">
+                      <div className="space-y-1.5">
+                        <p className="text-xs font-semibold text-foreground">
+                          {t("overview.igvViewer.title")}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {t("overview.igvViewer.desc")}
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-8 px-3 text-xs font-semibold"
+                        asChild
+                      >
+                        <Link href={`/tools/igv-viewer?marker=${markerId}`}>
+                          {t("overview.igvViewer.button")}
                         </Link>
                       </Button>
                     </div>

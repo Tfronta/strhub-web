@@ -9,6 +9,13 @@ export const OG_IMAGE = {
   alt: "STRhub, central hub for Short Tandem Repeats",
 };
 export const BASICS_LOCALES = ["en", "es", "pt"] as const;
+
+/**
+ * STRhub Verified is in a tester phase: reachable by direct link only.
+ * Flip to true to add it to the header, footer and sitemap and let search
+ * engines index it.
+ */
+export const VERIFIED_PUBLIC = false;
 export type BasicsLocale = (typeof BASICS_LOCALES)[number];
 
 export function isBasicsLocale(locale: string): locale is BasicsLocale {

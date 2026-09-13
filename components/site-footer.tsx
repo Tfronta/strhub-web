@@ -10,7 +10,6 @@ const FOOTER_LINKS = [
   { href: "/strbase", labelKey: "nav.strbase" },
   { href: "/tools", labelKey: "nav.tools" },
   { href: "/mix-profiles", labelKey: "nav.mixProfiles" },
-  { href: "/verified", labelKey: "nav.verified" },
   { href: "/basics", labelKey: "nav.basics" },
   { href: "/about", labelKey: "nav.about" },
 ];

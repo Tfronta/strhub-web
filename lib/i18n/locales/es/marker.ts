@@ -353,5 +353,10 @@ overview: {
     desc: "Comprende cómo los motivos canónicos, variantes internas y regiones flanqueadoras definen el alelo.",
     button: "Abrir STR Motif Explorer",
   },
+  igvViewer: {
+    title: "Ver las lecturas en este locus",
+    desc: "Abre el visor IGV integrado en la ventana hg38 de este marcador con una muestra de 1000 Genomas.",
+    button: "Abrir visor IGV",
+  },
 },
 } as const

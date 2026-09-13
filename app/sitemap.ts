@@ -6,6 +6,7 @@ import {
   BASICS_LOCALES,
   basicsArticlePath,
   SITE_URL,
+  VERIFIED_PUBLIC,
 } from "@/lib/seo";
 
 // Contentful and the Verified index change without a redeploy; refresh hourly.
@@ -34,6 +35,9 @@ const STATIC_ROUTES: Array<{
   { path: "/about", changeFrequency: "monthly", priority: 0.6 },
   { path: "/strbase", changeFrequency: "monthly", priority: 0.6 },
   { path: "/global-frequencies", changeFrequency: "monthly", priority: 0.7 },
+];
+
+const VERIFIED_ROUTES: typeof STATIC_ROUTES = [
   { path: "/verified", changeFrequency: "weekly", priority: 0.7 },
   { path: "/verified/how-to-read", changeFrequency: "monthly", priority: 0.5 },
   { path: "/verified/submit", changeFrequency: "monthly", priority: 0.5 },
@@ -43,10 +47,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const [articles, verified] = await Promise.all([
     fetchAllBasicsArticles(),
-    getVerifiedIndex({ fresh: false }).catch(() => null),
+    VERIFIED_PUBLIC
+      ? getVerifiedIndex({ fresh: false }).catch(() => null)
+      : Promise.resolve(null),
   ]);
 
-  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(
+  const routes = VERIFIED_PUBLIC
+    ? [...STATIC_ROUTES, ...VERIFIED_ROUTES]
+    : STATIC_ROUTES;
+
+  const staticEntries: MetadataRoute.Sitemap = routes.map(
     ({ path, changeFrequency, priority }) => ({
       url: `${SITE_URL}${path}`,
       lastModified: now,

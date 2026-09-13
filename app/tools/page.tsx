@@ -1,7 +1,34 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ExternalLink, Github, Info, FileText, Filter } from "lucide-react";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ExternalLink, Github, Info, FileText, Filter, Eye, Dna, Search } from "lucide-react";
+
+const BUILT_IN_TOOLS = [
+  {
+    href: "/tools/igv-viewer",
+    icon: Eye,
+    titleKey: "home.explore.igvViewer.title",
+    descriptionKey: "home.explore.igvViewer.description",
+  },
+  {
+    href: "/tools/str-motif-explorer",
+    icon: Search,
+    titleKey: "home.explore.motifExplorer.title",
+    descriptionKey: "home.explore.motifExplorer.description",
+  },
+  {
+    href: "/tools/fasta-generator",
+    icon: Dna,
+    titleKey: "home.explore.fastaGenerator.title",
+    descriptionKey: "home.explore.fastaGenerator.description",
+  },
+];
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -107,6 +134,31 @@ export default function ToolsPage() {
               {t("tools.hero.ctaCollaborate")}
             </Link>
           </Button>
+        </div>
+      </section>
+
+      {/* STRhub's own browser tools, before the external catalogue */}
+      <section className="pt-4 pb-6 px-4">
+        <div className="container mx-auto">
+          <h2 className="text-xl font-semibold mb-1">{t("tools.builtIn.title")}</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            {t("tools.builtIn.description")}
+          </p>
+          <div className="grid gap-4 md:grid-cols-3">
+            {BUILT_IN_TOOLS.map((tool) => (
+              <Link key={tool.href} href={tool.href} className="group">
+                <Card className="h-full border-0 bg-gradient-to-br from-card to-card/50 transition-all duration-300 hover:shadow-lg hover:from-primary/5 hover:to-accent/5">
+                  <CardHeader>
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
+                      <tool.icon className="h-5 w-5 text-primary-foreground" aria-hidden />
+                    </div>
+                    <CardTitle className="text-lg">{t(tool.titleKey)}</CardTitle>
+                    <CardDescription>{t(tool.descriptionKey)}</CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 

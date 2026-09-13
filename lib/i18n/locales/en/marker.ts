@@ -353,5 +353,10 @@ overview: {
     desc: "Understand how canonical motifs, internal variants and flanking regions define the allele.",
     button: "Open STR Motif Explorer",
   },
+  igvViewer: {
+    title: "See the reads at this locus",
+    desc: "Open the built-in IGV viewer on the hg38 window of this marker with a 1000 Genomes sample.",
+    button: "Open IGV Viewer",
+  },
 },
 } as const

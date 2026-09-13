@@ -152,9 +152,9 @@ export default function AboutPage() {
                 {firstRow.map((contributor) => (
                   <Card
                     key={contributor.name}
-                    className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 h-full"
+                    className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 h-full py-0"
                   >
-                    <CardHeader className="space-y-0.5 px-5 py-4">
+                    <CardHeader className="gap-0.5 px-4 py-3">
                       <p className="font-bold text-foreground leading-snug">
                         {contributor.name}
                       </p>
@@ -175,9 +175,9 @@ export default function AboutPage() {
                   {remaining.map((contributor) => (
                     <Card
                       key={contributor.name}
-                      className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 h-full"
+                      className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 h-full py-0"
                     >
-                      <CardHeader className="space-y-0.5 px-5 py-4">
+                      <CardHeader className="gap-0.5 px-4 py-3">
                         <p className="font-bold text-foreground leading-snug">
                           {contributor.name}
                         </p>

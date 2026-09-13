@@ -149,7 +149,7 @@ communityHub: {
       'Artículos "Back to basics" para ayudarte a vos y a tu equipo a construir una base sólida en análisis de STRs y NGS.',
     loading: "Cargando publicaciones...",
     readMore: "Leer Más",
-    viewAll: "Ver todos los artículos de Back to Basics",
+    viewAll: "Ver todos los artículos de Fundamentos",
     noPosts: "Todavía no hay artículos disponibles.",
   },
   comingSoon: {

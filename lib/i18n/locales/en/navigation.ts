@@ -69,7 +69,7 @@ home: {
   featuresSectionTitle: "Platform Features",
   explore: {
     basics: {
-      title: "Back to Basics",
+      title: "Foundations",
       description: "Learn fundamental concepts: CRAM/BAM/SAM, flanking regions, and key bioinformatics terms",
     },
     catalog: {

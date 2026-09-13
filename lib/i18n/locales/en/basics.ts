@@ -1,11 +1,11 @@
 export default {
 basics: {
-  title: "STR Foundations",
+  title: "Foundations",
   subtitle: "Understanding the Fundamentals",
   description:
     "Explore STR loci across human chromosomes and learn the core concepts behind forensic genetics and bioinformatics workflows.",
   readArticle: "Read Article",
-  backToArticles: "← Back to All Articles",
+  backToArticles: "Back to Foundations",
   readTime: "min read",
   topicsCovered: "Topics covered:",
   explorerSectionTitle: "Explore STR loci in the Genome",

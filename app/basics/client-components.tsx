@@ -116,7 +116,7 @@ export function ClientBackToBasicsGrid({
         setError(
           err instanceof Error
             ? err.message
-            : "Unable to load Back to Basics posts.",
+            : "Unable to load Foundations articles.",
         );
       } finally {
         if (isMounted) {

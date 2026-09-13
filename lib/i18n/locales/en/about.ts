@@ -4,7 +4,7 @@ about: {
   subtitle: "Advancing STR Research & Education",
   mission: "Our Mission",
   missionP1:
-    "STRhub is an open-access, interactive platform designed to explore, visualize, and understand Short Tandem Repeat (STR) data across forensic and population genetics contexts.",
+    "The mission of STRhub is to simplify the complexity of Short Tandem Repeat analysis in forensic and population genetics through an interactive, centralized, open-access hub. The platform unifies capillary electrophoresis and next-generation sequencing compatibility alongside data exploration modules, nomenclature references, and educational resources. The primary goal is to bridge analytical innovation and daily practice, providing the global scientific community with transparent, intuitive, and rigorous tools that strengthen research and education.",
   missionP2:
     "The project aims to bridge analytical technologies, interpretation frameworks, and educational gaps by integrating STR information derived from both capillary electrophoresis (CE) and next-generation sequencing (NGS). STRhub provides reliable tools, curated datasets, and learning resources that support researchers, students, and laboratories worldwide in navigating the complexity of STR analysis.",
   missionP3:
@@ -22,12 +22,12 @@ about: {
     title: "People",
     lead: "Project lead and developer",
     leadName: "Dr. Tamara Frontanilla",
-    leadBio: "STRhub was conceived, designed and built by Tamara Frontanilla as an independent initiative: concept, architecture, data curation and implementation.",
+    leadBio: "STRhub is developed and led by Tamara Frontanilla. It began as an independent initiative in which she designed the concept, architecture and implementation, centralizing the field's resources in a clean, modern and interactive interface.",
     affiliation: "Forensic and Genomics Research Laboratory, FFCLRP, University of São Paulo",
     country: "Brazil",
-    support: "Academic supervision",
+    support: "Academic support",
     supportName: "Dr. Celso Teixeira Mendes Junior",
-    supportBio: "STRhub receives academic support from the Forensic and Genomics Research Laboratory under his supervision.",
+    supportBio: "The project receives academic support from the Forensic and Genomics Research Laboratory at the University of São Paulo, under the supervision of Dr. Celso Teixeira Mendes Junior.",
     orcid: "ORCID",
     github: "GitHub",
   },

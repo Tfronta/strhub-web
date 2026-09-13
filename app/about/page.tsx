@@ -6,11 +6,9 @@ import {
   ExternalLink,
   FlaskConical,
   Github,
-  Heart,
   Mail,
   MessageSquare,
   Share2,
-  Target,
 } from "lucide-react";
 import {
   Card,
@@ -71,67 +69,28 @@ export default function AboutPage() {
       <div className="container mx-auto px-4 md:px-0 py-8 space-y-6">
         <PageTitle title={t("about.title")} />
         <div className="space-y-8">
-          {/* First row: Mission and Why This Matters */}
-          <div className="grid items-stretch lg:grid-cols-2 gap-8">
-            {/* Mission */}
-            <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary">
-                    <Target className="h-5 w-5 text-primary-foreground" />
-                  </div>
-                  <CardTitle className="text-2xl">{trans.mission}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground leading-relaxed">
-                  {trans.missionP1}
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  {trans.missionP2}
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  {trans.missionP3}
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Why This Matters */}
-            <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary">
-                    <Heart className="h-5 w-5 text-primary-foreground" />
-                  </div>
-                  <CardTitle className="text-2xl">{trans.whyThisMatters}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground leading-relaxed">
-                  {trans.whyP1}
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  {trans.whyP2}
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  {trans.whyP3}
-                </p>
-              </CardContent>
-            </Card>
-
-          </div>
+          {/* Mission: short intro, no card, so People is visible without scrolling */}
+          <section className="max-w-4xl">
+            <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+              {trans.mission}
+            </h2>
+            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+              {trans.missionP1}
+            </p>
+          </section>
 
           {/* People: project lead, academic supervision, community contributors */}
-          <section id="people" className="scroll-mt-24 border-t border-border pt-12">
+          <section id="people" className="scroll-mt-24 border-t border-border pt-8">
             <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
               {t("about.people.title")}
             </h2>
 
+            <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
             {/* Project lead */}
-            <Card className="mt-6 border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 py-0">
-              <CardContent className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-start sm:gap-6">
+            <Card className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 py-0">
+              <CardContent className="flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-start sm:gap-5">
                 <div
-                  className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground"
+                  className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground"
                   aria-hidden
                 >
                   TF
@@ -140,13 +99,13 @@ export default function AboutPage() {
                   <p className="text-xs font-semibold uppercase tracking-wide text-primary">
                     {t("about.people.lead")}
                   </p>
-                  <p className="text-2xl font-bold leading-tight text-foreground">
+                  <p className="text-xl font-bold leading-tight text-foreground">
                     {t("about.people.leadName")}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     {t("about.people.affiliation")}. {t("about.people.country")}
                   </p>
-                  <p className="pt-1 text-base leading-relaxed text-muted-foreground">
+                  <p className="pt-1 text-sm leading-relaxed text-muted-foreground">
                     {t("about.people.leadBio")}
                   </p>
                   <div className="flex flex-wrap gap-4 pt-1 text-sm">
@@ -173,8 +132,8 @@ export default function AboutPage() {
               </CardContent>
             </Card>
 
-            {/* Academic supervision */}
-            <Card className="mt-4 border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 py-0 lg:max-w-3xl">
+            {/* Academic support */}
+            <Card className="border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 py-0">
               <CardContent className="px-5 py-4 space-y-1">
                 <p className="text-xs font-semibold uppercase tracking-wide text-primary">
                   {t("about.people.support")}
@@ -190,9 +149,10 @@ export default function AboutPage() {
                 </p>
               </CardContent>
             </Card>
+            </div>
 
             {/* Community contributors */}
-            <h3 className="mt-10 text-lg font-semibold tracking-tight">
+            <h3 className="mt-8 text-lg font-semibold tracking-tight">
               {t("communityHub.communityContributors.title")}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">

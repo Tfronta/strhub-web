@@ -2207,7 +2207,7 @@ export function MarkerView({
                       className="h-8 text-xs font-normal rounded-sm px-4"
                       asChild
                     >
-                      <Link href="/community#contact">
+                      <Link href="/about#contact">
                         {t("marker.addNewVariant")}
                       </Link>
                     </Button>

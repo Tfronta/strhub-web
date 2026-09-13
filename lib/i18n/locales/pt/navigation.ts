@@ -150,6 +150,7 @@ home: {
   getStarted: "Começar",
   learnMore: "Saiba Mais",
   footer: {
+    joinDiscussion: "Junte-se à discussão",
     mission:
       "Impulsionando a pesquisa genética por meio de ciência colaborativa.",
     community: "Criado para a comunidade global de pesquisa",

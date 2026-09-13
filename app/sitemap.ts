@@ -30,7 +30,6 @@ const STATIC_ROUTES: Array<{
     priority: 0.7,
   },
   { path: "/datasets", changeFrequency: "monthly", priority: 0.8 },
-  { path: "/community", changeFrequency: "weekly", priority: 0.7 },
   { path: "/projects", changeFrequency: "monthly", priority: 0.6 },
   { path: "/about", changeFrequency: "monthly", priority: 0.6 },
 ];

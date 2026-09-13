@@ -59,16 +59,12 @@ const nextConfig = {
         source: '/strbase',
         destination: '/catalog',
         permanent: true,
-      },      {
-        source: '/blog',
-        destination: '/community',
-        permanent: true,
-      },
-      {
-        source: '/blog/:path*',
-        destination: '/community/:path*',
-        permanent: true,
-      },
+      },      // Community merged into About (Get involved section). /blog was an
+      // older alias of the same page.
+      { source: '/community', destination: '/about#get-involved', permanent: true },
+      { source: '/community/:path*', destination: '/about#get-involved', permanent: true },
+      { source: '/blog', destination: '/about#get-involved', permanent: true },
+      { source: '/blog/:path*', destination: '/about#get-involved', permanent: true },
     ]
   },
 }

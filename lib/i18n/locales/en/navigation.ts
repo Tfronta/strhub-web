@@ -149,6 +149,7 @@ home: {
   getStarted: "Get Started",
   learnMore: "Learn More",
   footer: {
+    joinDiscussion: "Join the discussion",
     mission: "Advancing genetic research through collaborative science.",
     community: "Built for the global research community",
   },

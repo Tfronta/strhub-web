@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Github } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 
 const FOOTER_LINKS = [
@@ -50,6 +51,15 @@ export function SiteFooter() {
               {t(item.labelKey)}
             </Link>
           ))}
+          <a
+            href="https://github.com/Tfronta/strhub-web/discussions"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-primary transition-colors hover:underline"
+          >
+            <Github className="h-3.5 w-3.5" aria-hidden />
+            {t("home.footer.joinDiscussion")}
+          </a>
         </nav>
       </div>
     </footer>

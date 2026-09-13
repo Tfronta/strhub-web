@@ -4,6 +4,10 @@ tools: {
   subtitle: "Ferramentas de Análise e Processamento",
   description:
     "Suite abrangente de ferramentas de bioinformática e pipelines para análise de STRs, desde processamento de dados brutos até genética populacional.",
+  builtIn: {
+    title: "Ferramentas interativas do STRhub",
+    description: "Integradas ao STRhub: rodam no navegador, sem instalação.",
+  },
   hero: {
     title: "Ferramentas Poderosas para Análise STR",
     description: "Coleção abrangente de ferramentas, pipelines e tutoriais para análise de Repetições em Tandem Curtas. Desde genotipagem até visualização, encontre tudo que você precisa para sua pesquisa.",

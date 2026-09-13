@@ -4,6 +4,10 @@ tools: {
   subtitle: "Analysis & Processing Tools",
   description:
     "Comprehensive suite of bioinformatics tools and pipelines for STR analysis, from raw data processing to population genetics.",
+  builtIn: {
+    title: "STRhub interactive tools",
+    description: "Built into STRhub: run them in the browser, no installation.",
+  },
   hero: {
     title: "Powerful Tools for STR Analysis",
     description: "Comprehensive collection of tools, pipelines, and tutorials for Short Tandem Repeat analysis. From genotyping to visualization, find everything you need for your research.",

@@ -4,6 +4,10 @@ tools: {
   subtitle: "Herramientas de Análisis y Procesamiento",
   description:
     "Suite integral de herramientas de bioinformática y pipelines para análisis STR, desde procesamiento de datos en bruto hasta genética poblacional.",
+  builtIn: {
+    title: "Herramientas interactivas de STRhub",
+    description: "Integradas en STRhub: se usan en el navegador, sin instalar nada.",
+  },
   hero: {
     title: "Herramientas Poderosas para Análisis STR",
     description: "Colección integral de herramientas, pipelines y tutoriales para análisis de Repeticiones en Tándem Cortas. Desde genotipado hasta visualización, encuentra todo lo que necesitas para tu investigación.",

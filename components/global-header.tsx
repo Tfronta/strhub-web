@@ -14,7 +14,6 @@ const navItems = [
   { href: "/datasets", labelKey: "nav.datasets" },
   { href: "/tools", labelKey: "nav.tools" },
   { href: "/mix-profiles", labelKey: "nav.mixProfiles" },
-  { href: "/verified", labelKey: "nav.verified" },
   { href: "/community", labelKey: "nav.blog" },
   { href: "/projects", labelKey: "nav.projects" },
   { href: "/about", labelKey: "nav.about" },

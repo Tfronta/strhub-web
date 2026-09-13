@@ -52,6 +52,13 @@ catalog: {
   },
 },
 datasets: {
+  hub: {
+    title: "Datos",
+    description:
+      "Frecuencias alélicas de marcadores STR forenses por población y dataset. Explóralas en gráficos o descarga las tablas para tu propio análisis. Los datasets de CE y NGS se mantienen separados.",
+    tabExplore: "Explorar frecuencias",
+    tabDownload: "Descargar datasets",
+  },
   title: "Conjuntos de datos",
   description: "Esta sección permite descargar conjuntos de datos STR curados, incluyendo frecuencias alélicas y, cuando están disponibles, datos de genotipos, en formatos estándar para su integración directa con otros programas y flujos de análisis.",
   description2: "STRhub no combina ni reinterpreta datos. Cada conjunto de datos se presenta tal como fue definido originalmente, utilizando una única tecnología y una nomenclatura de alelos consistente.",

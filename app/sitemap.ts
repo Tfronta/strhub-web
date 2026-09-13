@@ -33,8 +33,6 @@ const STATIC_ROUTES: Array<{
   { path: "/community", changeFrequency: "weekly", priority: 0.7 },
   { path: "/projects", changeFrequency: "monthly", priority: 0.6 },
   { path: "/about", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/strbase", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/global-frequencies", changeFrequency: "monthly", priority: 0.7 },
 ];
 
 const VERIFIED_ROUTES: typeof STATIC_ROUTES = [

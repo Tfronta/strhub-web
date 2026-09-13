@@ -8,7 +8,6 @@ nav: {
   projects: "Resources",
   about: "About",
   search: "Search",
-  strbase: "STRBase Integration",
   mixProfiles: "Mixtures",
   globalFrequencies: "Global Frequencies",
   datasets: "Data",

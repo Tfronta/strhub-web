@@ -80,7 +80,7 @@ interface DatasetConfig {
 
 const MAX_POPULATIONS_FOR_CHART = 7;
 
-export default function GlobalFrequenciesPage() {
+export function ExplorePanel() {
   const { t, language } = useLanguage();
   const [selectedDataset, setSelectedDataset] = useState<DatasetId>("CE");
   const [selectedPopulations, setSelectedPopulations] = useState<Set<string>>(
@@ -439,13 +439,9 @@ export default function GlobalFrequenciesPage() {
   const datasetInfo = getDatasetInfo();
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-6 max-w-7xl">
-        {/* Header */}
+    <div>
+        {/* Intro */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            {t("globalFrequencies.title")}
-          </h1>
           <p className="text-base text-muted-foreground mb-3">
             {t("globalFrequencies.heroLine")}
           </p>
@@ -800,7 +796,6 @@ export default function GlobalFrequenciesPage() {
             </CardContent>
           </Card>
         )}
-      </main>
     </div>
   );
 }

@@ -5,9 +5,7 @@ import { useLanguage } from "@/contexts/language-context";
 
 const FOOTER_LINKS = [
   { href: "/catalog", labelKey: "nav.catalog" },
-  { href: "/global-frequencies", labelKey: "nav.globalFrequencies" },
   { href: "/datasets", labelKey: "nav.datasets" },
-  { href: "/strbase", labelKey: "nav.strbase" },
   { href: "/tools", labelKey: "nav.tools" },
   { href: "/mix-profiles", labelKey: "nav.mixProfiles" },
   { href: "/basics", labelKey: "nav.basics" },

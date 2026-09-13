@@ -52,6 +52,13 @@ catalog: {
   },
 },
 datasets: {
+  hub: {
+    title: "Data",
+    description:
+      "Allele frequencies of forensic STR markers by population and dataset. Explore them in charts, or download the tables for your own analysis. CE and NGS datasets are kept separate.",
+    tabExplore: "Explore frequencies",
+    tabDownload: "Download datasets",
+  },
   title: "Datasets",
   description: "This section allows you to download curated STR datasets, including allele frequencies and, when available, genotype data, in standard formats for direct integration into external software and analytical workflows.",
   description2: "STRhub does not merge or reinterpret data. Each dataset is provided as originally defined, using a single technology and consistent allele nomenclature.",

@@ -3,6 +3,7 @@
 import type React from "react";
 import {
   BookOpen,
+  ExternalLink,
   FlaskConical,
   Github,
   Heart,
@@ -10,7 +11,6 @@ import {
   MessageSquare,
   Share2,
   Target,
-  Users,
 } from "lucide-react";
 import {
   Card,
@@ -71,7 +71,7 @@ export default function AboutPage() {
       <div className="container mx-auto px-4 md:px-0 py-8 space-y-6">
         <PageTitle title={t("about.title")} />
         <div className="space-y-8">
-          {/* First row: Mission and Team */}
+          {/* First row: Mission and Why This Matters */}
           <div className="grid items-stretch lg:grid-cols-2 gap-8">
             {/* Mission */}
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
@@ -96,58 +96,110 @@ export default function AboutPage() {
               </CardContent>
             </Card>
 
-            {/* Team */}
+            {/* Why This Matters */}
             <Card className="border-0 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary">
-                    <Users className="h-5 w-5 text-primary-foreground" />
+                    <Heart className="h-5 w-5 text-primary-foreground" />
                   </div>
-                  <CardTitle className="text-2xl">{trans.team}</CardTitle>
+                  <CardTitle className="text-2xl">{trans.whyThisMatters}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground leading-relaxed">
-                  {trans.teamP1.split("**").map((part, index) => 
-                    index % 2 === 1 ? (
-                      <strong key={index}>{part}</strong>
-                    ) : (
-                      <span key={index}>{part}</span>
-                    )
-                  )}
+                  {trans.whyP1}
                 </p>
                 <p className="text-muted-foreground leading-relaxed">
-                  {trans.teamP2}
+                  {trans.whyP2}
                 </p>
                 <p className="text-muted-foreground leading-relaxed">
-                  {trans.teamP3}
-                </p>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  <a
-                    href="https://orcid.org/0000-0002-6873-7813"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    {trans.teamP4}
-                  </a>
+                  {trans.whyP3}
                 </p>
               </CardContent>
             </Card>
+
           </div>
 
-          {/* Community Contributors */}
-          <section className="border-t border-border pt-12">
+          {/* People: project lead, academic supervision, community contributors */}
+          <section id="people" className="scroll-mt-24 border-t border-border pt-12">
             <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-              {t("communityHub.communityContributors.title")}
+              {t("about.people.title")}
             </h2>
-            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-              {t("communityHub.communityContributors.subtitle")}
-            </p>
-            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+
+            {/* Project lead */}
+            <Card className="mt-6 border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 py-0">
+              <CardContent className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-start sm:gap-6">
+                <div
+                  className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground"
+                  aria-hidden
+                >
+                  TF
+                </div>
+                <div className="min-w-0 flex-1 space-y-1.5">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                    {t("about.people.lead")}
+                  </p>
+                  <p className="text-2xl font-bold leading-tight text-foreground">
+                    {t("about.people.leadName")}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("about.people.affiliation")}. {t("about.people.country")}
+                  </p>
+                  <p className="pt-1 text-base leading-relaxed text-muted-foreground">
+                    {t("about.people.leadBio")}
+                  </p>
+                  <div className="flex flex-wrap gap-4 pt-1 text-sm">
+                    <a
+                      href="https://orcid.org/0000-0002-6873-7813"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-primary hover:underline"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                      {t("about.people.orcid")}: 0000-0002-6873-7813
+                    </a>
+                    <a
+                      href="https://github.com/Tfronta"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-primary hover:underline"
+                    >
+                      <Github className="h-3.5 w-3.5" aria-hidden />
+                      {t("about.people.github")}: Tfronta
+                    </a>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Academic supervision */}
+            <Card className="mt-4 border-0 border-l-4 border-solid border-l-[#0099a3] bg-gradient-to-br from-card to-card/50 py-0 lg:max-w-3xl">
+              <CardContent className="px-5 py-4 space-y-1">
+                <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                  {t("about.people.support")}
+                </p>
+                <p className="font-bold text-foreground leading-snug">
+                  {t("about.people.supportName")}
+                </p>
+                <p className="text-sm leading-snug text-muted-foreground">
+                  {t("about.people.affiliation")}. {t("about.people.country")}
+                </p>
+                <p className="pt-1 text-sm leading-relaxed text-muted-foreground">
+                  {t("about.people.supportBio")}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Community contributors */}
+            <h3 className="mt-10 text-lg font-semibold tracking-tight">
+              {t("communityHub.communityContributors.title")}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {t("communityHub.communityContributors.subtitle")}{" "}
               {t("communityHub.communityContributors.disclaimer")}
             </p>
-            <div className="mt-6 space-y-4">
+            <div className="mt-4 space-y-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                 {firstRow.map((contributor) => (
                   <Card
@@ -260,35 +312,12 @@ export default function AboutPage() {
             </div>
           </section>
 
-          {/* Why This Matters and Contact */}
-          <div className="grid lg:grid-cols-2 gap-8 border-t border-border pt-12">
-            {/* Why This Matters */}
-            <Card className="border-0 bg-gradient-to-br from-card to-card/50">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary">
-                    <Heart className="h-5 w-5 text-primary-foreground" />
-                  </div>
-                  <CardTitle className="text-2xl">{trans.whyThisMatters}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground leading-relaxed">
-                  {trans.whyP1}
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  {trans.whyP2}
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  {trans.whyP3}
-                </p>
-              </CardContent>
-            </Card>
-
+          {/* Contact */}
+          <div className="border-t border-border pt-12">
             {/* Contact (single form for the whole site) */}
             <Card
               id="contact"
-              className="scroll-mt-24 border-0 bg-gradient-to-br from-card to-card/50 flex flex-col"
+              className="scroll-mt-24 border-0 bg-gradient-to-br from-card to-card/50 flex flex-col lg:max-w-3xl"
             >
               <CardHeader>
                 <div className="flex items-center gap-3">

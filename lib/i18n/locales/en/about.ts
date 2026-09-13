@@ -149,7 +149,7 @@ communityHub: {
       'Back to basics articles to help you and your team build a solid foundation in STR and NGS analysis.',
     loading: "Loading posts...",
     readMore: "Read More",
-    viewAll: "View all Back to Basics posts",
+    viewAll: "View all Foundations articles",
     noPosts: "No posts available yet.",
   },
   comingSoon: {

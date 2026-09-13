@@ -90,7 +90,7 @@ export default function HomePageClient() {
             {t("home.exploreSectionTitle")}
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* 1. Back to Basics */}
+            {/* 1. Foundations */}
             <Link href="/basics">
               <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-card to-card/50 h-full">
                 <CardHeader>

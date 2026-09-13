@@ -20,7 +20,7 @@ export default function ArticlePageClient({
   params: { locale: string; slug: string };
   initialPost: BasicsArticle;
 }) {
-  const { setLanguage } = useLanguage();
+  const { setLanguage, t } = useLanguage();
   const locale = params.locale as Language;
   const isValidLocale = SUPPORTED_LOCALES.includes(locale);
   const post = initialPost;
@@ -41,7 +41,7 @@ export default function ArticlePageClient({
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Articles
+          {t("basics.backToArticles")}
         </Link>
       </div>
 
@@ -85,7 +85,7 @@ export default function ArticlePageClient({
               variant="outline"
               className="hover:bg-primary hover:text-primary-foreground transition-colors"
             >
-              Back to Articles
+              {t("basics.backToArticles")}
             </Badge>
           </Link>
         </div>

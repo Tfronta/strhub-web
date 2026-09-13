@@ -1,11 +1,11 @@
 export default {
 basics: {
-  title: "Fundamentos de STRs",
+  title: "Fundamentos",
   subtitle: "Entendiendo los Fundamentos",
   description:
     "Explorá loci STR a lo largo de los cromosomas humanos y aprendé los conceptos centrales detrás de la genética forense y los flujos de trabajo en bioinformática.",
   readArticle: "Leer Artículo",
-  backToArticles: "← Volver a Todos los Artículos",
+  backToArticles: "Volver a Fundamentos",
   readTime: "min de lectura",
   topicsCovered: "Temas cubiertos:",
   explorerSectionTitle: "Explorar STRs en el genoma",

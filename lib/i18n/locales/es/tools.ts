@@ -180,6 +180,8 @@ tools: {
   documentation: "Documentación",
   github: "Ver en GitHub",
   igvHelp: {
+    show: "Ver guía",
+    hide: "Ocultar guía",
     sectionTitle: "Guía para interpretar la vista de IGV",
     howToRead: "Cómo leer esta vista de IGV",
     readAligned: "Cada línea horizontal es una lectura de secuenciación alineada al genoma de referencia",

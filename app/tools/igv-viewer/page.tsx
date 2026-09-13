@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { ChevronDown, Eye, Info } from "lucide-react";
+import { BookOpen, ChevronRight, Eye, Info } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import {
   Card,
@@ -348,18 +348,26 @@ export default function IgvViewerPage() {
                 onOpenChange={setHelpOpen}
                 className="mt-4 border-t pt-3"
               >
-                <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md py-2 text-left hover:bg-muted/50 transition-colors px-1">
+                <CollapsibleTrigger
+                  aria-expanded={helpOpen}
+                  className="group flex w-full items-center justify-between gap-3 rounded-md border border-dashed border-primary/40 bg-primary/5 px-3 py-2.5 text-left transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
                   <div className="flex items-center gap-2">
-                    <Info className="h-4 w-4 text-muted-foreground shrink-0" />
+                    {/* Disclosure chevron on the left: rotates to point down when open. */}
+                    <ChevronRight
+                      aria-hidden
+                      className={`h-4 w-4 shrink-0 text-primary transition-transform duration-200 ${
+                        helpOpen ? "rotate-90" : ""
+                      }`}
+                    />
+                    <BookOpen aria-hidden className="h-4 w-4 shrink-0 text-primary" />
                     <span className="text-sm font-semibold">
                       {t("tools.igvHelp.sectionTitle")}
                     </span>
                   </div>
-                  <ChevronDown
-                    className={`h-4 w-4 text-muted-foreground shrink-0 transition-transform duration-200 ${
-                      helpOpen ? "rotate-180" : ""
-                    }`}
-                  />
+                  <span className="shrink-0 text-xs font-medium text-primary underline-offset-4 group-hover:underline">
+                    {helpOpen ? t("tools.igvHelp.hide") : t("tools.igvHelp.show")}
+                  </span>
                 </CollapsibleTrigger>
 
                 <CollapsibleContent>

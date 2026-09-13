@@ -84,6 +84,16 @@ export const COMMUNITY_CONTRIBUTORS: CommunityContributor[] = [
     institutionKey: "angel_carracedo_alvarez",
     country: "Spain",
   },
+  {
+    name: "Katherine Butler Gettings",
+    institutionKey: "katherine_butler_gettings",
+    country: "USA",
+  },
+  {
+    name: "Walther Parson",
+    institutionKey: "walther_parson",
+    country: "Austria",
+  },
 ];
 
 /** Shown first, same row (md+), left to right. Must match `name` in `COMMUNITY_CONTRIBUTORS`. */
@@ -92,6 +102,13 @@ const COMMUNITY_CONTRIBUTORS_FIRST_ROW_NAMES: readonly string[] = [
   "Sebastian Ganschow",
   "Melissa Gymrek",
   "Ángel Carracedo Álvarez",
+];
+
+/** Lead the second grid, in this order; everyone else follows sorted by first surname. */
+const COMMUNITY_CONTRIBUTORS_SECOND_ROW_NAMES: readonly string[] = [
+  "Katherine Butler Gettings",
+  "Walther Parson",
+  "Jonathan King",
 ];
 
 export function getCommunityContributorsForGrid(): {
@@ -106,9 +123,13 @@ export function getCommunityContributorsForGrid(): {
   ).filter((c): c is CommunityContributor => c != null);
 
   const firstSet = new Set(firstRow.map((c) => c.name));
-  const remaining = [...COMMUNITY_CONTRIBUTORS]
-    .filter((c) => !firstSet.has(c.name))
+  const secondRow = COMMUNITY_CONTRIBUTORS_SECOND_ROW_NAMES.map((name) =>
+    byName.get(name)
+  ).filter((c): c is CommunityContributor => c != null);
+  const placed = new Set([...firstSet, ...secondRow.map((c) => c.name)]);
+  const rest = [...COMMUNITY_CONTRIBUTORS]
+    .filter((c) => !placed.has(c.name))
     .sort(compareContributorsByFirstSurname);
 
-  return { firstRow, remaining };
+  return { firstRow, remaining: [...secondRow, ...rest] };
 }

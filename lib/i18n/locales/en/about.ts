@@ -113,6 +113,7 @@ communityHub: {
       USA: "USA",
       Spain: "Spain",
       Germany: "Germany",
+      Austria: "Austria",
     },
     institutions: {
       john_m_butler: "NIST",
@@ -121,6 +122,8 @@ communityHub: {
       parana_scientific_police: "Paraná Scientific Police",
       jonathan_king: "University of North Texas",
       angel_carracedo_alvarez: "University of Santiago de Compostela",
+      katherine_butler_gettings: "NIST",
+      walther_parson: "Medical University of Innsbruck",
     },
     disclaimer:
       "The people listed below generously shared feedback, ideas, or conversations that helped shape STRhub. This recognition does not mean they authored STRhub's content or materials. Thank you.",

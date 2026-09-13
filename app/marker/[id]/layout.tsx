@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { pageMetadata } from "@/lib/seo";
 import { markerData } from "@/lib/markerData";
+import { markerFrequenciesCE } from "@/app/marker/[id]/markerFrequencies";
 
 type Props = {
   params: { id: string };
@@ -36,7 +37,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const motif = marker.motif ? ` Repeat motif ${marker.motif}.` : "";
   const alleles = marker.alleles ? ` Allele range ${marker.alleles}.` : "";
 
+  // A marker page with no coordinates, no reference sequences and no
+  // frequency data is a near-empty page; keep it out of the index (links are
+  // still followed) until the record is filled in.
+  const key = params.id.toLowerCase();
+  const hasContent =
+    marker.coordinates?.start != null ||
+    (marker.sequences?.length ?? 0) > 0 ||
+    key in markerFrequenciesCE;
+
   return pageMetadata(canonicalPath, {
+    index: hasContent,
     title: `${name} STR marker`,
     description:
       `${name}${where}: ${kind || "STR"} marker.${motif}${alleles} ` +

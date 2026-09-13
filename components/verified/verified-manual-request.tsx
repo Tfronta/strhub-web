@@ -15,7 +15,6 @@
 import Link from "next/link";
 import { ArrowLeft, LifeBuoy, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
-import { SiteFooter } from "@/components/site-footer";
 import { PageTitle } from "@/components/page-title";
 import { manualRequestMailto, reasonI18nKey } from "@/lib/verified/manual";
 import type { VerifiedManualVerification } from "@/types/verified";
@@ -169,7 +168,6 @@ export function VerifiedManualRequest({
           </section>
         )}
       </main>
-      <SiteFooter />
     </div>
   );
 }

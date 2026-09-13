@@ -30,7 +30,6 @@ import { useRouter } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/contexts/language-context"; // Fixed import path to use correct location
 import { PageTitle } from "@/components/page-title";
-import { SiteFooter } from "@/components/site-footer";
 import { markerData } from "@/lib/markerData";
 import { markers } from "@/lib/catalogMarkers";
 import { markerFrequenciesCE } from "@/app/marker/[id]/markerFrequencies";
@@ -543,7 +542,14 @@ export default function CatalogPage() {
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <CardTitle className="text-2xl font-bold text-gradient">
-                          {marker.name}
+                          {/* Real link so crawlers (and middle-click) reach the marker page. */}
+                          <Link
+                            href={detailPath}
+                            onClick={(event) => event.stopPropagation()}
+                            className="focus:outline-none focus-visible:underline"
+                          >
+                            {marker.name}
+                          </Link>
                         </CardTitle>
                         <CardDescription className="font-medium">
                           {getTranslatedFullName(
@@ -692,7 +698,6 @@ export default function CatalogPage() {
           </div>
         </div>
       </div>
-      <SiteFooter />
 
       <Sheet open={filterSheetOpen} onOpenChange={setFilterSheetOpen}>
         <SheetContent

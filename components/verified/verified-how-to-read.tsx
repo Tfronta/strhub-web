@@ -11,7 +11,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
-import { SiteFooter } from "@/components/site-footer";
 
 export function VerifiedHowToRead() {
   const { t } = useLanguage();
@@ -96,7 +95,6 @@ export function VerifiedHowToRead() {
           {t("verified.scopeNote")}
         </p>
       </div>
-      <SiteFooter />
     </div>
   );
 }

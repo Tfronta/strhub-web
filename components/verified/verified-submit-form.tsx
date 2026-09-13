@@ -21,7 +21,6 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PageTitle } from "@/components/page-title";
-import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
 import {
   submissionSchema,
@@ -3109,7 +3108,6 @@ export function VerifiedSubmitForm() {
           </Button>
         </form>
       </div>
-      <SiteFooter />
     </div>
   );
 }
@@ -3118,7 +3116,6 @@ function ResultShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-[60vh]">
       <div className="container mx-auto max-w-2xl px-4 py-12 flex-1">{children}</div>
-      <SiteFooter />
     </div>
   );
 }

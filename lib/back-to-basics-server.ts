@@ -1,13 +1,14 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import {
   getContentfulClient,
   buildIncludesMaps,
   resolveAuthor,
 } from "@/lib/contentful";
-import type { BasicsArticle } from "@/lib/back-to-basics-types";
+import type { BasicsArticle, BasicsListItem } from "@/lib/back-to-basics-types";
 import { BASICS_LOCALES, type BasicsLocale } from "@/lib/seo";
 
-export type { BasicsArticle } from "@/lib/back-to-basics-types";
+export type { BasicsArticle, BasicsListItem } from "@/lib/back-to-basics-types";
 
 const CONTENT_TYPE = "backToBasicsPost";
 const DEFAULT_CF_LOCALE = "en-US";
@@ -179,3 +180,49 @@ export async function fetchAllBasicsSlugs(): Promise<string[]> {
   const articles = await fetchAllBasicsArticles();
   return articles.map((a) => a.slugs.en);
 }
+
+async function fetchBasicsListUncached(
+  locale: string,
+  tag: string
+): Promise<BasicsListItem[]> {
+  try {
+    const client = getContentfulClient();
+    const response = await client.getEntries({
+      content_type: CONTENT_TYPE,
+      order: ["-sys.createdAt"],
+      locale: toContentfulLocale(locale),
+      select: [
+        "sys.id",
+        "fields.title",
+        "fields.summary",
+        "fields.postReadMinutes",
+        "fields.keywords",
+        "fields.slug",
+      ],
+      "metadata.tags.sys.id[in]": [tag],
+      limit: 100,
+    } as any);
+    return (response.items || []).map((it: any) => ({
+      sys: { id: it.sys.id },
+      fields: {
+        title: it.fields?.title ?? "",
+        summary: it.fields?.summary ?? "",
+        postReadMinutes: it.fields?.postReadMinutes ?? 0,
+        keywords: it.fields?.keywords ?? [],
+        slug: it.fields?.slug,
+      },
+    }));
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Article cards for the /basics index, cached for 60 s per locale and tag so
+ * the server-rendered index does not hit Contentful on every request.
+ */
+export const fetchBasicsList = unstable_cache(
+  fetchBasicsListUncached,
+  ["basics-list"],
+  { revalidate: 60 }
+);

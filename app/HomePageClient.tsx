@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/contexts/language-context";
-import { SiteFooter } from "@/components/site-footer";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -329,7 +328,6 @@ export default function HomePageClient() {
         </div>
       </section>
 
-      <SiteFooter />
     </div>
   );
 }

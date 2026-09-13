@@ -57,7 +57,7 @@ export function pageMetadata(path: string, meta: PageMeta): Metadata {
       images: [OG_IMAGE],
       ...twitter,
     },
-    ...(index ? {} : { robots: { index: false, follow: false } }),
+    ...(index ? {} : { robots: { index: false, follow: true } }),
     ...rest,
   };
 }

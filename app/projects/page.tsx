@@ -12,7 +12,6 @@ import {
 import { useLanguage } from "@/contexts/language-context";
 import Link from "next/link";
 import { PageTitle } from "@/components/page-title";
-import { SiteFooter } from "@/components/site-footer";
 
 interface Project {
   id: string;
@@ -200,7 +199,6 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <SiteFooter />
     </div>
   );
 }

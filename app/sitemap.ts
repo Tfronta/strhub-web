@@ -55,14 +55,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
-  const articleEntries: MetadataRoute.Sitemap = articles.flatMap((article) =>
-    BASICS_LOCALES.map((locale) => ({
+  const articleEntries: MetadataRoute.Sitemap = articles.flatMap((article) => {
+    const languages: Record<string, string> = {
+      "x-default": `${SITE_URL}${basicsArticlePath("en", article.slugs.en)}`,
+    };
+    for (const locale of BASICS_LOCALES) {
+      languages[locale] = `${SITE_URL}${basicsArticlePath(locale, article.slugs[locale])}`;
+    }
+    return BASICS_LOCALES.map((locale) => ({
       url: `${SITE_URL}${basicsArticlePath(locale, article.slugs[locale])}`,
       lastModified: article.updatedAt ? new Date(article.updatedAt) : now,
       changeFrequency: "monthly" as const,
       priority: 0.7,
-    }))
-  );
+      alternates: { languages },
+    }));
+  });
 
   const markerEntries: MetadataRoute.Sitemap = Object.keys(markerData).map(
     (id) => ({

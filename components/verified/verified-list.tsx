@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
-import { SiteFooter } from "@/components/site-footer";
 import {
   VERIFIED_LEVELS,
   type VerifiedIndex,
@@ -240,7 +239,6 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
           {t("verified.disclaimer")}
         </p>
       </div>
-      <SiteFooter />
     </div>
   );
 }

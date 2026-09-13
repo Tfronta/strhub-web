@@ -3,6 +3,18 @@
 import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
 
+const FOOTER_LINKS = [
+  { href: "/catalog", labelKey: "nav.catalog" },
+  { href: "/global-frequencies", labelKey: "nav.globalFrequencies" },
+  { href: "/datasets", labelKey: "nav.datasets" },
+  { href: "/strbase", labelKey: "nav.strbase" },
+  { href: "/tools", labelKey: "nav.tools" },
+  { href: "/mix-profiles", labelKey: "nav.mixProfiles" },
+  { href: "/verified", labelKey: "nav.verified" },
+  { href: "/basics", labelKey: "nav.basics" },
+  { href: "/about", labelKey: "nav.about" },
+];
+
 export function SiteFooter() {
   const { t } = useLanguage();
 
@@ -31,6 +43,17 @@ export function SiteFooter() {
             {t("home.footer.community")}
           </p>
         </div>
+        <nav aria-label="Footer" className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm">
+          {FOOTER_LINKS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {t(item.labelKey)}
+            </Link>
+          ))}
+        </nav>
       </div>
     </footer>
   );

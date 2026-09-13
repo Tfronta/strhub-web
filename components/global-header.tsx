@@ -310,7 +310,10 @@ export function GlobalHeader() {
                     <Link
                       href={entry.href}
                       className={cn(
-                        "inline-flex h-9 items-center rounded-md px-3 text-base font-medium hover:text-primary transition-colors",
+                        // Same as the triggers: the default link paints bg-accent
+                        // on hover/focus, which hides teal text after a click.
+                        "inline-flex h-9 items-center rounded-md px-3 text-base font-medium transition-colors !bg-transparent text-foreground",
+                        "hover:text-primary focus:text-primary active:text-primary data-[active=true]:text-primary",
                         isActive(pathname, entry.href) && "text-primary"
                       )}
                     >

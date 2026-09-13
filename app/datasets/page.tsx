@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BarChart3, Download } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PageTitle } from "@/components/page-title";
 import { useLanguage } from "@/contexts/language-context";
 import { ExplorePanel } from "./ExplorePanel";
 import { DownloadPanel } from "./DownloadPanel";
@@ -37,14 +38,12 @@ export default function DataPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-6 max-w-7xl">
+      <main className="container mx-auto px-4 py-6">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            {t("datasets.hub.title")}
-          </h1>
-          <p className="text-base text-muted-foreground max-w-4xl">
-            {t("datasets.hub.description")}
-          </p>
+          <PageTitle
+            title={t("datasets.hub.title")}
+            description={t("datasets.hub.description")}
+          />
         </div>
 
         <Tabs value={activeTab} onValueChange={setTab} className="space-y-6">

@@ -110,6 +110,7 @@ globalFrequencies: {
   selectPopulationsToView: "Por favor, selecciona al menos una población para ver frecuencias.",
   selectMarker: "Seleccionar Marcador",
   selectMarkerPlaceholder: "Selecciona un marcador...",
+  openMarkerPage: "Abrir página del marcador",
   searchMarkers: "Buscar marcadores...",
   datasetInfo: "Información del Conjunto de Datos",
   datasetName: "Nombre del Conjunto de Datos",

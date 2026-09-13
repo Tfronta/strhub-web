@@ -617,7 +617,7 @@ export function DownloadPanel() {
           <p className="text-sm text-muted-foreground leading-relaxed mb-2">
             {t("datasets.description2")}
           </p>
-          <p className="text-sm text-muted-foreground max-w-4xl leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t("datasets.description3")}
           </p>
         </div>

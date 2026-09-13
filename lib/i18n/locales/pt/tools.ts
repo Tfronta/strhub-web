@@ -433,6 +433,9 @@ fastaGeneratorPage: {
     allelesPlaceholder: "ex.: 10-12 ou 9,10,11",
     flankingLabel: "Região flanqueadora (pb por lado)",
     outputLabel: "Tipo de saída",
+    referenceLabel: "Genoma de referência",
+    referenceHint: "A sequência flanqueadora é cortada da fita positiva deste assembly.",
+    comingSoon: "em breve",
     generateButton: "Gerar sequência",
   },
   output: {
@@ -442,6 +445,7 @@ fastaGeneratorPage: {
       'Selecione um marcador e clique em "Gerar sequência" para começar',
     copyButton: "Copiar",
     downloadButton: "Baixar FASTA",
+    referenceLine: "Referência: {build}, fita positiva. Janela exportada: {region}. Verificado contra o UCSC {ucsc}.",
   },
   messages: {
     enterAlleles: "Informe os alelos (ex.: 10-12 ou 9,10,11)",

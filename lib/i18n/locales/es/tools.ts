@@ -432,6 +432,9 @@ fastaGeneratorPage: {
     allelesPlaceholder: "p. ej. 10-12 o 9,10,11",
     flankingLabel: "Región flanqueante (pb por lado)",
     outputLabel: "Tipo de salida",
+    referenceLabel: "Genoma de referencia",
+    referenceHint: "La secuencia flanqueante se corta de la hebra positiva de este ensamblado.",
+    comingSoon: "próximamente",
     generateButton: "Generar secuencia",
   },
   output: {
@@ -441,6 +444,7 @@ fastaGeneratorPage: {
       'Selecciona un marcador y haz clic en "Generar secuencia" para comenzar',
     copyButton: "Copiar",
     downloadButton: "Descargar FASTA",
+    referenceLine: "Referencia: {build}, hebra positiva. Ventana exportada: {region}. Verificado contra UCSC {ucsc}.",
   },
   messages: {
     enterAlleles: "Ingresa alelos (p. ej. 10-12 o 9,10,11)",

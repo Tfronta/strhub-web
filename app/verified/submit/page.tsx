@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { VerifiedSubmitForm } from "@/components/verified/verified-submit-form";
+import { VerifiedStart } from "@/components/verified/verified-start";
 
 export const metadata: Metadata = {
   title: { absolute: "Verify a tool | STRhub Verified" },
   description:
-    "Self-service certification that your forensic STR tool installs and runs end-to-end on its public source at a pinned commit. STRhub stores no source code.",
+    "Paste a public repository. STRhub works out how to install and run the tool, rehearses it in a clean environment, and publishes nothing until you say so.",
 };
 
 export default function VerifiedSubmitPage() {
-  return <VerifiedSubmitForm />;
+  return <VerifiedStart role="owner" />;
 }

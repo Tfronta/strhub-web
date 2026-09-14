@@ -37,13 +37,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       ok: true,
       message: "Test email sent — check your inbox.",
-      env: { RESEND_API_KEY: "SET (" + key.slice(0, 8) + "…)", RESEND_FROM_EMAIL: from ?? "MISSING" },
+      env: { RESEND_API_KEY: "SET", RESEND_FROM_EMAIL: from ?? "MISSING" },
     });
   } catch (err: any) {
     return NextResponse.json({
       ok: false,
       error: err?.message ?? String(err),
-      env: { RESEND_API_KEY: "SET (" + key.slice(0, 8) + "…)", RESEND_FROM_EMAIL: from ?? "MISSING" },
+      env: { RESEND_API_KEY: "SET", RESEND_FROM_EMAIL: from ?? "MISSING" },
     });
   }
 }

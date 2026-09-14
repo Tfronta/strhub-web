@@ -8,10 +8,10 @@
  *      publicly reachable, and a regions BED fits the reference slice's panel.
  *   4. Resolve who owns the slug, from the committed manifest. A different repo
  *      is refused (409); only the same repo may overwrite and re-run.
- *   5. New repos require admin approval before their first run → recorded as
- *      "approved-pending" and NOT dispatched until an admin approves the repo.
- *   6. Commit manifest.yml + Dockerfile to tools/<slug>/ (rebuilt from THIS
- *      submission, so edits apply) and dispatch with a unique dispatch_id.
+ *   5. EVERY submission is held for admin approval → recorded as
+ *      "approved-pending" and NOT dispatched until an admin approves it.
+ *   6. (On approval, /api/verify/approve) Commit manifest.yml + Dockerfile to
+ *      tools/<slug>/ and dispatch with a unique dispatch_id.
  *
  * STRhub never stores tool source code — only the verification metadata.
  */
@@ -29,24 +29,13 @@ import {
   fetchPanel,
 } from "@/lib/verified/validate-regions";
 import {
-  buildManifestYaml,
-  buildSubmissionJson,
-  generateDockerfile,
-  REGIONS_ASSET_PATH,
-  SUBMISSION_ASSET_PATH,
-} from "@/lib/verified/manifest";
-import {
-  ENGINE_REPO,
   GitHubConfigError,
   GitHubApiError,
   getFileContent,
-  putFile,
-  dispatchWorkflow,
 } from "@/lib/verified/github";
 import {
   checkRateLimit,
   hashClient,
-  isRepoApproved,
   normalizeRepo,
   recordSubmission,
 } from "@/lib/verified/store";
@@ -240,9 +229,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 3b. New-repo gate: hold for admin approval. Only the author's OWN
-    //     re-submission skips it — an existing directory is not consent.
-    if (!isOwnResubmission && !(await isRepoApproved(sub.source.repo))) {
+    // 3b. Every submission is held for admin approval. This used to be skipped
+    //     when the repository had been approved once before, or when the slug's
+    //     manifest already named the same repository. Neither is evidence about
+    //     the SUBMITTER: the repository URL is a field in an unauthenticated
+    //     POST, so anyone could name an approved repository, attach an
+    //     arbitrary Dockerfile (docker.mode "provided") and have it built and
+    //     run in the engine's CI, then published as an attestation of that
+    //     repository under its maintainer's name. Until a submission can prove
+    //     control of the repository (a marker file at the pinned ref, planned),
+    //     a human looks at every one. The commit + dispatch that used to follow
+    //     here now lives only in /api/verify/approve, so the submitter does
+    //     not need to come back.
+    {
       const pendingRecord = {
         slug,
         repo: sub.source.repo,
@@ -268,59 +267,12 @@ export async function POST(request: NextRequest) {
           status: "pending-approval",
           slug,
           message:
-            "This repository is new to STRhub Verified and must be approved by an admin before its first run. You'll be able to resubmit once approved.",
+            "Every submission is reviewed by a STRhub admin before it runs. Approval starts the run; you do not need to resubmit.",
         },
         { status: 202 }
       );
     }
 
-    // 4. Commit metadata + dispatch.
-    //    The manifest and Dockerfile are rebuilt from THIS submission every time,
-    //    including re-submissions. They used to be written only when the directory
-    //    was new, which silently discarded every edit: an author told by the
-    //    diagnostics that a flag does not exist would fix the command, press
-    //    "Edit & re-submit", and get the identical failure back with no
-    //    indication why. That broke the promise the whole free tier rests on —
-    //    that a correctable failure costs nothing to correct — so overwriting is
-    //    the correct behaviour. It is safe only because 3a established that the
-    //    slug belongs to this repository; a stranger never reaches this line.
-    const dispatchId = newDispatchId();
-    const alreadyExists = owner !== null;
-    const now = new Date().toISOString();
-    const msg = `verified: ${alreadyExists ? "update" : "add"} ${slug} (${sub.source.repo}@${sub.source.ref})`;
-    await putFile(`tools/${slug}/manifest.yml`, buildManifestYaml(sub, slug), msg);
-    await putFile(`tools/${slug}/Dockerfile`, generateDockerfile(sub), msg);
-    if (sub.inputs.regions_bed) {
-      await putFile(`tools/${slug}/${REGIONS_ASSET_PATH}`, sub.inputs.regions_bed, msg);
-    }
-    // The answers behind the manifest, kept so a later submission from the same
-    // repository can refill the form instead of re-deriving twenty fields from
-    // a Dockerfile. Never fatal: a run must not be lost over a convenience file.
-    try {
-      await putFile(
-        `tools/${slug}/${SUBMISSION_ASSET_PATH}`,
-        buildSubmissionJson(sub, now),
-        msg
-      );
-    } catch (e) {
-      console.error("verify/submit: could not store submission.json:", e);
-    }
-    await dispatchWorkflow({ tool: slug, dispatch_id: dispatchId });
-
-    await recordSubmission({
-      slug,
-      repo: sub.source.repo,
-      ref: sub.source.ref,
-      dispatchId,
-      createdAt: new Date().toISOString(),
-      clientHash,
-      status: "dispatched",
-    });
-
-    return NextResponse.json(
-      { ok: true, status: "dispatched", slug, dispatchId, engineRepo: ENGINE_REPO },
-      { status: 201 }
-    );
   } catch (e) {
     if (e instanceof GitHubConfigError) {
       console.error("verify/submit config error:", e.message);

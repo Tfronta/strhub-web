@@ -31,7 +31,9 @@ function secret(): string | null {
 /** Sign an admin token. Throws when no secret is configured, so callers can 503. */
 export function signAdminToken(
   payload: object,
-  expiresIn: jwt.SignOptions["expiresIn"] = "30d"
+  // A day at most. The token sits in the admin's localStorage with no way to
+  // revoke it, so its lifetime is the whole exposure window if it leaks.
+  expiresIn: jwt.SignOptions["expiresIn"] = "12h"
 ): string {
   const key = secret()
   if (!key) throw new Error("JWT_SECRET is not configured")
@@ -42,7 +44,9 @@ export function verifyToken(token: string) {
   const key = secret()
   if (!key) return null
   try {
-    return jwt.verify(token, key)
+    // The algorithm is pinned so a token cannot pick its own (the library
+    // defaults to accepting any HMAC variant when the secret is a string).
+    return jwt.verify(token, key, { algorithms: ["HS256"] })
   } catch (error) {
     return null
   }

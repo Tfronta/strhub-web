@@ -184,6 +184,9 @@ export type SubmitterRole = (typeof SUBMITTER_ROLES)[number];
 
 /** Output formats the engine's IO gate understands. */
 export const OUTPUT_FORMATS = ["vcf", "csv", "tsv", "json", "text"] as const;
+/** Formats in the engine's regions library (datasets/<type>/regions/<format>.bed). */
+export const REGIONS_LIBRARY_FORMATS = ["hipstr", "gangstr", "strsearch", "bed4"] as const;
+export type RegionsLibraryFormat = (typeof REGIONS_LIBRARY_FORMATS)[number];
 export type OutputFormat = (typeof OUTPUT_FORMATS)[number];
 
 /** Build paths for the Dockerfile (see §14 of the plan). */
@@ -372,6 +375,13 @@ export const submissionSchema = z
         // 1 MB is far above any forensic panel (tens of rows) and far below a
         // genome-wide reference, which cannot work against a slice anyway.
         regions_bed: z.string().min(1).max(1_000_000).optional(),
+        /**
+         * One of STRhub's ready-made regions files instead of an upload: the
+         * dataset's panel loci in the layout the tool reads. Mirrors the
+         * engine's inputs.regions.library. Wins over regions_bed when both are
+         * sent, since it is the one the engine can vouch for.
+         */
+        regions_library: z.enum(REGIONS_LIBRARY_FORMATS).optional(),
       })
       .strict(),
     outputs: z.array(outputSchema).min(1).max(5),

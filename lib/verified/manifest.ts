@@ -159,7 +159,10 @@ export function buildManifestObject(sub: QueuedSubmission, slug: string): Json {
   // The author uploaded the BED; the API commits it here. `provided_by` keeps the
   // choice of loci attributed to them — the file lives in our repo, but they picked
   // the regions, and the report must not credit STRhub for that.
-  if (sub.inputs.regions_bed) {
+  if (sub.inputs.regions_library) {
+    // STRhub's own file, by format: nothing to commit, nothing to attribute.
+    inputs.regions = { library: sub.inputs.regions_library };
+  } else if (sub.inputs.regions_bed) {
     inputs.regions = {
       path: `tools/${slug}/${REGIONS_ASSET_PATH}`,
       provided_by: "author",

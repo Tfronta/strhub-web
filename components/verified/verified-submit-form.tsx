@@ -22,7 +22,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PageTitle } from "@/components/page-title";
 import { useLanguage } from "@/contexts/language-context";
+import { detectRegionsFormat, countRegions } from "@/lib/verified/regions-format";
 import {
+  REGIONS_LIBRARY_FORMATS,
   submissionSchema,
   versionFromRef,
   deriveSlug,
@@ -44,6 +46,7 @@ import {
   looksLikeUnconvertedPanel,
   fetchPanel,
   panelUrl,
+  libraryUrl,
   type BedInterval,
   type RegionsValidation,
 } from "@/lib/verified/validate-regions";
@@ -87,6 +90,8 @@ const FORM_STORAGE_KEY = "strhub-verified-submit-form";
 
 interface StoredFormState {
   f: typeof INITIAL_F;
+  /** STRhub ready-made regions file chosen, by format; "" for an upload. */
+  regionsLibrary?: string;
   dockerMode: "generated" | "provided";
   needsBuild: boolean;
   fixtureSource: FixtureSource;
@@ -604,6 +609,11 @@ export function VerifiedSubmitForm() {
   const [panel, setPanel] = useState<BedInterval[] | null>(null);
   const [panelState, setPanelState] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [regionsBed, setRegionsBed] = useState<string>("");
+  // One of STRhub's ready-made regions files, by format. "" = upload my own.
+  // The default for a coordinate-based tool: nobody has to write a BED to try.
+  const [regionsLibrary, setRegionsLibrary] = useState<string>("bed4");
+  const [regionsDetected, setRegionsDetected] = useState<{ format: string; count: number } | null>(null);
+  const [regionsPreview, setRegionsPreview] = useState<string | null>(null);
   const [regionsFileName, setRegionsFileName] = useState<string>("");
   const [regionsCheck, setRegionsCheck] = useState<RegionsValidation | null>(null);
   // Non-blocking: true when the upload looks like our panel handed back unconverted.
@@ -703,6 +713,7 @@ export function VerifiedSubmitForm() {
       setNeedsBuild(stored.needsBuild ?? stored.f.buildCmd.trim() !== "");
       setFixtureSource(stored.fixtureSource);
       setShowContent(stored.showContent);
+      if (typeof stored.regionsLibrary === "string") setRegionsLibrary(stored.regionsLibrary);
       // Sessions saved before the question existed have no answer, and there is
       // none to infer: they stay unanswered and the box asks.
       if (stored.submitterRole === "maintainer" || stored.submitterRole === "third_party") {
@@ -1212,10 +1223,20 @@ export function VerifiedSubmitForm() {
       setRegionsFileError(t("verified.submit.regionsGzip"));
       return;
     }
-    setRegionsBed(await file.text());
+    const text = await file.text();
+    setRegionsBed(text);
+    // A file in a layout STRhub already has a ready-made file for is worth
+    // saying so: a 590-locus genome-wide reference is still that layout, and
+    // the slice can only serve the panel's loci anyway.
+    const fmt = detectRegionsFormat(text);
+    setRegionsDetected(fmt ? { format: fmt, count: countRegions(text) } : null);
   }
 
   function onInputTypeChange(value: string) {
+    // Radix Select reports "" when a controlled value is set from outside after
+    // mount (restoring a saved form, arriving from a trial). No option is empty,
+    // so "" is never a choice; taking it wiped the restored input type.
+    if (value === "") return;
     const entry = INPUT_TYPES.find((t) => t.slug === value);
     const template = buildCmdTemplate(entry);
     setF((prev) => ({
@@ -1253,7 +1274,7 @@ export function VerifiedSubmitForm() {
     f.outputPath.trim() !== "" &&
     // A coordinate-based tool needs an uploaded regions BED that clears the panel
     // check. Blocking here spares the author a CI run that would only reject it.
-    (!needsRegions || (regionsBed !== "" && regionsCheck?.ok === true));
+    (!needsRegions || regionsLibrary !== "" || (regionsBed !== "" && regionsCheck?.ok === true));
 
   /**
    * What will actually be run, given both answers.
@@ -1323,7 +1344,8 @@ export function VerifiedSubmitForm() {
       ? { repo: fixtureRepo, ref: fixtureRef, path: f.fixtureFilePath }
       : undefined;
 
-    const regions_bed = needsRegions && regionsBed !== "" ? regionsBed : undefined;
+    const regions_bed = needsRegions && regionsLibrary === "" && regionsBed !== "" ? regionsBed : undefined;
+    const regions_library = needsRegions && regionsLibrary !== "" ? (regionsLibrary as "hipstr" | "gangstr" | "strsearch" | "bed4") : undefined;
 
     return {
       tool: {
@@ -1426,7 +1448,7 @@ export function VerifiedSubmitForm() {
       return;
     }
 
-    if (needsRegions && !payload.inputs.regions_bed) {
+    if (needsRegions && !payload.inputs.regions_bed && !payload.inputs.regions_library) {
       setFormError(t("verified.submit.regionsRequiredError"));
       return;
     }
@@ -1442,7 +1464,7 @@ export function VerifiedSubmitForm() {
       return;
     }
 
-    saveFormState({ f, dockerMode, needsBuild, fixtureSource, showContent, submitterRole });
+    saveFormState({ f, dockerMode, needsBuild, fixtureSource, showContent, submitterRole, regionsLibrary });
     setPhase("submitting");
     try {
       const res = await fetch("/api/verify/submit", {
@@ -2300,7 +2322,7 @@ export function VerifiedSubmitForm() {
                   {t("verified.submit.dockerGeneratedHint")}
                 </p>
                 <Field label={t("verified.submit.language")} required>
-                  <Select value={f.language} onValueChange={(v) => setF((prev) => ({ ...prev, language: v }))}>
+                  <Select value={f.language} onValueChange={(v) => { if (v) setF((prev) => ({ ...prev, language: v })); }}>
                     <SelectTrigger className="h-11">
                       <SelectValue />
                     </SelectTrigger>
@@ -2612,7 +2634,49 @@ export function VerifiedSubmitForm() {
                   </div>
                 </div>
 
+                {/* STRhub's ready-made files first: the panel's loci in the
+                    tool's own layout, generated from hg38, nothing to write. */}
+                <Field label={t("verified.submit.regionsLibraryLabel")} required>
+                  <select
+                    id="regions-library"
+                    value={regionsLibrary}
+                    onChange={(e) => { setRegionsLibrary(e.target.value); setRegionsPreview(null); if (e.target.value) { setRegionsBed(""); setRegionsFileName(""); setRegionsDetected(null); } }}
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    {REGIONS_LIBRARY_FORMATS.map((fmt) => (
+                      <option key={fmt} value={fmt}>{t(`verified.submit.regionsLibraryOption.${fmt}`)}</option>
+                    ))}
+                    <option value="">{t("verified.submit.regionsLibraryOption.upload")}</option>
+                  </select>
+                  <p className="text-xs text-muted-foreground mt-1">{t("verified.submit.regionsLibraryHint")}</p>
+                  {regionsLibrary !== "" && (
+                    <div className="mt-2 text-xs">
+                      <p className="text-muted-foreground">{t(`verified.submit.regionsLibraryUsedBy.${regionsLibrary}`)}</p>
+                      <button
+                        type="button"
+                        className="mt-1 font-medium text-primary underline underline-offset-2"
+                        onClick={async () => {
+                          if (regionsPreview) { setRegionsPreview(null); return; }
+                          try {
+                            const res = await fetch(libraryUrl(f.inputType, regionsLibrary));
+                            const text = await res.text();
+                            setRegionsPreview(text.split("\n").filter((l) => l.trim()).slice(0, 6).join("\n"));
+                          } catch {
+                            setRegionsPreview(t("verified.submit.regionsPreviewError"));
+                          }
+                        }}
+                      >
+                        {regionsPreview ? t("verified.submit.regionsPreviewHide") : t("verified.submit.regionsPreview")}
+                      </button>
+                      {regionsPreview && (
+                        <pre className="mt-1 overflow-x-auto rounded-md bg-muted p-2 font-mono text-[11px] leading-snug">{regionsPreview}</pre>
+                      )}
+                    </div>
+                  )}
+                </Field>
+
                 {/* Upload the converted BED. */}
+                {regionsLibrary === "" && (<>
                 <Field label={t("verified.submit.regionsUploadLabel")} required>
                   <label className="flex items-center gap-3 cursor-pointer rounded-md border border-dashed border-border px-4 py-3 text-sm hover:bg-muted/40 transition-colors">
                     <Upload className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -2630,6 +2694,24 @@ export function VerifiedSubmitForm() {
                     {t("verified.submit.regionsUploadHint")}
                   </p>
                 </Field>
+                {regionsDetected && (
+                  <div className="flex flex-wrap items-center gap-2 rounded-md border border-[#0099a3]/30 bg-[#0099a3]/5 px-3 py-2 text-xs">
+                    <span>
+                      {t("verified.submit.regionsDetected", {
+                        format: t(`verified.submit.regionsLibraryOption.${regionsDetected.format}`),
+                        count: String(regionsDetected.count),
+                      })}
+                    </span>
+                    <button
+                      type="button"
+                      className="font-medium text-primary underline underline-offset-2"
+                      onClick={() => { setRegionsLibrary(regionsDetected.format); setRegionsBed(""); setRegionsFileName(""); setRegionsDetected(null); }}
+                    >
+                      {t("verified.submit.regionsUseLibrary")}
+                    </button>
+                  </div>
+                )}
+                </>)}
 
                 {/* Nudge, not a requirement: keeping the BED in the tool's own repo
                     helps the tool's future users. STRhub doesn't fetch or validate
@@ -2979,7 +3061,7 @@ export function VerifiedSubmitForm() {
             >
               <Select
                 value={f.outputFormat}
-                onValueChange={(v) => setF((prev) => ({ ...prev, outputFormat: v }))}
+                onValueChange={(v) => { if (v) setF((prev) => ({ ...prev, outputFormat: v })); }}
               >
                 <SelectTrigger className="h-11">
                   <SelectValue />

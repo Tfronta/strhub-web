@@ -98,6 +98,9 @@ export function formStateFromTrial(report: TrialReport, recipe: TrialRecipe) {
       expectLoci: "",
       minTotalReads: "",
     },
+    // The library file the trial used, so the form opens with it selected and
+    // the person can switch to another layout or upload their own.
+    regionsLibrary: (yml.match(/^\s+library:\s*([a-z0-9]+)/m)?.[1] ?? ""),
     dockerMode,
     needsBuild: false,
     fixtureSource: "none" as const,

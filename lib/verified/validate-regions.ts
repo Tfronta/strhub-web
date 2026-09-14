@@ -254,6 +254,11 @@ export function panelUrl(inputType: string): string {
   return `${ENGINE_RAW_BASE}/datasets/${inputType}/loci.bed`;
 }
 
+/** The ready-made regions file for a dataset type and layout, on the engine's main branch. */
+export function libraryUrl(inputType: string, format: string): string {
+  return `${ENGINE_RAW_BASE}/datasets/${encodeURIComponent(inputType)}/regions/${encodeURIComponent(format)}.bed`;
+}
+
 /** Fetch a dataset's panel. Returns null when the type has no panel (e.g. ONT). */
 export async function fetchPanel(inputType: string): Promise<BedInterval[] | null> {
   const res = await fetch(panelUrl(inputType));

@@ -537,6 +537,26 @@ export default {
       regionsLabel: "Your regions BED file",
       regionsExplainer:
         "Required for tools that read BAM files. Every tool expects its own BED layout (HipSTR, GangSTR and others use different columns), so the BED is yours to define. STRhub supplies the coordinates: download the panel below, convert it to your tool's format, and upload it.",
+      regionsLibraryLabel: "Regions file",
+      regionsLibraryHint: "STRhub has the reference sample's forensic loci ready in each of these layouts, generated from hg38. Pick the one your tool reads; upload your own only if none fits.",
+      regionsLibraryOption: {
+        hipstr: "7 columns: chrom, start, end, period, reference copies, name, motif",
+        gangstr: "5 columns: chrom, start, end, period, motif",
+        strsearch: "11 columns: coordinates, period, allele, names, structure, strand, 5' and 3' flanking sequences",
+        bed4: "4 columns: chrom, start, end, name (plain BED)",
+        upload: "None of these: upload my own regions file",
+      },
+      regionsLibraryUsedBy: {
+        hipstr: "The layout HipSTR reads with --regions.",
+        gangstr: "The layout GangSTR reads with --regions.",
+        strsearch: "The layout STRsearch reads with --ref_bed.",
+        bed4: "Plain BED; most tools that take a BED read this.",
+      },
+      regionsPreview: "Preview the first lines",
+      regionsPreviewHide: "Hide preview",
+      regionsPreviewError: "Could not load the preview.",
+      regionsDetected: "This looks like the {format}, with {count} regions. STRhub has a ready-made file in that layout with only the loci the reference sample covers.",
+      regionsUseLibrary: "Use STRhub's file instead",
       regionsUploadLabel: "Upload your BED",
       regionsUploadPlaceholder: "Choose a .bed file…",
       regionsUploadHint:

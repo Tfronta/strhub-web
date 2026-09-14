@@ -537,6 +537,26 @@ export default {
       regionsLabel: "Seu arquivo BED de regiões",
       regionsExplainer:
         "Obrigatório para ferramentas que leem arquivos BAM. Cada ferramenta espera seu próprio formato de BED (HipSTR, GangSTR e outras usam colunas diferentes), então o BED é você quem define. O STRhub fornece as coordenadas: baixe o painel abaixo, converta para o formato da sua ferramenta e envie.",
+      regionsLibraryLabel: "Arquivo de regiões",
+      regionsLibraryHint: "O STRhub tem os loci forenses da amostra de referência prontos em cada um destes formatos, gerados a partir do hg38. Escolha o que sua ferramenta lê; envie o seu só se nenhum servir.",
+      regionsLibraryOption: {
+        hipstr: "7 colunas: chrom, start, end, período, cópias de referência, nome, motivo",
+        gangstr: "5 colunas: chrom, start, end, período, motivo",
+        strsearch: "11 colunas: coordenadas, período, alelo, nomes, estrutura, fita, sequências flanqueadoras 5' e 3'",
+        bed4: "4 colunas: chrom, start, end, nome (BED simples)",
+        upload: "Nenhum destes: enviar meu próprio arquivo de regiões",
+      },
+      regionsLibraryUsedBy: {
+        hipstr: "O formato que o HipSTR lê com --regions.",
+        gangstr: "O formato que o GangSTR lê com --regions.",
+        strsearch: "O formato que o STRsearch lê com --ref_bed.",
+        bed4: "BED simples; a maioria das ferramentas que aceitam BED lê este.",
+      },
+      regionsPreview: "Ver as primeiras linhas",
+      regionsPreviewHide: "Ocultar prévia",
+      regionsPreviewError: "Não foi possível carregar a prévia.",
+      regionsDetected: "Isto parece {format}, com {count} regiões. O STRhub tem um arquivo pronto nesse formato só com os loci que a amostra de referência cobre.",
+      regionsUseLibrary: "Usar o arquivo do STRhub",
       regionsUploadLabel: "Envie seu BED",
       regionsUploadPlaceholder: "Escolha um arquivo .bed…",
       regionsUploadHint:

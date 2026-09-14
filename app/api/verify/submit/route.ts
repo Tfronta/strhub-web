@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
   //     not enforcement — a direct POST must not get past it. Rejecting here also
   //     spares a CI run that the harness pre-flight would only abort anyway.
   const typeInfo = INPUT_TYPES.find((it) => it.slug === sub.inputs.type);
-  if (typeInfo?.requiresRegions) {
+  if (typeInfo?.requiresRegions && !sub.inputs.regions_library) {
     if (!sub.inputs.regions_bed) {
       return NextResponse.json(
         {

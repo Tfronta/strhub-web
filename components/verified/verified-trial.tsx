@@ -19,6 +19,8 @@ import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
 import { VERIFIED_GATES } from "@/types/verified";
 import type { TrialRole, TrialStatus, TrialVerdictCode } from "@/lib/verified/trial";
+import { ownerIssueUrl, prepareSelfFix } from "@/lib/verified/trial-next-steps";
+import { useRouter } from "next/navigation";
 
 const POLL_MS = 8000;
 const STALL_AFTER_MS = 6 * 60 * 1000;
@@ -43,6 +45,7 @@ function extractCmd(manifestYml: string): string | null {
 
 export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const { t } = useLanguage();
+  const router = useRouter();
   const [status, setStatus] = useState<TrialStatus | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [publishState, setPublishState] = useState<"idle" | "busy" | "done" | "error">("idle");
@@ -186,6 +189,46 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             )}
           </section>
 
+          {verdict.blockers && verdict.blockers.length > 0 && status?.recipe && (
+            <Card className="mt-6 border-amber-300 dark:border-amber-800">
+              <CardHeader>
+                <CardTitle className="text-base">{t("verified.trial.stoppedTitle")}</CardTitle>
+                <p className="text-xs text-muted-foreground">{t("verified.trial.stoppedHint")}</p>
+              </CardHeader>
+              <CardContent>
+                <ol className="space-y-5">
+                  {verdict.blockers.map((b) => {
+                    const issue = ownerIssueUrl(report, b, typeof window !== "undefined" ? window.location.href.split("?")[0] : "");
+                    return (
+                      <li key={b.code} className="text-sm">
+                        <p className="font-medium">{b.what}</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {b.self_fix && (
+                            <Button
+                              size="sm"
+                              onClick={() => router.push(prepareSelfFix(report, status.recipe!, b.self_fix!))}
+                              title={t("verified.trial.selfFixHint")}
+                            >
+                              {t("verified.trial.selfFix")}
+                            </Button>
+                          )}
+                          {issue && (
+                            <Button asChild size="sm" variant="outline" title={t("verified.trial.askOwnerHint")}>
+                              <a href={issue} target="_blank" rel="noopener noreferrer">
+                                {t("verified.trial.askOwner")} <ExternalLink className="ml-1 h-3.5 w-3.5" />
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+                        <p className="mt-1 text-xs text-muted-foreground">{b.self_fix_text}</p>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </CardContent>
+            </Card>
+          )}
+
           {role === "owner" && (
             <Card className="mt-6">
               <CardContent className="pt-6">
@@ -298,6 +341,16 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
           )}
 
           <p className="mt-6 flex flex-wrap gap-4 text-sm">
+            {status?.files?.pdf && (
+              <a href={status.files.pdf} className="inline-flex items-center gap-1 underline underline-offset-2">
+                {t("verified.trial.pdf")}
+              </a>
+            )}
+            {status?.files?.html && (
+              <a href={status.files.html} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 underline underline-offset-2">
+                {t("verified.trial.html")} <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            )}
             {status?.runUrl && (
               <a href={status.runUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 underline underline-offset-2">
                 {t("verified.trial.runLink")} <ExternalLink className="h-3.5 w-3.5" />

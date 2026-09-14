@@ -715,6 +715,11 @@ export function VerifiedSubmitForm() {
       }
     }
     setHydrated(true);
+    // Arriving from a trial's "fix it yourself": land on the section to fix.
+    const hash = typeof window !== "undefined" ? window.location.hash : "";
+    if (hash.startsWith("#section-")) {
+      setTimeout(() => document.querySelector(hash)?.scrollIntoView({ behavior: "smooth", block: "start" }), 300);
+    }
   }, []);
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setF((prev) => ({ ...prev, [k]: e.target.value }));
@@ -2263,7 +2268,7 @@ export function VerifiedSubmitForm() {
           )}
 
           {/* ── 4. Environment ───────────────────────────────────────── */}
-          <Section title={t("verified.submit.sectionEnv")} disabled={!sourceReady}>
+          <Section id="section-env" title={t("verified.submit.sectionEnv")} disabled={!sourceReady}>
             <Field
               label={t("verified.submit.dockerMode")}
               infoTooltip={t("verified.submit.dockerModeTooltip")}
@@ -2370,6 +2375,7 @@ export function VerifiedSubmitForm() {
 
           {/* ── 5. Input data (before Execution so user sees canonical paths first) */}
           <Section
+            id="section-inputs"
             title={t("verified.submit.sectionInputs")}
             hint={t("verified.submit.sectionInputsHint")}
             disabled={!sourceReady}
@@ -2825,7 +2831,7 @@ export function VerifiedSubmitForm() {
           </Section>
 
           {/* ── 6. Execution ─────────────────────────────────────────── */}
-          <Section title={t("verified.submit.sectionRun")} disabled={!sourceReady}>
+          <Section id="section-run" title={t("verified.submit.sectionRun")} disabled={!sourceReady}>
             <Field
               label={t("verified.submit.cmd")}
               required
@@ -2886,6 +2892,7 @@ export function VerifiedSubmitForm() {
 
           {/* ── 7. Outputs ───────────────────────────────────────────── */}
           <Section
+            id="section-outputs"
             title={t("verified.submit.sectionOutputs")}
             hint={t("verified.submit.sectionOutputsHint")}
             disabled={!sourceReady}
@@ -3251,6 +3258,7 @@ function SubmissionParams({
  * collapsible section still be unfolded while its contents are gated.
  */
 function Section({
+  id,
   title,
   hint,
   disabled,
@@ -3260,6 +3268,8 @@ function Section({
   summary,
   children,
 }: {
+  /** Anchor, so "fix it yourself" from a trial can land on the right section. */
+  id?: string;
   title: string;
   hint?: string;
   disabled?: boolean;
@@ -3273,6 +3283,7 @@ function Section({
   const expanded = !collapsible || open !== false;
   return (
     <fieldset
+      id={id}
       disabled={disabled}
       className={`space-y-4 ${disabled ? "opacity-50" : ""}`}
     >

@@ -18,7 +18,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://strhub.app";
  * `<a href="https://evil/approve">Aprobar</a>` becomes a working link in the
  * one message whose whole purpose is to get the admin to click "approve".
  */
-function esc(value: string): string {
+export function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -44,12 +44,12 @@ export async function notifyNewPendingSubmission(params: {
   if (!client) return;
 
   const dashboardUrl = `${SITE_URL}/admin/dashboard`;
-  const toolName = esc(params.toolName);
-  const toolVersion = esc(params.toolVersion);
-  const slug = esc(params.slug);
-  const repo = esc(params.repo);
-  const repoLabel = esc(params.repo.replace("https://github.com/", ""));
-  const ip = esc(params.ip);
+  const toolName = escapeHtml(params.toolName);
+  const toolVersion = escapeHtml(params.toolVersion);
+  const slug = escapeHtml(params.slug);
+  const repo = escapeHtml(params.repo);
+  const repoLabel = escapeHtml(params.repo.replace("https://github.com/", ""));
+  const ip = escapeHtml(params.ip);
 
   const { error } = await client.emails.send({
     from: FROM,

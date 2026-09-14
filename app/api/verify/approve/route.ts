@@ -64,6 +64,12 @@ export async function POST(request: NextRequest) {
           const msg = `verified: add ${slug} from trial ${recipe.data.trial_id} (${pending.repo}@${pending.ref})`;
           await putFile(`tools/${slug}/manifest.yml`, recipe.data.manifest_yml, msg);
           await putFile(`tools/${slug}/Dockerfile`, recipe.data.dockerfile, msg);
+          // Plan B travels with the recipe: the manifest declares it under
+          // environment.fallback, and prepare.py warns (and runs without one)
+          // if the file it names is not next to the manifest.
+          if (recipe.data.dockerfile_fallback) {
+            await putFile(`tools/${slug}/Dockerfile.fallback`, recipe.data.dockerfile_fallback, msg);
+          }
           if (recipe.data.regions_bed) {
             await putFile(`tools/${slug}/${REGIONS_ASSET_PATH}`, recipe.data.regions_bed, msg);
           }

@@ -12,6 +12,7 @@ export const recipePayloadSchema = z
     trial_id: z.string().regex(/^tr_[a-z0-9]+_[a-z0-9]+$/),
     manifest_yml: z.string().min(20).max(60_000),
     dockerfile: z.string().min(10).max(60_000),
+    dockerfile_fallback: z.string().min(10).max(60_000).optional(),
     regions_bed: z.string().max(1_000_000).optional(),
   })
   .strict();

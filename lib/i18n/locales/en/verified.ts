@@ -28,6 +28,7 @@ export default {
       "This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Any maintainer named above is who answers for the software — not who asked for this report, and not an endorsement of it.",
     commit: "Commit",
     environment: "Environment",
+    environmentFallback: "Plan B: {reason}, after the build from the pinned commit failed.",
     ciRun: "CI run",
     gates: "Gates",
     scope: "Scope",
@@ -123,6 +124,9 @@ export default {
     install: {
       heading: "Why the environment did not build",
       note: "The container could not be built from the declared install steps, so nothing below the Installs gate ran.",
+      headingFallback: "Why the pinned commit did not build",
+      noteFallback:
+        "The container could not be built from the declared install steps at the pinned commit; {reason} was built instead, and every gate below ran on it. What ran is the version that environment holds, not necessarily the pinned commit.",
       faultStrhub:
         "At least one cause is STRhub's, not the tool's: the container recipe for a generated environment is ours. Nothing here is a finding about the software, and nothing needs fixing on the author's side.",
       faultHarness:
@@ -776,6 +780,9 @@ export default {
       recipeCmd: "Command",
       recipeDockerfile: "Environment (Dockerfile)",
       recipeRepoDockerfile: "The repository's own Dockerfile was built as-is.",
+      recipeFallbackUsed: "The build from the pinned commit failed (see the build log). What ran is this fallback environment: {reason}.",
+      recipeFallbackAvailable: "Plan B, not needed this time: if the build above had failed, STRhub would have used {reason}.",
+      recipeFallbackReason: "the fallback environment the recipe declares",
       caveatsTitle: "Caveats: what STRhub guessed",
       logsTitle: "Logs",
       log: {

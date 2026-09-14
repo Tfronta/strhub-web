@@ -767,6 +767,7 @@ export default {
       },
       verdictMeaning: {
         runs: "Se instaló desde su código público y produjo su salida documentada en un entorno limpio.",
+        runsFallback: "Produjo su salida documentada en un entorno limpio — sobre el entorno publicado al que apunta el README, no sobre un build del commit fijado.",
         fails: "No lo hizo. La evidencia apunta a la herramienta o a su forma documentada de correr.",
         undetermined: "STRhub no pudo deducir cómo correrla desde el repositorio. Es un hallazgo sobre la documentación, no sobre el software.",
         out_of_scope: "Necesita algo que el runner automático no puede dar. Una verificación manual puede cubrirlo.",

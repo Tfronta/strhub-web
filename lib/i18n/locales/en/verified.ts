@@ -767,6 +767,7 @@ export default {
       },
       verdictMeaning: {
         runs: "It installed from its public source and produced its documented output in a clean environment.",
+        runsFallback: "It produced its documented output in a clean environment — on the published environment the README points at, not on a build of the pinned commit.",
         fails: "It did not. The evidence points at the tool or its documented way of running.",
         undetermined: "STRhub could not work out how to run it from the repository. That is a finding about the documentation, not about the software.",
         out_of_scope: "It needs something the automated runner cannot provide. A manual verification can cover it.",

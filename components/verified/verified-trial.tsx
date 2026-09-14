@@ -193,7 +193,9 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
           <section className="mt-6 rounded-lg border p-5" aria-labelledby="trial-verdict">
             <div className="flex flex-wrap items-center gap-3">
               <Badge className={`${VERDICT_TONE[verdict.code]} border-transparent text-sm`}>{t(`verified.trial.verdict.${verdict.code}`)}</Badge>
-              <h2 id="trial-verdict" className="text-lg font-semibold">{t(`verified.trial.verdictMeaning.${verdict.code}`)}</h2>
+              <h2 id="trial-verdict" className="text-lg font-semibold">
+                {t(`verified.trial.verdictMeaning.${verdict.code === "runs" && fallbackUsed ? "runsFallback" : verdict.code}`)}
+              </h2>
             </div>
             <p className="mt-3 text-sm text-muted-foreground">{verdict.reason}</p>
             {verdict.readme_gaps && verdict.readme_gaps.length > 0 && (

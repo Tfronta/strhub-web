@@ -767,6 +767,7 @@ export default {
       },
       verdictMeaning: {
         runs: "Instalou a partir do código público e produziu a saída documentada em um ambiente limpo.",
+        runsFallback: "Produziu sua saída documentada em um ambiente limpo — no ambiente publicado que o README indica, não em um build do commit fixado.",
         fails: "Não produziu. A evidência aponta para a ferramenta ou para sua forma documentada de executar.",
         undetermined: "O STRhub não conseguiu deduzir como executá-la a partir do repositório. É um achado sobre a documentação, não sobre o software.",
         out_of_scope: "Precisa de algo que o runner automático não pode fornecer. Uma verificação manual pode cobrir.",

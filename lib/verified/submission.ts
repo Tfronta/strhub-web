@@ -232,7 +232,22 @@ export const contentSchema = z
 
 export const outputSchema = z
   .object({
-    path: z.string().trim().min(1).max(200),
+    path: z
+      .string()
+      .trim()
+      .min(1)
+      .max(200)
+      // Mirrors the engine schema. The glob is resolved under /data/out by the
+      // IO and Content gates; a pattern that could leave it ("../in_own/*", an
+      // absolute path) used to pass both gates against the staged INPUT. The
+      // engine now refuses it, but refusing here means the submitter is told
+      // at the form instead of by a run that stops before its first gate.
+      .refine((v) => !v.startsWith("/") && !v.startsWith("~"), {
+        message: "Output path must be relative to /data/out, not an absolute path",
+      })
+      .refine((v) => !v.split("/").includes(".."), {
+        message: "Output path must stay under /data/out ('..' is not allowed)",
+      }),
     format: z.enum(OUTPUT_FORMATS),
     min_records: z.number().int().min(0).default(1),
     must_contain: z.array(z.string().min(1)).optional(),

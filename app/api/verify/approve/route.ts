@@ -14,7 +14,14 @@ import { approveRepo, normalizeRepo, getPendingBySlug, updateSubmissionStatus } 
 // predate a field that is now required, and an approval must not be refused over
 // a question its author was never asked (see queuedSubmissionSchema).
 import { queuedSubmissionSchema, newDispatchId } from "@/lib/verified/submission";
-import { buildManifestYaml, generateDockerfile, REGIONS_ASSET_PATH } from "@/lib/verified/manifest";
+import { recipePayloadSchema } from "@/lib/verified/trial-publish";
+import {
+  buildManifestYaml,
+  buildSubmissionJson,
+  generateDockerfile,
+  REGIONS_ASSET_PATH,
+  SUBMISSION_ASSET_PATH,
+} from "@/lib/verified/manifest";
 import { putFile, dispatchWorkflow, GitHubConfigError, GitHubApiError } from "@/lib/verified/github";
 
 export const runtime = "nodejs";
@@ -47,7 +54,24 @@ export async function POST(request: NextRequest) {
     const pending = await getPendingBySlug(body.slug);
     if (pending?.payload) {
       try {
-        const parsed = queuedSubmissionSchema.safeParse(JSON.parse(pending.payload));
+        const raw = JSON.parse(pending.payload);
+        // A recipe published from a trial: the exact manifest and Dockerfile the
+        // engine ran, committed verbatim. Nothing to rebuild from form answers.
+        const recipe = recipePayloadSchema.safeParse(raw);
+        if (recipe.success) {
+          const slug = pending.slug;
+          const dispatchId = newDispatchId();
+          const msg = `verified: add ${slug} from trial ${recipe.data.trial_id} (${pending.repo}@${pending.ref})`;
+          await putFile(`tools/${slug}/manifest.yml`, recipe.data.manifest_yml, msg);
+          await putFile(`tools/${slug}/Dockerfile`, recipe.data.dockerfile, msg);
+          if (recipe.data.regions_bed) {
+            await putFile(`tools/${slug}/${REGIONS_ASSET_PATH}`, recipe.data.regions_bed, msg);
+          }
+          await dispatchWorkflow({ tool: slug, dispatch_id: dispatchId });
+          await updateSubmissionStatus(slug, "approved-pending", "dispatched", { dispatchId });
+          return NextResponse.json({ ok: true, repo: normalizeRepo(repo), dispatched: true, slug, dispatchId });
+        }
+        const parsed = queuedSubmissionSchema.safeParse(raw);
         if (parsed.success) {
           const sub = parsed.data;
           const slug = pending.slug;
@@ -62,6 +86,18 @@ export async function POST(request: NextRequest) {
           // exactly the kind of fault that hides for months.
           if (sub.inputs.regions_bed) {
             await putFile(`tools/${slug}/${REGIONS_ASSET_PATH}`, sub.inputs.regions_bed, msg);
+          }
+          // The answers behind the manifest, so a later submission from the
+          // same repository can refill the form. Written here because every
+          // submission now passes through approval; never fatal.
+          try {
+            await putFile(
+              `tools/${slug}/${SUBMISSION_ASSET_PATH}`,
+              buildSubmissionJson(sub, new Date().toISOString()),
+              msg
+            );
+          } catch (e) {
+            console.error("verify/approve: could not store submission.json:", e);
           }
           await dispatchWorkflow({ tool: slug, dispatch_id: dispatchId });
           await updateSubmissionStatus(slug, "approved-pending", "dispatched", { dispatchId });

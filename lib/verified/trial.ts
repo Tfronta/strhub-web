@@ -32,12 +32,24 @@ export type TrialRole = (typeof TRIAL_ROLES)[number];
 
 export type TrialVerdictCode = "runs" | "fails" | "undetermined" | "out_of_scope";
 
+export type SelfFix = "upload_regions" | "edit_command" | "choose_install" | "edit_install" | "edit_output";
+
+/** What stopped a trial, as two actions (see harness/verdict.py BLOCKERS). */
+export interface TrialBlocker {
+  code: string;
+  what: string;
+  self_fix: SelfFix | null;
+  self_fix_text: string;
+  ask_owner: { title: string; body: string };
+}
+
 export interface TrialVerdict {
   code: TrialVerdictCode;
   title: string;
   reason: string;
   basis?: string;
   readme_gaps?: { item: string; text: string }[];
+  blockers?: TrialBlocker[];
 }
 
 export interface TrialRecipe {
@@ -66,6 +78,8 @@ export interface TrialStatus {
   recipe: TrialRecipe | null;
   summaryMd: string | null;
   logs: Record<string, string>;
+  /** Files in the artifact a reader may want whole: the PDF and the static HTML. */
+  files?: { pdf?: string; html?: string };
 }
 
 /** Trial dispatch ids are distinguishable from verification ones (sv_…). */
@@ -161,6 +175,12 @@ export async function startTrial(repoUrl: string, ref: string | undefined): Prom
 // ---------------------------------------------------------------------------
 
 const finished = new Map<string, TrialStatus>();
+/** The PDF and HTML bytes of finished trials, served by /api/verify/trial/file. */
+const binaries = new Map<string, Record<string, Uint8Array>>();
+
+export function getTrialFile(id: string, name: "pdf" | "html"): Uint8Array | null {
+  return binaries.get(id)?.[name] ?? null;
+}
 
 /** "Trial <slug> [tr_…]" is the run-name the engine gives a trial. */
 function slugFromRunName(name: string | undefined): string | null {
@@ -183,7 +203,9 @@ function baseStatus(id: string, run: WorkflowRun | null): TrialStatus {
   };
 }
 
-async function readArtifact(runId: number, slug: string): Promise<Partial<TrialStatus> | "expired" | null> {
+const runIdHolder = { id: "" };
+
+async function readArtifact(runId: number, slug: string): Promise<(Partial<TrialStatus> & { _bin?: Record<string, Uint8Array> }) | "expired" | null> {
   const artifacts = await listRunArtifacts(runId);
   const art = artifacts.find((a) => a.name === `trial-${slug}`) ?? artifacts.find((a) => a.name.startsWith("trial-"));
   if (!art) return null;
@@ -198,12 +220,18 @@ async function readArtifact(runId: number, slug: string): Promise<Partial<TrialS
     const m = f.match(/\.log-(own|external|example|build)\.txt$/);
     if (m) logs[m[1]] = strFromU8(files[f]).slice(-20_000);
   }
+  const bin: Record<string, Uint8Array> = {};
+  if (files[`${slug}.pdf`]) bin.pdf = files[`${slug}.pdf`];
+  if (files[`${slug}.html`]) bin.html = files[`${slug}.html`];
   return {
     report: reportText ? (JSON.parse(reportText) as TrialReport) : null,
     recipe: recipeText ? (JSON.parse(recipeText) as TrialRecipe) : null,
     summaryMd: text(`${slug}.summary.md`),
     logs,
-  };
+    files: { pdf: bin.pdf ? `/api/verify/trial/file?id=${encodeURIComponent(runIdHolder.id)}&name=pdf` : undefined,
+             html: bin.html ? `/api/verify/trial/file?id=${encodeURIComponent(runIdHolder.id)}&name=html` : undefined },
+    _bin: bin,
+  } as Partial<TrialStatus> & { _bin: Record<string, Uint8Array> };
 }
 
 /**
@@ -227,8 +255,15 @@ async function fixtureTrial(id: string): Promise<TrialStatus | null> {
       const m = f.match(/^log-(own|external|example|build)\.txt$/);
       if (m) logs[m[1]] = (await fs.readFile(path.join(base, f), "utf-8")).slice(-20_000);
     }
+    const bin: Record<string, Uint8Array> = {};
+    for (const [name, file] of [["pdf", "report.pdf"], ["html", "report.html"]] as const) {
+      try { bin[name] = new Uint8Array(await fs.readFile(path.join(base, file))); } catch { /* optional */ }
+    }
+    binaries.set(id, bin);
     return { id, state: "completed", conclusion: "success", runUrl: report.ci_run ?? null,
-             slug: recipe?.slug ?? null, startedAt: report.generated, report, recipe, summaryMd, logs };
+             slug: recipe?.slug ?? null, startedAt: report.generated, report, recipe, summaryMd, logs,
+             files: { pdf: bin.pdf ? `/api/verify/trial/file?id=${id}&name=pdf` : undefined,
+                      html: bin.html ? `/api/verify/trial/file?id=${id}&name=html` : undefined } };
   } catch {
     return null;
   }
@@ -244,11 +279,14 @@ export async function getTrial(id: string): Promise<TrialStatus> {
   if (!run || status.state !== "completed") return status;
 
   const slug = status.slug ?? "";
+  runIdHolder.id = id;
   const art = slug ? await readArtifact(run.id, slug) : null;
   if (art === "expired") {
     status.state = "expired";
   } else if (art) {
-    Object.assign(status, art);
+    const { _bin, ...rest } = art;
+    Object.assign(status, rest);
+    if (_bin) binaries.set(id, _bin);
     if (status.recipe?.slug) status.slug = status.recipe.slug;
   }
   // A run that stopped before producing a report (a pre-flight rejection) still

@@ -22,6 +22,13 @@ import { normalizeRepo } from "@/lib/verified/store";
 import { REGIONS_ASSET_PATH, SUBMISSION_ASSET_PATH } from "@/lib/verified/manifest";
 import { getVerifiedIndex, getVerifiedReport } from "@/lib/verified";
 import { isValidSlug } from "@/lib/verified/submission";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
+
+// Up to seven GitHub API calls per request on the shared installation token,
+// and the form only needs it once per repository URL typed. Ceiling per client
+// so nobody can drain the allowance by pasting URLs in a loop.
+const CONTEXT_MAX = 20;
+const CONTEXT_WINDOW_MS = 60 * 1000;
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -73,6 +80,14 @@ function repoSlugOf(url: string): string | null {
 export async function GET(request: NextRequest) {
   const repoParam = request.nextUrl.searchParams.get("repo") ?? "";
   const slugParam = request.nextUrl.searchParams.get("slug");
+
+  const limit = rateLimit(`verify-repo-context:${clientIp(request)}`, CONTEXT_MAX, CONTEXT_WINDOW_MS);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many lookups. Wait a moment and try again." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } }
+    );
+  }
 
   const repoSlug = repoSlugOf(repoParam);
   if (!repoSlug) {

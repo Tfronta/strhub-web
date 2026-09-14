@@ -51,6 +51,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const [publishState, setPublishState] = useState<"idle" | "busy" | "done" | "error">("idle");
   const [publishMsg, setPublishMsg] = useState<string>("");
   const [showDockerfile, setShowDockerfile] = useState(false);
+  const [showFallback, setShowFallback] = useState(false);
   const [openLog, setOpenLog] = useState<string | null>(null);
   const startedAt = useRef(Date.now());
   const [now, setNow] = useState(Date.now());
@@ -117,6 +118,12 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const repoName = report?.source.repo?.replace(/\/+$/, "").split("/").pop();
   const cmd = status?.recipe ? extractCmd(status.recipe.manifest_yml) : null;
   const repoDockerfile = status?.recipe?.manifest_yml.includes("source: repository") ?? false;
+  // Plan B: a second Dockerfile the engine builds only if the first fails. The
+  // report says whether it ran; a page that showed only the first Dockerfile
+  // would present a run on the published image as a build of the pinned commit.
+  const fallbackDockerfile = status?.recipe?.dockerfile_fallback ?? null;
+  const fallbackUsed = report?.environment?.fallback_used ?? false;
+  const fallbackReason = report?.environment?.fallback?.reason ?? t("verified.trial.recipeFallbackReason");
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-10">
@@ -186,7 +193,9 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
           <section className="mt-6 rounded-lg border p-5" aria-labelledby="trial-verdict">
             <div className="flex flex-wrap items-center gap-3">
               <Badge className={`${VERDICT_TONE[verdict.code]} border-transparent text-sm`}>{t(`verified.trial.verdict.${verdict.code}`)}</Badge>
-              <h2 id="trial-verdict" className="text-lg font-semibold">{t(`verified.trial.verdictMeaning.${verdict.code}`)}</h2>
+              <h2 id="trial-verdict" className="text-lg font-semibold">
+                {t(`verified.trial.verdictMeaning.${verdict.code === "runs" && fallbackUsed ? "runsFallback" : verdict.code}`)}
+              </h2>
             </div>
             <p className="mt-3 text-sm text-muted-foreground">{verdict.reason}</p>
             {verdict.readme_gaps && verdict.readme_gaps.length > 0 && (
@@ -314,6 +323,19 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
                       </button>
                       {showDockerfile && (
                         <pre className="mt-2 overflow-x-auto rounded-md bg-muted p-3 text-xs"><code>{status.recipe.dockerfile}</code></pre>
+                      )}
+                      {fallbackDockerfile && (
+                        <div className={`mt-3 rounded-md border p-3 ${fallbackUsed ? "border-amber-300 bg-amber-50/60 dark:border-amber-800 dark:bg-amber-950/20" : ""}`}>
+                          <p className={fallbackUsed ? "text-sm" : "text-xs text-muted-foreground"}>
+                            {t(fallbackUsed ? "verified.trial.recipeFallbackUsed" : "verified.trial.recipeFallbackAvailable", { reason: fallbackReason })}
+                          </p>
+                          <button type="button" className="mt-2 text-xs underline underline-offset-2" onClick={() => setShowFallback((v) => !v)}>
+                            {showFallback ? "−" : "+"} Dockerfile.fallback
+                          </button>
+                          {showFallback && (
+                            <pre className="mt-2 overflow-x-auto rounded-md bg-muted p-3 text-xs"><code>{fallbackDockerfile}</code></pre>
+                          )}
+                        </div>
                       )}
                     </>
                   )}

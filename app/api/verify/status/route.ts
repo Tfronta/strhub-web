@@ -13,6 +13,15 @@ import {
 } from "@/lib/verified/github";
 import { getByDispatchId } from "@/lib/verified/store";
 import { getRejection } from "@/lib/verified/rejection";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
+
+// The form polls every 6 s, so a client that is merely watching one run makes
+// ~10 requests a minute. Each of them costs a GitHub API call on the shared
+// installation token, and this endpoint used to have no ceiling at all: a
+// trivial loop could spend the whole 5,000/hour allowance and leave every real
+// submitter looking at 502s.
+const STATUS_MAX = 40;
+const STATUS_WINDOW_MS = 60 * 1000;
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -23,6 +32,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { ok: false, error: "Missing or invalid dispatchId" },
       { status: 400 }
+    );
+  }
+
+  const limit = rateLimit(`verify-status:${clientIp(request)}`, STATUS_MAX, STATUS_WINDOW_MS);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many status requests. Slow down and try again." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } }
     );
   }
 

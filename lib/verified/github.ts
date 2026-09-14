@@ -302,6 +302,43 @@ export async function dispatchWorkflow(
   );
 }
 
+/**
+ * A raw (non-JSON) download from the GitHub API on the installation token.
+ * Artifact zips come back as a redirect to short-lived blob storage; fetch
+ * follows it, and the Authorization header must not follow along.
+ */
+export async function ghBinary(path: string): Promise<ArrayBuffer> {
+  const token = await getInstallationToken();
+  const res = await fetch(`${API}${path}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+    redirect: "follow",
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new GitHubApiError(`GET ${path} → ${res.status}`, res.status);
+  }
+  return res.arrayBuffer();
+}
+
+export interface WorkflowArtifact {
+  id: number;
+  name: string;
+  size_in_bytes: number;
+  expired: boolean;
+}
+
+/** The artifacts a run uploaded (a trial's report lives in one of them). */
+export async function listRunArtifacts(runId: number): Promise<WorkflowArtifact[]> {
+  const data = await gh<{ artifacts: WorkflowArtifact[] }>(
+    `/repos/${ENGINE_REPO}/actions/runs/${runId}/artifacts?per_page=50`
+  );
+  return data.artifacts ?? [];
+}
+
 export interface WorkflowRun {
   id: number;
   name: string;

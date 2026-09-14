@@ -808,6 +808,11 @@ export default {
       selfFixHint: "Abre la receta que STRhub propuso, con todo completado, en la sección a completar. La próxima corrida vuelve a ser un ensayo.",
       pdf: "Descargar el informe PDF",
       html: "Abrir el informe completo",
+      scopeTitle: "Alcance de este informe",
+      scope1:
+        "Verificación automática e independiente de ejecución reproducible. Confirma que la herramienta instala, corre de punta a punta y produce salida estructuralmente válida en un entorno estandarizado.",
+      scope2:
+        "No es una validación analítica. La exactitud de los genotipos, la concordancia, la aptitud forense y el cumplimiento regulatorio quedan fuera de alcance.",
     },
     check: {
       title: "¿Es mi entorno, o la herramienta?",

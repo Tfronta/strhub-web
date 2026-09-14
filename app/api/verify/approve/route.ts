@@ -14,6 +14,7 @@ import { approveRepo, normalizeRepo, getPendingBySlug, updateSubmissionStatus } 
 // predate a field that is now required, and an approval must not be refused over
 // a question its author was never asked (see queuedSubmissionSchema).
 import { queuedSubmissionSchema, newDispatchId } from "@/lib/verified/submission";
+import { recipePayloadSchema } from "@/lib/verified/trial-publish";
 import {
   buildManifestYaml,
   buildSubmissionJson,
@@ -53,7 +54,24 @@ export async function POST(request: NextRequest) {
     const pending = await getPendingBySlug(body.slug);
     if (pending?.payload) {
       try {
-        const parsed = queuedSubmissionSchema.safeParse(JSON.parse(pending.payload));
+        const raw = JSON.parse(pending.payload);
+        // A recipe published from a trial: the exact manifest and Dockerfile the
+        // engine ran, committed verbatim. Nothing to rebuild from form answers.
+        const recipe = recipePayloadSchema.safeParse(raw);
+        if (recipe.success) {
+          const slug = pending.slug;
+          const dispatchId = newDispatchId();
+          const msg = `verified: add ${slug} from trial ${recipe.data.trial_id} (${pending.repo}@${pending.ref})`;
+          await putFile(`tools/${slug}/manifest.yml`, recipe.data.manifest_yml, msg);
+          await putFile(`tools/${slug}/Dockerfile`, recipe.data.dockerfile, msg);
+          if (recipe.data.regions_bed) {
+            await putFile(`tools/${slug}/${REGIONS_ASSET_PATH}`, recipe.data.regions_bed, msg);
+          }
+          await dispatchWorkflow({ tool: slug, dispatch_id: dispatchId });
+          await updateSubmissionStatus(slug, "approved-pending", "dispatched", { dispatchId });
+          return NextResponse.json({ ok: true, repo: normalizeRepo(repo), dispatched: true, slug, dispatchId });
+        }
+        const parsed = queuedSubmissionSchema.safeParse(raw);
         if (parsed.success) {
           const sub = parsed.data;
           const slug = pending.slug;

@@ -353,7 +353,18 @@ export function VerifiedDetail({
             {report.environment?.os && (
               <>
                 <dt className="text-muted-foreground">{t("verified.environment")}</dt>
-                <dd>{report.environment.os.join(", ")}</dd>
+                <dd>
+                  {report.environment.os.join(", ")}
+                  {/* Plan B ran: say so where the environment is named, or the
+                      line reads as "the pinned commit, built and run". */}
+                  {report.environment.fallback_used && (
+                    <span className="mt-1 block text-xs text-amber-700 dark:text-amber-500">
+                      {t("verified.environmentFallback", {
+                        reason: report.environment.fallback?.reason ?? t("verified.trial.recipeFallbackReason"),
+                      })}
+                    </span>
+                  )}
+                </dd>
               </>
             )}
             <dt className="text-muted-foreground">{t("verified.verifiedOn")}</dt>
@@ -404,10 +415,14 @@ export function VerifiedDetail({
         {report.install_detail?.diagnostics?.length ? (
           <div className="mt-6 rounded-lg border border-amber-300 dark:border-amber-800 bg-amber-50/60 dark:bg-amber-950/20 p-5">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-500">
-              {t("verified.install.heading")}
+              {t(report.install_detail.fallback_used ? "verified.install.headingFallback" : "verified.install.heading")}
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              {t("verified.install.note")}
+              {report.install_detail.fallback_used
+                ? t("verified.install.noteFallback", {
+                    reason: report.environment?.fallback?.reason ?? t("verified.trial.recipeFallbackReason"),
+                  })
+                : t("verified.install.note")}
             </p>
             <p className="mt-2 text-sm">
               {t(installFaultKey(report.install_detail.faults, submittedBy))}

@@ -28,6 +28,7 @@ export default {
       "Esta ferramenta foi enviada para verificação por alguém que não é seu mantenedor. O mantenedor não participou da execução nem forneceu nada do que ela usou: o comando, o ambiente e as regiões alvo foram escolhidos por quem a enviou. Se houver um mantenedor citado acima, é quem responde pelo software — não quem pediu este relatório, e não implica endosso dele.",
     commit: "Commit",
     environment: "Ambiente",
+    environmentFallback: "Plano B: {reason}, depois que o build do commit fixado falhou.",
     ciRun: "Execução de CI",
     gates: "Portões",
     scope: "Escopo",
@@ -123,6 +124,9 @@ export default {
     install: {
       heading: "Por que o ambiente não foi construído",
       note: "O contêiner não pôde ser construído a partir dos passos de instalação declarados, então nada abaixo do portão Installs chegou a rodar.",
+      headingFallback: "Por que o commit fixado não compilou",
+      noteFallback:
+        "O contêiner não pôde ser construído com os passos de instalação declarados no commit fixado; em vez disso foi construído {reason}, e todos os portões abaixo rodaram nele. O que rodou é a versão que esse ambiente traz, não necessariamente o commit fixado.",
       faultStrhub:
         "Ao menos uma causa é do STRhub, não da ferramenta: a receita do contêiner de um ambiente gerado é nossa. Nada aqui é uma constatação sobre o software, e não há nada a corrigir do lado de quem o mantém.",
       faultHarness:
@@ -776,6 +780,9 @@ export default {
       recipeCmd: "Comando",
       recipeDockerfile: "Ambiente (Dockerfile)",
       recipeRepoDockerfile: "O Dockerfile do próprio repositório foi construído como está.",
+      recipeFallbackUsed: "O build do commit fixado falhou (veja o log de build). O que rodou é este ambiente de reserva: {reason}.",
+      recipeFallbackAvailable: "Plano B, não foi preciso desta vez: se o build acima tivesse falhado, o STRhub teria usado {reason}.",
+      recipeFallbackReason: "o ambiente de reserva que a receita declara",
       caveatsTitle: "Ressalvas: o que o STRhub supôs",
       logsTitle: "Logs",
       log: {

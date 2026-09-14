@@ -28,6 +28,7 @@ export default {
       "Esta herramienta fue enviada a verificación por alguien que no es su mantenedor. El mantenedor no participó en la corrida ni aportó nada de lo que usó: el comando, el entorno y las regiones objetivo los eligió quien la envió. Si arriba figura un mantenedor, es quien responde por el software, no quien pidió este reporte, y no implica su respaldo.",
     commit: "Commit",
     environment: "Entorno",
+    environmentFallback: "Plan B: {reason}, después de que fallara el build del commit fijado.",
     ciRun: "Run de CI",
     gates: "Compuertas",
     scope: "Alcance",
@@ -123,6 +124,9 @@ export default {
     install: {
       heading: "Por qué no se pudo construir el entorno",
       note: "El contenedor no se pudo construir con los pasos de instalación declarados, así que nada por debajo de la compuerta Installs llegó a correr.",
+      headingFallback: "Por qué no se pudo construir el commit fijado",
+      noteFallback:
+        "El contenedor no se pudo construir con los pasos de instalación declarados en el commit fijado; en su lugar se construyó {reason}, y todas las compuertas de abajo corrieron sobre eso. Lo que corrió es la versión que ese entorno trae, no necesariamente el commit fijado.",
       faultStrhub:
         "Al menos una causa es de STRhub, no de la herramienta: la receta del contenedor de un entorno generado es nuestra. Nada de esto es un hallazgo sobre el software, y no hay nada que arreglar del lado de quien lo mantiene.",
       faultHarness:
@@ -776,6 +780,9 @@ export default {
       recipeCmd: "Comando",
       recipeDockerfile: "Entorno (Dockerfile)",
       recipeRepoDockerfile: "Se construyó el Dockerfile del propio repositorio tal cual.",
+      recipeFallbackUsed: "El build del commit fijado falló (ver el log de build). Lo que corrió es este entorno de respaldo: {reason}.",
+      recipeFallbackAvailable: "Plan B, no hizo falta esta vez: si el build de arriba hubiera fallado, STRhub habría usado {reason}.",
+      recipeFallbackReason: "el entorno de respaldo que declara la receta",
       caveatsTitle: "Salvedades: lo que STRhub supuso",
       logsTitle: "Logs",
       log: {

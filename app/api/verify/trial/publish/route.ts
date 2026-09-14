@@ -66,6 +66,7 @@ export async function POST(request: NextRequest) {
         trial_id: id,
         manifest_yml: manifestYml,
         dockerfile: trial.recipe.dockerfile,
+        ...(trial.recipe.dockerfile_fallback ? { dockerfile_fallback: trial.recipe.dockerfile_fallback } : {}),
         ...(trial.recipe.regions_bed ? { regions_bed: trial.recipe.regions_bed } : {}),
       }),
     });

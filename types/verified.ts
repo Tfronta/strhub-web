@@ -133,7 +133,19 @@ export interface VerifiedReport {
    */
   submission?: { by?: SubmittedBy } | null;
   source: { repo: string; ref?: string; ref_resolved?: string };
-  environment: { dockerfile?: string; os?: string[] };
+  environment: {
+    dockerfile?: string;
+    os?: string[];
+    /**
+     * Plan B: a second Dockerfile the engine builds only if the first fails —
+     * the published image or package the README points at, which holds
+     * whatever its publisher last pushed rather than the pinned commit.
+     * `fallback_used` says the gates ran on it; a view must then not present
+     * the result as "the pinned commit, built and run".
+     */
+    fallback?: { dockerfile: string; reason?: string };
+    fallback_used?: boolean;
+  };
   generated: string;
   ci_run?: string;
   gates: Record<VerifiedLevel, boolean>;
@@ -172,6 +184,8 @@ export interface VerifiedReport {
    */
   install_detail?: {
     passed?: boolean;
+    /** The gate passed on plan B; `diagnostics` explain why the pinned commit did not build. */
+    fallback_used?: boolean;
     diagnostics?: VerifiedDiagnostic[];
     faults?: ("author" | "strhub" | "harness")[];
   } | null;

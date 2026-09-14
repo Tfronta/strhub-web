@@ -6,7 +6,7 @@ import { TRIAL_ID_RE, TRIAL_ROLES, type TrialRole } from "@/lib/verified/trial";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: { absolute: "Rehearsal | STRhub Verified" },
+  title: { absolute: "Test run | STRhub Verified" },
   robots: { index: false, follow: false },
 };
 

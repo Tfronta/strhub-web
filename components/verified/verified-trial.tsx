@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * A rehearsal, watched live and then read.
+ * A test run, watched live and then read.
  *
  * Polls /api/verify/trial until the run completes, then shows the one sentence
  * a reader who does not program needs (the verdict), what the README does not
@@ -131,6 +131,17 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             : undefined
         }
       />
+
+      {/* What a verdict here does and does not say, before the verdict itself.
+          The PDF opens with the same two sentences; the page used to leave a
+          reader to find them at the foot of the catalogue entry. */}
+      {report && (
+        <aside className="mt-4 border-t pt-3 text-sm text-muted-foreground" aria-label={t("verified.trial.scopeTitle")}>
+          <p className="text-xs uppercase tracking-wider">{t("verified.trial.scopeTitle")}</p>
+          <p className="mt-1.5">{t("verified.trial.scope1")}</p>
+          <p className="mt-1.5">{t("verified.trial.scope2")}</p>
+        </aside>
+      )}
 
       {fetchError && (
         <p role="alert" className="mt-6 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-800">{fetchError}</p>

@@ -54,6 +54,7 @@
     "contentful": "^11.8.9",
     "contentful-management": "^11.66.0",
     "embla-carousel-react": "8.5.1",
+    "fflate": "0.8.3",
     "igv": "^3.6.0",
     "input-otp": "1.4.1",
     "jsonwebtoken": "^9.0.2",

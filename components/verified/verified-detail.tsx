@@ -1065,7 +1065,11 @@ export function VerifiedDetail({
                   <p className="text-sm font-medium">
                     {k.heading}{" "}
                     <span className="font-normal text-muted-foreground">
-                      ({t("verified.trial.knownIssuesLine", { line: String(k.line) })})
+                      ({k.url ? (
+                        <a href={k.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+                          {t("verified.trial.knownIssuesLine", { line: String(k.line) })}
+                        </a>
+                      ) : t("verified.trial.knownIssuesLine", { line: String(k.line) })})
                     </span>
                   </p>
                   <blockquote className="mt-1 border-l-2 pl-3 text-sm text-muted-foreground">
@@ -1074,6 +1078,29 @@ export function VerifiedDetail({
                 </div>
               ))}
             </div>
+          </>
+        ) : null}
+
+        {/* Every claim the configuration rests on, openable at the pinned ref. */}
+        {report.evidence && report.evidence.length > 0 ? (
+          <>
+            <h2 className="mt-10 text-xl font-semibold">{t("verified.trial.evidenceTitle")}</h2>
+            <p className="mt-2 text-sm text-muted-foreground">{t("verified.trial.evidenceHint")}</p>
+            <ul className="mt-3 space-y-1.5 rounded-lg border p-4 text-sm">
+              {report.evidence.map((e, i) => (
+                <li key={`${e.claim}-${e.path}-${i}`} className="flex flex-wrap items-baseline gap-x-2">
+                  <span className="w-40 shrink-0 text-muted-foreground">
+                    {t(`verified.trial.evidenceClaim.${e.claim}`) === `verified.trial.evidenceClaim.${e.claim}` ? e.claim : t(`verified.trial.evidenceClaim.${e.claim}`)}
+                  </span>
+                  <a href={e.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs underline underline-offset-2">
+                    {e.path}{e.line ? `#L${e.line}` : ""} <ExternalLink className="h-3 w-3" />
+                  </a>
+                  {e.kind === "readme" && e.text && e.claim !== "known_issue" && (
+                    <code className="max-w-full truncate rounded bg-muted px-1 text-xs text-muted-foreground">{e.text}</code>
+                  )}
+                </li>
+              ))}
+            </ul>
           </>
         ) : null}
 

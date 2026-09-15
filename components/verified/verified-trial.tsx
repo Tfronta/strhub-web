@@ -366,6 +366,35 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             </Card>
           )}
 
+
+          {/* The author's own note about their own software, before any of
+              STRhub's findings: a run that stops where the README says it
+              stops is not news, and a reader must see that without opening
+              the repository. */}
+          {report.author_known_issues && report.author_known_issues.length > 0 && (
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle className="text-base">{t("verified.trial.knownIssuesTitle")}</CardTitle>
+                <p className="text-xs text-muted-foreground">{t("verified.trial.knownIssuesHint")}</p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {report.author_known_issues.map((k) => (
+                  <div key={`${k.heading}-${k.line}`}>
+                    <p className="text-sm font-medium">
+                      {k.heading}{" "}
+                      <span className="font-normal text-muted-foreground">
+                        ({t("verified.trial.knownIssuesLine", { line: String(k.line) })})
+                      </span>
+                    </p>
+                    <blockquote className="mt-1 border-l-2 pl-3 text-sm text-muted-foreground">
+                      {k.text}{k.truncated ? "…" : ""}
+                    </blockquote>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+
           {report.caveats?.items?.length ? (
             <Card className="mt-6">
               <CardHeader><CardTitle className="text-base">{t("verified.trial.caveatsTitle")}</CardTitle></CardHeader>

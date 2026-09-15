@@ -182,6 +182,17 @@ export interface VerifiedReport {
    * never read as a finding about the software, 'harness' is a ceiling of the
    * free environment. Empty means the log named nothing we could classify.
    */
+  /**
+   * Sections where the author documents a known bug or limitation, quoted from
+   * their README at the verified commit.
+   *
+   * The author's own words about their own software: the safest thing a report
+   * can carry, and what a reader most needs when a run stops. STRspy documents
+   * that its wrapper can exit without doing any work; the report on a run that
+   * died in that wrapper said nothing about it, because the section never left
+   * the README.
+   */
+  author_known_issues?: { heading: string; line: number; text: string; truncated?: boolean }[];
   install_detail?: {
     passed?: boolean;
     /** The gate passed on plan B; `diagnostics` explain why the pinned commit did not build. */

@@ -1052,6 +1052,31 @@ export function VerifiedDetail({
             named and the block says plainly that it is unverified. Last before
             the scope statement, where a reader has already seen what was
             actually tested. */}
+        {/* The author's own note about their own software, before STRhub's
+            own notes: a run that stops where the README says it stops is not
+            news. Quoted, with the line so a reader can open the README at it. */}
+        {report.author_known_issues && report.author_known_issues.length > 0 ? (
+          <>
+            <h2 className="mt-10 text-xl font-semibold">{t("verified.trial.knownIssuesTitle")}</h2>
+            <p className="mt-2 text-sm text-muted-foreground">{t("verified.trial.knownIssuesHint")}</p>
+            <div className="mt-3 space-y-4 rounded-lg border p-4">
+              {report.author_known_issues.map((k) => (
+                <div key={`${k.heading}-${k.line}`}>
+                  <p className="text-sm font-medium">
+                    {k.heading}{" "}
+                    <span className="font-normal text-muted-foreground">
+                      ({t("verified.trial.knownIssuesLine", { line: String(k.line) })})
+                    </span>
+                  </p>
+                  <blockquote className="mt-1 border-l-2 pl-3 text-sm text-muted-foreground">
+                    {k.text}{k.truncated ? "…" : ""}
+                  </blockquote>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : null}
+
         {report.caveats?.items?.length ? (
           <>
             <h2 className="mt-10 text-xl font-semibold">

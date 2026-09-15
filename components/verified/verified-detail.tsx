@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Check, Minus, ExternalLink, AlertTriangle, Info, XCircle, LifeBuoy } from "lucide-react";
+import { ArrowLeft, Check, Minus, X, ExternalLink, AlertTriangle, Info, XCircle, LifeBuoy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import {
@@ -9,6 +9,7 @@ import {
   VERIFIED_GATES,
   type VerifiedReport,
 } from "@/types/verified";
+import { gateStates } from "@/lib/verified/gate-state";
 import { cn } from "@/lib/utils";
 import {
   summarizeErrors,
@@ -494,28 +495,46 @@ export function VerifiedDetail({
         {/* ── GATES ── */}
         <h2 className="mt-10 text-xl font-semibold">{t("verified.gates")}</h2>
         <div className="mt-3 divide-y rounded-lg border">
-          {VERIFIED_GATES.map((g) => {
-            const pass = report.gates?.[g.key];
-            return (
-              <div
-                key={g.key}
-                className="flex items-center gap-3 px-4 py-2.5 text-sm"
-              >
-                <span
-                  className={cn(
-                    "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
-                    pass
-                      ? "bg-teal-600 text-white"
-                      : "bg-muted text-muted-foreground"
-                  )}
+          {(() => {
+            const st = gateStates(report.gates, VERIFIED_GATES.map((g) => g.key));
+            return VERIFIED_GATES.map((g) => {
+              const state = st[g.key];
+              return (
+                <div
+                  key={g.key}
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm"
                 >
-                  {pass ? <Check className="h-3 w-3" /> : <Minus className="h-3 w-3" />}
-                </span>
-                <span className="font-medium whitespace-nowrap">{g.label}</span>
-                <span className="text-muted-foreground">{t(g.meaningKey)}</span>
-              </div>
-            );
-          })}
+                  {/* One rung is where the run stopped; the ones above it were
+                      never attempted. Marking them alike made a single stop
+                      look like several failures. */}
+                  <span
+                    className={cn(
+                      "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
+                      state === "pass"
+                        ? "bg-teal-600 text-white"
+                        : state === "stopped"
+                          ? "bg-red-600 text-white"
+                          : "bg-muted text-muted-foreground"
+                    )}
+                  >
+                    {state === "pass" ? <Check className="h-3 w-3" />
+                      : state === "stopped" ? <X className="h-3 w-3" />
+                      : <Minus className="h-3 w-3" />}
+                  </span>
+                  <span className="font-medium whitespace-nowrap">{g.label}</span>
+                  <span className="text-muted-foreground">
+                    {t(g.meaningKey)}
+                    {state === "stopped" && (
+                      <span className="ml-2 text-red-700 dark:text-red-400">— {t("verified.gate.stoppedHere")}</span>
+                    )}
+                    {state === "not-reached" && (
+                      <span className="ml-2 italic">— {t("verified.gate.notReached")}</span>
+                    )}
+                  </span>
+                </div>
+              );
+            });
+          })()}
         </div>
 
         {/* A run that stopped before the top step used to say nothing at all

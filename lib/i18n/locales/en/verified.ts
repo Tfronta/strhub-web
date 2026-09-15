@@ -64,6 +64,8 @@ export default {
       reads: "reads",
     },
     gate: {
+      stoppedHere: "the run stopped here",
+      notReached: "not attempted — the run had already stopped",
       available: "the pinned public source exists",
       installs: "the environment builds from source",
       runs: "it executes end-to-end without crashing",

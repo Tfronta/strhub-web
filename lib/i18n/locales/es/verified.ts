@@ -64,6 +64,8 @@ export default {
       reads: "reads",
     },
     gate: {
+      stoppedHere: "acá se detuvo la corrida",
+      notReached: "no se intentó — la corrida ya se había detenido",
       available: "el código público fijado existe",
       installs: "el entorno compila desde el código",
       runs: "se ejecuta de principio a fin sin romperse",

@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
 import { VERIFIED_GATES } from "@/types/verified";
+import { gateStates } from "@/lib/verified/gate-state";
 import type { TrialRole, TrialStatus, TrialVerdictCode } from "@/lib/verified/trial";
 import { ownerIssueUrl, prepareSelfFix } from "@/lib/verified/trial-next-steps";
 import { useRouter } from "next/navigation";
@@ -281,13 +282,34 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             <CardHeader><CardTitle className="text-base">{t("verified.trial.gates")}</CardTitle></CardHeader>
             <CardContent>
               <ul className="divide-y text-sm">
-                {VERIFIED_GATES.map((g) => (
-                  <li key={g.key} className="flex items-start gap-3 py-2">
-                    <span className={`mt-0.5 inline-block h-2.5 w-2.5 shrink-0 rounded-full ${report.gates?.[g.key] ? "bg-teal-600" : "bg-slate-300"}`} aria-hidden />
-                    <span className="w-40 shrink-0 font-medium">{g.label}</span>
-                    <span className="text-muted-foreground">{t(g.meaningKey)}</span>
-                  </li>
-                ))}
+                {(() => {
+                  const st = gateStates(report.gates, VERIFIED_GATES.map((g) => g.key));
+                  return VERIFIED_GATES.map((g) => (
+                    <li key={g.key} className="flex items-start gap-3 py-2">
+                      {/* Red marks the one rung the run stopped at; the rungs
+                          above it were never attempted and stay grey, so five
+                          grey dots no longer read as five shortcomings. */}
+                      <span
+                        className={`mt-0.5 inline-block h-2.5 w-2.5 shrink-0 rounded-full ${
+                          st[g.key] === "pass" ? "bg-teal-600"
+                            : st[g.key] === "stopped" ? "bg-red-600"
+                            : "bg-slate-300"
+                        }`}
+                        aria-hidden
+                      />
+                      <span className="w-40 shrink-0 font-medium">{g.label}</span>
+                      <span className="text-muted-foreground">
+                        {t(g.meaningKey)}
+                        {st[g.key] === "stopped" && (
+                          <span className="ml-2 text-red-700 dark:text-red-400">— {t("verified.gate.stoppedHere")}</span>
+                        )}
+                        {st[g.key] === "not-reached" && (
+                          <span className="ml-2 italic">— {t("verified.gate.notReached")}</span>
+                        )}
+                      </span>
+                    </li>
+                  ));
+                })()}
                 {"example" in (report.gates ?? {}) && (
                   <li className="flex items-start gap-3 py-2">
                     <span className={`mt-0.5 inline-block h-2.5 w-2.5 shrink-0 rounded-full ${(report.gates as Record<string, boolean>).example ? "bg-teal-600" : "bg-slate-300"}`} aria-hidden />

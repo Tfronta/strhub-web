@@ -383,7 +383,11 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
                     <p className="text-sm font-medium">
                       {k.heading}{" "}
                       <span className="font-normal text-muted-foreground">
-                        ({t("verified.trial.knownIssuesLine", { line: String(k.line) })})
+                        ({k.url ? (
+                          <a href={k.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+                            {t("verified.trial.knownIssuesLine", { line: String(k.line) })}
+                          </a>
+                        ) : t("verified.trial.knownIssuesLine", { line: String(k.line) })})
                       </span>
                     </p>
                     <blockquote className="mt-1 border-l-2 pl-3 text-sm text-muted-foreground">
@@ -391,6 +395,37 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
                     </blockquote>
                   </div>
                 ))}
+              </CardContent>
+            </Card>
+          )}
+
+
+          {/* Every claim the configuration rests on, openable at the pinned
+              ref. A claim a reader cannot open in one click is a claim nobody
+              can challenge; the README line a command was read on is what a
+              reviewer checks the rewrite against. */}
+          {report.evidence && report.evidence.length > 0 && (
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle className="text-base">{t("verified.trial.evidenceTitle")}</CardTitle>
+                <p className="text-xs text-muted-foreground">{t("verified.trial.evidenceHint")}</p>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-1.5 text-sm">
+                  {report.evidence.map((e, i) => (
+                    <li key={`${e.claim}-${e.path}-${i}`} className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="w-40 shrink-0 text-muted-foreground">
+                        {t(`verified.trial.evidenceClaim.${e.claim}`) === `verified.trial.evidenceClaim.${e.claim}` ? e.claim : t(`verified.trial.evidenceClaim.${e.claim}`)}
+                      </span>
+                      <a href={e.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs underline underline-offset-2">
+                        {e.path}{e.line ? `#L${e.line}` : ""} <ExternalLink className="h-3 w-3" />
+                      </a>
+                      {e.kind === "readme" && e.text && e.claim !== "known_issue" && (
+                        <code className="max-w-full truncate rounded bg-muted px-1 text-xs text-muted-foreground">{e.text}</code>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </CardContent>
             </Card>
           )}

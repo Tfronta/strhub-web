@@ -192,7 +192,22 @@ export interface VerifiedReport {
    * died in that wrapper said nothing about it, because the section never left
    * the README.
    */
-  author_known_issues?: { heading: string; line: number; text: string; truncated?: boolean }[];
+  author_known_issues?: { heading: string; line: number; text: string; truncated?: boolean; url?: string }[];
+  /**
+   * What the run's configuration rests on, each item openable at the pinned
+   * ref: the README line a command was read on, the file that says how to
+   * install, the paths that count as example data. A claim a reader cannot
+   * open in one click is a claim nobody can challenge.
+   */
+  evidence?: {
+    claim: "install_method" | "published_image" | "bioconda_package" | "fallback_environment"
+      | "run_command" | "example_data" | "known_issue" | string;
+    kind: "tree" | "readme";
+    path: string;
+    line?: number;
+    text?: string;
+    url: string;
+  }[];
   install_detail?: {
     passed?: boolean;
     /** The gate passed on plan B; `diagnostics` explain why the pinned commit did not build. */

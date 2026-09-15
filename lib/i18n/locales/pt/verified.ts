@@ -64,6 +64,8 @@ export default {
       reads: "reads",
     },
     gate: {
+      stoppedHere: "a execução parou aqui",
+      notReached: "não foi tentado — a execução já havia parado",
       available: "o código público fixado existe",
       installs: "o ambiente compila a partir do código",
       runs: "executa de ponta a ponta sem quebrar",

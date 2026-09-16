@@ -9,7 +9,7 @@
  * not a form. The long form survives as "advanced" for maintainers who want to
  * write the recipe themselves.
  */
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -19,8 +19,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
 import type { TrialRole } from "@/lib/verified/trial";
+import { repoSlugOf } from "@/lib/verified/repo-url";
 
 const ROLES: TrialRole[] = ["owner", "reviewer", "user"];
+
+/** What the run will pin, as the form found it. */
+interface ResolvedRef {
+  sha: string;
+  label: string;
+  how: "given" | "release" | "tag" | "head";
+}
 
 export function VerifiedStart({ role: initialRole, compact = false }: { role: TrialRole; compact?: boolean }) {
   const { t } = useLanguage();
@@ -30,6 +38,51 @@ export function VerifiedStart({ role: initialRole, compact = false }: { role: Tr
   const [ref, setRef] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // The commit the run would pin, resolved as the person types. A ref they
+  // typed themselves is never overwritten; one the form filled in is.
+  const [resolved, setResolved] = useState<ResolvedRef | null>(null);
+  const [resolving, setResolving] = useState(false);
+  const [unresolved, setUnresolved] = useState(false);
+  const refTyped = useRef(false);
+
+  useEffect(() => {
+    const slug = repoSlugOf(repo);
+    if (!slug) {
+      setResolved(null);
+      setUnresolved(false);
+      return;
+    }
+    const typed = refTyped.current ? ref.trim() : "";
+    let cancelled = false;
+    setResolving(true);
+    setUnresolved(false);
+    const timer = setTimeout(async () => {
+      try {
+        const q = new URLSearchParams({ repo: repo.trim() });
+        if (typed) q.set("ref", typed);
+        const res = await fetch(`/api/verify/resolve-ref?${q}`);
+        const data = await res.json();
+        if (cancelled) return;
+        if (res.ok && data.ok) {
+          setResolved({ sha: data.sha, label: data.label, how: data.how });
+          if (!refTyped.current) setRef(data.sha);
+        } else {
+          setResolved(null);
+          setUnresolved(true);
+        }
+      } catch {
+        if (!cancelled) setResolved(null);
+      } finally {
+        if (!cancelled) setResolving(false);
+      }
+    }, 600);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+    // `ref` is read through refTyped so a fill by the form does not re-fire.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [repo, refTyped.current ? ref : ""]);
 
   async function start(e: React.FormEvent) {
     e.preventDefault();
@@ -89,9 +142,29 @@ export function VerifiedStart({ role: initialRole, compact = false }: { role: Tr
             autoComplete="off"
             placeholder={t("verified.start.refPlaceholder")}
             value={ref}
-            onChange={(e) => setRef(e.target.value)}
+            onChange={(e) => {
+              refTyped.current = e.target.value.trim().length > 0;
+              setRef(e.target.value);
+            }}
           />
-          <p className="text-sm text-muted-foreground">{t("verified.start.refHint")}</p>
+          {resolving ? (
+            <p className="text-sm text-muted-foreground" aria-live="polite">{t("verified.start.refResolving")}</p>
+          ) : resolved ? (
+            <p className="text-sm" aria-live="polite">
+              <span className="font-medium">{t("verified.start.refPinnedLabel")}</span>{" "}
+              <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{resolved.sha.slice(0, 7)}</code>{" "}
+              <span className="text-muted-foreground">
+                — {t("verified.start.refResolved", {
+                  label: resolved.label,
+                  how: t(`verified.start.refHow.${resolved.how}`),
+                })}
+              </span>
+            </p>
+          ) : unresolved ? (
+            <p className="text-sm text-amber-700 dark:text-amber-500" aria-live="polite">{t("verified.start.refUnresolved")}</p>
+          ) : (
+            <p className="text-sm text-muted-foreground">{t("verified.start.refHint")}</p>
+          )}
         </div>
         <fieldset className="space-y-2">
           <legend className="text-sm font-medium">{t("verified.start.roleLabel")}</legend>

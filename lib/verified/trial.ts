@@ -95,14 +95,9 @@ export function newTrialId(): string {
   return `tr_${t}_${r}`;
 }
 
-export function repoSlugOf(url: string): string | null {
-  const m = url
-    .trim()
-    .replace(/\.git$/, "")
-    .replace(/\/+$/, "")
-    .match(/^https:\/\/github\.com\/([A-Za-z0-9._-]+)\/([A-Za-z0-9._-]+)$/);
-  return m ? `${m[1]}/${m[2]}` : null;
-}
+// Pure, and shared with the browser: the start form reads a pasted URL with it.
+export { repoSlugOf } from "./repo-url";
+import { repoSlugOf } from "./repo-url";
 
 /**
  * The slug a trial's report is filed under. Not the catalogue's slug scheme

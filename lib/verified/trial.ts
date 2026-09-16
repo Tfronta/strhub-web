@@ -210,20 +210,28 @@ async function readArtifact(runId: number, slug: string): Promise<(Partial<Trial
   const zip = await ghBinary(`/repos/${ENGINE_REPO}/actions/artifacts/${art.id}/zip`);
   const files = unzipSync(new Uint8Array(zip));
   const text = (name: string) => (files[name] ? strFromU8(files[name]) : null);
-  const reportText = text(`${slug}.json`) ?? Object.keys(files).filter((f) => f.endsWith(".json") && !f.endsWith(".recipe.json") && !f.endsWith(".badge.json")).map(text)[0] ?? null;
-  const recipeText = text(`${slug}.recipe.json`);
+  // The files are named after the report's slug, which need not be the
+  // run-name's: a trial from a URL is filed under the tool's catalogue slug
+  // (the engine works that out from the repository) while its artifact keeps
+  // the run's own name. So find the report first, and key everything else
+  // off the stem it was written under.
+  const isReport = (f: string) => f.endsWith(".json") && !f.endsWith(".recipe.json") && !f.endsWith(".badge.json") && !f.includes("/");
+  const reportName = files[`${slug}.json`] ? `${slug}.json` : Object.keys(files).find(isReport);
+  const stem = reportName ? reportName.replace(/\.json$/, "") : slug;
+  const reportText = reportName ? text(reportName) : null;
+  const recipeText = text(`${stem}.recipe.json`);
   const logs: Record<string, string> = {};
   for (const f of Object.keys(files)) {
     const m = f.match(/\.log-(own|external|example|build)\.txt$/);
     if (m) logs[m[1]] = strFromU8(files[f]).slice(-20_000);
   }
   const bin: Record<string, Uint8Array> = {};
-  if (files[`${slug}.pdf`]) bin.pdf = files[`${slug}.pdf`];
-  if (files[`${slug}.html`]) bin.html = files[`${slug}.html`];
+  if (files[`${stem}.pdf`]) bin.pdf = files[`${stem}.pdf`];
+  if (files[`${stem}.html`]) bin.html = files[`${stem}.html`];
   return {
     report: reportText ? (JSON.parse(reportText) as TrialReport) : null,
     recipe: recipeText ? (JSON.parse(recipeText) as TrialRecipe) : null,
-    summaryMd: text(`${slug}.summary.md`),
+    summaryMd: text(`${stem}.summary.md`),
     logs,
     files: { pdf: bin.pdf ? `/api/verify/trial/file?id=${encodeURIComponent(runIdHolder.id)}&name=pdf` : undefined,
              html: bin.html ? `/api/verify/trial/file?id=${encodeURIComponent(runIdHolder.id)}&name=html` : undefined },

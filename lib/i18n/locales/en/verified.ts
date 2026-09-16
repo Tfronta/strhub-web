@@ -8,7 +8,6 @@ export default {
       level: "Level",
       datasets: "Datasets",
       gatesPassed: "{passed}/{total} gates passed",
-      datasetsUsed: "{count} reference dataset(s)",
       noDatasets: "No datasets",
       verifiedDate: "Verified on {date}",
     },
@@ -17,15 +16,16 @@ export default {
     backToList: "All verified tools",
     source: "Source",
     variant: "Kit / variant",
-    submittedBy: "Submitted by",
-    submittedByValue: {
-      maintainer: "The tool's maintainer",
-      third_party: "A third party (not the tool's maintainer)",
-    },
-    thirdPartyShortfall:
-      "This run was configured by a third party, not by the tool's maintainer. A result that stops short of the top step may reflect that configuration rather than the software itself.",
-    submittedByThirdPartyNote:
-      "This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Any maintainer named above is who answers for the software — not who asked for this report, and not an endorsement of it.",
+    version: "Version",
+    maintainer: "Maintainer",
+    repository: "Repository",
+    commitPinned: "Pinned commit",
+    commitPinnedHint: "Fixed. This result describes exactly this commit, not anything published since.",
+    viewRun: "View run",
+    fullReport: "Full report",
+    pdf: "Download PDF",
+    footnote:
+      "Verified automatically, in a clean environment, on the tool's public source at the pinned commit. This is a record of what happened, not an endorsement by the tool's author.",
     commit: "Commit",
     environment: "Environment",
     environmentFallback: "Plan B: {reason}, after the build from the pinned commit failed.",
@@ -124,7 +124,6 @@ export default {
     },
     errorsBadgeSuffix: "(errors reported)",
     upstream: {
-      head: "This is the head of {branch} today.",
       behind: "{n} commit(s) have landed on {branch} since. That is context, not a fault — a pinned release is often meant to sit behind.",
       refGone: "This commit is no longer reachable in the repository. The result still describes what ran, but the source cannot be fetched to repeat it.",
       repoGone: "The public repository is no longer reachable at this URL, so nothing here can be re-checked against its source.",
@@ -141,8 +140,6 @@ export default {
         "At least one cause is a ceiling of the free automated environment rather than a fault in the tool.",
       faultAuthor:
         "Every cause identified sits in what the submission declared — its pinned versions, package names or build steps. These are correctable, and re-verifying afterwards is free.",
-      faultAuthorThirdParty:
-        "Every cause identified sits in what the submission declared — its pinned versions, package names or build steps — and that submission came from a third party, not from the tool's maintainer. They are faults in how the tool was set up here rather than in the software. Re-verifying after correcting them is free.",
       faultUnknown:
         "The cause could not be classified automatically. The full build output is linked below.",
       viewBuildLog: "View build log",
@@ -189,6 +186,9 @@ export default {
     data: {
       heading: "Verification data",
       note: "Public reference datasets used as input for this verification run. Sourced from open-access repositories; see upstream licenses for terms of use.",
+      source: "Source",
+      doi: "DOI",
+      license: "License",
       lociTested: "Loci tested",
       lociCount: "forensic STR loci",
       lociScope: "This verification only covers the specific STR loci listed above. The tool may support additional loci not tested by this reference dataset.",
@@ -725,9 +725,19 @@ export default {
       },
       repoLabel: "Public GitHub repository",
       repoPlaceholder: "https://github.com/owner/tool",
-      refLabel: "Version, tag or commit (optional)",
+      refLabel: "Version, tag or commit",
       refPlaceholder: "v2.1.0, or a commit SHA",
-      refHint: "Leave it empty to use the latest release. A paper usually cites one.",
+      refHint: "Filled in for you with the latest release the moment you paste the repository. Change it to verify a different version. The result is always pinned to one commit.",
+      refResolving: "Finding the commit to pin…",
+      refPinnedLabel: "Pinned commit:",
+      refResolved: "{label} ({how})",
+      refHow: {
+        given: "the ref you gave",
+        release: "latest release",
+        tag: "newest tag",
+        head: "head of the default branch",
+      },
+      refUnresolved: "Could not find that repository or ref. Check the URL, or type a commit SHA.",
       roleLabel: "I am",
       role: {
         owner: "the tool's maintainer",

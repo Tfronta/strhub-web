@@ -37,6 +37,12 @@ export default {
     staticPage: "static report",
     disclaimer:
       "Each result is a dated snapshot, verified on the tool's public repository at a pinned commit. STRhub stores no tool source code.",
+    dispute: {
+      heading: "Something look wrong?",
+      note: "You do not have to take any of this on trust. If a claim, a gate, a diagnostic or an evidence line reads wrong, tell STRhub — the tool's author and an attentive reviewer are who catch a false claim fastest.",
+      cta: "Report a problem with this attestation",
+      hint: "Opens a pre-filled issue on STRhub's own repository, in your GitHub session, for you to review and post. Nothing is sent by STRhub.",
+    },
     group: {
       runs: "verification runs",
       runSingular: "1 verification run",

@@ -37,6 +37,12 @@ export default {
     staticPage: "relatório estático",
     disclaimer:
       "Cada resultado é um instantâneo datado, verificado sobre o repositório público da ferramenta em um commit fixado. O STRhub não armazena código-fonte de nenhuma ferramenta.",
+    dispute: {
+      heading: "Viu algo errado?",
+      note: "Você não precisa acreditar em nada disto às cegas. Se uma afirmação, um portão, um diagnóstico ou uma linha de evidência estiver errada, avise o STRhub: o autor da ferramenta e um revisor atento são quem detecta mais rápido uma afirmação falsa.",
+      cta: "Relatar um problema com esta atestação",
+      hint: "Abre uma issue pré-preenchida no repositório do próprio STRhub, na sua sessão do GitHub, para você revisar e publicar. O STRhub não envia nada.",
+    },
     group: {
       runs: "execuções de verificação",
       runSingular: "1 execução de verificação",

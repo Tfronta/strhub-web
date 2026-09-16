@@ -8,7 +8,6 @@ export default {
       level: "Nível",
       datasets: "Datasets",
       gatesPassed: "{passed}/{total} portões passados",
-      datasetsUsed: "{count} dataset(s) de referência",
       noDatasets: "Sem datasets",
       verifiedDate: "Verificado em {date}",
     },
@@ -17,15 +16,16 @@ export default {
     backToList: "Todas as ferramentas verificadas",
     source: "Código",
     variant: "Kit / variante",
-    submittedBy: "Enviado por",
-    submittedByValue: {
-      maintainer: "O mantenedor da ferramenta",
-      third_party: "Um terceiro (não o mantenedor da ferramenta)",
-    },
-    thirdPartyShortfall:
-      "Esta execução foi configurada por um terceiro, não por quem mantém a ferramenta. Um resultado que para antes do degrau mais alto pode refletir essa configuração, e não o software em si.",
-    submittedByThirdPartyNote:
-      "Esta ferramenta foi enviada para verificação por alguém que não é seu mantenedor. O mantenedor não participou da execução nem forneceu nada do que ela usou: o comando, o ambiente e as regiões alvo foram escolhidos por quem a enviou. Se houver um mantenedor citado acima, é quem responde pelo software — não quem pediu este relatório, e não implica endosso dele.",
+    version: "Versão",
+    maintainer: "Mantenedor",
+    repository: "Repositório",
+    commitPinned: "Commit fixo",
+    commitPinnedHint: "Fixado. Este resultado descreve exatamente este commit, não nada publicado depois.",
+    viewRun: "Ver execução",
+    fullReport: "Relatório completo",
+    pdf: "Baixar PDF",
+    footnote:
+      "Verificado automaticamente, em um ambiente limpo, sobre o código público da ferramenta no commit fixo. É um registro do que aconteceu, não um endosso do autor da ferramenta.",
     commit: "Commit",
     environment: "Ambiente",
     environmentFallback: "Plano B: {reason}, depois que o build do commit fixado falhou.",
@@ -124,7 +124,6 @@ export default {
     },
     errorsBadgeSuffix: "(erros reportados)",
     upstream: {
-      head: "Hoje é a cabeça de {branch}.",
       behind: "Desde então entraram {n} commit(s) em {branch}. É contexto, não uma falha: uma release fixada costuma ficar para trás de propósito.",
       refGone: "Este commit não é mais alcançável no repositório. O resultado ainda descreve o que rodou, mas não dá para buscar o código para repetir.",
       repoGone: "O repositório público não é mais alcançável nesta URL, então nada aqui pode ser reconferido contra seu código.",
@@ -141,8 +140,6 @@ export default {
         "Ao menos uma causa é um teto do ambiente automático gratuito, não uma falha da ferramenta.",
       faultAuthor:
         "Todas as causas identificadas estão no que a submission declarou — suas versões fixadas, nomes de pacotes ou passos de build. São corrigíveis, e re-verificar depois é grátis.",
-      faultAuthorThirdParty:
-        "Todas as causas identificadas estão no que a submission declarou — suas versões fixadas, nomes de pacotes ou passos de build — e essa submission veio de um terceiro, não de quem mantém a ferramenta. São falhas em como a ferramenta foi configurada aqui, não no software. Re-verificar depois de corrigi-las é grátis.",
       faultUnknown:
         "A causa não pôde ser classificada automaticamente. Abaixo está o log completo do build.",
       viewBuildLog: "Ver log do build",
@@ -189,6 +186,9 @@ export default {
     data: {
       heading: "Dados de verificação",
       note: "Conjuntos de dados de referência públicos usados como entrada para esta execução de verificação. Provenientes de repositórios de acesso aberto; veja as licenças upstream para os termos de uso.",
+      source: "Fonte",
+      doi: "DOI",
+      license: "Licença",
       lociTested: "Loci testados",
       lociCount: "loci STR forenses",
       lociScope: "Esta verificação cobre apenas os loci STR listados acima. A ferramenta pode suportar loci adicionais não incluídos neste dataset de referência.",

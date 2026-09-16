@@ -8,7 +8,6 @@ export default {
       level: "Nivel",
       datasets: "Datasets",
       gatesPassed: "{passed}/{total} compuertas pasadas",
-      datasetsUsed: "{count} dataset(s) de referencia",
       noDatasets: "Sin datasets",
       verifiedDate: "Verificado el {date}",
     },
@@ -17,15 +16,16 @@ export default {
     backToList: "Todas las herramientas verificadas",
     source: "Código",
     variant: "Kit / variante",
-    submittedBy: "Enviado por",
-    submittedByValue: {
-      maintainer: "El mantenedor de la herramienta",
-      third_party: "Un tercero (no el mantenedor de la herramienta)",
-    },
-    thirdPartyShortfall:
-      "Esta corrida la configuró un tercero, no quien mantiene la herramienta. Un resultado que no llega al escalón más alto puede reflejar esa configuración y no el software en sí.",
-    submittedByThirdPartyNote:
-      "Esta herramienta fue enviada a verificación por alguien que no es su mantenedor. El mantenedor no participó en la corrida ni aportó nada de lo que usó: el comando, el entorno y las regiones objetivo los eligió quien la envió. Si arriba figura un mantenedor, es quien responde por el software, no quien pidió este reporte, y no implica su respaldo.",
+    version: "Versión",
+    maintainer: "Mantenedor",
+    repository: "Repositorio",
+    commitPinned: "Commit fijo",
+    commitPinnedHint: "Pineado. Este resultado describe exactamente este commit, no nada publicado después.",
+    viewRun: "Ver corrida",
+    fullReport: "Informe completo",
+    pdf: "Descargar PDF",
+    footnote:
+      "Verificado automáticamente, en un entorno limpio, sobre el código público de la herramienta en el commit fijo. Es un registro de lo que pasó, no un aval del autor de la herramienta.",
     commit: "Commit",
     environment: "Entorno",
     environmentFallback: "Plan B: {reason}, después de que fallara el build del commit fijado.",
@@ -124,7 +124,6 @@ export default {
     },
     errorsBadgeSuffix: "(errores reportados)",
     upstream: {
-      head: "Hoy es la cabeza de {branch}.",
       behind: "Desde entonces entraron {n} commit(s) en {branch}. Es contexto, no una falla: una release fijada suele estar por detrás a propósito.",
       refGone: "Este commit ya no es alcanzable en el repositorio. El resultado sigue describiendo lo que corrió, pero no se puede traer el código para repetirlo.",
       repoGone: "El repositorio público ya no es alcanzable en esta URL, así que nada de esto se puede volver a chequear contra su código.",
@@ -141,8 +140,6 @@ export default {
         "Al menos una causa es un techo del entorno automático gratuito, no una falla de la herramienta.",
       faultAuthor:
         "Todas las causas identificadas están en lo que declaró la submission: sus versiones fijadas, nombres de paquetes o pasos de build. Son corregibles, y re-verificar después es gratis.",
-      faultAuthorThirdParty:
-        "Todas las causas identificadas están en lo que declaró la submission —sus versiones fijadas, nombres de paquetes o pasos de build— y esa submission la hizo un tercero, no quien mantiene la herramienta. Son fallas en cómo se configuró la herramienta acá, no en el software. Re-verificar después de corregirlas es gratis.",
       faultUnknown:
         "La causa no se pudo clasificar automáticamente. Abajo está el log completo del build.",
       viewBuildLog: "Ver log del build",
@@ -189,6 +186,9 @@ export default {
     data: {
       heading: "Datos de verificación",
       note: "Conjuntos de datos de referencia públicos utilizados como entrada para esta corrida de verificación. Provienen de repositorios de acceso abierto; ver las licencias upstream para los términos de uso.",
+      source: "Fuente",
+      doi: "DOI",
+      license: "Licencia",
       lociTested: "Loci probados",
       lociCount: "loci STR forenses",
       lociScope: "Esta verificación cubre únicamente los loci STR listados arriba. La herramienta puede soportar loci adicionales no incluidos en este dataset de referencia.",

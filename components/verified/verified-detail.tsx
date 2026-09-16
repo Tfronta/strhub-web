@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Check, Minus, X, ExternalLink, AlertTriangle, Info, XCircle, LifeBuoy } from "lucide-react";
+import { ArrowLeft, Check, Minus, X, ExternalLink, AlertTriangle, Info, XCircle, LifeBuoy, Flag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import {
@@ -19,6 +19,7 @@ import {
   installFaultKey,
 } from "@/lib/verified/diagnostics";
 import { isManualEligible, reasonI18nKey } from "@/lib/verified/manual";
+import { buildDisputeLink } from "@/lib/verified/dispute";
 
 const CODIS_CORE_LOCI = [
   "Amelogenin", "CSF1PO", "D1S1656", "D2S441", "D2S1338", "D3S1358",
@@ -1137,6 +1138,34 @@ export function VerifiedDetail({
           <p>{report.scope}</p>
           <p className="mt-3 text-muted-foreground">{t("verified.scopeNote")}</p>
         </div>
+
+        {/* ── DISPUTE ──
+            The other half of the evidence links above: a reader who opens one
+            and finds it does not say what STRhub claims needs a way to say so.
+            It files against STRhub's own repository, not the tool's — this
+            questions what STRhub published — and it only prefills GitHub's form;
+            nothing is sent from here. */}
+        {(() => {
+          const dispute = buildDisputeLink(report, slug, staticPageUrl);
+          if (!dispute.url || dispute.tooLong) return null;
+          return (
+            <div className="mt-6 rounded-lg border bg-muted/40 p-4">
+              <h2 className="text-sm font-semibold">{t("verified.dispute.heading")}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">{t("verified.dispute.note")}</p>
+              <a
+                href={dispute.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+              >
+                <Flag className="h-3.5 w-3.5" />
+                {t("verified.dispute.cta")}
+                <ExternalLink className="h-3 w-3" />
+              </a>
+              <p className="mt-1.5 text-xs text-muted-foreground">{t("verified.dispute.hint")}</p>
+            </div>
+          );
+        })()}
 
         {/* Footer disclaimer */}
         <p className="mt-8 text-xs text-muted-foreground">

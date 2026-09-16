@@ -3,11 +3,12 @@
 /**
  * A test run, watched live and then read.
  *
- * Polls /api/verify/trial until the run completes, then shows the one sentence
- * a reader who does not program needs (the verdict), what the README does not
- * say when that is the reason, the gate ladder, what was actually run, the
- * caveats (every guess the engine made), and the logs. An owner gets "Publish";
- * a reviewer gets a link to share.
+ * Polls /api/verify/trial until the run completes, then renders the same
+ * report a published attestation gets — summary, pinned commit, the data it
+ * ran on, the ladder, the evidence — with what only a trial has slotted in:
+ * the verdict a reader who does not program needs, what stopped it and what
+ * to do about it, and the recipe that ran. An owner gets "Publish"; a
+ * reviewer gets a link to share.
  */
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -17,11 +18,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
-import { VERIFIED_GATES } from "@/types/verified";
-import { gateStates } from "@/lib/verified/gate-state";
 import type { TrialRole, TrialStatus, TrialVerdictCode } from "@/lib/verified/trial";
 import { ownerIssueUrl, prepareSelfFix } from "@/lib/verified/trial-next-steps";
 import { useRouter } from "next/navigation";
+import { VerifiedReportBody, type ReportLog, type ExtraGateRow } from "./report/verified-report-body";
 
 const POLL_MS = 8000;
 const STALL_AFTER_MS = 6 * 60 * 1000;
@@ -53,7 +53,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const [publishMsg, setPublishMsg] = useState<string>("");
   const [showDockerfile, setShowDockerfile] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
-  const [openLog, setOpenLog] = useState<string | null>(null);
   const startedAt = useRef(Date.now());
   const [now, setNow] = useState(Date.now());
 
@@ -116,7 +115,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const elapsedMin = Math.floor((now - startedAt.current) / 60000);
   const running = !status || (status.state !== "completed" && status.state !== "expired");
   const stalled = running && status?.state === "pending" && now - startedAt.current > STALL_AFTER_MS;
-  const repoName = report?.source.repo?.replace(/\/+$/, "").split("/").pop();
   const cmd = status?.recipe ? extractCmd(status.recipe.manifest_yml) : null;
   const repoDockerfile = status?.recipe?.manifest_yml.includes("source: repository") ?? false;
   // Plan B: a second Dockerfile the engine builds only if the first fails. The
@@ -126,30 +124,160 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const fallbackUsed = report?.environment?.fallback_used ?? false;
   const fallbackReason = report?.environment?.fallback?.reason ?? t("verified.trial.recipeFallbackReason");
 
+  // The artifact carries the log text itself, so the body opens it inline.
+  const logs: ReportLog[] = Object.entries(status?.logs ?? {}).map(([leg, text]) => ({
+    leg,
+    label: t(`verified.trial.log.${leg}`),
+    text,
+  }));
+  const gates = (report?.gates ?? {}) as Record<string, boolean>;
+  const extraGateRows: ExtraGateRow[] =
+    "example" in gates
+      ? [{ key: "example", label: t("verified.trial.example"), meaning: t("verified.trial.exampleMeaning"), passed: !!gates.example }]
+      : [];
+
+  const verdictBlock = report && verdict && (
+    <>
+      <section className="mt-6 rounded-lg border p-5" aria-labelledby="trial-verdict">
+        <div className="flex flex-wrap items-center gap-3">
+          <Badge className={`${VERDICT_TONE[verdict.code]} border-transparent text-sm`}>{t(`verified.trial.verdict.${verdict.code}`)}</Badge>
+          <h2 id="trial-verdict" className="text-lg font-semibold">
+            {t(`verified.trial.verdictMeaning.${verdict.code === "runs" && fallbackUsed ? "runsFallback" : verdict.code}`)}
+          </h2>
+        </div>
+        <p className="mt-3 text-sm text-muted-foreground">{verdict.reason}</p>
+        {verdict.readme_gaps && verdict.readme_gaps.length > 0 && (
+          <div className="mt-4">
+            <h3 className="text-sm font-semibold">{t("verified.trial.gapsTitle")}</h3>
+            <p className="mb-2 text-xs text-muted-foreground">{t("verified.trial.gapsHint")}</p>
+            <ul className="list-disc space-y-1 pl-5 text-sm">
+              {verdict.readme_gaps.map((g) => <li key={g.item}>{g.text}</li>)}
+            </ul>
+          </div>
+        )}
+      </section>
+
+      {verdict.blockers && verdict.blockers.length > 0 && status?.recipe && (
+        <Card className="mt-6 border-amber-300 dark:border-amber-800">
+          <CardHeader>
+            <CardTitle className="text-base">{t("verified.trial.stoppedTitle")}</CardTitle>
+            <p className="text-xs text-muted-foreground">{t("verified.trial.stoppedHint")}</p>
+          </CardHeader>
+          <CardContent>
+            <ol className="space-y-5">
+              {verdict.blockers.map((b) => {
+                const issue = ownerIssueUrl(report, b, typeof window !== "undefined" ? window.location.href.split("?")[0] : "");
+                return (
+                  <li key={b.code} className="text-sm">
+                    <p className="font-medium">{b.what}</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {b.self_fix && (
+                        <Button
+                          size="sm"
+                          onClick={() => router.push(prepareSelfFix(report, status.recipe!, b.self_fix!))}
+                          title={t("verified.trial.selfFixHint")}
+                        >
+                          {t("verified.trial.selfFix")}
+                        </Button>
+                      )}
+                      {issue && (
+                        <Button asChild size="sm" variant="outline" title={t("verified.trial.askOwnerHint")}>
+                          <a href={issue} target="_blank" rel="noopener noreferrer">
+                            {t("verified.trial.askOwner")} <ExternalLink className="ml-1 h-3.5 w-3.5" />
+                          </a>
+                        </Button>
+                      )}
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">{b.self_fix_text}</p>
+                  </li>
+                );
+              })}
+            </ol>
+          </CardContent>
+        </Card>
+      )}
+
+      {role === "owner" && (
+        <Card className="mt-6">
+          <CardContent className="pt-6">
+            {verdict.code === "runs" ? (
+              <>
+                <Button onClick={publish} disabled={publishState === "busy" || publishState === "done"}>
+                  {t("verified.trial.publish")}
+                </Button>
+                <p className="mt-2 text-sm text-muted-foreground">{t("verified.trial.publishHint")}</p>
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground">{t("verified.trial.publishOnlyRuns")}</p>
+            )}
+            {publishMsg && (
+              <p role="status" className={`mt-3 text-sm ${publishState === "error" ? "text-red-700" : "text-teal-700"}`}>{publishMsg}</p>
+            )}
+          </CardContent>
+        </Card>
+      )}
+      {role === "reviewer" && (
+        <p className="mt-4 text-sm text-muted-foreground">{t("verified.trial.share")}</p>
+      )}
+      {role === "user" && (
+        <p className="mt-4 text-sm text-muted-foreground">
+          <Link href={`/verified/trial/${id}?as=owner`} className="underline underline-offset-2">{t("verified.trial.asOwnerCta")}</Link>
+        </p>
+      )}
+    </>
+  );
+
+  const recipeBlock = status?.recipe && (
+    <Card className="mt-6">
+      <CardHeader>
+        <CardTitle className="text-base">{t("verified.trial.recipeTitle")}</CardTitle>
+        <p className="text-xs text-muted-foreground">{t("verified.trial.recipeHint")}</p>
+      </CardHeader>
+      <CardContent className="space-y-3 text-sm">
+        {cmd && (
+          <div>
+            <p className="mb-1 font-medium">{t("verified.trial.recipeCmd")}</p>
+            <pre className="overflow-x-auto rounded-md bg-muted p-3 text-xs"><code>{cmd}</code></pre>
+          </div>
+        )}
+        <div>
+          <p className="mb-1 font-medium">{t("verified.trial.recipeDockerfile")}</p>
+          {repoDockerfile ? (
+            <p className="text-muted-foreground">{t("verified.trial.recipeRepoDockerfile")}</p>
+          ) : (
+            <>
+              <button type="button" className="text-xs underline underline-offset-2" onClick={() => setShowDockerfile((v) => !v)}>
+                {showDockerfile ? "−" : "+"} Dockerfile
+              </button>
+              {showDockerfile && (
+                <pre className="mt-2 overflow-x-auto rounded-md bg-muted p-3 text-xs"><code>{status.recipe.dockerfile}</code></pre>
+              )}
+              {fallbackDockerfile && (
+                <div className={`mt-3 rounded-md border p-3 ${fallbackUsed ? "border-amber-300 bg-amber-50/60 dark:border-amber-800 dark:bg-amber-950/20" : ""}`}>
+                  <p className={fallbackUsed ? "text-sm" : "text-xs text-muted-foreground"}>
+                    {t(fallbackUsed ? "verified.trial.recipeFallbackUsed" : "verified.trial.recipeFallbackAvailable", { reason: fallbackReason })}
+                  </p>
+                  <button type="button" className="mt-2 text-xs underline underline-offset-2" onClick={() => setShowFallback((v) => !v)}>
+                    {showFallback ? "−" : "+"} Dockerfile.fallback
+                  </button>
+                  {showFallback && (
+                    <pre className="mt-2 overflow-x-auto rounded-md bg-muted p-3 text-xs"><code>{fallbackDockerfile}</code></pre>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-10">
+    <div className="container mx-auto max-w-3xl px-4 pt-10">
       <p className="mb-2 text-sm text-muted-foreground">
         <Link href="/verified" className="underline underline-offset-2">STRhub Verified</Link>
       </p>
-      <PageTitle
-        title={report ? `${t("verified.trial.title")}: ${repoName ?? report.tool.name}` : t("verified.trial.title")}
-        description={
-          report
-            ? t("verified.trial.of", { repo: report.source.repo, ref: (report.source.ref_resolved ?? report.source.ref ?? "").slice(0, 12) })
-            : undefined
-        }
-      />
-
-      {/* What a verdict here does and does not say, before the verdict itself.
-          The PDF opens with the same two sentences; the page used to leave a
-          reader to find them at the foot of the catalogue entry. */}
-      {report && (
-        <aside className="mt-4 border-t pt-3 text-sm text-muted-foreground" aria-label={t("verified.trial.scopeTitle")}>
-          <p className="text-xs uppercase tracking-wider">{t("verified.trial.scopeTitle")}</p>
-          <p className="mt-1.5">{t("verified.trial.scope1")}</p>
-          <p className="mt-1.5">{t("verified.trial.scope2")}</p>
-        </aside>
-      )}
+      {!report && <PageTitle title={t("verified.trial.title")} />}
 
       {fetchError && (
         <p role="alert" className="mt-6 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-800">{fetchError}</p>
@@ -191,285 +319,18 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
 
       {report && verdict && (
         <>
-          <section className="mt-6 rounded-lg border p-5" aria-labelledby="trial-verdict">
-            <div className="flex flex-wrap items-center gap-3">
-              <Badge className={`${VERDICT_TONE[verdict.code]} border-transparent text-sm`}>{t(`verified.trial.verdict.${verdict.code}`)}</Badge>
-              <h2 id="trial-verdict" className="text-lg font-semibold">
-                {t(`verified.trial.verdictMeaning.${verdict.code === "runs" && fallbackUsed ? "runsFallback" : verdict.code}`)}
-              </h2>
-            </div>
-            <p className="mt-3 text-sm text-muted-foreground">{verdict.reason}</p>
-            {verdict.readme_gaps && verdict.readme_gaps.length > 0 && (
-              <div className="mt-4">
-                <h3 className="text-sm font-semibold">{t("verified.trial.gapsTitle")}</h3>
-                <p className="mb-2 text-xs text-muted-foreground">{t("verified.trial.gapsHint")}</p>
-                <ul className="list-disc space-y-1 pl-5 text-sm">
-                  {verdict.readme_gaps.map((g) => <li key={g.item}>{g.text}</li>)}
-                </ul>
-              </div>
-            )}
-          </section>
-
-          {verdict.blockers && verdict.blockers.length > 0 && status?.recipe && (
-            <Card className="mt-6 border-amber-300 dark:border-amber-800">
-              <CardHeader>
-                <CardTitle className="text-base">{t("verified.trial.stoppedTitle")}</CardTitle>
-                <p className="text-xs text-muted-foreground">{t("verified.trial.stoppedHint")}</p>
-              </CardHeader>
-              <CardContent>
-                <ol className="space-y-5">
-                  {verdict.blockers.map((b) => {
-                    const issue = ownerIssueUrl(report, b, typeof window !== "undefined" ? window.location.href.split("?")[0] : "");
-                    return (
-                      <li key={b.code} className="text-sm">
-                        <p className="font-medium">{b.what}</p>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {b.self_fix && (
-                            <Button
-                              size="sm"
-                              onClick={() => router.push(prepareSelfFix(report, status.recipe!, b.self_fix!))}
-                              title={t("verified.trial.selfFixHint")}
-                            >
-                              {t("verified.trial.selfFix")}
-                            </Button>
-                          )}
-                          {issue && (
-                            <Button asChild size="sm" variant="outline" title={t("verified.trial.askOwnerHint")}>
-                              <a href={issue} target="_blank" rel="noopener noreferrer">
-                                {t("verified.trial.askOwner")} <ExternalLink className="ml-1 h-3.5 w-3.5" />
-                              </a>
-                            </Button>
-                          )}
-                        </div>
-                        <p className="mt-1 text-xs text-muted-foreground">{b.self_fix_text}</p>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </CardContent>
-            </Card>
-          )}
-
-          {role === "owner" && (
-            <Card className="mt-6">
-              <CardContent className="pt-6">
-                {verdict.code === "runs" ? (
-                  <>
-                    <Button onClick={publish} disabled={publishState === "busy" || publishState === "done"}>
-                      {t("verified.trial.publish")}
-                    </Button>
-                    <p className="mt-2 text-sm text-muted-foreground">{t("verified.trial.publishHint")}</p>
-                  </>
-                ) : (
-                  <p className="text-sm text-muted-foreground">{t("verified.trial.publishOnlyRuns")}</p>
-                )}
-                {publishMsg && (
-                  <p role="status" className={`mt-3 text-sm ${publishState === "error" ? "text-red-700" : "text-teal-700"}`}>{publishMsg}</p>
-                )}
-              </CardContent>
-            </Card>
-          )}
-          {role === "reviewer" && (
-            <p className="mt-4 text-sm text-muted-foreground">{t("verified.trial.share")}</p>
-          )}
-          {role === "user" && (
-            <p className="mt-4 text-sm text-muted-foreground">
-              <Link href={`/verified/trial/${id}?as=owner`} className="underline underline-offset-2">{t("verified.trial.asOwnerCta")}</Link>
-            </p>
-          )}
-
-          <Card className="mt-6">
-            <CardHeader><CardTitle className="text-base">{t("verified.trial.gates")}</CardTitle></CardHeader>
-            <CardContent>
-              <ul className="divide-y text-sm">
-                {(() => {
-                  const st = gateStates(report.gates, VERIFIED_GATES.map((g) => g.key));
-                  return VERIFIED_GATES.map((g) => (
-                    <li key={g.key} className="flex items-start gap-3 py-2">
-                      {/* Red marks the one rung the run stopped at; the rungs
-                          above it were never attempted and stay grey, so five
-                          grey dots no longer read as five shortcomings. */}
-                      <span
-                        className={`mt-0.5 inline-block h-2.5 w-2.5 shrink-0 rounded-full ${
-                          st[g.key] === "pass" ? "bg-teal-600"
-                            : st[g.key] === "stopped" ? "bg-red-600"
-                            : "bg-slate-300"
-                        }`}
-                        aria-hidden
-                      />
-                      <span className="w-40 shrink-0 font-medium">{g.label}</span>
-                      <span className="text-muted-foreground">
-                        {t(g.meaningKey)}
-                        {st[g.key] === "stopped" && (
-                          <span className="ml-2 text-red-700 dark:text-red-400">— {t("verified.gate.stoppedHere")}</span>
-                        )}
-                        {st[g.key] === "not-reached" && (
-                          <span className="ml-2 italic">— {t("verified.gate.notReached")}</span>
-                        )}
-                      </span>
-                    </li>
-                  ));
-                })()}
-                {"example" in (report.gates ?? {}) && (
-                  <li className="flex items-start gap-3 py-2">
-                    <span className={`mt-0.5 inline-block h-2.5 w-2.5 shrink-0 rounded-full ${(report.gates as Record<string, boolean>).example ? "bg-teal-600" : "bg-slate-300"}`} aria-hidden />
-                    <span className="w-40 shrink-0 font-medium">{t("verified.trial.example")}</span>
-                    <span className="text-muted-foreground">{t("verified.trial.exampleMeaning")}</span>
-                  </li>
-                )}
-              </ul>
-            </CardContent>
-          </Card>
-
-          {status?.recipe && (
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle className="text-base">{t("verified.trial.recipeTitle")}</CardTitle>
-                <p className="text-xs text-muted-foreground">{t("verified.trial.recipeHint")}</p>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                {cmd && (
-                  <div>
-                    <p className="mb-1 font-medium">{t("verified.trial.recipeCmd")}</p>
-                    <pre className="overflow-x-auto rounded-md bg-muted p-3 text-xs"><code>{cmd}</code></pre>
-                  </div>
-                )}
-                <div>
-                  <p className="mb-1 font-medium">{t("verified.trial.recipeDockerfile")}</p>
-                  {repoDockerfile ? (
-                    <p className="text-muted-foreground">{t("verified.trial.recipeRepoDockerfile")}</p>
-                  ) : (
-                    <>
-                      <button type="button" className="text-xs underline underline-offset-2" onClick={() => setShowDockerfile((v) => !v)}>
-                        {showDockerfile ? "−" : "+"} Dockerfile
-                      </button>
-                      {showDockerfile && (
-                        <pre className="mt-2 overflow-x-auto rounded-md bg-muted p-3 text-xs"><code>{status.recipe.dockerfile}</code></pre>
-                      )}
-                      {fallbackDockerfile && (
-                        <div className={`mt-3 rounded-md border p-3 ${fallbackUsed ? "border-amber-300 bg-amber-50/60 dark:border-amber-800 dark:bg-amber-950/20" : ""}`}>
-                          <p className={fallbackUsed ? "text-sm" : "text-xs text-muted-foreground"}>
-                            {t(fallbackUsed ? "verified.trial.recipeFallbackUsed" : "verified.trial.recipeFallbackAvailable", { reason: fallbackReason })}
-                          </p>
-                          <button type="button" className="mt-2 text-xs underline underline-offset-2" onClick={() => setShowFallback((v) => !v)}>
-                            {showFallback ? "−" : "+"} Dockerfile.fallback
-                          </button>
-                          {showFallback && (
-                            <pre className="mt-2 overflow-x-auto rounded-md bg-muted p-3 text-xs"><code>{fallbackDockerfile}</code></pre>
-                          )}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-
-          {/* The author's own note about their own software, before any of
-              STRhub's findings: a run that stops where the README says it
-              stops is not news, and a reader must see that without opening
-              the repository. */}
-          {report.author_known_issues && report.author_known_issues.length > 0 && (
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle className="text-base">{t("verified.trial.knownIssuesTitle")}</CardTitle>
-                <p className="text-xs text-muted-foreground">{t("verified.trial.knownIssuesHint")}</p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {report.author_known_issues.map((k) => (
-                  <div key={`${k.heading}-${k.line}`}>
-                    <p className="text-sm font-medium">
-                      {k.heading}{" "}
-                      <span className="font-normal text-muted-foreground">
-                        ({k.url ? (
-                          <a href={k.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
-                            {t("verified.trial.knownIssuesLine", { line: String(k.line) })}
-                          </a>
-                        ) : t("verified.trial.knownIssuesLine", { line: String(k.line) })})
-                      </span>
-                    </p>
-                    <blockquote className="mt-1 border-l-2 pl-3 text-sm text-muted-foreground">
-                      {k.text}{k.truncated ? "…" : ""}
-                    </blockquote>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-
-
-          {/* Every claim the configuration rests on, openable at the pinned
-              ref. A claim a reader cannot open in one click is a claim nobody
-              can challenge; the README line a command was read on is what a
-              reviewer checks the rewrite against. */}
-          {report.evidence && report.evidence.length > 0 && (
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle className="text-base">{t("verified.trial.evidenceTitle")}</CardTitle>
-                <p className="text-xs text-muted-foreground">{t("verified.trial.evidenceHint")}</p>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-1.5 text-sm">
-                  {report.evidence.map((e, i) => (
-                    <li key={`${e.claim}-${e.path}-${i}`} className="flex flex-wrap items-baseline gap-x-2">
-                      <span className="w-40 shrink-0 text-muted-foreground">
-                        {t(`verified.trial.evidenceClaim.${e.claim}`) === `verified.trial.evidenceClaim.${e.claim}` ? e.claim : t(`verified.trial.evidenceClaim.${e.claim}`)}
-                      </span>
-                      <a href={e.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs underline underline-offset-2">
-                        {e.path}{e.line ? `#L${e.line}` : ""} <ExternalLink className="h-3 w-3" />
-                      </a>
-                      {e.kind === "readme" && e.text && e.claim !== "known_issue" && (
-                        <code className="max-w-full truncate rounded bg-muted px-1 text-xs text-muted-foreground">{e.text}</code>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          )}
-
-          {report.caveats?.items?.length ? (
-            <Card className="mt-6">
-              <CardHeader><CardTitle className="text-base">{t("verified.trial.caveatsTitle")}</CardTitle></CardHeader>
-              <CardContent>
-                <ul className="list-disc space-y-1 pl-5 text-sm">
-                  {report.caveats.items.map((c, i) => <li key={i}>{c}</li>)}
-                </ul>
-              </CardContent>
-            </Card>
-          ) : null}
-
-          {Object.keys(status?.logs ?? {}).length > 0 && (
-            <Card className="mt-6">
-              <CardHeader><CardTitle className="text-base">{t("verified.trial.logsTitle")}</CardTitle></CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {Object.keys(status!.logs).map((k) => (
-                    <Button key={k} variant={openLog === k ? "default" : "outline"} size="sm" onClick={() => setOpenLog(openLog === k ? null : k)}>
-                      {t(`verified.trial.log.${k}`)}
-                    </Button>
-                  ))}
-                </div>
-                {openLog && (
-                  <pre className="mt-3 max-h-96 overflow-auto rounded-md bg-muted p-3 text-xs"><code>{status!.logs[openLog]}</code></pre>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
-          <p className="mt-6 flex flex-wrap gap-4 text-sm">
-            {status?.files?.pdf && (
-              <a href={status.files.pdf} className="inline-flex items-center gap-1 underline underline-offset-2">
-                {t("verified.trial.pdf")}
-              </a>
-            )}
-            {status?.files?.html && (
-              <a href={status.files.html} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 underline underline-offset-2">
-                {t("verified.trial.html")} <ExternalLink className="h-3.5 w-3.5" />
-              </a>
-            )}
+          <VerifiedReportBody
+            report={report}
+            slug={status?.slug ?? id}
+            staticPageUrl={status?.files?.html}
+            pdfUrl={status?.files?.pdf}
+            logs={logs}
+            extraGateRows={extraGateRows}
+            backLink={false}
+            afterHeader={verdictBlock}
+            afterSource={recipeBlock}
+          />
+          <p className="mb-10 flex flex-wrap gap-4 px-4 text-sm">
             {status?.runUrl && (
               <a href={status.runUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 underline underline-offset-2">
                 {t("verified.trial.runLink")} <ExternalLink className="h-3.5 w-3.5" />
@@ -479,7 +340,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
               {t("verified.trial.again")}
             </Link>
           </p>
-          <p className="mt-8 text-xs text-muted-foreground">{report.scope}</p>
         </>
       )}
     </div>

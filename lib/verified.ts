@@ -81,6 +81,11 @@ export function verifiedStaticPageUrl(slug: string): string {
   return `${BASE}/${slug}.html`;
 }
 
+/** The PDF the engine writes next to the report, for a reader who wants to keep it. */
+export function verifiedPdfUrl(slug: string): string {
+  return `${BASE}/${slug}.pdf`;
+}
+
 export function contentStats(report: VerifiedReport) {
   const outs = report.content_detail?.outputs;
   return outs && outs.length > 0 ? outs[0].stats : undefined;

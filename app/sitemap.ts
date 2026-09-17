@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { fetchAllBasicsArticles } from "@/lib/back-to-basics-server";
 import { getVerifiedIndex } from "@/lib/verified";
-import { markerData } from "@/lib/markerData";
+import { indexableMarkerIds, MARKER_DATA_UPDATED } from "@/lib/marker-summary";
 import {
   BASICS_LOCALES,
   basicsArticlePath,
@@ -40,8 +40,12 @@ const VERIFIED_ROUTES: typeof STATIC_ROUTES = [
   { path: "/verified/submit", changeFrequency: "monthly", priority: 0.5 },
 ];
 
+function newest(dates: Array<string | null | undefined>): string | undefined {
+  const valid = dates.filter((d): d is string => !!d).sort();
+  return valid.length ? valid[valid.length - 1] : undefined;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
   const [articles, verified] = await Promise.all([
     fetchAllBasicsArticles(),
     VERIFIED_PUBLIC
@@ -53,13 +57,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ? [...STATIC_ROUTES, ...VERIFIED_ROUTES]
     : STATIC_ROUTES;
 
+  // Only dates we can vouch for: search engines ignore lastmod once it is
+  // seen to change on every fetch, which is what a build timestamp does.
+  const articlesUpdated = newest(articles.map((a) => a.updatedAt));
+  const verifiedUpdated = newest((verified?.tools ?? []).map((t) => t.generated));
+  const lastModifiedByPath: Record<string, string | undefined> = {
+    "": newest([articlesUpdated, MARKER_DATA_UPDATED]),
+    "/catalog": MARKER_DATA_UPDATED,
+    "/basics": articlesUpdated,
+    "/datasets": MARKER_DATA_UPDATED,
+    "/tools/str-motif-explorer": MARKER_DATA_UPDATED,
+    "/verified": verifiedUpdated,
+  };
+
   const staticEntries: MetadataRoute.Sitemap = routes.map(
-    ({ path, changeFrequency, priority }) => ({
-      url: `${SITE_URL}${path}`,
-      lastModified: now,
-      changeFrequency,
-      priority,
-    })
+    ({ path, changeFrequency, priority }) => {
+      const lastModified = lastModifiedByPath[path];
+      return {
+        // Google records the root as "https://strhub.app/"; match it so the
+        // home page is attributed to this sitemap.
+        url: path === "" ? `${SITE_URL}/` : `${SITE_URL}${path}`,
+        ...(lastModified ? { lastModified } : {}),
+        changeFrequency,
+        priority,
+      };
+    }
   );
 
   const articleEntries: MetadataRoute.Sitemap = articles.flatMap((article) => {
@@ -71,17 +93,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
     return BASICS_LOCALES.map((locale) => ({
       url: `${SITE_URL}${basicsArticlePath(locale, article.slugs[locale])}`,
-      lastModified: article.updatedAt ? new Date(article.updatedAt) : now,
+      ...(article.updatedAt ? { lastModified: new Date(article.updatedAt) } : {}),
       changeFrequency: "monthly" as const,
       priority: 0.7,
       alternates: { languages },
     }));
   });
 
-  const markerEntries: MetadataRoute.Sitemap = Object.keys(markerData).map(
+  // Markers without locus data are noindex (see app/marker/[id]/layout.tsx);
+  // listing them here would tell crawlers the opposite.
+  const markerEntries: MetadataRoute.Sitemap = indexableMarkerIds().map(
     (id) => ({
       url: `${SITE_URL}/marker/${id}`,
-      lastModified: now,
+      lastModified: MARKER_DATA_UPDATED,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })
@@ -91,7 +115,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter((tool) => /^[A-Za-z0-9._-]+$/.test(tool.slug))
     .map((tool) => ({
       url: `${SITE_URL}/verified/${tool.slug}`,
-      lastModified: tool.generated ? new Date(tool.generated) : now,
+      ...(tool.generated ? { lastModified: new Date(tool.generated) } : {}),
       changeFrequency: "monthly" as const,
       priority: 0.5,
     }));

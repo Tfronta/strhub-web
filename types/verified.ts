@@ -59,11 +59,33 @@ export interface VerifiedContentStats {
   distinct_loci?: number;
   distinct_str_loci?: number;
   distinct_snp_markers?: number;
+  /** Every locus named in the output, STR and SNP alike. */
+  loci?: string[];
   str_loci?: string[];
   snp_markers?: string[];
   total_reads?: number;
   max_sequence_depth?: number;
+  /** Deepest first, as `most_common()` left it. */
   top_loci_by_depth?: [string, number][];
+  called_genotypes?: number;
+  /** How many loci the regions file asked for, and how many the output names. */
+  regions_given?: number;
+  regions_hit?: number;
+}
+
+/**
+ * What the Expected IO gate established about one declared output: the file
+ * it resolved to, and each check it ran. The gate row says "pass"; this is
+ * what passing consisted of, and it is what a reader who wants to see the
+ * output rather than take the row's word for it needs first.
+ */
+export interface VerifiedIoOutput {
+  path?: string;
+  format?: string;
+  resolved?: string;
+  records?: number;
+  checks?: Record<string, boolean>;
+  passed?: boolean;
 }
 
 /** A leg of the verification matrix (own data / external dataset). */
@@ -169,7 +191,15 @@ export interface VerifiedReport {
     status?: string;
     behind_by?: number;
   } | null;
-  io_detail?: unknown;
+  io_detail?: { passed?: boolean; outputs?: VerifiedIoOutput[] } | null;
+  /**
+   * The command the gates ran, as the tool saw it: the manifest's `run.cmd`
+   * with the harness's capture wrapper stripped. The PDF prints it under
+   * "Exact Run Command"; the page had nothing, so a reader of a published
+   * attestation could not see what was executed without opening the log.
+   * Absent on reports written before the engine recorded it.
+   */
+  run?: { cmd?: string; cwd?: string } | null;
   /**
    * Why the environment did not build, when it did not.
    *

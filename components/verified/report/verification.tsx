@@ -3,7 +3,7 @@
 import { Check, Minus } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import { cn } from "@/lib/utils";
-import type { VerifiedContentStats, VerifiedMatrixLeg } from "@/types/verified";
+import type { VerifiedMatrixLeg } from "@/types/verified";
 import type { DatasetProvenance } from "@/lib/verified/dataset-provenance";
 
 /** What the badge does and does not claim, side by side. Static by design. */
@@ -180,45 +180,6 @@ export function VerificationData({
           <p className="mt-3 text-xs text-muted-foreground italic">{t("verified.data.lociScope")}</p>
         </>
       )}
-    </>
-  );
-}
-
-/** The plausibility evidence: how many records, how many loci, how many reads. */
-export function OutputContent({ stats }: { stats: VerifiedContentStats | undefined }) {
-  const { t } = useLanguage();
-  if (!stats) return null;
-  return (
-    <>
-      <h2 className="mt-10 text-xl font-semibold">{t("verified.content.heading")}</h2>
-      <div className="mt-3 rounded-lg border bg-card p-5">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("verified.content.records")}</p>
-            <p className="text-2xl font-bold tabular-nums mt-1">{stats.rows ?? 0}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("verified.content.strLoci")}</p>
-            <p className="text-2xl font-bold tabular-nums mt-1">{stats.distinct_str_loci ?? stats.distinct_loci ?? 0}</p>
-          </div>
-          {(stats.distinct_snp_markers ?? 0) > 0 && (
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("verified.content.snps")}</p>
-              <p className="text-2xl font-bold tabular-nums mt-1">{stats.distinct_snp_markers}</p>
-            </div>
-          )}
-          <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("verified.content.totalReads")}</p>
-            <p className="text-2xl font-bold tabular-nums mt-1">{stats.total_reads ?? 0}</p>
-          </div>
-        </div>
-        {stats.str_loci && stats.str_loci.length > 0 && (
-          <div className="mt-5 pt-4 border-t">
-            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">{t("verified.content.strLociList")}</p>
-            <p className="text-xs font-mono text-muted-foreground leading-relaxed">{stats.str_loci.join(", ")}</p>
-          </div>
-        )}
-      </div>
     </>
   );
 }

@@ -18,9 +18,10 @@ import { hasReportedErrors, errorAwareLevel } from "@/lib/verified/diagnostics";
 import { summarizeDatasets } from "@/lib/verified/dataset-provenance";
 import { ReportHeader } from "./header";
 import { SummaryCard } from "./summary-card";
-import { SourceCard } from "./source-card";
+import { SourceCard, RunCommandCard } from "./source-card";
 import { GatesLadder, LogLinks, type ExtraGateRow, type ReportLog } from "./gates";
-import { WhatWasVerified, VerificationMatrix, VerificationData, OutputContent } from "./verification";
+import { WhatWasVerified, VerificationMatrix, VerificationData } from "./verification";
+import { OutputContent } from "./output";
 import {
   BuildFailedCard,
   AutoDiagnostics,
@@ -47,6 +48,8 @@ export function VerifiedReportBody({
   slug,
   staticPageUrl,
   pdfUrl,
+  jsonUrl,
+  command,
   logs,
   buildLogHref,
   extraGateRows,
@@ -59,13 +62,20 @@ export function VerifiedReportBody({
   /** The self-contained HTML report, if there is one to link. */
   staticPageUrl?: string;
   pdfUrl?: string;
+  jsonUrl?: string;
+  /**
+   * The command that ran, when the caller knows it. A published report carries
+   * it in `run.cmd` (newer engines); a trial can read it off its recipe even
+   * when the report predates that field.
+   */
+  command?: string;
   logs: ReportLog[];
   buildLogHref?: string;
   extraGateRows?: ExtraGateRow[];
   backLink?: boolean;
   /** A trial's verdict and next steps, right under the title. */
   afterHeader?: ReactNode;
-  /** A trial's recipe, next to where the source is named. */
+  /** A trial's environment, next to where the source is named. */
   afterSource?: ReactNode;
 }) {
   const { t } = useLanguage();
@@ -102,7 +112,9 @@ export function VerifiedReportBody({
           scope={report.scope}
         />
 
-        <SourceCard report={report} staticPageUrl={staticPageUrl} pdfUrl={pdfUrl} />
+        <SourceCard report={report} staticPageUrl={staticPageUrl} pdfUrl={pdfUrl} jsonUrl={jsonUrl} />
+
+        <RunCommandCard cmd={command ?? report.run?.cmd} />
 
         {afterSource}
 
@@ -118,7 +130,14 @@ export function VerifiedReportBody({
 
         <VerificationData provenance={data.provenance} hasStrhubFixture={data.hasStrhubFixture} />
 
-        <OutputContent stats={report.content_detail?.outputs?.[0]?.stats} />
+        {/* The IO gate and the content gate describe the same file; the panel
+            list is the reference sample's, so the section can name what the
+            output does not. */}
+        <OutputContent
+          stats={report.content_detail?.outputs?.[0]?.stats}
+          io={report.io_detail?.outputs?.[0]}
+          panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
+        />
 
         <AutoDiagnostics diagnostics={report.diagnostics} hasStrhubFixture={data.hasStrhubFixture} />
 
@@ -144,17 +163,7 @@ export function VerifiedReportBody({
 
         {staticPageUrl && <DisputeCard report={report} slug={slug} staticPageUrl={staticPageUrl} />}
 
-        <p className="mt-8 text-xs text-muted-foreground">
-          {t("verified.disclaimer")}
-          {staticPageUrl && (
-            <>
-              {" "}
-              <a href={staticPageUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                {t("verified.staticPage")}
-              </a>
-            </>
-          )}
-        </p>
+        <p className="mt-8 text-xs text-muted-foreground">{t("verified.disclaimer")}</p>
       </div>
     </div>
   );

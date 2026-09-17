@@ -331,6 +331,74 @@ marker: {
         "ToaSTR es una herramienta forense de genotipado STR basada en navegador para datos MPS, con modelado de stutter consciente de la secuencia, llamada automática de alelos e informes PDF conformes con ISFG. La distribución en Docker (labconowl/toastr) se ejecuta en macOS, Windows y Linux. Integrada en STRhub para análisis STR forense y validación de referencias.",
     },
   },
+  summary: {
+    and: "y",
+    kind: {
+      codis: "uno de los 20 loci del núcleo CODIS",
+      ess: "parte del European Standard Set",
+      autosomal: "un STR autosómico fuera del núcleo CODIS",
+      x: "un STR del cromosoma X (X-STR)",
+      y: "un STR del cromosoma Y (Y-STR)",
+    },
+    introTyped:
+      "{name} es un locus de repeticiones cortas en tándem (STR) de tipo {type} en el cromosoma {chromosome}{cytoband}, {kind}.",
+    introUntyped:
+      "{name} es un locus de repeticiones cortas en tándem (STR) en el cromosoma {chromosome}{cytoband}, {kind}.",
+    motif: "Su motivo de repetición es {motif}.",
+    motifAlternatives:
+      "Su motivo de repetición es {motif}; también se han descrito las estructuras alternativas {alternatives}.",
+    canonical:
+      "En la notación ISFG / STRNaming, la estructura de la secuencia de referencia es {canonical}.",
+    canonicalMany:
+      "En la notación ISFG / STRNaming, la estructura de la secuencia de referencia es {canonical}, con {count} formas alternativas definidas.",
+    alleles: "Se han descrito los alelos {range}.",
+    referenceOnly: "La secuencia de referencia GRCh38 corresponde al alelo {reference}.",
+    allelesWithReference:
+      "Se han descrito los alelos {range}; la secuencia de referencia GRCh38 corresponde al alelo {reference}.",
+    coordinates:
+      "En GRCh38 la región repetitiva abarca chr{chromosome}:{start}-{end} ({length} pb, hebra {strand}).",
+    coordinatesBoth:
+      "En GRCh38 la región repetitiva abarca chr{chromosome}:{start}-{end} ({length} pb, hebra {strand}); en GRCh37/hg19 corresponde a {start37}-{end37}.",
+    modalAllele: "{allele} ({population}, {frequency})",
+    frequencies:
+      "En el conjunto de datos de electroforesis capilar de pop.STR, el alelo más frecuente por grupo poblacional es {list}.",
+    heterozygosity:
+      "La heterocigosidad esperada va de {min} ({minPopulation}) a {max} ({maxPopulation}).",
+    ngs: "También hay frecuencias alélicas basadas en secuencia (NGS) del Proyecto 1000 Genomas.",
+    ngsWithRao:
+      "También hay frecuencias alélicas basadas en secuencia (NGS) del Proyecto 1000 Genomas y de un conjunto de datos NGS brasileño (RAO).",
+    kits: "El locus está cubierto por los kits MPS {kits}.",
+    kitsOne: "El locus está cubierto por el kit MPS {kits}.",
+    variants:
+      "STRbase recoge {count} variantes de secuencia repartidas en {alleleCount} designaciones alélicas.",
+    structureTitle: "Estructura de la secuencia (FSSG)",
+    structureSource:
+      "Rango mínimo ISFG, bracketing y cobertura por kit según la Forensic Sequence Structure Guide v6.1 beta (05/09/2024) de",
+    canonicalLabel: "Bracketing ISFG / STRNaming (desde 2024)",
+    historicalLabel: "Bracketing histórico (2016-2023)",
+    minimumRangeLabel: "Rango mínimo ISFG (GRCh38)",
+    basePairs: "{n} pb",
+    kitsLabel: "Kits MPS que cubren este locus",
+    frequenciesTitle: "Frecuencias alélicas de un vistazo",
+    frequenciesIntro:
+      "Alelo más frecuente por grupo poblacional, con su frecuencia y el tamaño muestral, en los datos de electroforesis capilar de",
+    modalAlleleShort: "Alelo {allele}",
+    sampleSize: "n = {n}",
+    frequenciesTableCaption:
+      "Frecuencias alélicas por grupo poblacional (pop.STR, CE). Se omiten los alelos ausentes en todos los grupos.",
+    openFrequencies: "Abrir los gráficos interactivos de frecuencias",
+    openVariants: "Ver las secuencias de las variantes",
+    relatedTitle: "Marcadores relacionados",
+    relatedSameChromosome: "Otros marcadores STR en el cromosoma {chromosome}",
+    relatedKind: {
+      codis: "Otros loci del núcleo CODIS",
+      ess: "Otros loci del European Standard Set",
+      autosomal: "Otros STR autosómicos",
+      x: "Otros X-STR",
+      y: "Otros Y-STR",
+    },
+    relatedCatalog: "Explorar el catálogo completo de marcadores STR",
+  },
   repeatTypes: {
     tetranucleotide: "Tetranucleótido",
     trinucleotide: "Trinucleótido",

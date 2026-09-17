@@ -331,6 +331,74 @@ marker: {
         "ToaSTR is a browser-based forensic STR genotyping tool for MPS data, with sequence-aware stutter modeling, automatic allele calling, and ISFG-compliant PDF reporting. The Dockerized distribution (labconowl/toastr) runs on macOS, Windows, and Linux. Integrated into STRhub for forensic STR analysis and reference validation.",
     },
   },
+  summary: {
+    and: "and",
+    kind: {
+      codis: "one of the 20 CODIS core loci",
+      ess: "part of the European Standard Set",
+      autosomal: "an autosomal STR outside the CODIS core set",
+      x: "an X-chromosome STR (X-STR)",
+      y: "a Y-chromosome STR (Y-STR)",
+    },
+    introTyped:
+      "{name} is a {type} short tandem repeat (STR) locus on chromosome {chromosome}{cytoband}, {kind}.",
+    introUntyped:
+      "{name} is a short tandem repeat (STR) locus on chromosome {chromosome}{cytoband}, {kind}.",
+    motif: "Its repeat motif is {motif}.",
+    motifAlternatives:
+      "Its repeat motif is {motif}; the alternative structures {alternatives} have also been described.",
+    canonical:
+      "In ISFG / STRNaming notation the reference sequence structure is {canonical}.",
+    canonicalMany:
+      "In ISFG / STRNaming notation the reference sequence structure is {canonical}, with {count} alternative forms also defined.",
+    alleles: "Alleles {range} have been reported.",
+    referenceOnly: "The GRCh38 reference sequence corresponds to allele {reference}.",
+    allelesWithReference:
+      "Alleles {range} have been reported; the GRCh38 reference sequence corresponds to allele {reference}.",
+    coordinates:
+      "On GRCh38 the repeat region spans chr{chromosome}:{start}-{end} ({length} bp, {strand} strand).",
+    coordinatesBoth:
+      "On GRCh38 the repeat region spans chr{chromosome}:{start}-{end} ({length} bp, {strand} strand); on GRCh37/hg19 it maps to {start37}-{end37}.",
+    modalAllele: "{allele} ({population}, {frequency})",
+    frequencies:
+      "In the pop.STR capillary electrophoresis dataset the most common allele per population group is {list}.",
+    heterozygosity:
+      "Expected heterozygosity ranges from {min} ({minPopulation}) to {max} ({maxPopulation}).",
+    ngs: "Sequence-based (NGS) allele frequencies from the 1000 Genomes Project are also available.",
+    ngsWithRao:
+      "Sequence-based (NGS) allele frequencies from the 1000 Genomes Project and from a Brazilian NGS dataset (RAO) are also available.",
+    kits: "The locus is covered by the MPS kits {kits}.",
+    kitsOne: "The locus is covered by the MPS kit {kits}.",
+    variants:
+      "STRbase reports {count} sequence variants across {alleleCount} allele designations.",
+    structureTitle: "Sequence structure (FSSG)",
+    structureSource:
+      "ISFG minimum range, bracketing and kit coverage from the Forensic Sequence Structure Guide v6.1 beta (2024-09-05) of",
+    canonicalLabel: "ISFG / STRNaming bracketing (2024 onward)",
+    historicalLabel: "Historical bracketing (2016-2023)",
+    minimumRangeLabel: "ISFG minimum range (GRCh38)",
+    basePairs: "{n} bp",
+    kitsLabel: "MPS kits covering this locus",
+    frequenciesTitle: "Allele frequencies at a glance",
+    frequenciesIntro:
+      "Most common allele per population group, with its frequency and the sample size, in the capillary electrophoresis data of",
+    modalAlleleShort: "Allele {allele}",
+    sampleSize: "n = {n}",
+    frequenciesTableCaption:
+      "Allele frequencies by population group (pop.STR, CE). Alleles absent from every group are omitted.",
+    openFrequencies: "Open the interactive frequency charts",
+    openVariants: "See the variant sequences",
+    relatedTitle: "Related markers",
+    relatedSameChromosome: "Other STR markers on chromosome {chromosome}",
+    relatedKind: {
+      codis: "Other CODIS core loci",
+      ess: "Other European Standard Set loci",
+      autosomal: "Other autosomal STRs",
+      x: "Other X-STRs",
+      y: "Other Y-STRs",
+    },
+    relatedCatalog: "Browse the full STR marker catalog",
+  },
   repeatTypes: {
     tetranucleotide: "Tetranucleotide",
     trinucleotide: "Trinucleotide",

@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { pageMetadata } from "@/lib/seo";
 import { markerData } from "@/lib/markerData";
-import { markerFrequenciesCE } from "@/app/marker/[id]/markerFrequencies";
+import { buildMarkerSummary, markerHasContent } from "@/lib/marker-summary";
 
 type Props = {
   params: { id: string };
@@ -28,6 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     });
   }
 
+  const summary = buildMarkerSummary(params.id);
   const name = marker.name || params.id.toUpperCase();
   const parts: string[] = [];
   if (marker.chromosome) parts.push(`chromosome ${marker.chromosome}`);
@@ -35,23 +36,35 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const where = parts.length ? ` (${parts.join(", ")})` : "";
   const kind = [marker.type, marker.category].filter(Boolean).join(", ");
   const motif = marker.motif ? ` Repeat motif ${marker.motif}.` : "";
-  const alleles = marker.alleles ? ` Allele range ${marker.alleles}.` : "";
+  const alleles = summary?.alleleRange ? ` Alleles ${summary.alleleRange}.` : "";
+  // Say what the page actually has, so the snippet is specific to this locus.
+  const contents: string[] = [];
+  if (summary?.ce)
+    contents.push(
+      `allele frequencies for ${summary.ce.populations.length} populations`
+    );
+  if (summary?.grch38) contents.push("GRCh38 coordinates");
+  if (summary?.fssg?.canonicalBracketing.length)
+    contents.push("ISFG sequence structure");
+  if (summary?.fssg?.kits.length)
+    contents.push(
+      summary.fssg.kits.length === 1
+        ? "1 MPS kit"
+        : `${summary.fssg.kits.length} MPS kits`
+    );
+  if (summary?.variants)
+    contents.push(`${summary.variants.count} STRbase sequence variants`);
+  const summaryLine = contents.length
+    ? ` ${contents.join(", ").replace(/^./, (c) => c.toUpperCase())}.`
+    : " GRCh38 coordinates, population allele frequencies, variant alleles and analysis tools.";
 
-  // A marker page with no coordinates, no reference sequences and no
-  // frequency data is a near-empty page; keep it out of the index (links are
-  // still followed) until the record is filled in.
-  const key = params.id.toLowerCase();
-  const hasContent =
-    marker.coordinates?.start != null ||
-    (marker.sequences?.length ?? 0) > 0 ||
-    key in markerFrequenciesCE;
-
+  // A marker page with no coordinates, sequences, frequencies or FSSG record
+  // is a near-empty page; keep it out of the index (links are still followed)
+  // until the record is filled in. The sitemap applies the same rule.
   return pageMetadata(canonicalPath, {
-    index: hasContent,
+    index: markerHasContent(params.id),
     title: `${name} STR marker`,
-    description:
-      `${name}${where}: ${kind || "STR"} marker.${motif}${alleles} ` +
-      "GRCh38 coordinates, population allele frequencies, variant alleles and analysis tools.",
+    description: `${name}${where}: ${kind || "STR"} marker.${motif}${alleles}${summaryLine}`,
     openGraph: {
       title: `${name} STR marker | STRhub`,
       description: `${name}${where}: ${kind || "STR"} marker.${motif}${alleles}`,

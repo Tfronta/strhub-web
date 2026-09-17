@@ -75,12 +75,12 @@ import { InfoTip } from "@/components/InfoTip";
 import { LATAMCatalog, type LatamSubpop } from "@/lib/latamCatalog";
 import { getDatasetConfig } from "./datasetConfig";
 import { cn } from "@/lib/utils";
-import strKitsData from "@/data/str_kits.json";
 import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
-
-const motifExplorerMarkerIds = new Set(
-  Object.keys(strKitsData).map((marker) => marker.toLowerCase()),
-);
+import type { MarkerSummary } from "@/lib/marker-summary";
+import {
+  MarkerSummaryDescription,
+  MarkerSummarySections,
+} from "./MarkerSummarySections";
 
 const POP_SUBPOP_DESCRIPTION_KEYS: Record<string, string> = {
   AFR: "populationAfr",
@@ -126,10 +126,13 @@ const NGS_1000G_POPS = new Set(["AFR", "NAM", "EUR", "EAS", "SAS"]);
 export function MarkerView({
   params,
   embed,
+  summary = null,
 }: {
   params: { id: string };
   /** Render only the Frequencies panel (used by the Data page). */
   embed?: "frequencies";
+  /** Server-computed locus summary shown on the Overview tab (see lib/marker-summary). */
+  summary?: MarkerSummary | null;
 }) {
   const { t, language } = useLanguage();
   const [selectedPopulation, setSelectedPopulation] = useState<string>("AFR");
@@ -148,7 +151,7 @@ export function MarkerView({
 
   const markerId = params.id.toLowerCase();
   const marker = markerData[markerId as keyof typeof markerData];
-  const isMarkerInMotifExplorer = motifExplorerMarkerIds.has(markerId);
+  const isMarkerInMotifExplorer = summary?.tools.motifExplorer ?? false;
   const isMarkerInIgv = IGV_MARKER_IDS.has(markerId);
 
   // Helper function to translate marker descriptions
@@ -251,6 +254,15 @@ export function MarkerView({
   useEffect(() => {
     setActiveTab(initialTabParam);
   }, [initialTabParam]);
+
+  // Buttons at the bottom of the Overview jump to another tab; bring the tab
+  // strip back into view so the switch is visible.
+  const openTab = (tab: TabValue) => {
+    setActiveTab(tab);
+    document
+      .getElementById("marker-tabs")
+      ?.scrollIntoView({ block: "start", behavior: "smooth" });
+  };
 
   if (!marker) {
     return (
@@ -1660,9 +1672,13 @@ export function MarkerView({
               {marker.category}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {getTranslatedDescription(marker.description)}
-          </p>
+          {summary ? (
+            <MarkerSummaryDescription summary={summary} t={t} />
+          ) : (
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {getTranslatedDescription(marker.description)}
+            </p>
+          )}
         </div>
 
         {activeTab !== "overview" && (
@@ -1701,7 +1717,10 @@ export function MarkerView({
           onValueChange={(value) => setActiveTab(value as TabValue)}
           className="space-y-6"
         >
-          <TabsList className="flex w-full h-9 justify-start overflow-x-auto [scrollbar-width:thin] md:grid md:grid-cols-5 bg-muted/50 p-0 rounded-md border-0">
+          <TabsList
+            id="marker-tabs"
+            className="flex w-full h-9 scroll-mt-4 justify-start overflow-x-auto [scrollbar-width:thin] md:grid md:grid-cols-5 bg-muted/50 p-0 rounded-md border-0"
+          >
             <TabsTrigger
               value="overview"
               className="shrink-0 whitespace-nowrap px-3 text-sm font-normal data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-sm"
@@ -1935,6 +1954,14 @@ export function MarkerView({
                 </CardContent>
               </Card>
             </div>
+            {summary && (
+              <MarkerSummarySections
+                summary={summary}
+                t={t}
+                onOpenFrequencies={() => openTab("frequencies")}
+                onOpenVariants={() => openTab("variants")}
+              />
+            )}
           </TabsContent>
 
           <TabsContent value="frequencies" className="space-y-4">

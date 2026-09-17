@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Grid3x3, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -51,6 +51,17 @@ const GROUP_LABEL: Record<string, string> = {
 export default function MotifExplorerPage() {
   const t = useStrings();
   const [selectedMarkerId, setSelectedMarkerId] = useState<string>("CSF1PO");
+
+  // Marker pages link here with ?marker=<name>. Read it after mount rather
+  // than with useSearchParams, which would turn this statically rendered page
+  // into a client-only one.
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("marker");
+    if (!requested) return;
+    const strip = (name: string) => name.toLowerCase().replace(/[\s_-]/g, "");
+    const match = DISPLAY_MARKERS.find((m) => strip(m) === strip(requested));
+    if (match) setSelectedMarkerId(match);
+  }, []);
 
   const marker = FSSG_MARKERS[selectedMarkerId];
 

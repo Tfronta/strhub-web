@@ -33,7 +33,7 @@ export default {
       "Verificado automáticamente, en un entorno limpio, sobre el código público de la herramienta en el commit fijo. Es un registro de lo que pasó, no un aval del autor de la herramienta.",
     commit: "Commit",
     environment: "Entorno",
-    environmentFallback: "Plan B: {reason}, después de que fallara el build del commit fijado.",
+    environmentFallback: "Corrió sobre {reason} — el código fuente en este commit no se pudo compilar. Por qué, y qué significa, está explicado más abajo.",
     ciRun: "Run de CI",
     gates: "Compuertas",
     scope: "Alcance",
@@ -135,19 +135,30 @@ export default {
       repoGone: "El repositorio público ya no es alcanzable en esta URL, así que nada de esto se puede volver a chequear contra su código.",
     },
     install: {
-      heading: "Por qué no se pudo construir el entorno",
-      note: "El contenedor no se pudo construir con los pasos de instalación declarados, así que nada por debajo de la compuerta Installs llegó a correr.",
-      headingFallback: "Por qué no se pudo construir el commit fijado",
+      heading: "No se pudo compilar desde el código fuente",
+      note: "STRhub intentó compilar {name} desde su código fuente en el commit {sha}, siguiendo los pasos de build que declara el repositorio, y el build falló. Nada por debajo de la compuerta Installs llegó a correr.",
+      headingFallback: "No se pudo compilar desde el código fuente; la corrida usó el entorno listo al que apunta el README",
       noteFallback:
-        "El contenedor no se pudo construir con los pasos de instalación declarados en el commit fijado; en su lugar se construyó {reason}, y todas las compuertas de abajo corrieron sobre eso. Lo que corrió es la versión que ese entorno trae, no necesariamente el commit fijado.",
+        "STRhub intentó compilar {name} desde su código fuente en el commit {sha}, siguiendo los pasos de build que declara el repositorio, y el build falló. En su lugar se usó {reason}, y todas las compuertas de abajo corrieron sobre eso.",
+      meaningHeading: "Qué significa",
+      meaning: {
+        runLabel: "Si querés correrla:",
+        run: "compilarla desde el código fuente en este commit falla en un entorno limpio; la causa y una sugerencia de arreglo están abajo.",
+        runFallback: "compilarla desde el código fuente en este commit falla en un entorno limpio (la causa está abajo). El entorno listo al que apunta el README sí funciona: es el que usó esta corrida.",
+        reviewLabel: "Si estás revisando un paper:",
+        review: "no corrió nada, así que esto no dice nada sobre la salida del software. Registra que este intento de compilarla se detuvo, y de qué lado está la causa.",
+        reviewFallback: "este resultado describe el software que trae ese entorno — lo último que haya publicado quien lo mantiene — no el commit {sha}, que es la versión que citaría un manuscrito.",
+        maintainLabel: "Si la mantenés:",
+      },
       faultStrhub:
-        "Al menos una causa es de STRhub, no de la herramienta: la receta del contenedor de un entorno generado es nuestra. Nada de esto es un hallazgo sobre el software, y no hay nada que arreglar del lado de quien lo mantiene.",
+        "al menos una causa es de STRhub, no de la herramienta: la receta del contenedor de un entorno generado es nuestra. Nada de esto es un hallazgo sobre el software, y no hay nada que arreglar de tu lado.",
       faultHarness:
-        "Al menos una causa es un techo del entorno automático gratuito, no una falla de la herramienta.",
+        "al menos una causa es un techo del entorno automático gratuito, no una falla de la herramienta.",
       faultAuthor:
-        "Todas las causas identificadas están en lo que declaró la submission: sus versiones fijadas, nombres de paquetes o pasos de build. Son corregibles, y re-verificar después es gratis.",
+        "todas las causas identificadas están en los pasos de build que siguió esta corrida — versiones fijadas, nombres de paquetes o archivos de build, del repositorio o de la submission. Cada fila de abajo trae una sugerencia de arreglo, y re-verificar después es gratis.",
       faultUnknown:
-        "La causa no se pudo clasificar automáticamente. Abajo está el log completo del build.",
+        "la causa no se pudo clasificar automáticamente. Abajo está el log completo del build.",
+      whatFailed: "Qué falló",
       viewBuildLog: "Ver log del build",
     },
     diagnostics: {
@@ -815,7 +826,7 @@ export default {
       },
       verdictMeaning: {
         runs: "Se instaló desde su código público y produjo su salida documentada en un entorno limpio.",
-        runsFallback: "Produjo su salida documentada en un entorno limpio — sobre el entorno publicado al que apunta el README, no sobre un build del commit fijado.",
+        runsFallback: "Corrió y produjo su salida documentada — pero sobre el entorno listo al que apunta el README, porque su código fuente no se pudo compilar en el commit fijado.",
         fails: "No lo hizo. La evidencia apunta a la herramienta o a su forma documentada de correr.",
         undetermined: "STRhub no pudo deducir cómo correrla desde el repositorio. Es un hallazgo sobre la documentación, no sobre el software.",
         out_of_scope: "Necesita algo que el runner automático no puede dar. Una verificación manual puede cubrirlo.",
@@ -845,7 +856,7 @@ export default {
       recipeHint: "Propuesto por STRhub a partir del repositorio. Cada suposición está listada en las salvedades.",
       recipeDockerfile: "Entorno (Dockerfile)",
       recipeRepoDockerfile: "Se construyó el Dockerfile del propio repositorio tal cual.",
-      recipeFallbackUsed: "El build del commit fijado falló (ver el log de build). Lo que corrió es este entorno de respaldo: {reason}.",
+      recipeFallbackUsed: "El Dockerfile de arriba no se pudo construir (ver el log de build). Lo que corrió es este segundo: {reason}.",
       recipeFallbackAvailable: "Plan B, no hizo falta esta vez: si el build de arriba hubiera fallado, STRhub habría usado {reason}.",
       recipeFallbackReason: "el entorno de respaldo que declara la receta",
       caveatsTitle: "Salvedades: lo que STRhub supuso",

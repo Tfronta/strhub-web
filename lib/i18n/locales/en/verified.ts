@@ -33,7 +33,7 @@ export default {
       "Verified automatically, in a clean environment, on the tool's public source at the pinned commit. This is a record of what happened, not an endorsement by the tool's author.",
     commit: "Commit",
     environment: "Environment",
-    environmentFallback: "Plan B: {reason}, after the build from the pinned commit failed.",
+    environmentFallback: "Ran on {reason} — the source at this commit did not build. Why, and what it means, is explained below.",
     ciRun: "CI run",
     gates: "Gates",
     scope: "Scope",
@@ -135,19 +135,30 @@ export default {
       repoGone: "The public repository is no longer reachable at this URL, so nothing here can be re-checked against its source.",
     },
     install: {
-      heading: "Why the environment did not build",
-      note: "The container could not be built from the declared install steps, so nothing below the Installs gate ran.",
-      headingFallback: "Why the pinned commit did not build",
+      heading: "It did not build from source",
+      note: "STRhub tried to build {name} from its source at commit {sha}, following the build steps the repository declares, and the build failed. Nothing below the Installs gate ran.",
+      headingFallback: "It did not build from source; the run used the README's ready-made environment",
       noteFallback:
-        "The container could not be built from the declared install steps at the pinned commit; {reason} was built instead, and every gate below ran on it. What ran is the version that environment holds, not necessarily the pinned commit.",
+        "STRhub tried to build {name} from its source at commit {sha}, following the build steps the repository declares, and the build failed. {reason} was used instead, and every gate below ran on it.",
+      meaningHeading: "What this means",
+      meaning: {
+        runLabel: "If you are trying to run it:",
+        run: "a build from source at this commit fails in a clean environment; the cause and a suggested fix are below.",
+        runFallback: "a build from source at this commit fails in a clean environment (the cause is below). The ready-made environment the README points at does work — it is what this run used.",
+        reviewLabel: "If you are reviewing a paper:",
+        review: "nothing ran, so this says nothing about the software's output. It records that this attempt to build it stopped, and whose side the cause is on.",
+        reviewFallback: "this result describes the software inside that environment — whatever its publisher last put there — not commit {sha}, which is the version a manuscript would cite.",
+        maintainLabel: "If you maintain it:",
+      },
       faultStrhub:
-        "At least one cause is STRhub's, not the tool's: the container recipe for a generated environment is ours. Nothing here is a finding about the software, and nothing needs fixing on the author's side.",
+        "at least one cause is STRhub's, not the tool's: the container recipe for a generated environment is ours. Nothing here is a finding about the software, and nothing needs fixing on your side.",
       faultHarness:
-        "At least one cause is a ceiling of the free automated environment rather than a fault in the tool.",
+        "at least one cause is a ceiling of the free automated environment rather than a fault in the tool.",
       faultAuthor:
-        "Every cause identified sits in what the submission declared — its pinned versions, package names or build steps. These are correctable, and re-verifying afterwards is free.",
+        "every cause identified sits in the build steps this run followed — pinned versions, package names or build files, from the repository or the submission. Each row below carries a suggested fix, and re-verifying afterwards is free.",
       faultUnknown:
-        "The cause could not be classified automatically. The full build output is linked below.",
+        "the cause could not be classified automatically. The full build output is linked below.",
+      whatFailed: "What failed",
       viewBuildLog: "View build log",
     },
     diagnostics: {
@@ -815,7 +826,7 @@ export default {
       },
       verdictMeaning: {
         runs: "It installed from its public source and produced its documented output in a clean environment.",
-        runsFallback: "It produced its documented output in a clean environment — on the published environment the README points at, not on a build of the pinned commit.",
+        runsFallback: "It ran and produced its documented output — but on the ready-made environment the README points at, because its source did not build at the pinned commit.",
         fails: "It did not. The evidence points at the tool or its documented way of running.",
         undetermined: "STRhub could not work out how to run it from the repository. That is a finding about the documentation, not about the software.",
         out_of_scope: "It needs something the automated runner cannot provide. A manual verification can cover it.",
@@ -845,7 +856,7 @@ export default {
       recipeHint: "Proposed by STRhub from the repository. Every guess is listed under the caveats.",
       recipeDockerfile: "Environment (Dockerfile)",
       recipeRepoDockerfile: "The repository's own Dockerfile was built as-is.",
-      recipeFallbackUsed: "The build from the pinned commit failed (see the build log). What ran is this fallback environment: {reason}.",
+      recipeFallbackUsed: "The Dockerfile above did not build (see the build log). What ran is this second one: {reason}.",
       recipeFallbackAvailable: "Plan B, not needed this time: if the build above had failed, STRhub would have used {reason}.",
       recipeFallbackReason: "the fallback environment the recipe declares",
       caveatsTitle: "Caveats: what STRhub guessed",

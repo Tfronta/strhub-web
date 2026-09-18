@@ -327,28 +327,50 @@ export function AuthorKnownIssues({ items }: { items: VerifiedReport["author_kno
   );
 }
 
-/** Every claim the configuration rests on, openable at the pinned ref. */
+/** Claims whose README text is a command line rather than a sentence. */
+const COMMAND_CLAIMS = new Set(["run_command", "published_image", "bioconda_package", "fallback_environment"]);
+
+/**
+ * Every claim the configuration rests on, openable at the pinned ref.
+ *
+ * The text quoted from the README is shown whole. It was clipped to one line
+ * with an ellipsis, which cut the author's platform advice mid-word — the one
+ * line a reader most needs entire, since the run may have gone against it.
+ * A command is shown as code; a sentence is shown as a quotation, because that
+ * is what it is.
+ */
 export function EvidenceList({ evidence }: { evidence: VerifiedReport["evidence"] }) {
   const { t } = useLanguage();
   if (!evidence?.length) return null;
+  const claimLabel = (claim: string) => {
+    const key = `verified.trial.evidenceClaim.${claim}`;
+    const label = t(key);
+    // An engine newer than these strings degrades to its own claim id, which
+    // is at least readable, rather than to a raw i18n key.
+    return label === key ? claim.replace(/_/g, " ") : label;
+  };
   return (
     <>
       <h2 className="mt-10 text-xl font-semibold">{t("verified.trial.evidenceTitle")}</h2>
       <p className="mt-2 text-sm text-muted-foreground">{t("verified.trial.evidenceHint")}</p>
-      <ul className="mt-3 space-y-1.5 rounded-lg border p-4 text-sm">
-        {evidence.map((e, i) => (
-          <li key={`${e.claim}-${e.path}-${i}`} className="flex flex-wrap items-baseline gap-x-2">
-            <span className="w-40 shrink-0 text-muted-foreground">
-              {t(`verified.trial.evidenceClaim.${e.claim}`) === `verified.trial.evidenceClaim.${e.claim}` ? e.claim : t(`verified.trial.evidenceClaim.${e.claim}`)}
-            </span>
-            <a href={e.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs underline underline-offset-2">
-              {e.path}{e.line ? `#L${e.line}` : ""} <ExternalLink className="h-3 w-3" />
-            </a>
-            {e.kind === "readme" && e.text && e.claim !== "known_issue" && (
-              <code className="max-w-full truncate rounded bg-muted px-1 text-xs text-muted-foreground">{e.text}</code>
-            )}
-          </li>
-        ))}
+      <ul className="mt-3 divide-y rounded-lg border text-sm">
+        {evidence.map((e, i) => {
+          const quote = e.kind === "readme" && e.text && e.claim !== "known_issue" ? e.text : null;
+          return (
+            <li key={`${e.claim}-${e.path}-${i}`} className="grid gap-x-3 gap-y-1 px-4 py-2 sm:grid-cols-[10rem_1fr]">
+              <span className="text-muted-foreground">{claimLabel(e.claim)}</span>
+              <div className="min-w-0">
+                <a href={e.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs underline underline-offset-2 break-all">
+                  {e.path}{e.line ? `#L${e.line}` : ""} <ExternalLink className="h-3 w-3 shrink-0" />
+                </a>
+                {quote && (COMMAND_CLAIMS.has(e.claim)
+                  ? <code className="mt-1 block break-words rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">{quote}</code>
+                  : <blockquote className="mt-1 border-l-2 pl-3 text-sm italic text-muted-foreground">{quote}</blockquote>
+                )}
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </>
   );

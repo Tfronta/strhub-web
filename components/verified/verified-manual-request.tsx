@@ -17,9 +17,9 @@ import { ArrowLeft, LifeBuoy, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
 import { manualRequestMailto, reasonI18nKey } from "@/lib/verified/manual";
+import { CONTACT_EMAIL } from "@/lib/verified/contact";
 import type { VerifiedManualVerification } from "@/types/verified";
 
-const CONTACT_EMAIL = "contact@strhub.app";
 // Read from env rather than `window.location`: this renders on the server first,
 // and a value that only exists after hydration would mismatch the mailto href.
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://strhub.io";

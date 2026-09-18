@@ -1,9 +1,10 @@
 "use client";
 
-import { ExternalLink, FileDown } from "lucide-react";
+import { ExternalLink, FileDown, FileJson } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import { cn } from "@/lib/utils";
 import type { VerifiedReport } from "@/types/verified";
+import { formatCommand } from "@/lib/verified/command";
 
 /**
  * Where the result came from, with the two anchors a reader needs in the
@@ -21,10 +22,14 @@ export function SourceCard({
   report,
   staticPageUrl,
   pdfUrl,
+  jsonUrl,
 }: {
   report: VerifiedReport;
+  /** The engine's self-contained HTML page for this run, if there is one. */
   staticPageUrl?: string;
   pdfUrl?: string;
+  /** The report JSON itself, for a reader who wants the record and not a rendering of it. */
+  jsonUrl?: string;
 }) {
   const { t } = useLanguage();
   const ref = report.source.ref_resolved ?? report.source.ref ?? "";
@@ -138,33 +143,72 @@ export function SourceCard({
             </dd>
           </>
         )}
-        {(staticPageUrl || pdfUrl) && (
+        {/* The same record, three ways. The HTML page used to be labelled
+            "Full report", which promised more than this page — it is the
+            engine's plain copy, with less on it — so the row now says what
+            each file is for instead. */}
+        {(staticPageUrl || pdfUrl || jsonUrl) && (
           <>
-            <dt className="text-muted-foreground">{t("verified.staticPage")}</dt>
-            <dd className="flex flex-wrap gap-x-4 gap-y-1">
-              {staticPageUrl && (
-                <a
-                  href={staticPageUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-primary hover:underline font-medium"
-                >
-                  {t("verified.fullReport")} <ExternalLink className="h-3 w-3" />
-                </a>
-              )}
-              {pdfUrl && (
-                <a
-                  href={pdfUrl}
-                  className="inline-flex items-center gap-1 text-primary hover:underline font-medium"
-                >
-                  <FileDown className="h-3.5 w-3.5" /> {t("verified.pdf")}
-                </a>
-              )}
+            <dt className="text-muted-foreground">{t("verified.files.heading")}</dt>
+            <dd>
+              <div className="flex flex-wrap gap-x-4 gap-y-1">
+                {pdfUrl && (
+                  <a
+                    href={pdfUrl}
+                    className="inline-flex items-center gap-1 text-primary hover:underline font-medium"
+                  >
+                    <FileDown className="h-3.5 w-3.5" /> {t("verified.files.pdf")}
+                  </a>
+                )}
+                {staticPageUrl && (
+                  <a
+                    href={staticPageUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-primary hover:underline font-medium"
+                  >
+                    {t("verified.files.html")} <ExternalLink className="h-3 w-3" />
+                  </a>
+                )}
+                {jsonUrl && (
+                  <a
+                    href={jsonUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-primary hover:underline font-medium"
+                  >
+                    <FileJson className="h-3.5 w-3.5" /> {t("verified.files.json")}
+                  </a>
+                )}
+              </div>
+              <span className="mt-1 block text-xs text-muted-foreground">{t("verified.files.note")}</span>
             </dd>
           </>
         )}
       </dl>
       <p className="mt-3 border-t pt-3 text-xs text-muted-foreground">{t("verified.footnote")}</p>
+    </div>
+  );
+}
+
+/**
+ * The command the gates ran, as the tool saw it.
+ *
+ * The PDF has printed it since the start ("Exact Run Command"); the page never
+ * did, so a reader of a published attestation who wanted to know what was
+ * executed had to open the log. It is the reproducibility anchor: the pinned
+ * commit, the environment and this line are what "anyone can repeat it" means.
+ */
+export function RunCommandCard({ cmd }: { cmd: string | undefined }) {
+  const { t } = useLanguage();
+  if (!cmd) return null;
+  return (
+    <div className="mt-6 rounded-lg border bg-card p-5">
+      <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+        {t("verified.run.heading")}
+      </h2>
+      <pre className="overflow-x-auto whitespace-pre-wrap break-all rounded-md bg-muted p-3 text-xs"><code>{formatCommand(cmd)}</code></pre>
+      <p className="mt-2 text-xs text-muted-foreground">{t("verified.run.note")}</p>
     </div>
   );
 }

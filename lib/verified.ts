@@ -86,6 +86,11 @@ export function verifiedPdfUrl(slug: string): string {
   return `${BASE}/${slug}.pdf`;
 }
 
+/** The report itself: what this page renders, for a reader who wants the record. */
+export function verifiedReportJsonUrl(slug: string): string {
+  return `${BASE}/${slug}.json`;
+}
+
 export function contentStats(report: VerifiedReport) {
   const outs = report.content_detail?.outputs;
   return outs && outs.length > 0 ? outs[0].stats : undefined;

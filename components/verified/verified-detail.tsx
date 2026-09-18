@@ -6,7 +6,7 @@
  */
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedReport } from "@/types/verified";
-import { verifiedPdfUrl } from "@/lib/verified";
+import { verifiedPdfUrl, verifiedReportJsonUrl } from "@/lib/verified";
 import { VerifiedReportBody, type ReportLog } from "./report/verified-report-body";
 
 export function VerifiedDetail({
@@ -47,6 +47,7 @@ export function VerifiedDetail({
       slug={slug}
       staticPageUrl={staticPageUrl}
       pdfUrl={verifiedPdfUrl(slug)}
+      jsonUrl={verifiedReportJsonUrl(slug)}
       logs={logs}
       buildLogHref={report.logs?.build ? `${logBaseUrl}/${report.logs.build}` : undefined}
     />

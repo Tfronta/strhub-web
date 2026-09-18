@@ -20,6 +20,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
 import type { TrialRole, TrialStatus, TrialVerdictCode } from "@/lib/verified/trial";
 import { ownerIssueUrl, prepareSelfFix } from "@/lib/verified/trial-next-steps";
+import { commandFromManifest } from "@/lib/verified/command";
 import { useRouter } from "next/navigation";
 import { VerifiedReportBody, type ReportLog, type ExtraGateRow } from "./report/verified-report-body";
 
@@ -33,16 +34,6 @@ const VERDICT_TONE: Record<TrialVerdictCode, string> = {
   undetermined: "bg-amber-500 text-white",
   out_of_scope: "bg-slate-500 text-white",
 };
-
-function extractCmd(manifestYml: string): string | null {
-  const m = manifestYml.match(/^run:\s*\n\s+cmd:\s*(.+)$/m);
-  if (!m) return null;
-  let cmd = m[1].trim().replace(/^["']|["']$/g, "");
-  // The capture wrapper is engine plumbing; show the tool's own command.
-  const inner = cmd.match(/&&\s*\(\s*(.+?)\s*\);\s*rc=\$\?/);
-  if (inner) cmd = inner[1];
-  return cmd;
-}
 
 export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const { t } = useLanguage();
@@ -115,7 +106,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const elapsedMin = Math.floor((now - startedAt.current) / 60000);
   const running = !status || (status.state !== "completed" && status.state !== "expired");
   const stalled = running && status?.state === "pending" && now - startedAt.current > STALL_AFTER_MS;
-  const cmd = status?.recipe ? extractCmd(status.recipe.manifest_yml) : null;
+  const cmd = status?.recipe ? commandFromManifest(status.recipe.manifest_yml) : null;
   const repoDockerfile = status?.recipe?.manifest_yml.includes("source: repository") ?? false;
   // Plan B: a second Dockerfile the engine builds only if the first fails. The
   // report says whether it ran; a page that showed only the first Dockerfile
@@ -227,6 +218,8 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
     </>
   );
 
+  // The command itself is shown by the shared body, where a published
+  // attestation shows it too; this card is the environment it ran in.
   const recipeBlock = status?.recipe && (
     <Card className="mt-6">
       <CardHeader>
@@ -234,12 +227,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
         <p className="text-xs text-muted-foreground">{t("verified.trial.recipeHint")}</p>
       </CardHeader>
       <CardContent className="space-y-3 text-sm">
-        {cmd && (
-          <div>
-            <p className="mb-1 font-medium">{t("verified.trial.recipeCmd")}</p>
-            <pre className="overflow-x-auto rounded-md bg-muted p-3 text-xs"><code>{cmd}</code></pre>
-          </div>
-        )}
         <div>
           <p className="mb-1 font-medium">{t("verified.trial.recipeDockerfile")}</p>
           {repoDockerfile ? (
@@ -324,6 +311,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             slug={status?.slug ?? id}
             staticPageUrl={status?.files?.html}
             pdfUrl={status?.files?.pdf}
+            command={report.run?.cmd ?? cmd ?? undefined}
             logs={logs}
             extraGateRows={extraGateRows}
             backLink={false}

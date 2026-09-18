@@ -24,9 +24,17 @@ function getDiagnosticText(
 }
 
 /**
- * Why the environment did not build. Directly under the source block, because
- * nothing below it ran. A "Installs — did not pass" with no cause tells a
- * reviewer nothing they can act on and its maintainer nothing they can fix.
+ * The build that failed, in plain words. Directly under the source block,
+ * because nothing below it ran (or, on plan B, because what ran is not a
+ * build of the pinned commit).
+ *
+ * This used to open with "Why the pinned commit did not build" and the line
+ * "the published image … the README points at was built instead", which is
+ * the mechanism in the engine's words: a reader who did not know what a
+ * pinned commit or a plan B was learnt only that something had failed. Three
+ * people read this card — someone about to run the tool, a reviewer holding
+ * a manuscript, its maintainer — and each gets the finding in their own
+ * terms before the table of causes.
  */
 export function BuildFailedCard({
   report,
@@ -38,20 +46,39 @@ export function BuildFailedCard({
   const { t } = useLanguage();
   const d = report.install_detail;
   if (!d?.diagnostics?.length) return null;
+  const fallback = !!d.fallback_used;
+  const reason = report.environment?.fallback?.reason ?? t("verified.trial.recipeFallbackReason");
+  const params = {
+    name: report.tool.name,
+    sha: (report.source.ref_resolved ?? report.source.ref ?? "").slice(0, 7),
+    // The engine phrases the reason mid-sentence ("the published image …");
+    // here it opens one.
+    reason: reason.charAt(0).toUpperCase() + reason.slice(1),
+  };
+  const meaning: [string, string][] = [
+    ["verified.install.meaning.runLabel", fallback ? "verified.install.meaning.runFallback" : "verified.install.meaning.run"],
+    ["verified.install.meaning.reviewLabel", fallback ? "verified.install.meaning.reviewFallback" : "verified.install.meaning.review"],
+    ["verified.install.meaning.maintainLabel", installFaultKey(d.faults)],
+  ];
   return (
     <div className="mt-6 rounded-lg border border-amber-300 dark:border-amber-800 bg-amber-50/60 dark:bg-amber-950/20 p-5">
       <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-500">
-        {t(d.fallback_used ? "verified.install.headingFallback" : "verified.install.heading")}
+        {t(fallback ? "verified.install.headingFallback" : "verified.install.heading")}
       </h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        {d.fallback_used
-          ? t("verified.install.noteFallback", {
-              reason: report.environment?.fallback?.reason ?? t("verified.trial.recipeFallbackReason"),
-            })
-          : t("verified.install.note")}
-      </p>
-      <p className="mt-2 text-sm">{t(installFaultKey(d.faults))}</p>
-      <ul className="mt-3 space-y-2 border-t border-amber-300/60 dark:border-amber-800/60 pt-3">
+      <p className="mt-2 text-sm">{t(fallback ? "verified.install.noteFallback" : "verified.install.note", params)}</p>
+      <div className="mt-3 rounded-md border border-amber-300/60 dark:border-amber-800/60 bg-background/60 p-3">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("verified.install.meaningHeading")}</p>
+        <ul className="mt-2 space-y-1.5 text-sm">
+          {meaning.map(([labelKey, textKey]) => (
+            <li key={labelKey}>
+              <span className="font-medium">{t(labelKey)}</span>{" "}
+              <span className="text-muted-foreground">{t(textKey, params)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("verified.install.whatFailed")}</p>
+      <ul className="mt-2 space-y-2 border-t border-amber-300/60 dark:border-amber-800/60 pt-3">
         {d.diagnostics.map((issue) => (
           <li key={issue.id + issue.title} className="text-sm">
             <span className="font-medium">{issue.title}</span>

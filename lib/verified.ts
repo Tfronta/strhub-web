@@ -91,6 +91,20 @@ export function verifiedReportJsonUrl(slug: string): string {
   return `${BASE}/${slug}.json`;
 }
 
+/** A file on gh-pages by its path in index.json (`hipstr/<sha>/hipstr.pdf`). */
+export function verifiedFileUrl(path: string): string {
+  return `${BASE}/${path.replace(/^\/+/, "")}`;
+}
+
+/**
+ * The report of one commit, by the path index.json gives for it. The root
+ * `<slug>.json` is the newest commit; older ones live in `<slug>/<sha>/`.
+ */
+export async function getVerifiedReportAt(path: string): Promise<VerifiedReport | null> {
+  if (!/^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*\.json$/.test(path)) return null;
+  return fetchJson<VerifiedReport>(verifiedFileUrl(path), true);
+}
+
 export function contentStats(report: VerifiedReport) {
   const outs = report.content_detail?.outputs;
   return outs && outs.length > 0 ? outs[0].stats : undefined;

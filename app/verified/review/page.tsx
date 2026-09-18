@@ -7,6 +7,12 @@ export const metadata: Metadata = {
     "Paste the repository a manuscript cites and get a plain answer in minutes: does it install and run as documented? No code, no account, nothing published.",
 };
 
-export default function VerifiedReviewPage() {
-  return <VerifiedStart role="reviewer" />;
+export default function VerifiedReviewPage({
+  searchParams,
+}: {
+  searchParams: { repo?: string | string[] };
+}) {
+  // "Test another version" on a report arrives with the repository chosen.
+  const repo = Array.isArray(searchParams.repo) ? searchParams.repo[0] : searchParams.repo;
+  return <VerifiedStart role="reviewer" initialRepo={repo?.trim() ?? ""} />;
 }

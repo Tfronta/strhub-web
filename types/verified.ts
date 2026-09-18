@@ -20,6 +20,33 @@ export type VerifiedLevel =
 /** Compact state of a verification matrix leg in index.json. */
 export type LegState = "pass" | "fail" | "na" | null;
 
+/**
+ * One commit a tool was verified at, as index.json lists it (schema /3).
+ *
+ * The unit published is the tool AT A COMMIT: every run lands in
+ * `<slug>/<sha>/` on gh-pages and the flat entry is an alias of the newest
+ * commit. `committed` is when the commit was made — the clock a tool's
+ * history runs on — and `generated` is when STRhub verified it; a version
+ * verified today can still be the oldest. See the engine's
+ * docs/PLAN-Version-History.md.
+ */
+export interface VerifiedVersionEntry {
+  sha: string | null;
+  version?: string | null;
+  variant?: string | null;
+  committed?: string | null;
+  generated?: string | null;
+  level: VerifiedLevel;
+  label?: string;
+  verdict?: string | null;
+  errors_reported?: boolean;
+  ci_run?: string | null;
+  /** Paths relative to the gh-pages root. */
+  report: string;
+  page: string;
+  pdf?: string;
+}
+
 /** One row in index.json — enough to render a card without fetching the report. */
 export interface VerifiedIndexEntry {
   slug: string;
@@ -29,6 +56,14 @@ export interface VerifiedIndexEntry {
   /** The run reported error-severity diagnostics (absent on older reports). */
   errors_reported?: boolean;
   generated: string | null;
+  // index/2: what this entry was verified at.
+  version?: string | null;
+  variant?: string | null;
+  sha?: string | null;
+  verdict?: string | null;
+  // index/3: the commit's own date, and every commit verified, newest first.
+  committed?: string | null;
+  versions?: VerifiedVersionEntry[];
   source_repo: string | null;
   source_ref: string | null;
   ci_run: string | null;
@@ -154,7 +189,13 @@ export interface VerifiedReport {
    * the assumption this field exists to retire.
    */
   submission?: { by?: SubmittedBy } | null;
-  source: { repo: string; ref?: string; ref_resolved?: string };
+  source: {
+    repo: string;
+    ref?: string;
+    ref_resolved?: string;
+    /** When the pinned commit was made (committer date). Absent on older reports. */
+    committed?: string;
+  };
   environment: {
     dockerfile?: string;
     os?: string[];

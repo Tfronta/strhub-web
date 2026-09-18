@@ -21,6 +21,8 @@ authors:
 repository-code: https://github.com/Tfronta/strhub-web
 url: https://strhub.app
 license: AGPL-3.0-only
+version: 1.0.0
+date-released: 2026-09-18
 keywords:
   - short tandem repeats
   - STR

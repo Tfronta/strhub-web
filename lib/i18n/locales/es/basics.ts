@@ -4,6 +4,7 @@ basics: {
   subtitle: "Entendiendo los Fundamentos",
   description:
     "Explorá loci STR a lo largo de los cromosomas humanos y aprendé los conceptos centrales detrás de la genética forense y los flujos de trabajo en bioinformática.",
+  relatedArticles: "Más de Fundamentos",
   readArticle: "Leer Artículo",
   backToArticles: "Volver a Fundamentos",
   readTime: "min de lectura",

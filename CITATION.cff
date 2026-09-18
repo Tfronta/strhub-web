@@ -1,0 +1,33 @@
+# Citation metadata for the STRhub platform. GitHub reads this file for the
+# "Cite this repository" button; Zenodo and bio.tools read it too. The journal
+# article is under review: once it is out, add it here as `preferred-citation`.
+cff-version: 1.2.0
+message: >-
+  If you use STRhub for teaching, academic discussion or research, please cite
+  it using the metadata in this file.
+type: software
+title: "STRhub: Central Hub for Short Tandem Repeats"
+abstract: >-
+  Open-access, web-based platform for forensic short tandem repeat (STR)
+  genetics: a catalogue of 228 STR markers with GRCh38 coordinates, ISFG
+  sequence structures and population allele frequencies (capillary
+  electrophoresis and sequencing), a DNA mixture simulator, an STR motif
+  explorer, a FASTA generator, an embedded IGV viewer and educational
+  articles in English, Spanish and Portuguese.
+authors:
+  - family-names: Frontanilla Recalde
+    given-names: Tamara Soledad
+    orcid: https://orcid.org/0000-0002-6873-7813
+repository-code: https://github.com/Tfronta/strhub-web
+url: https://strhub.app
+license: AGPL-3.0-only
+keywords:
+  - short tandem repeats
+  - STR
+  - forensic genetics
+  - allele frequencies
+  - population genetics
+  - massively parallel sequencing
+  - capillary electrophoresis
+  - bioinformatics
+  - education

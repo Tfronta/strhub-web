@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { fetchBasicsArticle } from "@/lib/back-to-basics-server";
+import { fetchBasicsArticle, fetchBasicsList } from "@/lib/back-to-basics-server";
 import {
   basicsArticleAlternates,
   basicsArticlePath,
@@ -75,6 +75,20 @@ export default async function ArticlePage({ params }: PageProps) {
     permanentRedirect(basicsArticlePath(params.locale, localizedSlug));
   }
 
+  // The other Foundations articles in this language, the article's own topic
+  // first. Server-rendered so every article links to its siblings for crawlers.
+  const [coreConcepts, bioinformatics] = await Promise.all([
+    fetchBasicsList(params.locale, "coreConcept"),
+    fetchBasicsList(params.locale, "bioinformatics"),
+  ]);
+  const inCore = coreConcepts.some((item) => item.sys.id === post.sys.id);
+  const related = (inCore
+    ? [...coreConcepts, ...bioinformatics]
+    : [...bioinformatics, ...coreConcepts]
+  )
+    .filter((item) => item.sys.id !== post.sys.id && item.fields.slug)
+    .slice(0, 6);
+
   const articleUrl = `${SITE_URL}${basicsArticlePath(params.locale, params.slug)}`;
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -99,7 +113,7 @@ export default async function ArticlePage({ params }: PageProps) {
   return (
     <>
       <JsonLd data={articleJsonLd} />
-      <ArticlePageClient params={params} initialPost={post} />
+      <ArticlePageClient params={params} initialPost={post} related={related} />
     </>
   );
 }

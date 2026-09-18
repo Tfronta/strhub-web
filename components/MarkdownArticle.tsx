@@ -67,7 +67,20 @@ export default function MarkdownArticle({ markdown }: { markdown: string }) {
                 )}
               </figure>
             ),
-            p: ({ node, ...props }) => <p className="mb-4 leading-7" {...props} />,
+            // Markdown wraps images in paragraphs, but the img renderer emits a
+            // <figure>, which is not allowed inside <p>: browsers split the
+            // paragraph, hydration fails and React re-renders every article on
+            // the client. Paragraphs that hold an image become a <div>.
+            p: ({ node, ...props }) => {
+              const holdsImage = node?.children?.some(
+                (child) => child.type === "element" && child.tagName === "img"
+              )
+              return holdsImage ? (
+                <div className="mb-4 leading-7" {...props} />
+              ) : (
+                <p className="mb-4 leading-7" {...props} />
+              )
+            },
             ul: ({ node, ...props }) => <ul className="list-disc pl-6 my-4" {...props} />,
             ol: ({ node, ...props }) => <ol className="list-decimal pl-6 my-4" {...props} />,
             blockquote: ({ node, ...props }) => <blockquote className="my-4 border-l-4 pl-4 text-gray-700" {...props} />,

@@ -8,17 +8,21 @@ import { notFound } from "next/navigation";
 import MarkdownArticle from "@/components/MarkdownArticle";
 import { useEffect } from "react";
 import { useLanguage } from "@/contexts/language-context";
-import type { BasicsArticle } from "@/lib/back-to-basics-types";
+import type { BasicsArticle, BasicsListItem } from "@/lib/back-to-basics-types";
 import type { Language } from "@/lib/translations";
+import { basicsArticlePath } from "@/lib/seo";
 
 const SUPPORTED_LOCALES: Language[] = ["en", "es", "pt"];
 
 export default function ArticlePageClient({
   params,
   initialPost,
+  related = [],
 }: {
   params: { locale: string; slug: string };
   initialPost: BasicsArticle;
+  /** Other Foundations articles in this locale (server-fetched). */
+  related?: BasicsListItem[];
 }) {
   const { setLanguage, t } = useLanguage();
   const locale = params.locale as Language;
@@ -78,6 +82,39 @@ export default function ArticlePageClient({
             <MarkdownArticle markdown={post.fields.bodyMd || ""} />
           </CardContent>
         </Card>
+
+        {related.length > 0 && (
+          <aside aria-labelledby="related-articles" className="pt-6">
+            <h2 id="related-articles" className="text-xl font-semibold mb-4">
+              {t("basics.relatedArticles")}
+            </h2>
+            <ul className="grid gap-4 sm:grid-cols-2">
+              {related.map((item) => (
+                <li key={item.sys.id}>
+                  <Link
+                    href={basicsArticlePath(locale, item.fields.slug!)}
+                    className="block h-full rounded-lg border border-border bg-card p-4 transition-colors hover:bg-muted/50"
+                  >
+                    <p className="font-medium text-foreground text-balance">
+                      {item.fields.title}
+                    </p>
+                    {item.fields.summary && (
+                      <p className="mt-1 text-sm text-muted-foreground line-clamp-3">
+                        {item.fields.summary}
+                      </p>
+                    )}
+                    {item.fields.postReadMinutes > 0 && (
+                      <p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
+                        <Clock className="h-3 w-3" />
+                        {item.fields.postReadMinutes} {t("basics.readTime")}
+                      </p>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
 
         <div className="mt-12 flex justify-between">
           <Link href="/basics">

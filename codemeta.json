@@ -1,0 +1,44 @@
+{
+  "@context": "https://w3id.org/codemeta/3.0",
+  "@type": "SoftwareSourceCode",
+  "name": "STRhub",
+  "alternateName": "STRhub: Central Hub for Short Tandem Repeats",
+  "description": "Open-access, web-based platform for forensic short tandem repeat (STR) genetics: a catalogue of 228 STR markers with GRCh38 coordinates, ISFG sequence structures and population allele frequencies (capillary electrophoresis and sequencing), a DNA mixture simulator, an STR motif explorer, a FASTA generator, an embedded IGV viewer and educational articles in English, Spanish and Portuguese.",
+  "url": "https://strhub.app",
+  "codeRepository": "https://github.com/Tfronta/strhub-web",
+  "issueTracker": "https://github.com/Tfronta/strhub-web/issues",
+  "license": "https://spdx.org/licenses/AGPL-3.0-only",
+  "programmingLanguage": ["TypeScript"],
+  "runtimePlatform": ["Node.js", "Next.js 14"],
+  "operatingSystem": "Web browser",
+  "applicationCategory": "Bioinformatics",
+  "applicationSubCategory": "Forensic genetics",
+  "isAccessibleForFree": true,
+  "keywords": [
+    "short tandem repeats",
+    "STR",
+    "forensic genetics",
+    "allele frequencies",
+    "population genetics",
+    "massively parallel sequencing",
+    "capillary electrophoresis",
+    "bioinformatics",
+    "education"
+  ],
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Tamara Soledad",
+      "familyName": "Frontanilla Recalde",
+      "@id": "https://orcid.org/0000-0002-6873-7813"
+    }
+  ],
+  "maintainer": {
+    "@type": "Person",
+    "givenName": "Tamara Soledad",
+    "familyName": "Frontanilla Recalde",
+    "@id": "https://orcid.org/0000-0002-6873-7813"
+  },
+  "developmentStatus": "active",
+  "readme": "https://github.com/Tfronta/strhub-web/blob/main/README.md"
+}

@@ -4,6 +4,7 @@ basics: {
   subtitle: "Understanding the Fundamentals",
   description:
     "Explore STR loci across human chromosomes and learn the core concepts behind forensic genetics and bioinformatics workflows.",
+  relatedArticles: "More from Foundations",
   readArticle: "Read Article",
   backToArticles: "Back to Foundations",
   readTime: "min read",

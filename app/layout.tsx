@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { JsonLd } from "@/components/json-ld";
+import { DATASET_CREATOR } from "@/lib/seo";
 import "./globals.css";
 import { Viewport } from "next";
 
@@ -31,8 +32,22 @@ const SITE_JSON_LD = {
       "@type": "Organization",
       "@id": "https://strhub.app/#organization",
       name: "STRhub",
+      // The full name and the topics tell search engines which "STRhub" this
+      // is: not the telco (StarHub) nor the short-term-rental sites (STR Hub).
+      alternateName: "STRhub, Central Hub for Short Tandem Repeats",
+      description:
+        "Open-access platform for forensic short tandem repeat (STR) genetics: marker catalog, allele frequencies, DNA mixture simulator, STR motif explorer, tools, datasets and educational articles.",
       url: "https://strhub.app",
       logo: "https://strhub.app/strhub-logo-pdf.png",
+      founder: DATASET_CREATOR,
+      knowsAbout: [
+        "short tandem repeats",
+        "forensic genetics",
+        "STR allele frequencies",
+        "massively parallel sequencing",
+        "capillary electrophoresis",
+        "population genetics",
+      ],
       sameAs: ["https://github.com/Tfronta/strhub-web"],
     },
     {

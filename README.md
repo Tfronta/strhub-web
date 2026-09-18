@@ -87,6 +87,8 @@ If you use STRhub for teaching, academic discussion, or research contexts, pleas
 
 (Citation details will be updated upon publication.)
 
+Until then, the software itself can be cited from [`CITATION.cff`](CITATION.cff) (GitHub's "Cite this repository" button uses it).
+
 ## Disclaimer
 
 STRhub is provided **for educational and research purposes only**.  

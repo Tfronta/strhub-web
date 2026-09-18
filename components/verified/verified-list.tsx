@@ -15,6 +15,8 @@ import {
 } from "@/types/verified";
 import { cn } from "@/lib/utils";
 import { errorAwareLevel } from "@/lib/verified/diagnostics";
+import { historyOf, shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
+import { rowHref } from "./report/history";
 
 const TONE: Record<string, string> = {
   green: "bg-teal-600 text-white border-transparent",
@@ -40,47 +42,42 @@ const LEVEL_RANK: Record<VerifiedLevel, number> = {
   content: 5,
 };
 
+/**
+ * One card per repository, and on it the tool's history: every commit
+ * verified, newest commit first. The badge is the newest commit's — what the
+ * tool is at today, not the best result any commit ever got.
+ */
 interface ToolGroup {
   name: string;
   repo: string;
-  bestLevel: VerifiedLevel;
-  bestErrors: boolean;
-  runs: VerifiedIndexEntry[];
+  head: HistoryRow;
+  rows: HistoryRow[];
 }
 
 function groupTools(entries: VerifiedIndexEntry[]): ToolGroup[] {
-  const real = entries.filter(
-    (e) => e.level !== "none" && e.source_repo != null
-  );
-
   const byRepo = new Map<string, VerifiedIndexEntry[]>();
-  for (const entry of real) {
-    const key = entry.source_repo!;
+  for (const entry of entries) {
+    if (!entry.source_repo) continue;
+    const key = entry.source_repo.replace(/\/+$/, "");
     const arr = byRepo.get(key);
     if (arr) arr.push(entry);
     else byRepo.set(key, [entry]);
   }
 
   const groups: ToolGroup[] = [];
-  for (const [repo, runs] of byRepo) {
-    runs.sort(
-      (a, b) =>
-        LEVEL_RANK[b.level] - LEVEL_RANK[a.level] ||
-        (b.generated ?? "").localeCompare(a.generated ?? "")
-    );
-    const best = runs[0];
-    const repoName = repo.replace(/\/+$/, "").split("/").pop() || best.name;
+  for (const [repo, tools] of byRepo) {
+    const rows = historyOf(tools);
+    if (rows.length === 0) continue;
     groups.push({
-      name: repoName,
+      name: repo.split("/").pop() || tools[0].name,
       repo,
-      bestLevel: best.level,
-      bestErrors: best.errors_reported ?? false,
-      runs,
+      head: rows[0],
+      rows,
     });
   }
 
   groups.sort(
-    (a, b) => LEVEL_RANK[b.bestLevel] - LEVEL_RANK[a.bestLevel]
+    (a, b) => LEVEL_RANK[b.head.level] - LEVEL_RANK[a.head.level] || a.name.localeCompare(b.name)
   );
   return groups;
 }
@@ -121,8 +118,8 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {groups.map((group) => {
               const level = errorAwareLevel(
-                VERIFIED_LEVELS[group.bestLevel] ?? VERIFIED_LEVELS.none,
-                group.bestErrors,
+                VERIFIED_LEVELS[group.head.level] ?? VERIFIED_LEVELS.none,
+                group.head.errors_reported,
                 t("verified.errorsBadgeSuffix"),
               );
               const isOpen = expanded.has(group.repo);
@@ -161,9 +158,9 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                         <ExternalLink className="h-3 w-3 shrink-0" />
                       </a>
                       <span className="text-muted-foreground/60">
-                        {group.runs.length === 1
-                          ? t("verified.group.runSingular")
-                          : `${group.runs.length} ${t("verified.group.runs")}`}
+                        {group.rows.length === 1
+                          ? t("verified.group.commitSingular")
+                          : t("verified.group.commits", { n: String(group.rows.length) })}
                       </span>
                     </div>
                   </CardHeader>
@@ -171,27 +168,19 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                   {isOpen && (
                     <CardContent className="pt-0">
                       <div className="space-y-1.5 border-t pt-3 max-h-[280px] overflow-y-auto">
-                        {group.runs.map((run) => {
-                          const runLevel = errorAwareLevel(
-                            VERIFIED_LEVELS[run.level] ?? VERIFIED_LEVELS.none,
-                            run.errors_reported ?? false,
+                        {/* The history, newest commit first: the version, the
+                            commit and its date; the verification date under it. */}
+                        {group.rows.map((row) => {
+                          const rowLevel = errorAwareLevel(
+                            VERIFIED_LEVELS[row.level] ?? VERIFIED_LEVELS.none,
+                            row.errors_reported,
                             t("verified.errorsBadgeSuffix"),
                           );
-                          const markers =
-                            run.distinct_str_loci != null
-                              ? `${run.distinct_str_loci} ${t("verified.col.strLoci")}` +
-                                (run.distinct_snp_markers
-                                  ? ` + ${run.distinct_snp_markers} ${t("verified.col.snps")}`
-                                  : "") +
-                                (run.total_reads != null
-                                  ? ` · ${run.total_reads} ${t("verified.col.reads")}`
-                                  : "")
-                              : null;
-                          const panelLabel = getPanelLabel(t, run.dataset_types);
+                          const panelLabel = getPanelLabel(t, row.dataset_types);
                           return (
                             <Link
-                              key={run.slug}
-                              href={`/verified/${run.slug}`}
+                              key={`${row.slug}-${row.sha}`}
+                              href={rowHref(row)}
                               className="block rounded-md border px-3 py-2 transition-colors hover:border-primary hover:bg-muted/50"
                             >
                               <div className="flex items-center gap-2 flex-wrap">
@@ -199,28 +188,25 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                                   variant="outline"
                                   className={cn(
                                     "text-[10px] px-1.5 py-0 shrink-0",
-                                    TONE[runLevel.tone]
+                                    TONE[rowLevel.tone]
                                   )}
                                 >
-                                  {runLevel.label}
+                                  {rowLevel.label}
                                 </Badge>
-                                <span className="font-mono text-xs text-muted-foreground truncate">
-                                  {run.slug}
-                                </span>
+                                <span className="text-xs font-medium">{versionLabel(row)}</span>
+                                <code className="rounded bg-muted px-1 text-[10px] text-muted-foreground">{shortSha(row.sha)}</code>
+                                {row.committed && (
+                                  <span className="text-[10px] text-muted-foreground">{row.committed.slice(0, 10)}</span>
+                                )}
                                 {panelLabel && (
                                   <span className="text-[10px] border rounded px-1.5 py-0 text-muted-foreground shrink-0">
                                     {panelLabel}
                                   </span>
                                 )}
                               </div>
-                              {markers && (
-                                <p className="mt-1 text-xs text-muted-foreground">
-                                  {markers}
-                                </p>
-                              )}
-                              {run.generated && (
+                              {row.generated && (
                                 <p className="mt-0.5 text-[10px] text-muted-foreground">
-                                  {run.generated.slice(0, 10)}
+                                  {t("verified.history.verifiedOn", { date: row.generated.slice(0, 10) })}
                                 </p>
                               )}
                             </Link>

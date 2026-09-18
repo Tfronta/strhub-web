@@ -1,0 +1,156 @@
+"use client";
+
+/**
+ * A tool's history on its page: every commit it was verified at, newest commit
+ * first, the one being read marked.
+ *
+ * Two clocks on every row, labelled: the commit's own date, which orders the
+ * list, and the verification date. A reviewer holding a manuscript finds the
+ * version it cites; a maintainer sees whether the commit before the fix
+ * stopped where the user said and whether the one after still does. Before
+ * this the same runs were a card's "6 verification runs", sorted by level.
+ */
+import Link from "next/link";
+import { ArrowRight, GitCommitHorizontal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/contexts/language-context";
+import { VERIFIED_LEVELS } from "@/types/verified";
+import { errorAwareLevel } from "@/lib/verified/diagnostics";
+import { shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
+import { cn } from "@/lib/utils";
+import { TONE } from "./header";
+
+function panelKey(types: string[]): "ystr" | "ont" | "autosomal" | null {
+  if (types.length === 0) return null;
+  if (types.some((t) => t.endsWith("-y"))) return "ystr";
+  if (types.some((t) => t.includes("ont"))) return "ont";
+  return "autosomal";
+}
+
+/** Where a row is read: its slug's page, with `?at=` unless it is the slug's alias. */
+export function rowHref(row: HistoryRow): string {
+  return row.isAlias ? `/verified/${row.slug}` : `/verified/${row.slug}?at=${shortSha(row.sha)}`;
+}
+
+/** The form, with this repository already pasted and the commit field next. */
+export function anotherVersionHref(repo: string): string {
+  return `/verified/review?repo=${encodeURIComponent(repo)}`;
+}
+
+export function VersionHistory({
+  rows,
+  current,
+  repo,
+}: {
+  rows: HistoryRow[];
+  /** The commit this page shows: (slug, sha). */
+  current: { slug: string; sha: string | null };
+  repo: string;
+}) {
+  const { t } = useLanguage();
+  if (rows.length === 0) return null;
+  return (
+    <div className="mt-6 rounded-lg border bg-card p-5">
+      <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+        {t("verified.history.heading")}
+      </h2>
+      <p className="mt-1 text-xs text-muted-foreground">{t("verified.history.note")}</p>
+      {rows.length > 1 && (
+        <ol className="mt-3 divide-y rounded-md border">
+          {rows.map((row) => {
+            const isCurrent = row.slug === current.slug && row.sha === current.sha;
+            const level = errorAwareLevel(
+              VERIFIED_LEVELS[row.level] ?? VERIFIED_LEVELS.none,
+              row.errors_reported,
+              t("verified.errorsBadgeSuffix"),
+            );
+            const panel = panelKey(row.dataset_types);
+            const inner = (
+              <>
+                <GitCommitHorizontal className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span className="font-medium">{versionLabel(row)}</span>
+                    <code className="rounded bg-muted px-1 text-xs">{shortSha(row.sha)}</code>
+                    {row.committed && (
+                      <span className="text-xs text-muted-foreground">{row.committed.slice(0, 10)}</span>
+                    )}
+                    {panel && (
+                      <span className="rounded-full border px-1.5 text-[10px] text-muted-foreground">{t(`verified.panel.${panel}`)}</span>
+                    )}
+                    {row.isNewest && (
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-400">{t("verified.history.newest")}</span>
+                    )}
+                    {isCurrent && (
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{t("verified.history.thisPage")}</span>
+                    )}
+                  </div>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {row.generated
+                      ? t("verified.history.verifiedOn", { date: row.generated.slice(0, 10) })
+                      : ""}
+                  </p>
+                </div>
+                <Badge className={cn("shrink-0 text-[10px]", TONE[level.tone])}>{level.label}</Badge>
+              </>
+            );
+            const cls = cn(
+              "flex items-center gap-3 px-3 py-2 text-sm",
+              isCurrent ? "bg-muted/60" : "hover:bg-muted/40",
+            );
+            return (
+              <li key={`${row.slug}-${row.sha}`}>
+                {isCurrent ? (
+                  <div className={cls} aria-current="page">{inner}</div>
+                ) : (
+                  <Link href={rowHref(row)} className={cls}>{inner}</Link>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      )}
+      <p className="mt-3 text-sm">
+        <Link href={anotherVersionHref(repo)} className="inline-flex items-center gap-1 font-medium text-primary hover:underline">
+          {t("verified.history.another")} <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+        <span className="ml-2 text-xs text-muted-foreground">{t("verified.history.anotherHint")}</span>
+      </p>
+    </div>
+  );
+}
+
+/** "v0.7 (b2033bf)", or just the commit when no version was recorded. */
+function nameOf(row: HistoryRow): string {
+  const label = versionLabel(row);
+  return label === shortSha(row.sha) ? label : `${label} (${shortSha(row.sha)})`;
+}
+
+/**
+ * Said before anything else when the page is an older commit: a result read
+ * out of its place in the history is the one thing this page must not let a
+ * reader take for the current one.
+ */
+export function OlderVersionNotice({ current, newest }: { current: HistoryRow; newest: HistoryRow }) {
+  const { t } = useLanguage();
+  const sha = shortSha(current.sha);
+  const label = versionLabel(current);
+  // "commit b2033bf, made 2019-09-04", or without the date when it is not
+  // known (a report from before it was recorded); with the version in front
+  // when the report recorded one.
+  const commit = current.committed
+    ? t("verified.history.older.commitMade", { sha, committed: current.committed.slice(0, 10) })
+    : t("verified.history.older.commit", { sha });
+  const what = label === sha ? commit : `${label} — ${commit}`;
+  return (
+    <div className="mt-6 rounded-lg border border-amber-300 bg-amber-50/60 p-4 text-sm dark:border-amber-800 dark:bg-amber-950/20">
+      <p className="font-semibold">{t("verified.history.older.title")}</p>
+      <p className="mt-1 text-muted-foreground">
+        {t("verified.history.older.body", { what, newest: nameOf(newest) })}
+      </p>
+      <Link href={rowHref(newest)} className="mt-2 inline-flex items-center gap-1 font-medium text-primary hover:underline">
+        {t("verified.history.older.cta")} <ArrowRight className="h-3.5 w-3.5" />
+      </Link>
+    </div>
+  );
+}

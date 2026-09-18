@@ -2,23 +2,32 @@
 
 /**
  * A published attestation. Everything it shows is the shared report body;
- * this only says where the logs and files live on gh-pages.
+ * this only says where the logs and files live on gh-pages — at the root for
+ * the newest commit, under `<slug>/<sha>/` for an older one — and hands the
+ * body the tool's history.
  */
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedReport } from "@/types/verified";
-import { verifiedPdfUrl, verifiedReportJsonUrl } from "@/lib/verified";
+import type { HistoryRow } from "@/lib/verified/history";
 import { VerifiedReportBody, type ReportLog } from "./report/verified-report-body";
 
 export function VerifiedDetail({
   report,
   slug,
   staticPageUrl,
+  pdfUrl,
+  jsonUrl,
+  history,
 }: {
   report: VerifiedReport;
   slug: string;
   staticPageUrl: string;
+  pdfUrl: string;
+  jsonUrl: string;
+  history?: { rows: HistoryRow[]; current: HistoryRow };
 }) {
   const { t } = useLanguage();
+  // Every log is a file next to the report, wherever the report lives.
   const logBaseUrl = staticPageUrl.replace(/\/[^/]+$/, "");
   const hasStrhubFixture = report.datasets?.some((d) => d.fixture_source === "strhub") ?? false;
 
@@ -46,10 +55,11 @@ export function VerifiedDetail({
       report={report}
       slug={slug}
       staticPageUrl={staticPageUrl}
-      pdfUrl={verifiedPdfUrl(slug)}
-      jsonUrl={verifiedReportJsonUrl(slug)}
+      pdfUrl={pdfUrl}
+      jsonUrl={jsonUrl}
       logs={logs}
       buildLogHref={report.logs?.build ? `${logBaseUrl}/${report.logs.build}` : undefined}
+      history={history}
     />
   );
 }

@@ -30,11 +30,24 @@ interface ResolvedRef {
   how: "given" | "release" | "tag" | "head";
 }
 
-export function VerifiedStart({ role: initialRole, compact = false }: { role: TrialRole; compact?: boolean }) {
+export function VerifiedStart({
+  role: initialRole,
+  compact = false,
+  initialRepo = "",
+}: {
+  role: TrialRole;
+  compact?: boolean;
+  /**
+   * A repository already chosen — "Test another version" on a report. The
+   * form then opens on the commit field, since the repository is settled and
+   * the version is the question.
+   */
+  initialRepo?: string;
+}) {
   const { t } = useLanguage();
   const router = useRouter();
   const [role, setRole] = useState<TrialRole>(initialRole);
-  const [repo, setRepo] = useState("");
+  const [repo, setRepo] = useState(initialRepo);
   const [ref, setRef] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -140,6 +153,7 @@ export function VerifiedStart({ role: initialRole, compact = false }: { role: Tr
           <Input
             id="trial-ref"
             autoComplete="off"
+            autoFocus={Boolean(initialRepo)}
             placeholder={t("verified.start.refPlaceholder")}
             value={ref}
             onChange={(e) => {

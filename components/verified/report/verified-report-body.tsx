@@ -32,6 +32,8 @@ import {
   EvidenceList,
 } from "./findings";
 import { ScopeBlock, DisputeCard } from "./closing";
+import { VersionHistory, OlderVersionNotice } from "./history";
+import { newestOfKind, type HistoryRow } from "@/lib/verified/history";
 
 export type { ReportLog, ExtraGateRow };
 
@@ -56,6 +58,7 @@ export function VerifiedReportBody({
   backLink = true,
   afterHeader,
   afterSource,
+  history,
 }: {
   report: VerifiedReport;
   slug: string;
@@ -77,6 +80,11 @@ export function VerifiedReportBody({
   afterHeader?: ReactNode;
   /** A trial's environment, next to where the source is named. */
   afterSource?: ReactNode;
+  /**
+   * A published tool's history: every commit verified, and which one this
+   * page is. A trial has none — it is published nowhere.
+   */
+  history?: { rows: HistoryRow[]; current: HistoryRow };
 }) {
   const { t } = useLanguage();
   const baseLevel = VERIFIED_LEVELS[report.level] ?? VERIFIED_LEVELS.none;
@@ -103,6 +111,15 @@ export function VerifiedReportBody({
 
         {afterHeader}
 
+        {/* An older commit, read out of its place in the history, is the one
+            thing this page must not let a reader take for the current one. */}
+        {history && !history.current.isNewest && (() => {
+          const newest = newestOfKind(history.rows, history.current);
+          return newest && newest !== history.current
+            ? <OlderVersionNotice current={history.current} newest={newest} />
+            : null;
+        })()}
+
         <SummaryCard
           level={level}
           gatesPassed={gatesPassed}
@@ -113,6 +130,14 @@ export function VerifiedReportBody({
         />
 
         <SourceCard report={report} staticPageUrl={staticPageUrl} pdfUrl={pdfUrl} jsonUrl={jsonUrl} />
+
+        {history && (
+          <VersionHistory
+            rows={history.rows}
+            current={{ slug: history.current.slug, sha: history.current.sha }}
+            repo={report.source.repo}
+          />
+        )}
 
         <RunCommandCard cmd={command ?? report.run?.cmd} />
 

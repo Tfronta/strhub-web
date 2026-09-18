@@ -51,6 +51,16 @@ export function VerifiedHowToRead() {
           </p>
         </div>
 
+        <h2 className="mt-10 text-xl font-semibold">
+          {t("verified.howToRead.instrumentHeading")}
+        </h2>
+        <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+          {t("verified.howToRead.instrumentBody")}
+        </p>
+        <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+          {t("verified.howToRead.instrumentBody2")}
+        </p>
+
         <div className="mt-10 grid gap-8 sm:grid-cols-2">
           <div>
             <h2 className="text-base font-semibold">

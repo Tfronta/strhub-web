@@ -7,16 +7,10 @@ import { useLanguage } from "@/contexts/language-context";
 import { cn } from "@/lib/utils";
 import type { PanelKind } from "@/lib/verified/dataset-provenance";
 
-export const TONE: Record<string, string> = {
-  green: "bg-teal-600 text-white border-transparent",
-  amber: "bg-amber-500 text-white border-transparent",
-  red: "bg-red-600 text-white border-transparent",
-};
+import { TONE, type BadgeDisplay } from "@/lib/verified/badge";
 
-export interface LevelDisplay {
-  label: string;
-  tone: "green" | "amber" | "red";
-}
+export { TONE };
+export type LevelDisplay = BadgeDisplay;
 
 /**
  * The first thing a reader sees: the badge, the tool, and — because a person

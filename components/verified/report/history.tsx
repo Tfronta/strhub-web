@@ -14,11 +14,11 @@ import Link from "next/link";
 import { ArrowRight, GitCommitHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
-import { VERIFIED_LEVELS } from "@/types/verified";
-import { errorAwareLevel } from "@/lib/verified/diagnostics";
+import type { VerifiedInstrument } from "@/types/verified";
+import { badgeFor, TONE } from "@/lib/verified/badge";
 import { shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
 import { cn } from "@/lib/utils";
-import { TONE } from "./header";
+import { InstrumentTag } from "./instrument";
 
 function panelKey(types: string[]): "ystr" | "ont" | "autosomal" | null {
   if (types.length === 0) return null;
@@ -27,9 +27,15 @@ function panelKey(types: string[]): "ystr" | "ont" | "autosomal" | null {
   return "autosomal";
 }
 
-/** Where a row is read: its slug's page, with `?at=` unless it is the slug's alias. */
+/**
+ * Where a row is read: its slug's page, with `?at=` unless it is the slug's
+ * alias — and, for a run of STRhub's recipe, `&recipe=curated`, since the
+ * same commit may also carry the documented run, which `?at=` alone names.
+ */
 export function rowHref(row: HistoryRow): string {
-  return row.isAlias ? `/verified/${row.slug}` : `/verified/${row.slug}?at=${shortSha(row.sha)}`;
+  if (row.isAlias) return `/verified/${row.slug}`;
+  const recipe = row.instrument === "curated" ? "&recipe=curated" : "";
+  return `/verified/${row.slug}?at=${shortSha(row.sha)}${recipe}`;
 }
 
 /** The form, with this repository already pasted and the commit field next. */
@@ -43,8 +49,8 @@ export function VersionHistory({
   repo,
 }: {
   rows: HistoryRow[];
-  /** The commit this page shows: (slug, sha). */
-  current: { slug: string; sha: string | null };
+  /** The run this page shows: (slug, sha, instrument). */
+  current: { slug: string; sha: string | null; instrument?: VerifiedInstrument | null };
   repo: string;
 }) {
   const { t } = useLanguage();
@@ -58,12 +64,9 @@ export function VersionHistory({
       {rows.length > 1 && (
         <ol className="mt-3 divide-y rounded-md border">
           {rows.map((row) => {
-            const isCurrent = row.slug === current.slug && row.sha === current.sha;
-            const level = errorAwareLevel(
-              VERIFIED_LEVELS[row.level] ?? VERIFIED_LEVELS.none,
-              row.errors_reported,
-              t("verified.errorsBadgeSuffix"),
-            );
+            const isCurrent = row.slug === current.slug && row.sha === current.sha
+              && (row.instrument ?? null) === (current.instrument ?? null);
+            const level = badgeFor(row, t);
             const panel = panelKey(row.dataset_types);
             const inner = (
               <>
@@ -78,6 +81,7 @@ export function VersionHistory({
                     {panel && (
                       <span className="rounded-full border px-1.5 text-[10px] text-muted-foreground">{t(`verified.panel.${panel}`)}</span>
                     )}
+                    <InstrumentTag instrument={row.instrument} />
                     {row.isNewest && (
                       <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-400">{t("verified.history.newest")}</span>
                     )}

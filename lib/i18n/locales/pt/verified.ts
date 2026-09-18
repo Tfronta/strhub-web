@@ -128,6 +128,11 @@ export default {
       cannot4: "É melhor ou pior que outra ferramenta?",
       cannot5: "Tem o desempenho relatado no manuscrito?",
       cannot6: "Seu mantenedor endossa este resultado?",
+      instrumentHeading: "Conforme a documentação, ou com a receita do STRhub",
+      instrumentBody:
+        "Cada resultado nomeia sua receita. \"Conforme a documentação\" significa que o STRhub leu as instruções do próprio repositório (o README, um Dockerfile ou arquivo de ambiente, a imagem que o README indica) e rodou exatamente isso. É a única execução em que o selo se apoia: é o que quem usa a ferramenta pela primeira vez encontra. Uma receita do mantenedor conta igual, porque é documentação em outro formato.",
+      instrumentBody2:
+        "\"Receita do STRhub\" significa que o STRhub escreveu à mão o ambiente e o comando, para ver até onde a ferramenta poderia ser levada a rodar. Esse resultado aparece como uma nota abaixo do documentado, nunca como o selo, e cada coisa que a receita teve de fazer diferente é listada como recomendação ao autor. Uma ferramenta ainda sem execução documentada é marcada \"não verificada conforme a documentação\". Uma cujo README não diz o suficiente para tentar rodá-la fica como \"não foi possível determinar\": um achado sobre a documentação, não sobre o software.",
       developerHeading: "Para um desenvolvedor",
       developerBody:
         "Um resultado descreve um ambiente, e um software que funciona na máquina onde foi escrito pode parar aqui mesmo assim. Essa lacuna costuma ser a parte útil: é o que um usuário novo encontra no primeiro dia. Cada resultado traz o log completo e os comandos exatos, então pode ser reproduzido localmente.",
@@ -143,6 +148,45 @@ export default {
     log: {
       build: "Build",
       view: "Ver log de execução",
+    },
+    instrument: {
+      badgeSuffix: "receita do STRhub",
+      recipeLabel: "Receita",
+      notDocumented: "Não verificada conforme a documentação",
+      tag: {
+        documented: "conforme a documentação",
+        maintainer: "receita do mantenedor",
+        curated: "receita do STRhub",
+      },
+      line: {
+        documented: "as instruções do próprio repositório, lidas do README e da árvore no commit fixado.",
+        maintainer: "uma receita enviada pelo mantenedor da ferramenta, que é documentação em outro formato.",
+        curated: "uma receita escrita à mão pelo STRhub, não lida do repositório. Uma nota abaixo do resultado documentado, nunca o selo.",
+      },
+      notice: {
+        title: "Não verificada conforme a documentação",
+        body: "Este resultado vem de uma receita que o STRhub escreveu à mão, não das instruções do próprio repositório. Mostra até onde a ferramenta pode ser levada a rodar; não diz se quem segue o README pela primeira vez chega até lá. O selo se apoia na execução das instruções do repositório, nunca nesta.",
+        seeDocumented: "Ver o resultado documentado: {label}",
+        noDocumented: "O STRhub ainda não rodou esta ferramenta a partir das próprias instruções dela. O próximo refresh documentado fará isso, e esse resultado será o selo.",
+      },
+      workarounds: {
+        heading: "O que a receita do STRhub faz que as instruções do repositório não fazem",
+        lead: "Esta execução usou uma receita escrita pelo STRhub. Cada item é um desvio do README que quem o segue pela primeira vez teria de descobrir por conta própria.",
+        insteadOf: "Em vez de:",
+        why: "Por quê:",
+        none: "Não detalhado para esta receita.",
+        recommendations: "Para o autor, cada item é uma recomendação: o que o README teria de dizer, ou o repositório incluir, para que alguém chegue aonde esta receita chegou.",
+      },
+      note: {
+        heading: "O que o STRhub conseguiu com uma receita própria",
+        body: "O STRhub escreveu à mão uma receita para esta ferramenta e a rodou em {what}. É trabalho do STRhub, não o comportamento documentado da ferramenta: uma nota abaixo do resultado acima, nunca o selo. Até onde chegou:",
+        cta: "Ler essa execução",
+      },
+      card: {
+        undetermined: "O STRhub não conseguiu determinar como rodá-la a partir das instruções do repositório.",
+        outOfScope: "Precisa de algo que o ambiente automatizado não pode fornecer.",
+        curatedNote: "Receita do STRhub: {label}",
+      },
     },
     errorsBadgeSuffix: "(erros reportados)",
     upstream: {

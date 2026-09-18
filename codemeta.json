@@ -11,7 +11,8 @@
   "codeRepository": "https://github.com/Tfronta/strhub-web",
   "issueTracker": "https://github.com/Tfronta/strhub-web/issues",
   "sameAs": [
-    "https://zenodo.org/records/22831681"
+    "https://zenodo.org/records/22831681",
+    "https://bio.tools/strhub"
   ],
   "license": "https://spdx.org/licenses/AGPL-3.0-only",
   "programmingLanguage": [

@@ -48,7 +48,10 @@ const SITE_JSON_LD = {
         "capillary electrophoresis",
         "population genetics",
       ],
-      sameAs: ["https://github.com/Tfronta/strhub-web"],
+      sameAs: [
+        "https://github.com/Tfronta/strhub-web",
+        "https://bio.tools/strhub",
+      ],
     },
     {
       "@type": "WebApplication",
@@ -74,6 +77,7 @@ const SITE_JSON_LD = {
       sameAs: [
         "https://github.com/Tfronta/strhub-web",
         "https://doi.org/10.5281/zenodo.22831681",
+        "https://bio.tools/strhub",
       ],
     },
     {

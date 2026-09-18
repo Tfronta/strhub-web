@@ -13,8 +13,9 @@
  */
 import type { ReactNode } from "react";
 import { useLanguage } from "@/contexts/language-context";
-import { VERIFIED_LEVELS, VERIFIED_GATES, type VerifiedReport } from "@/types/verified";
-import { hasReportedErrors, errorAwareLevel } from "@/lib/verified/diagnostics";
+import { VERIFIED_GATES, type VerifiedInstrument, type VerifiedReport } from "@/types/verified";
+import { hasReportedErrors } from "@/lib/verified/diagnostics";
+import { badgeFor } from "@/lib/verified/badge";
 import { summarizeDatasets } from "@/lib/verified/dataset-provenance";
 import { ReportHeader } from "./header";
 import { SummaryCard } from "./summary-card";
@@ -33,7 +34,8 @@ import {
 } from "./findings";
 import { ScopeBlock, DisputeCard } from "./closing";
 import { VersionHistory, OlderVersionNotice } from "./history";
-import { newestOfKind, type HistoryRow } from "@/lib/verified/history";
+import { InstrumentNotice, WorkaroundsSection, CuratedNoteSection } from "./instrument";
+import { documentedOf, newestOfKind, type HistoryRow } from "@/lib/verified/history";
 
 export type { ReportLog, ExtraGateRow };
 
@@ -59,6 +61,8 @@ export function VerifiedReportBody({
   afterHeader,
   afterSource,
   history,
+  instrument,
+  note,
 }: {
   report: VerifiedReport;
   slug: string;
@@ -85,14 +89,27 @@ export function VerifiedReportBody({
    * page is. A trial has none — it is published nowhere.
    */
   history?: { rows: HistoryRow[]; current: HistoryRow };
+  /**
+   * Which instrument this published run is. A trial passes none: its
+   * recipe may be anybody's, and the page then says nothing about it.
+   */
+  instrument?: VerifiedInstrument;
+  /**
+   * On a documented page, the run of STRhub's own recipe for the same tool,
+   * shown as a note under the documented result.
+   */
+  note?: { row: HistoryRow; report: VerifiedReport };
 }) {
   const { t } = useLanguage();
-  const baseLevel = VERIFIED_LEVELS[report.level] ?? VERIFIED_LEVELS.none;
-  // A run can clear its gates and still have reported errors (a tool that fails
-  // some loci, writes a partial file and exits 0). The badge is the first thing a
-  // reviewer sees, so a green level with errors is misleading: qualify it, exactly
-  // as the static report and shields badge do.
-  const level = errorAwareLevel(baseLevel, hasReportedErrors(report.diagnostics), t("verified.errorsBadgeSuffix"));
+  // The badge is the first thing a reviewer sees, and one rule writes it
+  // everywhere (lib/verified/badge.ts): the verdict before the rung reached,
+  // a green qualified by reported errors, and a run of STRhub's recipe
+  // marked as such, exactly as the static report and shields badge do.
+  const level = badgeFor(
+    { level: report.level, verdict: report.verdict?.code, errors_reported: hasReportedErrors(report.diagnostics), instrument },
+    t,
+    { markCurated: true },
+  );
   const data = summarizeDatasets(report, slug);
   const gateKeys = VERIFIED_GATES.map((g) => g.key);
   const gatesPassed = gateKeys.filter((k) => report.gates?.[k]).length;
@@ -108,6 +125,12 @@ export function VerifiedReportBody({
           slug={slug}
           backLink={backLink}
         />
+
+        {/* A run of STRhub's own recipe is not the documented result, and
+            the page says so before it says anything else. */}
+        {instrument === "curated" && (
+          <InstrumentNotice documented={history ? documentedOf(history.rows, slug) : undefined} />
+        )}
 
         {afterHeader}
 
@@ -127,6 +150,7 @@ export function VerifiedReportBody({
           datasetNames={data.provenance.map((p) => p.name)}
           generated={report.generated}
           scope={report.scope}
+          instrument={instrument}
         />
 
         <SourceCard report={report} staticPageUrl={staticPageUrl} pdfUrl={pdfUrl} jsonUrl={jsonUrl} />
@@ -134,7 +158,7 @@ export function VerifiedReportBody({
         {history && (
           <VersionHistory
             rows={history.rows}
-            current={{ slug: history.current.slug, sha: history.current.sha }}
+            current={{ slug: history.current.slug, sha: history.current.sha, instrument: history.current.instrument }}
             repo={report.source.repo}
           />
         )}
@@ -166,6 +190,11 @@ export function VerifiedReportBody({
 
         <AutoDiagnostics diagnostics={report.diagnostics} hasStrhubFixture={data.hasStrhubFixture} />
 
+        {/* What STRhub could do with a recipe of its own: under the documented
+            result and its diagnostics, labelled as STRhub's work, never in
+            the result's place. */}
+        {note && instrument !== "curated" && <CuratedNoteSection note={note} />}
+
         <ManualOffer report={report} slug={slug} />
 
         <ReadmeCheck check={report.readme_check} />
@@ -174,6 +203,10 @@ export function VerifiedReportBody({
             property of the software and quietly folds in the work it took to
             get there. */}
         <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={report.needed_beyond_repo} />
+
+        {/* Each departure from the README as data, and the recommendations
+            they amount to — the second thing the plan says a report says. */}
+        {instrument === "curated" && <WorkaroundsSection report={report} />}
 
         <AuthorKnownIssues items={report.author_known_issues} />
 

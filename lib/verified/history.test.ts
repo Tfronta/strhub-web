@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { familyOf, findVersion, historyOf, newestOfKind, repoEntries, versionLabel } from "./history";
+import { curatedNoteOf, documentedOf, familyOf, findVersion, headOf, historyOf, newestOfKind, repoEntries, versionLabel } from "./history";
 import type { VerifiedIndex, VerifiedIndexEntry } from "@/types/verified";
 
 /**
@@ -151,5 +151,83 @@ describe("what a row is called", () => {
     expect(versionLabel({ version: "v0.7", sha: OLD })).toBe("v0.7");
     expect(versionLabel({ version: "b2033bf", sha: OLD })).toBe("b2033bf");
     expect(versionLabel({ version: null, sha: NEW })).toBe("12e989b");
+  });
+});
+
+/**
+ * One commit can carry two runs: the repository's own instructions and a
+ * recipe STRhub wrote. They are two facts, two rows; the alias is the newest
+ * run that may stand behind the badge, not the newest commit; and a tool
+ * with no documented run yet heads with its curated one, marked.
+ */
+describe("two instruments", () => {
+  // STRspy as the engine settled it: the curated run is at the newest commit,
+  // the documented alias is an older one that failed.
+  const strspy = entry({
+    slug: "strspy-ont", name: "STRspy", source_repo: "https://github.com/unique379r/strspy",
+    sha: OLD, source_ref: OLD, instrument: "documented", level: "installs", verdict: "fails",
+    dataset_types: ["ont-bam-hg38"],
+    versions: [
+      { sha: NEW, instrument: "curated", committed: "2024-01-01T00:00:00Z", generated: "2026-09-16T00:00:00+00:00", level: "io", verdict: "runs", report: `strspy-ont/${NEW}/curated/strspy-ont.json`, page: `strspy-ont/${NEW}/curated/strspy-ont.html` },
+      { sha: OLD, instrument: "documented", committed: "2023-06-01T00:00:00Z", generated: "2026-09-18T00:00:00+00:00", level: "installs", verdict: "fails", report: `strspy-ont/${OLD}/strspy-ont.json`, page: `strspy-ont/${OLD}/strspy-ont.html` },
+      { sha: OLD, instrument: "curated", committed: "2023-06-01T00:00:00Z", generated: "2026-09-17T00:00:00+00:00", level: "io", verdict: "runs", report: `strspy-ont/${OLD}/curated/strspy-ont.json`, page: `strspy-ont/${OLD}/curated/strspy-ont.html` },
+    ],
+  });
+
+  it("keeps the documented run and STRhub's at one commit as two rows", () => {
+    const rows = historyOf([strspy]);
+    expect(rows.map((r) => [r.sha, r.instrument])).toEqual([[NEW, "curated"], [OLD, "documented"], [OLD, "curated"]]);
+  });
+
+  it("marks as the alias the run the index entry describes, not the newest commit", () => {
+    const rows = historyOf([strspy]);
+    expect(rows.map((r) => r.isAlias)).toEqual([false, true, false]);
+    // Without instruments in the index, the first row was the newest commit and the alias.
+    const legacy = historyOf([entry({ sha: NEW, versions: [
+      { sha: NEW, committed: "2026-02-01T00:00:00Z", level: "content", report: "a.json", page: "a.html" },
+      { sha: OLD, committed: "2019-09-04T00:00:00Z", level: "content", report: "b.json", page: "b.html" },
+    ] })]);
+    expect(legacy.map((r) => r.isAlias)).toEqual([true, false]);
+  });
+
+  it("is its own kind: the newest curated run is not an older documented one", () => {
+    const rows = historyOf([strspy]);
+    expect(rows.map((r) => r.isNewest)).toEqual([true, true, false]);
+    expect(newestOfKind(rows, rows[2])).toBe(rows[0]);
+  });
+
+  it("heads a card with the newest run that may stand behind the badge", () => {
+    const rows = historyOf([strspy]);
+    expect(headOf(rows)?.sha).toBe(OLD);
+    expect(headOf(rows)?.instrument).toBe("documented");
+    expect(curatedNoteOf(rows)?.sha).toBe(NEW);
+    expect(documentedOf(rows, "strspy-ont")?.sha).toBe(OLD);
+    expect(documentedOf(rows, "other")).toBeUndefined();
+  });
+
+  it("heads a tool with no documented run with its curated one", () => {
+    const rows = historyOf([entry({ slug: "gangstr", sha: NEW, instrument: "curated", versions: [
+      { sha: NEW, instrument: "curated", committed: "2026-02-01T00:00:00Z", level: "content", report: "gangstr/x/curated/gangstr.json", page: "gangstr/x/curated/gangstr.html" },
+    ] })]);
+    expect(headOf(rows)?.instrument).toBe("curated");
+    expect(rows[0].isAlias).toBe(true);
+  });
+
+  it("finds the documented run at a commit unless STRhub's recipe is asked for", () => {
+    const rows = historyOf([strspy]);
+    expect(findVersion(rows, "b2033bf", "strspy-ont")?.instrument).toBe("documented");
+    expect(findVersion(rows, "b2033bf", "strspy-ont", "curated")?.instrument).toBe("curated");
+    // A commit that only has a curated run is still found by its commit alone.
+    expect(findVersion(rows, "12e989b", "strspy-ont")?.instrument).toBe("curated");
+    // And asking for a curated run at a commit that has none falls back to what is there.
+    expect(findVersion(rows, "12e989b", "strspy-ont", "documented")?.instrument).toBe("curated");
+  });
+
+  it("lists a run nobody knew how to attempt, though it reached no gate", () => {
+    const rows = historyOf([entry({ slug: "readme-less", sha: NEW, instrument: "documented", level: "none", verdict: "undetermined", versions: [
+      { sha: NEW, instrument: "documented", committed: "2026-02-01T00:00:00Z", level: "none", verdict: "undetermined", report: "r.json", page: "r.html" },
+      { sha: OLD, instrument: "documented", committed: "2019-09-04T00:00:00Z", level: "none", verdict: "fails", report: "s.json", page: "s.html" },
+    ] })]);
+    expect(rows.map((r) => r.sha)).toEqual([NEW]);
   });
 });

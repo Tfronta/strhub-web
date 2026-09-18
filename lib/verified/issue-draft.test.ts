@@ -68,6 +68,22 @@ describe("issue drafts", () => {
     expect(draft?.body).toContain("A file could not be opened");
   });
 
+  it("passes on what STRhub's recipe had to do differently, as recommendations", () => {
+    const curated = report({
+      instrument: "curated",
+      recipe: { origin: "curated", workarounds: [
+        { what: "Runs src/STRspy_Normal_v2.0_Args.sh directly.", instead_of: "The wrapper, the only documented command.", why: "The wrapper exits before doing anything." },
+      ] },
+    });
+    expect(draftReasons(curated)).toContain("STRhub's own recipe had to depart from the README in 1 place(s)");
+    const draft = buildIssueDraft(curated, "strspy-ont");
+    expect(draft?.body).toContain("## What STRhub had to do that the README does not say");
+    expect(draft?.body).toContain("- Runs src/STRspy_Normal_v2.0_Args.sh directly. — instead of: The wrapper, the only documented command. The wrapper exits before doing anything.");
+    expect(draft?.body).toContain("not the tool's documented behaviour");
+    // A documented run has no such section: it did only what it read.
+    expect(buildIssueDraft(report({ instrument: "documented", recipe: { origin: "proposed" } }), "x")).toBeNull();
+  });
+
   it("keeps unverified repository notes out unless they are asked for", () => {
     const withNotes = report({
       gates: { none: false, available: true, installs: false, runs: false, io: false, content: false },

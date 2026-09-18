@@ -18,7 +18,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
-import type { TrialRole, TrialStatus, TrialVerdictCode } from "@/lib/verified/trial";
+import type { TrialRole, TrialStatus } from "@/lib/verified/trial";
+import { VERDICT_TONE } from "@/lib/verified/badge";
 import { ownerIssueUrl, prepareSelfFix } from "@/lib/verified/trial-next-steps";
 import { commandFromManifest } from "@/lib/verified/command";
 import { useRouter } from "next/navigation";
@@ -28,12 +29,6 @@ const POLL_MS = 8000;
 const STALL_AFTER_MS = 6 * 60 * 1000;
 const GIVE_UP_AFTER_MS = 45 * 60 * 1000;
 
-const VERDICT_TONE: Record<TrialVerdictCode, string> = {
-  runs: "bg-teal-600 text-white",
-  fails: "bg-red-600 text-white",
-  undetermined: "bg-amber-500 text-white",
-  out_of_scope: "bg-slate-500 text-white",
-};
 
 export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const { t } = useLanguage();

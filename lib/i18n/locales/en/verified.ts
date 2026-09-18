@@ -128,6 +128,11 @@ export default {
       cannot4: "Is it better or worse than another tool?",
       cannot5: "Does it perform as reported in the manuscript?",
       cannot6: "Does its maintainer stand behind this result?",
+      instrumentHeading: "As documented, or with STRhub's recipe",
+      instrumentBody:
+        "Every result names its recipe. \"As documented\" means STRhub read the repository's own instructions — the README, a Dockerfile or environment file, the image the README points at — and ran exactly those. That is the only run the badge rests on: it is what a first-time user meets. A maintainer's recipe counts the same, because it is documentation in another format.",
+      instrumentBody2:
+        "\"STRhub's recipe\" means STRhub wrote the environment and the command by hand, to see how far the tool could be made to run. That result is shown as a note under the documented one, never as the badge, and each thing the recipe had to do differently is listed as a recommendation to the author. A tool with no documented run yet is marked \"not verified as documented\". A tool whose README does not say enough to attempt a run is \"could not be determined\": a finding about the documentation, not the software.",
       developerHeading: "For a developer",
       developerBody:
         "A result describes one environment, and software that works on the machine it was written on can still stop here. That gap is usually the useful part: it is what a new user meets on their first day. Every result links the full log and the exact commands used, so a result can be reproduced locally.",
@@ -143,6 +148,45 @@ export default {
     log: {
       build: "Build",
       view: "View execution log",
+    },
+    instrument: {
+      badgeSuffix: "STRhub's recipe",
+      recipeLabel: "Recipe",
+      notDocumented: "Not verified as documented",
+      tag: {
+        documented: "as documented",
+        maintainer: "maintainer's recipe",
+        curated: "STRhub's recipe",
+      },
+      line: {
+        documented: "the repository's own instructions, read off the README and the tree at the pinned commit.",
+        maintainer: "a recipe the tool's maintainer submitted, which is documentation in another format.",
+        curated: "a recipe STRhub wrote by hand, not read off the repository. A note under the documented result, never the badge.",
+      },
+      notice: {
+        title: "Not verified as documented",
+        body: "This result comes from a recipe STRhub wrote by hand, not from the repository's own instructions. It shows how far the tool can be made to run; it does not say whether a first-time user following the README gets there. The badge rests on the run of the repository's own instructions, never on this one.",
+        seeDocumented: "See the documented result: {label}",
+        noDocumented: "STRhub has not yet run this tool from its own instructions. The next documented refresh will, and that result will take the badge.",
+      },
+      workarounds: {
+        heading: "What STRhub's recipe does that the repository's instructions do not",
+        lead: "This run used a recipe STRhub wrote. Each item below is a departure from the README that a first-time user would have to discover for themselves.",
+        insteadOf: "Instead of:",
+        why: "Why:",
+        none: "Not itemised for this recipe.",
+        recommendations: "For the author, each item is a recommendation: what the README would have to say, or the repository ship, for a first-time user to get where this recipe got.",
+      },
+      note: {
+        heading: "What STRhub could do with a recipe of its own",
+        body: "STRhub wrote a recipe by hand for this tool and ran it at {what}. That is STRhub's work, not the tool's documented behaviour: a note under the result above, never the badge. How far it got:",
+        cta: "Read that run",
+      },
+      card: {
+        undetermined: "STRhub could not work out how to run it from the repository's instructions.",
+        outOfScope: "It needs something the automated runner cannot provide.",
+        curatedNote: "STRhub's recipe: {label}",
+      },
     },
     errorsBadgeSuffix: "(errors reported)",
     upstream: {

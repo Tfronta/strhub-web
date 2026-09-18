@@ -25,32 +25,17 @@ import {
   listRunArtifacts,
   type WorkflowRun,
 } from "./github";
-import type { VerifiedReport } from "@/types/verified";
+import type { VerifiedReport, VerifiedBlocker, VerifiedSelfFix, VerifiedVerdict, VerifiedVerdictCode } from "@/types/verified";
 
 export const TRIAL_ROLES = ["owner", "reviewer", "user"] as const;
 export type TrialRole = (typeof TRIAL_ROLES)[number];
 
-export type TrialVerdictCode = "runs" | "fails" | "undetermined" | "out_of_scope";
-
-export type SelfFix = "upload_regions" | "edit_command" | "choose_install" | "edit_install" | "edit_output";
-
-/** What stopped a trial, as two actions (see harness/verdict.py BLOCKERS). */
-export interface TrialBlocker {
-  code: string;
-  what: string;
-  self_fix: SelfFix | null;
-  self_fix_text: string;
-  ask_owner: { title: string; body: string };
-}
-
-export interface TrialVerdict {
-  code: TrialVerdictCode;
-  title: string;
-  reason: string;
-  basis?: string;
-  readme_gaps?: { item: string; text: string }[];
-  blockers?: TrialBlocker[];
-}
+// The verdict is the report's, not the trial's: a published page leads with
+// it too. The names stay for the trial's callers.
+export type TrialVerdictCode = VerifiedVerdictCode;
+export type SelfFix = VerifiedSelfFix;
+export type TrialBlocker = VerifiedBlocker;
+export type TrialVerdict = VerifiedVerdict;
 
 export interface TrialRecipe {
   schema: string;

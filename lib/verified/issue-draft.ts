@@ -22,6 +22,7 @@
  */
 import type { VerifiedReport } from "@/types/verified";
 import { summarizeErrors, shortItems } from "./diagnostics";
+import { instrumentOfReport } from "./instrument";
 
 /** Where a reader can see the run for themselves. */
 const ENGINE_REPO_URL = "https://github.com/Tfronta/strhub-verified";
@@ -99,7 +100,19 @@ export function draftReasons(report: VerifiedReport): string[] {
   if ((report.needed_beyond_repo ?? []).some((n) => /test data/i.test(n))) {
     reasons.push("no test data from the repository was used, so a public sample stood in");
   }
+  // A recipe STRhub wrote departs from the README where the README does not
+  // get a stranger there; each departure is something the author could
+  // document, and the best material for a recommendation we have.
+  const workarounds = curatedWorkarounds(report);
+  if (workarounds.length) {
+    reasons.push(`STRhub's own recipe had to depart from the README in ${workarounds.length} place(s)`);
+  }
   return reasons;
+}
+
+/** The departures of a run of STRhub's recipe; nothing for any other run. */
+function curatedWorkarounds(report: VerifiedReport) {
+  return instrumentOfReport(report) === "curated" ? report.recipe?.workarounds ?? [] : [];
 }
 
 function toolLabel(report: VerifiedReport): string {
@@ -212,6 +225,24 @@ export function buildIssueDraft(
         "it shows what a correct run looks like, which is what a reader needs to " +
         "tell one from a run that merely finished.",
     );
+  }
+
+  const workarounds = curatedWorkarounds(report);
+  if (workarounds.length) {
+    L.push(
+      "",
+      "## What STRhub had to do that the README does not say",
+      "",
+      "This run used a recipe STRhub wrote by hand, not the repository's own " +
+        "instructions, so its result is not the tool's documented behaviour. " +
+        "Each item below is a departure from the README that a first-time user " +
+        "would have to discover for themselves — and so something the README " +
+        "could say, or the repository ship:",
+      "",
+    );
+    for (const w of workarounds) {
+      L.push(`- ${w.what} — instead of: ${w.instead_of}${w.why ? ` ${w.why}` : ""}`);
+    }
   }
 
   if (options.includeRepoNotes && report.caveats?.items?.length) {

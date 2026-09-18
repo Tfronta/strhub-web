@@ -21,6 +21,52 @@ export type VerifiedLevel =
 export type LegState = "pass" | "fail" | "na" | null;
 
 /**
+ * Which instrument produced a run (the engine's docs/PLAN-Documented-Is-The-
+ * Badge.md). `documented`: the repository's own instructions, read off the
+ * README and the tree at the pinned commit; `maintainer`: a recipe the tool's
+ * maintainer submitted, which is documentation in another format; `curated`:
+ * a recipe a third party (STRhub, for the tools it filled the catalogue with)
+ * wrote by hand. Only the first two may stand behind the badge — it claims
+ * "installs and runs from its public source" — and a curated run is a note
+ * under the documented result, never in its place.
+ */
+export type VerifiedInstrument = "documented" | "maintainer" | "curated";
+
+/**
+ * One thing a curated recipe does that the repository's instructions do not:
+ * a departure from the README a first-time user would have to discover, and
+ * so a recommendation to the author.
+ */
+export interface VerifiedWorkaround {
+  what: string;
+  instead_of: string;
+  why?: string;
+}
+
+/** The one sentence for a reader who does not program (harness/verdict.py). */
+export type VerifiedVerdictCode = "runs" | "fails" | "undetermined" | "out_of_scope";
+
+export type VerifiedSelfFix = "upload_regions" | "edit_command" | "choose_install" | "edit_install" | "edit_output";
+
+/** What stopped a run, as two actions (see harness/verdict.py BLOCKERS). */
+export interface VerifiedBlocker {
+  code: string;
+  what: string;
+  self_fix: VerifiedSelfFix | null;
+  self_fix_text: string;
+  ask_owner: { title: string; body: string };
+}
+
+export interface VerifiedVerdict {
+  code: VerifiedVerdictCode;
+  title: string;
+  reason: string;
+  basis?: string;
+  readme_gaps?: { item: string; text: string }[];
+  blockers?: VerifiedBlocker[];
+}
+
+/**
  * One commit a tool was verified at, as index.json lists it (schema /3).
  *
  * The unit published is the tool AT A COMMIT: every run lands in
@@ -32,6 +78,8 @@ export type LegState = "pass" | "fail" | "na" | null;
  */
 export interface VerifiedVersionEntry {
   sha: string | null;
+  /** Absent on an index from before the engine told instruments apart. */
+  instrument?: VerifiedInstrument | null;
   version?: string | null;
   variant?: string | null;
   committed?: string | null;
@@ -64,6 +112,13 @@ export interface VerifiedIndexEntry {
   // index/3: the commit's own date, and every commit verified, newest first.
   committed?: string | null;
   versions?: VerifiedVersionEntry[];
+  /**
+   * The instrument of the alias — what the card's badge rests on. `curated`
+   * means the tool has no run of its own instructions yet, and the card must
+   * say "not verified as documented" rather than show that result as the
+   * tool's own.
+   */
+  instrument?: VerifiedInstrument | null;
   source_repo: string | null;
   source_ref: string | null;
   ci_run: string | null;
@@ -213,6 +268,24 @@ export interface VerifiedReport {
   ci_run?: string;
   gates: Record<VerifiedLevel, boolean>;
   level: VerifiedLevel;
+  /**
+   * Which instrument this run is, and — for a recipe somebody wrote — what it
+   * does that the repository's instructions do not. Both absent on reports
+   * from before the engine recorded them; `instrumentOfReport` in
+   * lib/verified/instrument.ts derives it then, the way the engine does.
+   */
+  instrument?: VerifiedInstrument | null;
+  recipe?: {
+    origin?: "proposed" | VerifiedInstrument | null;
+    workarounds?: VerifiedWorkaround[];
+  } | null;
+  /**
+   * The verdict: runs, fails, could not be determined, out of scope. A
+   * published page leads with it, as the engine's HTML copy does; an
+   * `undetermined` one is a finding about the documentation, and the page
+   * must not present the rung it happened to reach as the tool's result.
+   */
+  verdict?: VerifiedVerdict | null;
   /**
    * Where the pinned commit sits in its repository now.
    *

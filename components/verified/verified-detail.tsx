@@ -9,7 +9,9 @@
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedReport } from "@/types/verified";
 import type { HistoryRow } from "@/lib/verified/history";
+import { instrumentOfReport } from "@/lib/verified/instrument";
 import { VerifiedReportBody, type ReportLog } from "./report/verified-report-body";
+import { PublishedVerdict } from "./report/verdict";
 
 export function VerifiedDetail({
   report,
@@ -18,6 +20,7 @@ export function VerifiedDetail({
   pdfUrl,
   jsonUrl,
   history,
+  note,
 }: {
   report: VerifiedReport;
   slug: string;
@@ -25,8 +28,13 @@ export function VerifiedDetail({
   pdfUrl: string;
   jsonUrl: string;
   history?: { rows: HistoryRow[]; current: HistoryRow };
+  /** The run of STRhub's own recipe for this tool, when this page is not it. */
+  note?: { row: HistoryRow; report: VerifiedReport };
 }) {
   const { t } = useLanguage();
+  // Which instrument: what the report says, else what the index listed this
+  // run as, else derived the way the engine derives it for older reports.
+  const instrument = report.instrument ?? history?.current.instrument ?? instrumentOfReport(report);
   // Every log is a file next to the report, wherever the report lives.
   const logBaseUrl = staticPageUrl.replace(/\/[^/]+$/, "");
   const hasStrhubFixture = report.datasets?.some((d) => d.fixture_source === "strhub") ?? false;
@@ -60,6 +68,9 @@ export function VerifiedDetail({
       logs={logs}
       buildLogHref={report.logs?.build ? `${logBaseUrl}/${report.logs.build}` : undefined}
       history={history}
+      instrument={instrument}
+      note={note}
+      afterHeader={<PublishedVerdict report={report} />}
     />
   );
 }

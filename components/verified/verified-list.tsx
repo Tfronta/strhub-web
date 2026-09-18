@@ -7,22 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
-import {
-  VERIFIED_LEVELS,
-  type VerifiedIndex,
-  type VerifiedIndexEntry,
-  type VerifiedLevel,
-} from "@/types/verified";
+import type { VerifiedIndex, VerifiedIndexEntry, VerifiedLevel } from "@/types/verified";
 import { cn } from "@/lib/utils";
-import { errorAwareLevel } from "@/lib/verified/diagnostics";
-import { historyOf, shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
+import { badgeFor, TONE, type BadgeDisplay } from "@/lib/verified/badge";
+import { curatedNoteOf, headOf, historyOf, shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
 import { rowHref } from "./report/history";
-
-const TONE: Record<string, string> = {
-  green: "bg-teal-600 text-white border-transparent",
-  amber: "bg-amber-500 text-white border-transparent",
-  red: "bg-red-600 text-white border-transparent",
-};
+import { InstrumentTag } from "./report/instrument";
 
 function getPanelLabel(
   translate: (k: string) => string,
@@ -44,13 +34,19 @@ const LEVEL_RANK: Record<VerifiedLevel, number> = {
 
 /**
  * One card per repository, and on it the tool's history: every commit
- * verified, newest commit first. The badge is the newest commit's — what the
- * tool is at today, not the best result any commit ever got.
+ * verified, newest commit first. The badge is the head's — the newest run
+ * that may stand behind it: the repository's own instructions or the
+ * maintainer's recipe. A tool that only has runs of a recipe STRhub wrote
+ * is "not verified as documented", and what that recipe achieved is a note
+ * on the card, never its badge; a tool nobody knew how to run from its
+ * README is "could not be determined", not the rung it happened to reach.
  */
 interface ToolGroup {
   name: string;
   repo: string;
   head: HistoryRow;
+  /** The newest run of STRhub's recipe, when the head is not it. */
+  note?: HistoryRow;
   rows: HistoryRow[];
 }
 
@@ -67,19 +63,47 @@ function groupTools(entries: VerifiedIndexEntry[]): ToolGroup[] {
   const groups: ToolGroup[] = [];
   for (const [repo, tools] of byRepo) {
     const rows = historyOf(tools);
-    if (rows.length === 0) continue;
+    const head = headOf(rows);
+    if (!head) continue;
+    const note = head.instrument === "curated" ? undefined : curatedNoteOf(rows);
     groups.push({
       name: repo.split("/").pop() || tools[0].name,
       repo,
-      head: rows[0],
+      head,
+      note,
       rows,
     });
   }
 
-  groups.sort(
-    (a, b) => LEVEL_RANK[b.head.level] - LEVEL_RANK[a.head.level] || a.name.localeCompare(b.name)
-  );
+  groups.sort((a, b) => rankOf(b) - rankOf(a) || a.name.localeCompare(b.name));
   return groups;
+}
+
+/**
+ * Documented results first, by how far they got; then the ones that could
+ * not be determined; last, the tools with no documented run yet — an absence,
+ * which sorts below any documented finding, including a failure.
+ */
+function rankOf(g: ToolGroup): number {
+  if (g.head.instrument === "curated") return -1;
+  if (g.head.verdict === "undetermined" || g.head.verdict === "out_of_scope") return 0.5;
+  return LEVEL_RANK[g.head.level];
+}
+
+/** What the card leads with, and the note under it, if any. */
+function cardBadge(g: ToolGroup, t: (k: string, p?: Record<string, string>) => string): { badge: BadgeDisplay; notes: string[] } {
+  const notes: string[] = [];
+  let badge: BadgeDisplay;
+  if (g.head.instrument === "curated") {
+    badge = { label: t("verified.instrument.notDocumented"), tone: "grey" };
+    notes.push(t("verified.instrument.card.curatedNote", { label: badgeFor(g.head, t).label }));
+  } else {
+    badge = badgeFor(g.head, t);
+    if (g.head.verdict === "undetermined") notes.push(t("verified.instrument.card.undetermined"));
+    if (g.head.verdict === "out_of_scope") notes.push(t("verified.instrument.card.outOfScope"));
+    if (g.note) notes.push(t("verified.instrument.card.curatedNote", { label: badgeFor(g.note, t).label }));
+  }
+  return { badge, notes };
 }
 
 export function VerifiedList({ index }: { index: VerifiedIndex }) {
@@ -117,11 +141,7 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
         ) : (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {groups.map((group) => {
-              const level = errorAwareLevel(
-                VERIFIED_LEVELS[group.head.level] ?? VERIFIED_LEVELS.none,
-                group.head.errors_reported,
-                t("verified.errorsBadgeSuffix"),
-              );
+              const { badge, notes } = cardBadge(group, t);
               const isOpen = expanded.has(group.repo);
 
               return (
@@ -132,12 +152,20 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="space-y-1.5">
-                        <Badge className={cn("w-fit", TONE[level.tone])}>
-                          {level.label}
-                        </Badge>
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <Badge className={cn("w-fit", TONE[badge.tone])}>
+                            {badge.label}
+                          </Badge>
+                          {group.head.instrument !== "curated" && (
+                            <InstrumentTag instrument={group.head.instrument} />
+                          )}
+                        </div>
                         <CardTitle className="text-lg">
                           {group.name}
                         </CardTitle>
+                        {notes.map((note) => (
+                          <p key={note} className="text-xs text-muted-foreground">{note}</p>
+                        ))}
                       </div>
                       <ChevronDown
                         className={cn(
@@ -169,17 +197,14 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                     <CardContent className="pt-0">
                       <div className="space-y-1.5 border-t pt-3 max-h-[280px] overflow-y-auto">
                         {/* The history, newest commit first: the version, the
-                            commit and its date; the verification date under it. */}
+                            commit and its date, the instrument; the
+                            verification date under it. */}
                         {group.rows.map((row) => {
-                          const rowLevel = errorAwareLevel(
-                            VERIFIED_LEVELS[row.level] ?? VERIFIED_LEVELS.none,
-                            row.errors_reported,
-                            t("verified.errorsBadgeSuffix"),
-                          );
+                          const rowLevel = badgeFor(row, t);
                           const panelLabel = getPanelLabel(t, row.dataset_types);
                           return (
                             <Link
-                              key={`${row.slug}-${row.sha}`}
+                              key={`${row.slug}-${row.sha}-${row.instrument ?? ""}`}
                               href={rowHref(row)}
                               className="block rounded-md border px-3 py-2 transition-colors hover:border-primary hover:bg-muted/50"
                             >
@@ -203,6 +228,7 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                                     {panelLabel}
                                   </span>
                                 )}
+                                <InstrumentTag instrument={row.instrument} className="shrink-0" />
                               </div>
                               {row.generated && (
                                 <p className="mt-0.5 text-[10px] text-muted-foreground">

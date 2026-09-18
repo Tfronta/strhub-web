@@ -128,6 +128,11 @@ export default {
       cannot4: "¿Es mejor o peor que otra herramienta?",
       cannot5: "¿Rinde como dice el manuscrito?",
       cannot6: "¿Su mantenedor respalda este resultado?",
+      instrumentHeading: "Según su documentación, o con la receta de STRhub",
+      instrumentBody:
+        "Cada resultado nombra su receta. \"Según su documentación\" significa que STRhub leyó las instrucciones del propio repositorio (el README, un Dockerfile o archivo de entorno, la imagen que el README señala) y corrió exactamente eso. Es la única corrida en la que se apoya el badge: es lo que encuentra quien usa la herramienta por primera vez. Una receta del mantenedor cuenta igual, porque es documentación en otro formato.",
+      instrumentBody2:
+        "\"Receta de STRhub\" significa que STRhub escribió a mano el entorno y el comando, para ver hasta dónde se podía hacer correr la herramienta. Ese resultado se muestra como una nota debajo del documentado, nunca como el badge, y cada cosa que la receta tuvo que hacer distinto se lista como recomendación al autor. Una herramienta sin corrida documentada todavía se marca \"no verificada según su documentación\". Una cuyo README no dice lo suficiente para intentar correrla queda como \"no se pudo determinar\": un hallazgo sobre la documentación, no sobre el software.",
       developerHeading: "Para un desarrollador",
       developerBody:
         "Un resultado describe un entorno, y un software que funciona en la máquina donde se escribió puede detenerse igual acá. Esa brecha suele ser la parte útil: es lo que se encuentra un usuario nuevo el primer día. Cada resultado enlaza el log completo y los comandos exactos, así que se puede reproducir en local.",
@@ -143,6 +148,45 @@ export default {
     log: {
       build: "Build",
       view: "Ver log de ejecución",
+    },
+    instrument: {
+      badgeSuffix: "receta de STRhub",
+      recipeLabel: "Receta",
+      notDocumented: "No verificada según su documentación",
+      tag: {
+        documented: "según su documentación",
+        maintainer: "receta del mantenedor",
+        curated: "receta de STRhub",
+      },
+      line: {
+        documented: "las instrucciones del propio repositorio, leídas del README y del árbol en el commit fijado.",
+        maintainer: "una receta que envió el mantenedor de la herramienta, que es documentación en otro formato.",
+        curated: "una receta escrita a mano por STRhub, no leída del repositorio. Una nota debajo del resultado documentado, nunca el badge.",
+      },
+      notice: {
+        title: "No verificada según su documentación",
+        body: "Este resultado sale de una receta que STRhub escribió a mano, no de las instrucciones del propio repositorio. Muestra hasta dónde se puede hacer correr la herramienta; no dice si alguien que sigue el README por primera vez llega hasta ahí. El badge se apoya en la corrida de las instrucciones del repositorio, nunca en esta.",
+        seeDocumented: "Ver el resultado documentado: {label}",
+        noDocumented: "STRhub todavía no corrió esta herramienta desde sus propias instrucciones. El próximo refresh documentado lo hará, y ese resultado será el badge.",
+      },
+      workarounds: {
+        heading: "Qué hace la receta de STRhub que las instrucciones del repositorio no",
+        lead: "Esta corrida usó una receta que escribió STRhub. Cada punto es un desvío del README que alguien que lo sigue por primera vez tendría que descubrir por su cuenta.",
+        insteadOf: "En lugar de:",
+        why: "Por qué:",
+        none: "No detallado para esta receta.",
+        recommendations: "Para el autor, cada punto es una recomendación: lo que el README tendría que decir, o el repositorio incluir, para que alguien llegue a donde llegó esta receta.",
+      },
+      note: {
+        heading: "Qué pudo hacer STRhub con una receta propia",
+        body: "STRhub escribió a mano una receta para esta herramienta y la corrió en {what}. Es trabajo de STRhub, no el comportamiento documentado de la herramienta: una nota debajo del resultado de arriba, nunca el badge. Hasta dónde llegó:",
+        cta: "Leer esa corrida",
+      },
+      card: {
+        undetermined: "STRhub no pudo determinar cómo correrla a partir de las instrucciones del repositorio.",
+        outOfScope: "Necesita algo que el entorno automatizado no puede dar.",
+        curatedNote: "Receta de STRhub: {label}",
+      },
     },
     errorsBadgeSuffix: "(errores reportados)",
     upstream: {

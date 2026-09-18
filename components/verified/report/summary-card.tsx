@@ -4,11 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { cn } from "@/lib/utils";
 import { TONE, type LevelDisplay } from "./header";
+import type { VerifiedInstrument } from "@/types/verified";
 
 /**
  * The four numbers a reviewer scans first, and the data by name: "1 reference
  * dataset(s)" told a reader nothing they could act on, when the sample's own
- * name is one line away.
+ * name is one line away. Under them, which instrument the run is — the
+ * repository's own instructions, the maintainer's recipe, or one STRhub
+ * wrote — because the level means a different thing in each case.
  */
 export function SummaryCard({
   level,
@@ -17,6 +20,7 @@ export function SummaryCard({
   datasetNames,
   generated,
   scope,
+  instrument,
 }: {
   level: LevelDisplay;
   gatesPassed: number;
@@ -24,6 +28,7 @@ export function SummaryCard({
   datasetNames: string[];
   generated?: string;
   scope?: string;
+  instrument?: VerifiedInstrument;
 }) {
   const { t } = useLanguage();
   return (
@@ -55,6 +60,14 @@ export function SummaryCard({
           <p className="text-sm text-muted-foreground mt-1.5">{generated?.slice(0, 10)}</p>
         </div>
       </div>
+      {instrument && (
+        <p className="mt-4 text-sm border-t pt-3">
+          <span className="text-muted-foreground">{t("verified.instrument.recipeLabel")}:</span>{" "}
+          <span className={instrument === "curated" ? "text-amber-700 dark:text-amber-500" : ""}>
+            {t(`verified.instrument.line.${instrument}`)}
+          </span>
+        </p>
+      )}
       {scope && (
         <p className="mt-4 text-sm text-muted-foreground border-t pt-3">{scope}</p>
       )}

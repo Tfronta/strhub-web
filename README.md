@@ -1,5 +1,7 @@
 # STRhub
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22831681.svg)](https://doi.org/10.5281/zenodo.22831681)
+
 **STRhub** is an open, web-based **educational and exploratory platform** for forensic Short Tandem Repeat (STR) genetics.
 
 **Link to the platform:** https://strhub.app/
@@ -87,7 +89,11 @@ If you use STRhub for teaching, academic discussion, or research contexts, pleas
 
 (Citation details will be updated upon publication.)
 
-Until then, the software itself can be cited from [`CITATION.cff`](CITATION.cff) (GitHub's "Cite this repository" button uses it).
+Until then, please cite the software release archived on Zenodo:
+
+> Frontanilla Recalde, T. S. (2026). *STRhub: Central Hub for Short Tandem Repeats* (v1.0.0) [Software]. Zenodo. https://doi.org/10.5281/zenodo.22831681
+
+[`CITATION.cff`](CITATION.cff) carries the same metadata (GitHub's "Cite this repository" button uses it).
 
 ## Disclaimer
 

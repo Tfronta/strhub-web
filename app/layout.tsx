@@ -51,6 +51,32 @@ const SITE_JSON_LD = {
       sameAs: ["https://github.com/Tfronta/strhub-web"],
     },
     {
+      "@type": "WebApplication",
+      "@id": "https://strhub.app/#app",
+      name: "STRhub",
+      url: "https://strhub.app",
+      applicationCategory: "Bioinformatics",
+      applicationSubCategory: "Forensic genetics",
+      operatingSystem: "Web browser",
+      isAccessibleForFree: true,
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      softwareVersion: "1.0.0",
+      license: "https://www.gnu.org/licenses/agpl-3.0.html",
+      inLanguage: ["en", "es", "pt"],
+      author: DATASET_CREATOR,
+      publisher: { "@id": "https://strhub.app/#organization" },
+      // Concept DOI of the archived source code (Zenodo); resolves to the latest release.
+      identifier: {
+        "@type": "PropertyValue",
+        propertyID: "DOI",
+        value: "10.5281/zenodo.22831681",
+      },
+      sameAs: [
+        "https://github.com/Tfronta/strhub-web",
+        "https://doi.org/10.5281/zenodo.22831681",
+      ],
+    },
+    {
       "@type": "WebSite",
       "@id": "https://strhub.app/#website",
       name: "STRhub",

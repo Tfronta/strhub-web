@@ -23,6 +23,15 @@ url: https://strhub.app
 license: AGPL-3.0-only
 version: 1.0.0
 date-released: 2026-09-18
+# Concept DOI: always resolves to the latest archived release.
+doi: 10.5281/zenodo.22831681
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22831681
+    description: Concept DOI for all versions of STRhub on Zenodo
+  - type: doi
+    value: 10.5281/zenodo.22831682
+    description: DOI of version 1.0.0
 keywords:
   - short tandem repeats
   - STR

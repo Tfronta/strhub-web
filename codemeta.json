@@ -3,13 +3,24 @@
   "@type": "SoftwareSourceCode",
   "name": "STRhub",
   "alternateName": "STRhub: Central Hub for Short Tandem Repeats",
+  "identifier": "https://doi.org/10.5281/zenodo.22831681",
+  "version": "1.0.0",
+  "datePublished": "2026-09-18",
   "description": "Open-access, web-based platform for forensic short tandem repeat (STR) genetics: a catalogue of 228 STR markers with GRCh38 coordinates, ISFG sequence structures and population allele frequencies (capillary electrophoresis and sequencing), a DNA mixture simulator, an STR motif explorer, a FASTA generator, an embedded IGV viewer and educational articles in English, Spanish and Portuguese.",
   "url": "https://strhub.app",
   "codeRepository": "https://github.com/Tfronta/strhub-web",
   "issueTracker": "https://github.com/Tfronta/strhub-web/issues",
+  "sameAs": [
+    "https://zenodo.org/records/22831681"
+  ],
   "license": "https://spdx.org/licenses/AGPL-3.0-only",
-  "programmingLanguage": ["TypeScript"],
-  "runtimePlatform": ["Node.js", "Next.js 14"],
+  "programmingLanguage": [
+    "TypeScript"
+  ],
+  "runtimePlatform": [
+    "Node.js",
+    "Next.js 14"
+  ],
   "operatingSystem": "Web browser",
   "applicationCategory": "Bioinformatics",
   "applicationSubCategory": "Forensic genetics",

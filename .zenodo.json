@@ -1,0 +1,36 @@
+{
+  "title": "STRhub: Central Hub for Short Tandem Repeats",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "agpl-3.0-only",
+  "language": "eng",
+  "description": "<p>STRhub is an open-access, web-based platform for forensic short tandem repeat (STR) genetics, built for education, teaching and research support. It provides a catalogue of 228 STR markers (CODIS core, other autosomal, X-STRs and Y-STRs) with GRCh38/GRCh37 coordinates, repeat motifs, ISFG/STRNaming sequence structures and MPS kit coverage from STRidER's FSSG; population allele frequencies and summary statistics from capillary electrophoresis (pop.STR / SP-SMART) and sequencing (1000 Genomes Project) datasets, explorable in charts and downloadable as tables; a DNA mixture simulator that contrasts CE and NGS behaviour; an STR motif explorer over the ISFG minimum range; a FASTA generator with configurable flanking regions; an embedded IGV.js viewer with 1000 Genomes demo reads; and educational articles in English, Spanish and Portuguese.</p><p>This record archives the source code of the platform deployed at <a href=\"https://strhub.app\">https://strhub.app</a>. STRhub is not a casework tool and does not replace validated forensic software.</p>",
+  "creators": [
+    {
+      "name": "Frontanilla Recalde, Tamara Soledad",
+      "affiliation": "Faculdade de Medicina de Ribeirão Preto, Universidade de São Paulo",
+      "orcid": "0000-0002-6873-7813"
+    }
+  ],
+  "keywords": [
+    "short tandem repeats",
+    "STR",
+    "forensic genetics",
+    "allele frequencies",
+    "population genetics",
+    "CODIS",
+    "ISFG nomenclature",
+    "massively parallel sequencing",
+    "capillary electrophoresis",
+    "bioinformatics",
+    "education"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://strhub.app",
+      "relation": "isSourceOf",
+      "scheme": "url"
+    }
+  ],
+  "notes": "Software licence: GNU AGPL-3.0-only. Data compilations published on the platform are released under CC BY 4.0; source datasets (pop.STR / SP-SMART, 1000 Genomes Project, STRidER FSSG, NIST STRBase) keep their own terms and are cited on each page."
+}

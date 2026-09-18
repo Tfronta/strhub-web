@@ -1,6 +1,6 @@
 import { JsonLd } from "@/components/json-ld";
 import { buildMarkerSummary, type MarkerSummary } from "@/lib/marker-summary";
-import { SITE_URL } from "@/lib/seo";
+import { DATASET_CREATOR, DATASET_LICENSE, SITE_URL } from "@/lib/seo";
 import { MarkerView } from "./MarkerView";
 
 const POPULATION_NAMES: Record<string, string> = {
@@ -37,6 +37,8 @@ function markerJsonLd(summary: MarkerSummary) {
     graph.push({
       "@type": "Dataset",
       "@id": `${url}#frequencies`,
+      license: DATASET_LICENSE,
+      creator: DATASET_CREATOR,
       name: `${summary.name} allele frequencies (capillary electrophoresis)`,
       description:
         `Allele frequencies of the ${summary.name} STR locus in ${pops.length} population groups ` +

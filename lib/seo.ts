@@ -90,3 +90,23 @@ export function basicsArticleAlternates(
     languages,
   };
 }
+
+/**
+ * Structured-data fields shared by every schema.org Dataset the site emits
+ * (Search Console flags a Dataset without them).
+ *
+ * The licence is what STRhub grants on its own compilations (tables, charts,
+ * downloads). The source data keep their own terms and are credited through
+ * `isBasedOn` / `citation` on each Dataset. AGPL-3.0 is the licence of the
+ * code, not of the data, so it is deliberately not used here.
+ */
+export const DATASET_LICENSE = "https://creativecommons.org/licenses/by/4.0/";
+
+export const DATASET_CREATOR = {
+  "@type": "Person",
+  name: "Tamara Soledad Frontanilla Recalde",
+  sameAs: [
+    "https://orcid.org/0000-0002-6873-7813",
+    "https://scholar.google.com/citations?user=wd4DwGIAAAAJ",
+  ],
+} as const;

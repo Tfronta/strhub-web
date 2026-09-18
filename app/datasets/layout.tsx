@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { pageMetadata } from "@/lib/seo";
+import { DATASET_CREATOR, DATASET_LICENSE, pageMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 
 export const metadata: Metadata = pageMetadata("/datasets", {
@@ -25,7 +25,13 @@ export default function DatasetsLayout({
             "Curated STR allele frequency and genotype datasets for forensic loci (pop.STR for CE, sequence-based datasets for NGS), organized by technology and study design, explorable in charts and downloadable in standard formats.",
           url: "https://strhub.app/datasets",
           isAccessibleForFree: true,
-          creator: { "@type": "Organization", name: "STRhub", url: "https://strhub.app" },
+          license: DATASET_LICENSE,
+          creator: DATASET_CREATOR,
+          publisher: { "@id": "https://strhub.app/#organization" },
+          isBasedOn: [
+            "http://spsmart.cesga.es/",
+            "https://www.internationalgenome.org/category/phase-3/",
+          ],
         }}
       />
       {/* The page reads ?tab= on the client. */}

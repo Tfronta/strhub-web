@@ -79,6 +79,18 @@ This repository contains the **source code that powers the STRhub web platform**
 While the code is openly available, STRhub is **not designed as a developer SDK**.  
 Contributions, issues, and discussions are welcome, provided they align with the platform’s **educational, transparency-first philosophy**.
 
+### Search engine pings (IndexNow)
+
+After every production deploy, the `IndexNow` GitHub Action tells Bing, DuckDuckGo, Yandex, Seznam and Naver which pages changed, based on the `lastmod` dates in `/sitemap.xml`. The key is `lib/indexnow.ts` plus its `public/<key>.txt` file. To send URLs by hand:
+
+```bash
+npm run indexnow                       # sitemap URLs changed in the last 2 days
+npm run indexnow -- --all              # every sitemap URL
+npm run indexnow -- https://strhub.app/marker/d3s1358
+```
+
+Add `--dry-run` to see the list without sending it. Google does not use IndexNow; it reads the sitemap and Search Console.
+
 ## Citation
 
 If you use STRhub for teaching, academic discussion, or research contexts, please cite:

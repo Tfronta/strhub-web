@@ -1,0 +1,28 @@
+# Tells IndexNow (Bing, DuckDuckGo, Yandex, Seznam, Naver) which pages changed,
+# right after Vercel finishes a production deploy. "Changed" means the sitemap
+# lastmod moved in the last 3 days, so a deploy that touches nothing dated sends
+# nothing. Run `npm run indexnow -- --all` locally for a one-off full resubmit.
+name: IndexNow
+
+on:
+  deployment_status:
+
+jobs:
+  ping:
+    if: >-
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run indexnow -- --since=3

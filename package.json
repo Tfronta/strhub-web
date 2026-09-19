@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "autoconfig:context": "tsx scripts/dump-autoconfig-context.ts",
-    "autoconfig:eval": "tsx scripts/eval-autoconfig.ts"
+    "autoconfig:eval": "tsx scripts/eval-autoconfig.ts",
+    "indexnow": "tsx scripts/indexnow.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.116.0",

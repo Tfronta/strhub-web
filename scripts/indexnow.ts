@@ -10,10 +10,10 @@ import { SITE_URL } from "../lib/seo";
 /**
  * Pings IndexNow with the URLs that changed. Three ways to pick them:
  *
- *   npm run indexnow                          sitemap URLs with lastmod in the last 2 days
- *   npm run indexnow -- --since=7             same, with a 7-day window
- *   npm run indexnow -- --all                 every sitemap URL (first setup, or after a key change)
- *   npm run indexnow -- https://strhub.app/marker/dys505 ...   explicit URLs
+ *   pnpm indexnow                             sitemap URLs with lastmod in the last 2 days
+ *   pnpm indexnow --since=7                   same, with a 7-day window
+ *   pnpm indexnow --all                       every sitemap URL (first setup, or after a key change)
+ *   pnpm indexnow https://strhub.app/marker/dys505 ...   explicit URLs
  *
  * Add --dry-run to print the list without sending it. The production workflow
  * (.github/workflows/indexnow.yml) runs the default mode after each deploy, so

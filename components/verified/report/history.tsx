@@ -15,10 +15,9 @@ import { ArrowRight, GitCommitHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedInstrument } from "@/types/verified";
-import { badgeFor, TONE } from "@/lib/verified/badge";
-import { shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
+import { badgeFor, reachedLabel, TONE } from "@/lib/verified/badge";
+import { foldStrhubRuns, shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
 import { cn } from "@/lib/utils";
-import { InstrumentTag } from "./instrument";
 
 function panelKey(types: string[]): "ystr" | "ont" | "autosomal" | null {
   if (types.length === 0) return null;
@@ -63,7 +62,7 @@ export function VersionHistory({
       <p className="mt-1 text-xs text-muted-foreground">{t("verified.history.note")}</p>
       {rows.length > 1 && (
         <ol className="mt-3 divide-y rounded-md border">
-          {rows.map((row) => {
+          {foldStrhubRuns(rows).map(({ row, strhub }) => {
             const isCurrent = row.slug === current.slug && row.sha === current.sha
               && (row.instrument ?? null) === (current.instrument ?? null);
             const level = badgeFor(row, t);
@@ -81,8 +80,7 @@ export function VersionHistory({
                     {panel && (
                       <span className="rounded-full border px-1.5 text-[10px] text-muted-foreground">{t(`verified.panel.${panel}`)}</span>
                     )}
-                    <InstrumentTag instrument={row.instrument} />
-                    {row.isNewest && (
+                    {row.isNewest && row.instrument !== "curated" && (
                       <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-400">{t("verified.history.newest")}</span>
                     )}
                     {isCurrent && (
@@ -102,12 +100,28 @@ export function VersionHistory({
               "flex items-center gap-3 px-3 py-2 text-sm",
               isCurrent ? "bg-muted/60" : "hover:bg-muted/40",
             );
+            // The run of STRhub's recipe at this commit: an annotation of the
+            // row, never a row beside it, linked to that run in full.
+            const strhubIsCurrent = !!strhub && strhub.slug === current.slug && strhub.sha === current.sha
+              && current.instrument === "curated";
             return (
-              <li key={`${row.slug}-${row.sha}`}>
+              <li key={`${row.slug}-${row.sha}-${row.instrument ?? ""}`}>
                 {isCurrent ? (
                   <div className={cls} aria-current="page">{inner}</div>
                 ) : (
                   <Link href={rowHref(row)} className={cls}>{inner}</Link>
+                )}
+                {strhub && (
+                  <Link
+                    href={rowHref(strhub)}
+                    className={cn("flex items-center gap-2 px-3 pb-2 pl-10 text-xs text-muted-foreground hover:text-primary", strhubIsCurrent && "bg-muted/60")}
+                    aria-current={strhubIsCurrent ? "page" : undefined}
+                  >
+                    <span>{t("verified.strhubDid.rowNote", { label: reachedLabel(strhub.level) })}</span>
+                    {strhubIsCurrent && (
+                      <span className="text-[10px] font-semibold uppercase tracking-wider">{t("verified.history.thisPage")}</span>
+                    )}
+                  </Link>
                 )}
               </li>
             );

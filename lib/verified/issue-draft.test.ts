@@ -77,7 +77,7 @@ describe("issue drafts", () => {
     });
     expect(draftReasons(curated)).toContain("STRhub's own recipe had to depart from the README in 1 place(s)");
     const draft = buildIssueDraft(curated, "strspy-ont");
-    expect(draft?.body).toContain("## What STRhub had to do that the README does not say");
+    expect(draft?.body).toContain("## What STRhub had to do to run this tool");
     expect(draft?.body).toContain("- Runs src/STRspy_Normal_v2.0_Args.sh directly. — instead of: The wrapper, the only documented command. The wrapper exits before doing anything.");
     expect(draft?.body).toContain("not the tool's documented behaviour");
     // A documented run has no such section: it did only what it read.

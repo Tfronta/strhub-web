@@ -4,31 +4,31 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { cn } from "@/lib/utils";
 import { TONE, type LevelDisplay } from "./header";
-import type { VerifiedInstrument } from "@/types/verified";
+import { reachedLabel } from "@/lib/verified/badge";
+import type { VerifiedLevel } from "@/types/verified";
 
 /**
  * The four numbers a reviewer scans first, and the data by name: "1 reference
  * dataset(s)" told a reader nothing they could act on, when the sample's own
- * name is one line away. Under them, which instrument the run is — the
- * repository's own instructions, the maintainer's recipe, or one STRhub
- * wrote — because the level means a different thing in each case.
+ * name is one line away. The label is the result in words; the rung reached
+ * sits under it, as a detail.
  */
 export function SummaryCard({
   level,
+  reached,
   gatesPassed,
   gatesTotal,
   datasetNames,
   generated,
   scope,
-  instrument,
 }: {
   level: LevelDisplay;
+  reached?: VerifiedLevel;
   gatesPassed: number;
   gatesTotal: number;
   datasetNames: string[];
   generated?: string;
   scope?: string;
-  instrument?: VerifiedInstrument;
 }) {
   const { t } = useLanguage();
   return (
@@ -40,6 +40,9 @@ export function SummaryCard({
         <div>
           <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("verified.summary.level")}</p>
           <Badge className={cn("mt-1.5", TONE[level.tone])}>{level.label}</Badge>
+          {reached && (
+            <p className="mt-1.5 text-xs text-muted-foreground">{t("verified.summary.reached", { level: reachedLabel(reached) })}</p>
+          )}
         </div>
         <div>
           <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("verified.gates")}</p>
@@ -60,14 +63,6 @@ export function SummaryCard({
           <p className="text-sm text-muted-foreground mt-1.5">{generated?.slice(0, 10)}</p>
         </div>
       </div>
-      {instrument && (
-        <p className="mt-4 text-sm border-t pt-3">
-          <span className="text-muted-foreground">{t("verified.instrument.recipeLabel")}:</span>{" "}
-          <span className={instrument === "curated" ? "text-amber-700 dark:text-amber-500" : ""}>
-            {t(`verified.instrument.line.${instrument}`)}
-          </span>
-        </p>
-      )}
       {scope && (
         <p className="mt-4 text-sm text-muted-foreground border-t pt-3">{scope}</p>
       )}

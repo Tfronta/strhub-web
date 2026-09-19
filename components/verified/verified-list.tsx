@@ -9,10 +9,9 @@ import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
 import type { VerifiedIndex, VerifiedIndexEntry, VerifiedLevel } from "@/types/verified";
 import { cn } from "@/lib/utils";
-import { badgeFor, TONE, type BadgeDisplay } from "@/lib/verified/badge";
-import { curatedNoteOf, headOf, historyOf, shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
+import { badgeFor, reachedLabel, TONE } from "@/lib/verified/badge";
+import { foldStrhubRuns, headOf, historyOf, shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
 import { rowHref } from "./report/history";
-import { InstrumentTag } from "./report/instrument";
 
 function getPanelLabel(
   translate: (k: string) => string,
@@ -34,19 +33,19 @@ const LEVEL_RANK: Record<VerifiedLevel, number> = {
 
 /**
  * One card per repository, and on it the tool's history: every commit
- * verified, newest commit first. The badge is the head's — the newest run
- * that may stand behind it: the repository's own instructions or the
- * maintainer's recipe. A tool that only has runs of a recipe STRhub wrote
- * is "not verified as documented", and what that recipe achieved is a note
- * on the card, never its badge; a tool nobody knew how to run from its
+ * verified, newest commit first. The card is the headline, and there is one:
+ * what happens to the tool as it is in its repository, from the newest run
+ * that may stand behind it (the repository's own instructions or the
+ * maintainer's recipe). A tool that only has runs of a recipe STRhub wrote
+ * is "not verified as documented"; a tool nobody knew how to run from its
  * README is "could not be determined", not the rung it happened to reach.
+ * What STRhub's recipe achieved is on the page, and on a row's annotation
+ * here — never on the card.
  */
 interface ToolGroup {
   name: string;
   repo: string;
   head: HistoryRow;
-  /** The newest run of STRhub's recipe, when the head is not it. */
-  note?: HistoryRow;
   rows: HistoryRow[];
 }
 
@@ -65,12 +64,10 @@ function groupTools(entries: VerifiedIndexEntry[]): ToolGroup[] {
     const rows = historyOf(tools);
     const head = headOf(rows);
     if (!head) continue;
-    const note = head.instrument === "curated" ? undefined : curatedNoteOf(rows);
     groups.push({
       name: repo.split("/").pop() || tools[0].name,
       repo,
       head,
-      note,
       rows,
     });
   }
@@ -88,22 +85,6 @@ function rankOf(g: ToolGroup): number {
   if (g.head.instrument === "curated") return -1;
   if (g.head.verdict === "undetermined" || g.head.verdict === "out_of_scope") return 0.5;
   return LEVEL_RANK[g.head.level];
-}
-
-/** What the card leads with, and the note under it, if any. */
-function cardBadge(g: ToolGroup, t: (k: string, p?: Record<string, string>) => string): { badge: BadgeDisplay; notes: string[] } {
-  const notes: string[] = [];
-  let badge: BadgeDisplay;
-  if (g.head.instrument === "curated") {
-    badge = { label: t("verified.instrument.notDocumented"), tone: "grey" };
-    notes.push(t("verified.instrument.card.curatedNote", { label: badgeFor(g.head, t).label }));
-  } else {
-    badge = badgeFor(g.head, t);
-    if (g.head.verdict === "undetermined") notes.push(t("verified.instrument.card.undetermined"));
-    if (g.head.verdict === "out_of_scope") notes.push(t("verified.instrument.card.outOfScope"));
-    if (g.note) notes.push(t("verified.instrument.card.curatedNote", { label: badgeFor(g.note, t).label }));
-  }
-  return { badge, notes };
 }
 
 export function VerifiedList({ index }: { index: VerifiedIndex }) {
@@ -141,7 +122,7 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
         ) : (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {groups.map((group) => {
-              const { badge, notes } = cardBadge(group, t);
+              const badge = badgeFor(group.head, t);
               const isOpen = expanded.has(group.repo);
 
               return (
@@ -152,20 +133,12 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="space-y-1.5">
-                        <div className="flex flex-wrap items-center gap-1.5">
-                          <Badge className={cn("w-fit", TONE[badge.tone])}>
-                            {badge.label}
-                          </Badge>
-                          {group.head.instrument !== "curated" && (
-                            <InstrumentTag instrument={group.head.instrument} />
-                          )}
-                        </div>
+                        <Badge className={cn("w-fit", TONE[badge.tone])}>
+                          {badge.label}
+                        </Badge>
                         <CardTitle className="text-lg">
                           {group.name}
                         </CardTitle>
-                        {notes.map((note) => (
-                          <p key={note} className="text-xs text-muted-foreground">{note}</p>
-                        ))}
                       </div>
                       <ChevronDown
                         className={cn(
@@ -197,16 +170,17 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                     <CardContent className="pt-0">
                       <div className="space-y-1.5 border-t pt-3 max-h-[280px] overflow-y-auto">
                         {/* The history, newest commit first: the version, the
-                            commit and its date, the instrument; the
-                            verification date under it. */}
-                        {group.rows.map((row) => {
+                            commit and its date; the verification date under
+                            it; and, under a commit, the run of STRhub's own
+                            recipe at it, as an annotation. */}
+                        {foldStrhubRuns(group.rows).map(({ row, strhub }) => {
                           const rowLevel = badgeFor(row, t);
                           const panelLabel = getPanelLabel(t, row.dataset_types);
                           return (
+                            <div key={`${row.slug}-${row.sha}-${row.instrument ?? ""}`} className="rounded-md border transition-colors hover:border-primary">
                             <Link
-                              key={`${row.slug}-${row.sha}-${row.instrument ?? ""}`}
                               href={rowHref(row)}
-                              className="block rounded-md border px-3 py-2 transition-colors hover:border-primary hover:bg-muted/50"
+                              className="block px-3 py-2 hover:bg-muted/50"
                             >
                               <div className="flex items-center gap-2 flex-wrap">
                                 <Badge
@@ -228,7 +202,6 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                                     {panelLabel}
                                   </span>
                                 )}
-                                <InstrumentTag instrument={row.instrument} className="shrink-0" />
                               </div>
                               {row.generated && (
                                 <p className="mt-0.5 text-[10px] text-muted-foreground">
@@ -236,6 +209,15 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                                 </p>
                               )}
                             </Link>
+                            {strhub && (
+                              <Link
+                                href={rowHref(strhub)}
+                                className="block border-t px-3 py-1.5 text-[10px] text-muted-foreground hover:bg-muted/50 hover:text-primary"
+                              >
+                                {t("verified.strhubDid.rowNote", { label: reachedLabel(strhub.level) })}
+                              </Link>
+                            )}
+                            </div>
                           );
                         })}
                       </div>

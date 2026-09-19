@@ -11,7 +11,6 @@ import type { VerifiedReport } from "@/types/verified";
 import type { HistoryRow } from "@/lib/verified/history";
 import { instrumentOfReport } from "@/lib/verified/instrument";
 import { VerifiedReportBody, type ReportLog } from "./report/verified-report-body";
-import { PublishedVerdict } from "./report/verdict";
 
 export function VerifiedDetail({
   report,
@@ -70,7 +69,6 @@ export function VerifiedDetail({
       history={history}
       instrument={instrument}
       note={note}
-      afterHeader={<PublishedVerdict report={report} />}
     />
   );
 }

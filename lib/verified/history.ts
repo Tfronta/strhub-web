@@ -245,3 +245,35 @@ export function versionLabel(row: Pick<HistoryRow, "version" | "sha">): string {
   const v = row.version?.trim();
   return v && v !== shortSha(row.sha) ? v : shortSha(row.sha);
 }
+
+/**
+ * A row as the page shows it: the run of the repository's own instructions,
+ * and — as an annotation of it, never a row beside it — the run of STRhub's
+ * recipe at the same commit, if there is one. A run of STRhub's recipe with
+ * no documented sibling at its commit is its own row, and the page marks it
+ * as not verified as documented.
+ */
+export interface DisplayRow {
+  row: HistoryRow;
+  strhub?: HistoryRow;
+}
+
+function sameToolAndCommit(a: HistoryRow, b: HistoryRow): boolean {
+  return a.sha === b.sha && familyOf(a) === familyOf(b)
+    && a.dataset_types.join("+") === b.dataset_types.join("+") && (a.variant ?? "") === (b.variant ?? "");
+}
+
+export function foldStrhubRuns(rows: HistoryRow[]): DisplayRow[] {
+  const shown: DisplayRow[] = rows.filter((r) => r.instrument !== "curated").map((row) => ({ row }));
+  const out: DisplayRow[] = [];
+  for (const r of rows) {
+    if (r.instrument !== "curated") {
+      out.push(shown.find((d) => d.row === r)!);
+      continue;
+    }
+    const host = shown.find((d) => !d.strhub && sameToolAndCommit(d.row, r));
+    if (host) host.strhub = r;
+    else out.push({ row: r });
+  }
+  return out;
+}

@@ -1,17 +1,23 @@
 /**
- * What the badge says for one run, wherever a run is shown: the catalogue
- * card, a history row, the report's header. One rule, so the three never
- * disagree, and the same rule the engine's shields badge follows
- * (harness/report.py):
+ * The label, in words, wherever a run is shown: the catalogue card, a
+ * history row, the report's header. One rule, so the three never disagree,
+ * and the same rule the engine's badge, copies and certificate follow
+ * (harness/certificate_text.py::headline):
  *
- *   the verdict first — "could not be determined" is neither a pass nor a
- *   failure and must not read as the rung the run happened to reach;
- *   then a green qualified by the errors the tool reported;
- *   then, on request, a run of STRhub's own recipe marked as such, so its
- *   result never reads as the tool's own.
+ *   Runs as documented                          the documented run produced its output
+ *   Runs as documented (errors reported)        … and the tool's log reported errors
+ *   Does not run as documented · stops at run   the documented run did not, and where
+ *   Could not be determined                     nobody knew how to attempt it (the README)
+ *   Out of scope                                the free runner cannot provide something
+ *   Not verified as documented                  the run is of a recipe STRhub wrote
+ *
+ * What the tool does AS IT IS in its repository is the label; the rung it
+ * reached is a detail under it, in the ladder. A rung as the label read as a
+ * result ("Installs" on a run that then failed), and a green from a recipe
+ * STRhub wrote read as the tool's own — which would make every first-time
+ * user repeat STRhub's work to find out.
  */
 import { VERIFIED_LEVELS, type VerifiedInstrument, type VerifiedLevel, type VerifiedVerdictCode } from "@/types/verified";
-import { errorAwareLevel } from "./diagnostics";
 
 export type BadgeTone = "green" | "amber" | "red" | "grey";
 
@@ -42,25 +48,23 @@ export interface BadgeInput {
   instrument?: VerifiedInstrument | null;
 }
 
-export function badgeFor(
-  run: BadgeInput,
-  t: (key: string) => string,
-  options: { markCurated?: boolean } = {},
-): BadgeDisplay {
-  let out: BadgeDisplay;
-  if (run.verdict === "undetermined") {
-    out = { label: t("verified.trial.verdict.undetermined"), tone: "grey" };
-  } else if (run.verdict === "out_of_scope") {
-    out = { label: t("verified.trial.verdict.out_of_scope"), tone: "grey" };
-  } else {
-    out = errorAwareLevel(
-      VERIFIED_LEVELS[run.level] ?? VERIFIED_LEVELS.none,
-      !!run.errors_reported,
-      t("verified.errorsBadgeSuffix"),
-    );
+type Translate = (key: string, params?: Record<string, string>) => string;
+
+export function badgeFor(run: BadgeInput, t: Translate): BadgeDisplay {
+  if (run.instrument === "curated") return { label: t("verified.headline.notDocumented"), tone: "grey" };
+  if (run.verdict === "undetermined") return { label: t("verified.headline.undetermined"), tone: "grey" };
+  if (run.verdict === "out_of_scope") return { label: t("verified.headline.outOfScope"), tone: "grey" };
+  // A report from before the verdict is read off the rung.
+  const runs = run.verdict ? run.verdict === "runs" : run.level === "io" || run.level === "content";
+  if (runs) {
+    return run.errors_reported
+      ? { label: t("verified.headline.runsErrors"), tone: "amber" }
+      : { label: t("verified.headline.runs"), tone: "green" };
   }
-  if (options.markCurated && run.instrument === "curated") {
-    out = { ...out, label: `${out.label} · ${t("verified.instrument.badgeSuffix")}` };
-  }
-  return out;
+  return { label: t("verified.headline.notRun", { where: t(`verified.headline.stopsAt.${run.level}`) }), tone: "red" };
+}
+
+/** The rung reached, for the line under the label. */
+export function reachedLabel(level: VerifiedLevel): string {
+  return (VERIFIED_LEVELS[level] ?? VERIFIED_LEVELS.none).label;
 }

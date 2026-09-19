@@ -1,15 +1,19 @@
 "use client";
 
 /**
- * One report, two pages.
+ * One report, two pages — and two chapters, in this order.
  *
- * The catalogue entry and the trial used to be two unrelated views of the same
- * JSON: the catalogue had the summary, the source, the verification matrix and
- * the sample's provenance; the trial had the verdict, the recipe and inline
- * logs, and none of the rest — so a reader who ran a trial could not find the
- * commit it pinned or the data it ran on. This composes every section once.
- * The two pages differ only in what they slot in (a trial's verdict up top and
- * its recipe under the source) and in where the logs and files live.
+ * First, the tool as it is in its repository: the label, the verdict, where
+ * the run stopped (the ladder), why (the failed build, the errors the tool
+ * reported, the bug its author documents), how (the command, the logs).
+ * Second, apart, what STRhub had to do to run it — the run of a recipe
+ * STRhub wrote, when there is one, which never changes the label. Then the
+ * context: the summary, the source, the history, the data, the scope.
+ *
+ * The catalogue entry and the trial slot in what only they have: a trial its
+ * verdict block with the ways out (in chapter one) and its recipe (under the
+ * source); a published page its history and the note. A page that IS a run
+ * of STRhub's recipe opens with chapter two and shows the run in full.
  */
 import type { ReactNode } from "react";
 import { useLanguage } from "@/contexts/language-context";
@@ -34,7 +38,8 @@ import {
 } from "./findings";
 import { ScopeBlock, DisputeCard } from "./closing";
 import { VersionHistory, OlderVersionNotice } from "./history";
-import { InstrumentNotice, WorkaroundsSection, CuratedNoteSection } from "./instrument";
+import { AsItIsOpening } from "./verdict";
+import { NotDocumentedNotice, StrhubDidSection } from "./instrument";
 import { documentedOf, newestOfKind, type HistoryRow } from "@/lib/verified/history";
 
 export type { ReportLog, ExtraGateRow };
@@ -80,7 +85,7 @@ export function VerifiedReportBody({
   buildLogHref?: string;
   extraGateRows?: ExtraGateRow[];
   backLink?: boolean;
-  /** A trial's verdict and next steps, right under the title. */
+  /** A trial's verdict and next steps: what opens chapter one on a trial. */
   afterHeader?: ReactNode;
   /** A trial's environment, next to where the source is named. */
   afterSource?: ReactNode;
@@ -95,24 +100,23 @@ export function VerifiedReportBody({
    */
   instrument?: VerifiedInstrument;
   /**
-   * On a documented page, the run of STRhub's own recipe for the same tool,
-   * shown as a note under the documented result.
+   * On a documented page, the run of STRhub's own recipe for the same tool:
+   * chapter two, under the documented result.
    */
   note?: { row: HistoryRow; report: VerifiedReport };
 }) {
   const { t } = useLanguage();
-  // The badge is the first thing a reviewer sees, and one rule writes it
-  // everywhere (lib/verified/badge.ts): the verdict before the rung reached,
-  // a green qualified by reported errors, and a run of STRhub's recipe
-  // marked as such, exactly as the static report and shields badge do.
+  // The label is the first thing a reviewer sees, and one rule writes it
+  // everywhere (lib/verified/badge.ts): the result as it is in the
+  // repository, in words, exactly as the engine's badge and certificate do.
   const level = badgeFor(
     { level: report.level, verdict: report.verdict?.code, errors_reported: hasReportedErrors(report.diagnostics), instrument },
     t,
-    { markCurated: true },
   );
   const data = summarizeDatasets(report, slug);
   const gateKeys = VERIFIED_GATES.map((g) => g.key);
   const gatesPassed = gateKeys.filter((k) => report.gates?.[k]).length;
+  const isStrhubRun = instrument === "curated";
 
   return (
     <div className="flex flex-col min-h-[60vh]">
@@ -128,11 +132,9 @@ export function VerifiedReportBody({
 
         {/* A run of STRhub's own recipe is not the documented result, and
             the page says so before it says anything else. */}
-        {instrument === "curated" && (
-          <InstrumentNotice documented={history ? documentedOf(history.rows, slug) : undefined} />
+        {isStrhubRun && (
+          <NotDocumentedNotice documented={history ? documentedOf(history.rows, slug) : undefined} />
         )}
-
-        {afterHeader}
 
         {/* An older commit, read out of its place in the history, is the one
             thing this page must not let a reader take for the current one. */}
@@ -143,17 +145,51 @@ export function VerifiedReportBody({
             : null;
         })()}
 
+        {/* Chapter one — or, on the page of STRhub's own run, chapter two
+            first and the run in full after it. */}
+        {isStrhubRun ? (
+          <>
+            <StrhubDidSection run={report} />
+            <h2 className="mt-10 text-xl font-semibold">{t("verified.asIs.fullRun")}</h2>
+          </>
+        ) : (
+          <AsItIsOpening report={report}>{afterHeader}</AsItIsOpening>
+        )}
+
+        {/* Where it stopped. */}
+        <GatesLadder gates={report.gates} extraRows={extraGateRows} />
+
+        {/* Why. */}
+        <BuildFailedCard report={report} buildLogHref={buildLogHref} />
+
+        <AutoDiagnostics diagnostics={report.diagnostics} hasStrhubFixture={data.hasStrhubFixture} />
+
+        <AuthorKnownIssues items={report.author_known_issues} />
+
+        {/* How. */}
+        <RunCommandCard cmd={command ?? report.run?.cmd} />
+
+        <LogLinks logs={logs} />
+
+        {/* Chapter two, under the documented result and never in its place. */}
+        {note && !isStrhubRun && <StrhubDidSection run={note.report} row={note.row} />}
+
+        {/* The context. */}
+        <h2 className="mt-10 text-xl font-semibold">{t("verified.asIs.details")}</h2>
+
         <SummaryCard
           level={level}
+          reached={report.level}
           gatesPassed={gatesPassed}
           gatesTotal={gateKeys.length}
           datasetNames={data.provenance.map((p) => p.name)}
           generated={report.generated}
           scope={report.scope}
-          instrument={instrument}
         />
 
         <SourceCard report={report} staticPageUrl={staticPageUrl} pdfUrl={pdfUrl} jsonUrl={jsonUrl} />
+
+        {afterSource}
 
         {history && (
           <VersionHistory
@@ -163,17 +199,7 @@ export function VerifiedReportBody({
           />
         )}
 
-        <RunCommandCard cmd={command ?? report.run?.cmd} />
-
-        {afterSource}
-
-        <BuildFailedCard report={report} buildLogHref={buildLogHref} />
-
         <WhatWasVerified />
-
-        <GatesLadder gates={report.gates} extraRows={extraGateRows} />
-
-        <LogLinks logs={logs} />
 
         {report.datasets && report.datasets.length > 0 && <VerificationMatrix legs={report.datasets} />}
 
@@ -188,27 +214,14 @@ export function VerifiedReportBody({
           panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
         />
 
-        <AutoDiagnostics diagnostics={report.diagnostics} hasStrhubFixture={data.hasStrhubFixture} />
-
-        {/* What STRhub could do with a recipe of its own: under the documented
-            result and its diagnostics, labelled as STRhub's work, never in
-            the result's place. */}
-        {note && instrument !== "curated" && <CuratedNoteSection note={note} />}
-
         <ManualOffer report={report} slug={slug} />
 
         <ReadmeCheck check={report.readme_check} />
 
-        {/* Held next to the ladder on purpose. A green ladder reads as a
-            property of the software and quietly folds in the work it took to
-            get there. */}
+        {/* Held near the ladder's numbers on purpose. A green ladder reads as
+            a property of the software and quietly folds in the work it took
+            to get there. */}
         <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={report.needed_beyond_repo} />
-
-        {/* Each departure from the README as data, and the recommendations
-            they amount to — the second thing the plan says a report says. */}
-        {instrument === "curated" && <WorkaroundsSection report={report} />}
-
-        <AuthorKnownIssues items={report.author_known_issues} />
 
         <EvidenceList evidence={report.evidence} />
 

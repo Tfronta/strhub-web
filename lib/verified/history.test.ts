@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { curatedNoteOf, documentedOf, familyOf, findVersion, headOf, historyOf, newestOfKind, repoEntries, versionLabel } from "./history";
+import { curatedNoteOf, documentedOf, familyOf, findVersion, foldStrhubRuns, headOf, historyOf, newestOfKind, repoEntries, versionLabel } from "./history";
 import type { VerifiedIndex, VerifiedIndexEntry } from "@/types/verified";
 
 /**
@@ -221,6 +221,20 @@ describe("two instruments", () => {
     expect(findVersion(rows, "12e989b", "strspy-ont")?.instrument).toBe("curated");
     // And asking for a curated run at a commit that has none falls back to what is there.
     expect(findVersion(rows, "12e989b", "strspy-ont", "documented")?.instrument).toBe("curated");
+  });
+
+  it("shows STRhub's run as an annotation of its commit's row, and alone only when the commit has no documented run", () => {
+    const rows = historyOf([strspy]);
+    const shown = foldStrhubRuns(rows);
+    // dafdee7 has only STRhub's run: its own row. b2033bf has both: one row, annotated.
+    expect(shown.map((d) => [d.row.sha, d.row.instrument, d.strhub?.instrument ?? null]))
+      .toEqual([[NEW, "curated", null], [OLD, "documented", "curated"]]);
+    // The Y-STR run of the same commit is another tool's row, not this one's annotation.
+    const withY = historyOf([strspy, entry({ slug: "strspy-y", sha: OLD, source_ref: OLD, instrument: "curated", dataset_types: ["ont-bam-hg38-y"], report: "y.json", page: "y.html", versions: [
+      { sha: OLD, instrument: "curated", committed: "2023-06-01T00:00:00Z", level: "io", report: "y.json", page: "y.html" },
+    ] })]);
+    expect(foldStrhubRuns(withY).filter((d) => d.row.sha === OLD).map((d) => [d.row.slug, d.strhub?.slug ?? null]))
+      .toEqual([["strspy-ont", "strspy-ont"], ["strspy-y", null]]);
   });
 
   it("lists a run nobody knew how to attempt, though it reached no gate", () => {

@@ -231,7 +231,7 @@ export function buildIssueDraft(
   if (workarounds.length) {
     L.push(
       "",
-      "## What STRhub had to do that the README does not say",
+      "## What STRhub had to do to run this tool",
       "",
       "This run used a recipe STRhub wrote by hand, not the repository's own " +
         "instructions, so its result is not the tool's documented behaviour. " +

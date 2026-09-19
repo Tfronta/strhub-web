@@ -51,6 +51,7 @@ const SITE_JSON_LD = {
       sameAs: [
         "https://github.com/Tfronta/strhub-web",
         "https://bio.tools/strhub",
+        "https://www.wikidata.org/wiki/Q141500581",
       ],
     },
     {
@@ -78,6 +79,7 @@ const SITE_JSON_LD = {
         "https://github.com/Tfronta/strhub-web",
         "https://doi.org/10.5281/zenodo.22831681",
         "https://bio.tools/strhub",
+        "https://www.wikidata.org/wiki/Q141500581",
       ],
     },
     {

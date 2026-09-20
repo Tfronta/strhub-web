@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { cn } from "@/lib/utils";
 import { TONE, type LevelDisplay } from "./header";
 import { reachedLabel } from "@/lib/verified/badge";
+import { formatDate } from "@/lib/verified/format-date";
 import type { VerifiedLevel } from "@/types/verified";
 
 /**
@@ -30,7 +31,7 @@ export function SummaryCard({
   generated?: string;
   scope?: string;
 }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   return (
     <div className="mt-6 rounded-lg border bg-card p-5">
       <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
@@ -60,7 +61,7 @@ export function SummaryCard({
         </div>
         <div>
           <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("verified.verifiedOn")}</p>
-          <p className="text-sm text-muted-foreground mt-1.5">{generated?.slice(0, 10)}</p>
+          <p className="text-sm text-muted-foreground mt-1.5">{formatDate(generated, language)}</p>
         </div>
       </div>
       {scope && (

@@ -5,7 +5,7 @@ const t = (k: string, p?: Record<string, string>) => {
   const table: Record<string, string> = {
     "verified.headline.runs": "Runs as documented",
     "verified.headline.runsErrors": "Runs as documented (errors reported)",
-    "verified.headline.notRun": "Does not run as documented · {where}",
+    "verified.headline.notRun": "Does not run as documented: {where}",
     "verified.headline.stopsAt.none": "source not available",
     "verified.headline.stopsAt.available": "stops at install",
     "verified.headline.stopsAt.installs": "stops at run",
@@ -30,9 +30,9 @@ describe("the label", () => {
   });
 
   it("says where a documented run that does not run stopped, not the rung it reached", () => {
-    expect(badgeFor({ level: "installs", verdict: "fails" }, t)).toEqual({ label: "Does not run as documented · stops at run", tone: "red" });
-    expect(badgeFor({ level: "available", verdict: "fails" }, t)).toEqual({ label: "Does not run as documented · stops at install", tone: "red" });
-    expect(badgeFor({ level: "runs", verdict: "fails" }, t).label).toBe("Does not run as documented · no output");
+    expect(badgeFor({ level: "installs", verdict: "fails" }, t)).toEqual({ label: "Does not run as documented: stops at run", tone: "red" });
+    expect(badgeFor({ level: "available", verdict: "fails" }, t)).toEqual({ label: "Does not run as documented: stops at install", tone: "red" });
+    expect(badgeFor({ level: "runs", verdict: "fails" }, t).label).toBe("Does not run as documented: no output");
   });
 
   it("leads with the verdict when nobody knew how to attempt the run", () => {
@@ -46,7 +46,7 @@ describe("the label", () => {
 
   it("reads a report from before the verdict off the rung", () => {
     expect(badgeFor({ level: "content" }, t).label).toBe("Runs as documented");
-    expect(badgeFor({ level: "installs" }, t).label).toBe("Does not run as documented · stops at run");
+    expect(badgeFor({ level: "installs" }, t).label).toBe("Does not run as documented: stops at run");
   });
 
   it("keeps the rung as a detail", () => {

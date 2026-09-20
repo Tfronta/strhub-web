@@ -93,6 +93,13 @@ export interface VerifiedVersionEntry {
   report: string;
   page: string;
   pdf?: string;
+  /**
+   * A tombstone (the engine's publish_layout.retire): the run's files stay
+   * and its page still opens, but it is no longer a result — never the
+   * card's head, never the note, and not a row of the history. The page
+   * says so, and why.
+   */
+  retired?: { retired: string; reason: string } | null;
 }
 
 /** One row in index.json — enough to render a card without fetching the report. */

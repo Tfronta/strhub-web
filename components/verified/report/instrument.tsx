@@ -99,11 +99,13 @@ export function StrhubDidSection({ run, row }: { run: VerifiedReport; row?: Hist
         <div className="mt-3">
           <WorkaroundList items={items} />
         </div>
-        <p className="mt-3 text-sm">
+        {/* A div, not a p: the badge is a block, and a block inside a
+            paragraph is invalid HTML that breaks hydration. */}
+        <div className="mt-3 text-sm">
           {t("verified.strhubDid.reached")}{" "}
           <Badge className={cn("align-middle text-[10px]", TONE[run.level === "io" || run.level === "content" ? "green" : "amber"])}>{reached}</Badge>
           {run.verdict?.reason && <span className="ml-2 text-muted-foreground">{run.verdict.reason}</span>}
-        </p>
+        </div>
         {!!items?.length && (
           <p className="mt-3 text-sm text-muted-foreground">{t("verified.strhubDid.recommendations")}</p>
         )}

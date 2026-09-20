@@ -231,6 +231,32 @@ export interface VerifiedManualVerification {
 /** Whether the tool's own maintainer submitted it, or somebody else did. */
 export type SubmittedBy = "maintainer" | "third_party";
 
+/**
+ * The certificate's own words, written with the report by the engine
+ * (certificate_text.certificate_for): what the PDF prints on its cover, in
+ * its executive summary, in its closing lists and in its conclusion. The
+ * page prints this block rather than rewording it. Absent on reports from
+ * before the engine wrote it; the page then falls back to the same policy
+ * texts (lib/verified/certificate.ts) and shows no conclusion.
+ */
+export interface VerifiedCertificate {
+  schema: string;
+  label: string;
+  reached: string;
+  summary: {
+    purpose: string;
+    result: string;
+    reached: string;
+    why?: string;
+    scope: string;
+    not_evaluated: string[];
+  };
+  conclusion: { title: string; body: string }[];
+  out_of_scope: string[];
+  limitations: string[];
+  scope: { statement: string; not: string; disclaimer: string };
+}
+
 export interface VerifiedReport {
   schema: string;
   tool: {
@@ -293,6 +319,7 @@ export interface VerifiedReport {
    * must not present the rung it happened to reach as the tool's result.
    */
   verdict?: VerifiedVerdict | null;
+  certificate?: VerifiedCertificate | null;
   /**
    * Where the pinned commit sits in its repository now.
    *

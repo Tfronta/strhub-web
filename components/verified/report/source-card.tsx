@@ -2,6 +2,7 @@
 
 import { ExternalLink, FileDown, FileJson } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
+import { useHeaded } from "./certificate";
 import { cn } from "@/lib/utils";
 import type { VerifiedReport } from "@/types/verified";
 import { formatCommand } from "@/lib/verified/command";
@@ -55,10 +56,12 @@ export function SourceCard({
   const refIsFinding = up?.ref_exists === false || up?.repo_exists === false;
 
   return (
-    <div className="mt-8 rounded-lg border bg-card p-5">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-        {t("verified.source")}
-      </h2>
+    <div className="mt-4 rounded-lg border bg-card p-5">
+      {!useHeaded() && (
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+          {t("verified.source")}
+        </h2>
+      )}
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
         {report.tool.version && (
           <>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check, Minus, X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
+import { useHeaded } from "./certificate";
 import { VERIFIED_GATES, type VerifiedLevel } from "@/types/verified";
 import { gateStates } from "@/lib/verified/gate-state";
 import { cn } from "@/lib/utils";
@@ -35,7 +36,7 @@ export function GatesLadder({
 
   return (
     <>
-      <h2 className="mt-10 text-xl font-semibold">{t("verified.gates")}</h2>
+      {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.gates")}</h2>)}
       <div className="mt-3 divide-y rounded-lg border">
         {VERIFIED_GATES.map((g) => {
           const state = st[g.key];

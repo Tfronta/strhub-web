@@ -2,6 +2,7 @@
 
 import { ExternalLink, Flag, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
+import { useHeaded } from "./certificate";
 import type { VerifiedReport } from "@/types/verified";
 import { buildDisputeLink } from "@/lib/verified/dispute";
 import { attestationContactMailto, CONTACT_EMAIL } from "@/lib/verified/contact";
@@ -11,7 +12,7 @@ export function ScopeBlock({ scope }: { scope: string }) {
   const { t } = useLanguage();
   return (
     <>
-      <h2 className="mt-10 text-xl font-semibold">{t("verified.scope")}</h2>
+      {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.scope")}</h2>)}
       <div className="mt-3 rounded-lg border-l-4 border-teal-600 bg-muted/50 p-4 text-sm">
         <p>{scope}</p>
         <p className="mt-3 text-muted-foreground">{t("verified.scopeNote")}</p>

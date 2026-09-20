@@ -15,6 +15,7 @@
 import { useState } from "react";
 import { Check, X } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
+import { useHeaded } from "./certificate";
 import { cn } from "@/lib/utils";
 import type { VerifiedContentStats, VerifiedIoOutput } from "@/types/verified";
 import { depthRows, ioChecks, panelCoverage } from "@/lib/verified/output-evidence";
@@ -58,7 +59,7 @@ export function OutputContent({
 
   return (
     <>
-      <h2 className="mt-10 text-xl font-semibold">{t("verified.content.heading")}</h2>
+      {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.content.heading")}</h2>)}
       <div className="mt-3 rounded-lg border bg-card p-5">
         {/* Which file, and what the IO gate established about it. The gate row
             above says "pass"; this is what passing consisted of. */}

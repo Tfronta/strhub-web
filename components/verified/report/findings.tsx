@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft, Check, Minus, ExternalLink, AlertTriangle, Info, XCircle, LifeBuoy } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
+import { useHeaded } from "./certificate";
 import { cn } from "@/lib/utils";
 import type { VerifiedReport, VerifiedDiagnostic, VerifiedReadmeCheck } from "@/types/verified";
 import { summarizeErrors, externalLegNoteKeys, installFaultKey } from "@/lib/verified/diagnostics";
@@ -128,7 +129,7 @@ export function AutoDiagnostics({
 
   return (
     <>
-      <h2 className="mt-10 text-xl font-semibold">{t("verified.diagnostics.heading")}</h2>
+      {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.diagnostics.heading")}</h2>)}
       <p className="mt-1 text-sm text-muted-foreground">{t("verified.diagnostics.note")}</p>
       {hasStrhubFixture && (
         <div className="mt-3 rounded-lg border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-950/20 px-4 py-3">
@@ -223,7 +224,7 @@ export function ManualOffer({ report, slug }: { report: VerifiedReport; slug: st
   const reason = translated && translated !== key ? translated : manual.reason ?? "";
   return (
     <>
-      <h2 className="mt-10 text-xl font-semibold">{t("verified.manual.heading")}</h2>
+      {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.manual.heading")}</h2>)}
       <div className="mt-3 rounded-lg border border-border bg-muted/40 p-4">
         <div className="flex gap-3">
           <LifeBuoy className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
@@ -255,7 +256,7 @@ export function ReadmeCheck({ check }: { check: VerifiedReadmeCheck | null | und
   if (!check) return null;
   return (
     <>
-      <h2 className="mt-10 text-xl font-semibold">{t("verified.readme.heading")}</h2>
+      {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.readme.heading")}</h2>)}
       <p className="mt-1 text-sm text-muted-foreground">
         {t("verified.readme.note")} ({check.score}/{check.max})
       </p>
@@ -303,7 +304,7 @@ export function BulletCard({
   if (!items?.length) return null;
   return (
     <>
-      <h2 className="mt-10 text-xl font-semibold">{t(headingKey)}</h2>
+      {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t(headingKey)}</h2>)}
       <div className="mt-3 rounded-lg border bg-muted/40 p-4">
         {noteKey && <p className="text-sm text-muted-foreground">{t(noteKey)}</p>}
         <ul className={cn("space-y-2", noteKey && "mt-3")}>
@@ -329,7 +330,7 @@ export function AuthorKnownIssues({ items }: { items: VerifiedReport["author_kno
   if (!items?.length) return null;
   return (
     <>
-      <h2 className="mt-10 text-xl font-semibold">{t("verified.trial.knownIssuesTitle")}</h2>
+      {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.trial.knownIssuesTitle")}</h2>)}
       <p className="mt-2 text-sm text-muted-foreground">{t("verified.trial.knownIssuesHint")}</p>
       <div className="mt-3 space-y-4 rounded-lg border p-4">
         {items.map((k) => (
@@ -378,7 +379,7 @@ export function EvidenceList({ evidence }: { evidence: VerifiedReport["evidence"
   };
   return (
     <>
-      <h2 className="mt-10 text-xl font-semibold">{t("verified.trial.evidenceTitle")}</h2>
+      {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.trial.evidenceTitle")}</h2>)}
       <p className="mt-2 text-sm text-muted-foreground">{t("verified.trial.evidenceHint")}</p>
       <ul className="mt-3 divide-y rounded-lg border text-sm">
         {evidence.map((e, i) => {

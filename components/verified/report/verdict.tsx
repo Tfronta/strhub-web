@@ -10,6 +10,7 @@
 import type { ReactNode } from "react";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedReport } from "@/types/verified";
+import { useHeaded } from "./certificate";
 
 export function AsItIsOpening({ report, children }: { report: VerifiedReport; children?: ReactNode }) {
   const { t } = useLanguage();
@@ -18,7 +19,7 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
   const meaning = v ? (v.code === "runs" && fallbackUsed ? "runsFallback" : v.code) : null;
   return (
     <>
-      <h2 className="mt-8 text-xl font-semibold">{t("verified.asIs.heading")}</h2>
+      {!useHeaded() && <h2 className="mt-8 text-xl font-semibold">{t("verified.asIs.heading")}</h2>}
       {children ?? (v && (
         <section className="mt-3 rounded-lg border p-5" aria-labelledby="verified-verdict">
           <p id="verified-verdict" className="text-lg font-semibold">{t(`verified.trial.verdictMeaning.${meaning}`)}</p>

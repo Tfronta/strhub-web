@@ -2,6 +2,7 @@
 
 import { Check, Minus } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
+import { useHeaded } from "./certificate";
 import { cn } from "@/lib/utils";
 import type { VerifiedMatrixLeg } from "@/types/verified";
 import type { DatasetProvenance } from "@/lib/verified/dataset-provenance";
@@ -56,7 +57,7 @@ export function VerificationMatrix({ legs }: { legs: VerifiedMatrixLeg[] }) {
   if (visible.length === 0) return null;
   return (
     <>
-      <h2 className="mt-10 text-xl font-semibold">{t("verified.matrix.heading")}</h2>
+      {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.matrix.heading")}</h2>)}
       <div className="mt-3 divide-y rounded-lg border">
         {visible.map((leg) => {
           const state = !leg.available ? "na" : leg.passed ? "pass" : "fail";
@@ -111,7 +112,7 @@ export function VerificationData({
   if (provenance.length === 0 && !hasStrhubFixture) return null;
   return (
     <>
-      <h2 className="mt-10 text-xl font-semibold">{t("verified.data.heading")}</h2>
+      {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.data.heading")}</h2>)}
       <p className="mt-1 text-sm text-muted-foreground">{t("verified.data.note")}</p>
 
       {hasStrhubFixture && (

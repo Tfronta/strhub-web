@@ -1,28 +1,32 @@
 "use client";
 
 /**
- * One report, two pages — and two chapters, in this order.
+ * One report, two pages, laid out as the certificate is.
  *
- * First, the tool as it is in its repository: the label, the verdict, where
- * the run stopped (the ladder), why (the failed build, the errors the tool
- * reported, the bug its author documents), how (the command, the logs).
- * Second, apart, what STRhub had to do to run it — the run of a recipe
- * STRhub wrote, when there is one, which never changes the label. Then the
- * context: the summary, the source, the history, the data, the scope.
+ * The PDF is easy to read because its structure is fixed and numbered: a
+ * cover with the commit in full, an executive summary in a table, the gates,
+ * the causes, the command, then the context, and the closing lists and the
+ * conclusion in their own boxes. The page follows that order with the same
+ * words (the `certificate` block the engine writes), in two chapters: first
+ * the tool as it is in its repository, then what STRhub had to do to run it,
+ * which never changes the label.
  *
- * The catalogue entry and the trial slot in what only they have: a trial its
- * verdict block with the ways out (in chapter one) and its recipe (under the
- * source); a published page its history and the note. A page that IS a run
- * of STRhub's recipe opens with chapter two and shows the run in full.
+ * The catalogue entry and the trial slot in what only they have: a trial
+ * its verdict block with the ways out (in chapter one) and its recipe (under
+ * the metadata); a published page its history and the note. A page that IS
+ * a run of STRhub's recipe opens with chapter two and shows the run in full.
  */
 import type { ReactNode } from "react";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
-import { VERIFIED_GATES, type VerifiedInstrument, type VerifiedReport } from "@/types/verified";
+import { type VerifiedInstrument, type VerifiedReport } from "@/types/verified";
 import { hasReportedErrors } from "@/lib/verified/diagnostics";
 import { badgeFor } from "@/lib/verified/badge";
+import { certificateOf } from "@/lib/verified/certificate";
 import { summarizeDatasets } from "@/lib/verified/dataset-provenance";
-import { ReportHeader } from "./header";
-import { SummaryCard } from "./summary-card";
+import { Cover } from "./cover";
+import { Section, KvTable, BoxedList, BoxedText, ConclusionBox, sectionCounter } from "./certificate";
 import { SourceCard, RunCommandCard } from "./source-card";
 import { GatesLadder, LogLinks, type ExtraGateRow, type ReportLog } from "./gates";
 import { WhatWasVerified, VerificationMatrix, VerificationData } from "./verification";
@@ -36,13 +40,15 @@ import {
   AuthorKnownIssues,
   EvidenceList,
 } from "./findings";
-import { ScopeBlock, DisputeCard } from "./closing";
-import { VersionHistory, OlderVersionNotice, RetiredNotice } from "./history";
+import { DisputeCard } from "./closing";
+import { VersionHistory, OlderVersionNotice, RetiredNotice, rowHref } from "./history";
 import { AsItIsOpening } from "./verdict";
 import { NotDocumentedNotice, StrhubDidSection } from "./instrument";
 import { documentedOf, newestOfKind, type HistoryRow } from "@/lib/verified/history";
 
 export type { ReportLog, ExtraGateRow };
+
+const SITE = "https://strhub.app";
 
 function toolDisplayName(report: VerifiedReport): string {
   if (report.source?.repo) {
@@ -113,21 +119,45 @@ export function VerifiedReportBody({
     { level: report.level, verdict: report.verdict?.code, errors_reported: hasReportedErrors(report.diagnostics), instrument },
     t,
   );
+  const certificate = certificateOf(report, level.label);
   const data = summarizeDatasets(report, slug);
-  const gateKeys = VERIFIED_GATES.map((g) => g.key);
-  const gatesPassed = gateKeys.filter((k) => report.gates?.[k]).length;
   const isStrhubRun = instrument === "curated";
+  const permalink = history ? `${SITE}${rowHref(history.current)}` : undefined;
+  const hasCause = !!report.install_detail?.diagnostics?.length
+    || Object.values(report.diagnostics ?? {}).some((issues) => issues.length > 0)
+    || !!report.author_known_issues?.length;
+  const next = sectionCounter();
+
+  const summaryRows = [
+    { label: t("verified.certificate.summary.purpose"), value: certificate.summary.purpose },
+    { label: t("verified.certificate.summary.result"), value: <span className="font-semibold text-teal-700 dark:text-teal-400">{certificate.summary.result}</span> },
+    { label: t("verified.certificate.summary.reached"), value: certificate.summary.reached },
+    ...(certificate.summary.why ? [{ label: t("verified.certificate.summary.why"), value: certificate.summary.why }] : []),
+    { label: t("verified.certificate.summary.datasets"), value: data.provenance.length ? data.provenance.map((p) => p.name).join("; ") : t("verified.summary.noDatasets") },
+    { label: t("verified.certificate.summary.scope"), value: certificate.summary.scope },
+    { label: t("verified.certificate.summary.notEvaluated"), value: certificate.summary.not_evaluated.join(" · ") },
+  ];
 
   return (
     <div className="flex flex-col min-h-[60vh]">
       <div className="container mx-auto px-4 py-8 flex-1 max-w-3xl">
-        <ReportHeader
+        {backLink && (
+          <Link href="/verified" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="h-4 w-4" /> {t("verified.backToList")}
+          </Link>
+        )}
+
+        <Cover
+          report={report}
+          certificate={certificate}
           level={level}
           panel={data.panel}
           title={toolDisplayName(report)}
-          version={report.tool.version}
           slug={slug}
-          backLink={backLink}
+          permalink={permalink}
+          staticPageUrl={staticPageUrl}
+          pdfUrl={pdfUrl}
+          jsonUrl={jsonUrl}
         />
 
         {history?.current.retired && <RetiredNotice row={history.current} />}
@@ -147,92 +177,138 @@ export function VerifiedReportBody({
             : null;
         })()}
 
-        {/* Chapter one — or, on the page of STRhub's own run, chapter two
-            first and the run in full after it. */}
+        <Section n={next()} title={t("verified.certificate.section.summary")}>
+          <KvTable rows={summaryRows} />
+        </Section>
+
+        {/* Chapter one: the tool as it is. On the page of STRhub's own run,
+            chapter two comes first and the run follows in full. */}
         {isStrhubRun ? (
           <>
-            <StrhubDidSection run={report} />
-            <h2 className="mt-10 text-xl font-semibold">{t("verified.asIs.fullRun")}</h2>
+            <Section n={next()} title={t("verified.strhubDid.heading")}>
+              <StrhubDidSection run={report} />
+            </Section>
+            <Section n={next()} title={t("verified.asIs.fullRun")}>
+              <GatesLadder gates={report.gates} extraRows={extraGateRows} />
+              <LogLinks logs={logs} />
+            </Section>
           </>
         ) : (
-          <AsItIsOpening report={report}>{afterHeader}</AsItIsOpening>
+          <Section n={next()} title={t("verified.asIs.heading")}>
+            <AsItIsOpening report={report}>{afterHeader}</AsItIsOpening>
+            <GatesLadder gates={report.gates} extraRows={extraGateRows} />
+            <LogLinks logs={logs} />
+          </Section>
         )}
 
-        {/* Where it stopped. */}
-        <GatesLadder gates={report.gates} extraRows={extraGateRows} />
+        {/* Why it stopped, or what it reported on the way. */}
+        {hasCause && (
+          <Section n={next()} title={t(report.verdict?.code === "runs" ? "verified.certificate.section.reported" : "verified.certificate.section.why")}>
+            <BuildFailedCard report={report} buildLogHref={buildLogHref} />
+            <AutoDiagnostics diagnostics={report.diagnostics} hasStrhubFixture={data.hasStrhubFixture} />
+            <AuthorKnownIssues items={report.author_known_issues} />
+          </Section>
+        )}
 
-        {/* Why. */}
-        <BuildFailedCard report={report} buildLogHref={buildLogHref} />
-
-        <AutoDiagnostics diagnostics={report.diagnostics} hasStrhubFixture={data.hasStrhubFixture} />
-
-        <AuthorKnownIssues items={report.author_known_issues} />
-
-        {/* How. */}
-        <RunCommandCard cmd={command ?? report.run?.cmd} />
-
-        <LogLinks logs={logs} />
+        {(command ?? report.run?.cmd) && (
+          <Section n={next()} title={t("verified.certificate.section.command")}>
+            <RunCommandCard cmd={command ?? report.run?.cmd} />
+          </Section>
+        )}
 
         {/* Chapter two, under the documented result and never in its place. */}
-        {note && !isStrhubRun && <StrhubDidSection run={note.report} row={note.row} />}
-
-        {/* The context. */}
-        <h2 className="mt-10 text-xl font-semibold">{t("verified.asIs.details")}</h2>
-
-        <SummaryCard
-          level={level}
-          reached={report.level}
-          gatesPassed={gatesPassed}
-          gatesTotal={gateKeys.length}
-          datasetNames={data.provenance.map((p) => p.name)}
-          generated={report.generated}
-          scope={report.scope}
-        />
-
-        <SourceCard report={report} staticPageUrl={staticPageUrl} pdfUrl={pdfUrl} jsonUrl={jsonUrl} />
-
-        {afterSource}
-
-        {history && (
-          <VersionHistory
-            rows={history.rows}
-            current={{ slug: history.current.slug, sha: history.current.sha, instrument: history.current.instrument }}
-            repo={report.source.repo}
-          />
+        {note && !isStrhubRun && (
+          <Section n={next()} title={t("verified.strhubDid.heading")}>
+            <StrhubDidSection run={note.report} row={note.row} />
+          </Section>
         )}
 
-        <WhatWasVerified />
+        <Section n={next()} title={t("verified.certificate.section.metadata")}>
+          <SourceCard report={report} />
+          {afterSource}
+        </Section>
 
-        {report.datasets && report.datasets.length > 0 && <VerificationMatrix legs={report.datasets} />}
+        {history && (
+          <Section n={next()} title={t("verified.history.heading")}>
+            <VersionHistory
+              rows={history.rows}
+              current={{ slug: history.current.slug, sha: history.current.sha, instrument: history.current.instrument }}
+              repo={report.source.repo}
+            />
+          </Section>
+        )}
 
-        <VerificationData provenance={data.provenance} hasStrhubFixture={data.hasStrhubFixture} />
+        <Section n={next()} title={t("verified.certificate.section.outOfScope")}>
+          <BoxedList lead={t("verified.certificate.outOfScopeLead")} items={certificate.out_of_scope} />
+        </Section>
 
-        {/* The IO gate and the content gate describe the same file; the panel
-            list is the reference sample's, so the section can name what the
-            output does not. */}
-        <OutputContent
-          stats={report.content_detail?.outputs?.[0]?.stats}
-          io={report.io_detail?.outputs?.[0]}
-          panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
-        />
+        {(report.content_detail?.outputs?.[0]?.stats || report.io_detail?.outputs?.[0]) && (
+          <Section n={next()} title={t("verified.content.heading")}>
+            {/* The IO gate and the content gate describe the same file; the
+                panel list is the reference sample's, so the section can name
+                what the output does not. */}
+            <OutputContent
+              stats={report.content_detail?.outputs?.[0]?.stats}
+              io={report.io_detail?.outputs?.[0]}
+              panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
+            />
+          </Section>
+        )}
+
+        <Section n={next()} title={t("verified.data.heading")}>
+          <VerificationData provenance={data.provenance} hasStrhubFixture={data.hasStrhubFixture} />
+        </Section>
+
+        {report.datasets && report.datasets.length > 0 && (
+          <Section n={next()} title={t("verified.matrix.heading")}>
+            <VerificationMatrix legs={report.datasets} />
+          </Section>
+        )}
 
         <ManualOffer report={report} slug={slug} />
 
-        <ReadmeCheck check={report.readme_check} />
+        {report.readme_check && (
+          <Section n={next()} title={t("verified.readme.heading")}>
+            <ReadmeCheck check={report.readme_check} />
+          </Section>
+        )}
 
-        {/* Held near the ladder's numbers on purpose. A green ladder reads as
-            a property of the software and quietly folds in the work it took
-            to get there. */}
-        <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={report.needed_beyond_repo} />
+        {!!report.needed_beyond_repo?.length && (
+          <Section n={next()} title={t("verified.needed.heading")}>
+            <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={report.needed_beyond_repo} />
+          </Section>
+        )}
 
-        <EvidenceList evidence={report.evidence} />
+        {!!report.evidence?.length && (
+          <Section n={next()} title={t("verified.trial.evidenceTitle")}>
+            <EvidenceList evidence={report.evidence} />
+          </Section>
+        )}
 
-        {/* Nothing here was run: it was read off the repository when the
-            configuration was worked out, so the origin is named and the block
-            says plainly that it is unverified. */}
-        <BulletCard headingKey="verified.caveats.heading" noteKey="verified.caveats.note" items={report.caveats?.items} />
+        {!!report.caveats?.items?.length && (
+          <Section n={next()} title={t("verified.caveats.heading")}>
+            <BulletCard headingKey="verified.caveats.heading" noteKey="verified.caveats.note" items={report.caveats.items} />
+          </Section>
+        )}
 
-        <ScopeBlock scope={report.scope} />
+        <Section n={next()} title={t("verified.certificate.section.limitations")}>
+          <BoxedList items={certificate.limitations} />
+        </Section>
+
+        <Section n={next()} title={t("verified.certificate.section.scope")}>
+          <BoxedText>
+            <p>{report.scope}</p>
+            <p className="text-muted-foreground">{certificate.scope.disclaimer}</p>
+            <p className="text-muted-foreground">{t("verified.scopeNote")}</p>
+          </BoxedText>
+          <WhatWasVerified />
+        </Section>
+
+        {certificate.conclusion.length > 0 && (
+          <Section n={next()} title={t("verified.certificate.section.conclusion")}>
+            <ConclusionBox items={certificate.conclusion} />
+          </Section>
+        )}
 
         {staticPageUrl && <DisputeCard report={report} slug={slug} staticPageUrl={staticPageUrl} />}
 

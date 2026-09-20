@@ -27,6 +27,8 @@ export interface HistoryRow {
   sha: string | null;
   /** Null on an index from before the engine told instruments apart. */
   instrument: VerifiedInstrument | null;
+  /** Retired with a tombstone: the page opens, the lists leave it out. */
+  retired: { retired: string; reason: string } | null;
   version: string | null;
   variant: string | null;
   committed: string | null;
@@ -57,6 +59,7 @@ function rowOf(entry: VerifiedIndexEntry, v: VerifiedVersionEntry, isAlias: bool
     slug: entry.slug,
     sha: v.sha ?? null,
     instrument: v.instrument ?? null,
+    retired: v.retired ?? null,
     version: v.version ?? null,
     variant: v.variant ?? entry.variant ?? null,
     committed: v.committed ?? null,
@@ -223,17 +226,18 @@ export function findVersion(
  * publish_layout.alias_source.
  */
 export function headOf(rows: HistoryRow[]): HistoryRow | undefined {
-  return rows.find((r) => mayStandBehindBadge(r.instrument)) ?? rows[0];
+  const live = rows.filter((r) => !r.retired);
+  return live.find((r) => mayStandBehindBadge(r.instrument)) ?? live[0];
 }
 
-/** The newest run of STRhub's recipe among `rows` — the note, if there is one. */
+/** The newest run of STRhub's recipe among `rows`: the note, if there is one. */
 export function curatedNoteOf(rows: HistoryRow[]): HistoryRow | undefined {
-  return rows.find((r) => r.instrument === "curated");
+  return rows.find((r) => r.instrument === "curated" && !r.retired);
 }
 
 /** The newest run that may stand behind the badge, of one slug. */
 export function documentedOf(rows: HistoryRow[], slug: string): HistoryRow | undefined {
-  return rows.find((r) => r.slug === slug && mayStandBehindBadge(r.instrument));
+  return rows.find((r) => r.slug === slug && mayStandBehindBadge(r.instrument) && !r.retired);
 }
 
 export function shortSha(sha: string | null | undefined): string {
@@ -258,12 +262,20 @@ export interface DisplayRow {
   strhub?: HistoryRow;
 }
 
+/**
+ * The same tool at the same commit on the same panel. The variant is not
+ * looked at: it is a label a recipe may give itself ("Autosomal (hg38)"),
+ * and the documented run of the same commit carries none — HipSTR's two
+ * runs of b2033bf showed as two rows for exactly that.
+ */
 function sameToolAndCommit(a: HistoryRow, b: HistoryRow): boolean {
   return a.sha === b.sha && familyOf(a) === familyOf(b)
-    && a.dataset_types.join("+") === b.dataset_types.join("+") && (a.variant ?? "") === (b.variant ?? "");
+    && a.dataset_types.join("+") === b.dataset_types.join("+");
 }
 
-export function foldStrhubRuns(rows: HistoryRow[]): DisplayRow[] {
+export function foldStrhubRuns(all: HistoryRow[]): DisplayRow[] {
+  // A retired run is not a row: its page opens by its link, and says why.
+  const rows = all.filter((r) => !r.retired);
   const shown: DisplayRow[] = rows.filter((r) => r.instrument !== "curated").map((row) => ({ row }));
   const out: DisplayRow[] = [];
   for (const r of rows) {

@@ -8,7 +8,7 @@ export default {
       level: "Result",
       datasets: "Datasets",
       gatesPassed: "{passed}/{total} gates passed",
-      reached: "Reached: {level}",
+      reached: "Reached {level}.",
       noDatasets: "No datasets",
       verifiedDate: "Verified on {date}",
     },
@@ -21,6 +21,7 @@ export default {
     maintainer: "Maintainer",
     repository: "Repository",
     commitPinned: "Pinned commit",
+    commitMadeOn: "Made on {date}.",
     commitPinnedHint: "Fixed. This result describes exactly this commit, not anything published since.",
     viewRun: "View run",
     files: {
@@ -34,7 +35,7 @@ export default {
       "Verified automatically, in a clean environment, on the tool's public source at the pinned commit. This is a record of what happened, not an endorsement by the tool's author.",
     commit: "Commit",
     environment: "Environment",
-    environmentFallback: "Ran on {reason} — the source at this commit did not build. Why, and what it means, is explained below.",
+    environmentFallback: "Ran on {reason}, because the source at this commit did not build. Why, and what it means, is explained below.",
     ciRun: "CI run",
     gates: "Gates",
     scope: "Scope",
@@ -44,7 +45,7 @@ export default {
       "Each result is a dated snapshot, verified on the tool's public repository at a pinned commit. STRhub stores no tool source code.",
     dispute: {
       heading: "Something look wrong?",
-      note: "You do not have to take any of this on trust. If a claim, a gate, a diagnostic or an evidence line reads wrong, tell STRhub — the tool's author and an attentive reviewer are who catch a false claim fastest.",
+      note: "You do not have to take any of this on trust. If a claim, a gate, a diagnostic or an evidence line reads wrong, tell STRhub. The tool's author and an attentive reviewer are who catch a false claim fastest.",
       cta: "Report a problem with this attestation",
       hint: "Opens a pre-filled issue on STRhub's own repository, in your GitHub session, for you to review and post. Nothing is sent by STRhub.",
       orEmail: "Prefer not to use GitHub? Write to the STRhub team:",
@@ -56,10 +57,17 @@ export default {
     },
     history: {
       heading: "Verified at these versions",
-      note: "Every commit of this tool STRhub has verified, newest commit first. The date next to a commit is when it was made; the one under it is when it was verified — a version verified today can still be the oldest.",
+      note: "Every commit of this tool STRhub has verified, newest commit first, ordered by when the commit was made. The date on each row is when STRhub verified it, so a version verified today can still be the oldest.",
       newest: "newest",
       thisPage: "this page",
       verifiedOn: "verified {date}",
+      showOlder: "Show {n} older commits",
+      showOlderOne: "Show 1 older commit",
+      hideOlder: "Hide older commits",
+      retired: {
+        title: "This run was retired",
+        body: "STRhub retired this run on {date}. Its files stay and this link keeps working, but it is no longer a result the catalogue rests on.",
+      },
       another: "Test another version",
       anotherHint: "Any tag or commit: the one a manuscript cites, or an older one, to see what changed.",
       older: {
@@ -93,8 +101,8 @@ export default {
       reads: "reads",
     },
     gate: {
-      stoppedHere: "the run stopped here",
-      notReached: "not attempted — the run had already stopped",
+      stoppedHere: "The run stopped here.",
+      notReached: "Not attempted, because the run had already stopped.",
       available: "the pinned public source exists",
       installs: "the environment builds from source",
       runs: "it executes end-to-end without crashing",
@@ -121,7 +129,7 @@ export default {
       can3: "Does it run to completion on data the authors did not select?",
       can4: "Does it return output that looks like real marker calls?",
       can5: "What did it need that a standard environment could not supply?",
-      can6: "Who submitted it for verification — its maintainer, or somebody else?",
+      can6: "Who submitted it for verification: its maintainer, or somebody else?",
       cannotHeading: "Questions it cannot answer",
       cannot1: "Are the genotypes correct?",
       cannot2: "Does it agree with a reference profile or another method?",
@@ -131,7 +139,7 @@ export default {
       cannot6: "Does its maintainer stand behind this result?",
       chaptersHeading: "As it is in the repository, and what STRhub had to do",
       chaptersBody:
-        "Every report opens with the tool as it is in its repository: STRhub read the repository's own instructions — the README, a Dockerfile or environment file, the image the README points at — and ran exactly those. The label is that result, in words: \"Runs as documented\", or \"Does not run as documented\" with where it stopped. That is what a first-time user meets. A maintainer's recipe counts the same, because it is documentation in another format.",
+        "Every report opens with the tool as it is in its repository: STRhub read the repository's own instructions (the README, a Dockerfile or environment file, the image the README points at) and ran exactly those. The label is that result, in words: \"Runs as documented\", or \"Does not run as documented\" with where it stopped. That is what a first-time user meets. A maintainer's recipe counts the same, because it is documentation in another format.",
       chaptersBody2:
         "When STRhub wrote a recipe of its own to see how far the tool could be made to run, that comes second, under the heading \"What STRhub had to do to run this tool\": each thing the recipe had to do differently, as a recommendation to the author, and how far it got. It never changes the label. A tool with no run of its own instructions yet is marked \"Not verified as documented\"; one whose README does not say enough to attempt a run is \"Could not be determined\", a finding about the documentation, not the software.",
       developerHeading: "For a developer",
@@ -153,7 +161,7 @@ export default {
     headline: {
       runs: "Runs as documented",
       runsErrors: "Runs as documented (errors reported)",
-      notRun: "Does not run as documented · {where}",
+      notRun: "Does not run as documented: {where}",
       stopsAt: {
         none: "source not available",
         available: "stops at install",
@@ -173,8 +181,8 @@ export default {
     },
     strhubDid: {
       heading: "What STRhub had to do to run this tool",
-      lead: "STRhub wrote its own recipe for this tool — an environment and a command of its own, not the repository's instructions — and ran that.",
-      leadAt: "STRhub wrote its own recipe for this tool — an environment and a command of its own, not the repository's instructions — and ran it at {what}.",
+      lead: "STRhub wrote its own recipe for this tool, an environment and a command of its own rather than the repository's instructions, and ran that.",
+      leadAt: "STRhub wrote its own recipe for this tool, an environment and a command of its own rather than the repository's instructions, and ran it at {what}.",
       each: "Each item below is something a first-time user following the README would have to work out for themselves.",
       insteadOf: "Instead of:",
       why: "Why:",
@@ -193,7 +201,7 @@ export default {
     },
     errorsBadgeSuffix: "(errors reported)",
     upstream: {
-      behind: "{n} commit(s) have landed on {branch} since. That is context, not a fault — a pinned release is often meant to sit behind.",
+      behind: "{n} commit(s) have landed on {branch} since. That is context, not a fault: a pinned release is often meant to sit behind.",
       refGone: "This commit is no longer reachable in the repository. The result still describes what ran, but the source cannot be fetched to repeat it.",
       repoGone: "The public repository is no longer reachable at this URL, so nothing here can be re-checked against its source.",
     },
@@ -207,10 +215,10 @@ export default {
       meaning: {
         runLabel: "If you are trying to run it:",
         run: "a build from source at this commit fails in a clean environment; the cause and a suggested fix are below.",
-        runFallback: "a build from source at this commit fails in a clean environment (the cause is below). The ready-made environment the README points at does work — it is what this run used.",
+        runFallback: "a build from source at this commit fails in a clean environment (the cause is below). The ready-made environment the README points at does work: it is what this run used.",
         reviewLabel: "If you are reviewing a paper:",
         review: "nothing ran, so this says nothing about the software's output. It records that this attempt to build it stopped, and whose side the cause is on.",
-        reviewFallback: "this result describes the software inside that environment — whatever its publisher last put there — not commit {sha}, which is the version a manuscript would cite.",
+        reviewFallback: "this result describes the software inside that environment, whatever its publisher last put there, and not commit {sha}, which is the version a manuscript would cite.",
         maintainLabel: "If you maintain it:",
       },
       faultStrhub:
@@ -218,7 +226,7 @@ export default {
       faultHarness:
         "at least one cause is a ceiling of the free automated environment rather than a fault in the tool.",
       faultAuthor:
-        "every cause identified sits in the build steps this run followed — pinned versions, package names or build files, from the repository or the submission. Each row below carries a suggested fix, and re-verifying afterwards is free.",
+        "every cause identified sits in the build steps this run followed: pinned versions, package names or build files, from the repository or the submission. Each row below carries a suggested fix, and re-verifying afterwards is free.",
       faultUnknown:
         "the cause could not be classified automatically. The full build output is linked below.",
       whatFailed: "What failed",
@@ -443,11 +451,11 @@ export default {
       name: "Tool name",
       variant: "Kit or configuration variant",
       variantTooltip:
-        "Use this when the same tool at the same commit is verified more than once with different configurations — STRait Razor with ForenSeq and with PowerSeq, for example. Each variant gets its own attestation and its own permanent link. Leave it blank if there is only one.",
+        "Use this when the same tool at the same commit is verified more than once with different configurations, for example STRait Razor with ForenSeq and with PowerSeq. Each variant gets its own attestation and its own permanent link. Leave it blank if there is only one.",
       slugPreview: "This will be published at",
       submitterRole: "Your relationship to this tool",
       submitterRoleTooltip:
-        "Everything below — the command, the environment, the target regions — is published as part of the attestation, and this is what says whose choices they were. A GitHub account tells us who owns a repository; it never tells us who filled in this form.",
+        "Everything below (the command, the environment, the target regions) is published as part of the attestation, and this is what says whose choices they were. A GitHub account tells us who owns a repository; it never tells us who filled in this form.",
       submitterRoleOption: {
         maintainer: "I maintain this tool",
         third_party: "I am not its maintainer",
@@ -471,7 +479,7 @@ export default {
       versionDerived: "Recorded on the attestation as version {version}.",
       repoLookupLoading: "Reading the repository…",
       repoLookupError:
-        "We couldn't read that repository. Check the URL — it must be a public GitHub repo. You can still fill the form in by hand.",
+        "We couldn't read that repository. Check the URL: it must be a public GitHub repo. You can still fill the form in by hand.",
       lockedUntilSource:
         "Fill in the public source above first. The rest of this form is built from your repository and the commit you pin.",
       prefillConflictTitle: "Keep what you typed, or use your repository's details?",
@@ -479,7 +487,7 @@ export default {
         "These fields already had a value, so nothing was changed. Here is what we found:",
       prefillAccept: "Use these values",
       prefillKeep: "Keep mine",
-      preflightSummaryNone: "Nothing ticked — the automated run applies to this tool.",
+      preflightSummaryNone: "Nothing ticked, so the automated run applies to this tool.",
       preflightSummarySelected: "{n} ticked.",
       reuseTitle: "Reuse a previous run",
       reuseHint:
@@ -493,14 +501,14 @@ export default {
       reuseApply: "Reuse",
       reuseShowMore: "Show {n} more run(s)",
       reuseApplied:
-        "Answers refilled from that run. Check them before submitting — the commit you pinned above is untouched.",
+        "Answers refilled from that run. Check them before submitting. The commit you pinned above is untouched.",
       reuseUnavailable:
-        "We couldn't load that run's settings. It may predate saved submissions — fill the form in by hand.",
+        "We couldn't load that run's settings. It may predate saved submissions, so fill the form in by hand.",
       reuseRegionsFile: "regions.bed (reused from a previous run)",
       autoConfigTitle: "Automatic configuration",
       autoConfigHint:
         "Optional. We read your repository at the commit you pinned and propose the answers below. Nothing is filled in until you have reviewed it.",
-      autoConfigSummaryIdle: "Not used — fill the form in by hand, or let us propose the answers.",
+      autoConfigSummaryIdle: "Not used. Fill the form in by hand, or let us propose the answers.",
       autoConfigSummaryApplied: "Applied. Check every field before submitting.",
       autoConfigOwnDockerfile: "I will provide the Dockerfile",
       autoConfigDockerfileHint:
@@ -508,12 +516,12 @@ export default {
       autoConfigSampleLabel: "Sample results file from a previous run",
       autoConfigLocalOnly:
         "Read in your browser to work out the output format and column layout. The file is never uploaded.",
-      autoConfigSampleApplied: "Read {file} — the expected-output section below is filled in.",
+      autoConfigSampleApplied: "Read {file}. The expected-output section below is filled in.",
       autoConfigGenerate: "Configure automatically",
       autoConfigUseSaved: "Use a saved configuration ({n})",
       autoConfigWorking: "Reading the repository and working out how your tool builds and runs. This can take a couple of minutes.",
       autoConfigAppliedNote:
-        "Answers filled in from the automatic configuration. Check them before submitting — the commit you pinned above is untouched.",
+        "Answers filled in from the automatic configuration. Check them before submitting. The commit you pinned above is untouched.",
       autoConfigReview: "Review",
       autoConfigReviewHint:
         "Everything here was read out of your repository. Tick the groups you want, check the values, then fill the form in.",
@@ -525,7 +533,7 @@ export default {
         "Only the repository URL and the commit are sent to our server. Your sample results file and your Dockerfile are read in your browser and stay there.",
       autoConfigStaleTitle: "The build files have changed since this was generated",
       autoConfigStaleBody:
-        "A Dockerfile, manifest or Makefile differs at the commit you pinned. The build answers below may no longer be right — check them, or configure again.",
+        "A Dockerfile, manifest or Makefile differs at the commit you pinned. The build answers below may no longer be right, so check them or configure again.",
       autoConfigNotFound: "Not found in the repository",
       autoConfigApplies: "Applies to this tool",
       autoConfigCaveats: "Worth checking by hand",
@@ -563,7 +571,7 @@ export default {
       language: "Language / stack",
       needsBuild: "My tool needs to be built from source code",
       needsBuildHint:
-        "Tick this if your tool has to be compiled or installed before it can run — pip install, make, cargo build. Leave it unticked for a script or a committed binary that runs straight from the clone.",
+        "Tick this if your tool has to be compiled or installed before it can run, such as pip install, make or cargo build. Leave it unticked for a script or a committed binary that runs straight from the clone.",
       buildCmd: "Build / install command",
       buildCmdTooltip:
         "Command run while building the Docker image, after cloning your repo. Usually your install steps, e.g. pip install, make, or conda env create. If it fails, verification stops at the Installs gate.",
@@ -579,7 +587,7 @@ export default {
       cmdTooltipAria: "What the run command is and how paths work",
       cmdReplaceMytool: "Replace \"mytool\" with the actual binary or command that runs your tool (e.g. hipstr, strait_razor, toastr). The rest of the paths are correct.",
       cmdFetchingReadme: "Reading your repo's README…",
-      cmdSuggestFromReadme: "Suggested from your README — click to use:",
+      cmdSuggestFromReadme: "Suggested from your README. Click to use:",
       cmdHint: "Your tool reads input from /data/in/ and writes output to /data/out/.",
       cmdHintWithRef: "Your tool reads input from /data/in/, the reference genome from {mountPath}, and writes output to /data/out/.",
       refGenomeTitle: "Reference genome: {assembly}",
@@ -609,7 +617,7 @@ export default {
       externalRunsBoth:
         "STRhub will run two verifications: one on your test file, and one on our reference dataset.",
       externalRunsOurs:
-        "STRhub will run one verification, on our reference dataset — you said the repository has no test file.",
+        "STRhub will run one verification, on our reference dataset, since you said the repository has no test file.",
       externalDetailIllumina:
         "The reference is NIST mds2-2157 Illumina STR data, which covers ForenSeq and PowerSeq 46GY only; use kit-matched reads in your own fixture.",
       externalDetailOnt:
@@ -633,7 +641,7 @@ export default {
       fixtureExplainer:
         "Required. Point to a small, publicly accessible test file at the ref you specified.",
       fixtureExplainerOptional:
-        "Recommended. For a stronger verification, point to a test file in your repo — STRhub will run both your data and our reference dataset. If your repo doesn't include test data, leave blank and STRhub will run with our reference dataset only.",
+        "Recommended. For a stronger verification, point to a test file in your repo, and STRhub will run both your data and our reference dataset. If your repo doesn't include test data, leave blank and STRhub will run with our reference dataset only.",
       fixtureRequiredError: "A test file is required for this input type (no STRhub reference dataset available).",
       fixtureSameRepo: "It's in my tool's repo",
       fixtureOtherRepo: "It's in a different repo",
@@ -676,7 +684,7 @@ export default {
       regionsUploadLabel: "Upload your BED",
       regionsUploadPlaceholder: "Choose a .bed file…",
       regionsUploadHint:
-        "The file you built from the panel above, in your tool's format. Plain-text .bed — not gzipped. Checked against the panel here before you submit.",
+        "The file you built from the panel above, in your tool's format. Plain-text .bed, not gzipped. Checked against the panel here before you submit.",
       regionsGzip:
         "That file is gzipped. Decompress it first (gunzip) and upload the plain-text .bed.",
       supportedLociTitle: "Loci our sample supports ({count})",
@@ -689,13 +697,13 @@ export default {
       regionsMalformed: "The BED is malformed:",
       regionsMalformedGeneric: "We couldn't parse that file as a BED.",
       regionsUnconverted:
-        "This looks like our coordinate panel, uploaded as-is. The coordinates are right, but the columns are still ours — most tools (HipSTR, GangSTR) expect their own layout and would reject it. Convert it to your tool's format before running.",
+        "This looks like our coordinate panel, uploaded as-is. The coordinates are right, but the columns are still ours, and most tools (HipSTR, GangSTR) expect their own layout and would reject it. Convert it to your tool's format before running.",
       regionsRepoTip:
         "Tip: commit this BED to your tool's repo (e.g. regions/strhub-verified.bed) so anyone using your tool has the exact regions this attestation covers. STRhub verifies the file you upload here, not the repo copy.",
       regionsOk: "Your BED covers {covered} of {total} supported loci. Ready to verify.",
       regionsRejectedTitle: "This BED targets regions outside our sample",
       regionsRejectedExplainer:
-        "These regions aren't covered by our slice, so your tool would find no reads there. This is not a problem with your tool — adjust the BED to the panel above.",
+        "These regions aren't covered by our slice, so your tool would find no reads there. This is not a problem with your tool. Adjust the BED to the panel above.",
       regionsLinePrefix: "line {line}:",
       regionsAndMore: "…and {n} more.",
       regionsTooFewLoci:
@@ -729,7 +737,7 @@ export default {
       detectError: "We couldn't read that file. Pick a plain-text result file.",
       detectGzip:
         "That file is gzipped. Decompress it first (gunzip) and pick the plain-text file.",
-      detectResult: "Detected {format} — {rows} data rows.",
+      detectResult: "Detected {format}, with {rows} data rows.",
       detectLoci: "Found {n} distinct markers: {sample}…",
       detectNote: {
         contentNeedsTabs:
@@ -744,14 +752,14 @@ export default {
         truncated: "Only the first part of the file was read.",
       },
       contentZeroBased:
-        "Column positions are counted from 0 — the first column is 0. Rows are split on tabs, and lines starting with # are ignored.",
+        "Column positions are counted from 0, so the first column is 0. Rows are split on tabs, and lines starting with # are ignored.",
       contentField: {
         columns: "Columns per row",
         columnsTip:
           "Every data row must have exactly this many tab-separated columns. A row with any other number counts as malformed and fails the check. Leave blank to skip it.",
         dnaColumn: "Sequence column",
         dnaColumnTip:
-          "Position of the column holding the DNA sequence. Every row's value must be only A, C, G, T or N — a single row that isn't fails the check. Positions start at 0.",
+          "Position of the column holding the DNA sequence. Every row's value must be only A, C, G, T or N. A single row that isn't fails the check. Positions start at 0.",
         countColumns: "Read-count columns",
         countColumnsTip:
           "Positions of the integer read-count columns, comma-separated. They are added together to give each row's depth, which is what the total-reads check counts. Positions start at 0.",
@@ -760,17 +768,17 @@ export default {
           "Position of the column carrying the locus or marker name. Anything after the first colon is dropped, so \"TH01:9\" counts as TH01. Positions start at 0.",
         minDistinctLoci: "Minimum distinct markers",
         minDistinctLociTip:
-          "The run must report at least this many different markers. Keep it at or below what STRhub's reference slice covers — it is a floor, not a target.",
+          "The run must report at least this many different markers. Keep it at or below what STRhub's reference slice covers. It is a floor, not a target.",
         minTotalReads: "Minimum total reads",
         minTotalReadsTip:
-          "The read-count columns, summed across every row, must reach at least this. Leave blank unless you know what STRhub's reference slice yields — it holds far fewer reads than a full run.",
+          "The read-count columns, summed across every row, must reach at least this. Leave blank unless you know what STRhub's reference slice yields, which is far fewer reads than a full run.",
         expectLoci: "Markers that must appear",
         expectLociTip:
           "Comma-separated marker names. Every single one listed must be present or the check fails, so list only markers you are sure your tool reports on our reference data.",
       },
       contentToggle: "Check output content plausibility (recommended)",
       contentToggleTooltip:
-        "Recommended. Checks that the output looks like plausible genotype data — enough recognizable loci, and any named loci you expect — not just a non-empty file. Passing this earns the stronger \"Plausible output\" badge. Uncheck to verify format only.",
+        "Recommended. Checks that the output looks like plausible genotype data (enough recognizable loci, and any named loci you expect) and not just a non-empty file. Passing this earns the stronger \"Plausible output\" badge. Uncheck to verify format only.",
       contentToggleTooltipAria: "What the content plausibility check does",
       contentDefaultsHint:
         "Prefilled with sensible defaults for the selected output format and assay. Edit any field to match your tool, or clear one to skip that check.",
@@ -799,7 +807,7 @@ export default {
       pdfDownload: "Download PDF report",
       pdfGenerating: "Generating PDF…",
       pdfDone: "PDF downloaded",
-      pdfError: "PDF failed — retry",
+      pdfError: "PDF failed. Retry",
       pdfErrorHint: "The report may not be published yet. Try again in a few seconds.",
       resubmit: "Edit & re-submit",
       resubmitHint: "Go back to the form with the same parameters pre-filled.",
@@ -831,7 +839,7 @@ export default {
       repoPlaceholder: "https://github.com/owner/tool",
       refLabel: "Version, tag or commit",
       refPlaceholder: "v2.1.0, or a commit SHA",
-      refHint: "Filled in for you with the latest release the moment you paste the repository. Any tag or commit works — the version a manuscript cites, or an older one, to see what changed. The result is always pinned to one commit.",
+      refHint: "Filled in for you with the latest release the moment you paste the repository. Any tag or commit works: the version a manuscript cites, or an older one, to see what changed. The result is always pinned to one commit.",
       refResolving: "Finding the commit to pin…",
       refPinnedLabel: "Pinned commit:",
       refResolved: "{label} ({how})",
@@ -889,7 +897,7 @@ export default {
       },
       verdictMeaning: {
         runs: "It installed from its public source and produced its documented output in a clean environment.",
-        runsFallback: "It ran and produced its documented output — but on the ready-made environment the README points at, because its source did not build at the pinned commit.",
+        runsFallback: "It ran and produced its documented output, but on the ready-made environment the README points at, because its source did not build at the pinned commit.",
         fails: "It did not. The evidence points at the tool or its documented way of running.",
         undetermined: "STRhub could not work out how to run it from the repository. That is a finding about the documentation, not about the software.",
         out_of_scope: "It needs something the automated runner cannot provide. A manual verification can cover it.",

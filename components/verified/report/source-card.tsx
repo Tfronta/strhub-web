@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { cn } from "@/lib/utils";
 import type { VerifiedReport } from "@/types/verified";
 import { formatCommand } from "@/lib/verified/command";
+import { formatDate, formatDateTime } from "@/lib/verified/format-date";
 
 /**
  * Where the result came from, with the two anchors a reader needs in the
@@ -31,7 +32,7 @@ export function SourceCard({
   /** The report JSON itself, for a reader who wants the record and not a rendering of it. */
   jsonUrl?: string;
 }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const ref = report.source.ref_resolved ?? report.source.ref ?? "";
 
   // Mirrors harness/upstream.py::note, minus the "head of master" case: that
@@ -93,7 +94,10 @@ export function SourceCard({
         <dt className="text-muted-foreground">{t("verified.commitPinned")}</dt>
         <dd>
           <code className="text-xs bg-muted px-1.5 py-0.5 rounded break-all">{ref}</code>
-          <span className="mt-1 block text-xs text-muted-foreground">{t("verified.commitPinnedHint")}</span>
+          <span className="mt-1 block text-xs text-muted-foreground">
+            {report.source.committed ? `${t("verified.commitMadeOn", { date: formatDate(report.source.committed, language) })} ` : ""}
+            {t("verified.commitPinnedHint")}
+          </span>
           {/* Where that commit sits now. Context for a reviewer comparing the
               attestation against the version a manuscript cites — and, when
               the ref has vanished, a finding: being fetchable is the first
@@ -127,7 +131,7 @@ export function SourceCard({
           </>
         )}
         <dt className="text-muted-foreground">{t("verified.verifiedOn")}</dt>
-        <dd>{report.generated?.slice(0, 19).replace("T", " ")} UTC</dd>
+        <dd>{formatDateTime(report.generated, language)}</dd>
         {report.ci_run && (
           <>
             <dt className="text-muted-foreground">{t("verified.ciRun")}</dt>

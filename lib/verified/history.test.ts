@@ -237,6 +237,34 @@ describe("two instruments", () => {
       .toEqual([["strspy-ont", "strspy-ont"], ["strspy-y", null]]);
   });
 
+  it("folds STRhub's run onto the documented row whatever variant its recipe called itself", () => {
+    // HipSTR's curated recipe says "Autosomal (hg38)"; the documented run of the same commit says nothing.
+    const rows = historyOf([entry({ slug: "hipstr", sha: OLD, source_ref: OLD, instrument: "documented", versions: [
+      { sha: OLD, instrument: "documented", committed: "2021-05-10T00:00:00Z", generated: "2026-09-18T00:00:00+00:00", level: "content", report: "a.json", page: "a.html" },
+      { sha: OLD, instrument: "curated", variant: "Autosomal (hg38)", committed: "2021-05-10T00:00:00Z", generated: "2026-09-19T00:00:00+00:00", level: "content", report: "b.json", page: "b.html" },
+    ] })]);
+    const shown = foldStrhubRuns(rows);
+    expect(shown).toHaveLength(1);
+    expect(shown[0].row.instrument).toBe("documented");
+    expect(shown[0].strhub?.instrument).toBe("curated");
+  });
+
+  it("leaves a retired run out of the rows, the head and the note, but still finds it by its link", () => {
+    const stone = { retired: "2026-09-20T00:00:00+00:00", reason: "its recipe is no longer committed" };
+    const rows = historyOf([entry({ slug: "straitrazor", sha: OLD, source_ref: OLD, instrument: "documented", versions: [
+      { sha: OLD, instrument: "documented", committed: "2025-08-18T00:00:00Z", level: "content", report: "a.json", page: "a.html" },
+      { sha: OLD, instrument: "curated", retired: stone, committed: "2025-08-18T00:00:00Z", level: "content", report: "b.json", page: "b.html" },
+    ] })]);
+    expect(foldStrhubRuns(rows)).toEqual([{ row: rows[0] }]);
+    expect(curatedNoteOf(rows)).toBeUndefined();
+    expect(findVersion(rows, "b2033bf", "straitrazor", "curated")?.retired).toEqual(stone);
+    // A tool whose every run is retired heads with nothing.
+    const gone = historyOf([entry({ slug: "x", sha: OLD, source_ref: OLD, instrument: "curated", versions: [
+      { sha: OLD, instrument: "curated", retired: stone, level: "content", report: "b.json", page: "b.html" },
+    ] })]);
+    expect(headOf(gone)).toBeUndefined();
+  });
+
   it("lists a run nobody knew how to attempt, though it reached no gate", () => {
     const rows = historyOf([entry({ slug: "readme-less", sha: NEW, instrument: "documented", level: "none", verdict: "undetermined", versions: [
       { sha: NEW, instrument: "documented", committed: "2026-02-01T00:00:00Z", level: "none", verdict: "undetermined", report: "r.json", page: "r.html" },

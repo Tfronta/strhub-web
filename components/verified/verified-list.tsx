@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { badgeFor, reachedLabel, TONE } from "@/lib/verified/badge";
 import { foldStrhubRuns, headOf, historyOf, shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
 import { rowHref } from "./report/history";
+import { formatDate } from "@/lib/verified/format-date";
 
 function getPanelLabel(
   translate: (k: string) => string,
@@ -88,7 +89,7 @@ function rankOf(g: ToolGroup): number {
 }
 
 export function VerifiedList({ index }: { index: VerifiedIndex }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const groups = groupTools(index.tools);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
@@ -194,9 +195,6 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                                 </Badge>
                                 <span className="text-xs font-medium">{versionLabel(row)}</span>
                                 <code className="rounded bg-muted px-1 text-[10px] text-muted-foreground">{shortSha(row.sha)}</code>
-                                {row.committed && (
-                                  <span className="text-[10px] text-muted-foreground">{row.committed.slice(0, 10)}</span>
-                                )}
                                 {panelLabel && (
                                   <span className="text-[10px] border rounded px-1.5 py-0 text-muted-foreground shrink-0">
                                     {panelLabel}
@@ -205,7 +203,7 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                               </div>
                               {row.generated && (
                                 <p className="mt-0.5 text-[10px] text-muted-foreground">
-                                  {t("verified.history.verifiedOn", { date: row.generated.slice(0, 10) })}
+                                  {t("verified.history.verifiedOn", { date: formatDate(row.generated, language) })}
                                 </p>
                               )}
                             </Link>

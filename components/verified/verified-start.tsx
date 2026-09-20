@@ -168,7 +168,7 @@ export function VerifiedStart({
               <span className="font-medium">{t("verified.start.refPinnedLabel")}</span>{" "}
               <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{resolved.sha.slice(0, 7)}</code>{" "}
               <span className="text-muted-foreground">
-                — {t("verified.start.refResolved", {
+                {t("verified.start.refResolved", {
                   label: resolved.label,
                   how: t(`verified.start.refHow.${resolved.how}`),
                 })}

@@ -10,6 +10,7 @@
  * stopped where the user said and whether the one after still does. Before
  * this the same runs were a card's "6 verification runs", sorted by level.
  */
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, GitCommitHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,7 @@ import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedInstrument } from "@/types/verified";
 import { badgeFor, reachedLabel, TONE } from "@/lib/verified/badge";
 import { foldStrhubRuns, shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
+import { formatDate } from "@/lib/verified/format-date";
 import { cn } from "@/lib/utils";
 
 function panelKey(types: string[]): "ystr" | "ont" | "autosomal" | null {
@@ -52,17 +54,27 @@ export function VersionHistory({
   current: { slug: string; sha: string | null; instrument?: VerifiedInstrument | null };
   repo: string;
 }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const [showOlder, setShowOlder] = useState(false);
   if (rows.length === 0) return null;
+  // Compact by default: the newest run of each kind and the one being read;
+  // the rest behind one line that says how many there are.
+  const shown = foldStrhubRuns(rows);
+  const isCurrentRow = (d: { row: HistoryRow; strhub?: HistoryRow }) =>
+    (d.row.slug === current.slug && d.row.sha === current.sha && (d.row.instrument ?? null) === (current.instrument ?? null))
+    || (!!d.strhub && d.strhub.slug === current.slug && d.strhub.sha === current.sha && current.instrument === "curated");
+  const visible = shown.filter((d) => d.row.isNewest || isCurrentRow(d));
+  const older = shown.length - visible.length;
+  const listed = showOlder ? shown : visible;
   return (
     <div className="mt-6 rounded-lg border bg-card p-5">
       <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
         {t("verified.history.heading")}
       </h2>
       <p className="mt-1 text-xs text-muted-foreground">{t("verified.history.note")}</p>
-      {rows.length > 1 && (
+      {shown.length > 1 && (
         <ol className="mt-3 divide-y rounded-md border">
-          {foldStrhubRuns(rows).map(({ row, strhub }) => {
+          {listed.map(({ row, strhub }) => {
             const isCurrent = row.slug === current.slug && row.sha === current.sha
               && (row.instrument ?? null) === (current.instrument ?? null);
             const level = badgeFor(row, t);
@@ -74,9 +86,6 @@ export function VersionHistory({
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="font-medium">{versionLabel(row)}</span>
                     <code className="rounded bg-muted px-1 text-xs">{shortSha(row.sha)}</code>
-                    {row.committed && (
-                      <span className="text-xs text-muted-foreground">{row.committed.slice(0, 10)}</span>
-                    )}
                     {panel && (
                       <span className="rounded-full border px-1.5 text-[10px] text-muted-foreground">{t(`verified.panel.${panel}`)}</span>
                     )}
@@ -89,7 +98,7 @@ export function VersionHistory({
                   </div>
                   <p className="mt-0.5 text-xs text-muted-foreground">
                     {row.generated
-                      ? t("verified.history.verifiedOn", { date: row.generated.slice(0, 10) })
+                      ? t("verified.history.verifiedOn", { date: formatDate(row.generated, language) })
                       : ""}
                   </p>
                 </div>
@@ -128,6 +137,17 @@ export function VersionHistory({
           })}
         </ol>
       )}
+      {older > 0 && (
+        <button
+          type="button"
+          onClick={() => setShowOlder((v) => !v)}
+          className="mt-2 text-xs font-medium text-primary hover:underline"
+        >
+          {showOlder
+            ? t("verified.history.hideOlder")
+            : older === 1 ? t("verified.history.showOlderOne") : t("verified.history.showOlder", { n: String(older) })}
+        </button>
+      )}
       <p className="mt-3 text-sm">
         <Link href={anotherVersionHref(repo)} className="inline-flex items-center gap-1 font-medium text-primary hover:underline">
           {t("verified.history.another")} <ArrowRight className="h-3.5 w-3.5" />
@@ -150,16 +170,16 @@ function nameOf(row: HistoryRow): string {
  * reader take for the current one.
  */
 export function OlderVersionNotice({ current, newest }: { current: HistoryRow; newest: HistoryRow }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const sha = shortSha(current.sha);
   const label = versionLabel(current);
-  // "commit b2033bf, made 2019-09-04", or without the date when it is not
+  // "commit b2033bf, made 4 Sept 2019", or without the date when it is not
   // known (a report from before it was recorded); with the version in front
   // when the report recorded one.
   const commit = current.committed
-    ? t("verified.history.older.commitMade", { sha, committed: current.committed.slice(0, 10) })
+    ? t("verified.history.older.commitMade", { sha, committed: formatDate(current.committed, language) })
     : t("verified.history.older.commit", { sha });
-  const what = label === sha ? commit : `${label} — ${commit}`;
+  const what = label === sha ? commit : `${label} (${commit})`;
   return (
     <div className="mt-6 rounded-lg border border-amber-300 bg-amber-50/60 p-4 text-sm dark:border-amber-800 dark:bg-amber-950/20">
       <p className="font-semibold">{t("verified.history.older.title")}</p>
@@ -169,6 +189,22 @@ export function OlderVersionNotice({ current, newest }: { current: HistoryRow; n
       <Link href={rowHref(newest)} className="mt-2 inline-flex items-center gap-1 font-medium text-primary hover:underline">
         {t("verified.history.older.cta")} <ArrowRight className="h-3.5 w-3.5" />
       </Link>
+    </div>
+  );
+}
+
+/**
+ * Said first on the page of a run that was retired (the engine's tombstone):
+ * the page still opens by its link, and this is why it is no longer a result.
+ */
+export function RetiredNotice({ row }: { row: HistoryRow }) {
+  const { t, language } = useLanguage();
+  if (!row.retired) return null;
+  return (
+    <div className="mt-6 rounded-lg border border-slate-300 bg-slate-50 p-4 text-sm dark:border-slate-700 dark:bg-slate-900/40">
+      <p className="font-semibold">{t("verified.history.retired.title")}</p>
+      <p className="mt-1 text-muted-foreground">{t("verified.history.retired.body", { date: formatDate(row.retired.retired, language) })}</p>
+      <p className="mt-2">{row.retired.reason}</p>
     </div>
   );
 }

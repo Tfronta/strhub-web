@@ -8,7 +8,7 @@ export default {
       level: "Resultado",
       datasets: "Datasets",
       gatesPassed: "{passed}/{total} portões passados",
-      reached: "Alcançou: {level}",
+      reached: "Alcançou {level}.",
       noDatasets: "Sem datasets",
       verifiedDate: "Verificado em {date}",
     },
@@ -21,6 +21,7 @@ export default {
     maintainer: "Mantenedor",
     repository: "Repositório",
     commitPinned: "Commit fixo",
+    commitMadeOn: "Feito em {date}.",
     commitPinnedHint: "Fixado. Este resultado descreve exatamente este commit, não nada publicado depois.",
     viewRun: "Ver execução",
     files: {
@@ -34,7 +35,7 @@ export default {
       "Verificado automaticamente, em um ambiente limpo, sobre o código público da ferramenta no commit fixo. É um registro do que aconteceu, não um endosso do autor da ferramenta.",
     commit: "Commit",
     environment: "Ambiente",
-    environmentFallback: "Rodou em {reason} — o código-fonte neste commit não compilou. O porquê, e o que isso significa, está explicado abaixo.",
+    environmentFallback: "Rodou em {reason}, porque o código-fonte neste commit não compilou. O porquê, e o que isso significa, está explicado abaixo.",
     ciRun: "Execução de CI",
     gates: "Portões",
     scope: "Escopo",
@@ -56,10 +57,17 @@ export default {
     },
     history: {
       heading: "Verificada nestas versões",
-      note: "Cada commit desta ferramenta que o STRhub verificou, o mais novo primeiro. A data ao lado do commit é quando ele foi feito; a de baixo, quando foi verificado — uma versão verificada hoje pode ainda ser a mais antiga.",
+      note: "Cada commit desta ferramenta que o STRhub verificou, o mais novo primeiro, ordenados por quando cada commit foi feito. A data de cada linha é quando o STRhub o verificou, então uma versão verificada hoje pode ainda ser a mais antiga.",
       newest: "mais novo",
       thisPage: "esta página",
       verifiedOn: "verificado em {date}",
+      showOlder: "Mostrar {n} commits anteriores",
+      showOlderOne: "Mostrar 1 commit anterior",
+      hideOlder: "Ocultar os commits anteriores",
+      retired: {
+        title: "Esta execução foi retirada",
+        body: "O STRhub retirou esta execução em {date}. Seus arquivos ficam e este link continua funcionando, mas ela já não é um resultado em que o catálogo se apoie.",
+      },
       another: "Testar outra versão",
       anotherHint: "Qualquer tag ou commit: o que um manuscrito cita, ou um anterior, para ver o que mudou.",
       older: {
@@ -94,7 +102,7 @@ export default {
     },
     gate: {
       stoppedHere: "a execução parou aqui",
-      notReached: "não foi tentado — a execução já havia parado",
+      notReached: "Não foi tentado, porque a execução já havia parado.",
       available: "o código público fixado existe",
       installs: "o ambiente compila a partir do código",
       runs: "executa de ponta a ponta sem quebrar",
@@ -153,7 +161,7 @@ export default {
     headline: {
       runs: "Roda conforme a documentação",
       runsErrors: "Roda conforme a documentação (erros reportados)",
-      notRun: "Não roda conforme a documentação · {where}",
+      notRun: "Não roda conforme a documentação: {where}",
       stopsAt: {
         none: "fonte não disponível",
         available: "para na instalação",
@@ -210,7 +218,7 @@ export default {
         runFallback: "compilá-la a partir do código-fonte neste commit falha em um ambiente limpo (a causa está abaixo). O ambiente pronto que o README indica funciona: foi o que esta execução usou.",
         reviewLabel: "Se você está revisando um artigo:",
         review: "nada rodou, então isto não diz nada sobre a saída do software. Registra que esta tentativa de compilá-la parou, e de que lado está a causa.",
-        reviewFallback: "este resultado descreve o software que esse ambiente traz — o que quer que quem o publica tenha colocado por último — não o commit {sha}, que é a versão que um manuscrito citaria.",
+        reviewFallback: "este resultado descreve o software que esse ambiente traz, o que quer que quem o publica tenha colocado por último, e não o commit {sha}, que é a versão que um manuscrito citaria.",
         maintainLabel: "Se você a mantém:",
       },
       faultStrhub:
@@ -218,7 +226,7 @@ export default {
       faultHarness:
         "ao menos uma causa é um teto do ambiente automático gratuito, não uma falha da ferramenta.",
       faultAuthor:
-        "todas as causas identificadas estão nos passos de build que esta execução seguiu — versões fixadas, nomes de pacotes ou arquivos de build, do repositório ou da submission. Cada linha abaixo traz uma sugestão de correção, e re-verificar depois é grátis.",
+        "todas as causas identificadas estão nos passos de build que esta execução seguiu: versões fixadas, nomes de pacotes ou arquivos de build, do repositório ou da submission. Cada linha abaixo traz uma sugestão de correção, e re-verificar depois é grátis.",
       faultUnknown:
         "a causa não pôde ser classificada automaticamente. Abaixo está o log completo do build.",
       whatFailed: "O que falhou",
@@ -447,7 +455,7 @@ export default {
       slugPreview: "Será publicado em",
       submitterRole: "Sua relação com esta ferramenta",
       submitterRoleTooltip:
-        "Tudo o que vem abaixo — o comando, o ambiente, as regiões — é publicado como parte da atestação, e é isto que diz de quem foram essas escolhas. Uma conta do GitHub diz quem é dono de um repositório; nunca diz quem preencheu este formulário.",
+        "Tudo o que vem abaixo (o comando, o ambiente, as regiões) é publicado como parte da atestação, e é isto que diz de quem foram essas escolhas. Uma conta do GitHub diz quem é dono de um repositório; nunca diz quem preencheu este formulário.",
       submitterRoleOption: {
         maintainer: "Eu mantenho esta ferramenta",
         third_party: "Não sou o mantenedor dela",
@@ -495,12 +503,12 @@ export default {
       reuseApplied:
         "Respostas recuperadas dessa verificação. Confira antes de enviar: o commit que você fixou acima fica intacto.",
       reuseUnavailable:
-        "Não conseguimos carregar as configurações dessa verificação. Ela pode ser anterior ao armazenamento de envios — preencha o formulário à mão.",
+        "Não conseguimos carregar as configurações dessa verificação. Ela pode ser anterior ao armazenamento de envios, então preencha o formulário à mão.",
       reuseRegionsFile: "regions.bed (reutilizado de uma verificação anterior)",
       autoConfigTitle: "Configuração automática",
       autoConfigHint:
         "Opcional. Lemos o teu repositório no commit que fixaste e propomos as respostas abaixo. Nada é preenchido até teres revisto.",
-      autoConfigSummaryIdle: "Sem usar — preenche o formulário à mão, ou deixa-nos propor as respostas.",
+      autoConfigSummaryIdle: "Sem usar. Preenche o formulário à mão, ou deixa-nos propor as respostas.",
       autoConfigSummaryApplied: "Aplicada. Verifica cada campo antes de submeter.",
       autoConfigOwnDockerfile: "Sou eu que forneço o Dockerfile",
       autoConfigDockerfileHint:
@@ -508,12 +516,12 @@ export default {
       autoConfigSampleLabel: "Ficheiro de resultados de uma execução anterior",
       autoConfigLocalOnly:
         "Lido no teu navegador para deduzir o formato de saída e a disposição das colunas. O ficheiro nunca é enviado.",
-      autoConfigSampleApplied: "Lido {file} — a secção de saída esperada fica preenchida.",
+      autoConfigSampleApplied: "Lido {file}. A secção de saída esperada fica preenchida.",
       autoConfigGenerate: "Configurar automaticamente",
       autoConfigUseSaved: "Usar uma configuração guardada ({n})",
       autoConfigWorking: "A ler o repositório e a deduzir como a tua ferramenta compila e corre. Pode demorar alguns minutos.",
       autoConfigAppliedNote:
-        "Respostas preenchidas a partir da configuração automática. Verifica-as antes de submeter — o commit que fixaste acima não é tocado.",
+        "Respostas preenchidas a partir da configuração automática. Verifica-as antes de submeter. O commit que fixaste acima não é tocado.",
       autoConfigReview: "Rever",
       autoConfigReviewHint:
         "Tudo isto foi lido do teu repositório. Marca os grupos que quiseres, verifica os valores e preenche o formulário.",
@@ -525,7 +533,7 @@ export default {
         "Para o nosso servidor só são enviados o URL do repositório e o commit. O teu ficheiro de resultados e o teu Dockerfile são lidos no navegador e ficam por lá.",
       autoConfigStaleTitle: "Os ficheiros de compilação mudaram desde que isto foi gerado",
       autoConfigStaleBody:
-        "Um Dockerfile, manifesto ou Makefile é diferente no commit que fixaste. As respostas de ambiente podem já não estar certas — verifica-as, ou configura de novo.",
+        "Um Dockerfile, manifesto ou Makefile é diferente no commit que fixaste. As respostas de ambiente podem já não estar certas, então verifica-as ou configura de novo.",
       autoConfigNotFound: "Não consta do repositório",
       autoConfigApplies: "Aplica-se a esta ferramenta",
       autoConfigCaveats: "Vale a pena verificar à mão",
@@ -579,7 +587,7 @@ export default {
       cmdTooltipAria: "O que é o comando de execução e como funcionam os caminhos",
       cmdReplaceMytool: "Substitua \"mytool\" pelo binário ou comando real da sua ferramenta (ex. hipstr, strait_razor, toastr). O restante dos caminhos está correto.",
       cmdFetchingReadme: "Lendo o README do seu repo…",
-      cmdSuggestFromReadme: "Sugerido do seu README — clique para usar:",
+      cmdSuggestFromReadme: "Sugerido do seu README. Clique para usar:",
       cmdHint: "Sua ferramenta lê os dados de /data/in/ e escreve a saída em /data/out/.",
       cmdHintWithRef: "Sua ferramenta lê os dados de /data/in/, o genoma de referência de {mountPath}, e escreve a saída em /data/out/.",
       refGenomeTitle: "Genoma de referência: {assembly}",
@@ -633,7 +641,7 @@ export default {
       fixtureExplainer:
         "Obrigatório. Indique um arquivo pequeno e acessível publicamente no ref que você indicou.",
       fixtureExplainerOptional:
-        "Recomendado. Para uma verificação mais completa, indique um arquivo de teste no seu repo — o STRhub rodará tanto com seus dados quanto com nosso dataset de referência. Se seu repo não inclui dados de teste, deixe em branco e o STRhub rodará apenas com nosso dataset de referência.",
+        "Recomendado. Para uma verificação mais completa, indique um arquivo de teste no seu repo, e o STRhub rodará tanto com seus dados quanto com nosso dataset de referência. Se seu repo não inclui dados de teste, deixe em branco e o STRhub rodará apenas com nosso dataset de referência.",
       fixtureRequiredError: "Um arquivo de teste é necessário para este tipo de input (não há dataset de referência STRhub disponível).",
       fixtureSameRepo: "Está no repo da minha ferramenta",
       fixtureOtherRepo: "Está em outro repo",
@@ -676,7 +684,7 @@ export default {
       regionsUploadLabel: "Envie seu BED",
       regionsUploadPlaceholder: "Escolha um arquivo .bed…",
       regionsUploadHint:
-        "O arquivo que você montou a partir do painel acima, no formato da sua ferramenta. Texto puro .bed — não compactado. Validado contra o painel aqui antes de enviar.",
+        "O arquivo que você montou a partir do painel acima, no formato da sua ferramenta. Texto puro .bed, não compactado. Validado contra o painel aqui antes de enviar.",
       regionsGzip:
         "Esse arquivo está compactado (gzip). Descompacte primeiro (gunzip) e envie o .bed em texto puro.",
       supportedLociTitle: "Loci suportados pela nossa amostra ({count})",
@@ -689,13 +697,13 @@ export default {
       regionsMalformed: "O BED tem formato inválido:",
       regionsMalformedGeneric: "Não conseguimos interpretar esse arquivo como um BED.",
       regionsUnconverted:
-        "Isto parece o nosso painel de coordenadas, enviado como está. As coordenadas estão certas, mas as colunas ainda são as nossas — a maioria das ferramentas (HipSTR, GangSTR) espera seu próprio formato e o rejeitaria. Converta para o formato da sua ferramenta antes de rodar.",
+        "Isto parece o nosso painel de coordenadas, enviado como está. As coordenadas estão certas, mas as colunas ainda são as nossas, e a maioria das ferramentas (HipSTR, GangSTR) espera seu próprio formato e o rejeitaria. Converta para o formato da sua ferramenta antes de rodar.",
       regionsRepoTip:
         "Dica: faça commit deste BED no repo da sua ferramenta (ex. regions/strhub-verified.bed) para que quem a usar tenha as regiões exatas desta atestação. O STRhub verifica o arquivo que você envia aqui, não a cópia do repo.",
       regionsOk: "Seu BED cobre {covered} de {total} loci suportados. Pronto para verificar.",
       regionsRejectedTitle: "Este BED aponta para fora da nossa amostra",
       regionsRejectedExplainer:
-        "Estas regiões não estão cobertas pelo nosso recorte, então sua ferramenta não encontraria leituras ali. Não é um problema da sua ferramenta — ajuste o BED ao painel acima.",
+        "Estas regiões não estão cobertas pelo nosso recorte, então sua ferramenta não encontraria leituras ali. Não é um problema da sua ferramenta. Ajuste o BED ao painel acima.",
       regionsLinePrefix: "linha {line}:",
       regionsAndMore: "…e mais {n}.",
       regionsTooFewLoci:
@@ -770,7 +778,7 @@ export default {
       },
       contentToggle: "Checar plausibilidade do conteúdo (recomendado)",
       contentToggleTooltip:
-        "Recomendado. Verifica que a saída pareça genótipos plausíveis —loci reconhecíveis suficientes e os loci que você espera— não apenas um arquivo não vazio. Passar concede o badge mais forte \"Plausible output\". Desmarque para verificar apenas o formato.",
+        "Recomendado. Verifica que a saída pareça genótipos plausíveis (loci reconhecíveis suficientes e os loci que você espera) e não apenas um arquivo não vazio. Passar concede o badge mais forte \"Plausible output\". Desmarque para verificar apenas o formato.",
       contentToggleTooltipAria: "O que faz a checagem de plausibilidade de conteúdo",
       contentDefaultsHint:
         "Pré-preenchido com valores sensatos para o formato de saída e o assay escolhidos. Edite qualquer campo para ajustar à sua ferramenta, ou limpe um para pular aquela checagem.",
@@ -799,7 +807,7 @@ export default {
       pdfDownload: "Baixar relatório PDF",
       pdfGenerating: "Gerando PDF…",
       pdfDone: "PDF baixado",
-      pdfError: "PDF falhou — tentar novamente",
+      pdfError: "PDF falhou. Tentar novamente",
       pdfErrorHint: "O relatório pode não estar publicado ainda. Tente novamente em alguns segundos.",
       resubmit: "Editar e reenviar",
       resubmitHint: "Voltar ao formulário com os mesmos parâmetros preenchidos.",
@@ -831,7 +839,7 @@ export default {
       repoPlaceholder: "https://github.com/owner/tool",
       refLabel: "Versão, tag ou commit",
       refPlaceholder: "v2.1.0, ou um SHA de commit",
-      refHint: "Preenchido para você com o último release assim que cola o repositório. Qualquer tag ou commit serve — a versão que um manuscrito cita, ou uma anterior, para ver o que mudou. O resultado fica sempre fixado a um commit.",
+      refHint: "Preenchido para você com o último release assim que cola o repositório. Qualquer tag ou commit serve: a versão que um manuscrito cita, ou uma anterior, para ver o que mudou. O resultado fica sempre fixado a um commit.",
       refResolving: "Procurando o commit a fixar…",
       refPinnedLabel: "Commit fixo:",
       refResolved: "{label} ({how})",
@@ -889,7 +897,7 @@ export default {
       },
       verdictMeaning: {
         runs: "Instalou a partir do código público e produziu a saída documentada em um ambiente limpo.",
-        runsFallback: "Rodou e produziu sua saída documentada — mas no ambiente pronto que o README indica, porque seu código-fonte não compilou no commit fixado.",
+        runsFallback: "Rodou e produziu sua saída documentada, mas no ambiente pronto que o README indica, porque seu código-fonte não compilou no commit fixado.",
         fails: "Não produziu. A evidência aponta para a ferramenta ou para sua forma documentada de executar.",
         undetermined: "O STRhub não conseguiu deduzir como executá-la a partir do repositório. É um achado sobre a documentação, não sobre o software.",
         out_of_scope: "Precisa de algo que o runner automático não pode fornecer. Uma verificação manual pode cobrir.",

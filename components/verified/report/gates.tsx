@@ -59,10 +59,10 @@ export function GatesLadder({
               <span className="text-muted-foreground">
                 {t(g.meaningKey)}
                 {state === "stopped" && (
-                  <span className="ml-2 text-red-700 dark:text-red-400">— {t("verified.gate.stoppedHere")}</span>
+                  <span className="ml-2 font-medium text-red-700 dark:text-red-400">{t("verified.gate.stoppedHere")}</span>
                 )}
                 {state === "not-reached" && (
-                  <span className="ml-2 italic">— {t("verified.gate.notReached")}</span>
+                  <span className="ml-2 italic">{t("verified.gate.notReached")}</span>
                 )}
               </span>
             </div>

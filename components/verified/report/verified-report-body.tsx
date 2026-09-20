@@ -37,7 +37,7 @@ import {
   EvidenceList,
 } from "./findings";
 import { ScopeBlock, DisputeCard } from "./closing";
-import { VersionHistory, OlderVersionNotice } from "./history";
+import { VersionHistory, OlderVersionNotice, RetiredNotice } from "./history";
 import { AsItIsOpening } from "./verdict";
 import { NotDocumentedNotice, StrhubDidSection } from "./instrument";
 import { documentedOf, newestOfKind, type HistoryRow } from "@/lib/verified/history";
@@ -129,6 +129,8 @@ export function VerifiedReportBody({
           slug={slug}
           backLink={backLink}
         />
+
+        {history?.current.retired && <RetiredNotice row={history.current} />}
 
         {/* A run of STRhub's own recipe is not the documented result, and
             the page says so before it says anything else. */}

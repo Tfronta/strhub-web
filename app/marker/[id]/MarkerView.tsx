@@ -153,6 +153,8 @@ export function MarkerView({
   const markerId = params.id.toLowerCase();
   const marker = markerData[markerId as keyof typeof markerData];
   const isMarkerInMotifExplorer = summary?.tools.motifExplorer ?? false;
+  // STRNaming names for the STRbase Variant Alleles, index-aligned with marker.sequences.
+  const variantNames = summary?.variantNames ?? null;
   const isMarkerInIgv = IGV_MARKER_IDS.has(markerId);
 
   // Helper function to translate marker descriptions
@@ -2139,14 +2141,24 @@ export function MarkerView({
                 {marker.sequences && marker.sequences.length > 0 ? (
                   <div className="space-y-4">
                     <div className="border border-border rounded-md overflow-hidden">
-                      <div className="max-h-96 overflow-y-auto">
-                        <table className="w-full">
-                          <thead className="sticky top-0 z-10 border-b border-border bg-background">
+                      {/* One scroll box for both axes: names and sequences stay on
+                          one line and scroll sideways together, allele column pinned. */}
+                      <div className="max-h-96 overflow-auto">
+                        <table className="w-max min-w-full border-separate border-spacing-0">
+                          <thead>
                             <tr>
-                              <th className="text-left px-3 py-2 text-xs font-semibold text-foreground">
+                              <th className="sticky left-0 top-0 z-30 border-b border-r border-border bg-background text-left px-3 py-2 text-xs font-semibold text-foreground">
                                 {t("marker.alleleDesignation")}
                               </th>
-                              <th className="text-left px-3 py-2 text-xs font-semibold text-foreground">
+                              {variantNames && (
+                                <th className="sticky top-0 z-20 border-b border-border bg-background text-left px-3 py-2 text-xs font-semibold text-foreground whitespace-nowrap">
+                                  <span className="inline-flex items-center gap-1">
+                                    {t("marker.strnamingName")}
+                                    <InfoTip term="strbaseStrnamingName" />
+                                  </span>
+                                </th>
+                              )}
+                              <th className="sticky top-0 z-20 border-b border-border bg-background text-left px-3 py-2 text-xs font-semibold text-foreground whitespace-nowrap">
                                 <span className="inline-flex items-center gap-1">
                                   {t("marker.sequence")}
                                   <InfoTip term="strbaseSequence" />
@@ -2155,25 +2167,43 @@ export function MarkerView({
                             </tr>
                           </thead>
                           <tbody>
-                            {marker.sequences.map((seq, index) => (
-                              <tr
-                                key={`${seq.allele}-${index}`}
-                                className={
-                                  index % 2 === 0
-                                    ? "bg-background"
-                                    : "bg-muted/10"
-                                }
-                              >
-                                <td className="px-3 py-2 font-mono font-normal text-xs text-foreground">
-                                  {seq.allele}
-                                </td>
-                                <td className="px-3 py-2">
-                                  <div className="font-mono text-xs font-normal break-all leading-relaxed text-foreground">
+                            {marker.sequences.map((seq, index) => {
+                              // Solid stripe (not translucent) so the pinned column
+                              // hides the cells scrolling underneath it.
+                              const stripe =
+                                index % 2 === 0
+                                  ? "bg-background"
+                                  : "bg-[color-mix(in_oklab,var(--muted)_40%,var(--background))]";
+                              const named = variantNames?.[index];
+                              return (
+                                <tr key={`${seq.allele}-${index}`}>
+                                  <td className={`sticky left-0 z-10 border-r border-border ${stripe} px-3 py-2 font-mono font-normal text-xs text-foreground whitespace-nowrap`}>
+                                    {seq.allele}
+                                  </td>
+                                  {variantNames && (
+                                    <td className={`${stripe} px-3 py-2 font-mono text-xs whitespace-nowrap`}>
+                                      {named?.name ? (
+                                        <span className="text-foreground">{named.name}</span>
+                                      ) : (
+                                        <span
+                                          className="text-muted-foreground cursor-help"
+                                          title={
+                                            named?.status === "held"
+                                              ? t("marker.strnamingHeld")
+                                              : t("marker.strnamingNotCovered")
+                                          }
+                                        >
+                                          {t("marker.strnamingNotAvailable")}
+                                        </span>
+                                      )}
+                                    </td>
+                                  )}
+                                  <td className={`${stripe} px-3 py-2 font-mono text-xs font-normal whitespace-nowrap text-foreground`}>
                                     {seq.sequence}
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
+                                  </td>
+                                </tr>
+                              );
+                            })}
                           </tbody>
                         </table>
                       </div>
@@ -2187,10 +2217,12 @@ export function MarkerView({
                           const csvContent = [
                             [
                               t("marker.alleleDesignation"),
+                              ...(variantNames ? [t("marker.strnamingName")] : []),
                               t("marker.sequence"),
                             ],
-                            ...marker.sequences.map((seq) => [
+                            ...marker.sequences.map((seq, index) => [
                               seq.allele,
+                              ...(variantNames ? [variantNames[index]?.name ?? ""] : []),
                               seq.sequence,
                             ]),
                           ]

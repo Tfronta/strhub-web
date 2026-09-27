@@ -15,6 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { InfoTip } from "@/components/InfoTip";
 import {
   Tooltip,
   TooltipContent,
@@ -207,6 +208,19 @@ function StructureCard({ summary, t }: { summary: MarkerSummary; t: Translate })
                   </Badge>
                 ))}
               </div>
+            </div>
+          )}
+          {fssg.referenceName && (
+            <div className="space-y-1 sm:col-span-2">
+              <div className="flex items-center gap-1">
+                <Label className="text-xs font-normal text-muted-foreground">
+                  {s("referenceNameLabel")}
+                </Label>
+                <InfoTip term="strnamingName" />
+              </div>
+              <p className="overflow-x-auto whitespace-nowrap font-mono text-sm font-semibold text-foreground">
+                {fssg.referenceName}
+              </p>
             </div>
           )}
           {fssg.historicalBracketing && (

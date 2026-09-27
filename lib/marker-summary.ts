@@ -21,6 +21,17 @@ import {
 } from "@/app/tools/str-motif-explorer/data/fssgData";
 import { IGV_MARKER_IDS } from "@/app/tools/igv-viewer/markers";
 import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
+import strnamingNames from "@/data/strnaming_names.json";
+
+export type VariantNameStatus = "ok" | "held" | "not_covered";
+
+type StrnamingNames = {
+  reference: Record<string, string>;
+  strbase: Record<string, Array<{ h: string; name: string | null; status: VariantNameStatus }>>;
+};
+// STRNaming 1.2.1 names over the ISFG minimum range, generated offline and
+// verified (see the file's `source` block). Only verified names are stored.
+const STRNAMING = strnamingNames as unknown as StrnamingNames;
 
 /**
  * Date of the last change to what marker pages show: the datasets (markerData,
@@ -89,6 +100,8 @@ export type MarkerSummary = {
     canonicalBracketing: string[];
     historicalBracketing: string | null;
     minimumRange: { chrom: string; start: number; end: number; lengthBp: number } | null;
+    /** STRNaming 1.2.1 name of the GRCh38 reference allele over the ISFG minimum range, e.g. "CE13_TCTA[13]". */
+    referenceName: string | null;
     /** MPS kits whose amplicon covers the locus, per STRidER's FSSG, each with the range it sequences (GRCh38). */
     kits: Array<{
       name: string;
@@ -101,6 +114,11 @@ export type MarkerSummary = {
   ce: { populations: PopulationSummary[]; table: FrequencyTable } | null;
   ngs: { populations: string[]; hasRao: boolean } | null;
   variants: { count: number; alleles: string[] } | null;
+  /**
+   * STRNaming names for the STRbase Variant Alleles, index-aligned with
+   * markerData[id].sequences; name is null unless status is "ok".
+   */
+  variantNames: Array<{ name: string | null; status: VariantNameStatus }> | null;
   related: { sameChromosome: MarkerLink[]; sameKind: MarkerLink[] };
   tools: { motifExplorer: boolean; igv: boolean };
 };
@@ -283,6 +301,14 @@ function relatedMarkers(id: string, marker: RawMarker): MarkerSummary["related"]
   return { sameChromosome, sameKind };
 }
 
+// Drop the names entirely if the stored list no longer lines up with the
+// STRbase sequences (the alignment itself is checked by strnaming-names.test).
+function variantNamesFor(id: string, sequenceCount: number): MarkerSummary["variantNames"] {
+  const rows = STRNAMING.strbase[id];
+  if (!rows || rows.length !== sequenceCount) return null;
+  return rows.map(({ name, status }) => ({ name, status }));
+}
+
 export function buildMarkerSummary(id: string): MarkerSummary | null {
   const key = id.toLowerCase();
   const marker = rawMarkers[key];
@@ -341,6 +367,7 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
                   fssg.minimumRange.end - fssg.minimumRange.start + 1,
               }
             : null,
+          referenceName: STRNAMING.reference[fssg.locus] ?? null,
           kits: Object.entries(fssg.kits ?? {}).map(([name, range]) => ({
             name,
             chrom: range.chrom,
@@ -356,6 +383,7 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
       sequences.length > 0
         ? { count: sequences.length, alleles: variantAlleles }
         : null,
+    variantNames: variantNamesFor(key, sequences.length),
     related: relatedMarkers(key, marker),
     tools: {
       motifExplorer: fssg ? isDisplayable(fssg) : false,

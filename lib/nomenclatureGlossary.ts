@@ -17,6 +17,7 @@ export type GlossaryTermKey =
   | "coreRepeat"
   | "flankingRegion"
   | "strbaseSequence"
+  | "strbaseStrnamingName"
   | "alleleRange"
   | "canonicalMotif"
   | "historicalMotif";
@@ -73,6 +74,11 @@ export const NOMENCLATURE_GLOSSARY: Record<GlossaryTermKey, Record<Language, Ent
     en: { term: "STRbase sequence", anchor: "mps-allele", short: "Full allele sequences catalogued by STRbase (NIST), reported over STRbase's own sequence window, which can differ from the ISFG minimum range used for STRNaming names. Ranges can vary between databases, so compare alleles with the sequence range in mind." },
     es: { term: "Secuencia STRbase", anchor: "mps-allele", short: "Secuencias completas del alelo catalogadas por STRbase (NIST), reportadas sobre la ventana propia de STRbase, que puede diferir del ISFG minimum range que usan los nombres STRNaming. Los rangos pueden variar entre bases de datos, así que compará los alelos teniendo en cuenta el rango de secuencia." },
     pt: { term: "Sequência STRbase", anchor: "mps-allele", short: "Sequências completas do alelo catalogadas pelo STRbase (NIST), reportadas sobre a janela do próprio STRbase, que pode diferir do ISFG minimum range usado pelos nomes STRNaming. Os intervalos podem variar entre bases de dados, então compare os alelos considerando o intervalo de sequência." },
+  },
+  strbaseStrnamingName: {
+    en: { term: "STRNaming name (ISFG 2024)", anchor: "strnaming-name", short: "Name generated with STRNaming 1.2.1 over the ISFG minimum range (GRCh38 forward strand), as CE allele plus repeat blocks. STRbase sequences that differ only outside that range share a name. A name is shown only when its CE matches the STRbase designation; n/a means the sequence does not span the range or the name is under review." },
+    es: { term: "Nombre STRNaming (ISFG 2024)", anchor: "strnaming-name", short: "Nombre generado con STRNaming 1.2.1 sobre el ISFG minimum range (hebra forward de GRCh38), como alelo CE más bloques de repetición. Las secuencias de STRbase que solo difieren fuera de ese rango comparten nombre. Se muestra solo cuando su CE coincide con la designación de STRbase; n/a indica que la secuencia no cubre el rango o que el nombre está en revisión." },
+    pt: { term: "Nome STRNaming (ISFG 2024)", anchor: "strnaming-name", short: "Nome gerado com o STRNaming 1.2.1 sobre o ISFG minimum range (fita forward do GRCh38), como alelo CE mais blocos de repetição. Sequências do STRbase que diferem só fora dessa faixa compartilham o nome. É mostrado só quando seu CE coincide com a designação do STRbase; n/a indica que a sequência não cobre a faixa ou que o nome está em revisão." },
   },
   alleleRange: {
     en: { term: "Allele range", anchor: "ce-allele", short: "The range of allele sizes (length-based, CE) reported for this marker. It reflects the alleles seen in the reference data and can vary by population and kit, so treat it as typical rather than an absolute limit." },

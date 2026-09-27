@@ -227,6 +227,10 @@ marker: {
   noVariantsForMarker: "Ainda não há variantes alélicas reportadas na STRbase para este marcador.",
   addNewVariant: "Adicionar uma nova variante",
   alleleDesignation: "Designação do Alelo",
+  strnamingName: "STRNaming (ISFG 2024)",
+  strnamingNotAvailable: "n/a",
+  strnamingNotCovered: "Esta sequência do STRbase não cobre o ISFG minimum range",
+  strnamingHeld: "Nome em revisão: o CE do STRNaming não coincide com a designação do STRbase",
   sequence: "Sequência",
   noFrequenciesMessage:
     "Nenhum dado disponível. As frequências populacionais para este locus estão sendo curadas.",
@@ -377,6 +381,7 @@ marker: {
     structureSource:
       "Intervalo mínimo ISFG, bracketing e cobertura por kit segundo o Forensic Sequence Structure Guide v6.1 beta (05/09/2024) do",
     canonicalLabel: "Bracketing ISFG / STRNaming (a partir de 2024)",
+    referenceNameLabel: "Alelo de referência (GRCh38) nomeado com o STRNaming 1.2.1",
     historicalLabel: "Bracketing histórico (2016-2023)",
     minimumRangeLabel: "Intervalo mínimo ISFG (GRCh38)",
     basePairs: "{n} pb",

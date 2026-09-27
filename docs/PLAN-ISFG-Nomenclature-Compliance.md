@@ -207,3 +207,34 @@ Eso ya no aplica:
   Sequence con el rango ISFG") reproduce los nombres.
 - Procedencia registrada en `source.nomenclature` de cada JSON de
   `sections/mix-profiles/data/ngs-haplotypes/`.
+
+## Corrección 2026-09-27: ventanas ISFG de Mix Profiles
+
+La verificación del 2026-09-22 ("210/210 nombres se regeneran idénticos") solo
+comprobaba que STRNaming reproduce los nombres a partir de las ventanas
+guardadas; no podía detectar que las ventanas mismas estuvieran mal. Una
+auditoría contra coordenadas GRCh38 encontró:
+
+- **92/210 alelos (10 loci)**: al armar `full_seq` se recortaban 1-5 pb de los
+  flancos hg38 cuando el final del alelo se parecía al comienzo del flanco
+  (`overlap_left/right_bp`), aunque en coordenadas los flancos son contiguos a
+  la región de HipSTR (210/210). La ventana quedaba corrida: 92 nombres
+  cambian (ningún CE), 82 tenían variantes de flanco falsas.
+- **4 alelos (HG02944, D1S1656 y D5S818)**: las bases de padding del VCF
+  (`POS < START`) se contaban en el alelo: 11.1/15.1 y 13.1/12.1 publicados;
+  según `FORMAT GB` de HipSTR son 11/15 y 12/11 (coinciden con `data.ts`).
+- **3 filas de la tabla NGS (HG02944)** tomaban el haplotipo por posición y
+  mostraban la secuencia del otro alelo; ahora se elige por valor del alelo.
+
+Ventana corregida: `GRCh38[inicio ISFG .. POS-1] + allele_seq +
+GRCh38[END+1 .. fin ISFG]`. Controles: reproduce las 118 ventanas no afectadas;
+el CE de cada nombre = CE de referencia + GB (210/210); plantilla STRidER
+207/210 (vs 177 antes). Tests:
+`sections/mix-profiles/data/ngs-haplotypes/ngs-haplotypes.test.ts`.
+
+Pendiente: por diseño, 4-36 pb en los extremos de cada ventana son referencia
+GRCh38 no observada (en 16/21 loci tocan el repeat nombrado, p. ej. los
+primeros 23 pb de vWA); quedan registrados en `isfg_ref5_bp_{n}` /
+`isfg_ref3_bp_{n}`. La solución es re-genotipar las 5 muestras con HipSTR
+usando como regiones el rango ISFG (`bed_isfg.bed` del proyecto HGDP, como en
+`joint_isfg`), para que la ventana quede entera observada.

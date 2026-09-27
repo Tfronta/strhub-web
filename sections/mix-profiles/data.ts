@@ -966,7 +966,16 @@ export function cePeaksToNGSRowsWithSeq(
       if (source) {
         const entry = getSampleNgsLocus(source.sampleId, locusId)
         if (entry) {
-          const useFirst = source.alleleIndex === 0
+          // Pick the haplotype whose allele call matches this row. The CE
+          // genotype above is not always in the VCF's haplotype order (e.g.
+          // HG02944 at D5S818 is phased 12|11 but listed as 11, 12).
+          let useFirst = source.alleleIndex === 0
+          const call1 = entry.allele_call1 != null ? String(entry.allele_call1) : null
+          const call2 = entry.allele_call2 != null ? String(entry.allele_call2) : null
+          if (call1 !== call2) {
+            if (call1 === alleleLabel) useFirst = true
+            else if (call2 === alleleLabel) useFirst = false
+          }
           repeatSequence = (useFirst ? entry.bracketed1 : entry.bracketed2) ?? "—"
           const alleleNum = useFirst ? 1 : 2
           // Prefer the exact STRNaming input (ISFG reported-range window): this

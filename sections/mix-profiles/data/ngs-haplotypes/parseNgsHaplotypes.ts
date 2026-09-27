@@ -36,6 +36,15 @@ export type LocusRecord = {
   isfg_repeat_start0_2?: number;
   isfg_repeat_end0_1?: number;
   isfg_repeat_end0_2?: number;
+  // Bases at the 5' / 3' end of isfg_seq{idx} taken from GRCh38: the ISFG range
+  // extends beyond the region HipSTR genotyped, so they were not observed.
+  isfg_ref5_bp_1?: number;
+  isfg_ref5_bp_2?: number;
+  isfg_ref3_bp_1?: number;
+  isfg_ref3_bp_2?: number;
+  // CE allele per haplotype (reference CE + HipSTR GB), in VCF haplotype order.
+  allele_call1?: string;
+  allele_call2?: string;
   coverage1?: number;
   coverage2?: number;
   [key: string]: unknown;

@@ -5,12 +5,13 @@
   "primary": "HipSTR VCF",
   "secondary_crosscheck": "haplotypes.tsv",
   "notes": "Allele sequences reconstructed from REF/ALT + GT. Allelic Coverage derived from PDP (fractional read support).",
-  "allele_designation": "Allele calls computed from haplotype length and PERIOD (len(seq)//PERIOD, microvariants as .{remainder_bp}). Motifs for bracketed display are canonical per locus.",
+  "allele_designation": "Allele calls = reference CE + HipSTR FORMAT GB (bp difference from GRCh38), microvariants as .{remainder_bp}. This equals len(haplotype)//PERIOD once VCF padding bases before the STR region (POS < START) are excluded. genotype_forense lists the two calls in ascending order. Motifs for bracketed display are canonical per locus.",
   "nomenclature": {
    "tool": "STRNaming 1.2.1 (PyPI, 2026-08-10), CLI `strnaming name-sequences -r <ISFG BED>`",
    "ranges": "ISFG minimum range (FSSG v6.1 / ISFG 2024), GRCh38, passed as a BED file with strand '+' because isfg_seq{n} is stored in forward orientation",
-   "fields": "bracketed{n} = STRNaming name; isfg_seq{n} = exact input over the ISFG range; isfgSegments{n} = block colouring from STRNaming --html",
-   "verified": "2026-09-22: all 210 names (5 samples x 21 loci x 2 alleles) regenerated identically with STRNaming 1.2.1. Note: 1.2.1 removed the built-in 'uas-frr' ranges; -r now takes a BED file."
+   "fields": "bracketed{n} = STRNaming name; isfg_seq{n} = exact STRNaming input over the ISFG range; isfgSegments{n} = block colouring from STRNaming --html; isfg_ref5_bp_{n} / isfg_ref3_bp_{n} = reference (not observed) bases at the 5' / 3' end of isfg_seq{n}",
+   "verified": "2026-09-27: windows rebuilt from coordinates. The 2026-09-12 build trimmed 1-5 flank bases by sequence similarity in 92/210 alleles and counted VCF padding in 4 calls; both fixed. Checks: the rebuilt windows reproduce the 118 untouched ones exactly; the CE in every name equals reference CE + HipSTR GB (210/210); names fit a STRidER canonical bracketing template in 207/210 (the rest: TH01 9.3 and one rare D18S51 haplotype).",
+   "window": "isfg_seq{n} = GRCh38[ISFG start .. POS-1] + allele_seq{n} + GRCh38[END+1 .. ISFG end], built from coordinates (GRCh38 no-alt analysis set). The ISFG minimum range extends beyond the HipSTR-genotyped region at every locus, so isfg_ref5_bp_{n} / isfg_ref3_bp_{n} bases at each end are GRCh38 reference, not observed."
   }
  },
  "loci": [
@@ -29,11 +30,11 @@
    "coverage2": 19.0,
    "period": 4,
    "motif": null,
-   "allele_call1": "11.1",
-   "allele_call2": "15.1",
-   "genotype_forense": "11.1/15.1",
-   "bracketed1": "CE11.1_AC[5]AT[1]CTAT[10]_-4.1->A",
-   "bracketed2": "CE15.1_AC[5]AT[1]CTAT[14]_-4.1->A",
+   "allele_call1": "11",
+   "allele_call2": "15",
+   "genotype_forense": "11/15",
+   "bracketed1": "CE11_AC[5]AT[1]CTAT[10]",
+   "bracketed2": "CE15_AC[5]AT[1]CTAT[14]",
    "hipstr_start": 230769616,
    "hipstr_end": 230769683,
    "motif_canonical": "TCTA",
@@ -41,28 +42,28 @@
    "right_flank_hg38": "CATCACACAGTTGACCCTTGAGCAA",
    "flank_size": 25,
    "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-   "full_seq1": "ATACATACAATTAAACACACACACATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATCACACAGTTGACCCTTGAGCAA",
-   "overlap_left_bp_1": 1,
+   "full_seq1": "TATACATACAATTAAACACACACACATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATCACACAGTTGACCCTTGAGCAA",
+   "overlap_left_bp_1": 0,
    "overlap_right_bp_1": 0,
-   "left_flank_in_full1": "ATACATACAATTAAACACACACAC",
+   "left_flank_in_full1": "TATACATACAATTAAACACACACAC",
    "right_flank_in_full1": "CATCACACAGTTGACCCTTGAGCAA",
-   "repeat_start0_full1": 24,
-   "repeat_end0_full1": 69,
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 70,
    "repeat_seq1": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
    "motif_observed1": "ATCT",
-   "full_seq2": "ATACATACAATTAAACACACACACATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATCACACAGTTGACCCTTGAGCAA",
-   "overlap_left_bp_2": 1,
+   "full_seq2": "TATACATACAATTAAACACACACACATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATCACACAGTTGACCCTTGAGCAA",
+   "overlap_left_bp_2": 0,
    "overlap_right_bp_2": 0,
-   "left_flank_in_full2": "ATACATACAATTAAACACACACAC",
+   "left_flank_in_full2": "TATACATACAATTAAACACACACAC",
    "right_flank_in_full2": "CATCACACAGTTGACCCTTGAGCAA",
-   "repeat_start0_full2": 24,
-   "repeat_end0_full2": 85,
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 86,
    "repeat_seq2": "ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
    "motif_observed2": "ATCT",
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "ATTAA",
+     "t": "TTAA",
      "c": "f"
     },
     {
@@ -84,7 +85,7 @@
    ],
    "isfgSegments2": [
     {
-     "t": "ATTAA",
+     "t": "TTAA",
      "c": "f"
     },
     {
@@ -104,12 +105,16 @@
      "c": "f"
     }
    ],
-   "isfg_seq1": "ATTAAACACACACACATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATC",
-   "isfg_repeat_start0_1": 5,
-   "isfg_repeat_end0_1": 57,
-   "isfg_seq2": "ATTAAACACACACACATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATC",
-   "isfg_repeat_start0_2": 5,
-   "isfg_repeat_end0_2": 73
+   "isfg_seq1": "TTAAACACACACACATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATC",
+   "isfg_repeat_start0_1": 4,
+   "isfg_repeat_end0_1": 56,
+   "isfg_ref5_bp_1": 14,
+   "isfg_ref3_bp_1": 4,
+   "isfg_seq2": "TTAAACACACACACATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACATC",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 72,
+   "isfg_ref5_bp_2": 14,
+   "isfg_ref3_bp_2": 4
   },
   {
    "locus": "D10S1248",
@@ -129,8 +134,8 @@
    "allele_call1": "13",
    "allele_call2": "14",
    "genotype_forense": "13/14",
-   "bracketed1": "CE13_GGAA[13]_+1ATG>TGA",
-   "bracketed2": "CE14_GGAA[14]_+1ATG>TGA",
+   "bracketed1": "CE13_GGAA[13]",
+   "bracketed2": "CE14_GGAA[14]",
    "hipstr_start": 129294244,
    "hipstr_end": 129294295,
    "motif_canonical": "GGAA",
@@ -138,20 +143,20 @@
    "right_flank_hg38": "ATGAAGACAATACAACCAGAGTTGT",
    "flank_size": 25,
    "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-   "full_seq1": "TAATGAATTGAACAAATGAGTGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAATGAAGACAATACAACCAGAGTTGT",
+   "full_seq1": "TAATGAATTGAACAAATGAGTGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAATGAAGACAATACAACCAGAGTTGT",
    "overlap_left_bp_1": 0,
-   "overlap_right_bp_1": 1,
+   "overlap_right_bp_1": 0,
    "left_flank_in_full1": "TAATGAATTGAACAAATGAGTGAGT",
-   "right_flank_in_full1": "TGAAGACAATACAACCAGAGTTGT",
+   "right_flank_in_full1": "ATGAAGACAATACAACCAGAGTTGT",
    "repeat_start0_full1": 25,
    "repeat_end0_full1": 77,
    "repeat_seq1": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
    "motif_observed1": "GGAA",
-   "full_seq2": "TAATGAATTGAACAAATGAGTGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAATGAAGACAATACAACCAGAGTTGT",
+   "full_seq2": "TAATGAATTGAACAAATGAGTGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAATGAAGACAATACAACCAGAGTTGT",
    "overlap_left_bp_2": 0,
-   "overlap_right_bp_2": 1,
+   "overlap_right_bp_2": 0,
    "left_flank_in_full2": "TAATGAATTGAACAAATGAGTGAGT",
-   "right_flank_in_full2": "TGAAGACAATACAACCAGAGTTGT",
+   "right_flank_in_full2": "ATGAAGACAATACAACCAGAGTTGT",
    "repeat_start0_full2": 25,
    "repeat_end0_full2": 81,
    "repeat_seq2": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA",
@@ -167,7 +172,7 @@
      "c": "0"
     },
     {
-     "t": "TGAA",
+     "t": "ATGA",
      "c": "f"
     }
    ],
@@ -181,16 +186,20 @@
      "c": "0"
     },
     {
-     "t": "TGAA",
+     "t": "ATGA",
      "c": "f"
     }
    ],
-   "isfg_seq1": "TGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAATGAA",
+   "isfg_seq1": "TGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAATGA",
    "isfg_repeat_start0_1": 5,
    "isfg_repeat_end0_1": 57,
-   "isfg_seq2": "TGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAATGAA",
+   "isfg_ref5_bp_1": 5,
+   "isfg_ref3_bp_1": 4,
+   "isfg_seq2": "TGAGTGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAATGA",
    "isfg_repeat_start0_2": 5,
-   "isfg_repeat_end0_2": 61
+   "isfg_repeat_end0_2": 61,
+   "isfg_ref5_bp_2": 5,
+   "isfg_ref3_bp_2": 4
   },
   {
    "locus": "TH01",
@@ -269,9 +278,13 @@
    "isfg_seq1": "ATGGTGAATGAATGAATGAATGAATGAATGAGGGA",
    "isfg_repeat_start0_1": 4,
    "isfg_repeat_end0_1": 28,
+   "isfg_ref5_bp_1": 6,
+   "isfg_ref3_bp_1": 5,
    "isfg_seq2": "ATGGTGAATGAATGAATGAATGAATGAATGAATGAATGAGGGA",
    "isfg_repeat_start0_2": 4,
-   "isfg_repeat_end0_2": 36
+   "isfg_repeat_end0_2": 36,
+   "isfg_ref5_bp_2": 6,
+   "isfg_ref3_bp_2": 5
   },
   {
    "locus": "vWA",
@@ -390,9 +403,13 @@
    "isfg_seq1": "CATAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGATAGATCAAT",
    "isfg_repeat_start0_1": 4,
    "isfg_repeat_end0_1": 84,
+   "isfg_ref5_bp_1": 23,
+   "isfg_ref3_bp_1": 5,
    "isfg_seq2": "CATAGGATGGATGGATAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGATAGATCAAT",
    "isfg_repeat_start0_2": 4,
-   "isfg_repeat_end0_2": 92
+   "isfg_repeat_end0_2": 92,
+   "isfg_ref5_bp_2": 23,
+   "isfg_ref3_bp_2": 5
   },
   {
    "locus": "D12S391",
@@ -479,9 +496,13 @@
    "isfg_seq1": "TGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGATGAGA",
    "isfg_repeat_start0_1": 8,
    "isfg_repeat_end0_1": 76,
+   "isfg_ref5_bp_1": 9,
+   "isfg_ref3_bp_1": 4,
    "isfg_seq2": "TGCATAGGTAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGATGAGA",
    "isfg_repeat_start0_2": 8,
-   "isfg_repeat_end0_2": 88
+   "isfg_repeat_end0_2": 88,
+   "isfg_ref5_bp_2": 9,
+   "isfg_ref3_bp_2": 4
   },
   {
    "locus": "D13S317",
@@ -501,8 +522,8 @@
    "allele_call1": "11",
    "allele_call2": "13",
    "genotype_forense": "11/13",
-   "bracketed1": "CE11_TATC[11]AATC[2]ATCT[3]_-1T>-_-4.1->T",
-   "bracketed2": "CE13_TATC[13]AATC[2]ATCT[3]_-1T>-_-4.1->T",
+   "bracketed1": "CE11_TATC[11]AATC[2]ATCT[3]",
+   "bracketed2": "CE13_TATC[13]AATC[2]ATCT[3]",
    "hipstr_start": 82148025,
    "hipstr_end": 82148068,
    "motif_canonical": "TATC",
@@ -510,28 +531,28 @@
    "right_flank_hg38": "AATCAATCATCTATCTATCTTTCTG",
    "flank_size": 25,
    "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-   "full_seq1": "CGCCTATCTGTATTTACAAATACATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTG",
-   "overlap_left_bp_1": 1,
+   "full_seq1": "CGCCTATCTGTATTTACAAATACATTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTG",
+   "overlap_left_bp_1": 0,
    "overlap_right_bp_1": 0,
-   "left_flank_in_full1": "CGCCTATCTGTATTTACAAATACA",
+   "left_flank_in_full1": "CGCCTATCTGTATTTACAAATACAT",
    "right_flank_in_full1": "AATCAATCATCTATCTATCTTTCTG",
-   "repeat_start0_full1": 24,
-   "repeat_end0_full1": 68,
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 69,
    "repeat_seq1": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
    "motif_observed1": "TATC",
-   "full_seq2": "CGCCTATCTGTATTTACAAATACATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTG",
-   "overlap_left_bp_2": 1,
+   "full_seq2": "CGCCTATCTGTATTTACAAATACATTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTG",
+   "overlap_left_bp_2": 0,
    "overlap_right_bp_2": 0,
-   "left_flank_in_full2": "CGCCTATCTGTATTTACAAATACA",
+   "left_flank_in_full2": "CGCCTATCTGTATTTACAAATACAT",
    "right_flank_in_full2": "AATCAATCATCTATCTATCTTTCTG",
-   "repeat_start0_full2": 24,
-   "repeat_end0_full2": 76,
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 77,
    "repeat_seq2": "TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC",
    "motif_observed2": "TATC",
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "TACA",
+     "t": "ACAT",
      "c": "f"
     },
     {
@@ -553,7 +574,7 @@
    ],
    "isfgSegments2": [
     {
-     "t": "TACA",
+     "t": "ACAT",
      "c": "f"
     },
     {
@@ -573,12 +594,16 @@
      "c": "f"
     }
    ],
-   "isfg_seq1": "TACATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTGTCTGTCTTTTT",
+   "isfg_seq1": "ACATTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTGTCTGTCTTTTT",
    "isfg_repeat_start0_1": 4,
    "isfg_repeat_end0_1": 68,
-   "isfg_seq2": "TACATATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTGTCTGTCTTTTT",
+   "isfg_ref5_bp_1": 4,
+   "isfg_ref3_bp_1": 36,
+   "isfg_seq2": "ACATTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCAATCAATCATCTATCTATCTTTCTGTCTGTCTTTTT",
    "isfg_repeat_start0_2": 4,
-   "isfg_repeat_end0_2": 76
+   "isfg_repeat_end0_2": 76,
+   "isfg_ref5_bp_2": 4,
+   "isfg_ref3_bp_2": 36
   },
   {
    "locus": "PentaE",
@@ -598,8 +623,8 @@
    "allele_call1": "7",
    "allele_call2": "10",
    "genotype_forense": "7/10",
-   "bracketed1": "CE7_TTTC[1]TTTTC[6]_-4.1->T",
-   "bracketed2": "CE10_TTTC[1]TTTTC[9]_-4.1->T",
+   "bracketed1": "CE7_TTTTC[7]",
+   "bracketed2": "CE10_TTTTC[10]",
    "hipstr_start": 96831015,
    "hipstr_end": 96831039,
    "motif_canonical": "TCTTT",
@@ -607,36 +632,32 @@
    "right_flank_hg38": "GAGACTGAGTCTTGCTCAGTCGCCC",
    "flank_size": 25,
    "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-   "full_seq1": "TAATTGAGAAAACTCCTTACAATTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGACTGAGTCTTGCTCAGTCGCCC",
-   "overlap_left_bp_1": 1,
+   "full_seq1": "TAATTGAGAAAACTCCTTACAATTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGACTGAGTCTTGCTCAGTCGCCC",
+   "overlap_left_bp_1": 0,
    "overlap_right_bp_1": 0,
-   "left_flank_in_full1": "TAATTGAGAAAACTCCTTACAATT",
+   "left_flank_in_full1": "TAATTGAGAAAACTCCTTACAATTT",
    "right_flank_in_full1": "GAGACTGAGTCTTGCTCAGTCGCCC",
-   "repeat_start0_full1": 24,
-   "repeat_end0_full1": 59,
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 60,
    "repeat_seq1": "TCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT",
    "motif_observed1": "TCTTT",
-   "full_seq2": "TAATTGAGAAAACTCCTTACAATTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGACTGAGTCTTGCTCAGTCGCCC",
-   "overlap_left_bp_2": 1,
+   "full_seq2": "TAATTGAGAAAACTCCTTACAATTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGACTGAGTCTTGCTCAGTCGCCC",
+   "overlap_left_bp_2": 0,
    "overlap_right_bp_2": 0,
-   "left_flank_in_full2": "TAATTGAGAAAACTCCTTACAATT",
+   "left_flank_in_full2": "TAATTGAGAAAACTCCTTACAATTT",
    "right_flank_in_full2": "GAGACTGAGTCTTGCTCAGTCGCCC",
-   "repeat_start0_full2": 24,
-   "repeat_end0_full2": 74,
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 75,
    "repeat_seq2": "TCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT",
    "motif_observed2": "TCTTT",
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "TACAA",
+     "t": "ACAA",
      "c": "f"
     },
     {
-     "t": "TTTC",
-     "c": "2"
-    },
-    {
-     "t": "TTTTCTTTTCTTTTCTTTTCTTTTCTTTTC",
+     "t": "TTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTC",
      "c": "0"
     },
     {
@@ -646,15 +667,11 @@
    ],
    "isfgSegments2": [
     {
-     "t": "TACAA",
+     "t": "ACAA",
      "c": "f"
     },
     {
-     "t": "TTTC",
-     "c": "2"
-    },
-    {
-     "t": "TTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTC",
+     "t": "TTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTC",
      "c": "0"
     },
     {
@@ -662,12 +679,16 @@
      "c": "f"
     }
    ],
-   "isfg_seq1": "TACAATTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGAC",
-   "isfg_repeat_start0_1": 5,
+   "isfg_seq1": "ACAATTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGAC",
+   "isfg_repeat_start0_1": 4,
    "isfg_repeat_end0_1": 39,
-   "isfg_seq2": "TACAATTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGAC",
-   "isfg_repeat_start0_2": 5,
-   "isfg_repeat_end0_2": 54
+   "isfg_ref5_bp_1": 7,
+   "isfg_ref3_bp_1": 5,
+   "isfg_seq2": "ACAATTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTGAGAC",
+   "isfg_repeat_start0_2": 4,
+   "isfg_repeat_end0_2": 54,
+   "isfg_ref5_bp_2": 7,
+   "isfg_ref3_bp_2": 5
   },
   {
    "locus": "D16S539",
@@ -687,8 +708,8 @@
    "allele_call1": "12",
    "allele_call2": "11",
    "genotype_forense": "11/12",
-   "bracketed1": "CE12_GATA[12]_-2TG>GT_-4G>A",
-   "bracketed2": "CE11_GATA[11]_-2TG>GT_-4G>A",
+   "bracketed1": "CE12_GATA[12]",
+   "bracketed2": "CE11_GATA[11]",
    "hipstr_start": 86352702,
    "hipstr_end": 86352745,
    "motif_canonical": "GATA",
@@ -696,28 +717,28 @@
    "right_flank_hg38": "TCATTGAAAGACAAAACAGAGATGG",
    "flank_size": 25,
    "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-   "full_seq1": "ATCAATACAGACAGACAGACAGGTGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCATTGAAAGACAAAACAGAGATGG",
-   "overlap_left_bp_1": 1,
+   "full_seq1": "ATCAATACAGACAGACAGACAGGTGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCATTGAAAGACAAAACAGAGATGG",
+   "overlap_left_bp_1": 0,
    "overlap_right_bp_1": 0,
-   "left_flank_in_full1": "ATCAATACAGACAGACAGACAGGT",
+   "left_flank_in_full1": "ATCAATACAGACAGACAGACAGGTG",
    "right_flank_in_full1": "TCATTGAAAGACAAAACAGAGATGG",
-   "repeat_start0_full1": 24,
-   "repeat_end0_full1": 72,
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 73,
    "repeat_seq1": "GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA",
    "motif_observed1": "GATA",
-   "full_seq2": "ATCAATACAGACAGACAGACAGGTGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCATTGAAAGACAAAACAGAGATGG",
-   "overlap_left_bp_2": 1,
+   "full_seq2": "ATCAATACAGACAGACAGACAGGTGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCATTGAAAGACAAAACAGAGATGG",
+   "overlap_left_bp_2": 0,
    "overlap_right_bp_2": 0,
-   "left_flank_in_full2": "ATCAATACAGACAGACAGACAGGT",
+   "left_flank_in_full2": "ATCAATACAGACAGACAGACAGGTG",
    "right_flank_in_full2": "TCATTGAAAGACAAAACAGAGATGG",
-   "repeat_start0_full2": 24,
-   "repeat_end0_full2": 68,
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 69,
    "repeat_seq2": "GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA",
    "motif_observed2": "GATA",
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "AGGT",
+     "t": "GGTG",
      "c": "f"
     },
     {
@@ -731,7 +752,7 @@
    ],
    "isfgSegments2": [
     {
-     "t": "AGGT",
+     "t": "GGTG",
      "c": "f"
     },
     {
@@ -743,12 +764,16 @@
      "c": "f"
     }
    ],
-   "isfg_seq1": "AGGTGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCAT",
+   "isfg_seq1": "GGTGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCAT",
    "isfg_repeat_start0_1": 4,
    "isfg_repeat_end0_1": 52,
-   "isfg_seq2": "AGGTGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCAT",
+   "isfg_ref5_bp_1": 4,
+   "isfg_ref3_bp_1": 4,
+   "isfg_seq2": "GGTGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATCAT",
    "isfg_repeat_start0_2": 4,
-   "isfg_repeat_end0_2": 48
+   "isfg_repeat_end0_2": 48,
+   "isfg_ref5_bp_2": 4,
+   "isfg_ref3_bp_2": 4
   },
   {
    "locus": "D18S51",
@@ -768,8 +793,8 @@
    "allele_call1": "15",
    "allele_call2": "16",
    "genotype_forense": "15/16",
-   "bracketed1": "CE15_GAAA[15]G[1]AG[3]GAAA[2]GA[1]",
-   "bracketed2": "CE16_GAAA[16]G[1]AG[3]GAAA[2]GA[1]",
+   "bracketed1": "CE15_GAAA[15]A[1]AG[4]GAAA[2]",
+   "bracketed2": "CE16_GAAA[16]A[1]AG[4]GAAA[2]",
    "hipstr_start": 63281667,
    "hipstr_end": 63281738,
    "motif_canonical": "AGAA",
@@ -777,20 +802,20 @@
    "right_flank_hg38": "AAAGAGAGAGGAAAGAAAGAGAAAA",
    "flank_size": 25,
    "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-   "full_seq1": "GAGTGACAAATTGAGACCTTGTCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAGAGGAAAGAAAGAGAAAA",
+   "full_seq1": "GAGTGACAAATTGAGACCTTGTCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAAAGAGAGAGGAAAGAAAGAGAAAA",
    "overlap_left_bp_1": 0,
-   "overlap_right_bp_1": 2,
+   "overlap_right_bp_1": 0,
    "left_flank_in_full1": "GAGTGACAAATTGAGACCTTGTCTC",
-   "right_flank_in_full1": "AGAGAGAGGAAAGAAAGAGAAAA",
+   "right_flank_in_full1": "AAAGAGAGAGGAAAGAAAGAGAAAA",
    "repeat_start0_full1": 25,
    "repeat_end0_full1": 85,
    "repeat_seq1": "AGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAA",
    "motif_observed1": "AGAA",
-   "full_seq2": "GAGTGACAAATTGAGACCTTGTCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAGAGGAAAGAAAGAGAAAA",
+   "full_seq2": "GAGTGACAAATTGAGACCTTGTCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAAAGAGAGAGGAAAGAAAGAGAAAA",
    "overlap_left_bp_2": 0,
-   "overlap_right_bp_2": 2,
+   "overlap_right_bp_2": 0,
    "left_flank_in_full2": "GAGTGACAAATTGAGACCTTGTCTC",
-   "right_flank_in_full2": "AGAGAGAGGAAAGAAAGAGAAAA",
+   "right_flank_in_full2": "AAAGAGAGAGGAAAGAAAGAGAAAA",
    "repeat_start0_full2": 25,
    "repeat_end0_full2": 89,
    "repeat_seq2": "AGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAA",
@@ -806,19 +831,15 @@
      "c": "0"
     },
     {
-     "t": "G",
+     "t": "A",
      "c": "2"
     },
     {
-     "t": "AGAGAG",
+     "t": "AGAGAGAG",
      "c": "1"
     },
     {
      "t": "GAAAGAAA",
-     "c": "0"
-    },
-    {
-     "t": "GA",
      "c": "0"
     }
    ],
@@ -832,28 +853,28 @@
      "c": "0"
     },
     {
-     "t": "G",
+     "t": "A",
      "c": "2"
     },
     {
-     "t": "AGAGAG",
+     "t": "AGAGAGAG",
      "c": "1"
     },
     {
      "t": "GAAAGAAA",
      "c": "0"
-    },
-    {
-     "t": "GA",
-     "c": "0"
     }
    ],
-   "isfg_seq1": "TCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAGAGGAAAGAAAGA",
+   "isfg_seq1": "TCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAAAGAGAGAGGAAAGAAA",
    "isfg_repeat_start0_1": 5,
    "isfg_repeat_end0_1": 82,
-   "isfg_seq2": "TCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAGAGGAAAGAAAGA",
+   "isfg_ref5_bp_1": 4,
+   "isfg_ref3_bp_1": 18,
+   "isfg_seq2": "TCTCAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAAAGAGAGAGGAAAGAAA",
    "isfg_repeat_start0_2": 5,
-   "isfg_repeat_end0_2": 86
+   "isfg_repeat_end0_2": 86,
+   "isfg_ref5_bp_2": 4,
+   "isfg_ref3_bp_2": 18
   },
   {
    "locus": "D19S433",
@@ -932,9 +953,13 @@
    "isfg_seq1": "ATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTTCAACA",
    "isfg_repeat_start0_1": 22,
    "isfg_repeat_end0_1": 70,
+   "isfg_ref5_bp_1": 23,
+   "isfg_ref3_bp_1": 5,
    "isfg_seq2": "ATCTTCTCTCTTTCTTCCTCTCTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTTTCCTTCAACA",
    "isfg_repeat_start0_2": 22,
-   "isfg_repeat_end0_2": 78
+   "isfg_repeat_end0_2": 78,
+   "isfg_ref5_bp_2": 23,
+   "isfg_ref3_bp_2": 5
   },
   {
    "locus": "TPOX",
@@ -1013,9 +1038,13 @@
    "isfg_seq1": "TCACTGAATGAATGAATGAATGAATGAATGAATGAATGTTTGGGCA",
    "isfg_repeat_start0_1": 4,
    "isfg_repeat_end0_1": 36,
+   "isfg_ref5_bp_1": 6,
+   "isfg_ref3_bp_1": 8,
    "isfg_seq2": "TCACTGAATGAATGAATGAATGAATGAATGAATGAATGAATGTTTGGGCA",
    "isfg_repeat_start0_2": 4,
-   "isfg_repeat_end0_2": 40
+   "isfg_repeat_end0_2": 40,
+   "isfg_ref5_bp_2": 6,
+   "isfg_ref3_bp_2": 8
   },
   {
    "locus": "D2S441",
@@ -1035,8 +1064,8 @@
    "allele_call1": "14",
    "allele_call2": "14",
    "genotype_forense": "14/14",
-   "bracketed1": "CE14_TCTA[11]TTTA[1]TCTA[2]_-2CT>AC_+2ATC>CAT",
-   "bracketed2": "CE14_TCTA[11]TTTA[1]TCTA[2]_-2CT>AC_+2ATC>CAT",
+   "bracketed1": "CE14_TCTA[11]TTTA[1]TCTA[2]",
+   "bracketed2": "CE14_TCTA[11]TTTA[1]TCTA[2]",
    "hipstr_start": 68011947,
    "hipstr_end": 68011994,
    "motif_canonical": "TCTA",
@@ -1044,28 +1073,28 @@
    "right_flank_hg38": "TATCATAACACCACAGCCACTTAGC",
    "flank_size": 25,
    "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-   "full_seq1": "GAACTGTGGCTCATCTATGAAAACTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTATCATAACACCACAGCCACTTAGC",
-   "overlap_left_bp_1": 1,
-   "overlap_right_bp_1": 2,
-   "left_flank_in_full1": "GAACTGTGGCTCATCTATGAAAAC",
-   "right_flank_in_full1": "TCATAACACCACAGCCACTTAGC",
-   "repeat_start0_full1": 24,
-   "repeat_end0_full1": 80,
+   "full_seq1": "GAACTGTGGCTCATCTATGAAAACTTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTATATCATAACACCACAGCCACTTAGC",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "GAACTGTGGCTCATCTATGAAAACT",
+   "right_flank_in_full1": "TATCATAACACCACAGCCACTTAGC",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 81,
    "repeat_seq1": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTA",
    "motif_observed1": "TCTA",
-   "full_seq2": "GAACTGTGGCTCATCTATGAAAACTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTATCATAACACCACAGCCACTTAGC",
-   "overlap_left_bp_2": 1,
-   "overlap_right_bp_2": 2,
-   "left_flank_in_full2": "GAACTGTGGCTCATCTATGAAAAC",
-   "right_flank_in_full2": "TCATAACACCACAGCCACTTAGC",
-   "repeat_start0_full2": 24,
-   "repeat_end0_full2": 80,
+   "full_seq2": "GAACTGTGGCTCATCTATGAAAACTTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTATATCATAACACCACAGCCACTTAGC",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "GAACTGTGGCTCATCTATGAAAACT",
+   "right_flank_in_full2": "TATCATAACACCACAGCCACTTAGC",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 81,
    "repeat_seq2": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTA",
    "motif_observed2": "TCTA",
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "AAAC",
+     "t": "AACT",
      "c": "f"
     },
     {
@@ -1081,13 +1110,13 @@
      "c": "0"
     },
     {
-     "t": "TCATA",
+     "t": "TATCA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "AAAC",
+     "t": "AACT",
      "c": "f"
     },
     {
@@ -1103,16 +1132,20 @@
      "c": "0"
     },
     {
-     "t": "TCATA",
+     "t": "TATCA",
      "c": "f"
     }
    ],
-   "isfg_seq1": "AAACTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTATCATA",
+   "isfg_seq1": "AACTTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTATATCA",
    "isfg_repeat_start0_1": 4,
    "isfg_repeat_end0_1": 60,
-   "isfg_seq2": "AAACTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTATCATA",
+   "isfg_ref5_bp_1": 4,
+   "isfg_ref3_bp_1": 5,
+   "isfg_seq2": "AACTTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTATATCA",
    "isfg_repeat_start0_2": 4,
-   "isfg_repeat_end0_2": 60
+   "isfg_repeat_end0_2": 60,
+   "isfg_ref5_bp_2": 4,
+   "isfg_ref3_bp_2": 5
   },
   {
    "locus": "D2S1338",
@@ -1132,8 +1165,8 @@
    "allele_call1": "20",
    "allele_call2": "22",
    "genotype_forense": "20/22",
-   "bracketed1": "CE20_GGAA[13]GGCA[7]_-2AG>GA_-4G>A_+1A>G_+3G>C",
-   "bracketed2": "CE22_GGAA[2]GGAC[1]GGAA[12]GGCA[7]_-2AG>GA_-4G>A_+1A>G_+3G>C",
+   "bracketed1": "CE20_GGAA[13]GGCA[7]",
+   "bracketed2": "CE22_GGAA[2]GGAC[1]GGAA[12]GGCA[7]",
    "hipstr_start": 218014859,
    "hipstr_end": 218014950,
    "motif_canonical": "GGAA",
@@ -1141,28 +1174,28 @@
    "right_flank_hg38": "AGGCCAAGCCATTTCTGTTTCCAAA",
    "flank_size": 25,
    "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-   "full_seq1": "TCAGTAAGTTAAAGGATTGCAGGAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAGGCCAAGCCATTTCTGTTTCCAAA",
-   "overlap_left_bp_1": 1,
-   "overlap_right_bp_1": 1,
-   "left_flank_in_full1": "TCAGTAAGTTAAAGGATTGCAGGA",
-   "right_flank_in_full1": "GGCCAAGCCATTTCTGTTTCCAAA",
-   "repeat_start0_full1": 24,
-   "repeat_end0_full1": 104,
+   "full_seq1": "TCAGTAAGTTAAAGGATTGCAGGAGGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTTCTGTTTCCAAA",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "TCAGTAAGTTAAAGGATTGCAGGAG",
+   "right_flank_in_full1": "AGGCCAAGCCATTTCTGTTTCCAAA",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 105,
    "repeat_seq1": "GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCA",
    "motif_observed1": "GGAA",
-   "full_seq2": "TCAGTAAGTTAAAGGATTGCAGGAGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAGGCCAAGCCATTTCTGTTTCCAAA",
-   "overlap_left_bp_2": 1,
-   "overlap_right_bp_2": 1,
-   "left_flank_in_full2": "TCAGTAAGTTAAAGGATTGCAGGA",
-   "right_flank_in_full2": "GGCCAAGCCATTTCTGTTTCCAAA",
-   "repeat_start0_full2": 24,
-   "repeat_end0_full2": 112,
+   "full_seq2": "TCAGTAAGTTAAAGGATTGCAGGAGGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGCCAAGCCATTTCTGTTTCCAAA",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "TCAGTAAGTTAAAGGATTGCAGGAG",
+   "right_flank_in_full2": "AGGCCAAGCCATTTCTGTTTCCAAA",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 113,
    "repeat_seq2": "GGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCA",
    "motif_observed2": "GGAA",
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "AGGA",
+     "t": "GGAG",
      "c": "f"
     },
     {
@@ -1174,13 +1207,13 @@
      "c": "1"
     },
     {
-     "t": "GGCC",
+     "t": "AGGC",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "AGGA",
+     "t": "GGAG",
      "c": "f"
     },
     {
@@ -1200,16 +1233,20 @@
      "c": "1"
     },
     {
-     "t": "GGCC",
+     "t": "AGGC",
      "c": "f"
     }
    ],
-   "isfg_seq1": "AGGAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAGGCC",
+   "isfg_seq1": "GGAGGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGC",
    "isfg_repeat_start0_1": 4,
    "isfg_repeat_end0_1": 84,
-   "isfg_seq2": "AGGAGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAGGCC",
+   "isfg_ref5_bp_1": 4,
+   "isfg_ref3_bp_1": 4,
+   "isfg_seq2": "GGAGGGAAGGAAGGACGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGCAGGCAGGCAGGCAGGCAGGCAGGCAAGGC",
    "isfg_repeat_start0_2": 4,
-   "isfg_repeat_end0_2": 92
+   "isfg_repeat_end0_2": 92,
+   "isfg_ref5_bp_2": 4,
+   "isfg_ref3_bp_2": 4
   },
   {
    "locus": "PentaD",
@@ -1229,8 +1266,8 @@
    "allele_call1": "8",
    "allele_call2": "10",
    "genotype_forense": "8/10",
-   "bracketed1": "CE8_A[4]AAAAG[8]A[5]_-11.1->ACCA_+8.1->A",
-   "bracketed2": "CE10_A[4]AAAAG[10]A[5]_-11.1->ACCA_+8.1->A",
+   "bracketed1": "CE8_A[8]GAAAG[1]AAAAG[7]A[6]",
+   "bracketed2": "CE10_A[8]GAAAG[1]AAAAG[9]A[6]",
    "hipstr_start": 43636205,
    "hipstr_end": 43636269,
    "motif_canonical": "AAAGA",
@@ -1238,75 +1275,87 @@
    "right_flank_hg38": "AAAAACGAAGGGGAAAAAAAGAGAA",
    "flank_size": 25,
    "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-   "full_seq1": "CACCATCTCAAGAAAGAAAAAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAACGAAGGGGAAAAAAAGAGAA",
-   "overlap_left_bp_1": 4,
-   "overlap_right_bp_1": 1,
-   "left_flank_in_full1": "CACCATCTCAAGAAAGAAAAA",
-   "right_flank_in_full1": "AAAACGAAGGGGAAAAAAAGAGAA",
-   "repeat_start0_full1": 21,
-   "repeat_end0_full1": 61,
+   "full_seq1": "CACCATCTCAAGAAAGAAAAAAAAGAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAAACGAAGGGGAAAAAAAGAGAA",
+   "overlap_left_bp_1": 0,
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "CACCATCTCAAGAAAGAAAAAAAAG",
+   "right_flank_in_full1": "AAAAACGAAGGGGAAAAAAAGAGAA",
+   "repeat_start0_full1": 25,
+   "repeat_end0_full1": 65,
    "repeat_seq1": "AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA",
    "motif_observed1": "AAAGA",
-   "full_seq2": "CACCATCTCAAGAAAGAAAAAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAACGAAGGGGAAAAAAAGAGAA",
-   "overlap_left_bp_2": 4,
-   "overlap_right_bp_2": 1,
-   "left_flank_in_full2": "CACCATCTCAAGAAAGAAAAA",
-   "right_flank_in_full2": "AAAACGAAGGGGAAAAAAAGAGAA",
-   "repeat_start0_full2": 21,
-   "repeat_end0_full2": 71,
+   "full_seq2": "CACCATCTCAAGAAAGAAAAAAAAGAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAAACGAAGGGGAAAAAAAGAGAA",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "CACCATCTCAAGAAAGAAAAAAAAG",
+   "right_flank_in_full2": "AAAAACGAAGGGGAAAAAAAGAGAA",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 75,
    "repeat_seq2": "AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA",
    "motif_observed2": "AAAGA",
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "ACCATCTCAAGAAAG",
+     "t": "TCTCAAGAAAG",
      "c": "f"
     },
     {
-     "t": "AAAA",
+     "t": "AAAAAAAA",
      "c": "1"
     },
     {
-     "t": "AAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAG",
+     "t": "GAAAG",
+     "c": "2"
+    },
+    {
+     "t": "AAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAG",
      "c": "0"
     },
     {
-     "t": "AAAAA",
+     "t": "AAAAAA",
      "c": "1"
     },
     {
-     "t": "CGAAGGGGA",
+     "t": "CGAAGGGG",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "ACCATCTCAAGAAAG",
+     "t": "TCTCAAGAAAG",
      "c": "f"
     },
     {
-     "t": "AAAA",
+     "t": "AAAAAAAA",
      "c": "1"
     },
     {
-     "t": "AAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAG",
+     "t": "GAAAG",
+     "c": "2"
+    },
+    {
+     "t": "AAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAG",
      "c": "0"
     },
     {
-     "t": "AAAAA",
+     "t": "AAAAAA",
      "c": "1"
     },
     {
-     "t": "CGAAGGGGA",
+     "t": "CGAAGGGG",
      "c": "f"
     }
    ],
-   "isfg_seq1": "ACCATCTCAAGAAAGAAAAAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAACGAAGGGGA",
-   "isfg_repeat_start0_1": 15,
-   "isfg_repeat_end0_1": 64,
-   "isfg_seq2": "ACCATCTCAAGAAAGAAAAAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAACGAAGGGGA",
-   "isfg_repeat_start0_2": 15,
-   "isfg_repeat_end0_2": 74
+   "isfg_seq1": "TCTCAAGAAAGAAAAAAAAGAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAAACGAAGGGG",
+   "isfg_repeat_start0_1": 11,
+   "isfg_repeat_end0_1": 65,
+   "isfg_ref5_bp_1": 20,
+   "isfg_ref3_bp_1": 13,
+   "isfg_seq2": "TCTCAAGAAAGAAAAAAAAGAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAAACGAAGGGG",
+   "isfg_repeat_start0_2": 11,
+   "isfg_repeat_end0_2": 75,
+   "isfg_ref5_bp_2": 20,
+   "isfg_ref3_bp_2": 13
   },
   {
    "locus": "D22S1045",
@@ -1401,9 +1450,13 @@
    "isfg_seq1": "TCTCATTATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATTGTTA",
    "isfg_repeat_start0_1": 4,
    "isfg_repeat_end0_1": 55,
+   "isfg_ref5_bp_1": 4,
+   "isfg_ref3_bp_1": 4,
    "isfg_seq2": "TCTCATTATTATTATTATTATTATTACTATTATTGTTA",
    "isfg_repeat_start0_2": 4,
-   "isfg_repeat_end0_2": 34
+   "isfg_repeat_end0_2": 34,
+   "isfg_ref5_bp_2": 4,
+   "isfg_ref3_bp_2": 4
   },
   {
    "locus": "D3S1358",
@@ -1498,9 +1551,13 @@
    "isfg_seq1": "CATGTATCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGA",
    "isfg_repeat_start0_1": 4,
    "isfg_repeat_end0_1": 68,
+   "isfg_ref5_bp_1": 6,
+   "isfg_ref3_bp_1": 5,
    "isfg_seq2": "CATGTATCTATCTGTCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGAGA",
    "isfg_repeat_start0_2": 4,
-   "isfg_repeat_end0_2": 72
+   "isfg_repeat_end0_2": 72,
+   "isfg_ref5_bp_2": 6,
+   "isfg_ref3_bp_2": 5
   },
   {
    "locus": "FGA",
@@ -1619,9 +1676,13 @@
    "isfg_seq1": "GAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTAG",
    "isfg_repeat_start0_1": 0,
    "isfg_repeat_end0_1": 88,
+   "isfg_ref5_bp_1": 7,
+   "isfg_ref3_bp_1": 4,
    "isfg_seq2": "GAAGAAAGGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAACTAG",
    "isfg_repeat_start0_2": 0,
-   "isfg_repeat_end0_2": 100
+   "isfg_repeat_end0_2": 100,
+   "isfg_ref5_bp_2": 7,
+   "isfg_ref3_bp_2": 4
   },
   {
    "locus": "D5S818",
@@ -1638,11 +1699,11 @@
    "coverage2": 21.04,
    "period": 4,
    "motif": null,
-   "allele_call1": "13.1",
-   "allele_call2": "12.1",
-   "genotype_forense": "12.1/13.1",
-   "bracketed1": "CE13.1_TCTCA[1]TCTA[12]_+4TC>CA",
-   "bracketed2": "CE12.1_TCTA[11]_-5.1->TATTT_+4TC>CA",
+   "allele_call1": "12",
+   "allele_call2": "11",
+   "genotype_forense": "11/12",
+   "bracketed1": "CE12_TCTA[12]_-1C>A",
+   "bracketed2": "CE11_TCTA[11]",
    "hipstr_start": 123775556,
    "hipstr_end": 123775599,
    "motif_canonical": "TCTA",
@@ -1650,46 +1711,42 @@
    "right_flank_hg38": "TCAAAATATTACATAAGGATACCAA",
    "flank_size": 25,
    "reference_fasta": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-   "full_seq1": "TATCTGTATCCTTATTTATACCTCTCATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTCAAAATATTACATAAGGATACCAA",
+   "full_seq1": "ATCTTTATCTGTATCCTTATTTATACATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTTCAAAATATTACATAAGGATACCAA",
    "overlap_left_bp_1": 0,
-   "overlap_right_bp_1": 1,
-   "left_flank_in_full1": "TATCTGTATCCTTATTTATACCTCT",
-   "right_flank_in_full1": "CAAAATATTACATAAGGATACCAA",
+   "overlap_right_bp_1": 0,
+   "left_flank_in_full1": "ATCTTTATCTGTATCCTTATTTATA",
+   "right_flank_in_full1": "TCAAAATATTACATAAGGATACCAA",
    "repeat_start0_full1": 25,
    "repeat_end0_full1": 78,
    "repeat_seq1": "CATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
    "motif_observed1": "CATC",
-   "full_seq2": "TATCTGTATCCTTATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTCAAAATATTACATAAGGATACCAA",
-   "overlap_left_bp_2": 5,
-   "overlap_right_bp_2": 1,
-   "left_flank_in_full2": "TATCTGTATCCTTATTTATA",
-   "right_flank_in_full2": "CAAAATATTACATAAGGATACCAA",
-   "repeat_start0_full2": 20,
-   "repeat_end0_full2": 69,
+   "full_seq2": "ATCTTTATCTGTATCCTTATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTTCAAAATATTACATAAGGATACCAA",
+   "overlap_left_bp_2": 0,
+   "overlap_right_bp_2": 0,
+   "left_flank_in_full2": "ATCTTTATCTGTATCCTTATTTATA",
+   "right_flank_in_full2": "TCAAAATATTACATAAGGATACCAA",
+   "repeat_start0_full2": 25,
+   "repeat_end0_full2": 74,
    "repeat_seq2": "CCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT",
    "motif_observed2": "CCTC",
    "flanks_status": "OK",
    "isfgSegments1": [
     {
-     "t": "ATACC",
+     "t": "ATACA",
      "c": "f"
-    },
-    {
-     "t": "TCTCA",
-     "c": "2"
     },
     {
      "t": "TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA",
      "c": "0"
     },
     {
-     "t": "TCTCAAA",
+     "t": "TCTTCAA",
      "c": "f"
     }
    ],
    "isfgSegments2": [
     {
-     "t": "TATTTATACC",
+     "t": "ATACC",
      "c": "f"
     },
     {
@@ -1697,16 +1754,20 @@
      "c": "0"
     },
     {
-     "t": "TCTCAAA",
+     "t": "TCTTCAA",
      "c": "f"
     }
    ],
-   "isfg_seq1": "ATACCTCTCATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTCAAA",
+   "isfg_seq1": "ATACATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTTCAA",
    "isfg_repeat_start0_1": 5,
-   "isfg_repeat_end0_1": 58,
-   "isfg_seq2": "TATTTATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTCAAA",
-   "isfg_repeat_start0_2": 10,
-   "isfg_repeat_end0_2": 54
+   "isfg_repeat_end0_1": 53,
+   "isfg_ref5_bp_1": 3,
+   "isfg_ref3_bp_1": 4,
+   "isfg_seq2": "ATACCTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTTCAA",
+   "isfg_repeat_start0_2": 5,
+   "isfg_repeat_end0_2": 49,
+   "isfg_ref5_bp_2": 3,
+   "isfg_ref3_bp_2": 4
   },
   {
    "locus": "CSF1PO",
@@ -1785,9 +1846,13 @@
    "isfg_seq1": "CTTCCTATCTATCTATCTATCTATCTATCTATCTAATCT",
    "isfg_repeat_start0_1": 7,
    "isfg_repeat_end0_1": 35,
+   "isfg_ref5_bp_1": 6,
+   "isfg_ref3_bp_1": 5,
    "isfg_seq2": "CTTCCTATCTATCTATCTATCTATCTATCTATCTATCTAATCT",
    "isfg_repeat_start0_2": 7,
-   "isfg_repeat_end0_2": 39
+   "isfg_repeat_end0_2": 39,
+   "isfg_ref5_bp_2": 6,
+   "isfg_ref3_bp_2": 5
   },
   {
    "locus": "D7S820",
@@ -1890,9 +1955,13 @@
    "isfg_seq1": "AGATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTA",
    "isfg_repeat_start0_1": 5,
    "isfg_repeat_end0_1": 65,
+   "isfg_ref5_bp_1": 26,
+   "isfg_ref3_bp_1": 4,
    "isfg_seq2": "AGATTAAAAAAAACTATCAATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCGTTA",
    "isfg_repeat_start0_2": 5,
-   "isfg_repeat_end0_2": 69
+   "isfg_repeat_end0_2": 69,
+   "isfg_ref5_bp_2": 26,
+   "isfg_ref3_bp_2": 4
   },
   {
    "locus": "D8S1179",
@@ -1987,9 +2056,13 @@
    "isfg_seq1": "TTCGTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCCC",
    "isfg_repeat_start0_1": 4,
    "isfg_repeat_end0_1": 60,
+   "isfg_ref5_bp_1": 6,
+   "isfg_ref3_bp_1": 6,
    "isfg_seq2": "TTCGTATCTATCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTCCCC",
    "isfg_repeat_start0_2": 4,
-   "isfg_repeat_end0_2": 64
+   "isfg_repeat_end0_2": 64,
+   "isfg_ref5_bp_2": 6,
+   "isfg_ref3_bp_2": 6
   }
  ]
 }

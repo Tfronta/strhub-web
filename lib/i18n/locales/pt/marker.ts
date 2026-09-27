@@ -381,6 +381,7 @@ marker: {
     minimumRangeLabel: "Intervalo mínimo ISFG (GRCh38)",
     basePairs: "{n} pb",
     kitsLabel: "Kits MPS que cobrem este locus",
+    kitRange: "Intervalo sequenciado: {chrom}:{start}-{end} · {length} bp",
     frequenciesTitle: "Frequências alélicas em resumo",
     frequenciesIntro:
       "Alelo mais frequente por grupo populacional, com sua frequência e o tamanho amostral, nos dados de eletroforese capilar do",

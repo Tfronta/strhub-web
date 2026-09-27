@@ -15,6 +15,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { MarkerSummary } from "@/lib/marker-summary";
 
 type Translate = (key: string, params?: Record<string, string>) => string;
@@ -232,18 +238,32 @@ function StructureCard({ summary, t }: { summary: MarkerSummary; t: Translate })
               <Label className="text-xs font-normal text-muted-foreground">
                 {s("kitsLabel")}
               </Label>
-              <ul className="flex flex-wrap gap-1">
-                {fssg.kits.map((kit) => (
-                  <li key={kit}>
-                    <Badge
-                      variant="secondary"
-                      className="text-xs font-normal px-2 py-0.5 bg-muted text-foreground border-0"
-                    >
-                      {kit}
-                    </Badge>
-                  </li>
-                ))}
-              </ul>
+              <TooltipProvider delayDuration={100}>
+                <ul className="flex flex-wrap gap-1">
+                  {fssg.kits.map((kit) => (
+                    <li key={kit.name}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge
+                            variant="secondary"
+                            className="cursor-help text-xs font-normal px-2 py-0.5 bg-muted text-foreground border-0"
+                          >
+                            {kit.name}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="text-xs">
+                          {s("kitRange", {
+                            chrom: kit.chrom,
+                            start: formatInt(kit.start),
+                            end: formatInt(kit.end),
+                            length: formatInt(kit.length),
+                          })}
+                        </TooltipContent>
+                      </Tooltip>
+                    </li>
+                  ))}
+                </ul>
+              </TooltipProvider>
             </div>
           )}
         </div>

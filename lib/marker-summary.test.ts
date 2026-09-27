@@ -76,7 +76,7 @@ describe("buildMarkerSummary", () => {
     expect(summary.referenceAllele).toBe("16");
     expect(summary.fssg?.canonicalBracketing).toEqual(["TATC[2]TGTC[n]TATC[n]"]);
     expect(summary.fssg?.minimumRange?.lengthBp).toBe(75);
-    expect(summary.fssg?.kits).toContain("PowerSeq 46GY");
+    expect(summary.fssg?.kits.map((k) => k.name)).toContain("PowerSeq 46GY");
     expect(summary.tools.motifExplorer).toBe(true);
   });
 

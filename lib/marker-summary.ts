@@ -89,8 +89,14 @@ export type MarkerSummary = {
     canonicalBracketing: string[];
     historicalBracketing: string | null;
     minimumRange: { chrom: string; start: number; end: number; lengthBp: number } | null;
-    /** MPS kits whose amplicon covers the locus, per STRidER's FSSG. */
-    kits: string[];
+    /** MPS kits whose amplicon covers the locus, per STRidER's FSSG, each with the range it sequences (GRCh38). */
+    kits: Array<{
+      name: string;
+      chrom: string;
+      start: number;
+      end: number;
+      length: number;
+    }>;
   } | null;
   ce: { populations: PopulationSummary[]; table: FrequencyTable } | null;
   ngs: { populations: string[]; hasRao: boolean } | null;
@@ -335,7 +341,13 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
                   fssg.minimumRange.end - fssg.minimumRange.start + 1,
               }
             : null,
-          kits: Object.keys(fssg.kits ?? {}),
+          kits: Object.entries(fssg.kits ?? {}).map(([name, range]) => ({
+            name,
+            chrom: range.chrom,
+            start: range.start,
+            end: range.end,
+            length: range.length,
+          })),
         }
       : null,
     ce: ceSummary(key),

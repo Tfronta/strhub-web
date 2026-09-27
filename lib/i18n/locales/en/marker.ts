@@ -381,6 +381,7 @@ marker: {
     minimumRangeLabel: "ISFG minimum range (GRCh38)",
     basePairs: "{n} bp",
     kitsLabel: "MPS kits covering this locus",
+    kitRange: "Sequenced range: {chrom}:{start}-{end} · {length} bp",
     frequenciesTitle: "Allele frequencies at a glance",
     frequenciesIntro:
       "Most common allele per population group, with its frequency and the sample size, in the capillary electrophoresis data of",

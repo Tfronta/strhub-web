@@ -5,7 +5,13 @@
   "primary": "HipSTR VCF",
   "secondary_crosscheck": "haplotypes.tsv",
   "notes": "Allele sequences reconstructed from REF/ALT + GT. Allelic Coverage derived from PDP (fractional read support).",
-  "allele_designation": "Allele calls computed from haplotype length and PERIOD (len(seq)//PERIOD, microvariants as .{remainder_bp}). Motifs for bracketed display are canonical per locus."
+  "allele_designation": "Allele calls computed from haplotype length and PERIOD (len(seq)//PERIOD, microvariants as .{remainder_bp}). Motifs for bracketed display are canonical per locus.",
+  "nomenclature": {
+   "tool": "STRNaming 1.2.1 (PyPI, 2026-08-10), CLI `strnaming name-sequences -r <ISFG BED>`",
+   "ranges": "ISFG minimum range (FSSG v6.1 / ISFG 2024), GRCh38, passed as a BED file with strand '+' because isfg_seq{n} is stored in forward orientation",
+   "fields": "bracketed{n} = STRNaming name; isfg_seq{n} = exact input over the ISFG range; isfgSegments{n} = block colouring from STRNaming --html",
+   "verified": "2026-09-22: all 210 names (5 samples x 21 loci x 2 alleles) regenerated identically with STRNaming 1.2.1. Note: 1.2.1 removed the built-in 'uas-frr' ranges; -r now takes a BED file."
+  }
  },
  "loci": [
   {

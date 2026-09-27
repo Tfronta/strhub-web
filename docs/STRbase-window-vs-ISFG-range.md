@@ -89,9 +89,10 @@ explicitly by STRNaming (`A[9]` with `_-1T>-`), while STRbase writes `A[8]`.
 ## What STRhub does
 
 - Mix Profiles NGS table: shows genuine STRNaming names (`CE<n>_...`) generated
-  by the STRNaming tool over the ISFG reported range, and the Full Sequence is
-  the exact sequence over that range so it can be reproduced at
-  https://fdstools.nl/strnaming/.
+  by STRNaming 1.2.1 (`name-sequences -r <ISFG BED>`, GRCh38, forward strand)
+  over the ISFG minimum range, and the Full Sequence is the exact sequence over
+  that range so it can be reproduced at https://fdstools.nl/strnaming/ (the web
+  tool defaults to the ISFG Minimum Range coordinates).
 - Catalog Variant Alleles: shows the STRbase sequence and allele designation
   only. It no longer labels the STRbase bracketing as "STRNaming", because that
   bracketing follows the STRbase window, not the ISFG range.

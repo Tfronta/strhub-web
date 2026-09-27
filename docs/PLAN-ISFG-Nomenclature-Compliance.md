@@ -178,3 +178,32 @@ Scripts (en scratchpad): `apply_isfg_local.py`, `gen_segments.py`, `poc_strnamin
 ## Nota de alcance
 
 Solo 5 muestras + 1 sintética ⇒ **no** portar STRNaming a TypeScript. Re-anotar offline y embeber el resultado.
+
+## Addendum 2026-09-22 — STRNaming 1.2.1 (reemplaza las notas de versión anteriores)
+
+Las secciones de arriba (P0, POC, tabla de conformidad y "Caveat de rango") se
+escribieron con **STRNaming 1.2.0**, cuando el CLI solo aceptaba `-r uas-frr`.
+Eso ya no aplica:
+
+- **STRNaming 1.2.1** (PyPI, 2026-08-10) cambió la interfaz: `-r/--ranges`
+  ahora recibe un **archivo BED** con el rango reportado por marcador, y los
+  rangos internos `uas-frr` **fueron eliminados**. `-r uas-frr` falla en 1.2.1.
+- La columna 6 del BED (strand) indica la orientación de la **secuencia de
+  entrada**, no la del nombre: STRNaming siempre nombra sobre la hebra forward
+  de GRCh38. Como `isfg_seq{n}` se guarda en orientación forward, el BED de
+  STRhub lleva `+` en todos los loci (mismo resultado que el BED del proyecto
+  HGDP con `-` y la entrada reverso-complementada).
+- Los nombres publicados en Mix Profiles (`bracketed{n}` de los 5 JSON, commit
+  `fc11be1`, 2026-09-12) se generaron con 1.2.1 y el ISFG minimum range, no con
+  UAS-FRR. El caveat "solo ofrece rangos UAS-FRR" queda **cerrado**.
+- Verificación 2026-09-22: los **210/210** nombres (5 muestras x 21 loci x 2
+  alelos) se regeneran idénticos con 1.2.1 + BED ISFG; los 6 alelos demo
+  trialélicos de `data.ts` (TPOX, TH01) coinciden al nombrarlos sobre la ventana
+  ISFG; la referencia GRCh38 nombrada por 1.2.1 coincide con el bracketing
+  canónico FSSG del Motif Explorer en los 22 loci del BED.
+- La versión web (https://fdstools.nl/strnaming/) sigue anunciándose como
+  "based on STRNaming version 1.2.0", pero usa por defecto las coordenadas del
+  ISFG Minimum Range GRCh38, así que la instrucción de la UI ("pegá la Full
+  Sequence con el rango ISFG") reproduce los nombres.
+- Procedencia registrada en `source.nomenclature` de cada JSON de
+  `sections/mix-profiles/data/ngs-haplotypes/`.

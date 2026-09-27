@@ -4,7 +4,7 @@ mixProfiles: {
   subtitle: "beta",
   description: "Using demo data — you can load your own samples when available.",
   simulatorDescription:
-    "This simulator shows how two or three DNA profiles behave when mixed, in both capillary electrophoresis (CE) and NGS. It helps users understand how peak heights shift, how stutter artifacts appear, and how minor alleles can become hidden or confused with noise, illustrating the real complexity of interpreting mixed profiles in forensic genetics. Profiles are derived from open-access 1000 Genomes samples. For educational purposes only, not validated for forensic casework interpretation.",
+    "This simulator shows how two or three DNA profiles behave when mixed, in both capillary electrophoresis (CE) and NGS. It helps users understand how peak heights shift, how stutter artifacts appear, and how minor alleles can become hidden or confused with noise, illustrating the real complexity of interpreting mixed profiles in forensic genetics. **Profiles are derived from open-access 1000 Genomes samples. For educational purposes only, not validated for forensic casework interpretation.**",
   controls: {
     locus: "Locus",
     sampleA: "Sample A",
@@ -29,7 +29,7 @@ mixProfiles: {
   },
   ngs: {
     disclaimer:
-      "Individual haplotypes inferred from Illumina short-read NGS data using specialized STR genotyping software (HipSTR, hg38), displayed for educational purposes only. Repeat-region sequences follow the current ISFG STR sequence nomenclature recommendations (2024), via STRNaming.",
+      "Individual haplotypes inferred from Illumina short-read NGS data using specialized STR genotyping software (HipSTR, hg38), **displayed for educational purposes only.** Repeat-region sequences follow the current ISFG STR sequence nomenclature recommendations (2024), via STRNaming.",
     isfgLinkText: "Read the original paper",
     copySequence: "Copy full sequence",
     copyRepeat: "Copy STRNaming name",

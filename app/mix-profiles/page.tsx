@@ -4,6 +4,7 @@ import { useLanguage } from "@/contexts/language-context";
 import MixProfilesDemo from "@/sections/mix-profiles/MixProfilesDemo";
 import { HelpCircle } from "lucide-react";
 import { PageTitle } from "@/components/page-title";
+import { renderBold } from "@/lib/i18n/renderBold";
 import {
   Popover,
   PopoverContent,
@@ -111,7 +112,7 @@ export default function Page() {
             </Popover>
           </div>
           <p className="w-full max-w-none break-words text-base text-muted-foreground">
-            {t("mixProfiles.simulatorDescription")}
+            {renderBold(t("mixProfiles.simulatorDescription"))}
           </p>
         </div>
         <MixProfilesDemo />

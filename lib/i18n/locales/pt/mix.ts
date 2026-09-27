@@ -4,7 +4,7 @@ mixProfiles: {
   subtitle: "beta",
   description: "Usando dados de demonstração — você pode carregar suas próprias amostras quando disponível.",
   simulatorDescription:
-    "Este simulador mostra como dois ou três perfis de DNA se comportam quando misturados, tanto na eletroforese capilar (CE) quanto em NGS. Ele ajuda a compreender como as alturas dos picos mudam, como surgem artefatos de stutter e como alelos minoritários podem ficar ocultos ou confundidos com ruído, ilustrando a real complexidade da interpretação de misturas em genética forense. Os perfis são derivados de amostras de acesso aberto do Projeto 1000 Genomes. Apenas para fins educacionais, não validado para a interpretação de casos forenses.",
+    "Este simulador mostra como dois ou três perfis de DNA se comportam quando misturados, tanto na eletroforese capilar (CE) quanto em NGS. Ele ajuda a compreender como as alturas dos picos mudam, como surgem artefatos de stutter e como alelos minoritários podem ficar ocultos ou confundidos com ruído, ilustrando a real complexidade da interpretação de misturas em genética forense. **Os perfis são derivados de amostras de acesso aberto do Projeto 1000 Genomes. Apenas para fins educacionais, não validado para a interpretação de casos forenses.**",
   controls: {
     locus: "Locus",
     sampleA: "Amostra A",
@@ -29,7 +29,7 @@ mixProfiles: {
   },
   ngs: {
     disclaimer:
-      "Haplótipos individuais inferidos a partir de dados NGS de leituras curtas Illumina usando software especializado de genotipagem de STRs (HipSTR, hg38), exibidos apenas para fins educacionais. As sequências da região repetida seguem as recomendações vigentes de nomenclatura de sequência de STRs da ISFG (2024), via STRNaming.",
+      "Haplótipos individuais inferidos a partir de dados NGS de leituras curtas Illumina usando software especializado de genotipagem de STRs (HipSTR, hg38), **exibidos apenas para fins educacionais.** As sequências da região repetida seguem as recomendações vigentes de nomenclatura de sequência de STRs da ISFG (2024), via STRNaming.",
     isfgLinkText: "Ler o artigo original",
     copySequence: "Copiar sequência completa",
     copyRepeat: "Copiar nome STRNaming",

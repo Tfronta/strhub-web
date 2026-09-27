@@ -4,7 +4,7 @@ mixProfiles: {
   subtitle: "beta",
   description: "Usando datos de demostración — puede cargar sus propias muestras cuando estén disponibles.",
   simulatorDescription:
-    "Este simulador muestra cómo dos o tres perfiles de ADN se comportan cuando se mezclan, tanto en electroforesis capilar (CE) como en NGS. Ayuda a comprender cómo cambian las alturas de los picos, cómo aparecen los artefactos de stutter y cómo los alelos minoritarios pueden quedar ocultos o confundidos con ruido, ilustrando la complejidad real de la interpretación de mezclas en genética forense. Los perfiles se derivan de muestras de acceso abierto del Proyecto 1000 Genomes. Solo con fines educativos, no validado para la interpretación de casos forenses.",
+    "Este simulador muestra cómo dos o tres perfiles de ADN se comportan cuando se mezclan, tanto en electroforesis capilar (CE) como en NGS. Ayuda a comprender cómo cambian las alturas de los picos, cómo aparecen los artefactos de stutter y cómo los alelos minoritarios pueden quedar ocultos o confundidos con ruido, ilustrando la complejidad real de la interpretación de mezclas en genética forense. **Los perfiles se derivan de muestras de acceso abierto del Proyecto 1000 Genomes. Solo con fines educativos, no validado para la interpretación de casos forenses.**",
   controls: {
     locus: "Locus",
     sampleA: "Muestra A",
@@ -29,7 +29,7 @@ mixProfiles: {
   },
   ngs: {
     disclaimer:
-      "Haplotipos individuales inferidos a partir de datos NGS de lecturas cortas Illumina mediante software especializado de genotipado de STRs (HipSTR, hg38), mostrados únicamente con fines educativos. Las secuencias de la región repetida siguen las recomendaciones vigentes de nomenclatura de secuencia de STRs de la ISFG (2024), vía STRNaming.",
+      "Haplotipos individuales inferidos a partir de datos NGS de lecturas cortas Illumina mediante software especializado de genotipado de STRs (HipSTR, hg38), **mostrados únicamente con fines educativos.** Las secuencias de la región repetida siguen las recomendaciones vigentes de nomenclatura de secuencia de STRs de la ISFG (2024), vía STRNaming.",
     isfgLinkText: "Leer el paper original",
     copySequence: "Copiar secuencia completa",
     copyRepeat: "Copiar nombre STRNaming",

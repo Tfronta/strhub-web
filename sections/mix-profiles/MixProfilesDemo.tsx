@@ -46,6 +46,7 @@ import { Check, ChevronsUpDown, Info } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
+import { renderBold } from "@/lib/i18n/renderBold";
 import { Button } from "@/components/ui/button";
 
 /* ------------------------ helpers ------------------------ */
@@ -1125,10 +1126,10 @@ export default function MixProfilesDemo({
               {(() => {
                 const text = t("mixProfiles.ngs.disclaimer");
                 const [before, after] = text.split("STRNaming");
-                if (after === undefined) return text;
+                if (after === undefined) return renderBold(text);
                 return (
                   <>
-                    {before}
+                    {renderBold(before)}
                     <a
                       href="https://fdstools.nl/strnaming/"
                       target="_blank"
@@ -1137,7 +1138,7 @@ export default function MixProfilesDemo({
                     >
                       STRNaming
                     </a>
-                    {after}
+                    {renderBold(after)}
                   </>
                 );
               })()}{" "}

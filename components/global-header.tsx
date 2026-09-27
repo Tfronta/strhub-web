@@ -266,7 +266,7 @@ export function GlobalHeader() {
                       key={entry.href}
                       href={entry.href}
                       className={cn(
-                        "rounded-md px-3 py-2.5 text-base font-medium hover:bg-muted hover:text-primary transition-colors",
+                        "rounded-md px-3 py-2.5 text-base font-semibold hover:bg-muted hover:text-primary transition-colors",
                         isActive(pathname, entry.href) && "text-primary"
                       )}
                     >

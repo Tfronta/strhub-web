@@ -232,9 +232,21 @@ el CE de cada nombre = CE de referencia + GB (210/210); plantilla STRidER
 207/210 (vs 177 antes). Tests:
 `sections/mix-profiles/data/ngs-haplotypes/ngs-haplotypes.test.ts`.
 
-Pendiente: por diseño, 4-36 pb en los extremos de cada ventana son referencia
-GRCh38 no observada (en 16/21 loci tocan el repeat nombrado, p. ej. los
-primeros 23 pb de vWA); quedan registrados en `isfg_ref5_bp_{n}` /
-`isfg_ref3_bp_{n}`. La solución es re-genotipar las 5 muestras con HipSTR
-usando como regiones el rango ISFG (`bed_isfg.bed` del proyecto HGDP, como en
-`joint_isfg`), para que la ventana quede entera observada.
+Resuelto el mismo día: las 5 muestras se re-genotiparon con HipSTR v0.7 sobre el
+rango mínimo ISFG (`bed_isfg.bed` de HGDP rerun2026, GRCh38), a partir de recortes
+de los CRAM 30x de 1000 Genomas (ENA PRJEB31736, loci ISFG ±1 kb), con
+`--min-reads 6 --def-stutter-model --output-filters --max-str-len 150` (D2S1338
+mide 101 pb). Ahora toda ventana ISFG es secuencia observada
+(`isfg_ref5_bp`/`isfg_ref3_bp` = 0); nada se rellena con hg38.
+
+- Genotipos: 103/105 idénticos al run anterior de región corta.
+- Regla de no llamado (sin parámetros): un homocigoto no se informa si alguna
+  lectura que atraviesa el rango ISFG apoya otro alelo (fuera de stutter ±1),
+  firma de pérdida del alelo largo. Resultado: 2/105 sin llamada (HG01063 Penta E,
+  HG02944 D13S317); en ambos los runs de región corta ven el alelo 13. Se registran
+  en `source.no_calls` y el simulador los muestra como "Sin llamada".
+- D7S820: 8/10 alelos tienen T>A antes del poli-A (`A[9]…_-1T>-`), antes oculto
+  por el relleno con hg38 (STRbase: 36/56 secuencias con la misma variante).
+- Llamado conjunto de las 5 muestras descartado: recupera D13S317 pero asigna en
+  Penta E/D alelos sin lecturas que los apoyen.
+

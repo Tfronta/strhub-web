@@ -45,6 +45,19 @@ SAMPLE_IDS.forEach((sampleId, i) => {
   }
 });
 
+// Loci whose ISFG-range HipSTR call was withheld (source.no_call_rule in each JSON).
+const NO_CALLS_BY_SAMPLE: Record<string, Set<string>> = {};
+SAMPLE_IDS.forEach((sampleId, i) => {
+  const source = (JSON_BY_SAMPLE[i] as unknown as { source?: { no_calls?: Array<{ locus: string }> } })
+    .source;
+  NO_CALLS_BY_SAMPLE[sampleId] = new Set((source?.no_calls ?? []).map((n) => n.locus));
+});
+
+/** True when this sample's genotype at the locus was not called (not enough evidence over the ISFG range). */
+export function isNoCall(sampleId: string | null, locusId: string): boolean {
+  return sampleId != null && (NO_CALLS_BY_SAMPLE[sampleId]?.has(locusId) ?? false);
+}
+
 /** Sample name from JSON when present, otherwise the sampleId (e.g. filename-derived). */
 export function getResolvedSampleName(sampleId: string): string {
   return RESOLVED_SAMPLE_NAME[sampleId] ?? sampleId;

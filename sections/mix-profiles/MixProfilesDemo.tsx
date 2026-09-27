@@ -15,6 +15,7 @@ import {
   type Peak,
   getTrueGenotype,
 } from "./data";
+import { isNoCall } from "./data/ngs-haplotypes";
 
 import { simulateCECore } from "./utils/mix-model";
 
@@ -575,6 +576,7 @@ export default function MixProfilesDemo({
         label: contributor.label,
         sampleId: contributor.sampleId,
         genotype,
+        noCall: isNoCall(contributor.sampleId, selectedMarker),
       };
     });
   }, [contributors, selectedMarker]);
@@ -667,7 +669,7 @@ export default function MixProfilesDemo({
                   <CardContent className="pt-0">
                     <div className="space-y-2">
                       {trueGenotypes.map((item) => {
-                        const { label, sampleId, genotype } = item;
+                        const { label, sampleId, genotype, noCall } = item;
                         return (
                           <div
                             key={label}
@@ -694,6 +696,16 @@ export default function MixProfilesDemo({
                                   {genotype.allele1}, {genotype.allele2}
                                   {genotype.allele3 != null && `, ${genotype.allele3}`}
                                 </span>
+                              ) : noCall ? (
+                                // Visible reason, so a no-call never reads as missing data.
+                                <div className="max-w-[15rem] text-right">
+                                  <span className="text-xs font-medium text-muted-foreground">
+                                    {t("mixProfiles.trueGenotypes.noCall")}
+                                  </span>
+                                  <p className="text-[11px] leading-snug text-muted-foreground">
+                                    {t("mixProfiles.trueGenotypes.noCallReason")}
+                                  </p>
+                                </div>
                               ) : (
                                 <Tooltip>
                                   <TooltipTrigger asChild>
@@ -1091,6 +1103,27 @@ export default function MixProfilesDemo({
         </div>
       </div>
 
+      {/* Selected samples without a call at this locus add no alleles; say why
+          here too, so it reads as a genotyping decision even with the true
+          genotypes panel hidden. */}
+      {trueGenotypes.some((item) => item.noCall && item.sampleId) && (
+        <div className="flex items-start gap-2 rounded-md border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+          <div className="space-y-0.5">
+            {trueGenotypes
+              .filter((item) => item.noCall && item.sampleId)
+              .map((item) => (
+                <p key={item.label}>
+                  {t("mixProfiles.trueGenotypes.noCallNotice", {
+                    sample: item.sampleId as string,
+                    locus: selectedMarker,
+                  })}
+                </p>
+              ))}
+          </div>
+        </div>
+      )}
+
       {/* CE */}
       <div className="rounded-xl border p-4">
         <h3 className="text-base font-semibold">
@@ -1191,6 +1224,21 @@ export default function MixProfilesDemo({
             </PopoverContent>
           </Popover>
         </div>
+        {/* The table lists alleles, not samples: say which sample is missing. */}
+        {trueGenotypes
+          .filter((item) => item.noCall && item.sampleId)
+          .map((item) => (
+            <p
+              key={item.label}
+              className="mb-2 flex items-start gap-1.5 text-xs text-muted-foreground"
+            >
+              <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+              {t("mixProfiles.trueGenotypes.noCallNgs", {
+                sample: item.sampleId as string,
+                locus: selectedMarker,
+              })}
+            </p>
+          ))}
         <NGSChart
           bars={ngsBars}
           rows={ngsRows}

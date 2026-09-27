@@ -4,9 +4,10 @@ import HG00145 from "./HG00145.json";
 import HG00372 from "./HG00372.json";
 import HG01063 from "./HG01063.json";
 import HG02944 from "./HG02944.json";
-import { getSampleNgsLocus } from "./index";
+import { getSampleNgsLocus, isNoCall } from "./index";
 import type { LocusRecord } from "./parseNgsHaplotypes";
 import {
+  LOCI_ORDER,
   SAMPLE_DATABASE,
   cePeaksToNGSRowsWithSeq,
   getTrueGenotype,
@@ -28,15 +29,38 @@ const field = <T,>(L: LocusRecord, name: string) => L[name] as T;
 const ceOf = (name: string) => name.match(/^CE([\d.]+)_/)?.[1];
 
 describe("Mix Profiles NGS haplotypes", () => {
-  it("builds each ISFG window as GRCh38 ends around the untouched HipSTR allele", () => {
+  it("shows only observed sequence: each ISFG window is the HipSTR allele trimmed to the range", () => {
     for (const { L, k, tag } of alleles()) {
-      const seq = field<string>(L, `isfg_seq${k}`);
-      const ref5 = field<number>(L, `isfg_ref5_bp_${k}`);
-      const ref3 = field<number>(L, `isfg_ref3_bp_${k}`);
-      expect(ref5, tag).toBeGreaterThanOrEqual(0);
-      expect(ref3, tag).toBeGreaterThanOrEqual(0);
-      expect(seq.slice(ref5, seq.length - ref3), tag).toBe(field<string>(L, `allele_seq${k}`).toUpperCase());
+      const allele = field<string>(L, `allele_seq${k}`).toUpperCase();
+      const trim5 = field<number>(L, `isfg_trim5_bp_${k}`);
+      const trim3 = field<number>(L, `isfg_trim3_bp_${k}`);
+      expect(field<number>(L, `isfg_ref5_bp_${k}`), tag).toBe(0);
+      expect(field<number>(L, `isfg_ref3_bp_${k}`), tag).toBe(0);
+      expect(allele.slice(trim5, allele.length - trim3), tag).toBe(field<string>(L, `isfg_seq${k}`));
     }
+  });
+
+  it("records each no-call consistently in the data and the simulator", () => {
+    const docs = SAMPLES as unknown as Array<Doc & { source: { no_calls: Array<{ locus: string }> } }>;
+    let total = 0;
+    for (const doc of docs) {
+      for (const { locus } of doc.source.no_calls) {
+        total++;
+        const tag = `${doc.sample} ${locus}`;
+        expect(doc.loci.some((L) => L.locus === locus), tag).toBe(false);
+        expect(getTrueGenotype(doc.sample as SampleId, locus as LocusId), tag).toBeNull();
+        expect(isNoCall(doc.sample, locus), tag).toBe(true);
+        // a no-call must not remove the locus from the simulator
+        expect(LOCI_ORDER, tag).toContain(locus);
+      }
+      // every simulator locus of the sample is either called or a recorded no-call
+      for (const locus of Object.keys(SAMPLE_DATABASE[doc.sample as SampleId]?.loci ?? {})) {
+        if (locus === "D21S11") continue; // not a Mix Profiles locus
+        expect(doc.loci.some((L) => L.locus === locus), `${doc.sample} ${locus}`).toBe(true);
+      }
+    }
+    expect(total).toBe(2);
+    expect(LOCI_ORDER).toHaveLength(21);
   });
 
   it("keeps the allele whole inside full_seq (no flank bases trimmed)", () => {

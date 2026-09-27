@@ -82,6 +82,13 @@ mixProfiles: {
     none: "—",
     na: "Genotipo no disponible",
     naHelp: "No se encontraron alelos verdaderos para este locus en el conjunto de datos de demostración.",
+    noCall: "Sin llamada",
+    noCallReason:
+      "Pocas lecturas atraviesan el rango mínimo ISFG para descartar la pérdida de un segundo alelo.",
+    noCallNotice:
+      "{sample} no tiene llamada en {locus}: pocas lecturas atraviesan el rango mínimo ISFG para distinguir un homocigoto de la pérdida de un segundo alelo, así que no aporta alelos en este locus.",
+    noCallNgs:
+      "{sample} no tiene llamada en {locus}, así que ninguno de sus alelos aparece abajo; las filas son de las otras muestras seleccionadas.",
     noSample: "Ninguno",
   },
   ceChart: {

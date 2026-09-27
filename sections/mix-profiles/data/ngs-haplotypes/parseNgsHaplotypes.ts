@@ -36,12 +36,18 @@ export type LocusRecord = {
   isfg_repeat_start0_2?: number;
   isfg_repeat_end0_1?: number;
   isfg_repeat_end0_2?: number;
-  // Bases at the 5' / 3' end of isfg_seq{idx} taken from GRCh38: the ISFG range
-  // extends beyond the region HipSTR genotyped, so they were not observed.
+  // Bases at the 5' / 3' end of isfg_seq{idx} taken from GRCh38 rather than
+  // observed. 0 since the ISFG-range re-genotyping: every base is observed.
   isfg_ref5_bp_1?: number;
   isfg_ref5_bp_2?: number;
   isfg_ref3_bp_1?: number;
   isfg_ref3_bp_2?: number;
+  // Bases of allele_seq{idx} outside the ISFG range (HipSTR region is 1 bp
+  // wider, plus any VCF padding), trimmed off to get isfg_seq{idx}.
+  isfg_trim5_bp_1?: number;
+  isfg_trim5_bp_2?: number;
+  isfg_trim3_bp_1?: number;
+  isfg_trim3_bp_2?: number;
   // CE allele per haplotype (reference CE + HipSTR GB), in VCF haplotype order.
   allele_call1?: string;
   allele_call2?: string;

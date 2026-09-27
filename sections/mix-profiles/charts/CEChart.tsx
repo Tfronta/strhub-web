@@ -271,10 +271,10 @@ export default function CEChart(props: {
     return ["auto", "auto"];
   }, [alleleValues, dataTrue, dataStutter]);
 
-  if (!mounted) return <div style={{ height: 420 }} />;
+  if (!mounted) return <div style={{ height: 448 }} />;
 
   return (
-    <div className="relative w-full h-[420px]">
+    <div className="relative w-full h-[448px]">
       <div className="absolute right-2 top-2 flex items-center gap-2 z-10">
         <Tooltip>
           <TooltipTrigger asChild>
@@ -322,7 +322,9 @@ export default function CEChart(props: {
       </div>
 
       <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-        <LineChart margin={{ top: 12, right: 20, bottom: 0, left: 20 }}>
+        {/* top: 40 keeps the plot below the Advanced toggle (was 12 in a 420 px box,
+            so the toggle sat inside the plot and hid AT/ST labels near the top). */}
+        <LineChart margin={{ top: 40, right: 20, bottom: 0, left: 20 }}>
           {/* Ejes - sin gridlines horizontales */}
           <XAxis
             type="number"
@@ -423,9 +425,12 @@ export default function CEChart(props: {
             />
           )}
           {/* Líneas de umbral - solo AT y ST con labels (sin otras líneas) */}
+          {/* extendDomain: when every peak sits below a threshold, grow the axis to
+              include the line instead of leaving its label on the top edge. */}
           {analyticalThreshold != null && (
             <ReferenceLine
               y={analyticalThreshold}
+              ifOverflow="extendDomain"
               stroke="#9CA3AF"
               strokeDasharray="6 6"
               strokeWidth={1}
@@ -441,6 +446,7 @@ export default function CEChart(props: {
           {interpretationThreshold != null && (
             <ReferenceLine
               y={interpretationThreshold}
+              ifOverflow="extendDomain"
               stroke="#6B7280"
               strokeDasharray="4 4"
               strokeWidth={1}

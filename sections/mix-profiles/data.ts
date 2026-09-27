@@ -10,6 +10,7 @@ import { markerData } from "@/lib/markerData";
 import {
   getSampleNgsLocus,
   getDisplaySequenceForAllele,
+  isNoCall,
   parseFullSeqSegments,
 } from "./data/ngs-haplotypes";
 
@@ -119,7 +120,6 @@ export const SAMPLE_DATABASE: Record<string, SampleProfile> = {
       CSF1PO: { alleles: [7, 8] },
       D10S1248: { alleles: [13, 14] },
       D12S391: { alleles: [17, 20] },
-      D13S317: { alleles: [11, 13] },
       D16S539: { alleles: [11, 12] },
       D18S51: { alleles: [15, 16] },
       D19S433: { alleles: [13, 14.2] },
@@ -239,7 +239,6 @@ export const SAMPLE_DATABASE: Record<string, SampleProfile> = {
       D8S1179: { alleles: [10, 14] },
       FGA: { alleles: [19, 20] },
       PentaD: { alleles: [13, 5] },
-      PentaE: { alleles: [7, 13] },
       TH01: { alleles: [9.3, 9.3] },
       TPOX: { alleles: [8, 8] },
       vWA: { alleles: [14, 16] },
@@ -279,18 +278,16 @@ export const sampleOptions = (Object.keys(SAMPLE_DATABASE) as SampleId[]).filter
   (id) => !SYNTHETIC_SAMPLES.has(id)
 );
 
-// Only include loci present in ALL samples so every contributor has data
+// Only include loci present in ALL samples so every contributor has data. A
+// recorded no-call (genotyped over the ISFG range but not called) still counts:
+// the locus stays available and that contributor just adds no alleles there.
 export const LOCI_ORDER: LocusId[] = (() => {
-  const samples = Object.values(SAMPLE_DATABASE);
-  if (!samples.length) return [];
-  const allLoci = new Set(samples[0] ? Object.keys(samples[0].loci) : []);
-  for (const sample of samples) {
-    const sampleLoci = new Set(Object.keys(sample.loci));
-    for (const locus of allLoci) {
-      if (!sampleLoci.has(locus)) allLoci.delete(locus);
-    }
-  }
-  return Array.from(allLoci).sort();
+  const entries = Object.entries(SAMPLE_DATABASE);
+  if (!entries.length) return [];
+  const candidates = new Set(entries.flatMap(([, sample]) => Object.keys(sample.loci)));
+  return Array.from(candidates)
+    .filter((locus) => entries.every(([id, sample]) => locus in sample.loci || isNoCall(id, locus)))
+    .sort() as LocusId[];
 })();
 
 // ----------------------------------------------------

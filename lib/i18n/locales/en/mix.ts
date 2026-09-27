@@ -82,6 +82,13 @@ mixProfiles: {
     none: "—",
     na: "No genotype available",
     naHelp: "No true alleles found for this locus in the demo dataset.",
+    noCall: "No call",
+    noCallReason:
+      "Too few reads span the ISFG minimum range to rule out a lost second allele.",
+    noCallNotice:
+      "{sample} has no call at {locus}: too few reads span the ISFG minimum range to tell a homozygote from a lost second allele, so it adds no alleles to this locus.",
+    noCallNgs:
+      "{sample} has no call at {locus}, so none of its alleles are listed below; the rows belong to the other selected samples.",
     noSample: "None",
   },
   ceChart: {

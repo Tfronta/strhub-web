@@ -2182,20 +2182,17 @@ export function MarkerView({
                                   </td>
                                   {variantNames && (
                                     <td className={`${stripe} px-3 py-2 font-mono text-xs whitespace-nowrap`}>
+                                      {/* Held names (CE mismatch, pending validation) stay blank. */}
                                       {named?.name ? (
                                         <span className="text-foreground">{named.name}</span>
-                                      ) : (
+                                      ) : named?.status === "not_covered" ? (
                                         <span
                                           className="text-muted-foreground cursor-help"
-                                          title={
-                                            named?.status === "held"
-                                              ? t("marker.strnamingHeld")
-                                              : t("marker.strnamingNotCovered")
-                                          }
+                                          title={t("marker.strnamingNotCovered")}
                                         >
                                           {t("marker.strnamingNotAvailable")}
                                         </span>
-                                      )}
+                                      ) : null}
                                     </td>
                                   )}
                                   <td className={`${stripe} px-3 py-2 font-mono text-xs font-normal whitespace-nowrap text-foreground`}>

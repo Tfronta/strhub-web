@@ -230,7 +230,6 @@ marker: {
   strnamingName: "STRNaming (ISFG 2024)",
   strnamingNotAvailable: "n/a",
   strnamingNotCovered: "This STRbase sequence does not span the ISFG minimum range",
-  strnamingHeld: "Name under review: the STRNaming CE does not match the STRbase designation",
   sequence: "Sequence",
   noFrequenciesMessage:
     "No data available. Population frequencies for this locus are being curated.",

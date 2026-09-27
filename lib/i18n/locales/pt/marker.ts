@@ -54,6 +54,8 @@ marker: {
   reference: "Referência",
   nistVerified: "Verificado NIST",
   alleleFreqDistribution: "Distribuição de Frequência de Alelos",
+  freqReportingNote:
+    "Os conjuntos de frequências rotulados como NGS foram gerados com sequenciamento e ferramentas de genotipagem específicas para STRs, mas ainda são reportados por **tamanho de fragmento** (alelos baseados em comprimento), não por sequência. As frequências baseadas em sequência por marcador serão incorporadas quando esses dados estiverem publicados e validados.",
   freqDescription: "Dados de frequência populacional para diferentes alelos",
   dataSource: "Fonte de dados: STRBase – NIST",
   ocePopulationInfo:
@@ -145,9 +147,6 @@ marker: {
       markerCount: "{count} marcadores STR",
     },
   },
-  citation:
-    "Citação: Dados de frequência populacional obtidos do banco de dados STRBase – NIST. Todos os alelos relatados no STRbase para cada marcador estão incluídos em todos os grupos populacionais (AFR, NAM, EAS, CSA, EUR).",
-  citationReference: "Referência: NIST STRBase. Disponível em: https://strbase.nist.gov/",
   statistics: {
     title: "Estatísticas Populacionais",
     description: "Estatísticas resumidas para cada população CE (Illumina ForenSeq, pop.STR / SP-SMART).",
@@ -351,10 +350,13 @@ marker: {
       "Na notação ISFG / STRNaming, a estrutura da sequência de referência é {canonical}.",
     canonicalMany:
       "Na notação ISFG / STRNaming, a estrutura da sequência de referência é {canonical}, com {count} formas alternativas também definidas.",
-    alleles: "Foram descritos os alelos {range}.",
+    alleles: "Foram descritos os alelos {range} para este locus.",
+    allelesFreq: "Os alelos {range} constam nos dados de frequência do pop.STR (CE).",
     referenceOnly: "A sequência de referência GRCh38 corresponde ao alelo {reference}.",
     allelesWithReference:
-      "Foram descritos os alelos {range}; a sequência de referência GRCh38 corresponde ao alelo {reference}.",
+      "Foram descritos os alelos {range} para este locus; a sequência de referência GRCh38 corresponde ao alelo {reference}.",
+    allelesFreqWithReference:
+      "Os alelos {range} constam nos dados de frequência do pop.STR (CE); a sequência de referência GRCh38 corresponde ao alelo {reference}.",
     coordinates:
       "No GRCh38 a região repetitiva abrange chr{chromosome}:{start}-{end} ({length} pb, fita {strand}).",
     coordinatesBoth:

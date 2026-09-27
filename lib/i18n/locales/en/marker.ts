@@ -54,6 +54,8 @@ marker: {
   reference: "Reference",
   nistVerified: "NIST Verified",
   alleleFreqDistribution: "Allele Frequency Distribution",
+  freqReportingNote:
+    "The NGS-labelled frequency sets were generated with sequencing and STR-specific genotyping tools, but are still reported by **fragment size** (length-based alleles), not by sequence. Sequence-based per-marker frequencies will be added once published and validated.",
   freqDescription: "Population frequency data for different alleles",
   dataSource: "Data source: STRBase – NIST",
   ocePopulationInfo:
@@ -145,9 +147,6 @@ marker: {
       markerCount: "{count} STR markers",
     },
   },
-  citation:
-    "Citation: Population frequency data sourced from STRBase – NIST database. All alleles reported in STRbase for each marker are included across all population groups (AFR, NAM, EAS, CSA, EUR).",
-  citationReference: "Reference: NIST STRBase. Available at: https://strbase.nist.gov/",
   statistics: {
     title: "Population Statistics",
     description: "Summary statistics for each CE population (Illumina ForenSeq, pop.STR / SP-SMART).",
@@ -351,10 +350,13 @@ marker: {
       "In ISFG / STRNaming notation the reference sequence structure is {canonical}.",
     canonicalMany:
       "In ISFG / STRNaming notation the reference sequence structure is {canonical}, with {count} alternative forms also defined.",
-    alleles: "Alleles {range} have been reported.",
+    alleles: "Alleles {range} have been reported for this locus.",
+    allelesFreq: "Alleles {range} are reported in the pop.STR allele frequency data (CE).",
     referenceOnly: "The GRCh38 reference sequence corresponds to allele {reference}.",
     allelesWithReference:
-      "Alleles {range} have been reported; the GRCh38 reference sequence corresponds to allele {reference}.",
+      "Alleles {range} have been reported for this locus; the GRCh38 reference sequence corresponds to allele {reference}.",
+    allelesFreqWithReference:
+      "Alleles {range} are reported in the pop.STR allele frequency data (CE); the GRCh38 reference sequence corresponds to allele {reference}.",
     coordinates:
       "On GRCh38 the repeat region spans chr{chromosome}:{start}-{end} ({length} bp, {strand} strand).",
     coordinatesBoth:

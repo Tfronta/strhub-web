@@ -79,6 +79,8 @@ export type MarkerSummary = {
   kind: MarkerKind;
   /** "6-20", computed from frequencies when available, else the curated range if plausible. */
   alleleRange: string | null;
+  /** Where alleleRange came from: observed pop.STR CE frequencies, or the curated markerData range. */
+  alleleRangeSource: "frequencies" | "curated" | null;
   referenceAllele: string | null;
   strand: string | null;
   grch38: GenomicSpan | null;
@@ -285,8 +287,11 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
     ([pop, entries]) =>
       (entries ?? []).map((e) => ({ allele: e.allele, frequency: e.frequency, population: pop }))
   );
+  const alleleRangeFromFrequencies = computeAlleleRangeFromFrequencies(points);
   const alleleRange =
-    computeAlleleRangeFromFrequencies(points) ?? curatedAlleleRange(marker.alleles);
+    alleleRangeFromFrequencies ?? curatedAlleleRange(marker.alleles);
+  const alleleRangeSource: MarkerSummary["alleleRangeSource"] =
+    alleleRangeFromFrequencies ? "frequencies" : alleleRange ? "curated" : null;
 
   const referenceAllele =
     fssg?.ce != null
@@ -308,6 +313,7 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
     repeatType: marker.type || null,
     kind: markerKind(marker.category),
     alleleRange,
+    alleleRangeSource,
     referenceAllele,
     strand: fssg?.strand ?? marker.coordinates?.strand ?? null,
     grch38: span(marker.coordinates?.start ?? null, marker.coordinates?.end ?? null),

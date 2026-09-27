@@ -15,7 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import type { MarkerSummary, PopulationSummary } from "@/lib/marker-summary";
+import type { MarkerSummary } from "@/lib/marker-summary";
 
 type Translate = (key: string, params?: Record<string, string>) => string;
 
@@ -96,15 +96,19 @@ export function describeMarker(summary: MarkerSummary, t: Translate): string[] {
     );
   }
 
+  // The range names its source: alleles observed in the pop.STR CE frequency data,
+  // or the curated markerData range when no CE frequencies back it (common for
+  // Y/X loci).
+  const fromFreq = summary.alleleRangeSource === "frequencies";
   if (summary.alleleRange && summary.referenceAllele) {
     sentences.push(
-      s("allelesWithReference", {
+      s(fromFreq ? "allelesFreqWithReference" : "allelesWithReference", {
         range: summary.alleleRange,
         reference: summary.referenceAllele,
       })
     );
   } else if (summary.alleleRange) {
-    sentences.push(s("alleles", { range: summary.alleleRange }));
+    sentences.push(s(fromFreq ? "allelesFreq" : "alleles", { range: summary.alleleRange }));
   } else if (summary.referenceAllele) {
     sentences.push(s("referenceOnly", { reference: summary.referenceAllele }));
   }
@@ -128,58 +132,14 @@ export function describeMarker(summary: MarkerSummary, t: Translate): string[] {
     );
   }
 
-  if (summary.ce) {
-    const modal = summary.ce.populations.map((p) =>
-      s("modalAllele", {
-        allele: p.modalAllele,
-        population: populationName(p.pop, t),
-        frequency: formatFreq(p.modalFrequency),
-      })
-    );
-    sentences.push(s("frequencies", { list: joinList(modal, and) }));
-
-    const withHexp = summary.ce.populations.filter(
-      (p): p is PopulationSummary & { expectedHeterozygosity: number } =>
-        p.expectedHeterozygosity != null
-    );
-    if (withHexp.length >= 2) {
-      const min = withHexp.reduce((a, b) =>
-        b.expectedHeterozygosity < a.expectedHeterozygosity ? b : a
-      );
-      const max = withHexp.reduce((a, b) =>
-        b.expectedHeterozygosity > a.expectedHeterozygosity ? b : a
-      );
-      sentences.push(
-        s("heterozygosity", {
-          min: formatFreq(min.expectedHeterozygosity),
-          minPopulation: populationName(min.pop, t),
-          max: formatFreq(max.expectedHeterozygosity),
-          maxPopulation: populationName(max.pop, t),
-        })
-      );
-    }
-  }
-
-  if (summary.ngs) {
-    sentences.push(s(summary.ngs.hasRao ? "ngsWithRao" : "ngs"));
-  }
-
-  if (summary.fssg?.kits.length) {
-    sentences.push(
-      s(summary.fssg.kits.length === 1 ? "kitsOne" : "kits", {
-        kits: joinList(summary.fssg.kits, and),
-      })
-    );
-  }
-
-  if (summary.variants) {
-    sentences.push(
-      s("variants", {
-        count: String(summary.variants.count),
-        alleleCount: String(summary.variants.alleles.length),
-      })
-    );
-  }
+  // The per-population modal alleles, expected heterozygosity, NGS availability,
+  // MPS kit coverage and STRbase variant count are deliberately kept out of the
+  // intro prose: each already has its own tab or card (Frequencies, Statistics,
+  // Variant Alleles, Structure), where the numbers are interactive and cite their
+  // source. The intro stays a stable locus identity. Note also that the NGS
+  // frequency sets are reported by fragment size, not sequence, so the old
+  // "sequence-based (NGS) frequencies are also available" wording is dropped; the
+  // Frequencies panel carries that clarification.
 
   return sentences;
 }
@@ -192,7 +152,7 @@ export function MarkerSummaryDescription({
   t: Translate;
 }) {
   return (
-    <p className="max-w-4xl text-sm text-muted-foreground leading-relaxed">
+    <p className="text-sm text-muted-foreground leading-relaxed">
       {describeMarker(summary, t).join(" ")}
     </p>
   );

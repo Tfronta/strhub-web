@@ -61,6 +61,7 @@ import {
 import { markerData } from "@/lib/markerData";
 import { IGV_MARKER_IDS } from "@/app/tools/igv-viewer/markers";
 import { useLanguage } from "@/contexts/language-context";
+import { renderBold } from "@/lib/i18n/renderBold";
 import { markerFrequenciesCE, markerFrequenciesNGS } from "./markerFrequencies";
 import { markerStatisticsCE } from "./markerStatisticsCE";
 import {
@@ -728,6 +729,10 @@ export function MarkerView({
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
+          <div className="mb-4 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
+            <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+            <span>{renderBold(t("marker.freqReportingNote"))}</span>
+          </div>
           <div className="space-y-4">
             <div className="flex items-center justify-between gap-2 flex-wrap border-b border-border pb-3">
               {selectedTechnology !== "NGS" && (

@@ -13,6 +13,24 @@ const ST9_LOCI = [
 
 const rao = (id: string) => markerFrequenciesNGS[id]?.RAO;
 
+describe("1000 Genomes NGS counts (Genes 2022, ST3)", () => {
+  // Counts used to be frequency x N instead of frequency x 2N, which halved them
+  // and turned 113 singletons into 0.
+  it("add up to 2N and reproduce every published frequency", () => {
+    for (const [id, entry] of Object.entries(markerFrequenciesNGS)) {
+      for (const pop of ["AFR", "AMR", "EUR", "EAS", "SAS"] as const) {
+        const set = entry[pop];
+        if (!set?.length) continue;
+        const twoN = set.reduce((sum, e) => sum + e.count, 0);
+        expect(twoN % 2, `${id} ${pop}`).toBe(0);
+        for (const e of set) {
+          expect(Math.abs(e.frequency - e.count / twoN), `${id} ${pop} ${e.allele}`).toBeLessThan(0.000006);
+        }
+      }
+    }
+  });
+});
+
 describe("RAO NGS frequencies (Valle-Silva et al. 2022, ST9)", () => {
   it("cover exactly the 22 loci of the study", () => {
     const withRao = Object.keys(markerFrequenciesNGS).filter((id) => rao(id)?.length);

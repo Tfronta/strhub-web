@@ -142,7 +142,7 @@ marker: {
     compareTooltip:
       "Compara as populações AFR, NAM, EAS, CSA, EUR, MES e OCE do dataset SP-SMART/CESGA",
     ngs1000gTooltip:
-      "Compara AFR, NAM, EAS, SAS e EUR do Projeto 1000 Genomas Fase 3",
+      "Compara AFR, AMR, EAS, SAS e EUR do Projeto 1000 Genomas Fase 3",
     legendClickHint: "Clique em uma população na legenda para mostrar/ocultar",
     raoPopulationButtonTooltip:
       "Painel STR por NGS de uma amostra brasileira (Ribeirão Preto; Valle-Silva et al., 2022).",
@@ -164,6 +164,14 @@ marker: {
     legendHexp: "Hexp = heterozigosidade esperada",
     legendFis: "Fis = coeficiente de endogamia",
     legendFst: "Fst = índice de fixação",
+    g1kTitle: "Parâmetros Forenses, 1000 Genomes (NGS)",
+    g1kDescription:
+      "Cinco grupos populacionais do Projeto 1000 Genomas (dados de alta cobertura do NYGC), genótipos obtidos com o HipSTR, conforme publicados em {citation}, Tabela Suplementar 3.",
+    raoTitle: "Parâmetros Forenses, RAO (NGS)",
+    raoDescription:
+      "Amostra populacional brasileira de Ribeirão Preto, genótipos obtidos com o HipSTR, conforme publicados em {citation}, Tabela Suplementar 9.",
+    parametersLegend:
+      "N = indivíduos genotipados; Na = número de alelos; Ho = heterozigosidade observada; He = heterozigosidade esperada; MP = probabilidade de coincidência; PD = poder de discriminação; PIC = conteúdo de informação polimórfica; PE = poder de exclusão.",
   },
   toolsCompatibility: "Compatibilidade de Ferramentas e Pipelines",
   toolsDescription: "Ferramentas de análise STR e pipelines que suportam este marcador",
@@ -220,7 +228,7 @@ marker: {
   igvViewer: "Visualizador Genômico IGV",
   igvDescription: "Visualização genômica interativa usando IGV.js",
   igvIntegration: "Integração do Visualizador IGV",
-  igvText: "O navegador genômico interactivo se cargará aquí mostrando o locus {marker}",
+  igvText: "O navegador genômico interativo será carregado aqui mostrando o locus {marker}",
   launchIGV: "Iniciar Visualizador IGV",
   fastaGenerator: "Gerador de Sequência FASTA",
   fastaDescription: "Gere sequências FASTA para o marcador {marker}",

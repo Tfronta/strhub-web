@@ -68,6 +68,9 @@ import {
   type AlleleEntry,
 } from "@/app/marker/[id]/markerFrequencies";
 import { getDatasetConfig } from "@/app/marker/[id]/datasetConfig";
+import { markerStatisticsCE } from "@/app/marker/[id]/markerStatisticsCE";
+import { markerStatistics1000G } from "@/app/marker/[id]/markerStatistics1000G";
+import { markerStatisticsRAO } from "@/app/marker/[id]/markerStatisticsRAO";
 import { markerData } from "@/lib/markerData";
 import * as XLSX from "xlsx";
 
@@ -90,8 +93,17 @@ interface FrequencyRow {
   allele: string;
   frequency: number;
   population: string;
-  sampleSize: number;
+  /** N, the individuals typed for this locus and population, as the source table gives it. */
+  sampleSize: number | null;
 }
+
+/** One locus in one population, with the forensic parameters its source publishes. */
+type ParameterRow = { locus: string; population: string } & Record<string, string | number | null>;
+
+// Parameters each source publishes, under its own labels: pop.STR for CE, and
+// Genes 2022 ST3 / Valle-Silva et al. 2022 ST9 for the NGS datasets.
+const CE_PARAMETER_COLUMNS = ["N", "Hobs", "Hexp", "Fis", "Fst"] as const;
+const NGS_PARAMETER_COLUMNS = ["N", "Na", "Ho", "He", "MP", "PD", "PIC", "PE"] as const;
 
 interface GenotypeRow {
   locus: string;
@@ -109,9 +121,9 @@ export function DownloadPanel() {
   const [selectedPopulations, setSelectedPopulations] = useState<Set<string>>(
     new Set(),
   );
-  const [viewType, setViewType] = useState<"frequencies" | "genotypes">(
-    "frequencies",
-  );
+  const [viewType, setViewType] = useState<
+    "frequencies" | "genotypes" | "parameters"
+  >("frequencies");
   const [tableGenerated, setTableGenerated] = useState(false);
   const [locusFilter, setLocusFilter] = useState<string>("");
   const [alleleFilter, setAlleleFilter] = useState<string>("");
@@ -136,7 +148,7 @@ export function DownloadPanel() {
       internalPopMap: {
         AFR: "AFR",
         EUR: "EUR",
-        AMR: "NAM",
+        AMR: "AMR",
         EAS: "EAS",
         SAS: "SAS",
       },
@@ -209,7 +221,7 @@ export function DownloadPanel() {
         if (!markerFreqData) return;
 
         if (selectedDataset === "1000G") {
-          const has1000GData = ["AFR", "EUR", "NAM", "EAS", "SAS"].some(
+          const has1000GData = ["AFR", "EUR", "AMR", "EAS", "SAS"].some(
             (pop) =>
               markerFreqData[pop as NGSPop] &&
               Array.isArray(markerFreqData[pop as NGSPop]),
@@ -255,10 +267,10 @@ export function DownloadPanel() {
         Array.from(selectedPopulations).forEach((pop) => {
           const popData = markerFreqData[pop as CEPop];
           if (popData && Array.isArray(popData)) {
-            const totalCount = popData.reduce(
-              (sum, entry) => sum + entry.count,
-              0,
-            );
+            // pop.STR gives no allele counts (they are stored as 0), so N comes
+            // from its population statistics.
+            const sampleSize =
+              markerStatisticsCE[marker.id]?.[pop as CEPop]?.N ?? null;
             popData.forEach((entry) => {
               if (entry.frequency > 0) {
                 rows.push({
@@ -266,7 +278,7 @@ export function DownloadPanel() {
                   allele: entry.allele,
                   frequency: entry.frequency,
                   population: pop,
-                  sampleSize: totalCount,
+                  sampleSize,
                 });
               }
             });
@@ -291,10 +303,12 @@ export function DownloadPanel() {
           if (internalPop) {
             const popData = markerFreqData[internalPop];
             if (popData && Array.isArray(popData)) {
-              const totalCount = popData.reduce(
-                (sum, entry) => sum + entry.count,
-                0,
-              );
+              const sampleSize =
+                internalPop === "RAO"
+                  ? (markerStatisticsRAO[marker.id]?.N ?? null)
+                  : (markerStatistics1000G[marker.id]?.[
+                      internalPop as "AFR" | "AMR" | "EUR" | "EAS" | "SAS"
+                    ]?.N ?? null);
               popData.forEach((entry) => {
                 if (entry.frequency > 0) {
                   rows.push({
@@ -302,7 +316,7 @@ export function DownloadPanel() {
                     allele: entry.allele,
                     frequency: entry.frequency,
                     population: displayPop,
-                    sampleSize: totalCount,
+                    sampleSize,
                   });
                 }
               });
@@ -333,17 +347,54 @@ export function DownloadPanel() {
     [selectedDataset, selectedPopulations],
   );
 
+  // Forensic parameters of the selected loci and populations, as published.
+  const parameterData = useMemo((): ParameterRow[] => {
+    if (!selectedDataset || selectedPopulations.size === 0) return [];
+    const rows: ParameterRow[] = [];
+    availableMarkers.forEach((marker) => {
+      (currentDataset?.populations ?? [])
+        .filter((pop) => selectedPopulations.has(pop))
+        .forEach((pop) => {
+          if (selectedDataset === "CE") {
+            const s = markerStatisticsCE[marker.id]?.[pop as CEPop];
+            if (s) rows.push({ locus: marker.name, population: pop, ...s });
+          } else if (selectedDataset === "RAO") {
+            const s = markerStatisticsRAO[marker.id];
+            if (s) rows.push({ locus: marker.name, population: pop, ...s });
+          } else {
+            const internalPop = currentDataset?.internalPopMap?.[pop] ?? pop;
+            const s =
+              markerStatistics1000G[marker.id]?.[
+                internalPop as "AFR" | "AMR" | "EUR" | "EAS" | "SAS"
+              ];
+            if (s) rows.push({ locus: marker.name, population: pop, ...s });
+          }
+        });
+    });
+    return rows;
+  }, [selectedDataset, selectedPopulations, availableMarkers, currentDataset]);
+
+  const parameterColumns =
+    selectedDataset === "CE" ? CE_PARAMETER_COLUMNS : NGS_PARAMETER_COLUMNS;
+  const filteredParameterData =
+    locusFilter && locusFilter !== "all"
+      ? parameterData.filter((row) => row.locus === locusFilter)
+      : parameterData;
+  const hasParameterData = parameterData.length > 0;
+
   const hasGenotypeData = genotypeData.length > 0;
   const tableData = viewType === "frequencies" ? frequencyData : genotypeData;
+  const showParameters = viewType === "parameters" && hasParameterData;
+  const hasRows = showParameters || tableData.length > 0;
 
   // Get unique loci for filter
   const uniqueLoci = useMemo(() => {
     const loci = new Set<string>();
-    tableData.forEach((row) => {
+    (viewType === "parameters" ? parameterData : tableData).forEach((row) => {
       loci.add(row.locus);
     });
     return Array.from(loci).sort();
-  }, [tableData]);
+  }, [tableData, parameterData, viewType]);
 
   // Filter long-format data
   const filteredTableData = useMemo(() => {
@@ -468,12 +519,25 @@ export function DownloadPanel() {
     }
   };
 
+  // Source of the forensic parameters, named in the exports and under the table.
+  const parametersSource =
+    selectedDataset === "CE"
+      ? `${t("marker.statistics.sourceIntro")}.`
+      : selectedDataset === "RAO"
+        ? t("datasets.parametersSourceRao")
+        : t("datasets.parametersSourceG1k");
+
+  // Rows for Excel and CSV: the population-by-column frequency table, or the
+  // parameter table (one row per locus and population).
+  const exportRows: Array<Record<string, string | number | null>> =
+    viewType === "parameters" ? filteredParameterData : pivotTableData;
+
   // Download Excel
   const handleDownloadExcel = () => {
-    if (pivotTableData.length === 0) return;
+    if (exportRows.length === 0) return;
 
     // Use pivot table data where each population is a column
-    const ws = XLSX.utils.json_to_sheet(pivotTableData);
+    const ws = XLSX.utils.json_to_sheet(exportRows);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Data");
 
@@ -483,6 +547,9 @@ export function DownloadPanel() {
       { Key: "Technology", Value: currentDataset?.technology || "" },
       { Key: "Populations", Value: Array.from(selectedPopulations).join(", ") },
       { Key: "Data Type", Value: viewType },
+      ...(viewType === "parameters"
+        ? [{ Key: "Source", Value: parametersSource }]
+        : []),
       { Key: "Generated", Value: new Date().toISOString() },
     ];
     const metadataWs = XLSX.utils.json_to_sheet(metadata);
@@ -498,21 +565,22 @@ export function DownloadPanel() {
 
   // Download CSV
   const handleDownloadCSV = () => {
-    if (pivotTableData.length === 0) return;
+    if (exportRows.length === 0) return;
 
     // Use pivot table data where each population is a column
-    const headers = Object.keys(pivotTableData[0]);
+    const headers = Object.keys(exportRows[0]);
     const rows = [
       headers.join(","),
-      ...pivotTableData.map((row) =>
+      ...exportRows.map((row) =>
         headers
           .map((h) => {
-            const value = row[h as keyof typeof row];
-            // Format numbers appropriately, keep strings as-is
+            const value = row[h];
+            // Frequencies get six decimals; parameters keep the digits their
+            // source publishes. Strings are quoted.
             if (typeof value === "number") {
-              return value.toFixed(6);
+              return viewType === "parameters" ? String(value) : value.toFixed(6);
             }
-            return JSON.stringify(value);
+            return value == null ? "" : JSON.stringify(value);
           })
           .join(","),
       ),
@@ -534,7 +602,7 @@ export function DownloadPanel() {
 
   // Download JSON
   const handleDownloadJSON = () => {
-    if (tableData.length === 0) return;
+    if (!hasRows) return;
 
     const exportData = {
       dataset: currentDataset?.name || "",
@@ -542,8 +610,9 @@ export function DownloadPanel() {
       technology: currentDataset?.technology || "",
       populations: Array.from(selectedPopulations),
       dataType: viewType,
+      ...(viewType === "parameters" ? { source: parametersSource } : {}),
       generated: new Date().toISOString(),
-      data: tableData,
+      data: viewType === "parameters" ? filteredParameterData : tableData,
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
@@ -861,21 +930,30 @@ export function DownloadPanel() {
         {tableGenerated && canGenerateTable && (
           <>
             {/* View Type Toggle */}
-            {hasGenotypeData && (
+            {(hasGenotypeData || hasParameterData) && (
               <div className="mb-4">
                 <Tabs
                   value={viewType}
                   onValueChange={(value) =>
-                    setViewType(value as "frequencies" | "genotypes")
+                    setViewType(
+                      value as "frequencies" | "genotypes" | "parameters",
+                    )
                   }
                 >
                   <TabsList>
                     <TabsTrigger value="frequencies">
                       {t("datasets.frequencies")}
                     </TabsTrigger>
-                    <TabsTrigger value="genotypes">
-                      {t("datasets.genotypes")}
-                    </TabsTrigger>
+                    {hasParameterData && (
+                      <TabsTrigger value="parameters">
+                        {t("datasets.parameters")}
+                      </TabsTrigger>
+                    )}
+                    {hasGenotypeData && (
+                      <TabsTrigger value="genotypes">
+                        {t("datasets.genotypes")}
+                      </TabsTrigger>
+                    )}
                   </TabsList>
                 </Tabs>
               </div>
@@ -892,7 +970,7 @@ export function DownloadPanel() {
             )}
 
             {/* Download Buttons */}
-            {tableData.length > 0 && (
+            {hasRows && (
               <div className="flex gap-2 mb-4">
                 <Button
                   variant="outline"
@@ -918,7 +996,7 @@ export function DownloadPanel() {
             )}
 
             {/* Filters */}
-            {tableData.length > 0 && (
+            {hasRows && (
               <Card className="mb-4 border rounded-md shadow-none bg-card">
                 <CardContent className="px-4 py-3">
                   <div className="flex flex-wrap items-center gap-3">
@@ -980,16 +1058,18 @@ export function DownloadPanel() {
                       </PopoverContent>
                     </Popover>
 
-                    {/* Allele Filter */}
-                    <div className="flex items-center gap-2">
-                      <Input
-                        type="text"
-                        placeholder="Allele (exact match)"
-                        value={alleleFilter}
-                        onChange={(e) => setAlleleFilter(e.target.value)}
-                        className="w-[150px] h-8 text-xs"
-                      />
-                    </div>
+                    {/* Allele Filter (not for the per-locus parameters) */}
+                    {viewType !== "parameters" && (
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="text"
+                          placeholder="Allele (exact match)"
+                          value={alleleFilter}
+                          onChange={(e) => setAlleleFilter(e.target.value)}
+                          className="w-[150px] h-8 text-xs"
+                        />
+                      </div>
+                    )}
 
                     {/* Clear Filters */}
                     {(locusFilter || alleleFilter) && (
@@ -1008,8 +1088,81 @@ export function DownloadPanel() {
               </Card>
             )}
 
-            {/* Pivot Table */}
-            {pivotTableData.length > 0 ? (
+            {/* Forensic parameters: one row per locus and population, as published */}
+            {showParameters ? (
+              <div className="mb-6">
+                <div className="relative w-full overflow-x-auto overflow-y-auto max-h-[70vh] rounded-md border border-border">
+                  <table className="w-full caption-bottom text-sm">
+                    <TableHeader>
+                      <TableRow className="border-b">
+                        <TableHead className="text-xs font-semibold text-foreground bg-muted sticky top-0 left-0 z-30 border-r py-3">
+                          {t("datasets.locus")}
+                        </TableHead>
+                        <TableHead className="text-xs font-semibold text-foreground bg-muted sticky top-0 z-30 py-3">
+                          {t("datasets.population")}
+                        </TableHead>
+                        {parameterColumns.map((key) => (
+                          <TableHead
+                            key={key}
+                            className="text-xs font-semibold text-foreground text-right bg-muted sticky top-0 z-30 py-3"
+                          >
+                            {key}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredParameterData.map((row) => (
+                        <TableRow
+                          key={`${row.locus}-${row.population}`}
+                          className="border-b bg-background hover:bg-muted/50"
+                        >
+                          <TableCell className="text-xs font-mono text-foreground bg-background sticky left-0 z-20 border-r">
+                            {row.locus}
+                          </TableCell>
+                          <TableCell className="text-xs text-foreground">
+                            {row.population}
+                          </TableCell>
+                          {parameterColumns.map((key) => {
+                            const value = row[key];
+                            return (
+                              <TableCell
+                                key={key}
+                                className="text-xs text-right tabular-nums text-foreground"
+                              >
+                                {typeof value !== "number"
+                                  ? "–"
+                                  : key === "N" || key === "Na"
+                                    ? value
+                                    : selectedDataset === "CE"
+                                      ? value.toFixed(key === "Hobs" || key === "Hexp" ? 3 : 4)
+                                      : value.toFixed(4)}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </table>
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {parametersSource}{" "}
+                  {selectedDataset === "CE"
+                    ? `${t("marker.statistics.legendN")}; ${t("marker.statistics.legendHobs")}; ${t("marker.statistics.legendHexp")}; ${t("marker.statistics.legendFis")}; ${t("marker.statistics.legendFst")}.`
+                    : t("marker.statistics.parametersLegend")}
+                </p>
+              </div>
+            ) : viewType === "parameters" ? (
+              <Card className="mb-6 border rounded-md shadow-none bg-card">
+                <CardContent className="p-8 text-center">
+                  <AlertCircle className="h-8 w-8 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-sm text-muted-foreground">
+                    {t("datasets.noDataAvailable")}
+                  </p>
+                </CardContent>
+              </Card>
+            ) : /* Pivot Table */
+            pivotTableData.length > 0 ? (
               <div className="mb-6">
                 <div className="relative w-full overflow-x-auto overflow-y-auto max-h-[70vh] rounded-md border border-border">
                   <table

@@ -142,7 +142,7 @@ marker: {
     compareTooltip:
       "Compara las poblaciones AFR, NAM, EAS, CSA, EUR, MES y OCE del dataset SP-SMART/CESGA",
     ngs1000gTooltip:
-      "Compara AFR, NAM, EAS, SAS y EUR del Proyecto 1000 Genomas Fase 3",
+      "Compara AFR, AMR, EAS, SAS y EUR del Proyecto 1000 Genomas Fase 3",
     legendClickHint: "Haz clic en una población de la leyenda para mostrar/ocultar",
     raoPopulationButtonTooltip:
       "Panel STR NGS de una muestra brasileña (Ribeirão Preto; Valle-Silva et al., 2022).",
@@ -164,6 +164,14 @@ marker: {
     legendHexp: "Hexp = heterocigosidad esperada",
     legendFis: "Fis = coeficiente de endogamia",
     legendFst: "Fst = índice de fijación",
+    g1kTitle: "Parámetros Forenses, 1000 Genomes (NGS)",
+    g1kDescription:
+      "Cinco grupos poblacionales del Proyecto 1000 Genomas (datos de alta cobertura del NYGC), genotipos obtenidos con HipSTR, tal como se publicaron en {citation}, Tabla Suplementaria 3.",
+    raoTitle: "Parámetros Forenses, RAO (NGS)",
+    raoDescription:
+      "Muestra poblacional brasileña de Ribeirão Preto, genotipos obtenidos con HipSTR, tal como se publicaron en {citation}, Tabla Suplementaria 9.",
+    parametersLegend:
+      "N = individuos genotipados; Na = número de alelos; Ho = heterocigosidad observada; He = heterocigosidad esperada; MP = probabilidad de coincidencia; PD = poder de discriminación; PIC = contenido de información polimórfica; PE = poder de exclusión.",
   },
   toolsCompatibility: "Compatibilidad de Herramientas y Pipelines",
   toolsDescription: "Herramientas de análisis STR y pipelines que soportan este marcador",

@@ -64,6 +64,9 @@ import { useLanguage } from "@/contexts/language-context";
 import { renderBold } from "@/lib/i18n/renderBold";
 import { markerFrequenciesCE, markerFrequenciesNGS } from "./markerFrequencies";
 import { markerStatisticsCE } from "./markerStatisticsCE";
+import { markerStatisticsRAO } from "./markerStatisticsRAO";
+import { markerStatistics1000G } from "./markerStatistics1000G";
+import { ForensicParametersCard } from "./ForensicParametersCard";
 import {
   buildToolCards,
   getToolsForMarker,
@@ -100,7 +103,7 @@ const NGS_1000G_POPULATION_GROUPS: Record<string, string> = {
   AFR: "Esan in Nigeria, Gambian in Western Divisions in the Gambia, Luhya in Webuye, Kenya, Mende in Sierra Leone, Yoruba in Ibadan, Nigeria.",
   EAS: "Chinese Dai in Xishuangbanna, China, Han Chinese in Beijing, China, Southern Han Chinese, Japanese in Tokyo, Japan, Kinh in Ho Chi Minh City, Vietnam.",
   EUR: "Utah Residents (CEPH) with Northern and Western European ancestry, Finnish in Finland, British in England and Scotland, Iberian population in Spain, Toscani in Italia.",
-  NAM: "African Caribbeans in Barbados, Americans of African ancestry in Southwest USA, Colombians from Medellín, Colombia, Mexican ancestry from Los Angeles, USA, Peruvians from Lima, Peru, Puerto Ricans from Puerto Rico.",
+  AMR: "African Caribbeans in Barbados, Americans of African ancestry in Southwest USA, Colombians from Medellín, Colombia, Mexican ancestry from Los Angeles, USA, Peruvians from Lima, Peru, Puerto Ricans from Puerto Rico.",
   SAS: "Bengali from Bangladesh, Gujarati Indian from Houston, Texas, Indian Telugu from the UK, Punjabi from Lahore, Pakistan, Sri Lankan Tamil from the UK.",
 };
 
@@ -114,6 +117,7 @@ const NGS_1000G_DATASET_LINKS = {
 const POPULATION_COLORS: Record<string, string> = {
   AFR: "#f59e0b",
   NAM: "#ef4444",
+  AMR: "#ef4444",
   EAS: "#3b82f6",
   CSA: "#8b5cf6",
   SAS: "#8b5cf6",
@@ -122,7 +126,7 @@ const POPULATION_COLORS: Record<string, string> = {
   OCE: "#06b6d4",
 };
 
-const NGS_1000G_POPS = new Set(["AFR", "NAM", "EUR", "EAS", "SAS"]);
+const NGS_1000G_POPS = new Set(["AFR", "AMR", "EUR", "EAS", "SAS"]);
 
 export function MarkerView({
   params,
@@ -411,7 +415,7 @@ export function MarkerView({
   const hidePopStrDatasetNotesAccordion =
     selectedTechnology === "NGS" &&
     selectedPopulation !== "RAO" &&
-    ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(selectedPopulation);
+    ["AFR", "EUR", "AMR", "EAS", "SAS"].includes(selectedPopulation);
 
   const showPopStrDatasetNotesAccordion =
     isPopStrDataset && !datasetDescription && !hidePopStrDatasetNotesAccordion;
@@ -1073,11 +1077,11 @@ export function MarkerView({
                 <>
                   {/* Show dataset-specific description if available, otherwise show generic description */}
                   {(() => {
-                    // Check if this is NGS 1000G dataset (AFR/EUR/NAM/EAS/SAS, but not RAO)
+                    // Check if this is NGS 1000G dataset (AFR/EUR/AMR/EAS/SAS, but not RAO)
                     const isNGS1000G =
                       selectedTechnology === "NGS" &&
                       selectedPopulation !== "RAO" &&
-                      ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
+                      ["AFR", "EUR", "AMR", "EAS", "SAS"].includes(
                         selectedPopulation,
                       ) &&
                       NGS_1000G_POPULATION_GROUPS[selectedPopulation];
@@ -1094,7 +1098,7 @@ export function MarkerView({
                       );
                     }
 
-                    // Show NGS 1000G description for AFR/EUR/NAM/EAS/SAS
+                    // Show NGS 1000G description for AFR/EUR/AMR/EAS/SAS
                     if (isNGS1000G) {
                       return (
                         <div className="mt-2 space-y-3 text-sm text-muted-foreground">
@@ -1187,11 +1191,11 @@ export function MarkerView({
 
                   <div className="mt-4 flex flex-wrap gap-2">
                     {(() => {
-                      // Check if this is NGS 1000G dataset (AFR/EUR/NAM/EAS/SAS, but not RAO)
+                      // Check if this is NGS 1000G dataset (AFR/EUR/AMR/EAS/SAS, but not RAO)
                       const isNGS1000G =
                         selectedTechnology === "NGS" &&
                         selectedPopulation !== "RAO" &&
-                        ["AFR", "EUR", "NAM", "EAS", "SAS"].includes(
+                        ["AFR", "EUR", "AMR", "EAS", "SAS"].includes(
                           selectedPopulation,
                         );
 
@@ -2038,6 +2042,35 @@ export function MarkerView({
                 })()}
               </CardContent>
             </Card>
+            {markerStatistics1000G[markerId] && (
+              <ForensicParametersCard
+                title={t("marker.statistics.g1kTitle")}
+                description={t("marker.statistics.g1kDescription")}
+                citation="Genes 2022, 13(12):2205"
+                citationUrl={NGS_1000G_DATASET_LINKS.publicationUrl}
+                populationLabel={t("marker.statistics.population")}
+                legend={t("marker.statistics.parametersLegend")}
+                rows={(["AFR", "AMR", "EUR", "EAS", "SAS"] as const).flatMap(
+                  (pop) => {
+                    const params = markerStatistics1000G[markerId]?.[pop];
+                    return params
+                      ? [{ label: pop, color: POPULATION_COLORS[pop], params }]
+                      : [];
+                  },
+                )}
+              />
+            )}
+            {markerStatisticsRAO[markerId] && (
+              <ForensicParametersCard
+                title={t("marker.statistics.raoTitle")}
+                description={t("marker.statistics.raoDescription")}
+                citation="Valle-Silva et al. 2022"
+                citationUrl={getDatasetConfig("RAO")?.metadata?.externalUrl}
+                populationLabel={t("marker.statistics.population")}
+                legend={t("marker.statistics.parametersLegend")}
+                rows={[{ label: "RAO", params: markerStatisticsRAO[markerId] }]}
+              />
+            )}
           </TabsContent>
 
           <TabsContent value="variants" className="space-y-4">

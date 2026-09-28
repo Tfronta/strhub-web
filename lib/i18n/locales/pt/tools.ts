@@ -509,7 +509,6 @@ motifExplorerPage: {
   marker: {
     ce: "Equivalente CE",
     minimumRange: "ISFG minimum range",
-    strand: "Fita",
   },
   canonical: {
     title: "STRNaming Formatted ISFG Minimum Range for Common Alleles (2024 onward)",
@@ -521,7 +520,7 @@ motifExplorerPage: {
     none: "Não disponível",
   },
   sequence: {
-    title: "Sequência de referência (ISFG minimum range)",
+    title: "Sequência de referência (ISFG minimum range, fita direta do GRCh38)",
     note: "Os blocos verdes são as unidades canônicas de repetição sobre o minimum range. Os blocos âmbar são interrupções ou variantes internas. As bases cinzas são a sequência flanqueadora residual dentro da janela reportada e não contam para o alelo.",
     legendRepeat: "Unidade de repetição",
     legendMinorRepeat: "Repetição secundária (minúscula)",

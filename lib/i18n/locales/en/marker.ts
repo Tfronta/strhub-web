@@ -31,20 +31,26 @@ marker: {
   },
   basicInfo: "Basic Information",
   genomicCoords: "Genomic Coordinates",
+  repeatRegion: "Repeat region",
+  forwardStrandNote: "Motif and sequences are shown on the forward (+) strand of GRCh38.",
   nistReference: "NIST STRBase Reference",
   nistDescription: "Official reference information from NIST STRBase database",
   chromosome: "Chromosome",
-  position: "Position",
   cytogeneticLocation: "Cytogenetic Location",
   motif: "Motif",
+  alternativeMotifs: "Alternative Motifs",
   type: "Type",
-  alleleRange: "Allele Range",
   category: "Category",
   build: "Build",
-  strand: "Strand",
   start: "Start",
   end: "End",
   referenceAllele: "Reference Allele",
+  nomenclatureNotes: {
+    d6s474:
+      "Kits that count repeats with the Hill motif, [AGAT]n [GATA]n, designate this GRCh38 sequence as allele 17. STRhub uses the harmonized designation, 16, recommended by {citation}.",
+    dys612:
+      "The ForenSeq Universal Analysis Software reports DYS612 alleles six repeats shorter. STRhub numbers alleles over the entire repeat region, as recommended by {citation}.",
+  },
   lastUpdated: "Last Updated",
   commonAlleles: "Common Alleles",
   viewInBrowser: "View in UCSC Genome Browser",
@@ -334,7 +340,6 @@ marker: {
     },
   },
   summary: {
-    and: "and",
     kind: {
       codis: "one of the 20 CODIS core loci",
       ess: "part of the European Standard Set",
@@ -346,34 +351,6 @@ marker: {
       "{name} is a {type} short tandem repeat (STR) locus on chromosome {chromosome}{cytoband}, {kind}.",
     introUntyped:
       "{name} is a short tandem repeat (STR) locus on chromosome {chromosome}{cytoband}, {kind}.",
-    motif: "Its repeat motif is {motif}.",
-    motifAlternatives:
-      "Its repeat motif is {motif}; the alternative structures {alternatives} have also been described.",
-    canonical:
-      "In ISFG / STRNaming notation the reference sequence structure is {canonical}.",
-    canonicalMany:
-      "In ISFG / STRNaming notation the reference sequence structure is {canonical}, with {count} alternative forms also defined.",
-    alleles: "Alleles {range} have been reported for this locus.",
-    allelesFreq: "Alleles {range} are reported in the pop.STR allele frequency data (CE).",
-    referenceOnly: "The GRCh38 reference sequence corresponds to allele {reference}.",
-    allelesWithReference:
-      "Alleles {range} have been reported for this locus; the GRCh38 reference sequence corresponds to allele {reference}.",
-    allelesFreqWithReference:
-      "Alleles {range} are reported in the pop.STR allele frequency data (CE); the GRCh38 reference sequence corresponds to allele {reference}.",
-    coordinates:
-      "On GRCh38 the repeat region spans chr{chromosome}:{start}-{end} ({length} bp, {strand} strand).",
-    coordinatesBoth:
-      "On GRCh38 the repeat region spans chr{chromosome}:{start}-{end} ({length} bp, {strand} strand); on GRCh37/hg19 it maps to {start37}-{end37}.",
-    modalAllele: "{allele} ({population}, {frequency})",
-    frequencies:
-      "In the pop.STR capillary electrophoresis dataset the most common allele per population group is {list}.",
-    heterozygosity:
-      "Expected heterozygosity ranges from {min} ({minPopulation}) to {max} ({maxPopulation}).",
-    ngs: "Sequence-based (NGS) allele frequencies from the 1000 Genomes Project are also available.",
-    ngsWithRao:
-      "Sequence-based (NGS) allele frequencies from the 1000 Genomes Project and from a Brazilian NGS dataset (RAO) are also available.",
-    kits: "The locus is covered by the MPS kits {kits}.",
-    kitsOne: "The locus is covered by the MPS kit {kits}.",
     variants:
       "STRbase reports {count} sequence variants across {alleleCount} allele designations.",
     structureTitle: "Sequence structure (FSSG)",

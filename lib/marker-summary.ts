@@ -10,7 +10,6 @@ import { markerData } from "@/lib/markerData";
 import {
   markerFrequenciesCE,
   markerFrequenciesNGS,
-  type AlleleEntry,
   type CEPop,
 } from "@/app/marker/[id]/markerFrequencies";
 import { markerStatisticsCE } from "@/app/marker/[id]/markerStatisticsCE";
@@ -20,8 +19,8 @@ import {
   type FssgMarker,
 } from "@/app/tools/str-motif-explorer/data/fssgData";
 import { IGV_MARKER_IDS } from "@/app/tools/igv-viewer/markers";
-import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
 import strnamingNames from "@/data/strnaming_names.json";
+import { HARMONIZED_NOMENCLATURE } from "@/lib/nomenclatureHarmonization";
 
 export type VariantNameStatus = "ok" | "held" | "not_covered";
 
@@ -88,12 +87,12 @@ export type MarkerSummary = {
   /** "Tetranucleotide", "Pentanucleotide", ... as stored in markerData. */
   repeatType: string | null;
   kind: MarkerKind;
-  /** "6-20", computed from frequencies when available, else the curated range if plausible. */
-  alleleRange: string | null;
-  /** Where alleleRange came from: observed pop.STR CE frequencies, or the curated markerData range. */
-  alleleRangeSource: "frequencies" | "curated" | null;
   referenceAllele: string | null;
-  strand: string | null;
+  /**
+   * True for the loci whose length-based designation differs between kits and was
+   * harmonized by Bodner et al. 2024; the page states the difference, as the paper asks.
+   */
+  nomenclatureNote: boolean;
   grch38: GenomicSpan | null;
   grch37: GenomicSpan | null;
   fssg: {
@@ -131,17 +130,14 @@ type RawMarker = {
   motif: string | null;
   alternativeMotifs: readonly string[] | null;
   type: string | null;
-  alleles: string | null;
   category: string;
   coordinates: {
     start: number | null;
     end: number | null;
-    strand: string | null;
     grch37: { start: number | null; end: number | null } | null;
   } | null;
   sequences: readonly { allele: string }[];
   nistReference: { referenceAllele: string | number | null } | null;
-  populationFrequencies: Record<string, readonly AlleleEntry[]>;
 };
 
 const rawMarkers = markerData as unknown as Record<string, RawMarker>;
@@ -203,13 +199,6 @@ export function indexableMarkerIds(): string[] {
 // The curated `alleles` string is unreliable when no frequency data backs it
 // (22 records read "0-N", a few "1-N" or a single number); only keep a range
 // that could be a real set of repeat alleles.
-function curatedAlleleRange(alleles: string | null): string | null {
-  const match = alleles?.match(/^(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)$/);
-  if (!match) return null;
-  const [, low, high] = match;
-  return Number(low) >= 2 && Number(high) > Number(low) ? `${low}-${high}` : null;
-}
-
 function span(start: number | null, end: number | null): GenomicSpan | null {
   if (start == null || end == null) return null;
   return { start, end, lengthBp: end - start + 1 };
@@ -315,22 +304,18 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
   if (!marker) return null;
 
   const fssg = fssgFor(key);
-  const points = Object.entries(marker.populationFrequencies ?? {}).flatMap(
-    ([pop, entries]) =>
-      (entries ?? []).map((e) => ({ allele: e.allele, frequency: e.frequency, population: pop }))
-  );
-  const alleleRangeFromFrequencies = computeAlleleRangeFromFrequencies(points);
-  const alleleRange =
-    alleleRangeFromFrequencies ?? curatedAlleleRange(marker.alleles);
-  const alleleRangeSource: MarkerSummary["alleleRangeSource"] =
-    alleleRangeFromFrequencies ? "frequencies" : alleleRange ? "curated" : null;
-
+  // STRBase's GRCh38 reference allele, replaced by STRidER's CE equivalent when
+  // the FSSG has one. They agree everywhere except D6S474, where our STRBase copy
+  // counts with the Hill motif (17) and the FSSG uses the harmonized Becker
+  // designation (16) recommended by Bodner et al. 2024 (FSI Genet 70:103012).
+  // Loci without a STRBase value show none, so one FSSG row of the two-copy
+  // DYF387S1 is never shown as the locus reference allele.
+  const nistReferenceAllele =
+    marker.nistReference?.referenceAllele != null
+      ? String(marker.nistReference.referenceAllele)
+      : null;
   const referenceAllele =
-    fssg?.ce != null
-      ? String(fssg.ce)
-      : marker.nistReference?.referenceAllele != null
-        ? String(marker.nistReference.referenceAllele)
-        : null;
+    nistReferenceAllele != null && fssg?.ce != null ? String(fssg.ce) : nistReferenceAllele;
 
   const sequences = marker.sequences ?? [];
   const variantAlleles = [...new Set(sequences.map((s) => s.allele))].sort(sortAlleles);
@@ -344,10 +329,8 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
     alternativeMotifs: [...(marker.alternativeMotifs ?? [])],
     repeatType: marker.type || null,
     kind: markerKind(marker.category),
-    alleleRange,
-    alleleRangeSource,
     referenceAllele,
-    strand: fssg?.strand ?? marker.coordinates?.strand ?? null,
+    nomenclatureNote: HARMONIZED_NOMENCLATURE.has(key),
     grch38: span(marker.coordinates?.start ?? null, marker.coordinates?.end ?? null),
     grch37: span(
       marker.coordinates?.grch37?.start ?? null,

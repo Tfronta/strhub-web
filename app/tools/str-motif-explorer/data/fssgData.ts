@@ -6,9 +6,12 @@
 // (2024 onward), the historical 2016-2023 bracketing, the reference sequence
 // (sliced to the minimum range), and each MPS kit's sequenced range.
 //
-// Reverse-strand loci are already oriented in the source so that the canonical
-// bracketing reads left-to-right on the stored sequence, so the UI can slice
-// and highlight forward without reverse-complementing.
+// The FSSG gives every sequence on the GRCh38 forward strand ("sequence strings
+// (forward strand)" in its sheet title) and the canonical bracketing reads
+// left-to-right on it, so the UI slices and highlights forward without
+// reverse-complementing. No per-locus strand is stored: the old field had no
+// STRidER source and disagreed with the FSSG notes on which loci were first
+// characterized on the reverse strand.
 
 import raw from "@/data/fssg_motif_data.json";
 
@@ -42,7 +45,6 @@ export type MotifSegment = {
 export type FssgMarker = {
   locus: string;
   ce: number | string | null;
-  strand: "+" | "-" | null;
   minimumRange: GenomicRange | null;
   fullRange: GenomicRange | null;
   canonicalBracketing: string[];

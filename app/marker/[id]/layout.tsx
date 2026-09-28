@@ -36,7 +36,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const where = parts.length ? ` (${parts.join(", ")})` : "";
   const kind = [marker.type, marker.category].filter(Boolean).join(", ");
   const motif = marker.motif ? ` Repeat motif ${marker.motif}.` : "";
-  const alleles = summary?.alleleRange ? ` Alleles ${summary.alleleRange}.` : "";
   // Say what the page actually has, so the snippet is specific to this locus.
   const contents: string[] = [];
   if (summary?.ce)
@@ -64,10 +63,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return pageMetadata(canonicalPath, {
     index: markerHasContent(params.id),
     title: `${name} STR marker`,
-    description: `${name}${where}: ${kind || "STR"} marker.${motif}${alleles}${summaryLine}`,
+    description: `${name}${where}: ${kind || "STR"} marker.${motif}${summaryLine}`,
     openGraph: {
       title: `${name} STR marker | STRhub`,
-      description: `${name}${where}: ${kind || "STR"} marker.${motif}${alleles}`,
+      description: `${name}${where}: ${kind || "STR"} marker.${motif}`,
     },
   });
 }

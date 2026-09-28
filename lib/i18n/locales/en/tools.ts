@@ -508,7 +508,6 @@ motifExplorerPage: {
   marker: {
     ce: "CE equivalent",
     minimumRange: "ISFG minimum range",
-    strand: "Strand",
   },
   canonical: {
     title: "STRNaming Formatted ISFG Minimum Range for Common Alleles (2024 onward)",
@@ -520,7 +519,7 @@ motifExplorerPage: {
     none: "Not available",
   },
   sequence: {
-    title: "Reference sequence (ISFG minimum range)",
+    title: "Reference sequence (ISFG minimum range, GRCh38 forward strand)",
     note: "Green blocks are the canonical repeat units over the minimum range. Amber blocks are interruptions or internal variants. Grey bases are the residual flanking sequence inside the reported window and are not counted toward the allele.",
     legendRepeat: "Repeat unit",
     legendMinorRepeat: "Secondary repeat (lowercase)",

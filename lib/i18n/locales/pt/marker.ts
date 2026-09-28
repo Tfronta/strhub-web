@@ -31,20 +31,26 @@ marker: {
   },
   basicInfo: "Informações Básicas",
   genomicCoords: "Coordenadas Genômicas",
+  repeatRegion: "Região repetitiva",
+  forwardStrandNote: "O motivo e as sequências são mostrados na fita direta (+) do GRCh38.",
   nistReference: "Referência NIST STRBase",
   nistDescription: "Informações de referência oficial do banco de dados NIST STRBase",
   chromosome: "Cromossomo",
-  position: "Posição",
   cytogeneticLocation: "Localização citogenética",
   motif: "Motivo",
+  alternativeMotifs: "Motivos alternativos",
   type: "Tipo",
-  alleleRange: "Faixa de Alelos",
   category: "Categoria",
   build: "Build",
-  strand: "Fita",
   start: "Início",
   end: "Fim",
   referenceAllele: "Alelo de Referência",
+  nomenclatureNotes: {
+    d6s474:
+      "Os kits que contam as repetições com o motivo de Hill, [AGAT]n [GATA]n, designam esta sequência do GRCh38 como alelo 17. O STRhub usa a designação harmonizada, 16, recomendada por {citation}.",
+    dys612:
+      "O Universal Analysis Software do ForenSeq reporta os alelos de DYS612 com seis repetições a menos. O STRhub numera os alelos sobre toda a região repetitiva, como recomendam {citation}.",
+  },
   lastUpdated: "Última Atualização",
   commonAlleles: "Alelos Comuns",
   viewInBrowser: "Ver no Navegador Genômico UCSC",
@@ -334,7 +340,6 @@ marker: {
     },
   },
   summary: {
-    and: "e",
     kind: {
       codis: "um dos 20 loci do núcleo CODIS",
       ess: "parte do European Standard Set",
@@ -346,34 +351,6 @@ marker: {
       "{name} é um locus de repetições curtas em tandem (STR) do tipo {type} no cromossomo {chromosome}{cytoband}, {kind}.",
     introUntyped:
       "{name} é um locus de repetições curtas em tandem (STR) no cromossomo {chromosome}{cytoband}, {kind}.",
-    motif: "Seu motivo de repetição é {motif}.",
-    motifAlternatives:
-      "Seu motivo de repetição é {motif}; as estruturas alternativas {alternatives} também foram descritas.",
-    canonical:
-      "Na notação ISFG / STRNaming, a estrutura da sequência de referência é {canonical}.",
-    canonicalMany:
-      "Na notação ISFG / STRNaming, a estrutura da sequência de referência é {canonical}, com {count} formas alternativas também definidas.",
-    alleles: "Foram descritos os alelos {range} para este locus.",
-    allelesFreq: "Os alelos {range} constam nos dados de frequência do pop.STR (CE).",
-    referenceOnly: "A sequência de referência GRCh38 corresponde ao alelo {reference}.",
-    allelesWithReference:
-      "Foram descritos os alelos {range} para este locus; a sequência de referência GRCh38 corresponde ao alelo {reference}.",
-    allelesFreqWithReference:
-      "Os alelos {range} constam nos dados de frequência do pop.STR (CE); a sequência de referência GRCh38 corresponde ao alelo {reference}.",
-    coordinates:
-      "No GRCh38 a região repetitiva abrange chr{chromosome}:{start}-{end} ({length} pb, fita {strand}).",
-    coordinatesBoth:
-      "No GRCh38 a região repetitiva abrange chr{chromosome}:{start}-{end} ({length} pb, fita {strand}); no GRCh37/hg19 corresponde a {start37}-{end37}.",
-    modalAllele: "{allele} ({population}, {frequency})",
-    frequencies:
-      "No conjunto de dados de eletroforese capilar do pop.STR, o alelo mais frequente por grupo populacional é {list}.",
-    heterozygosity:
-      "A heterozigosidade esperada varia de {min} ({minPopulation}) a {max} ({maxPopulation}).",
-    ngs: "Também há frequências alélicas baseadas em sequência (NGS) do Projeto 1000 Genomas.",
-    ngsWithRao:
-      "Também há frequências alélicas baseadas em sequência (NGS) do Projeto 1000 Genomas e de um conjunto de dados NGS brasileiro (RAO).",
-    kits: "O locus é coberto pelos kits MPS {kits}.",
-    kitsOne: "O locus é coberto pelo kit MPS {kits}.",
     variants:
       "O STRbase registra {count} variantes de sequência distribuídas em {alleleCount} designações alélicas.",
     structureTitle: "Estrutura da sequência (FSSG)",

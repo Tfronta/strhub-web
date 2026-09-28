@@ -30,21 +30,27 @@ marker: {
     },
   },
   basicInfo: "Información Básica",
-  genomicCoords: "Coordenadas Genômicas",
+  genomicCoords: "Coordenadas Genómicas",
+  repeatRegion: "Región repetitiva",
+  forwardStrandNote: "El motivo y las secuencias se muestran en la hebra directa (+) de GRCh38.",
   nistReference: "Referencia NIST STRBase",
   nistDescription: "Información de referencia oficial de la base de datos NIST STRBase",
   chromosome: "Cromosoma",
-  position: "Posición",
   cytogeneticLocation: "Ubicación citogenética",
   motif: "Motivo",
+  alternativeMotifs: "Motivos alternativos",
   type: "Tipo",
-  alleleRange: "Rango de Alelos",
   category: "Categoría",
   build: "Build",
-  strand: "Cadena",
   start: "Inicio",
   end: "Fin",
   referenceAllele: "Alelo de Referencia",
+  nomenclatureNotes: {
+    d6s474:
+      "Los kits que cuentan las repeticiones con el motivo de Hill, [AGAT]n [GATA]n, designan esta secuencia de GRCh38 como alelo 17. STRhub usa la designación armonizada, 16, recomendada por {citation}.",
+    dys612:
+      "El Universal Analysis Software de ForenSeq informa los alelos de DYS612 con seis repeticiones menos. STRhub numera los alelos sobre toda la región repetitiva, como recomiendan {citation}.",
+  },
   lastUpdated: "Última Actualización",
   commonAlleles: "Alelos Comunes",
   viewInBrowser: "Ver en Navegador Genômico UCSC",
@@ -334,7 +340,6 @@ marker: {
     },
   },
   summary: {
-    and: "y",
     kind: {
       codis: "uno de los 20 loci del núcleo CODIS",
       ess: "parte del European Standard Set",
@@ -346,34 +351,6 @@ marker: {
       "{name} es un locus de repeticiones cortas en tándem (STR) de tipo {type} en el cromosoma {chromosome}{cytoband}, {kind}.",
     introUntyped:
       "{name} es un locus de repeticiones cortas en tándem (STR) en el cromosoma {chromosome}{cytoband}, {kind}.",
-    motif: "Su motivo de repetición es {motif}.",
-    motifAlternatives:
-      "Su motivo de repetición es {motif}; también se han descrito las estructuras alternativas {alternatives}.",
-    canonical:
-      "En la notación ISFG / STRNaming, la estructura de la secuencia de referencia es {canonical}.",
-    canonicalMany:
-      "En la notación ISFG / STRNaming, la estructura de la secuencia de referencia es {canonical}, con {count} formas alternativas definidas.",
-    alleles: "Se han descrito los alelos {range} para este locus.",
-    allelesFreq: "Los alelos {range} figuran en los datos de frecuencia de pop.STR (CE).",
-    referenceOnly: "La secuencia de referencia GRCh38 corresponde al alelo {reference}.",
-    allelesWithReference:
-      "Se han descrito los alelos {range} para este locus; la secuencia de referencia GRCh38 corresponde al alelo {reference}.",
-    allelesFreqWithReference:
-      "Los alelos {range} figuran en los datos de frecuencia de pop.STR (CE); la secuencia de referencia GRCh38 corresponde al alelo {reference}.",
-    coordinates:
-      "En GRCh38 la región repetitiva abarca chr{chromosome}:{start}-{end} ({length} pb, hebra {strand}).",
-    coordinatesBoth:
-      "En GRCh38 la región repetitiva abarca chr{chromosome}:{start}-{end} ({length} pb, hebra {strand}); en GRCh37/hg19 corresponde a {start37}-{end37}.",
-    modalAllele: "{allele} ({population}, {frequency})",
-    frequencies:
-      "En el conjunto de datos de electroforesis capilar de pop.STR, el alelo más frecuente por grupo poblacional es {list}.",
-    heterozygosity:
-      "La heterocigosidad esperada va de {min} ({minPopulation}) a {max} ({maxPopulation}).",
-    ngs: "También hay frecuencias alélicas basadas en secuencia (NGS) del Proyecto 1000 Genomas.",
-    ngsWithRao:
-      "También hay frecuencias alélicas basadas en secuencia (NGS) del Proyecto 1000 Genomas y de un conjunto de datos NGS brasileño (RAO).",
-    kits: "El locus está cubierto por los kits MPS {kits}.",
-    kitsOne: "El locus está cubierto por el kit MPS {kits}.",
     variants:
       "STRbase recoge {count} variantes de secuencia repartidas en {alleleCount} designaciones alélicas.",
     structureTitle: "Estructura de la secuencia (FSSG)",

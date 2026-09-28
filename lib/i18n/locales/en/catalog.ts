@@ -48,7 +48,6 @@ catalog: {
   visitPopStr: "Visit pop.STR",
   card: {
     description: "DNA Segment on Chromosome {chromosome}",
-    alleleRangeLabel: "Allele Range",
   },
 },
 datasets: {

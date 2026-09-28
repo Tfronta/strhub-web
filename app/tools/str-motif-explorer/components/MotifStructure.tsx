@@ -7,6 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { InfoTip } from "@/components/InfoTip";
+import { NomenclatureNote } from "@/components/NomenclatureNote";
 import type { FssgMarker } from "../data/fssgData";
 import {
   buildHighlight,
@@ -40,7 +41,6 @@ const NAME_CHIP =
 export type MotifStructureStrings = {
   ceLabel: string;
   minimumRangeLabel: string;
-  strandLabel: string;
   canonicalTitle: string;
   canonicalAltForms: string;
   historicalTitle: string;
@@ -120,9 +120,12 @@ function FlankPill({
 export function MotifStructure({
   marker,
   strings,
+  nomenclatureNote,
 }: {
   marker: FssgMarker;
   strings: MotifStructureStrings;
+  /** Cited designation note for the loci harmonized by Bodner et al. 2024 (D6S474, DYS612). */
+  nomenclatureNote?: string;
 }) {
   const forms = marker.canonicalBracketing;
   const seq = marker.minimumRangeSequence ?? "";
@@ -173,13 +176,11 @@ export function MotifStructure({
               </span>
             ) : null}
           </span>
-          {marker.strand ? (
-            <span>
-              <span className="font-semibold text-slate-900 dark:text-slate-100">
-                {strings.strandLabel}:
-              </span>{" "}
-              <span className="font-mono">{marker.strand}</span>
-            </span>
+          {nomenclatureNote ? (
+            <NomenclatureNote
+              className="basis-full text-xs leading-relaxed text-slate-500 dark:text-slate-400"
+              text={nomenclatureNote}
+            />
           ) : null}
         </div>
 

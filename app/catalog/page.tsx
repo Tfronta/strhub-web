@@ -30,10 +30,7 @@ import { useRouter } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/contexts/language-context"; // Fixed import path to use correct location
 import { PageTitle } from "@/components/page-title";
-import { markerData } from "@/lib/markerData";
 import { markers } from "@/lib/catalogMarkers";
-import { markerFrequenciesCE } from "@/app/marker/[id]/markerFrequencies";
-import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
 import { cn } from "@/lib/utils";
 import {
   Sheet,
@@ -64,67 +61,6 @@ const repeatTypes = [
   "Pentanucleotide",
   "Hexanucleotide",
 ];
-
-// Helper function to compute allele range for a marker (same logic as detail page)
-function computeAlleleRangeForMarker(
-  markerId: string,
-  fallbackAlleles: string,
-): string {
-  const markerIdLower = markerId.toLowerCase();
-  const marker = markerData[markerIdLower as keyof typeof markerData];
-
-  if (!marker?.populationFrequencies) {
-    return fallbackAlleles;
-  }
-
-  // Collect all frequency points from all populations
-  const allFrequencyPoints: Array<{
-    allele: string;
-    frequency: number;
-    population?: string;
-  }> = [];
-
-  // Iterate through all populations in populationFrequencies
-  Object.entries(marker.populationFrequencies).forEach(([pop, entries]) => {
-    if (Array.isArray(entries)) {
-      entries.forEach((entry) => {
-        if (entry && entry.allele && entry.frequency != null) {
-          allFrequencyPoints.push({
-            allele: entry.allele,
-            frequency: entry.frequency,
-            population: pop,
-          });
-        }
-      });
-    }
-  });
-
-  // Also check markerFrequencies for additional populations (e.g., RAO for NGS)
-  const markerFreqData = markerFrequenciesCE[markerIdLower];
-  if (markerFreqData) {
-    Object.entries(markerFreqData).forEach(([key, value]) => {
-      if (
-        key !== "kit" &&
-        key !== "technology" &&
-        Array.isArray(value) &&
-        value.length > 0
-      ) {
-        value.forEach((entry: any) => {
-          if (entry && entry.allele && entry.frequency != null) {
-            allFrequencyPoints.push({
-              allele: entry.allele,
-              frequency: entry.frequency,
-              population: key,
-            });
-          }
-        });
-      }
-    });
-  }
-
-  const computed = computeAlleleRangeFromFrequencies(allFrequencyPoints);
-  return computed || fallbackAlleles;
-}
 
 export default function CatalogPage() {
   const { t } = useLanguage();
@@ -607,17 +543,6 @@ export default function CatalogPage() {
                         </span>
                         <span className="font-medium">
                           {getTranslatedType(marker.type)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">
-                          {t("catalog.card.alleleRangeLabel")}:
-                        </span>
-                        <span className="font-medium">
-                          {computeAlleleRangeForMarker(
-                            marker.id,
-                            marker.alleles,
-                          )}
                         </span>
                       </div>
                     </div>

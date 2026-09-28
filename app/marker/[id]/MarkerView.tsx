@@ -73,10 +73,10 @@ import {
 } from "@/lib/tools";
 import { ToolCardCompact } from "@/components/tools/ToolCardCompact";
 import { InfoTip } from "@/components/InfoTip";
+import { NomenclatureNote } from "@/components/NomenclatureNote";
 import { LATAMCatalog, type LatamSubpop } from "@/lib/latamCatalog";
 import { getDatasetConfig } from "./datasetConfig";
 import { cn } from "@/lib/utils";
-import { computeAlleleRangeFromFrequencies } from "@/lib/alleleRange";
 import type { MarkerSummary } from "@/lib/marker-summary";
 import {
   MarkerSummaryDescription,
@@ -350,82 +350,20 @@ export function MarkerView({
 
   const availablePopulations = getAvailablePopulations();
 
-  // Compute allele range from all population frequencies
-  const computedAlleleRange = useMemo(() => {
-    if (
-      !marker?.populationFrequencies ||
-      !Object.values(marker.populationFrequencies).flat().length
-    ) {
-      return "";
-    }
-
-    // Collect all frequency points from all populations
-    const allFrequencyPoints: Array<{
-      allele: string;
-      frequency: number;
-      population?: string;
-    }> = [];
-
-    // Iterate through all populations in populationFrequencies
-    Object.entries(marker.populationFrequencies).forEach(([pop, entries]) => {
-      if (Array.isArray(entries)) {
-        entries.forEach((entry) => {
-          if (entry && entry.allele && entry.frequency != null) {
-            allFrequencyPoints.push({
-              allele: entry.allele,
-              frequency: entry.frequency,
-              population: pop,
-            });
-          }
-        });
-      }
-    });
-
-    // Also check markerFreqDataCE and markerFreqDataNGS for additional populations
-    if (markerFreqDataCE) {
-      Object.entries(markerFreqDataCE).forEach(([key, value]) => {
-        if (
-          key !== "kit" &&
-          key !== "technology" &&
-          Array.isArray(value) &&
-          value.length > 0
-        ) {
-          value.forEach((entry: any) => {
-            if (entry && entry.allele && entry.frequency != null) {
-              allFrequencyPoints.push({
-                allele: entry.allele,
-                frequency: entry.frequency,
-                population: key,
-              });
-            }
-          });
-        }
-      });
-    }
-    if (markerFreqDataNGS) {
-      Object.entries(markerFreqDataNGS).forEach(([key, value]) => {
-        if (
-          key !== "kit" &&
-          key !== "technology" &&
-          Array.isArray(value) &&
-          value.length > 0
-        ) {
-          value.forEach((entry: any) => {
-            if (entry && entry.allele && entry.frequency != null) {
-              allFrequencyPoints.push({
-                allele: entry.allele,
-                frequency: entry.frequency,
-                population: key,
-              });
-            }
-          });
-        }
-      });
-    }
-
-    const computed = computeAlleleRangeFromFrequencies(allFrequencyPoints);
-    return computed || marker.alleles; // Fallback to hardcoded value if computation returns null
-  }, [marker, markerFreqDataCE, markerFreqDataNGS]);
+  // Same "chr:start-end (N bp)" form as the ISFG minimum range in the FSSG card,
+  // with fixed en-US digits so server and client render the same markup.
+  const formatRegion = (start?: number | null, end?: number | null) =>
+    start != null && end != null
+      ? `chr${marker.chromosome}:${start.toLocaleString("en-US")}-${end.toLocaleString("en-US")} (${t(
+          "marker.summary.basePairs",
+          { n: (end - start + 1).toLocaleString("en-US") }
+        )})`
+      : null;
+  const grch38Region = formatRegion(marker.coordinates?.start, marker.coordinates?.end);
+  const grch37Region = formatRegion(
+    marker.coordinates?.grch37?.start,
+    marker.coordinates?.grch37?.end
+  );
 
   const isLatamCE =
     selectedPopulation === "LATAM" && selectedTechnology === "CE";
@@ -1700,19 +1638,13 @@ export function MarkerView({
             <span className="border-l border-border pl-4 text-muted-foreground">
               {getTranslatedType(marker.type)}
             </span>
-            <span className="border-l border-border pl-4">
-              <span className="text-muted-foreground">
-                {t("marker.alleleRange")}:
-              </span>{" "}
-              <span className="text-foreground">{computedAlleleRange}</span>
-            </span>
-            {marker.nistReference?.referenceAllele && (
+            {summary?.referenceAllele && (
               <span className="border-l border-border pl-4">
                 <span className="text-muted-foreground">
                   {t("marker.referenceAllele")}:
                 </span>{" "}
                 <span className="text-foreground">
-                  {marker.nistReference.referenceAllele}
+                  {summary.referenceAllele}
                 </span>
               </span>
             )}
@@ -1808,7 +1740,7 @@ export function MarkerView({
                       marker.alternativeMotifs.length > 0 && (
                         <div className="col-span-2 space-y-1">
                           <Label className="text-xs font-normal text-muted-foreground">
-                            Alternative Motifs
+                            {t("marker.alternativeMotifs")}
                           </Label>
                           <div className="flex flex-wrap gap-1 mt-1">
                             {marker.alternativeMotifs.map((motif, index) => (
@@ -1823,24 +1755,21 @@ export function MarkerView({
                           </div>
                         </div>
                       )}
-                    <div className="space-y-1">
-                      <Label className="inline-flex items-center gap-1 text-xs font-normal text-muted-foreground">
-                        {t("marker.alleleRange")}
-                        <InfoTip term="alleleRange" />
-                      </Label>
-                      <p className="text-sm font-normal text-foreground">
-                        {computedAlleleRange}
-                      </p>
-                    </div>
-                    {marker.nistReference?.referenceAllele && (
+                    {summary?.referenceAllele && (
                       <div className="space-y-1">
                         <Label className="text-xs font-normal text-muted-foreground">
                           {t("marker.referenceAllele")}
                         </Label>
                         <p className="text-sm font-normal text-foreground">
-                          {marker.nistReference.referenceAllele}
+                          {summary.referenceAllele}
                         </p>
                       </div>
+                    )}
+                    {summary?.nomenclatureNote && (
+                      <NomenclatureNote
+                        className="col-span-2 text-xs text-muted-foreground"
+                        text={t(`marker.nomenclatureNotes.${summary.id}`)}
+                      />
                     )}
                   </div>
                   {isMarkerInMotifExplorer && (
@@ -1899,59 +1828,44 @@ export function MarkerView({
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="px-4 space-y-4">
-                  {marker.coordinates ? (
+                  {grch38Region ? (
                     <div className="space-y-4">
                       <div className="space-y-3">
                         <h4 className="text-xs font-semibold text-foreground">
                           GRCh38/hg38
                         </h4>
-                        <div className="space-y-3">
-                          <div className="space-y-1">
-                            <Label className="text-xs font-normal text-muted-foreground">
-                              {t("marker.position")}
-                            </Label>
-                            <p className="text-sm font-normal text-foreground break-all">
-                              {marker.position}
-                            </p>
-                          </div>
-                          <div className="space-y-1">
-                            <Label className="text-xs font-normal text-muted-foreground">
-                              {t("marker.strand")}
-                            </Label>
-                            <p className="text-sm font-normal text-foreground">
-                              {marker.coordinates.strand}
-                            </p>
-                          </div>
+                        <div className="space-y-1">
+                          <Label className="text-xs font-normal text-muted-foreground">
+                            {t("marker.repeatRegion")}
+                          </Label>
+                          <p className="text-sm font-normal text-foreground break-all">
+                            {grch38Region}
+                          </p>
                         </div>
                       </div>
 
-                      {marker.coordinates["grch37"]?.start && (
+                      {grch37Region && (
                         <div className="pt-3 border-t border-border space-y-3">
                           <h4 className="text-xs font-semibold text-foreground">
                             GRCh37/hg19
                           </h4>
-                          <div className="space-y-3">
-                            <div className="space-y-1">
-                              <Label className="text-xs font-normal text-muted-foreground">
-                                {t("marker.position")}
-                              </Label>
-                              <p className="text-sm font-normal text-foreground break-all">
-                                {marker.coordinates.grch37.start.toLocaleString()}
-                                -
-                                {marker.coordinates.grch37.end.toLocaleString()}
-                              </p>
-                            </div>
-                            <div className="space-y-1">
-                              <Label className="text-xs font-normal text-muted-foreground">
-                                {t("marker.strand")}
-                              </Label>
-                              <p className="text-sm font-normal text-foreground">
-                                {marker.coordinates.strand}
-                              </p>
-                            </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs font-normal text-muted-foreground">
+                              {t("marker.repeatRegion")}
+                            </Label>
+                            <p className="text-sm font-normal text-foreground break-all">
+                              {grch37Region}
+                            </p>
                           </div>
                         </div>
                       )}
+
+                      {/* Verified 2026-09-28 against GRCh38 for every marker with
+                          coordinates: the motif and all STRbase sequences read on
+                          the forward strand. */}
+                      <p className="pt-3 border-t border-border text-xs text-muted-foreground">
+                        {t("marker.forwardStrandNote")}
+                      </p>
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground">

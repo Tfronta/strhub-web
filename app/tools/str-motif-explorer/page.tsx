@@ -21,6 +21,7 @@ import {
   markerClass,
 } from "./data/fssgData";
 import { MotifStructure } from "./components/MotifStructure";
+import { HARMONIZED_NOMENCLATURE } from "@/lib/nomenclatureHarmonization";
 import { InfoTip } from "@/components/InfoTip";
 
 // Read a nested string from the active locale, falling back to English.
@@ -65,6 +66,13 @@ export default function MotifExplorerPage() {
 
   const marker = FSSG_MARKERS[selectedMarkerId];
 
+  // D6S474 and DYS612 carry the same cited designation note as their marker page.
+  const { t: translate } = useLanguage();
+  const noteId = selectedMarkerId.toLowerCase().replace(/[\s_-]/g, "");
+  const nomenclatureNote = HARMONIZED_NOMENCLATURE.has(noteId)
+    ? translate(`marker.nomenclatureNotes.${noteId}`)
+    : undefined;
+
   // Group markers for the selector.
   const grouped = useMemo(() => {
     const groups: Record<string, string[]> = { autosomal: [], x: [], y: [] };
@@ -75,7 +83,6 @@ export default function MotifExplorerPage() {
   const structureStrings = {
     ceLabel: t("marker.ce"),
     minimumRangeLabel: t("marker.minimumRange"),
-    strandLabel: t("marker.strand"),
     canonicalTitle: t("canonical.title"),
     canonicalAltForms: t("canonical.altForms"),
     historicalTitle: t("historical.title"),
@@ -188,7 +195,11 @@ export default function MotifExplorerPage() {
               <CardContent className="space-y-8 pt-2">
                 {marker ? (
                   <>
-                    <MotifStructure marker={marker} strings={structureStrings} />
+                    <MotifStructure
+                      marker={marker}
+                      strings={structureStrings}
+                      nomenclatureNote={nomenclatureNote}
+                    />
                     <div className="flex items-start gap-1.5 border-t pt-4 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                       <span>{t("kits.note")}</span>
                       <InfoTip term="kitRange" />

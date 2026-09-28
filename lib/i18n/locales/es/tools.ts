@@ -508,7 +508,6 @@ motifExplorerPage: {
   marker: {
     ce: "Equivalente CE",
     minimumRange: "ISFG minimum range",
-    strand: "Hebra",
   },
   canonical: {
     title: "STRNaming Formatted ISFG Minimum Range for Common Alleles (2024 onward)",
@@ -520,7 +519,7 @@ motifExplorerPage: {
     none: "No disponible",
   },
   sequence: {
-    title: "Secuencia de referencia (ISFG minimum range)",
+    title: "Secuencia de referencia (ISFG minimum range, hebra directa de GRCh38)",
     note: "Los bloques verdes son las unidades canónicas de repetición sobre el minimum range. Los bloques ámbar son interrupciones o variantes internas. Las bases grises son la secuencia flanqueante residual dentro de la ventana reportada y no cuentan para el alelo.",
     legendRepeat: "Unidad de repetición",
     legendMinorRepeat: "Repetición secundaria (minúscula)",

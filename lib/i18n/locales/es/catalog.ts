@@ -48,7 +48,6 @@ catalog: {
   visitPopStr: "Visitar pop.STR",
   card: {
     description: "Segmento de ADN en el cromosoma {chromosome}",
-    alleleRangeLabel: "Rango de Alelos",
   },
 },
 datasets: {

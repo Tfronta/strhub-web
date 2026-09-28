@@ -2,7 +2,6 @@
   "D1S1677": {
     "locus": "D1S1677",
     "ce": 15,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr1",
       "start": 163590022,
@@ -108,7 +107,6 @@
   "D1S1656": {
     "locus": "D1S1656",
     "ce": 17,
-    "strand": "-",
     "minimumRange": {
       "chrom": "chr1",
       "start": 230769601,
@@ -249,7 +247,6 @@
   "TPOX": {
     "locus": "TPOX",
     "ce": 8,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr2",
       "start": 1489647,
@@ -351,7 +348,6 @@
   "D2S441": {
     "locus": "D2S441",
     "ce": 12,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr2",
       "start": 68011943,
@@ -472,7 +468,6 @@
   "D2S1776": {
     "locus": "D2S1776",
     "ce": 11,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr2",
       "start": 168788889,
@@ -562,7 +557,6 @@
   "D2S1338": {
     "locus": "D2S1338",
     "ce": 23,
-    "strand": "-",
     "minimumRange": {
       "chrom": "chr2",
       "start": 218014855,
@@ -727,7 +721,6 @@
   "D3S1358": {
     "locus": "D3S1358",
     "ce": 16,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr3",
       "start": 45540733,
@@ -861,7 +854,6 @@
   "D3S4529": {
     "locus": "D3S4529",
     "ce": 13,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr3",
       "start": 85803473,
@@ -959,7 +951,6 @@
   "D4S2408": {
     "locus": "D4S2408",
     "ce": 9,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr4",
       "start": 31302794,
@@ -1058,7 +1049,6 @@
   "FGA": {
     "locus": "FGA",
     "ce": 22,
-    "strand": "-",
     "minimumRange": {
       "chrom": "chr4",
       "start": 154587729,
@@ -1218,7 +1208,6 @@
   "D5S2800": {
     "locus": "D5S2800",
     "ce": 17,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr5",
       "start": 59403126,
@@ -1332,7 +1321,6 @@
   "D5S818": {
     "locus": "D5S818",
     "ce": 11,
-    "strand": "-",
     "minimumRange": {
       "chrom": "chr5",
       "start": 123775548,
@@ -1448,7 +1436,6 @@
   "CSF1PO": {
     "locus": "CSF1PO",
     "ce": 13,
-    "strand": "-",
     "minimumRange": {
       "chrom": "chr5",
       "start": 150076318,
@@ -1570,7 +1557,6 @@
   "SE33": {
     "locus": "SE33",
     "ce": 25.2,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr6",
       "start": 88277125,
@@ -1769,7 +1755,6 @@
   "D6S1043": {
     "locus": "D6S1043",
     "ce": 12,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr6",
       "start": 91740219,
@@ -1882,7 +1867,6 @@
   "D6S474": {
     "locus": "D6S474",
     "ce": 16,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr6",
       "start": 112557946,
@@ -1996,7 +1980,6 @@
   "D7S820": {
     "locus": "D7S820",
     "ce": 13,
-    "strand": "-",
     "minimumRange": {
       "chrom": "chr7",
       "start": 84160200,
@@ -2119,7 +2102,6 @@
   "D8S1179": {
     "locus": "D8S1179",
     "ce": 13,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr8",
       "start": 124894859,
@@ -2244,7 +2226,6 @@
   "D9S1122": {
     "locus": "D9S1122",
     "ce": 12,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr9",
       "start": 77073812,
@@ -2347,7 +2328,6 @@
   "D10S1248": {
     "locus": "D10S1248",
     "ce": 13,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr10",
       "start": 129294239,
@@ -2469,7 +2449,6 @@
   "TH01": {
     "locus": "TH01",
     "ce": 7,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr11",
       "start": 2171082,
@@ -2567,7 +2546,6 @@
   "vWA": {
     "locus": "vWA",
     "ce": 17,
-    "strand": "-",
     "minimumRange": {
       "chrom": "chr12",
       "start": 5983954,
@@ -2707,7 +2685,6 @@
   "D12S391": {
     "locus": "D12S391",
     "ce": 19,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr12",
       "start": 12297011,
@@ -2856,7 +2833,6 @@
   "D12ATA63": {
     "locus": "D12ATA63",
     "ce": 13,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr12",
       "start": 107928584,
@@ -2954,7 +2930,6 @@
   "D13S317": {
     "locus": "D13S317",
     "ce": 11,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr13",
       "start": 82148021,
@@ -3071,7 +3046,6 @@
   "D14S1434": {
     "locus": "D14S1434",
     "ce": 13,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr14",
       "start": 94842050,
@@ -3169,7 +3143,6 @@
   "Penta E": {
     "locus": "Penta E",
     "ce": 5,
-    "strand": "-",
     "minimumRange": {
       "chrom": "chr15",
       "start": 96831008,
@@ -3259,7 +3232,6 @@
   "D16S539": {
     "locus": "D16S539",
     "ce": 11,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr16",
       "start": 86352698,
@@ -3373,7 +3345,6 @@
   "D17S1301": {
     "locus": "D17S1301",
     "ce": 12,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr17",
       "start": 74684851,
@@ -3475,7 +3446,6 @@
   "D18S51": {
     "locus": "D18S51",
     "ce": 18,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr18",
       "start": 63281663,
@@ -3618,7 +3588,6 @@
   "D19S433": {
     "locus": "D19S433",
     "ce": 14,
-    "strand": "-",
     "minimumRange": {
       "chrom": "chr19",
       "start": 29926212,
@@ -3753,7 +3722,6 @@
   "D20S482": {
     "locus": "D20S482",
     "ce": 14,
-    "strand": null,
     "minimumRange": {
       "chrom": "chr20",
       "start": 4525688,
@@ -3863,7 +3831,6 @@
   "D21S11": {
     "locus": "D21S11",
     "ce": 29,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr21",
       "start": 19181969,
@@ -4064,7 +4031,6 @@
   "Penta D": {
     "locus": "Penta D",
     "ce": 13,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr21",
       "start": 43636185,
@@ -4187,7 +4153,6 @@
   "D22S1045": {
     "locus": "D22S1045",
     "ce": 17,
-    "strand": "+",
     "minimumRange": {
       "chrom": "chr22",
       "start": 37140283,
@@ -4325,7 +4290,6 @@
   "DYS393": {
     "locus": "DYS393",
     "ce": 12,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 3263107,
@@ -4427,7 +4391,6 @@
   "DYS505": {
     "locus": "DYS505",
     "ce": 12,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 3772786,
@@ -4529,7 +4492,6 @@
   "DYS456": {
     "locus": "DYS456",
     "ce": 15,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 4402915,
@@ -4643,7 +4605,6 @@
   "DYS570": {
     "locus": "DYS570",
     "ce": 17,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 6993186,
@@ -4773,7 +4734,6 @@
   "DYS576": {
     "locus": "DYS576",
     "ce": 17,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 7185314,
@@ -4903,7 +4863,6 @@
   "DYS522": {
     "locus": "DYS522",
     "ce": 10,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 7547580,
@@ -4997,7 +4956,6 @@
   "DYS458": {
     "locus": "DYS458",
     "ce": 16,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 7999831,
@@ -5115,7 +5073,6 @@
   "DYS481": {
     "locus": "DYS481",
     "ce": 22,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 8558328,
@@ -5265,7 +5222,6 @@
   "DYS627": {
     "locus": "DYS627",
     "ce": 21,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 8781940,
@@ -5395,7 +5351,6 @@
   "DYS19": {
     "locus": "DYS19",
     "ce": 15,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 9684374,
@@ -5521,7 +5476,6 @@
   "DYS391": {
     "locus": "DYS391",
     "ce": 11,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 11982085,
@@ -5643,7 +5597,6 @@
   "DYS635": {
     "locus": "DYS635",
     "ce": 23,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 12258854,
@@ -5798,7 +5751,6 @@
   "DYS437": {
     "locus": "DYS437",
     "ce": 15,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 12346263,
@@ -5920,7 +5872,6 @@
   "DYS439": {
     "locus": "DYS439",
     "ce": 12,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 12403512,
@@ -6030,7 +5981,6 @@
   "DYS389I": {
     "locus": "DYS389I",
     "ce": 12,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 12500439,
@@ -6140,7 +6090,6 @@
   "DYS389II": {
     "locus": "DYS389II",
     "ce": 29,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 12500439,
@@ -6167,7 +6116,6 @@
   "DYS438": {
     "locus": "DYS438",
     "ce": 12,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 12825885,
@@ -6277,7 +6225,6 @@
   "DYS612": {
     "locus": "DYS612",
     "ce": 36,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 13640724,
@@ -6468,7 +6415,6 @@
   "DYS390": {
     "locus": "DYS390",
     "ce": 24,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 15163061,
@@ -6627,7 +6573,6 @@
   "DYS643": {
     "locus": "DYS643",
     "ce": 11,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 15314128,
@@ -6733,7 +6678,6 @@
   "DYS533": {
     "locus": "DYS533",
     "ce": 12,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 16281342,
@@ -6843,7 +6787,6 @@
   "Y-GATA-H4": {
     "locus": "Y-GATA-H4",
     "ce": 12,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 16631669,
@@ -6953,7 +6896,6 @@
   "DYS385 b": {
     "locus": "DYS385 b",
     "ce": 11,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 18639700,
@@ -7083,7 +7025,6 @@
   "DYS385 a": {
     "locus": "DYS385 a",
     "ce": 14,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 18680604,
@@ -7108,7 +7049,6 @@
   "DYS461": {
     "locus": "DYS461",
     "ce": 12,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 18888800,
@@ -7202,7 +7142,6 @@
   "DYS460": {
     "locus": "DYS460",
     "ce": 10,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 18888949,
@@ -7229,7 +7168,6 @@
   "DYS549": {
     "locus": "DYS549",
     "ce": 13,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 19358334,
@@ -7343,7 +7281,6 @@
   "DYS392": {
     "locus": "DYS392",
     "ce": 13,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 20471982,
@@ -7457,7 +7394,6 @@
   "DYS448": {
     "locus": "DYS448",
     "ce": 19,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 22218919,
@@ -7627,7 +7563,6 @@
   "DYF387S1 fragment 1": {
     "locus": "DYF387S1 fragment 1",
     "ce": 35,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 23785357,
@@ -7821,7 +7756,6 @@
   "DYF387S1 fragment 2": {
     "locus": "DYF387S1 fragment 2",
     "ce": 36,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrY",
       "start": 25884573,
@@ -7846,7 +7780,6 @@
   "DXS10135": {
     "locus": "DXS10135",
     "ce": 23,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrX",
       "start": 9338298,
@@ -7988,7 +7921,6 @@
   "DXS8378": {
     "locus": "DXS8378",
     "ce": 10,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrX",
       "start": 9402256,
@@ -8074,7 +8006,6 @@
   "DXS7132": {
     "locus": "DXS7132",
     "ce": 14,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrX",
       "start": 65435641,
@@ -8176,7 +8107,6 @@
   "DXS10074": {
     "locus": "DXS10074",
     "ce": 14,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrX",
       "start": 67757311,
@@ -8278,7 +8208,6 @@
   "DXS10103": {
     "locus": "DXS10103",
     "ce": 19,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrX",
       "start": 134284955,
@@ -8404,7 +8333,6 @@
   "HPRTB": {
     "locus": "HPRTB",
     "ce": 13,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrX",
       "start": 134481488,
@@ -8502,7 +8430,6 @@
   "DXS7423": {
     "locus": "DXS7423",
     "ce": 15,
-    "strand": null,
     "minimumRange": {
       "chrom": "chrX",
       "start": 150542518,

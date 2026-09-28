@@ -48,7 +48,6 @@ catalog: {
   visitPopStr: "Visitar pop.STR",
   card: {
     description: "Segmento de DNA no cromossomo {chromosome}",
-    alleleRangeLabel: "Faixa de Alelos",
   },
 },
 datasets: {

@@ -7,6 +7,10 @@ import {
   markerKind,
 } from "./marker-summary";
 import { markerData } from "./markerData";
+import { HARMONIZED_NOMENCLATURE } from "./nomenclatureHarmonization";
+import enMarker from "./i18n/locales/en/marker";
+import esMarker from "./i18n/locales/es/marker";
+import ptMarker from "./i18n/locales/pt/marker";
 import { markerFrequenciesCE } from "@/app/marker/[id]/markerFrequencies";
 import { markerStatisticsCE } from "@/app/marker/[id]/markerStatisticsCE";
 
@@ -80,10 +84,6 @@ describe("buildMarkerSummary", () => {
     expect(summary.tools.motifExplorer).toBe(true);
   });
 
-  it("computes the allele range from the frequency data, like the page", () => {
-    expect(summary.alleleRange).toBe("6-20");
-  });
-
   it("finds the modal allele of every CE population with its statistics", () => {
     const ce = summary.ce!;
     const raw = markerFrequenciesCE.d3s1358;
@@ -140,17 +140,36 @@ describe("buildMarkerSummary", () => {
     expect(y.related.sameChromosome).toEqual([]);
     expect(y.related.sameKind.length).toBeGreaterThan(12);
     expect(y.ce).toBeNull();
-    expect(y.alleleRange).toBe(markerData.dys391.alleles);
   });
 });
 
-describe("curated allele ranges", () => {
-  it("drops implausible curated ranges when no frequency data exists", () => {
-    // SE33 is curated as "0-49" and has no CE frequencies.
-    expect(buildMarkerSummary("se33")?.alleleRange).toBeNull();
-    // D1S1677 is curated as the single value "13".
-    expect(buildMarkerSummary("d1s1677")?.alleleRange).toBeNull();
-    // DXS10135 is curated as "13-39".
-    expect(buildMarkerSummary("dxs10135")?.alleleRange).toBe("13-39");
+describe("reference allele", () => {
+  it("uses the harmonized D6S474 designation (Bodner et al. 2024), not STRBase's Hill count", () => {
+    expect(markerData.d6s474.nistReference.referenceAllele).toBe("17");
+    expect(buildMarkerSummary("d6s474")?.referenceAllele).toBe("16");
+  });
+
+  it("never shows one FSSG fragment as the reference allele of a locus STRBase leaves blank", () => {
+    expect(buildMarkerSummary("dyf387s1")?.referenceAllele).toBeNull();
+  });
+
+  it("flags only the two loci harmonized by Bodner et al. 2024, with a cited note in every locale", () => {
+    expect(buildMarkerSummary("d6s474")?.nomenclatureNote).toBe(true);
+    expect(buildMarkerSummary("dys612")?.nomenclatureNote).toBe(true);
+    expect(buildMarkerSummary("d3s1358")?.nomenclatureNote).toBe(false);
+    for (const locale of [enMarker, esMarker, ptMarker]) {
+      const notes = locale.marker.nomenclatureNotes as Record<string, string>;
+      expect(Object.keys(notes).sort()).toEqual([...HARMONIZED_NOMENCLATURE].sort());
+      for (const text of Object.values(notes)) expect(text.split("{citation}")).toHaveLength(2);
+    }
+    expect(buildMarkerSummary("dys612")?.referenceAllele).toBe("36");
+  });
+
+  it("agrees with STRBase on every other locus that has both sources", () => {
+    for (const id of Object.keys(markerData)) {
+      const nist = markerData[id as keyof typeof markerData].nistReference?.referenceAllele;
+      if (nist == null || id === "d6s474") continue;
+      expect(buildMarkerSummary(id)?.referenceAllele).toBe(String(nist));
+    }
   });
 });

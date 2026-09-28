@@ -33,11 +33,6 @@ const POPSTR_URL = "http://spsmart.cesga.es/";
 const formatInt = (n: number) => n.toLocaleString("en-US");
 const formatFreq = (f: number) => f.toFixed(3);
 
-function joinList(items: string[], and: string): string {
-  if (items.length <= 1) return items.join("");
-  return `${items.slice(0, -1).join(", ")} ${and} ${items[items.length - 1]}`;
-}
-
 function populationName(pop: string, t: Translate): string {
   const key = `marker.populationLabels.${pop}`;
   const label = t(key);
@@ -51,104 +46,27 @@ function repeatTypeName(type: string | null, t: Translate): string | null {
   return label && label !== key ? label.toLowerCase() : type.toLowerCase();
 }
 
-/** Sentences describing the locus; each one only appears when its data exists. */
-export function describeMarker(summary: MarkerSummary, t: Translate): string[] {
+/**
+ * One sentence of locus identity. Every other fact (motif, allele range,
+ * reference allele, coordinates, ISFG structure, frequencies) has a single home
+ * in the cards and tabs below, so the intro can never contradict them. It used
+ * to repeat them, and it put the strand on which STRidER says a locus was first
+ * characterized next to coordinates and motifs that are all on the forward strand.
+ */
+export function describeMarker(summary: MarkerSummary, t: Translate): string {
   const s = (key: string, params?: Record<string, string>) =>
     t(`marker.summary.${key}`, params);
-  const and = s("and");
-  const sentences: string[] = [];
-
   const type = repeatTypeName(summary.repeatType, t);
   const cytoband = summary.cytogeneticLocation
     ? ` (${summary.cytogeneticLocation})`
     : "";
-  const kind = s(`kind.${summary.kind}`);
-  sentences.push(
-    type
-      ? s("introTyped", {
-          name: summary.name,
-          type,
-          chromosome: summary.chromosome,
-          cytoband,
-          kind,
-        })
-      : s("introUntyped", {
-          name: summary.name,
-          chromosome: summary.chromosome,
-          cytoband,
-          kind,
-        })
-  );
-
-  if (summary.motif) {
-    sentences.push(
-      summary.alternativeMotifs.length
-        ? s("motifAlternatives", {
-            motif: summary.motif,
-            alternatives: joinList(summary.alternativeMotifs, and),
-          })
-        : s("motif", { motif: summary.motif })
-    );
-  }
-
-  const forms = summary.fssg?.canonicalBracketing ?? [];
-  if (forms.length === 1) {
-    sentences.push(s("canonical", { canonical: forms[0] }));
-  } else if (forms.length > 1) {
-    sentences.push(
-      s("canonicalMany", {
-        canonical: forms[0],
-        count: String(forms.length - 1),
-      })
-    );
-  }
-
-  // The range names its source: alleles observed in the pop.STR CE frequency data,
-  // or the curated markerData range when no CE frequencies back it (common for
-  // Y/X loci).
-  const fromFreq = summary.alleleRangeSource === "frequencies";
-  if (summary.alleleRange && summary.referenceAllele) {
-    sentences.push(
-      s(fromFreq ? "allelesFreqWithReference" : "allelesWithReference", {
-        range: summary.alleleRange,
-        reference: summary.referenceAllele,
-      })
-    );
-  } else if (summary.alleleRange) {
-    sentences.push(s(fromFreq ? "allelesFreq" : "alleles", { range: summary.alleleRange }));
-  } else if (summary.referenceAllele) {
-    sentences.push(s("referenceOnly", { reference: summary.referenceAllele }));
-  }
-
-  if (summary.grch38) {
-    const params = {
-      chromosome: summary.chromosome,
-      start: formatInt(summary.grch38.start),
-      end: formatInt(summary.grch38.end),
-      length: formatInt(summary.grch38.lengthBp),
-      strand: summary.strand ?? "+",
-    };
-    sentences.push(
-      summary.grch37
-        ? s("coordinatesBoth", {
-            ...params,
-            start37: formatInt(summary.grch37.start),
-            end37: formatInt(summary.grch37.end),
-          })
-        : s("coordinates", params)
-    );
-  }
-
-  // The per-population modal alleles, expected heterozygosity, NGS availability,
-  // MPS kit coverage and STRbase variant count are deliberately kept out of the
-  // intro prose: each already has its own tab or card (Frequencies, Statistics,
-  // Variant Alleles, Structure), where the numbers are interactive and cite their
-  // source. The intro stays a stable locus identity. Note also that the NGS
-  // frequency sets are reported by fragment size, not sequence, so the old
-  // "sequence-based (NGS) frequencies are also available" wording is dropped; the
-  // Frequencies panel carries that clarification.
-
-  return sentences;
+  const params = {
+    name: summary.name,
+    chromosome: summary.chromosome,
+    cytoband,
+    kind: s(`kind.${summary.kind}`),
+  };
+  return type ? s("introTyped", { ...params, type }) : s("introUntyped", params);
 }
 
 export function MarkerSummaryDescription({
@@ -160,7 +78,7 @@ export function MarkerSummaryDescription({
 }) {
   return (
     <p className="text-sm text-muted-foreground leading-relaxed">
-      {describeMarker(summary, t).join(" ")}
+      {describeMarker(summary, t)}
     </p>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, User, Clock } from "lucide-react";
+import { ArrowLeft, User, Clock, Globe } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -13,6 +13,13 @@ import type { Language } from "@/lib/translations";
 import { basicsArticlePath } from "@/lib/seo";
 
 const SUPPORTED_LOCALES: Language[] = ["en", "es", "pt"];
+
+/** Each language named in itself, the usual convention for a language switcher. */
+const LOCALE_NAMES: Record<Language, string> = {
+  en: "English",
+  es: "Español",
+  pt: "Português",
+};
 
 export default function ArticlePageClient({
   params,
@@ -28,6 +35,14 @@ export default function ArticlePageClient({
   const locale = params.locale as Language;
   const isValidLocale = SUPPORTED_LOCALES.includes(locale);
   const post = initialPost;
+
+  // The same article in the other languages. These are real links, unlike the
+  // header language toggle, so crawlers reach the translations: without them
+  // nothing on the site points at /basics/es/* or /basics/pt/* and Google
+  // leaves those URLs discovered but never crawled.
+  const otherLocales = SUPPORTED_LOCALES.filter(
+    (other) => other !== locale && post.slugs?.[other]
+  );
 
   useEffect(() => {
     setLanguage(locale);
@@ -72,8 +87,25 @@ export default function ArticlePageClient({
             )}
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
-              {post.fields.postReadMinutes} min read
+              {post.fields.postReadMinutes} {t("basics.readTime")}
             </div>
+            {otherLocales.length > 0 && (
+              <div className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                {otherLocales.map((other, index) => (
+                  <span key={other}>
+                    <Link
+                      href={basicsArticlePath(other, post.slugs![other])}
+                      hrefLang={other}
+                      className="underline-offset-4 hover:text-foreground hover:underline transition-colors"
+                    >
+                      {LOCALE_NAMES[other]}
+                    </Link>
+                    {index < otherLocales.length - 1 ? "," : ""}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </header>
 

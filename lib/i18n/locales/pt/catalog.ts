@@ -144,7 +144,7 @@ globalFrequencies: {
       name: "RAO (NGS)",
       source: "Derivado de um conjunto de dados NGS forense direcionado de Ribeirão Preto, São Paulo, Brasil (Valle-Silva et al., 2022).",
       keyNotes: {
-        "0": "Genótipos STR consenso obtidos entre HipSTR, STRait Razor e toaSTR. Design de painel forense direcionado.",
+        "0": "Genótipos STR obtidos com o HipSTR (Tabela Suplementar 9 do estudo). Design de painel forense direcionado.",
       },
       comparability: "As comparações são válidas apenas dentro do conjunto de dados RAO. Não são diretamente comparáveis a frequências baseadas em CE ou ao conjunto de dados 1000 Genomes.",
     },

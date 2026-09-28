@@ -118,7 +118,7 @@ marker: {
         "Amigo J, Phillips C, Lareu MV, Carracedo A. The SNPforID and SP-SMART databases: Resources for forensic population genetics. Forensic Sci Int Genet. 2008;2(3):212–217. Dataset: http://spsmart.cesga.es/",
     },
     ngsDatasetDescription_raoValleSilva2022:
-      "Estas frecuencias alélicas provienen de un estudio de secuenciación de nueva generación realizado en una muestra poblacional de Ribeirão Preto, São Paulo, Brasil (Valle-Silva et al., 2022). El conjunto de datos corresponde a los genotipos consenso obtenidos entre HipSTR, STRait Razor y toaSTR. En STRhub, la etiqueta RAO se refiere específicamente a este conjunto de datos NGS de Ribeirão Preto. Referencia: Valle-Silva G, Frontanilla TS, Ayala J, Donadi EA, Simões AL, Castelli EC, Mendes-Junior CT. Forensic Sci Int Genet. 2022;58:102676. doi:10.1016/j.fsigen.2022.102676.",
+      "Estas frecuencias alélicas provienen de un estudio de secuenciación de nueva generación realizado en una muestra poblacional de Ribeirão Preto, São Paulo, Brasil (Valle-Silva et al., 2022). STRhub muestra las frecuencias alélicas de los genotipos obtenidos con HipSTR en ese estudio (Tabla Suplementaria 9). En STRhub, la etiqueta RAO se refiere específicamente a este conjunto de datos NGS de Ribeirão Preto. Referencia: Valle-Silva G, Frontanilla TS, Ayala J, Donadi EA, Simões AL, Castelli EC, Mendes-Junior CT. Forensic Sci Int Genet. 2022;58:102676. doi:10.1016/j.fsigen.2022.102676.",
     ngs1000G: {
       intro:
         "Estas frecuencias alélicas se derivan de un estudio de secuenciación de nueva generación (NGS) publicado en 2022, basado en 2.504 individuos pertenecientes a 26 poblaciones analizadas por el Consorcio del Proyecto 1000 Genomas.",

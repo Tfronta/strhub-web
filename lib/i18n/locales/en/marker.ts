@@ -118,7 +118,7 @@ marker: {
         "Amigo J, Phillips C, Lareu MV, Carracedo A. The SNPforID and SP-SMART databases: Resources for forensic population genetics. Forensic Sci Int Genet. 2008;2(3):212–217. Dataset: http://spsmart.cesga.es/",
     },
     ngsDatasetDescription_raoValleSilva2022:
-      "These allele frequencies originate from a next-generation sequencing study carried out in a Brazilian population sample from Ribeirão Preto, São Paulo, Brazil (Valle-Silva et al., 2022). The dataset corresponds to the consensus STR genotypes obtained across HipSTR, STRait Razor and toaSTR. In STRhub, the RAO label refers specifically to this Ribeirão Preto NGS dataset. Reference: Valle-Silva G, Frontanilla TS, Ayala J, Donadi EA, Simões AL, Castelli EC, Mendes-Junior CT. Forensic Sci Int Genet. 2022;58:102676. doi:10.1016/j.fsigen.2022.102676.",
+      "These allele frequencies originate from a next-generation sequencing study carried out in a Brazilian population sample from Ribeirão Preto, São Paulo, Brazil (Valle-Silva et al., 2022). STRhub shows the allele frequencies of the genotypes called with HipSTR in that study (Supplementary Table 9). In STRhub, the RAO label refers specifically to this Ribeirão Preto NGS dataset. Reference: Valle-Silva G, Frontanilla TS, Ayala J, Donadi EA, Simões AL, Castelli EC, Mendes-Junior CT. Forensic Sci Int Genet. 2022;58:102676. doi:10.1016/j.fsigen.2022.102676.",
     ngs1000G: {
       intro:
         "These allele frequencies are derived from a next-generation sequencing (NGS) study published in 2022, based on 2,504 individuals belonging to 26 populations analyzed by the 1000 Genomes Project Consortium.",

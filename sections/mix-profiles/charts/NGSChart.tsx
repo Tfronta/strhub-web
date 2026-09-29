@@ -15,6 +15,7 @@ import {
 import type { NGSChartBar, NGSRow } from "../utils/simulate";
 import { getChartColors } from "../data";
 import { useLanguage } from "@/contexts/language-context";
+import { renderBold } from "@/lib/i18n/renderBold";
 import {
   Tooltip as UITooltip,
   TooltipContent,
@@ -376,7 +377,8 @@ export default function NGSChart({
                       ) : null}
                       {hasSimulated ? (
                         <p className="text-xs">
-                          {t("mixProfiles.ngs.simulatedNote")}
+                          {/* Plain text: renderBold's dark label is unreadable on bg-primary. */}
+                          {t("mixProfiles.ngs.simulatedNote").replace(/\*\*/g, "")}
                         </p>
                       ) : null}
                     </TooltipContent>
@@ -714,9 +716,11 @@ export default function NGSChart({
       </div>
 
       {/* Always visible: what the support column means for these rows. */}
-      <div className="space-y-1 text-xs leading-relaxed text-muted-foreground">
-        {hasHipstr ? <p>{t("mixProfiles.ngs.pdpNote")}</p> : null}
-        {hasSimulated ? <p>{t("mixProfiles.ngs.simulatedNote")}</p> : null}
+      <div className="space-y-1 text-sm italic leading-relaxed text-muted-foreground">
+        {hasHipstr ? <p>{renderBold(t("mixProfiles.ngs.pdpNote"))}</p> : null}
+        {hasSimulated ? (
+          <p>{renderBold(t("mixProfiles.ngs.simulatedNote"))}</p>
+        ) : null}
       </div>
 
       {/* Barras */}

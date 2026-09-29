@@ -65,9 +65,9 @@ mixProfiles: {
     isoTooltip:
       "Isoalelos en este ejemplo: misma designación alélica, distinta secuencia de repetición.",
     pdpNote:
-      "PDP (HipSTR): soporte fraccional de lecturas asignado a cada genotipo haploide. Los dos valores de PDP de un llamado suman DP, así que PDP no es una profundidad de secuenciación independiente por alelo. Los valores provienen de la corrida de HipSTR de cada muestra sola y no cambian con las proporciones de la mezcla.",
+      "**PDP (HipSTR):** soporte fraccional de lecturas asignado a cada genotipo haploide. Los dos valores de PDP de un llamado suman DP, así que PDP no es una profundidad de secuenciación independiente por alelo. Los valores provienen de la corrida de HipSTR de cada muestra sola y no cambian con las proporciones de la mezcla.",
     simulatedNote:
-      "Soporte de lecturas simulado: el ejemplo trialélico sintético no tiene datos de secuenciación, así que sus valores se simulan a partir de las alturas de pico del electroferograma. No son PDP de HipSTR.",
+      "**Soporte de lecturas simulado:** el ejemplo trialélico sintético no tiene datos de secuenciación, así que sus valores se simulan a partir de las alturas de pico del electroferograma. No son PDP de HipSTR.",
     flank5Tooltip: "Flanqueadora 5'",
     repeatRegionTooltip: "Región repetitiva",
     flank3Tooltip: "Flanqueadora 3'",

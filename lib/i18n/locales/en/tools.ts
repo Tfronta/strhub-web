@@ -425,7 +425,8 @@ tools: {
 fastaGeneratorPage: {
   languageLabel: "Current language",
   title: "FASTA Generator",
-  subtitle: "Simplified motif-based STR sequence constructs with GRCh38 reference flanks.",
+  subtitle:
+    "Simplified motif-based STR sequence constructs with GRCh38 reference flanks. **For educational purposes.**",
   config: {
     title: "Sequence configuration parameters",
     markerLabel: "STR Marker",

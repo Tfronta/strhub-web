@@ -41,6 +41,7 @@ import {
 } from "@/lib/reference-genomes";
 import { markerData } from "@/lib/markerData";
 import { useLanguage } from "@/contexts/language-context";
+import { renderBold } from "@/lib/i18n/renderBold";
 import { translations, type Language } from "@/lib/translations";
 
 const languageNames: Record<Language, string> = {
@@ -211,7 +212,7 @@ export default function FastaGeneratorPage() {
               {pageContent.title}
             </h1>
             <p className="text-lg text-muted-foreground text-pretty">
-              {pageContent.subtitle}
+              {renderBold(pageContent.subtitle)}
             </p>
           </div>
 

@@ -65,9 +65,9 @@ mixProfiles: {
     isoTooltip:
       "Isoalleles in this example: same allele designation, different repeat sequence.",
     pdpNote:
-      "PDP (HipSTR): fractional read support assigned to each haploid genotype. The two PDP values of a call sum to DP, so PDP is not independent allele-specific sequencing depth. Values come from each sample's single-source HipSTR run and do not change with the mixture proportions.",
+      "**PDP (HipSTR):** fractional read support assigned to each haploid genotype. The two PDP values of a call sum to DP, so PDP is not independent allele-specific sequencing depth. Values come from each sample's single-source HipSTR run and do not change with the mixture proportions.",
     simulatedNote:
-      "Simulated read support: the synthetic triallelic example has no sequencing data, so its values are simulated from the electropherogram peak heights. They are not HipSTR PDP.",
+      "**Simulated read support:** the synthetic triallelic example has no sequencing data, so its values are simulated from the electropherogram peak heights. They are not HipSTR PDP.",
     flank5Tooltip: "5' flank",
     repeatRegionTooltip: "Repeat region",
     flank3Tooltip: "3' flank",

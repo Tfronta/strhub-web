@@ -426,7 +426,7 @@ fastaGeneratorPage: {
   languageLabel: "Idioma atual",
   title: "Gerador FASTA",
   subtitle:
-    "Construtos simplificados de sequências STR baseados em motivos, com flancos de referência GRCh38.",
+    "Construtos simplificados de sequências STR baseados em motivos, com flancos de referência GRCh38. **Para fins educacionais.**",
   config: {
     title: "Parâmetros de configuração da sequência",
     markerLabel: "Marcador STR",

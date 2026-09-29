@@ -20,6 +20,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
 import type { TrialRole, TrialStatus } from "@/lib/verified/trial";
 import { VERDICT_TONE } from "@/lib/verified/badge";
+import { extraGateRowsFor } from "@/lib/verified/extra-gates";
 import { ownerIssueUrl, prepareSelfFix } from "@/lib/verified/trial-next-steps";
 import { commandFromManifest } from "@/lib/verified/command";
 import { useRouter } from "next/navigation";
@@ -117,10 +118,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
     text,
   }));
   const gates = (report?.gates ?? {}) as Record<string, boolean>;
-  const extraGateRows: ExtraGateRow[] =
-    "example" in gates
-      ? [{ key: "example", label: t("verified.trial.example"), meaning: t("verified.trial.exampleMeaning"), passed: !!gates.example }]
-      : [];
+  const extraGateRows: ExtraGateRow[] = extraGateRowsFor(gates, t);
 
   const verdictBlock = report && verdict && (
     <>

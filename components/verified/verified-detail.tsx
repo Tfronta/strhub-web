@@ -6,6 +6,7 @@
  * the newest commit, under `<slug>/<sha>/` for an older one — and hands the
  * body the tool's history.
  */
+import { extraGateRowsFor } from "@/lib/verified/extra-gates";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedReport } from "@/types/verified";
 import type { HistoryRow } from "@/lib/verified/history";
@@ -53,7 +54,9 @@ export function VerifiedDetail({
           ? t("verified.log.build")
           : leg === "own"
             ? t("verified.matrix.own")
-            : t("verified.matrix.external"),
+            : leg === "example" || leg === "starts"
+              ? t(`verified.trial.log.${leg}`)
+              : t("verified.matrix.external"),
       href: `${logBaseUrl}/${fname}`,
     }));
 
@@ -69,6 +72,7 @@ export function VerifiedDetail({
       history={history}
       instrument={instrument}
       note={note}
+      extraGateRows={extraGateRowsFor(report.gates as Record<string, boolean> | undefined, t)}
     />
   );
 }

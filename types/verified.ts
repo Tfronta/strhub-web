@@ -384,7 +384,12 @@ export interface VerifiedReport {
   evidence?: {
     claim: "install_method" | "published_image" | "bioconda_package" | "fallback_environment"
       | "run_command" | "example_data" | "known_issue" | string;
-    kind: "tree" | "readme";
+    /**
+     * Where the claim was read: the file tree, the README, a document the
+     * README links (`doc`, at the pinned commit) or a wiki page (`wiki`, not
+     * versioned with the code, so its URL names no commit).
+     */
+    kind: "tree" | "readme" | "doc" | "wiki";
     path: string;
     line?: number;
     text?: string;

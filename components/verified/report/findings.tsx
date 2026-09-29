@@ -383,7 +383,7 @@ export function EvidenceList({ evidence }: { evidence: VerifiedReport["evidence"
       <p className="mt-2 text-sm text-muted-foreground">{t("verified.trial.evidenceHint")}</p>
       <ul className="mt-3 divide-y rounded-lg border text-sm">
         {evidence.map((e, i) => {
-          const quote = e.kind === "readme" && e.text && e.claim !== "known_issue" ? e.text : null;
+          const quote = e.kind !== "tree" && e.text && e.claim !== "known_issue" ? e.text : null;
           return (
             <li key={`${e.claim}-${e.path}-${i}`} className="grid gap-x-3 gap-y-1 px-4 py-2 sm:grid-cols-[10rem_1fr]">
               <span className="text-muted-foreground">{claimLabel(e.claim)}</span>

@@ -36,6 +36,8 @@ export interface HistoryRow {
   level: VerifiedLevel;
   verdict: string | null;
   errors_reported: boolean;
+  /** Plan B ran: the pinned commit did not build; the published image did. */
+  fallback_used: boolean;
   dataset_types: string[];
   /** Paths relative to the gh-pages root. */
   report: string;
@@ -67,6 +69,7 @@ function rowOf(entry: VerifiedIndexEntry, v: VerifiedVersionEntry, isAlias: bool
     level: v.level,
     verdict: v.verdict ?? null,
     errors_reported: v.errors_reported ?? false,
+    fallback_used: v.fallback_used ?? false,
     dataset_types: entry.dataset_types ?? [],
     report: v.report,
     page: v.page,
@@ -97,6 +100,7 @@ export function rowsOf(entry: VerifiedIndexEntry): HistoryRow[] {
         label: entry.label,
         verdict: entry.verdict,
         errors_reported: entry.errors_reported,
+        fallback_used: entry.fallback_used,
         ci_run: entry.ci_run,
         report: entry.report,
         page: entry.page,

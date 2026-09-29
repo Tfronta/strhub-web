@@ -193,6 +193,8 @@ export default {
     headline: {
       runs: "Roda conforme a documentação",
       runsErrors: "Roda conforme a documentação (erros reportados)",
+      runsFallback: "Roda a partir da sua imagem publicada; o commit fixado não compila",
+      runsFallbackErrors: "Roda a partir da sua imagem publicada; o commit fixado não compila (erros reportados)",
       notRun: "Não roda conforme a documentação: {where}",
       stopsAt: {
         none: "fonte não disponível",

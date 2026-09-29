@@ -6,6 +6,8 @@
  *
  *   Runs as documented                          the documented run produced its output
  *   Runs as documented (errors reported)        … and the tool's log reported errors
+ *   Runs from its published image; the pinned   plan B: the commit did not build, the
+ *     commit does not build                     image the README points at ran
  *   Does not run as documented · stops at run   the documented run did not, and where
  *   Could not be determined                     nobody knew how to attempt it (the README)
  *   Out of scope                                the free runner cannot provide something
@@ -45,6 +47,7 @@ export interface BadgeInput {
   level: VerifiedLevel;
   verdict?: string | null;
   errors_reported?: boolean;
+  fallback_used?: boolean;
   instrument?: VerifiedInstrument | null;
 }
 
@@ -57,6 +60,15 @@ export function badgeFor(run: BadgeInput, t: Translate): BadgeDisplay {
   // A report from before the verdict is read off the rung.
   const runs = run.verdict ? run.verdict === "runs" : run.level === "io" || run.level === "content";
   if (runs) {
+    // Plan B: the pinned commit did not build and the published image ran.
+    // The failure to build is what a user building from source meets first,
+    // so it is in the label, not only in the report.
+    if (run.fallback_used) {
+      return {
+        label: t(run.errors_reported ? "verified.headline.runsFallbackErrors" : "verified.headline.runsFallback"),
+        tone: "amber",
+      };
+    }
     return run.errors_reported
       ? { label: t("verified.headline.runsErrors"), tone: "amber" }
       : { label: t("verified.headline.runs"), tone: "green" };

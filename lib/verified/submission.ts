@@ -165,7 +165,17 @@ export const INPUT_TYPES = [
     slug: "ont-fastq",
     label: "ONT FASTQ",
     description: "Oxford Nanopore raw FASTQ reads",
-    hasExternalDataset: false,
+    hasExternalDataset: true,
+    externalDataset: {
+      name: "1000 Genomes ONT, HG00113 reads over the CODIS panel loci",
+      sourceUrl:
+        "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
+    },
+    referenceGenome: {
+      assembly: "GRCh38 / hg38",
+      mountPath: "/data/ref/hg38.fa",
+    },
+    canonicalPaths: ["/data/in/input.fastq", "/data/ref/hg38.fa"],
   },
   {
     slug: "illumina-snp-fastq",

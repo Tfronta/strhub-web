@@ -1292,6 +1292,7 @@ export function VerifiedSubmitForm() {
       "illumina-str-fastq": "verified.submit.externalDetailIllumina",
       "ont-bam-hg38": "verified.submit.externalDetailOnt",
       "pacbio-hifi-bam-hg38": "verified.submit.externalDetailPacbioHifi",
+      "ont-fastq": "verified.submit.externalDetailOntFastq",
       "illumina-bam-hg38": "verified.submit.externalDetailIlluminaBam",
       "illumina-bam-hg38-y": "verified.submit.externalDetailIlluminaBamY",
     };
@@ -2409,7 +2410,7 @@ export function VerifiedSubmitForm() {
               <Info className="h-4 w-4 mt-0.5 shrink-0" />
               <div className="space-y-2">
                 <p className="font-medium text-foreground">{t("verified.submit.referenceDatasetsTitle")}</p>
-                <p>{t("verified.submit.referenceDatasetsIntro5")}</p>
+                <p>{t("verified.submit.referenceDatasetsIntro6")}</p>
                 <ul className="list-disc space-y-1 pl-4">
                   <li>
                     <strong>Illumina STR FASTQ</strong>: {t("verified.submit.referenceDatasetIllumina")}{" "}
@@ -2442,6 +2443,17 @@ export function VerifiedSubmitForm() {
                       className="text-primary underline underline-offset-2"
                     >
                       GIAB HG002 PacBio HiFi
+                    </a>
+                  </li>
+                  <li>
+                    <strong>ONT FASTQ</strong>: {t("verified.submit.referenceDatasetOntFastq")}{" "}
+                    <a
+                      href="https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2"
+                    >
+                      1000 Genomes ONT
                     </a>
                   </li>
                   <li>

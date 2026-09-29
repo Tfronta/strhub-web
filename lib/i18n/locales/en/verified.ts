@@ -467,10 +467,14 @@ export default {
         "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently four:",
       referenceDatasetsIntro5:
         "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently five:",
+      referenceDatasetsIntro6:
+        "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently six:",
       referenceDatasetIllumina:
         "NIST Forensic DNA Open Dataset (ForenSeq & PowerSeq 46GY, research/training use)",
       referenceDatasetOnt:
         "1000 Genomes ONT CODIS slice (open access on AWS)",
+      referenceDatasetOntFastq:
+        "the reads of the 1000 Genomes ONT slice over 20 CODIS loci, as FASTQ (open access on AWS)",
       referenceDatasetPacbioHifi:
         "GIAB HG002 PacBio HiFi (Revio) hg38 CODIS slice (open access, 20 autosomal forensic loci)",
       referenceDatasetIlluminaBamDesc:
@@ -662,6 +666,8 @@ export default {
         "The reference is NIST mds2-2157 Illumina STR data, which covers ForenSeq and PowerSeq 46GY only; use kit-matched reads in your own fixture.",
       externalDetailOnt:
         "The reference is a 1000 Genomes ONT hg38 CODIS slice (~30 MB).",
+      externalDetailOntFastq:
+        "The reference is the reads of a 1000 Genomes ONT sample (HG00113) over 20 CODIS loci, as FASTQ (~50 MB uncompressed), with hg38 to align them to.",
       externalDetailPacbioHifi:
         "The reference is a GIAB HG002 PacBio HiFi (Revio) hg38 CODIS slice (~19 MB, male sample).",
       externalDetailIlluminaBam:

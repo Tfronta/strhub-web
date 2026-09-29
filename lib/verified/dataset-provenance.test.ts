@@ -30,15 +30,24 @@ describe("the PacBio HiFi dataset", () => {
   });
 
   it("lists the loci the long-read slices hold, and only those", () => {
-    // datasets/{ont-bam-hg38,pacbio-hifi-bam-hg38}/loci.bed: the 20 autosomal
+    // datasets/{ont-bam-hg38,ont-fastq,pacbio-hifi-bam-hg38}/loci.bed: the 20 autosomal
     // CODIS loci inside the ±10 kb windows. SE33, PentaD, PentaE, D17S1301
     // and D20S482 were listed once and are in neither slice.
-    for (const type of ["ont-bam-hg38", "pacbio-hifi-bam-hg38"]) {
+    for (const type of ["ont-bam-hg38", "ont-fastq", "pacbio-hifi-bam-hg38"]) {
       const loci = DATASET_PROVENANCE[type].loci;
       expect(loci).toHaveLength(20);
       for (const absent of ["SE33", "PentaD", "PentaE", "D17S1301", "D20S482"]) {
         expect(loci).not.toContain(absent);
       }
     }
+  });
+});
+
+describe("the ONT FASTQ dataset", () => {
+  it("is now a reference dataset, not only the submitter's own file", () => {
+    const fq = INPUT_TYPES.find((t) => t.slug === "ont-fastq");
+    expect(fq?.hasExternalDataset).toBe(true);
+    expect(fq && "canonicalPaths" in fq ? fq.canonicalPaths : []).toContain("/data/in/input.fastq");
+    expect(panelKind(["ont-fastq"])).toBe("ont");
   });
 });

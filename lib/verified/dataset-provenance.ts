@@ -11,9 +11,9 @@
  */
 import type { VerifiedReport } from "@/types/verified";
 
-// Mirrors datasets/ont-bam-hg38/loci.bed and datasets/pacbio-hifi-bam-hg38/loci.bed:
-// the Illumina panel loci inside the CODIS ±10 kb windows both long-read slices
-// were cut with. It used to be a general CODIS list naming five loci (SE33,
+// Mirrors datasets/{ont-bam-hg38,ont-fastq,pacbio-hifi-bam-hg38}/loci.bed: the
+// Illumina panel loci inside the CODIS ±10 kb windows the long-read slices
+// were cut with (the ONT FASTQ holds the reads over those loci). It used to be a general CODIS list naming five loci (SE33,
 // PentaD, PentaE, D17S1301, D20S482) the ONT slice does not hold. Source of
 // truth is those BEDs; keep in sync.
 const CODIS_SLICE_PANEL_LOCI = [
@@ -69,6 +69,14 @@ export const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
   },
   "ont-bam-hg38": {
     name: "1000 Genomes ONT, hg38 CODIS slice (R10 SUP)",
+    source:
+      "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
+    license: "Open access (1000 Genomes / HPRC). Research use.",
+    loci: CODIS_SLICE_PANEL_LOCI,
+    referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
+  },
+  "ont-fastq": {
+    name: "1000 Genomes ONT, HG00113 reads over the CODIS panel loci (FASTQ)",
     source:
       "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
     license: "Open access (1000 Genomes / HPRC). Research use.",

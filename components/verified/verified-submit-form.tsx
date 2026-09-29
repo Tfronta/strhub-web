@@ -3027,7 +3027,7 @@ export function VerifiedSubmitForm() {
                       {detection.loci.length > 0 && (
                         <p className="text-muted-foreground">
                           {t("verified.submit.detectLoci", {
-                            n: String(detection.loci.length),
+                            count: String(detection.loci.length),
                             sample: detection.loci.slice(0, 6).join(", "),
                           })}
                         </p>

@@ -3,6 +3,7 @@ common: {
   loading: "Cargando...",
   error: "Error",
   notFound: "No Encontrado",
+  notAvailable: "No disponible",
   backToHome: "Volver al Inicio",
   frequency: "Frecuencia",
   allele: "Alelo",

@@ -42,12 +42,18 @@ mixProfiles: {
     copiedSequence: "Copiado",
     tableAllele: "Alelo",
     tableCoverage: "PDP",
-    tableCoverageTooltipAria: "Explicación sobre cobertura alélica",
+    tableCoverageTooltipAria: "Qué significa PDP",
     tableCoverageTooltip:
-      "PDP (Cobertura Alélica Probabilística): soporte probabilístico de lecturas por alelo derivado de HipSTR; pueden aparecer valores fraccionales.",
+      "PDP es un campo FORMAT de HipSTR: el soporte fraccional de lecturas asignado a cada genotipo haploide. Los dos valores de PDP de un llamado suman DP, así que PDP no es una profundidad de secuenciación independiente por alelo.",
+    tableSimulatedSupport: "Soporte de lecturas simulado",
+    tableMixedSupport: "PDP o soporte de lecturas simulado",
+    simulatedTag: "sim.",
+    simulatedTagTitle: "Soporte de lecturas simulado, no PDP de HipSTR",
     tableRepeatSequence: "Secuencia de Repetición",
     axisLabelAllele: "Alelo",
-    axisLabelCoverage: "Cobertura alélica (PDP)",
+    axisLabelCoverage: "PDP sumado por alelo",
+    axisLabelSimulated: "Soporte de lecturas simulado",
+    axisLabelMixed: "PDP + soporte de lecturas simulado, sumados por alelo",
     fullSequenceColumnLabel: "Secuencia completa",
     fullSequenceTooltipAria: "Explicación sobre la secuencia completa del amplicón",
     fullSequenceNote:
@@ -57,11 +63,11 @@ mixProfiles: {
     fullSequenceDidacticNote:
       "Los flancos no cuentan para el alelo CE; la región repetitiva es la utilizada para el llamado del alelo.",
     isoTooltip:
-      "Isoalelo: misma designación alélica pero distinta secuencia de repetición (variación interna).",
-    lowPdpBadge: "PDP bajo",
-    lowPdpTooltip:
-      "Cobertura alélica baja (PDP < 10).\nEste haplotipo puede reflejar ruido de secuenciación o artefactos de alineamiento y no se utiliza para la detección de isoalelos.",
-    lowPdpTooltipAria: "Explicación sobre cobertura alélica baja",
+      "Isoalelos en este ejemplo: misma designación alélica, distinta secuencia de repetición.",
+    pdpNote:
+      "PDP (HipSTR): soporte fraccional de lecturas asignado a cada genotipo haploide. Los dos valores de PDP de un llamado suman DP, así que PDP no es una profundidad de secuenciación independiente por alelo. Los valores provienen de la corrida de HipSTR de cada muestra sola y no cambian con las proporciones de la mezcla.",
+    simulatedNote:
+      "Soporte de lecturas simulado: el ejemplo trialélico sintético no tiene datos de secuenciación, así que sus valores se simulan a partir de las alturas de pico del electroferograma. No son PDP de HipSTR.",
     flank5Tooltip: "Flanqueadora 5'",
     repeatRegionTooltip: "Región repetitiva",
     flank3Tooltip: "Flanqueadora 3'",

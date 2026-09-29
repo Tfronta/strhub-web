@@ -120,7 +120,8 @@ export function buildToolCards(t: (key: string) => string): ToolCard[] {
         t("tools.strspy.features.2"),
         t("tools.strspy.features.3"),
       ],
-      input: "FASTQ, BAM (ONT)",
+      // README: fastq (raw reads, usually ONT) or bam (pre-aligned, usually PacBio).
+      input: "FASTQ (raw reads, usually ONT) or aligned BAM (usually PacBio)",
       output: "TXT/TSV tables",
       github: "https://github.com/unique379r/strspy/tree/main",
       publication: "https://pubmed.ncbi.nlm.nih.gov/34837788/",
@@ -216,7 +217,9 @@ export function buildToolCards(t: (key: string) => string): ToolCard[] {
         t("tools.strkit.features.2"),
         t("tools.strkit.features.3"),
       ],
-      input: "FASTQ, BAM (long-read)",
+      // README (`strkit call`): one indexed read file (BAM/CRAM), an indexed
+      // reference FASTA and a loci BED; no FASTQ input.
+      input: "BAM/CRAM (indexed), reference FASTA, loci BED",
       output: "Tabular (TSV/CSV/TXT)",
       github: "https://github.com/davidlougheed/strkit",
       publication: "https://doi.org/10.1101/2025.03.25.645269",

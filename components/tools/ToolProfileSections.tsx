@@ -33,7 +33,7 @@ function limitationTranslationKey(limitation: string): string {
   if (limitation.includes("Designed for Illumina") && limitation.includes("not compatible")) return "illuminaOnly";
   if (limitation.includes("Optimized for Illumina")) return "illuminaOnly";
   if (limitation.includes("Requires BAM/CRAM alignment")) return "requiresBamBed";
-  if (limitation.includes("Optimized for ONT")) return "ontOptimized";
+  if (limitation.includes("Designed for long-read")) return "longReadPanels";
   if (limitation.includes("Not designed for whole-genome")) return "notWgs";
   if (limitation.includes("BAM not currently supported")) return "fastqOnly";
   if (limitation.includes("Requires panel configuration")) return "requiresPanel";

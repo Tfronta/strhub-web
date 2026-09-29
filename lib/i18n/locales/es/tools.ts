@@ -213,8 +213,10 @@ tools: {
     selectMarker: "Seleccione un marcador",
     sample: "Muestra",
     selectSample: "Seleccione una muestra",
-    launchIgv: "Iniciar Visor IGV",
-    openUcsc: "Abrir en Navegador UCSC",
+    launchIgv: "Cargar lecturas en IGV",
+    launchIgvAria: "Cargar lecturas en IGV: {sample} en {marker}, en el visor de esta página",
+    openUcsc: "Abrir en UCSC Genome Browser",
+    openUcscAria: "Abrir en UCSC Genome Browser: región GRCh38 de {marker} (se abre en una pestaña nueva)",
     viewerTitle: "Visor Interactivo del Genoma",
     dataIntegration: "Integración de Datos",
     dataIntegrationPre: "Este visor integra la biblioteca de código abierto",
@@ -404,13 +406,13 @@ tools: {
   },
   strspy: {
     title: "STRspy",
-    description: "Herramienta de genotipado de STRs basada en ONT con salida tabular.",
+    description: "Herramienta de genotipado de STRs de lectura larga (ONT y PacBio) con salida tabular.",
     tags: {
       category: "Análisis",
       language: "Python",
     },
     features: {
-      1: "Llamada de alelos STR a partir de secuenciación de lectura larga Nanopore",
+      1: "Llamada de alelos STR a partir de secuenciación de lectura larga (ONT y PacBio)",
       2: "Resolución alélica a nivel de secuencia usando bases de referencia",
       3: "Diseñado para perfilado STR forense",
     },
@@ -423,13 +425,15 @@ tools: {
 fastaGeneratorPage: {
   languageLabel: "Idioma actual",
   title: "Generador FASTA",
-  subtitle: "Genera secuencias FASTA personalizadas para investigación y análisis.",
+  subtitle: "Constructos simplificados de secuencias STR basados en motivos, con flancos de referencia GRCh38.",
   config: {
     title: "Parámetros de configuración de secuencia",
     markerLabel: "Marcador STR",
     markerPlaceholder: "Selecciona un marcador",
-    allelesLabel: "Alelos (lista o rango)",
+    allelesLabel: "Número de repeticiones (lista o rango)",
     allelesPlaceholder: "p. ej. 10-12 o 9,10,11",
+    allelesHint:
+      "Números enteros de 1 a {max} (un límite técnico de entrada de esta herramienta): cada valor es la cantidad de copias del motivo de construcción, que se indica en el encabezado de la salida. Por ahora no se admiten microvariantes (por ejemplo 9.3). En loci complejos, el número de repeticiones no equivale necesariamente a una designación alélica forense de CE.",
     flankingLabel: "Región flanqueante (pb por lado)",
     outputLabel: "Tipo de salida",
     referenceLabel: "Genoma de referencia",
@@ -444,43 +448,53 @@ fastaGeneratorPage: {
       'Selecciona un marcador y haz clic en "Generar secuencia" para comenzar',
     copyButton: "Copiar",
     downloadButton: "Descargar FASTA",
-    referenceLine: "Referencia: {build}, hebra positiva. Ventana exportada: {region}. Verificado contra UCSC {ucsc}.",
+    downloadCsvButton: "Descargar CSV",
+    referenceLine: "Flancos de {build}, hebra positiva, ventana de referencia {region}, verificada contra UCSC {ucsc}. El bloque de repeticiones es un constructo simplificado, no la secuencia de referencia.",
   },
   messages: {
-    enterAlleles: "Ingresa alelos (p. ej. 10-12 o 9,10,11)",
+    enterAlleles: "Ingresa uno o más números de repeticiones enteros (p. ej. 10-12 o 9,10,11).",
+    microvariantsUnsupported:
+      "Por ahora no se admiten microvariantes ni valores decimales (por ejemplo 9.3). Ingresa números de repeticiones enteros.",
+    invalidRepeatCounts:
+      "Ingresa números de repeticiones enteros entre 1 y {max}, como lista o rango (p. ej. 10-12 o 9,10,11). El máximo es un límite técnico de entrada de esta herramienta.",
     markerNotFound: "Marcador no encontrado en la lista.",
+    coreNotFound:
+      "No se encontró una serie del motivo {motif} en el fragmento de referencia de {marker}, así que no se puede generar un constructo para este locus.",
+    sliceUnavailable: "No se pudo cargar el fragmento de referencia de {marker} (HTTP {status}). Intenta de nuevo más tarde.",
+    sliceInvalid: "El fragmento de referencia de {marker} no es un archivo FASTA válido.",
+    genomeUnavailable: "La referencia {genome} todavía no está disponible.",
+    configMissing: "Los fragmentos de referencia no están configurados en este servidor.",
+    unexpected: "No se pudo generar la secuencia.",
     errorPrefix: "ERROR",
   },
   about: {
     title: "Acerca de la generación FASTA",
     intro:
-      "Este módulo produce secuencias FASTA de alta calidad para marcadores de Repetición Corta en Tándem (STR), utilizando regiones de referencia curadas derivadas del GRCh38.",
+      "Genera constructos simplificados de secuencias STR basados en motivos, con flancos de referencia y un número de repeticiones definido por el usuario. No se modelan estructuras repetitivas compuestas, interrupciones ni microvariantes. Los resultados no deben interpretarse como secuencias alélicas forenses validadas.",
     detail:
-      "Cada secuencia generada representa la estructura genómica esperada del locus STR, con regiones flanqueantes personalizables.",
+      "Cada constructo une el flanco 5' de GRCh38, la cantidad pedida de copias del motivo de construcción (indicado en cada encabezado) y el flanco 3' de GRCh38. En loci complejos, el número de repeticiones no equivale necesariamente a una designación alélica forense de CE, y por ahora no se admiten microvariantes.",
     overview: {
       title: "Descripción general",
       paragraphs: [
-        "El Generador FASTA de STRhub permite a los investigadores explorar la variabilidad alélica simulando patrones de repetición STR con contexto genómico preciso.",
-        "Los usuarios pueden definir rangos de alelos, ajustar longitudes flanqueantes y exportar las secuencias resultantes en varios formatos estandarizados.",
+        "Elige un locus, ingresa números de repeticiones enteros como lista o rango, ajusta el largo de los flancos y exporta los constructos en uno de varios formatos estándar.",
+        "El conjunto actual incluye 19 de los 20 loci del núcleo CODIS (D22S1045 no está incluido).",
       ],
     },
     features: {
       title: "Características",
       items: [
-        "Soporte completo para marcadores STR del núcleo CODIS y extendidos",
-        "Cortes basados en referencia alineados a GRCh38",
+        "19 de los 20 loci del núcleo CODIS (D22S1045 no está incluido)",
+        "Flancos cortados de fragmentos de referencia GRCh38 (hebra positiva)",
         "Regiones flanqueantes personalizables (0–200 pb por lado)",
-        "Múltiples formatos de exportación: FASTA estándar, FASTA estilo referencia, Multi-FASTA y CSV tabular",
+        "Formatos de exportación: FASTA estándar, FASTA estilo referencia, Multi-FASTA y CSV tabular",
         "Opciones de descarga y copia directas",
       ],
     },
     useCases: {
       title: "Casos de uso",
       items: [
-        "Investigación en genética forense y poblacional",
-        "Reconstrucción alélica y análisis in silico",
-        "Diseño de cebadores y validación de ensayos",
         "Propósitos educativos y de formación en genómica forense",
+        "Entradas simples in silico, por ejemplo para ver cómo un software maneja un cambio en el número de repeticiones",
       ],
     },
   },
@@ -504,6 +518,7 @@ motifExplorerPage: {
   scientificNote:
     "Nota sobre nomenclatura: STRNaming y las recomendaciones ISFG reportan la estructura de repetición sobre el minimum range. El bracketing histórico de 2016 solía definirse sobre una ventana más ancha (STRbase / NIST), por eso ambos pueden verse distintos para el mismo alelo.",
   sourceLabel: "Fuente",
+  sourceValue: "{version} ({publisher}; distribuido como {file})",
   sourceButtonLabel: "Abrir STRidER",
   marker: {
     ce: "Equivalente CE",

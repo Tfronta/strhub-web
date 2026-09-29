@@ -1,6 +1,7 @@
 import { JsonLd } from "@/components/json-ld";
 import { buildMarkerSummary, type MarkerSummary } from "@/lib/marker-summary";
 import { DATASET_CREATOR, DATASET_LICENSE, SITE_URL } from "@/lib/seo";
+import { countNoun } from "@/lib/plural";
 import { MarkerView } from "./MarkerView";
 
 const POPULATION_NAMES: Record<string, string> = {
@@ -41,7 +42,7 @@ function markerJsonLd(summary: MarkerSummary) {
       creator: DATASET_CREATOR,
       name: `${summary.name} allele frequencies (capillary electrophoresis)`,
       description:
-        `Allele frequencies of the ${summary.name} STR locus in ${pops.length} population groups ` +
+        `Allele frequencies of the ${summary.name} STR locus in ${countNoun(pops.length, "population group", "population groups")} ` +
         `(${pops.join(", ")}), from the STRs Local dataset of pop.STR / SP-SMART (CESGA), ` +
         "with sample sizes and expected heterozygosity per population.",
       url,

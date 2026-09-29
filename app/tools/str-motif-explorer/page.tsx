@@ -168,7 +168,11 @@ export default function MotifExplorerPage() {
                   </p>
                   <div className="mt-3 flex items-center justify-between gap-2 text-xs text-muted-foreground">
                     <span className="italic">
-                      {t("sourceLabel")}: {FSSG_SOURCE.name}
+                      {t("sourceLabel")}:{" "}
+                      {t("sourceValue")
+                        .replace("{version}", FSSG_SOURCE.version)
+                        .replace("{publisher}", FSSG_SOURCE.publisher)
+                        .replace("{file}", FSSG_SOURCE.file)}
                     </span>
                     <Button
                       variant="outline"

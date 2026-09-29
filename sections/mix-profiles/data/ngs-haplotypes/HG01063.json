@@ -4,10 +4,10 @@
  "source": {
   "primary": "HipSTR v0.7 per-sample calls over the ISFG minimum range (GRCh38)",
   "data": "1000 Genomes 30x (NYGC, ENA PRJEB31736): CRAM slices of the ISFG loci +-1 kb",
-  "regions": "HGDP rerun2026 bed_isfg.bed: HipSTR regions = ISFG minimum ranges (FSSG v6.1, GRCh38). HipSTR reads the BED start as 1-based, so each region carries 1 extra 5' base; isfg_trim5_bp / isfg_trim3_bp bases of allele_seq fall outside the ISFG range and are trimmed off by coordinates.",
+  "regions": "HGDP rerun2026 bed_isfg.bed: HipSTR regions = ISFG minimum ranges from FSSG v6.1 (STRidER; distributed as FSSG_v6-1_beta.xlsx), GRCh38. HipSTR reads the BED start as 1-based, so each region carries 1 extra 5' base; isfg_trim5_bp / isfg_trim3_bp bases of allele_seq fall outside the ISFG range and are trimmed off by coordinates.",
   "hipstr_options": "--min-reads 6 --def-stutter-model --output-filters --max-str-len 150",
   "reference": "GRCh38_full_analysis_set_plus_decoy_hla.fa",
-  "notes": "Allele sequences reconstructed from REF/ALT + GT. Allelic Coverage derived from PDP (fractional read support).",
+  "notes": "Allele sequences reconstructed from REF/ALT + GT. coverage1/coverage2 = HipSTR FORMAT PDP, the fractional read support assigned to each haploid genotype (coverage1 + coverage2 = DP).",
   "allele_designation": "Allele calls = reference CE + HipSTR FORMAT GB (bp difference from GRCh38), microvariants as .{remainder_bp}. genotype_forense lists the two calls in ascending order.",
   "no_call_rule": "A homozygous call is not reported when any read spanning the ISFG range supports another allele (beyond +-1 repeat-unit stutter): the signature of dropout of the longer allele.",
   "no_calls": [
@@ -20,7 +20,7 @@
   ],
   "nomenclature": {
    "tool": "STRNaming 1.2.1 (PyPI, 2026-08-10), CLI `strnaming name-sequences -r <ISFG BED>`",
-   "ranges": "ISFG minimum range (FSSG v6.1 / ISFG 2024), GRCh38, BED strand '+' (isfg_seq{n} is forward)",
+   "ranges": "ISFG minimum range (ISFG 2024) from FSSG v6.1 (STRidER; distributed as FSSG_v6-1_beta.xlsx), GRCh38, BED strand '+' (isfg_seq{n} is forward)",
    "fields": "bracketed{n} = STRNaming name; isfg_seq{n} = exact STRNaming input over the ISFG range, all observed (isfg_ref5_bp / isfg_ref3_bp = 0); isfgSegments{n} = block colouring from STRNaming --html",
    "verified": "2026-09-27: every name's CE equals the allele call; across the 5 samples the calls agree with the earlier core-region HipSTR run in 103/105 loci, the other 2 being the no-calls."
   }

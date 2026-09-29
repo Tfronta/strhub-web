@@ -181,7 +181,7 @@ export function MarkerView({
   // Helper function to translate marker type
   const getTranslatedType = (type: string | null): string => {
     if (type == null || type === "") {
-      return "—";
+      return t("common.notAvailable");
     }
     // Convert type to lowercase key format (e.g., "Tetranucleotide" -> "tetranucleotide")
     const typeKey = type.toLowerCase();
@@ -1636,12 +1636,17 @@ export function MarkerView({
               <span className="text-muted-foreground">Chr</span>{" "}
               <span className="text-foreground">{marker.chromosome}</span>
             </span>
-            <span className="border-l border-border pl-4 font-mono text-foreground">
-              {marker.motif}
-            </span>
-            <span className="border-l border-border pl-4 text-muted-foreground">
-              {getTranslatedType(marker.type)}
-            </span>
+            {/* Empty fields get no chip here; the Overview says "Not available". */}
+            {marker.motif ? (
+              <span className="border-l border-border pl-4 font-mono text-foreground">
+                {marker.motif}
+              </span>
+            ) : null}
+            {marker.type ? (
+              <span className="border-l border-border pl-4 text-muted-foreground">
+                {getTranslatedType(marker.type)}
+              </span>
+            ) : null}
             {summary?.referenceAllele && (
               <span className="border-l border-border pl-4">
                 <span className="text-muted-foreground">
@@ -1728,15 +1733,23 @@ export function MarkerView({
                       <Label className="text-xs font-normal text-muted-foreground">
                         {t("marker.motif")}
                       </Label>
-                      <p className="text-sm font-normal font-mono text-foreground">
-                        {marker.motif}
-                      </p>
+                      {marker.motif ? (
+                        <p className="text-sm font-normal font-mono text-foreground">
+                          {marker.motif}
+                        </p>
+                      ) : (
+                        <p className="text-sm font-normal text-muted-foreground">
+                          {t("common.notAvailable")}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs font-normal text-muted-foreground">
                         {t("marker.type")}
                       </Label>
-                      <p className="text-sm font-normal text-foreground">
+                      <p
+                        className={`text-sm font-normal ${marker.type ? "text-foreground" : "text-muted-foreground"}`}
+                      >
                         {getTranslatedType(marker.type)}
                       </p>
                     </div>
@@ -1873,7 +1886,7 @@ export function MarkerView({
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      {t("common.notFound")}
+                      {t("common.notAvailable")}
                     </p>
                   )}
                 </CardContent>

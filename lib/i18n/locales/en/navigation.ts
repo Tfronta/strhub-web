@@ -24,7 +24,7 @@ nav: {
     motifExplorer: "STR Motif Explorer",
     motifExplorerDesc: "Internal structure of each marker",
     fastaGenerator: "FASTA Generator",
-    fastaGeneratorDesc: "Reference sequences for any allele",
+    fastaGeneratorDesc: "Simplified motif-based sequence constructs",
     toolsCatalog: "Tools and pipelines",
     toolsCatalogDesc: "Open-source software for STR analysis",
     searchPlaceholder: "Search markers, tools, articles",
@@ -88,7 +88,7 @@ home: {
     },
     fastaGenerator: {
       title: "FASTA Generator",
-      description: "Generate custom FASTA sequences for your research and analysis needs",
+      description: "Simplified motif-based STR sequence constructs with GRCh38 reference flanks",
     },
     igvViewer: {
       title: "IGV Viewer",
@@ -129,9 +129,9 @@ home: {
         "Generate and compare STR mixture profiles for both CE and NGS data with customizable contributor ratios",
     },
     fastaMetadata: {
-      title: "FASTA & Metadata Generator",
+      title: "FASTA Generator",
       description:
-        "Create custom FASTA sequences with configurable flanking regions and export comprehensive marker metadata",
+        "Simplified motif-based STR sequence constructs with configurable GRCh38 reference flanks, exported as FASTA or CSV",
     },
     educationalResources: {
       title: "Educational Resources",

@@ -24,7 +24,7 @@ nav: {
     motifExplorer: "STR Motif Explorer",
     motifExplorerDesc: "Estructura interna de cada marcador",
     fastaGenerator: "Generador FASTA",
-    fastaGeneratorDesc: "Secuencias de referencia para cualquier alelo",
+    fastaGeneratorDesc: "Constructos simplificados de secuencia basados en motivos",
     toolsCatalog: "Herramientas y pipelines",
     toolsCatalogDesc: "Software de código abierto para análisis de STR",
     searchPlaceholder: "Buscar marcadores, herramientas, artículos",
@@ -89,7 +89,7 @@ home: {
     },
     fastaGenerator: {
       title: "Generador FASTA",
-      description: "Genere secuencias FASTA personalizadas para sus necesidades de investigación y análisis",
+      description: "Constructos simplificados de secuencias STR basados en motivos, con flancos de referencia GRCh38",
     },
     igvViewer: {
       title: "Visor IGV",
@@ -131,9 +131,9 @@ home: {
         "Genere y compare perfiles de mezclas STR para datos CE y NGS con proporciones de contribuyentes personalizables",
     },
     fastaMetadata: {
-      title: "Generador FASTA y Metadatos",
+      title: "Generador FASTA",
       description:
-        "Cree secuencias FASTA personalizadas con regiones flanqueantes configurables y exporte metadatos completos de marcadores",
+        "Constructos simplificados de secuencias STR basados en motivos, con flancos de referencia GRCh38 configurables, exportados en FASTA o CSV",
     },
     educationalResources: {
       title: "Recursos Educativos",

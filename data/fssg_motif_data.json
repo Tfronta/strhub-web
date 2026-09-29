@@ -1583,6 +1583,15 @@
     "sequenceReference": null,
     "minimumRangeSequence": "CTTGCTCTTTCTTTCCTTCCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTCTTTCTTTCTTTCTCTTTCTTTCTTTTTCTTTCT",
     "kits": {
+      "ForenSeq Signature Prep/Plus and MainstAY": {
+        "chrom": "chr6",
+        "start": 88277130,
+        "end": 88277367,
+        "length": 238,
+        "sequence": "TCTTTCTTTCCTTCCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTCTTTCTTTCTTTCTCTTTCTTTCTTTTTCTTTCTTTTTCTTCCTTCCTTCCTTTCTCTCTCTCTCTCTTTCTTTCTTTCTAACTCTCTTTGTCTCTTTCTTTCTTTCTTTTGACGGAGTT",
+        "clippedToFullRange": false,
+        "note": "MainstAY only"
+      },
       "IDSeek OmniSTR Global": {
         "chrom": "chr6",
         "start": 88277121,
@@ -4318,6 +4327,15 @@
         "length": 71,
         "sequence": "ATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATGTATGTCTTTTCTATGAGACATA",
         "clippedToFullRange": false
+      },
+      "ForenSeq Signature Prep/Plus and MainstAY": {
+        "chrom": "chrY",
+        "start": 3263111,
+        "end": 3263183,
+        "length": 73,
+        "sequence": "AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATATGTATGTCTTTTCTATGAGACATA",
+        "clippedToFullRange": false,
+        "note": "MainstAY only"
       },
       "IDSeek mYSTR": {
         "chrom": "chrY",
@@ -7070,6 +7088,15 @@
     "sequenceReference": null,
     "minimumRangeSequence": "CTTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACCTA",
     "kits": {
+      "ForenSeq Signature Prep/Plus and MainstAY": {
+        "chrom": "chrY",
+        "start": 18888748,
+        "end": 18889046,
+        "length": 299,
+        "sequence": "TCAGGTAAATCTGTCCAGTAGTGATGCTGTGTCACTATATTTCTGTTTCTCTCTTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACCTATCTTCTATCTACCTATTATCTATCATCTACCTATTAGATATATCTGTCTATCCATATCATCTATCCTCTGCCTATCATTTATTATGTATTTGTCTATTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATGTCAGAGGTGTCAGATTCCTCTGGTATTCTTGTGCTTGCTACTGTCTTGAC",
+        "clippedToFullRange": false,
+        "note": "Included in range of DYS460"
+      },
       "IDSeek mYSTR": {
         "chrom": "chrY",
         "start": 18888780,

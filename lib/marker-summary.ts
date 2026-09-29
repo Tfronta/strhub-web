@@ -38,7 +38,7 @@ const STRNAMING = strnamingNames as unknown as StrnamingNames;
  * such changes: the sitemap reports it as lastmod for /catalog and every
  * marker page, and a stale value tells crawlers there is nothing new to fetch.
  */
-export const MARKER_DATA_UPDATED = "2026-09-17";
+export const MARKER_DATA_UPDATED = "2026-09-28";
 
 export const CE_POPS: readonly CEPop[] = [
   "AFR",
@@ -108,6 +108,8 @@ export type MarkerSummary = {
       start: number;
       end: number;
       length: number;
+      /** STRidER's qualifier from the same FSSG cell, verbatim (e.g. "MainstAY only"). */
+      note: string | null;
     }>;
   } | null;
   ce: { populations: PopulationSummary[]; table: FrequencyTable } | null;
@@ -357,6 +359,7 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
             start: range.start,
             end: range.end,
             length: range.length,
+            note: range.note ?? null,
           })),
         }
       : null,

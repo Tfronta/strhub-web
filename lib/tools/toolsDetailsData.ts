@@ -115,7 +115,7 @@ export const toolsDetailsData: ToolDetails[] = [
   {
     id: "strspy",
     name: "STRspy",
-    tech: ["ONT"],
+    tech: ["ONT", "PacBio"],
     input: ["FASTQ", "BAM"],
     output: ["TSV", "CSV"],
     support: {
@@ -135,14 +135,14 @@ export const toolsDetailsData: ToolDetails[] = [
       last_release: "v1.0.0",
     },
     limitations: [
-      "Optimized for ONT forensic STR panels; requires reference file of loci.",
+      "Designed for long-read forensic STR panels (ONT or PacBio); requires a reference file of loci.",
       "Not designed for whole-genome (WGS) applications.",
     ],
     repo_url: "https://github.com/unique379r/strspy",
     paper_doi: "10.1016/j.fsigen.2021.102629",
     last_checked: "2025-11-06",
     notes:
-      "STRspy is integrated into the STRhub ecosystem for forensic and population STR analysis using Oxford Nanopore data. Its modular design allows visualization, benchmarking, and cross-compatibility with HipSTR-UI datasets.",
+      "STRspy is integrated into the STRhub ecosystem for forensic and population STR analysis using long-read data (ONT or PacBio). Its modular design allows visualization, benchmarking, and cross-compatibility with HipSTR-UI datasets.",
   },
   {
     id: "strique",

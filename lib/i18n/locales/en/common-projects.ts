@@ -3,6 +3,7 @@ common: {
   loading: "Loading...",
   error: "Error",
   notFound: "Not Found",
+  notAvailable: "Not available",
   backToHome: "Back to Home",
   frequency: "Frequency",
   allele: "Allele",

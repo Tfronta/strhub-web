@@ -5,7 +5,6 @@
 // ====================================================================
 
 import { CATALOG } from "@/app/catalog/data";
-import { ISOALLELE_MIN_COVERAGE } from "@/lib/strFormatting";
 import { markerData } from "@/lib/markerData";
 import {
   getSampleNgsLocus,
@@ -755,14 +754,16 @@ type MarkerSequenceEntry = {
 };
 
 /**
- * CE → NGS pedagogical bridge:
- * Derives NGS-like allele coverage from CE peak heights (RFU).
+ * NGS table rows for the active contributors at one locus.
  *
- * - The CE simulation encodes mixture proportions and degradation in RFU.
- * - AT/IT are interpretation gates and MUST NOT alter underlying RFU or NGS coverage.
- * - We allocate a fixed TOTAL_READS per locus and distribute it by RFU proportion.
- *
- * This is an educational mapping to support CE→NGS migration (not a wet-lab model).
+ * - One row per allele copy. Rows from the 1000 Genomes samples carry that
+ *   sample's own single-source HipSTR PDP (fractional read support assigned to
+ *   each haploid genotype; the two values of a call sum to DP). PDP is fixed per
+ *   sample, so it does NOT change with the mixture proportions or degradation.
+ * - Rows with no HipSTR data (the synthetic triallelic sample) get a simulated
+ *   read support instead: a fixed budget of reads split by true-peak RFU. It is
+ *   flagged coverageSource "simulated" and must not be presented as PDP.
+ * - AT/IT are interpretation gates and never change either value.
  */
 export function cePeaksToNGSRowsWithSeq(
   locusId: string,
@@ -883,17 +884,12 @@ export function cePeaksToNGSRowsWithSeq(
   }
 
   // ---------------------------------------------------------------------------
-  // CE → NGS linkage (didactic mapping for forensic migration CE→NGS)
+  // Simulated read support (only for rows without HipSTR data)
   //
-  // Forensic principle:
-  // - Mixture proportion and degradation are encoded in the CE signal (RFU) model.
-  // - AT/IT are interpretation thresholds; they must NOT change underlying signal.
-  // - Therefore, NGS "coverage" is derived from TRUE-peak RFU proportions,
-  //   allocating a fixed total reads budget per locus.
-  //
-  // Result:
-  // - Changing AT/IT will not change bar heights (coverage), only what you *flag*.
-  // - Changing mixture/degradation will change RFU → and thus coverage (as expected).
+  // A fixed budget of reads per locus is split by TRUE-peak RFU, so for those
+  // rows it follows the simulated mixture and degradation. Rows from real
+  // samples ignore this and keep their single-source HipSTR PDP (see below).
+  // AT/IT never change either value, only what is flagged.
   // ---------------------------------------------------------------------------
 
   const TOTAL_READS = 2000; // fixed reads budget per locus (UI/education, not wet-lab)
@@ -1033,19 +1029,20 @@ export function cePeaksToNGSRowsWithSeq(
       const coverageFromRfu = i === copiesNeeded - 1
         ? coveragePerCopy + remainder
         : coveragePerCopy
+      // HipSTR PDP when the sample has sequencing data; otherwise simulated.
       const coverage = rowCoverage != null ? rowCoverage : coverageFromRfu
 
-      const meetsMinCoverage =
-        typeof coverage === "number" && coverage >= ISOALLELE_MIN_COVERAGE;
       rows.push({
         allele: alleleLabel,
         coverage,
+        coverageSource: rowCoverage != null ? "hipstr" : "simulated",
         stutterPct: stPctByTarget[alleleLabel] ?? '—',
         repeatSequence,
         fullSequence,
         fullSequenceSegments,
         isfgSegments,
-        isIsoallele: isIsoallele && meetsMinCoverage,
+        // Not gated by read support: the example shows its sequences as they are.
+        isIsoallele,
         sequenceId: `${alleleLabel}-${i}`,
       })
     }

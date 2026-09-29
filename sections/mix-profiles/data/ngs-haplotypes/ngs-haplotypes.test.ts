@@ -15,6 +15,7 @@ import {
   type Peak,
   type SampleId,
 } from "../../data";
+import { shouldShowIsoBadgeOnMinorRow } from "@/lib/strFormatting";
 
 type Doc = { sample: string; loci: LocusRecord[] };
 const SAMPLES = [HG00097, HG00145, HG00372, HG01063, HG02944] as unknown as Doc[];
@@ -117,6 +118,59 @@ describe("Mix Profiles NGS haplotypes", () => {
           }
         }
       }
+    }
+  });
+});
+
+describe("NGS table read support (PDP vs simulated)", () => {
+  const truePeaks = (alleles: Array<string | number>): Peak[] =>
+    alleles.map((a) => ({ allele: a, rfu: 1000, kind: "true", source: "A" }) as Peak);
+
+  it("gives real samples their single-source HipSTR PDP, which sums to DP and ignores the mixture proportion", () => {
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    for (const doc of SAMPLES) {
+      const sampleId = doc.sample as SampleId;
+      for (const L of doc.loci) {
+        const locus = L.locus as LocusId;
+        const g = getTrueGenotype(sampleId, locus)!;
+        const peaks = truePeaks([g.allele1, g.allele2]);
+        const full = cePeaksToNGSRowsWithSeq(locus, peaks, [{ sampleId, proportion: 1, label: "A" }]);
+        const minor = cePeaksToNGSRowsWithSeq(locus, peaks, [{ sampleId, proportion: 0.1, label: "A" }]);
+        const tag = `${doc.sample} ${L.locus}`;
+        expect(full.every((r) => r.coverageSource === "hipstr"), tag).toBe(true);
+        const sum = full.reduce((s, r) => s + r.coverage, 0);
+        expect(sum, tag).toBeCloseTo(field<number>(L, "DP"), 1);
+        expect(minor.map((r) => r.coverage), tag).toEqual(full.map((r) => r.coverage));
+      }
+    }
+  });
+
+  it("shows the HG00097 vWA isoalleles whatever the read support", () => {
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    const sampleId = "HG00097" as SampleId;
+    const g = getTrueGenotype(sampleId, "vWA")!;
+    const rows = cePeaksToNGSRowsWithSeq("vWA", truePeaks([g.allele1, g.allele2]), [
+      { sampleId, proportion: 1, label: "A" },
+    ]);
+    const isoRows = (rs: typeof rows) => rs.filter((r) => shouldShowIsoBadgeOnMinorRow(r, rs));
+    expect(new Set(rows.map((r) => r.repeatSequence)).size).toBe(2);
+    expect(isoRows(rows)).toHaveLength(1);
+    // Same example with very low support: the sequence distinction stays visible.
+    const low = rows.map((r) => ({ ...r, coverage: r.coverage / 20 }));
+    expect(Math.max(...low.map((r) => r.coverage))).toBeLessThan(2);
+    expect(isoRows(low)).toHaveLength(1);
+    expect(isoRows(low)[0].repeatSequence).toBe(isoRows(rows)[0].repeatSequence);
+  });
+
+  it("marks the synthetic triallelic sample as simulated read support, never PDP", () => {
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    for (const locus of ["TPOX", "TH01"] as LocusId[]) {
+      const g = getTrueGenotype("SYN_TRI01" as SampleId, locus)!;
+      const rows = cePeaksToNGSRowsWithSeq(locus, truePeaks([g.allele1, g.allele2, g.allele3!]), [
+        { sampleId: "SYN_TRI01" as SampleId, proportion: 1, label: "A" },
+      ]);
+      expect(rows).toHaveLength(3);
+      expect(rows.every((r) => r.coverageSource === "simulated"), locus).toBe(true);
     }
   });
 });

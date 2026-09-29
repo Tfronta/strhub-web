@@ -4,23 +4,50 @@ import { markerData, type MarkerEntry } from "@/lib/markerData";
 
 export type ExportType = "standard" | "reference" | "tabular" | "multi";
 
-export function parseAlleles(input: string): number[] {
-  // Acepta: "10", "10,11,12", "10-13", "9,10-12,14"
-  const parts = input.split(",").map(s => s.trim()).filter(Boolean);
-  const out: number[] = [];
-  for (const p of parts) {
-    if (p.includes("-")) {
-      const [a, b] = p.split("-").map(x => Number(x.trim()));
-      if (Number.isFinite(a) && Number.isFinite(b)) {
-        const start = Math.min(a, b), end = Math.max(a, b);
-        for (let k = start; k <= end; k++) out.push(k);
-      }
-    } else {
-      const n = Number(p);
-      if (Number.isFinite(n)) out.push(n);
+/**
+ * Largest repeat count the FASTA Generator accepts: a technical input limit of
+ * the tool (keeps each output small), not a biological or forensic bound. The
+ * page states it in the input hint and in the validation message.
+ */
+export const MAX_REPEAT_COUNT = 100;
+
+export type RepeatCountsResult =
+  | { ok: true; counts: number[] }
+  | { ok: false; reason: "empty" | "decimal" | "invalid" };
+
+/**
+ * Repeat counts for the FASTA Generator: whole numbers from 1 to
+ * MAX_REPEAT_COUNT, as a list and/or ranges ("10", "10,11,12", "10-13",
+ * "9,10-12,14"). Microvariants such as 9.3 are rejected, never truncated:
+ * they are not supported by the simplified constructs, and String.repeat
+ * would silently turn 9.3 into 9 copies.
+ */
+export function parseRepeatCounts(input: string): RepeatCountsResult {
+  const parts = input.split(",").map((s) => s.trim()).filter(Boolean);
+  if (parts.length === 0) return { ok: false, reason: "empty" };
+
+  const counts = new Set<number>();
+  const inRange = (n: number) => n >= 1 && n <= MAX_REPEAT_COUNT;
+  for (const part of parts) {
+    if (/\d\s*\.|\.\s*\d/.test(part)) return { ok: false, reason: "decimal" };
+
+    const range = part.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (range) {
+      const a = Number(range[1]);
+      const b = Number(range[2]);
+      if (!inRange(a) || !inRange(b)) return { ok: false, reason: "invalid" };
+      for (let k = Math.min(a, b); k <= Math.max(a, b); k++) counts.add(k);
+      continue;
     }
+
+    if (/^\d+$/.test(part) && inRange(Number(part))) {
+      counts.add(Number(part));
+      continue;
+    }
+
+    return { ok: false, reason: "invalid" };
   }
-  return Array.from(new Set(out)).sort((x, y) => x - y);
+  return { ok: true, counts: [...counts].sort((x, y) => x - y) };
 }
 
 function getMarker(id: string): MarkerEntry {

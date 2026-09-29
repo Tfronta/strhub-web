@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FileText, Download, Copy, Settings } from "lucide-react";
 import {
   Card,
@@ -20,13 +20,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { parseAlleles, type ExportType } from "@/lib/fasta-export";
+import {
+  MAX_REPEAT_COUNT,
+  parseRepeatCounts,
+  type ExportType,
+} from "@/lib/fasta-export";
 import {
   generateContentFromSlice,
   type SliceExportInfo,
 } from "@/lib/fasta-export-from-slice";
+import { FastaGeneratorError } from "@/lib/fasta-errors";
 import {
   DEFAULT_REFERENCE_GENOME,
   getReferenceGenome,
@@ -48,8 +54,14 @@ export default function FastaGeneratorPage() {
   const [allelesInput, setAllelesInput] = useState("");
   const [flankingRegion, setFlankingRegion] = useState("100");
   const [outputFormat, setOutputFormat] = useState<ExportType>("reference");
+  // Only a successful generation fills these three, so Copy and Download never
+  // act on a message. generatedFormat is the format the output was built in, so
+  // changing the selector afterwards cannot mislabel the downloaded file.
   const [generatedSequence, setGeneratedSequence] = useState("");
   const [generatedInfo, setGeneratedInfo] = useState<SliceExportInfo | null>(null);
+  const [generatedFormat, setGeneratedFormat] = useState<ExportType | null>(null);
+  // Validation and error messages, shown instead of an output.
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [referenceGenome, setReferenceGenome] = useState<ReferenceGenomeId>(
     DEFAULT_REFERENCE_GENOME
   );
@@ -99,30 +111,37 @@ export default function FastaGeneratorPage() {
     return { uiMarker, data };
   };
 
-  useEffect(() => {
-    if (!selectedMarker) return;
+  // No pre-filled repeat counts: the old default came from an unsourced
+  // per-marker allele range.
 
-    const { data } = getMarkerInfo(selectedMarker);
-    const defaultAlleles =
-      typeof data?.alleles === "string" ? data.alleles.trim() : "";
-
-    setAllelesInput(defaultAlleles || "");
-  }, [selectedMarker]);
+  const showMessage = (text: string) => {
+    setGeneratedSequence("");
+    setGeneratedInfo(null);
+    setGeneratedFormat(null);
+    setStatusMessage(text);
+  };
 
   const generateFasta = async () => {
     if (!selectedMarker) return;
 
-    const alleles = parseAlleles(allelesInput);
-    if (!alleles.length) {
-      setGeneratedSequence(messages.enterAlleles);
+    const parsed = parseRepeatCounts(allelesInput);
+    if (!parsed.ok) {
+      showMessage(
+        parsed.reason === "decimal"
+          ? messages.microvariantsUnsupported
+          : parsed.reason === "invalid"
+            ? messages.invalidRepeatCounts.replace("{max}", String(MAX_REPEAT_COUNT))
+            : messages.enterAlleles
+      );
       return;
     }
+    const repeatCounts = parsed.counts;
 
     try {
       // 1) Resolver el objeto del marcador para obtener el nombre EXACTO (CSF1PO, D21S11, etc.)
       const { uiMarker, data } = getMarkerInfo(selectedMarker);
       if (!uiMarker) {
-        setGeneratedSequence(messages.markerNotFound);
+        showMessage(messages.markerNotFound);
         return;
       }
       const markerName = uiMarker.name; // "CSF1PO" / "D21S11" ...
@@ -134,7 +153,7 @@ export default function FastaGeneratorPage() {
       const { fasta, info } = await generateContentFromSlice(
         markerName,
         motif,
-        alleles,
+        repeatCounts,
         Number(flankingRegion) || 0,
         outputFormat,
         referenceGenome
@@ -142,25 +161,40 @@ export default function FastaGeneratorPage() {
 
       setGeneratedSequence(fasta);
       setGeneratedInfo(info);
-    } catch (e: any) {
-      setGeneratedInfo(null);
-      setGeneratedSequence(
-        `${messages.errorPrefix}: ${e?.message ?? String(e)}`
-      );
+      setGeneratedFormat(outputFormat);
+      setStatusMessage(null);
+    } catch (e: unknown) {
+      // Known failures carry a code with a translated message; anything else
+      // gets a generic translated message and goes to the console.
+      let text: string = messages.unexpected;
+      if (e instanceof FastaGeneratorError) {
+        const template = (messages as Record<string, string>)[e.code] ?? messages.unexpected;
+        text = Object.entries(e.params).reduce(
+          (s, [key, value]) => s.replace(`{${key}}`, value),
+          template
+        );
+      } else {
+        console.error("[FASTA Generator]", e);
+      }
+      showMessage(`${messages.errorPrefix}: ${text}`);
     }
   };
 
+  const hasOutput = Boolean(generatedSequence && generatedInfo && generatedFormat);
+
   const copyToClipboard = () => {
+    if (!hasOutput) return;
     navigator.clipboard.writeText(generatedSequence);
   };
 
   const downloadFasta = () => {
+    if (!hasOutput || !generatedInfo) return;
     const blob = new Blob([generatedSequence], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    const ext = outputFormat === "tabular" ? "csv" : "fasta";
-    a.download = `${generatedInfo?.marker ?? selectedMarker}_${referenceGenome}.${ext}`;
+    const ext = generatedFormat === "tabular" ? "csv" : "fasta";
+    a.download = `${generatedInfo.marker}_${generatedInfo.build}.${ext}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -202,7 +236,7 @@ export default function FastaGeneratorPage() {
                     value={selectedMarker}
                     onValueChange={setSelectedMarker}
                   >
-                    <SelectTrigger className="h-11 text-base">
+                    <SelectTrigger id="marker-select" className="h-11 text-base">
                       <SelectValue
                         placeholder={configContent.markerPlaceholder}
                       />
@@ -231,11 +265,16 @@ export default function FastaGeneratorPage() {
                   <Input
                     id="alleles"
                     type="text"
+                    inputMode="numeric"
                     value={allelesInput}
                     onChange={(e) => setAllelesInput(e.target.value)}
                     placeholder={configContent.allelesPlaceholder}
+                    aria-describedby="alleles-hint"
                     className="h-11 text-base"
                   />
+                  <p id="alleles-hint" className="text-sm text-muted-foreground">
+                    {configContent.allelesHint.replace("{max}", String(MAX_REPEAT_COUNT))}
+                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -301,7 +340,7 @@ export default function FastaGeneratorPage() {
                     value={outputFormat}
                     onValueChange={(v) => setOutputFormat(v as ExportType)}
                   >
-                    <SelectTrigger className="h-11 text-base">
+                    <SelectTrigger id="output-format" className="h-11 text-base">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -343,7 +382,11 @@ export default function FastaGeneratorPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
-                {generatedSequence ? (
+                {statusMessage ? (
+                  <Alert variant="destructive">
+                    <AlertDescription className="text-base">{statusMessage}</AlertDescription>
+                  </Alert>
+                ) : hasOutput && generatedInfo ? (
                   <div className="space-y-4">
                     <Textarea
                       value={generatedSequence}
@@ -351,24 +394,23 @@ export default function FastaGeneratorPage() {
                       className="font-mono text-base min-h-[320px] max-h-[520px] resize-y rounded-xl border border-border bg-gradient-to-br from-background via-muted/40 to-background shadow-inner focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:border-primary/80 transition-colors"
                       placeholder={outputContent.description}
                     />
-                    {generatedInfo && (
-                      <p className="text-sm text-muted-foreground">
-                        {outputContent.referenceLine
-                          .replace("{build}", getReferenceGenome(generatedInfo.build).label)
-                          .replace(
-                            "{region}",
-                            generatedInfo.window
-                              ? `${generatedInfo.window.chrom}:${generatedInfo.window.start.toLocaleString("en-US")}-${generatedInfo.window.end.toLocaleString("en-US")} (${generatedInfo.window.strand})`
-                              : "n/a"
-                          )
-                          .replace("{ucsc}", getReferenceGenome(generatedInfo.build).ucsc)}
-                      </p>
-                    )}
+                    <p className="text-sm text-muted-foreground">
+                      {outputContent.referenceLine
+                        .replace("{build}", getReferenceGenome(generatedInfo.build).label)
+                        .replace(
+                          "{region}",
+                          generatedInfo.window
+                            ? `${generatedInfo.window.chrom}:${generatedInfo.window.start.toLocaleString("en-US")}-${generatedInfo.window.end.toLocaleString("en-US")} (${generatedInfo.window.strand})`
+                            : "n/a"
+                        )
+                        .replace("{ucsc}", getReferenceGenome(generatedInfo.build).ucsc)}
+                    </p>
                     <div className="flex flex-wrap gap-2">
                       <Button
                         onClick={copyToClipboard}
                         variant="outline"
                         className="text-base font-medium h-10 px-4"
+                        disabled={!hasOutput}
                       >
                         <Copy className="h-4 w-4 mr-2" />
                         {outputContent.copyButton}
@@ -376,9 +418,12 @@ export default function FastaGeneratorPage() {
                       <Button
                         onClick={downloadFasta}
                         className="text-base font-medium h-10 px-4"
+                        disabled={!hasOutput}
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        {outputContent.downloadButton}
+                        {generatedFormat === "tabular"
+                          ? outputContent.downloadCsvButton
+                          : outputContent.downloadButton}
                       </Button>
                     </div>
                   </div>

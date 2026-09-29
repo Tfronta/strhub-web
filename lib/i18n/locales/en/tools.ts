@@ -213,8 +213,10 @@ tools: {
     selectMarker: "Select a marker",
     sample: "Sample",
     selectSample: "Select a sample",
-    launchIgv: "Launch IGV Viewer",
-    openUcsc: "Open in UCSC Browser",
+    launchIgv: "Load reads in IGV",
+    launchIgvAria: "Load reads in IGV: {sample} at {marker}, in the viewer on this page",
+    openUcsc: "Open in UCSC Genome Browser",
+    openUcscAria: "Open in UCSC Genome Browser: GRCh38 region of {marker} (opens in a new tab)",
     viewerTitle: "Interactive Genome Viewer",
     dataIntegration: "Data Integration",
     dataIntegrationPre: "This viewer integrates the open-source",
@@ -404,13 +406,13 @@ tools: {
   },
   strspy: {
     title: "STRspy",
-    description: "ONT-based STR genotyping toolkit with tabular output.",
+    description: "Long-read STR genotyping toolkit (ONT and PacBio) with tabular output.",
     tags: {
       category: "Analysis",
       language: "Python",
     },
     features: {
-      1: "STR allele calling from Nanopore long-read sequencing",
+      1: "STR allele calling from long-read sequencing (ONT and PacBio)",
       2: "Sequence-level allele resolution using reference databases",
       3: "Designed for forensic STR profiling",
     },
@@ -423,13 +425,15 @@ tools: {
 fastaGeneratorPage: {
   languageLabel: "Current language",
   title: "FASTA Generator",
-  subtitle: "Generate custom FASTA sequences for research and analysis.",
+  subtitle: "Simplified motif-based STR sequence constructs with GRCh38 reference flanks.",
   config: {
     title: "Sequence configuration parameters",
     markerLabel: "STR Marker",
     markerPlaceholder: "Select a marker",
-    allelesLabel: "Alleles (list or range)",
+    allelesLabel: "Repeat counts (list or range)",
     allelesPlaceholder: "e.g. 10-12 or 9,10,11",
+    allelesHint:
+      "Whole numbers from 1 to {max} (a technical input limit of this tool): each value is the number of copies of the construction motif, which the output header reports. Microvariants (for example 9.3) are not currently supported. For complex loci the repeat count is not necessarily equivalent to a forensic CE allele designation.",
     flankingLabel: "Flanking Region (bp per side)",
     outputLabel: "Output Type",
     referenceLabel: "Reference genome",
@@ -444,43 +448,53 @@ fastaGeneratorPage: {
       'Select a marker and click "Generate Sequence" to begin',
     copyButton: "Copy",
     downloadButton: "Download FASTA",
-    referenceLine: "Reference: {build}, plus strand. Exported window: {region}. Verified against UCSC {ucsc}.",
+    downloadCsvButton: "Download CSV",
+    referenceLine: "Flanks from {build}, plus strand, reference window {region}, verified against UCSC {ucsc}. The repeat block is a simplified construct, not the reference sequence.",
   },
   messages: {
-    enterAlleles: "Please enter alleles (e.g. 10-12 or 9,10,11)",
+    enterAlleles: "Enter one or more whole repeat counts (e.g. 10-12 or 9,10,11).",
+    microvariantsUnsupported:
+      "Microvariants and decimal values (for example 9.3) are not currently supported. Enter whole repeat counts.",
+    invalidRepeatCounts:
+      "Enter whole repeat counts from 1 to {max}, as a list or a range (e.g. 10-12 or 9,10,11). The maximum is a technical input limit of this tool.",
     markerNotFound: "Marker not found in list.",
+    coreNotFound:
+      "No run of the motif {motif} was found in the {marker} reference slice, so no construct can be generated for this locus.",
+    sliceUnavailable: "The {marker} reference slice could not be loaded (HTTP {status}). Please try again later.",
+    sliceInvalid: "The {marker} reference slice is not a valid FASTA file.",
+    genomeUnavailable: "The {genome} reference is not available yet.",
+    configMissing: "The reference slices are not configured on this server.",
+    unexpected: "The sequence could not be generated.",
     errorPrefix: "ERROR",
   },
   about: {
     title: "About FASTA Generation",
     intro:
-      "This module produces high-quality FASTA sequences for Short Tandem Repeat (STR) markers, using curated reference regions derived from GRCh38.",
+      "Generates simplified motif-based STR sequence constructs using reference flanks and a user-defined repeat count. Compound repeat structures, interruptions and microvariants are not modeled. Outputs should not be interpreted as validated forensic allele sequences.",
     detail:
-      "Each generated sequence represents the expected genomic structure of the STR locus, with customizable upstream and downstream flanking regions.",
+      "Each construct joins the GRCh38 5' flank, the requested number of copies of the construction motif (reported in each header) and the GRCh38 3' flank. For complex loci the repeat count is not necessarily equivalent to a forensic CE allele designation, and microvariants are not currently supported.",
     overview: {
       title: "Overview",
       paragraphs: [
-        "STRhub's FASTA Generator allows researchers to explore allelic variability by simulating STR repeat patterns with precise genomic context.",
-        "Users can define allele ranges, adjust flanking lengths, and export the resulting sequences in several standardized formats.",
+        "Choose a locus, enter whole repeat counts as a list or a range, set the flank length and export the constructs in one of several standard formats.",
+        "The current set contains 19 of the 20 CODIS core loci (D22S1045 is not included).",
       ],
     },
     features: {
       title: "Features",
       items: [
-        "Full support for CODIS core and extended STR markers",
-        "Reference-based slices aligned to GRCh38",
+        "19 of the 20 CODIS core loci (D22S1045 is not included)",
+        "Flanks cut from GRCh38 reference slices (plus strand)",
         "Customizable flanking regions (0–200 bp per side)",
-        "Multiple export formats: Standard FASTA, Reference-style FASTA, Multi-FASTA, and Tabular CSV",
+        "Export formats: Standard FASTA, Reference-style FASTA, Multi-FASTA and Tabular CSV",
         "Direct download and copy options",
       ],
     },
     useCases: {
       title: "Use cases",
       items: [
-        "Forensic and population genetics research",
-        "Allelic reconstruction and in silico analysis",
-        "Primer design and assay validation",
         "Educational and training purposes in forensic genomics",
+        "Simple in silico inputs, for example to see how software handles a change in repeat count",
       ],
     },
   },
@@ -504,6 +518,7 @@ motifExplorerPage: {
   scientificNote:
     "Naming note: STRNaming and the ISFG recommendations report the repeat structure over the minimum range. Older 2016 bracketing was often defined over a wider window (STRbase / NIST), so the two can look different for the same allele.",
   sourceLabel: "Source",
+  sourceValue: "{version} ({publisher}; distributed as {file})",
   sourceButtonLabel: "Open STRidER",
   marker: {
     ce: "CE equivalent",

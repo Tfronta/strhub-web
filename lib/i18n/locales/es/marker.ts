@@ -300,12 +300,12 @@ marker: {
           "BED o JSON: definiciones de locus STR y secuencias flanqueadoras",
       },
       limitations: {
-        ontOptimized:
-          "Optimizado para paneles STR forenses ONT; requiere archivo de referencia de loci.",
+        longReadPanels:
+          "Diseñado para paneles STR forenses de lectura larga (ONT o PacBio); requiere un archivo de referencia de loci.",
         notWgs: "No diseñado para aplicaciones de genoma completo (WGS).",
       },
       notes:
-        "STRspy está integrado en el ecosistema STRhub para análisis STR forense y poblacional utilizando datos Oxford Nanopore. Su diseño modular permite visualización, benchmarking y compatibilidad cruzada con conjuntos de datos HipSTR-UI.",
+        "STRspy está integrado en el ecosistema STRhub para análisis STR forense y poblacional con datos de lectura larga (ONT o PacBio). Su diseño modular permite visualización, benchmarking y compatibilidad cruzada con conjuntos de datos HipSTR-UI.",
     },
     fdstools: {
       config: {
@@ -359,11 +359,14 @@ marker: {
       "{name} es un locus de repeticiones cortas en tándem (STR) de tipo {type} en el cromosoma {chromosome}{cytoband}, {kind}.",
     introUntyped:
       "{name} es un locus de repeticiones cortas en tándem (STR) en el cromosoma {chromosome}{cytoband}, {kind}.",
-    variants:
-      "STRbase recoge {count} variantes de secuencia repartidas en {alleleCount} designaciones alélicas.",
+    variants: "STRbase recoge {variants} en {designations}.",
+    variantCount_one: "{count} variante de secuencia",
+    variantCount_other: "{count} variantes de secuencia",
+    designationCount_one: "{count} designación alélica",
+    designationCount_other: "{count} designaciones alélicas",
     structureTitle: "Estructura de la secuencia (FSSG)",
     structureSource:
-      "Rango mínimo ISFG, bracketing y cobertura por kit según la Forensic Sequence Structure Guide v6.1 beta (05/09/2024) de",
+      "Rango mínimo ISFG, bracketing y cobertura por kit según la Forensic Sequence Structure Guide, {version} ({strider}; distribuido como {file}).",
     canonicalLabel: "Bracketing ISFG / STRNaming (desde 2024)",
     referenceNameLabel: "Alelo de referencia (GRCh38) nombrado con STRNaming 1.2.1",
     historicalLabel: "Bracketing histórico (2016-2023)",

@@ -39,7 +39,14 @@ export type FullSequenceSegments = {
 
 export type NGSRow = {
   allele: string | number;     // tamaño (p.ej. 12) o label con isoalelos (p.ej. "12 iso1")
-  coverage: number;            // lecturas (suma A+B)
+  /**
+   * "hipstr": coverage is that sample's single-source HipSTR PDP (fractional read
+   * support assigned to one haploid genotype). "simulated": no sequencing data
+   * (synthetic sample), coverage is a read count simulated from CE peak heights
+   * and must not be labelled PDP. Missing means simulated.
+   */
+  coverageSource?: "hipstr" | "simulated";
+  coverage: number;
   stutterPct?: number | '—';
   repeatSequence?: string | '—';
   fullSequence?: string | '—'; // columna de secuencia completa

@@ -1,6 +1,8 @@
 // FSSG-derived motif data for the STR Motif Explorer.
 //
-// Source: FSSG v6.1 beta (STRidER, 2024-09-05), sheet "Common Locus Information".
+// Source: FSSG v6.1 (STRidER; distributed as FSSG_v6-1_beta.xlsx), sheet
+// "Common Locus Information". FSSG_SOURCE (lib/fssgSource.ts) holds the access
+// date and hash.
 // Extracted per marker: the ISFG minimum range and full range (GRCh38, 1-based
 // inclusive), the CE equivalent, the STRNaming-formatted canonical bracketing
 // (2024 onward), the historical 2016-2023 bracketing, the reference sequence
@@ -29,6 +31,12 @@ export type KitRange = {
   length: number;
   sequence: string;
   clippedToFullRange: boolean;
+  /**
+   * STRidER's qualifier written in the same FSSG cell, verbatim: "MainstAY only"
+   * (SE33, DYS393) or "Included in range of DYS460" (DYS461, whose range is the
+   * DYS460 ForenSeq range given in the FSSG DYS460 row).
+   */
+  note?: string;
 };
 
 // Authoritative repeat/interruption/flank segmentation of the minimum-range
@@ -92,9 +100,4 @@ export function markerClass(name: string): "autosomal" | "x" | "y" {
   return classOf(name);
 }
 
-export const FSSG_SOURCE = {
-  name: "STRidER / FSSG v6.1 (beta)",
-  version: "v6.1 beta",
-  released: "2024-09-05",
-  url: "https://strider.online/",
-};
+export { FSSG_SOURCE } from "@/lib/fssgSource";

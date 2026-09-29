@@ -531,19 +531,31 @@ export default function CatalogPage() {
                         <span className="text-muted-foreground">
                           {t("catalog.motif")}:
                         </span>
-                        <span className="font-medium">
-                          {marker.motif.length > 20
-                            ? t("catalog.complex")
-                            : marker.motif}
-                        </span>
+                        {marker.motif ? (
+                          <span className="font-medium">
+                            {marker.motif.length > 20
+                              ? t("catalog.complex")
+                              : marker.motif}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">
+                            {t("common.notAvailable")}
+                          </span>
+                        )}
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">
                           {t("marker.type")}:
                         </span>
-                        <span className="font-medium">
-                          {getTranslatedType(marker.type)}
-                        </span>
+                        {marker.type ? (
+                          <span className="font-medium">
+                            {getTranslatedType(marker.type)}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">
+                            {t("common.notAvailable")}
+                          </span>
+                        )}
                       </div>
                     </div>
 

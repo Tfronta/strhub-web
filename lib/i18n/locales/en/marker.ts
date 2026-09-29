@@ -300,12 +300,12 @@ marker: {
           "BED or JSON: STR locus definitions and flanking sequences",
       },
       limitations: {
-        ontOptimized:
-          "Optimized for ONT forensic STR panels; requires reference file of loci.",
+        longReadPanels:
+          "Designed for long-read forensic STR panels (ONT or PacBio); requires a reference file of loci.",
         notWgs: "Not designed for whole-genome (WGS) applications.",
       },
       notes:
-        "STRspy is integrated into the STRhub ecosystem for forensic and population STR analysis using Oxford Nanopore data. Its modular design allows visualization, benchmarking, and cross-compatibility with HipSTR-UI datasets.",
+        "STRspy is integrated into the STRhub ecosystem for forensic and population STR analysis using long-read data (ONT or PacBio). Its modular design allows visualization, benchmarking, and cross-compatibility with HipSTR-UI datasets.",
     },
     fdstools: {
       config: {
@@ -359,11 +359,14 @@ marker: {
       "{name} is a {type} short tandem repeat (STR) locus on chromosome {chromosome}{cytoband}, {kind}.",
     introUntyped:
       "{name} is a short tandem repeat (STR) locus on chromosome {chromosome}{cytoband}, {kind}.",
-    variants:
-      "STRbase reports {count} sequence variants across {alleleCount} allele designations.",
+    variants: "STRbase reports {variants} across {designations}.",
+    variantCount_one: "{count} sequence variant",
+    variantCount_other: "{count} sequence variants",
+    designationCount_one: "{count} allele designation",
+    designationCount_other: "{count} allele designations",
     structureTitle: "Sequence structure (FSSG)",
     structureSource:
-      "ISFG minimum range, bracketing and kit coverage from the Forensic Sequence Structure Guide v6.1 beta (2024-09-05) of",
+      "ISFG minimum range, bracketing and kit coverage from the Forensic Sequence Structure Guide, {version} ({strider}; distributed as {file}).",
     canonicalLabel: "ISFG / STRNaming bracketing (2024 onward)",
     referenceNameLabel: "Reference allele (GRCh38) named with STRNaming 1.2.1",
     historicalLabel: "Historical bracketing (2016-2023)",

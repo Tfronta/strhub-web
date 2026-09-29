@@ -23,10 +23,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { MarkerSummary } from "@/lib/marker-summary";
+import { FSSG_SOURCE } from "@/lib/fssgSource";
 
 type Translate = (key: string, params?: Record<string, string>) => string;
 
-const FSSG_URL = "https://strider.online/";
 const POPSTR_URL = "http://spsmart.cesga.es/";
 
 /** Fixed locale so server and client render the same digits (no hydration drift). */
@@ -88,6 +88,11 @@ function StructureCard({ summary, t }: { summary: MarkerSummary; t: Translate })
   if (!fssg) return null;
   const s = (key: string, params?: Record<string, string>) =>
     t(`marker.summary.${key}`, params);
+  // "{strider}" stays in the string so the publisher can be rendered as a link.
+  const [sourceBefore, sourceAfter = ""] = s("structureSource", {
+    version: FSSG_SOURCE.version,
+    file: FSSG_SOURCE.file,
+  }).split("{strider}");
   return (
     <Card className="border rounded-md shadow-none bg-card">
       <CardHeader className="pb-3 px-4">
@@ -96,16 +101,16 @@ function StructureCard({ summary, t }: { summary: MarkerSummary; t: Translate })
           {s("structureTitle")}
         </CardTitle>
         <CardDescription className="text-xs font-normal mt-1">
-          {s("structureSource")}{" "}
+          {sourceBefore}
           <a
-            href={FSSG_URL}
+            href={FSSG_SOURCE.url}
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary hover:underline"
           >
-            STRidER
+            {FSSG_SOURCE.publisher}
           </a>
-          .
+          {sourceAfter}
         </CardDescription>
       </CardHeader>
       <CardContent className="px-4 space-y-4">
@@ -180,7 +185,8 @@ function StructureCard({ summary, t }: { summary: MarkerSummary; t: Translate })
                             variant="secondary"
                             className="cursor-help text-xs font-normal px-2 py-0.5 bg-muted text-foreground border-0"
                           >
-                            {kit.name}
+                            {/* STRidER's own qualifier, verbatim, e.g. "(MainstAY only)". */}
+                            {kit.note ? `${kit.name} (${kit.note})` : kit.name}
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="text-xs">
@@ -343,8 +349,10 @@ function VariantsNote({
       <CardContent className="px-4 space-y-3">
         <p className="text-sm text-muted-foreground">
           {s("variants", {
-            count: String(summary.variants.count),
-            alleleCount: String(summary.variants.alleles.length),
+            variants: s("variantCount", { count: String(summary.variants.count) }),
+            designations: s("designationCount", {
+              count: String(summary.variants.alleles.length),
+            }),
           })}
         </p>
         <div className="flex flex-wrap gap-1">

@@ -1,7 +1,7 @@
 {
  "source": {
   "tool": "STRNaming 1.2.1 (PyPI, 2026-08-10), CLI `strnaming name-sequences -r <BED>`",
-  "ranges": "ISFG minimum range from STRidER FSSG v6.1 beta (2024-09-05), GRCh38; inputs on the GRCh38 forward strand, BED strand '+'",
+  "ranges": "ISFG minimum range from FSSG v6.1 (STRidER; distributed as FSSG_v6-1_beta.xlsx), accessed 2026-09-28 (SHA-256 acf2fa7f16e911474152e52654e77c160d7b34f3d7a72e158def303fff9449e1, identical to the copy used), GRCh38; inputs on the GRCh38 forward strand, BED strand '+'",
   "refseq": "GRCh38 no-alt analysis set (NCBI, local fasta via STRNAMING_FASTA_REFERENCE). Cross-check: the 62 reference names and all 1591 STRbase names are identical when STRNaming reads GRCh38 from the Ensembl REST cache instead.",
   "reference": "Name of the GRCh38 reference sequence over the ISFG minimum range. Verified: the CE in the name equals the FSSG CE and the structure fits one of STRidER's canonical bracketing templates.",
   "strbase": "Each STRbase Variant Allele sequence is windowed to the ISFG minimum range with flank anchors from the FSSG full-range sequence, then named. A name is kept only when its CE equals the STRbase allele designation. status: ok | held (CE mismatch, kept for manual review, no name published) | not_covered (the STRbase sequence does not span the ISFG minimum range).",

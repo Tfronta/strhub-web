@@ -712,6 +712,7 @@ export default {
       regionsPreviewHide: "Ocultar prévia",
       regionsPreviewError: "Não foi possível carregar a prévia.",
       regionsDetected: "Isto parece {format}, com {count} regiões. O STRhub tem um arquivo pronto nesse formato só com os loci que a amostra de referência cobre.",
+      regionsDetected_one: "Isto parece {format}, com {count} região. O STRhub tem um arquivo pronto nesse formato só com os loci que a amostra de referência cobre.",
       regionsUseLibrary: "Usar o arquivo do STRhub",
       regionsUploadLabel: "Envie seu BED",
       regionsUploadPlaceholder: "Escolha um arquivo .bed…",
@@ -770,7 +771,8 @@ export default {
       detectGzip:
         "Esse arquivo está compactado com gzip. Descompacte primeiro (gunzip) e escolha o arquivo em texto puro.",
       detectResult: "Detectamos {format}: {rows} linhas de dados.",
-      detectLoci: "Encontramos {n} marcadores distintos: {sample}…",
+      detectLoci: "Encontramos {count} marcadores distintos: {sample}…",
+      detectLoci_one: "Encontramos {count} marcador: {sample}…",
       detectNote: {
         contentNeedsTabs:
           "As verificações de conteúdo leem colunas separadas por tabulação, então não conseguem inspecionar este formato. O formato em si continua sendo verificado.",

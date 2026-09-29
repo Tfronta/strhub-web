@@ -3,9 +3,6 @@
 
 import { markerData } from "@/lib/markerData";
 
-/** Minimum allelic coverage (PDP) required to trust an isoallele call. */
-export const ISOALLELE_MIN_COVERAGE = 10;
-
 /**
  * Normalize a sequence string for comparison: remove all whitespace, uppercase.
  */
@@ -27,43 +24,45 @@ export function isIsoAllele(
   return normalizeSeq(repeat1) !== normalizeSeq(repeat2);
 }
 
+type IsoRow = {
+  allele: string | number;
+  repeatSequence?: string | "—";
+  fullSequenceSegments?: { repeat?: string };
+  coverage?: number;
+};
+
+function getNormalizedRepeat<T extends IsoRow>(r: T): string {
+  const raw = r.fullSequenceSegments?.repeat;
+  return normalizeSeq(
+    String(raw != null && raw !== "" ? raw : r.repeatSequence ?? "")
+  );
+}
+
+/** A row without a sequence ("—" or empty) says nothing about isoalleles. */
+function isKnownSequence(normalized: string): boolean {
+  return normalized !== "" && normalized !== "—";
+}
+
 /**
  * Whether to show the "iso" badge for a row: there are ≥2 rows with the same CE allele
  * and ≥2 distinct normalized repeat sequences among them.
  * Uses fullSequenceSegments.repeat (actual repeat DNA) when present, else repeatSequence.
- * Requires every row in the same-allele group to have coverage >= ISOALLELE_MIN_COVERAGE;
- * if any row has missing/undefined/null coverage, the badge is not shown.
+ * Read support (PDP or simulated) plays no part: the badge describes the sequences
+ * of the represented example, not a validated forensic call.
  */
-export function shouldShowIsoBadge<
-  T extends {
-    allele: string | number;
-    repeatSequence?: string | "—";
-    fullSequenceSegments?: { repeat?: string };
-    coverage?: number;
-  }
->(row: T, allRows: T[]): boolean {
+export function shouldShowIsoBadge<T extends IsoRow>(row: T, allRows: T[]): boolean {
   const ce = String(row.allele);
-  const sameCe = allRows.filter((r) => String(r.allele) === ce);
-  if (sameCe.length < 2) return false;
-  // Every row in the group must have numeric coverage >= minimum
-  for (const r of sameCe) {
-    const cov = (r as { coverage?: number }).coverage;
-    if (typeof cov !== "number" || cov < ISOALLELE_MIN_COVERAGE) return false;
-  }
-  const normalized = sameCe.map((r) => {
-    const rawRepeat = r.fullSequenceSegments?.repeat;
-    return normalizeSeq(
-      String(rawRepeat != null && rawRepeat !== "" ? rawRepeat : r.repeatSequence ?? "")
-    );
-  });
-  const unique = new Set(normalized);
-  return unique.size >= 2;
+  const sequences = allRows
+    .filter((r) => String(r.allele) === ce)
+    .map((r) => getNormalizedRepeat(r))
+    .filter(isKnownSequence);
+  return new Set(sequences).size >= 2;
 }
 
 /**
  * Whether this row is the "leader" for its allele among allRows: the one on which
  * to show the isoallele badge (once per allele group). Leader = row with highest
- * allelic coverage (PDP); if coverage is missing or tied, the first row in allRows order.
+ * PDP (or simulated read support); if missing or tied, the first row in allRows order.
  */
 export function isLeaderRowForAllele<
   T extends { allele: string | number; coverage?: number }
@@ -80,54 +79,33 @@ export function isLeaderRowForAllele<
   return withMax.length > 0 && row === withMax[0];
 }
 
-type IsoRow = {
-  allele: string | number;
-  repeatSequence?: string | "—";
-  fullSequenceSegments?: { repeat?: string };
-  coverage?: number;
-};
-
-function getNormalizedRepeat<T extends IsoRow>(r: T): string {
-  const raw = r.fullSequenceSegments?.repeat;
-  return normalizeSeq(
-    String(raw != null && raw !== "" ? raw : r.repeatSequence ?? "")
-  );
-}
-
 /**
  * Whether to show the "iso" badge on this row. True only for minor/alternative
  * sequence rows in an isoallele group: same allele designation, ≥2 distinct
- * trusted sequences (coverage >= ISOALLELE_MIN_COVERAGE), and this row's
- * normalized sequence is not the major sequence (major = highest summed
- * coverage per sequence; tie-break = first appearance in allRows).
+ * normalized sequences, and this row's sequence is not the major one (major =
+ * highest summed read support per sequence; tie-break = first appearance in
+ * allRows). Read support only picks which row carries the badge: low or missing
+ * support never hides the distinction, because the badge describes the
+ * represented example, not a validated forensic call.
  */
-export function shouldShowIsoBadgeOnMinorRow<
-  T extends {
-    allele: string | number;
-    repeatSequence?: string | "—";
-    fullSequenceSegments?: { repeat?: string };
-    coverage?: number;
-  }
->(row: T, allRows: T[]): boolean {
+export function shouldShowIsoBadgeOnMinorRow<T extends IsoRow>(
+  row: T,
+  allRows: T[]
+): boolean {
   const ce = String(row.allele);
   const bySeq: Record<string, { totalCov: number; firstIndex: number }> = {};
-  let trustedCount = 0;
 
   for (let i = 0; i < allRows.length; i++) {
     const r = allRows[i];
     if (String(r.allele) !== ce) continue;
-    const cov = (r as IsoRow).coverage;
-    if (typeof cov !== "number" || cov < ISOALLELE_MIN_COVERAGE) continue;
-    trustedCount++;
-    const norm = getNormalizedRepeat(r as T);
+    const norm = getNormalizedRepeat(r);
+    if (!isKnownSequence(norm)) continue;
     if (!bySeq[norm]) bySeq[norm] = { totalCov: 0, firstIndex: i };
-    bySeq[norm].totalCov += cov;
+    bySeq[norm].totalCov += typeof r.coverage === "number" ? r.coverage : 0;
   }
 
-  if (trustedCount < 2 || Object.keys(bySeq).length < 2) return false;
-
-  const rowCov = (row as IsoRow).coverage;
-  if (typeof rowCov !== "number" || rowCov < ISOALLELE_MIN_COVERAGE) return false;
+  if (Object.keys(bySeq).length < 2) return false;
+  if (!isKnownSequence(getNormalizedRepeat(row))) return false;
 
   let majorSeq = "";
   let bestCov = -Infinity;
@@ -144,7 +122,7 @@ export function shouldShowIsoBadgeOnMinorRow<
     }
   }
 
-  return getNormalizedRepeat(row as T) !== majorSeq;
+  return getNormalizedRepeat(row) !== majorSeq;
 }
 
 /**

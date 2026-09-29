@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { BookOpen, ChevronRight, Eye, Info } from "lucide-react";
+import { BookOpen, ChevronRight, ExternalLink, Eye, Info } from "lucide-react";
 import { IGV_MARKERS } from "./markers";
 import { useLanguage } from "@/contexts/language-context";
 import {
@@ -154,14 +154,13 @@ export default function IgvViewerPage() {
     }
   };
 
-  const openInUCSC = () => {
-    if (!selectedMarker) return;
-    const marker = markers.find((m) => m.id === selectedMarker);
-    if (!marker) return;
-    const [start, end] = marker.position.split("-");
-    const url = `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&position=chr${marker.chromosome}:${start}-${end}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
+  // Two different actions: "Load reads" draws the selected 1000 Genomes
+  // sample's alignments in the embedded viewer; UCSC opens the GRCh38
+  // reference region (no sample reads) in a new tab, so it is a real link.
+  const selected = markers.find((m) => m.id === selectedMarker) ?? null;
+  const ucscUrl = selected
+    ? `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&position=chr${selected.chromosome}:${selected.position}`
+    : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -182,12 +181,12 @@ export default function IgvViewerPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
                 {/* Marker */}
                 <div className="space-y-1">
-                  <Label>{t("tools.igvViewer.strMarker")}</Label>
+                  <Label htmlFor="igv-marker">{t("tools.igvViewer.strMarker")}</Label>
                   <Select
                     value={selectedMarker}
                     onValueChange={setSelectedMarker}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger id="igv-marker">
                       <SelectValue placeholder={t("tools.igvViewer.selectMarker")} />
                     </SelectTrigger>
                     <SelectContent className="max-h-80">
@@ -202,12 +201,12 @@ export default function IgvViewerPage() {
 
                 {/* Sample */}
                 <div className="space-y-1">
-                  <Label>{t("tools.igvViewer.sample")}</Label>
+                  <Label htmlFor="igv-sample">{t("tools.igvViewer.sample")}</Label>
                   <Select
                     value={selectedSample}
                     onValueChange={setSelectedSample}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger id="igv-sample">
                       <SelectValue placeholder={t("tools.igvViewer.selectSample")} />
                     </SelectTrigger>
                     <SelectContent>
@@ -222,23 +221,49 @@ export default function IgvViewerPage() {
 
                 {/* Actions */}
                 <div className="flex md:block gap-2">
-                  <Button onClick={launchIGV} className="w-full">
+                  <Button
+                    onClick={launchIGV}
+                    className="w-full"
+                    disabled={!selected}
+                    aria-label={
+                      selected
+                        ? t("tools.igvViewer.launchIgvAria", {
+                            sample: selectedSample,
+                            marker: selected.name,
+                          })
+                        : undefined
+                    }
+                  >
                     <svg
                       className="h-4 w-4 mr-2"
                       viewBox="0 0 24 24"
                       fill="currentColor"
+                      aria-hidden="true"
                     >
                       <path d="M8 5v14l11-7z" />
                     </svg>
                     {t("tools.igvViewer.launchIgv")}
                   </Button>
-                  <Button
-                    onClick={openInUCSC}
-                    variant="outline"
-                    className="w-full"
-                  >
-                    {t("tools.igvViewer.openUcsc")}
-                  </Button>
+                  {selected && ucscUrl ? (
+                    <Button asChild variant="outline" className="w-full">
+                      <a
+                        href={ucscUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={t("tools.igvViewer.openUcscAria", {
+                          marker: selected.name,
+                        })}
+                      >
+                        {t("tools.igvViewer.openUcsc")}
+                        <ExternalLink aria-hidden="true" className="h-4 w-4 ml-2" />
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button variant="outline" className="w-full" disabled>
+                      {t("tools.igvViewer.openUcsc")}
+                      <ExternalLink aria-hidden="true" className="h-4 w-4 ml-2" />
+                    </Button>
+                  )}
                 </div>
               </div>
 
@@ -250,6 +275,11 @@ export default function IgvViewerPage() {
               >
                 <CollapsibleTrigger
                   aria-expanded={helpOpen}
+                  // Both visible texts, separated: the old name ran them together
+                  // ("…IGV viewShow guide").
+                  aria-label={`${t("tools.igvHelp.sectionTitle")}. ${
+                    helpOpen ? t("tools.igvHelp.hide") : t("tools.igvHelp.show")
+                  }`}
                   className="group flex w-full items-center justify-between gap-3 rounded-md border border-dashed border-primary/40 bg-primary/5 px-3 py-2.5 text-left transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   <div className="flex items-center gap-2">

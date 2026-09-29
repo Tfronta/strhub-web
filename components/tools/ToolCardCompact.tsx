@@ -36,7 +36,9 @@ export function ToolCardCompact({
   const { t } = useLanguage();
   const isMarker = variant === "marker";
 
-  const techKey = card.technology[0];
+  // Every listed technology gets a badge: LongTR, STRspy and STRkit support
+  // both ONT and PacBio, and showing only the first hid PacBio.
+  const techKeys = card.technology;
   const readKey = card.read_type[0];
   const showReadType =
     readKey && readKey !== "any" && !card.technology.includes("multi_platform");
@@ -76,14 +78,15 @@ export function ToolCardCompact({
                   {badgeLabel}
                 </Badge>
               )}
-              {techKey && (
+              {techKeys.map((techKey) => (
                 <Badge
+                  key={techKey}
                   variant="secondary"
                   className={isMarker ? "text-xs px-1.5 py-0" : "text-xs"}
                 >
                   {t(`tools.badges.technology.${techKey}`)}
                 </Badge>
-              )}
+              ))}
               {showReadType && readKey && (
                 <Badge
                   variant="outline"

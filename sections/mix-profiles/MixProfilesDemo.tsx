@@ -537,8 +537,10 @@ export default function MixProfilesDemo({
   const ngsRows = useMemo(
     () =>
       cePeaksToNGSRowsWithSeq(selectedMarker, ceRawPeaks, activeContributors),
-    // ✅ NGS cambia cuando cambia la mezcla / degradación / stutter / ruido, etc.
-    // ❌ pero NO debería depender de AT/ST (interpretación CE)
+    // Rows follow the active contributors. Their PDP is each sample's own
+    // single-source HipSTR value and does not scale with the mixture; only rows
+    // without HipSTR data (simulated read support) follow the CE peak heights.
+    // Neither depends on AT/ST (CE interpretation).
     [selectedMarker, ceRawPeaks, activeContributors]
   );
 

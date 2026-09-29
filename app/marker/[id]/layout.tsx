@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { pageMetadata } from "@/lib/seo";
 import { markerData } from "@/lib/markerData";
 import { buildMarkerSummary, markerHasContent } from "@/lib/marker-summary";
+import { countNoun } from "@/lib/plural";
 
 type Props = {
   params: { id: string };
@@ -40,19 +41,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const contents: string[] = [];
   if (summary?.ce)
     contents.push(
-      `allele frequencies for ${summary.ce.populations.length} populations`
+      `allele frequencies for ${countNoun(summary.ce.populations.length, "population", "populations")}`
     );
   if (summary?.grch38) contents.push("GRCh38 coordinates");
   if (summary?.fssg?.canonicalBracketing.length)
     contents.push("ISFG sequence structure");
   if (summary?.fssg?.kits.length)
-    contents.push(
-      summary.fssg.kits.length === 1
-        ? "1 MPS kit"
-        : `${summary.fssg.kits.length} MPS kits`
-    );
+    contents.push(countNoun(summary.fssg.kits.length, "MPS kit", "MPS kits"));
   if (summary?.variants)
-    contents.push(`${summary.variants.count} STRbase sequence variants`);
+    contents.push(
+      countNoun(
+        summary.variants.count,
+        "STRbase sequence variant",
+        "STRbase sequence variants"
+      )
+    );
   const summaryLine = contents.length
     ? ` ${contents.join(", ").replace(/^./, (c) => c.toUpperCase())}.`
     : " GRCh38 coordinates, population allele frequencies, variant alleles and analysis tools.";

@@ -7,11 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import {
-  translations,
-  type Language,
-  getNestedTranslation,
-} from "@/lib/translations";
+import { translate, type Language } from "@/lib/translations";
 
 const LANGUAGE_STORAGE_KEY = "strhub-language";
 const LANGUAGE_COOKIE_NAME = "strhub-language";
@@ -112,18 +108,8 @@ export function LanguageProvider({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const t = (key: string, params?: Record<string, string>): string => {
-    const translation = getNestedTranslation(translations[language], key);
-
-    if (!params) return translation;
-
-    const interpolated = Object.entries(params).reduce(
-      (text, [param, value]) => text.replace(`{${param}}`, value),
-      translation,
-    );
-
-    return interpolated;
-  };
+  const t = (key: string, params?: Record<string, string>): string =>
+    translate(language, key, params);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>

@@ -712,6 +712,7 @@ export default {
       regionsPreviewHide: "Hide preview",
       regionsPreviewError: "Could not load the preview.",
       regionsDetected: "This looks like the {format}, with {count} regions. STRhub has a ready-made file in that layout with only the loci the reference sample covers.",
+      regionsDetected_one: "This looks like the {format}, with {count} region. STRhub has a ready-made file in that layout with only the loci the reference sample covers.",
       regionsUseLibrary: "Use STRhub's file instead",
       regionsUploadLabel: "Upload your BED",
       regionsUploadPlaceholder: "Choose a .bed file…",
@@ -770,7 +771,8 @@ export default {
       detectGzip:
         "That file is gzipped. Decompress it first (gunzip) and pick the plain-text file.",
       detectResult: "Detected {format}, with {rows} data rows.",
-      detectLoci: "Found {n} distinct markers: {sample}…",
+      detectLoci: "Found {count} distinct markers: {sample}…",
+      detectLoci_one: "Found {count} marker: {sample}…",
       detectNote: {
         contentNeedsTabs:
           "The content checks read tab-separated columns, so they can't inspect this format. The format itself is still verified.",

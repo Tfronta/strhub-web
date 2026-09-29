@@ -27,7 +27,6 @@ import {
   getPrimaryMotifForLocus,
   getContinuousSequenceWithRepeat,
   shouldShowIsoBadgeOnMinorRow,
-  ISOALLELE_MIN_COVERAGE,
 } from "@/lib/strFormatting";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 
@@ -317,6 +316,23 @@ export default function NGSChart({
 
   if (!bars?.length) return <div className="h-[320px]" />;
 
+  // Real samples carry HipSTR PDP; the synthetic sample only has read support
+  // simulated from the CE peaks, which must never be labelled PDP.
+  const isHipstr = (r: NGSRow) => r.coverageSource === "hipstr";
+  const hasHipstr = rows.some(isHipstr);
+  const hasSimulated = rows.some((r) => !isHipstr(r));
+  const mixedSources = hasHipstr && hasSimulated;
+  const supportLabel = mixedSources
+    ? t("mixProfiles.ngs.tableMixedSupport")
+    : hasHipstr
+      ? t("mixProfiles.ngs.tableCoverage")
+      : t("mixProfiles.ngs.tableSimulatedSupport");
+  const axisLabel = mixedSources
+    ? t("mixProfiles.ngs.axisLabelMixed")
+    : hasHipstr
+      ? t("mixProfiles.ngs.axisLabelCoverage")
+      : t("mixProfiles.ngs.axisLabelSimulated");
+
   const chartBars = bars.map((bar) => ({
     ...bar,
     alleleLabel: String(bar.allele),
@@ -339,7 +355,7 @@ export default function NGSChart({
               </th>
               <th className="px-2.5 py-2 text-center w-16">
                 <div className="inline-flex items-center justify-center gap-1">
-                  {t("mixProfiles.ngs.tableCoverage")}
+                  {supportLabel}
                   <UITooltip>
                     <TooltipTrigger asChild>
                       <button
@@ -352,10 +368,17 @@ export default function NGSChart({
                         <Info className="h-3.5 w-3.5" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p className="text-xs">
-                        {t("mixProfiles.ngs.tableCoverageTooltip")}
-                      </p>
+                    <TooltipContent className="max-w-xs space-y-1">
+                      {hasHipstr ? (
+                        <p className="text-xs">
+                          {t("mixProfiles.ngs.tableCoverageTooltip")}
+                        </p>
+                      ) : null}
+                      {hasSimulated ? (
+                        <p className="text-xs">
+                          {t("mixProfiles.ngs.simulatedNote")}
+                        </p>
+                      ) : null}
                     </TooltipContent>
                   </UITooltip>
                 </div>
@@ -466,9 +489,6 @@ export default function NGSChart({
                 return aStr.localeCompare(bStr);
               });
               return sortedRows.map((r, i) => {
-                const lowCoverage =
-                  r.coverage != null &&
-                  r.coverage < ISOALLELE_MIN_COVERAGE;
                 return (
                 <tr
                   key={r.sequenceId ?? `${r.allele}-${i}`}
@@ -505,29 +525,13 @@ export default function NGSChart({
                   <td className="px-2.5 py-2 text-center">
                     <span className="inline-flex items-center justify-center gap-1">
                       {r.coverage}
-                      {lowCoverage ? (
-                        <TooltipProvider>
-                          <UITooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                type="button"
-                                className="inline-flex items-center justify-center rounded-full h-4 w-4 text-muted-foreground hover:text-foreground transition-colors cursor-help"
-                                aria-label={t("mixProfiles.ngs.lowPdpTooltipAria")}
-                              >
-                                <Info className="h-3.5 w-3.5" />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent
-                              side="top"
-                              sideOffset={6}
-                              className="max-w-[min(320px,calc(100vw-2rem))] sm:max-w-[320px]"
-                            >
-                              <p className="text-inherit whitespace-pre-line">
-                                {t("mixProfiles.ngs.lowPdpTooltip")}
-                              </p>
-                            </TooltipContent>
-                          </UITooltip>
-                        </TooltipProvider>
+                      {mixedSources && !isHipstr(r) ? (
+                        <abbr
+                          className="text-[11px] text-muted-foreground no-underline cursor-help"
+                          title={t("mixProfiles.ngs.simulatedTagTitle")}
+                        >
+                          {t("mixProfiles.ngs.simulatedTag")}
+                        </abbr>
                       ) : null}
                     </span>
                   </td>
@@ -709,6 +713,12 @@ export default function NGSChart({
         </table>
       </div>
 
+      {/* Always visible: what the support column means for these rows. */}
+      <div className="space-y-1 text-xs leading-relaxed text-muted-foreground">
+        {hasHipstr ? <p>{t("mixProfiles.ngs.pdpNote")}</p> : null}
+        {hasSimulated ? <p>{t("mixProfiles.ngs.simulatedNote")}</p> : null}
+      </div>
+
       {/* Barras */}
       <div className="w-full h-[320px]">
         <ResponsiveContainer width="100%" height="100%" key={chartKey}>
@@ -731,7 +741,7 @@ export default function NGSChart({
             <YAxis
               domain={[0, "auto"]}
               label={{
-                value: t("mixProfiles.ngs.axisLabelCoverage"),
+                value: axisLabel,
                 angle: -90,
                 position: "insideLeft",
                 style: { textAnchor: "middle" },
@@ -740,7 +750,7 @@ export default function NGSChart({
             <Tooltip
               content={({ active, payload, label }) => {
                 if (!active || !payload?.length) return null;
-                const coverageLabel = t("mixProfiles.ngs.tableCoverage");
+                const coverageLabel = axisLabel;
                 const value = payload[0]?.value;
                 return (
                   <div className="rounded-lg border bg-background px-2.5 py-2 text-sm shadow-md">

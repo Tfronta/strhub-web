@@ -42,12 +42,18 @@ mixProfiles: {
     copiedSequence: "Copied",
     tableAllele: "Allele",
     tableCoverage: "PDP",
-    tableCoverageTooltipAria: "Explanation about allelic coverage",
+    tableCoverageTooltipAria: "What PDP means",
     tableCoverageTooltip:
-      "PDP (Probabilistic Allelic Coverage): probabilistic read support per allele from HipSTR; fractional values are possible.",
+      "PDP is a HipSTR FORMAT field: fractional read support assigned to each haploid genotype. The two PDP values of a call sum to DP, so PDP is not independent allele-specific sequencing depth.",
+    tableSimulatedSupport: "Simulated read support",
+    tableMixedSupport: "PDP or simulated read support",
+    simulatedTag: "sim.",
+    simulatedTagTitle: "Simulated read support, not HipSTR PDP",
     tableRepeatSequence: "Repeat Sequence",
     axisLabelAllele: "Allele",
-    axisLabelCoverage: "Allelic Coverage (PDP)",
+    axisLabelCoverage: "PDP summed per allele",
+    axisLabelSimulated: "Simulated read support",
+    axisLabelMixed: "PDP + simulated read support, summed per allele",
     fullSequenceColumnLabel: "Full Sequence",
     fullSequenceTooltipAria: "Explanation about full amplicon sequence",
     fullSequenceNote:
@@ -57,11 +63,11 @@ mixProfiles: {
     fullSequenceDidacticNote:
       "Flanks do not count toward the CE allele call; the repeat region is what is used for allele calling.",
     isoTooltip:
-      "Isoallele: same allele designation but different repeat sequence (internal variation).",
-    lowPdpBadge: "low PDP",
-    lowPdpTooltip:
-      "Low allelic coverage (PDP < 10).\nThis haplotype may reflect sequencing noise or alignment artifacts and is not used for isoallele detection.",
-    lowPdpTooltipAria: "Explanation about low allelic coverage",
+      "Isoalleles in this example: same allele designation, different repeat sequence.",
+    pdpNote:
+      "PDP (HipSTR): fractional read support assigned to each haploid genotype. The two PDP values of a call sum to DP, so PDP is not independent allele-specific sequencing depth. Values come from each sample's single-source HipSTR run and do not change with the mixture proportions.",
+    simulatedNote:
+      "Simulated read support: the synthetic triallelic example has no sequencing data, so its values are simulated from the electropherogram peak heights. They are not HipSTR PDP.",
     flank5Tooltip: "5' flank",
     repeatRegionTooltip: "Repeat region",
     flank3Tooltip: "3' flank",

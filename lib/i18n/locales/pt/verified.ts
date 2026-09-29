@@ -667,7 +667,7 @@ export default {
       externalDetailOnt:
         "A referência é um slice CODIS hg38 do 1000 Genomes ONT (~30 MB).",
       externalDetailOntFastq:
-        "A referência são as leituras de uma amostra ONT do 1000 Genomes (HG00113) sobre 20 loci CODIS, em FASTQ (~50 MB sem compressão), com o hg38 para alinhá-las.",
+        "A referência são as leituras de uma amostra ONT do 1000 Genomes (HG00113) sobre 20 loci CODIS, em FASTQ (~50 MB sem compressão), com o hg38 para alinhá-las. Alinhá-las contra todo o hg38 precisa de mais memória que os 6 GB do contêiner de execução.",
       externalDetailPacbioHifi:
         "A referência é um slice CODIS hg38 do GIAB HG002 PacBio HiFi (Revio) (~19 MB, amostra masculina).",
       externalDetailIlluminaBam:

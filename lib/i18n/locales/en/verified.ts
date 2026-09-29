@@ -193,6 +193,8 @@ export default {
     headline: {
       runs: "Runs as documented",
       runsErrors: "Runs as documented (errors reported)",
+      runsFallback: "Runs from its published image; the pinned commit does not build",
+      runsFallbackErrors: "Runs from its published image; the pinned commit does not build (errors reported)",
       notRun: "Does not run as documented: {where}",
       stopsAt: {
         none: "source not available",

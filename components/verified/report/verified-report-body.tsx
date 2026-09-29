@@ -116,7 +116,13 @@ export function VerifiedReportBody({
   // everywhere (lib/verified/badge.ts): the result as it is in the
   // repository, in words, exactly as the engine's badge and certificate do.
   const level = badgeFor(
-    { level: report.level, verdict: report.verdict?.code, errors_reported: hasReportedErrors(report.diagnostics), instrument },
+    {
+      level: report.level,
+      verdict: report.verdict?.code,
+      errors_reported: hasReportedErrors(report.diagnostics),
+      fallback_used: !!report.environment?.fallback_used,
+      instrument,
+    },
     t,
   );
   const certificate = certificateOf(report, level.label);

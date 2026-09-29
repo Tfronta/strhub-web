@@ -88,6 +88,8 @@ export interface VerifiedVersionEntry {
   label?: string;
   verdict?: string | null;
   errors_reported?: boolean;
+  /** Plan B ran: the pinned commit did not build; the published image did. */
+  fallback_used?: boolean;
   ci_run?: string | null;
   /** Paths relative to the gh-pages root. */
   report: string;
@@ -110,6 +112,8 @@ export interface VerifiedIndexEntry {
   label: string;
   /** The run reported error-severity diagnostics (absent on older reports). */
   errors_reported?: boolean;
+  /** Plan B ran: the pinned commit did not build; the published image did. */
+  fallback_used?: boolean;
   generated: string | null;
   // index/2: what this entry was verified at.
   version?: string | null;

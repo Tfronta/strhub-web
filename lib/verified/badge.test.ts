@@ -5,6 +5,8 @@ const t = (k: string, p?: Record<string, string>) => {
   const table: Record<string, string> = {
     "verified.headline.runs": "Runs as documented",
     "verified.headline.runsErrors": "Runs as documented (errors reported)",
+    "verified.headline.runsFallback": "Runs from its published image; the pinned commit does not build",
+    "verified.headline.runsFallbackErrors": "Runs from its published image; the pinned commit does not build (errors reported)",
     "verified.headline.notRun": "Does not run as documented: {where}",
     "verified.headline.stopsAt.none": "source not available",
     "verified.headline.stopsAt.available": "stops at install",
@@ -24,6 +26,18 @@ const t = (k: string, p?: Record<string, string>) => {
  * rule as harness/certificate_text.py::headline — and never the rung reached.
  */
 describe("the label", () => {
+  it("says the pinned commit does not build when the published image ran instead", () => {
+    // Same words as harness/certificate_text.py::RUNS_FALLBACK.
+    expect(badgeFor({ level: "content", verdict: "runs", fallback_used: true }, t)).toEqual({
+      label: "Runs from its published image; the pinned commit does not build",
+      tone: "amber",
+    });
+    expect(badgeFor({ level: "io", verdict: "runs", fallback_used: true, errors_reported: true }, t).label)
+      .toBe("Runs from its published image; the pinned commit does not build (errors reported)");
+    // A plan B that did not produce output is a plain failure; the report says why.
+    expect(badgeFor({ level: "installs", verdict: "fails", fallback_used: true }, t).tone).toBe("red");
+  });
+
   it("says the documented run runs, qualified by reported errors", () => {
     expect(badgeFor({ level: "content", verdict: "runs" }, t)).toEqual({ label: "Runs as documented", tone: "green" });
     expect(badgeFor({ level: "io", verdict: "runs", errors_reported: true }, t)).toEqual({ label: "Runs as documented (errors reported)", tone: "amber" });

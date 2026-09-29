@@ -81,6 +81,7 @@ export default {
     panel: {
       autosomal: "STR autosómico",
       ont: "ONT CODIS",
+      hifi: "PacBio HiFi CODIS",
       ystr: "Y-STR",
     },
     whatVerified: {
@@ -464,10 +465,14 @@ export default {
         "Para tipos de assay compatibles, STRhub también prueba tu herramienta con un dataset STR de referencia open source. Hoy hay tres:",
       referenceDatasetsIntro4:
         "Para tipos de assay compatibles, STRhub también prueba tu herramienta con un dataset STR de referencia open source. Hoy hay cuatro:",
+      referenceDatasetsIntro5:
+        "Para tipos de assay compatibles, STRhub también prueba tu herramienta con un dataset STR de referencia open source. Hoy hay cinco:",
       referenceDatasetIllumina:
         "NIST Forensic DNA Open Dataset (ForenSeq y PowerSeq 46GY, uso investigación/educación)",
       referenceDatasetOnt:
         "slice CODIS 1000 Genomes ONT (open access en AWS)",
+      referenceDatasetPacbioHifi:
+        "slice CODIS hg38 de GIAB HG002 PacBio HiFi (Revio) (open access, 20 loci forenses autosómicos)",
       referenceDatasetIlluminaBamDesc:
         "slice GIAB NA12878 300x hg38 (open access, 24 loci autosomales forenses)",
       referenceDatasetIlluminaBamYDesc:
@@ -639,6 +644,7 @@ export default {
       inputTypeDescIlluminaStrFastq:
         "FASTQ Illumina MiSeq/MiniSeq STR: Verogen ForenSeq o Promega PowerSeq 46GY (los únicos dos kits en nuestro dataset NIST de referencia por ahora)",
       inputTypeDescOntBamHg38: "BAM Oxford Nanopore alineado a hg38 (regiones CODIS)",
+      inputTypeDescPacbioHifiBamHg38: "BAM PacBio HiFi alineado a hg38 (regiones CODIS)",
       inputTypeDescIlluminaBamHg38: "BAM Illumina WGS alineado a hg38 (loci STR autosomales forenses)",
       inputTypeDescIlluminaBamHg38Y: "BAM Illumina WGS alineado a hg38 (loci STR del cromosoma Y)",
       inputTypeDescOntFastq: "FASTQ crudo Oxford Nanopore",
@@ -647,7 +653,7 @@ export default {
       inputTypeOther: "Otro (lo escribo yo)",
       inputTypeCustom: "Slug personalizado del tipo de input",
       inputTypeCustomHint:
-        "Un identificador corto, ej. 'pacbio-hifi-bam'. No hay dataset STRhub para tipos custom.",
+        "Un identificador corto, ej. 'illumina-bam-hg19'. No hay dataset STRhub para tipos custom.",
       externalRunsBoth:
         "STRhub va a correr dos verificaciones: una sobre tu archivo de prueba y otra sobre nuestro dataset de referencia.",
       externalRunsOurs:
@@ -656,6 +662,8 @@ export default {
         "La referencia es NIST mds2-2157, datos STR de Illumina que cubren solo ForenSeq y PowerSeq 46GY; usá reads del mismo kit en tu propio fixture.",
       externalDetailOnt:
         "La referencia es un slice CODIS hg38 de 1000 Genomes ONT (~30 MB).",
+      externalDetailPacbioHifi:
+        "La referencia es un slice CODIS hg38 de GIAB HG002 PacBio HiFi (Revio) (~19 MB, muestra masculina).",
       externalDetailIlluminaBam:
         "La referencia es un slice GIAB NA12878 300x hg38 que cubre 24 loci STR forenses autosómicos (muestra femenina, sin marcadores Y).",
       externalDetailIlluminaBamY:

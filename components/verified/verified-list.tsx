@@ -13,14 +13,14 @@ import { badgeFor, reachedLabel, TONE } from "@/lib/verified/badge";
 import { foldStrhubRuns, headOf, historyOf, shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
 import { rowHref } from "./report/history";
 import { formatDate } from "@/lib/verified/format-date";
+import { panelKind } from "@/lib/verified/dataset-provenance";
 
 function getPanelLabel(
   translate: (k: string) => string,
   types: string[] | null | undefined
 ): string | null {
-  if (!types || types.length === 0) return null;
-  if (types.some((t) => t.endsWith("-y"))) return translate("verified.panel.ystr");
-  return translate("verified.panel.autosomal");
+  const panel = panelKind(types);
+  return panel ? translate(`verified.panel.${panel}`) : null;
 }
 
 const LEVEL_RANK: Record<VerifiedLevel, number> = {

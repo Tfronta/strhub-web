@@ -71,6 +71,7 @@ type RunState = "pending" | "queued" | "in_progress" | "completed";
 const INPUT_TYPE_DESC_KEYS: Record<string, string> = {
   "illumina-str-fastq": "verified.submit.inputTypeDescIlluminaStrFastq",
   "ont-bam-hg38": "verified.submit.inputTypeDescOntBamHg38",
+  "pacbio-hifi-bam-hg38": "verified.submit.inputTypeDescPacbioHifiBamHg38",
   "illumina-bam-hg38": "verified.submit.inputTypeDescIlluminaBamHg38",
   "illumina-bam-hg38-y": "verified.submit.inputTypeDescIlluminaBamHg38Y",
   "ont-fastq": "verified.submit.inputTypeDescOntFastq",
@@ -375,7 +376,7 @@ const CONTENT_FIELD_KEYS = Object.keys(EMPTY_CONTENT) as (keyof ContentFields)[]
 
 function assayFamily(inputType: string): "autosomal" | "y-str" | "snp" | "other" {
   if (inputType === "illumina-bam-hg38-y") return "y-str";
-  if (["illumina-str-fastq", "illumina-bam-hg38", "ont-bam-hg38", "ont-fastq"].includes(inputType))
+  if (["illumina-str-fastq", "illumina-bam-hg38", "ont-bam-hg38", "ont-fastq", "pacbio-hifi-bam-hg38"].includes(inputType))
     return "autosomal";
   if (inputType === "illumina-snp-fastq") return "snp";
   return "other";
@@ -1290,6 +1291,7 @@ export function VerifiedSubmitForm() {
     const DETAIL_KEYS: Record<string, string> = {
       "illumina-str-fastq": "verified.submit.externalDetailIllumina",
       "ont-bam-hg38": "verified.submit.externalDetailOnt",
+      "pacbio-hifi-bam-hg38": "verified.submit.externalDetailPacbioHifi",
       "illumina-bam-hg38": "verified.submit.externalDetailIlluminaBam",
       "illumina-bam-hg38-y": "verified.submit.externalDetailIlluminaBamY",
     };
@@ -2407,7 +2409,7 @@ export function VerifiedSubmitForm() {
               <Info className="h-4 w-4 mt-0.5 shrink-0" />
               <div className="space-y-2">
                 <p className="font-medium text-foreground">{t("verified.submit.referenceDatasetsTitle")}</p>
-                <p>{t("verified.submit.referenceDatasetsIntro4")}</p>
+                <p>{t("verified.submit.referenceDatasetsIntro5")}</p>
                 <ul className="list-disc space-y-1 pl-4">
                   <li>
                     <strong>Illumina STR FASTQ</strong>: {t("verified.submit.referenceDatasetIllumina")}{" "}
@@ -2429,6 +2431,17 @@ export function VerifiedSubmitForm() {
                       className="text-primary underline underline-offset-2"
                     >
                       1000 Genomes ONT
+                    </a>
+                  </li>
+                  <li>
+                    <strong>PacBio HiFi BAM (hg38)</strong>: {t("verified.submit.referenceDatasetPacbioHifi")}{" "}
+                    <a
+                      href="https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2"
+                    >
+                      GIAB HG002 PacBio HiFi
                     </a>
                   </li>
                   <li>

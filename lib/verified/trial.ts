@@ -137,9 +137,74 @@ export interface StartedTrial {
   refHow: "given" | "release" | "tag" | "head";
 }
 
+/**
+ * Development only: answer the form from the trials on disk instead of
+ * dispatching, so the whole flow can be walked without GitHub.
+ *
+ * Needed because three things stop a real dispatch from a dev server, all of
+ * them on purpose: it may have no route to api.github.com, `assertWritable`
+ * refuses to dispatch on the live engine from a non-production process, and
+ * the workflow it would run is the one on the engine's default branch rather
+ * than whatever is being worked on locally.
+ *
+ * Matches on the repository only, and only against a fixture that already
+ * exists. An unknown repository falls through to the real path and gets the
+ * real error: inventing a result for a repository nobody ran is the failure
+ * mode this project exists to remove, and it would be worse in the tool that
+ * demonstrates the rule. The ref the form asked for is not honoured either —
+ * the fixture is pinned to the commit it was written for, and the page says so.
+ */
+async function startFixtureTrial(repoSlug: string): Promise<StartedTrial | null> {
+  const dir = process.env.VERIFIED_TRIAL_FIXTURE_DIR;
+  if (!dir || process.env.NODE_ENV === "production") return null;
+  const fs = await import("fs/promises");
+  const path = await import("path");
+  const want = repoSlug.toLowerCase();
+  let entries: string[];
+  try {
+    entries = await fs.readdir(dir);
+  } catch {
+    return null;
+  }
+  const available: string[] = [];
+  const matches: StartedTrial[] = [];
+  // Sorted, so a repository with more than one scenario always resolves to the
+  // same one rather than to whatever the filesystem listed first.
+  for (const id of entries.filter((e) => TRIAL_ID_RE.test(e)).sort()) {
+    let report: { source?: { repo?: string; ref_resolved?: string } };
+    try {
+      report = JSON.parse(await fs.readFile(path.join(dir, id, "report.json"), "utf-8"));
+    } catch {
+      continue;
+    }
+    const repo = report.source?.repo ?? "";
+    const slug = repoSlugOf(repo);
+    if (!slug) continue;
+    available.push(`${slug} -> ${id}`);
+    if (slug.toLowerCase() === want) {
+      const sha = report.source?.ref_resolved ?? "";
+      matches.push({ id, slug: trialSlug(slug, sha.slice(0, 7)), repo, ref: sha,
+                     refLabel: sha.slice(0, 7), refHow: "given" });
+    }
+  }
+  if (matches.length > 1) {
+    console.warn(
+      `[trial fixtures] ${repoSlug} has ${matches.length} scenarios; using ${matches[0].id}. ` +
+        `Open the others directly: ${matches.slice(1).map((m) => m.id).join(", ")}`
+    );
+  }
+  if (matches.length) return matches[0];
+  console.warn(
+    `[trial fixtures] no trial on disk for ${repoSlug}. Paste one of:\n  ` + available.join("\n  ")
+  );
+  return null;
+}
+
 export async function startTrial(repoUrl: string, ref: string | undefined): Promise<StartedTrial | { error: string }> {
   const repoSlug = repoSlugOf(repoUrl);
   if (!repoSlug) return { error: "not_a_github_repo" };
+  const fixture = await startFixtureTrial(repoSlug);
+  if (fixture) return fixture;
   const resolved = await resolveRef(repoSlug, ref);
   if (!resolved) return { error: ref ? "ref_not_found" : "repo_not_found" };
   const id = newTrialId();

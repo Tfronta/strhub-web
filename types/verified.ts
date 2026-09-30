@@ -66,6 +66,27 @@ export interface VerifiedVerdict {
   blockers?: VerifiedBlocker[];
 }
 
+/** The blocks docs/GUIA-PASO-1.md asks a commit to state. */
+export type VerifiedStep1Block = "install" | "command" | "input" | "output";
+
+/**
+ * Step 1, the documented run, as the engine says it
+ * (harness/certificate_text.py::step1_says).
+ *
+ * `does_not_run` is a finding about the commit and `cannot_tell` one about its
+ * documentation; `ours` is a limitation of STRhub's reference data or of its
+ * own reader, and the page must never render it as the tool failing. `missing`
+ * carries the guide's block keys so the three locales can name them.
+ */
+export interface VerifiedStep1 {
+  code: "runs" | "does_not_run" | "cannot_tell" | "ours" | "none";
+  headline: string;
+  body: string;
+  missing: VerifiedStep1Block[];
+  missing_text?: string[];
+  guide: string;
+}
+
 /**
  * One commit a tool was verified at, as index.json lists it (schema /3).
  *
@@ -323,6 +344,12 @@ export interface VerifiedReport {
    * must not present the rung it happened to reach as the tool's result.
    */
   verdict?: VerifiedVerdict | null;
+  /**
+   * Step 1, the documented run, which is the headline. The forensic pipeline
+   * is a later section and never changes it. Absent on reports written before
+   * this field, and then the page falls back to the verdict alone.
+   */
+  step1?: VerifiedStep1 | null;
   certificate?: VerifiedCertificate | null;
   /**
    * Where the pinned commit sits in its repository now.

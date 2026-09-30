@@ -950,7 +950,37 @@ export default {
         runsFallback: "Rodou e produziu sua saída documentada, mas no ambiente pronto que o README indica, porque seu código-fonte não compilou no commit fixado.",
         fails: "Não produziu. A evidência aponta para a ferramenta ou para sua forma documentada de executar.",
         undetermined: "O STRhub não conseguiu deduzir como executá-la a partir do repositório. É um achado sobre a documentação, não sobre o software.",
+        // Quando o motivo é nosso, não é um achado sobre a documentação.
+        undeterminedOurs: "O STRhub não pôde tentar a execução com o que tem. Não é um achado sobre a documentação nem sobre o software.",
         out_of_scope: "Precisa de algo que o runner automático não pode fornecer. Uma verificação manual pode cobrir.",
+      },
+      // Passo 1: a execução documentada. É o título, e o pipeline forense vem
+      // depois sem alterá-lo (docs/PLAN-Paso-1.md do engine). Nenhuma destas
+      // frases diz que a ferramenta não funciona.
+      step1: {
+        heading: "Passo 1: a execução documentada",
+        pipelineHeading: "Passo 2: o pipeline forense do STRhub",
+        pipelineSkipped: "O passo 2 não foi feito. Isso não altera o resultado do passo 1.",
+        headline: {
+          runs: "Como está documentado, executa.",
+          does_not_run: "Como está documentado, não executa.",
+          cannot_tell: "Como está documentado, um terceiro não consegue saber como executá-la.",
+          ours: "O STRhub não pôde tentar a execução documentada.",
+        },
+        body: {
+          runs: "Um terceiro instalou a ferramenta com os passos que este commit enuncia e executou o comando que ele escreve, e o arquivo de saída que esse comando nomeia apareceu. Isso não diz nada sobre genótipos nem sobre o painel forense.",
+          does_not_run: "Isso não significa que a ferramenta não funcione. Significa que um terceiro, seguindo o README neste commit, não chegou ao final. Corrija a documentação, ou o passo que quebrou, e tente o link novamente no commit novo.",
+          cannot_tell: "Nada foi executado. Isso não significa que a ferramenta não funcione: falta no README deste commit o que o guia pede. Adicione e tente o link novamente no commit novo.",
+          ours: "Nada foi executado, e a limitação é nossa, não da documentação. Nada aqui é um achado sobre a ferramenta. Um arquivo de exemplo pequeno no repositório, ou um slice cobrindo as coordenadas que este comando lê, permitiria a execução.",
+        },
+        missingTitle: "O que falta, pelos blocos que o guia pede",
+        blocks: {
+          install: "Instalação copiável",
+          command: "Um comando",
+          input: "A entrada declarada",
+          output: "A saída declarada",
+        },
+        guideLink: "Ler o guia do passo 1",
       },
       gapsTitle: "O que o README não diz",
       knownIssuesTitle: "O que o autor documenta como problema conhecido",

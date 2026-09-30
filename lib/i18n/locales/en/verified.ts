@@ -950,7 +950,37 @@ export default {
         runsFallback: "It ran and produced its documented output, but on the ready-made environment the README points at, because its source did not build at the pinned commit.",
         fails: "It did not. The evidence points at the tool or its documented way of running.",
         undetermined: "STRhub could not work out how to run it from the repository. That is a finding about the documentation, not about the software.",
+        // When the cause is ours, it is not a finding about the documentation.
+        undeterminedOurs: "STRhub could not attempt the run with what it holds. That is a finding about neither the documentation nor the software.",
         out_of_scope: "It needs something the automated runner cannot provide. A manual verification can cover it.",
+      },
+      // Step 1: the documented run. It is the headline, and the forensic
+      // pipeline comes after without changing it (engine docs/PLAN-Paso-1.md).
+      // None of these sentences says the tool does not work.
+      step1: {
+        heading: "Step 1: the documented run",
+        pipelineHeading: "Step 2: STRhub's forensic pipeline",
+        pipelineSkipped: "Step 2 was not done. That does not change the step 1 result.",
+        headline: {
+          runs: "As documented, it runs.",
+          does_not_run: "As documented, it does not run.",
+          cannot_tell: "As documented, a third party cannot tell how to run it.",
+          ours: "STRhub could not attempt the documented run.",
+        },
+        body: {
+          runs: "A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.",
+          does_not_run: "That does not mean the tool does not work. It means a third party following the README at this commit did not reach the end. Fix the documentation, or the step that broke, and try the link again on the new commit.",
+          cannot_tell: "Nothing was executed. That does not mean the tool does not work: what the guide asks for is missing from the README at this commit. Add it and try the link again on the new commit.",
+          ours: "Nothing was executed, and the limitation is ours rather than the documentation's. Nothing here is a finding about the tool. A small example file committed to the repository, or a slice covering the coordinates this command reads, would let the run happen.",
+        },
+        missingTitle: "What is missing, by the blocks the guide asks for",
+        blocks: {
+          install: "Installation, copyable",
+          command: "One command",
+          input: "The declared input",
+          output: "The declared output",
+        },
+        guideLink: "Read the step 1 guide",
       },
       gapsTitle: "What the README does not say",
       knownIssuesTitle: "What the author documents as a known issue",

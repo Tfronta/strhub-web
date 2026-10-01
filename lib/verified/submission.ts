@@ -88,9 +88,27 @@ export const INPUT_TYPES = [
       mountPath: "/data/ref/hg38.fa",
     },
     canonicalPaths: ["/data/in/input.bam", "/data/ref/hg38.fa"],
-    // requiresRegions intentionally unset: the ONT supported-loci panel
-    // (datasets/ont-bam-hg38/loci.bed) is not yet built — 4 loci lack STR
-    // coordinates (DXS8378, DXS7132, AMEL, AMEL_Y). Enable once loci.bed exists.
+    // No requiresRegions: the engine hands the tool its panel file
+    // (datasets/ont-bam-hg38/regions/, the 20 autosomal CODIS loci inside the
+    // slice) in the layout the tool reads.
+  },
+  {
+    slug: "pacbio-hifi-bam-hg38",
+    label: "PacBio HiFi BAM (hg38)",
+    description: "PacBio HiFi aligned BAM against hg38 (CODIS regions)",
+    hasExternalDataset: true,
+    externalDataset: {
+      name: "GIAB HG002 PacBio HiFi (Revio), hg38 CODIS slice",
+      sourceUrl:
+        "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/",
+    },
+    referenceGenome: {
+      assembly: "GRCh38 / hg38",
+      mountPath: "/data/ref/hg38.fa",
+    },
+    canonicalPaths: ["/data/in/input.bam", "/data/ref/hg38.fa"],
+    // Like ONT, no requiresRegions: the engine hands the tool its panel file
+    // (datasets/pacbio-hifi-bam-hg38/regions/) in the layout the tool reads.
   },
   {
     slug: "illumina-bam-hg38",
@@ -147,7 +165,17 @@ export const INPUT_TYPES = [
     slug: "ont-fastq",
     label: "ONT FASTQ",
     description: "Oxford Nanopore raw FASTQ reads",
-    hasExternalDataset: false,
+    hasExternalDataset: true,
+    externalDataset: {
+      name: "1000 Genomes ONT, HG00113 reads over the CODIS panel loci",
+      sourceUrl:
+        "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
+    },
+    referenceGenome: {
+      assembly: "GRCh38 / hg38",
+      mountPath: "/data/ref/hg38.fa",
+    },
+    canonicalPaths: ["/data/in/input.fastq", "/data/ref/hg38.fa"],
   },
   {
     slug: "illumina-snp-fastq",
@@ -452,6 +480,7 @@ const TYPE_SLUG_SUFFIX: Record<string, string> = {
   "illumina-bam-hg38-y": "y",     // Y-STR variant
   "ont-bam-hg38":        "ont",
   "ont-fastq":           "ont",
+  "pacbio-hifi-bam-hg38": "hifi",  // not "hg38", the last hyphen-segment
   "illumina-snp-fastq":  "snp",
   "capillary-fsa":       "fsa",
 };

@@ -19,14 +19,9 @@ import type { VerifiedInstrument } from "@/types/verified";
 import { badgeFor, reachedLabel, TONE } from "@/lib/verified/badge";
 import { foldStrhubRuns, shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
 import { formatDate } from "@/lib/verified/format-date";
+import { panelKind } from "@/lib/verified/dataset-provenance";
 import { cn } from "@/lib/utils";
 
-function panelKey(types: string[]): "ystr" | "ont" | "autosomal" | null {
-  if (types.length === 0) return null;
-  if (types.some((t) => t.endsWith("-y"))) return "ystr";
-  if (types.some((t) => t.includes("ont"))) return "ont";
-  return "autosomal";
-}
 
 /**
  * Where a row is read: its slug's page, with `?at=` unless it is the slug's
@@ -78,7 +73,7 @@ export function VersionHistory({
             const isCurrent = row.slug === current.slug && row.sha === current.sha
               && (row.instrument ?? null) === (current.instrument ?? null);
             const level = badgeFor(row, t);
-            const panel = panelKey(row.dataset_types);
+            const panel = panelKind(row.dataset_types);
             const inner = (
               <>
                 <GitCommitHorizontal className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />

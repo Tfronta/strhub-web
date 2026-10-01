@@ -11,12 +11,15 @@
  */
 import type { VerifiedReport } from "@/types/verified";
 
-const CODIS_CORE_LOCI = [
-  "Amelogenin", "CSF1PO", "D1S1656", "D2S441", "D2S1338", "D3S1358",
-  "D5S818", "D7S820", "D8S1179", "D10S1248", "D12S391", "D13S317",
-  "D16S539", "D17S1301", "D18S51", "D19S433", "D20S482", "D21S11",
-  "D22S1045", "FGA", "TH01", "TPOX", "vWA", "PentaD", "PentaE",
-  "DYS391", "SE33",
+// Mirrors datasets/{ont-bam-hg38,ont-fastq,pacbio-hifi-bam-hg38}/loci.bed: the
+// Illumina panel loci inside the CODIS ±10 kb windows the long-read slices
+// were cut with (the ONT FASTQ holds the reads over those loci). It used to be a general CODIS list naming five loci (SE33,
+// PentaD, PentaE, D17S1301, D20S482) the ONT slice does not hold. Source of
+// truth is those BEDs; keep in sync.
+const CODIS_SLICE_PANEL_LOCI = [
+  "D1S1656", "TPOX", "D2S441", "D2S1338", "D3S1358", "FGA", "D5S818",
+  "CSF1PO", "D7S820", "D8S1179", "D10S1248", "TH01", "vWA", "D12S391",
+  "D13S317", "D16S539", "D18S51", "D19S433", "D21S11", "D22S1045",
 ];
 
 const FORENSEQ_STR_LOCI = [
@@ -69,7 +72,23 @@ export const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
     source:
       "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
     license: "Open access (1000 Genomes / HPRC). Research use.",
-    loci: CODIS_CORE_LOCI,
+    loci: CODIS_SLICE_PANEL_LOCI,
+    referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
+  },
+  "ont-fastq": {
+    name: "1000 Genomes ONT, HG00113 reads over the CODIS panel loci (FASTQ)",
+    source:
+      "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
+    license: "Open access (1000 Genomes / HPRC). Research use.",
+    loci: CODIS_SLICE_PANEL_LOCI,
+    referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
+  },
+  "pacbio-hifi-bam-hg38": {
+    name: "GIAB HG002 PacBio HiFi (Revio), hg38 CODIS slice",
+    source:
+      "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/",
+    license: "Open access (GIAB / NIST). Research use.",
+    loci: CODIS_SLICE_PANEL_LOCI,
     referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
   "illumina-bam-hg38": {
@@ -95,7 +114,21 @@ const LEGACY_SLUG_DATASETS: Record<string, string[]> = {
   "strait-razor-ForenSeqv1.27": ["illumina-str-fastq"],
 };
 
-export type PanelKind = "ystr" | "ont" | "autosomal";
+export type PanelKind = "ystr" | "ont" | "hifi" | "autosomal";
+
+/**
+ * Which panel family a run's input types belong to, for its tag. The one place
+ * this is decided: the catalogue list, the history rows and the report header
+ * each had a copy, and the list's never learned ONT, so nanopore runs were
+ * listed as "Autosomal STR" while their pages said "ONT CODIS".
+ */
+export function panelKind(types: string[] | null | undefined): PanelKind | null {
+  if (!types || types.length === 0) return null;
+  if (types.some((dt) => dt.endsWith("-y"))) return "ystr";
+  if (types.some((dt) => dt.startsWith("ont-"))) return "ont";
+  if (types.some((dt) => dt.startsWith("pacbio-"))) return "hifi";
+  return "autosomal";
+}
 
 export interface DatasetSummary {
   /** Input types across every leg of the run. */
@@ -119,14 +152,7 @@ export function summarizeDatasets(report: VerifiedReport, slug: string): Dataset
     types.push(...LEGACY_SLUG_DATASETS[slug]);
   }
 
-  // The tag is derived from the dataset type. Y-STR ends in "-y"; ONT (CODIS)
-  // must not fall through to "autosomal" as it once did — STRspy's ont-bam-hg38
-  // run was mislabelled "Autosomal STR".
-  const panel: PanelKind | null =
-    types.length === 0 ? null
-      : types.some((dt) => dt.endsWith("-y")) ? "ystr"
-        : types.some((dt) => dt.includes("ont")) ? "ont"
-          : "autosomal";
+  const panel = panelKind(types);
 
   const provenance = types
     .map((type) => ({ type, ...DATASET_PROVENANCE[type] }))

@@ -12,10 +12,10 @@
 import type { VerifiedReport } from "@/types/verified";
 
 // Mirrors datasets/{ont-bam-hg38,ont-fastq,pacbio-hifi-bam-hg38}/loci.bed: the
-// Illumina panel loci inside the CODIS ±10 kb windows the long-read slices
-// were cut with (the ONT FASTQ holds the reads over those loci). It used to be a general CODIS list naming five loci (SE33,
-// PentaD, PentaE, D17S1301, D20S482) the ONT slice does not hold. Source of
-// truth is those BEDs; keep in sync.
+// Illumina panel loci inside the CODIS ±10 kb windows the long-read slices were
+// cut with (the ONT FASTQ holds the reads over those loci). It used to be a
+// general CODIS list naming five loci (SE33, PentaD, PentaE, D17S1301, D20S482)
+// the ONT slice does not hold. Source of truth is those BEDs; keep in sync.
 const CODIS_SLICE_PANEL_LOCI = [
   "D1S1656", "TPOX", "D2S441", "D2S1338", "D3S1358", "FGA", "D5S818",
   "CSF1PO", "D7S820", "D8S1179", "D10S1248", "TH01", "vWA", "D12S391",

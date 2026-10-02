@@ -132,6 +132,11 @@ export type MarkerSummary = {
   grch38: GenomicSpan | null;
   grch37: GenomicSpan | null;
   /**
+   * On a multi-copy locus, the FSSG copy whose GRCh38 full range holds the
+   * STRBase coordinates (DYS385ab: "DYS385 b"); null elsewhere.
+   */
+  coordinatesCopy: string | null;
+  /**
    * The FSSG rows for this marker: one for most loci, one per physical copy for
    * the two multi-copy loci (DYS385 a/b, DYF387S1 fragments 1/2).
    */
@@ -405,6 +410,17 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
         ? fssgCe.map((row) => `${row.ce} (${row.locus})`).join(" · ")
         : String(fssgCe[0].ce);
 
+  const grch38 = span(marker.coordinates?.start ?? null, marker.coordinates?.end ?? null);
+  const coordinatesCopy =
+    fssgRows.length > 1 && grch38
+      ? (fssgRows.find(
+          (row) =>
+            row.fullRange != null &&
+            grch38.start >= row.fullRange.start &&
+            grch38.end <= row.fullRange.end
+        )?.locus ?? null)
+      : null;
+
   const sequences = marker.sequences ?? [];
   const variantAlleles = [...new Set(sequences.map((s) => s.allele))].sort(sortAlleles);
 
@@ -419,11 +435,12 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
     kind: markerKind(marker.category),
     referenceAllele,
     nomenclatureNote: HARMONIZED_NOMENCLATURE.has(key),
-    grch38: span(marker.coordinates?.start ?? null, marker.coordinates?.end ?? null),
+    grch38,
     grch37: span(
       marker.coordinates?.grch37?.start ?? null,
       marker.coordinates?.grch37?.end ?? null
     ),
+    coordinatesCopy,
     fssg: fssgRows.length > 0 ? { components: fssgRows.map(fssgComponent) } : null,
     ce: ceSummary(key),
     ngs: ngsSummary(key),

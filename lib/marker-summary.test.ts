@@ -302,6 +302,13 @@ describe("multi-copy loci and FSSG cross-references", () => {
     ]);
   });
 
+  it("names the copy STRBase's single region lies in, on multi-copy loci only", () => {
+    // STRBase chrY:18,639,713-756 lies in the FSSG full range of DYS385 b (18,639,600-904).
+    expect(buildMarkerSummary("dys385ab")?.coordinatesCopy).toBe("DYS385 b");
+    expect(buildMarkerSummary("dyf387s1")?.coordinatesCopy).toBeNull(); // no STRBase coordinates
+    expect(buildMarkerSummary("tpox")?.coordinatesCopy).toBeNull();
+  });
+
   it("opens the Motif Explorer on a copy it can show, or not at all", () => {
     expect(buildMarkerSummary("dys385ab")?.tools.motifExplorer).toBe("DYS385 b");
     expect(buildMarkerSummary("dyf387s1")?.tools.motifExplorer).toBe("DYF387S1 fragment 1");

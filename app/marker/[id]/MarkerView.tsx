@@ -1865,6 +1865,7 @@ export function MarkerView({
                         <div className="space-y-1">
                           <Label className="text-xs font-normal text-muted-foreground">
                             {t("marker.repeatRegion")}
+                            {summary?.coordinatesCopy ? ` (${summary.coordinatesCopy})` : ""}
                           </Label>
                           <p className="text-sm font-normal text-foreground break-all">
                             {grch38Region}
@@ -1880,6 +1881,7 @@ export function MarkerView({
                           <div className="space-y-1">
                             <Label className="text-xs font-normal text-muted-foreground">
                               {t("marker.repeatRegion")}
+                              {summary?.coordinatesCopy ? ` (${summary.coordinatesCopy})` : ""}
                             </Label>
                             <p className="text-sm font-normal text-foreground break-all">
                               {grch37Region}

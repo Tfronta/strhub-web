@@ -22,7 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { MarkerSummary } from "@/lib/marker-summary";
+import type { FssgComponentSummary, MarkerSummary } from "@/lib/marker-summary";
 import { FSSG_SOURCE } from "@/lib/fssgSource";
 
 type Translate = (key: string, params?: Record<string, string>) => string;
@@ -83,16 +83,163 @@ export function MarkerSummaryDescription({
   );
 }
 
+type Scoped = (key: string, params?: Record<string, string>) => string;
+
+/** The fields of one FSSG row. */
+function FssgComponentFields({ component, s }: { component: FssgComponentSummary; s: Scoped }) {
+  const pointers = component.crossReference;
+  return (
+    <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
+      {component.canonicalBracketing.length > 0 && (
+        <div className="space-y-1 sm:col-span-2">
+          <Label className="text-xs font-normal text-muted-foreground">
+            {s("canonicalLabel")}
+          </Label>
+          <div className="flex flex-wrap gap-1">
+            {component.canonicalBracketing.map((form) => (
+              <Badge
+                key={form}
+                variant="outline"
+                className="font-mono text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
+              >
+                {form}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
+      {component.referenceName && (
+        <div className="space-y-1 sm:col-span-2">
+          <div className="flex items-center gap-1">
+            <Label className="text-xs font-normal text-muted-foreground">
+              {s("referenceNameLabel")}
+            </Label>
+            <InfoTip term="strnamingName" />
+          </div>
+          <p className="overflow-x-auto whitespace-nowrap font-mono text-sm font-semibold text-foreground">
+            {component.referenceName}
+          </p>
+        </div>
+      )}
+      {/* Rows whose sequence the FSSG gives by pointer get no generated name;
+          their CE equivalent is the FSSG's own value. */}
+      {!component.referenceName && component.ce && (
+        <div className="space-y-1">
+          <Label className="text-xs font-normal text-muted-foreground">
+            {s("ceEquivalentLabel")}
+          </Label>
+          <p className="text-sm font-mono text-foreground">{component.ce}</p>
+        </div>
+      )}
+      {pointers && (
+        <div className="space-y-1 sm:col-span-2">
+          <Label className="text-xs font-normal text-muted-foreground">
+            {s("crossReferenceLabel")}
+          </Label>
+          <p className="text-sm text-foreground">
+            {[pointers.formatting, pointers.sequence]
+              .filter(Boolean)
+              .map((pointer) => `“${pointer}”`)
+              .join(" · ")}
+          </p>
+          <p className="text-xs text-muted-foreground">{s("crossReferenceNote")}</p>
+        </div>
+      )}
+      {component.historicalBracketing && (
+        <div className="space-y-1">
+          <Label className="text-xs font-normal text-muted-foreground">
+            {s("historicalLabel")}
+          </Label>
+          <p className="text-sm font-mono text-foreground">
+            {component.historicalBracketing}
+          </p>
+        </div>
+      )}
+      {component.minimumRange && (
+        <div className="space-y-1">
+          <Label className="text-xs font-normal text-muted-foreground">
+            {s("minimumRangeLabel")}
+          </Label>
+          <p className="text-sm text-foreground">
+            {component.minimumRange.chrom}:{formatInt(component.minimumRange.start)}-
+            {formatInt(component.minimumRange.end)}{" "}
+            <span className="text-muted-foreground">
+              ({s("basePairs", { n: formatInt(component.minimumRange.lengthBp) })})
+            </span>
+          </p>
+        </div>
+      )}
+      {component.kits.length > 0 && (
+        <div className="space-y-1 sm:col-span-2">
+          <Label className="text-xs font-normal text-muted-foreground">
+            {s("kitsLabel")}
+          </Label>
+          <TooltipProvider delayDuration={100}>
+            <ul className="flex flex-wrap gap-1">
+              {component.kits.map((kit) => (
+                <li key={kit.fssgColumn}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge
+                        variant="secondary"
+                        className="cursor-help text-xs font-normal px-2 py-0.5 bg-muted text-foreground border-0"
+                      >
+                        {/* STRidER's own qualifier, verbatim, e.g. "(Included in range of DYS460)". */}
+                        {kit.note ? `${kit.name} (${kit.note})` : kit.name}
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs">
+                      <p>
+                        {s("kitRange", {
+                          chrom: kit.chrom,
+                          start: formatInt(kit.start),
+                          end: formatInt(kit.end),
+                          length: formatInt(kit.length),
+                        })}
+                      </p>
+                      {kit.reversedInSource && (
+                        <p className="mt-1">
+                          {s("kitReversed", {
+                            from: formatInt(kit.end),
+                            to: formatInt(kit.start),
+                          })}
+                        </p>
+                      )}
+                      {kit.name !== kit.fssgColumn && (
+                        <p className="mt-1">{s("kitColumn", { column: kit.fssgColumn })}</p>
+                      )}
+                    </TooltipContent>
+                  </Tooltip>
+                </li>
+              ))}
+            </ul>
+          </TooltipProvider>
+        </div>
+      )}
+      {component.notes && (
+        <div className="space-y-1 sm:col-span-2">
+          <Label className="text-xs font-normal text-muted-foreground">
+            {s("fssgNotesLabel")}
+          </Label>
+          <p className="text-sm text-foreground" lang="en">
+            {component.notes}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function StructureCard({ summary, t }: { summary: MarkerSummary; t: Translate }) {
-  const fssg = summary.fssg;
-  if (!fssg) return null;
-  const s = (key: string, params?: Record<string, string>) =>
-    t(`marker.summary.${key}`, params);
+  const components = summary.fssg?.components ?? [];
+  if (components.length === 0) return null;
+  const s: Scoped = (key, params) => t(`marker.summary.${key}`, params);
   // "{strider}" stays in the string so the publisher can be rendered as a link.
   const [sourceBefore, sourceAfter = ""] = s("structureSource", {
     version: FSSG_SOURCE.version,
     file: FSSG_SOURCE.file,
   }).split("{strider}");
+  const multiCopy = components.length > 1;
   return (
     <Card className="border rounded-md shadow-none bg-card">
       <CardHeader className="pb-3 px-4">
@@ -112,116 +259,27 @@ function StructureCard({ summary, t }: { summary: MarkerSummary; t: Translate })
           </a>
           {sourceAfter}
         </CardDescription>
+        {multiCopy && (
+          <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+            {s("multiCopyIntro", { copies: components.map((c) => c.locus).join(", ") })}
+          </p>
+        )}
       </CardHeader>
       <CardContent className="px-4 space-y-4">
-        <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
-          {fssg.canonicalBracketing.length > 0 && (
-            <div className="space-y-1 sm:col-span-2">
-              <Label className="text-xs font-normal text-muted-foreground">
-                {s("canonicalLabel")}
-              </Label>
-              <div className="flex flex-wrap gap-1">
-                {fssg.canonicalBracketing.map((form) => (
-                  <Badge
-                    key={form}
-                    variant="outline"
-                    className="font-mono text-xs font-normal px-2 py-0.5 border-muted-foreground/20"
-                  >
-                    {form}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-          {fssg.referenceName && (
-            <div className="space-y-1 sm:col-span-2">
-              <div className="flex items-center gap-1">
-                <Label className="text-xs font-normal text-muted-foreground">
-                  {s("referenceNameLabel")}
-                </Label>
-                <InfoTip term="strnamingName" />
-              </div>
-              <p className="overflow-x-auto whitespace-nowrap font-mono text-sm font-semibold text-foreground">
-                {fssg.referenceName}
-              </p>
-            </div>
-          )}
-          {fssg.historicalBracketing && (
-            <div className="space-y-1">
-              <Label className="text-xs font-normal text-muted-foreground">
-                {s("historicalLabel")}
-              </Label>
-              <p className="text-sm font-mono text-foreground">
-                {fssg.historicalBracketing}
-              </p>
-            </div>
-          )}
-          {fssg.minimumRange && (
-            <div className="space-y-1">
-              <Label className="text-xs font-normal text-muted-foreground">
-                {s("minimumRangeLabel")}
-              </Label>
-              <p className="text-sm text-foreground">
-                {fssg.minimumRange.chrom}:{formatInt(fssg.minimumRange.start)}-
-                {formatInt(fssg.minimumRange.end)}{" "}
-                <span className="text-muted-foreground">
-                  ({s("basePairs", { n: formatInt(fssg.minimumRange.lengthBp) })})
-                </span>
-              </p>
-            </div>
-          )}
-          {fssg.kits.length > 0 && (
-            <div className="space-y-1 sm:col-span-2">
-              <Label className="text-xs font-normal text-muted-foreground">
-                {s("kitsLabel")}
-              </Label>
-              <TooltipProvider delayDuration={100}>
-                <ul className="flex flex-wrap gap-1">
-                  {fssg.kits.map((kit) => (
-                    <li key={kit.fssgColumn}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Badge
-                            variant="secondary"
-                            className="cursor-help text-xs font-normal px-2 py-0.5 bg-muted text-foreground border-0"
-                          >
-                            {/* STRidER's own qualifier, verbatim, e.g. "(Included in range of DYS460)". */}
-                            {kit.note ? `${kit.name} (${kit.note})` : kit.name}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="text-xs">
-                          <p>
-                            {s("kitRange", {
-                              chrom: kit.chrom,
-                              start: formatInt(kit.start),
-                              end: formatInt(kit.end),
-                              length: formatInt(kit.length),
-                            })}
-                          </p>
-                          {kit.name !== kit.fssgColumn && (
-                            <p className="mt-1">
-                              {s("kitColumn", { column: kit.fssgColumn })}
-                            </p>
-                          )}
-                        </TooltipContent>
-                      </Tooltip>
-                    </li>
-                  ))}
-                </ul>
-              </TooltipProvider>
-            </div>
-          )}
-          {fssg.notes && (
-            <div className="space-y-1 sm:col-span-2">
-              <Label className="text-xs font-normal text-muted-foreground">
-                {s("fssgNotesLabel")}
-              </Label>
-              <p className="text-sm text-foreground" lang="en">
-                {fssg.notes}
-              </p>
-            </div>
-          )}
-        </div>
+        {components.map((component, i) =>
+          multiCopy ? (
+            <section
+              key={component.locus}
+              aria-label={component.locus}
+              className={i > 0 ? "border-t pt-4 space-y-3" : "space-y-3"}
+            >
+              <h3 className="text-sm font-semibold text-foreground">{component.locus}</h3>
+              <FssgComponentFields component={component} s={s} />
+            </section>
+          ) : (
+            <FssgComponentFields key={component.locus} component={component} s={s} />
+          )
+        )}
       </CardContent>
     </Card>
   );

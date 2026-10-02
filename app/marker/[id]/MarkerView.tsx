@@ -156,7 +156,8 @@ export function MarkerView({
 
   const markerId = params.id.toLowerCase();
   const marker = markerData[markerId as keyof typeof markerData];
-  const isMarkerInMotifExplorer = summary?.tools.motifExplorer ?? false;
+  // The FSSG row the Motif Explorer opens ("DYS385 b" for the DYS385ab page), or null.
+  const motifExplorerMarker = summary?.tools.motifExplorer ?? null;
   // STRNaming names for the STRbase Variant Alleles, index-aligned with marker.sequences.
   const variantNames = summary?.variantNames ?? null;
   const isMarkerInIgv = IGV_MARKER_IDS.has(markerId);
@@ -1799,7 +1800,7 @@ export function MarkerView({
                       />
                     )}
                   </div>
-                  {isMarkerInMotifExplorer && (
+                  {motifExplorerMarker && (
                     <div className="pt-4 border-t border-border space-y-3">
                       <div className="space-y-1.5">
                         <p className="text-xs font-semibold text-foreground">
@@ -1815,7 +1816,7 @@ export function MarkerView({
                         asChild
                       >
                         <Link
-                          href={`/tools/str-motif-explorer?marker=${marker.name}`}
+                          href={`/tools/str-motif-explorer?marker=${encodeURIComponent(motifExplorerMarker)}`}
                         >
                           {t("overview.motifExplorer.button")}
                         </Link>

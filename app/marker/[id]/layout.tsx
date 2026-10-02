@@ -44,10 +44,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       `allele frequencies for ${countNoun(summary.ce.populations.length, "population", "populations")}`
     );
   if (summary?.grch38) contents.push("GRCh38 coordinates");
-  if (summary?.fssg?.canonicalBracketing.length)
+  const fssgComponents = summary?.fssg?.components ?? [];
+  if (fssgComponents.some((c) => c.canonicalBracketing.length))
     contents.push("ISFG sequence structure");
-  if (summary?.fssg?.kits.length)
-    contents.push(countNoun(summary.fssg.kits.length, "MPS kit", "MPS kits"));
+  // A kit that covers both copies of a multi-copy locus counts once.
+  const kitCount = new Set(fssgComponents.flatMap((c) => c.kits.map((k) => k.name))).size;
+  if (kitCount) contents.push(countNoun(kitCount, "MPS kit", "MPS kits"));
   if (summary?.variants)
     contents.push(
       countNoun(

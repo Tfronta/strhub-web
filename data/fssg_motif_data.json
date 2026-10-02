@@ -6128,7 +6128,32 @@
     "fullRangeSequence": null,
     "sequenceReference": "See DYS389I sequence",
     "minimumRangeSequence": null,
-    "kits": {},
+    "kits": {
+      "PowerSeq 46GY": {
+        "chrom": "chrY",
+        "start": 12500439,
+        "end": 12500613,
+        "length": 175,
+        "sequence": null,
+        "clippedToFullRange": false
+      },
+      "ForenSeq Signature Prep/Plus and MainstAY": {
+        "chrom": "chrY",
+        "start": 12500387,
+        "end": 12500633,
+        "length": 247,
+        "sequence": null,
+        "clippedToFullRange": false
+      },
+      "IDSeek mYSTR": {
+        "chrom": "chrY",
+        "start": 12500394,
+        "end": 12500617,
+        "length": 224,
+        "sequence": null,
+        "clippedToFullRange": false
+      }
+    },
     "notes": "Within 100bp 3' of DYS389II there is an incidental STR DYS467 for which GRCh38 has 12 repeats and GRCh37 has 14 repeats"
   },
   "DYS438": {
@@ -7061,7 +7086,33 @@
     "fullRangeSequence": null,
     "sequenceReference": "See DYS385b sequence",
     "minimumRangeSequence": null,
-    "kits": {},
+    "kits": {
+      "PowerSeq 46GY": {
+        "chrom": "chrY",
+        "start": 18680490,
+        "end": 18680694,
+        "length": 205,
+        "sequence": null,
+        "clippedToFullRange": false
+      },
+      "ForenSeq Signature Prep/Plus and MainstAY": {
+        "chrom": "chrY",
+        "start": 18680491,
+        "end": 18680702,
+        "length": 212,
+        "sequence": null,
+        "clippedToFullRange": false,
+        "reversedInSource": true
+      },
+      "IDSeek mYSTR": {
+        "chrom": "chrY",
+        "start": 18680485,
+        "end": 18680695,
+        "length": 211,
+        "sequence": null,
+        "clippedToFullRange": false
+      }
+    },
     "notes": "Reported on the reverse strand.  The forward strand DYS385 a is reverse complemented to DYS385 b."
   },
   "DYS461": {
@@ -7189,7 +7240,24 @@
     "fullRangeSequence": null,
     "sequenceReference": "See DYS461 sequence",
     "minimumRangeSequence": null,
-    "kits": {},
+    "kits": {
+      "ForenSeq Signature Prep/Plus and MainstAY": {
+        "chrom": "chrY",
+        "start": 18888748,
+        "end": 18889046,
+        "length": 299,
+        "sequence": null,
+        "clippedToFullRange": false
+      },
+      "IDSeek mYSTR": {
+        "chrom": "chrY",
+        "start": 18888780,
+        "end": 18889001,
+        "length": 222,
+        "sequence": null,
+        "clippedToFullRange": false
+      }
+    },
     "notes": "Originally characterized on the reverse strand"
   },
   "DYS549": {
@@ -7801,7 +7869,25 @@
     "fullRangeSequence": null,
     "sequenceReference": "See DYF387S1 fragment 1 sequence",
     "minimumRangeSequence": null,
-    "kits": {},
+    "kits": {
+      "ForenSeq Signature Prep/Plus and MainstAY": {
+        "chrom": "chrY",
+        "start": 25884560,
+        "end": 25884738,
+        "length": 179,
+        "sequence": null,
+        "clippedToFullRange": false,
+        "reversedInSource": true
+      },
+      "IDSeek mYSTR": {
+        "chrom": "chrY",
+        "start": 25884573,
+        "end": 25884756,
+        "length": 184,
+        "sequence": null,
+        "clippedToFullRange": false
+      }
+    },
     "notes": "Reported on the reverse strand.  The forward strand of DYF387S1 fragment 2 is reverse complemented to DYF387S1 fragment 1"
   },
   "DXS10135": {

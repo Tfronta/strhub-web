@@ -377,6 +377,13 @@ marker: {
     kitRange: "Intervalo sequenciado: {chrom}:{start}-{end} · {length} bp",
     kitColumn: "Coluna do FSSG: {column}. O FSSG restringe este locus ao kit indicado.",
     fssgNotesLabel: "Notas do FSSG (em inglês, como o STRidER as publica)",
+    ceEquivalentLabel: "Equivalente CE da referência GRCh38 (FSSG)",
+    crossReferenceLabel: "Sequência dada por referência no FSSG",
+    crossReferenceNote:
+      "O FSSG dá a sequência desta linha remetendo a outra linha, sem escrevê-la. O STRhub não mostra um nome STRNaming aqui até que essa sequência seja resolvida e revisada.",
+    kitReversed: "Escrito no FSSG de {from} a {to} (fita reversa).",
+    multiCopyIntro:
+      "Este locus tem duas cópias no GRCh38, e o FSSG descreve cada uma em sua própria linha: {copies}. Os intervalos, equivalentes CE e nomes abaixo correspondem à cópia indicada acima de cada bloco. Um resultado de tipagem costuma listar os dois alelos do locus juntos; a ordem deles não indica de qual cópia física vem cada um.",
     frequenciesTitle: "Frequências alélicas em resumo",
     frequenciesIntro:
       "Alelo mais frequente por grupo populacional, com sua frequência e o tamanho amostral, nos dados de eletroforese capilar do",

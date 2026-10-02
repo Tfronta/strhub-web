@@ -29,7 +29,12 @@ export type KitRange = {
   start: number;
   end: number;
   length: number;
-  sequence: string;
+  /**
+   * The kit range sliced from the row's full-range sequence. Null for the four
+   * rows whose FSSG sequence is a pointer to another row ("See DYS385b
+   * sequence"): their ranges are given, their sequence is not.
+   */
+  sequence: string | null;
   clippedToFullRange: boolean;
   /**
    * STRidER's qualifier written in the same FSSG cell, verbatim: "MainstAY only"
@@ -37,6 +42,12 @@ export type KitRange = {
    * DYS460 ForenSeq range given in the FSSG DYS460 row).
    */
   note?: string;
+  /**
+   * The FSSG writes this range high coordinate first (ForenSeq for DYS385 a and
+   * DYF387S1 fragment 2, both reported on the reverse strand); start/end here
+   * are stored low to high.
+   */
+  reversedInSource?: boolean;
 };
 
 // Authoritative repeat/interruption/flank segmentation of the minimum-range

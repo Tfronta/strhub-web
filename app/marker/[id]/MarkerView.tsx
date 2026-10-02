@@ -703,6 +703,125 @@ export function MarkerView({
   // Filter out alleles with frequency <= 0.000 to improve chart readability
   chartData = chartData.filter((item) => item.frequency > 0.0);
 
+  // One CE population button (LATAM opens its subpopulation picker).
+  const renderCePopulationButton = (pop: string) => {
+    const isLatam = pop === "LATAM";
+    const label = isLatam ? latamButtonLabel : pop;
+    const isActive =
+      !showAllPopulations && selectedPopulation === pop;
+
+    const button = (
+      <Button
+        variant={isActive ? "default" : "outline"}
+        size="sm"
+        onClick={() => {
+          setShowAllPopulations(false);
+          setSelectedPopulation(pop);
+          if (isLatam) {
+            setLatamSubpopPopoverOpen(true);
+          }
+        }}
+        className="h-7 text-xs font-normal rounded-sm px-2"
+      >
+        {label}
+      </Button>
+    );
+
+    if (isLatam) {
+      return (
+        <UITooltip key={pop}>
+          <TooltipTrigger asChild>
+            <span className="inline-flex">
+              <Popover
+                open={latamSubpopPopoverOpen && isLatamCE}
+                onOpenChange={(open) => {
+                  setLatamSubpopPopoverOpen(open);
+                  if (open) {
+                    setShowAllPopulations(false);
+                    setSelectedPopulation("LATAM");
+                  }
+                }}
+              >
+                <PopoverTrigger asChild>
+                  {button}
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-80 max-h-80 overflow-y-auto"
+                  align="start"
+                >
+                  <div className="flex flex-col gap-3">
+                    {groupedLatamOptions.map(
+                      ({ country, items }) => (
+                        <div
+                          key={country}
+                          className="space-y-2"
+                        >
+                          <p className="text-xs font-semibold text-muted-foreground">
+                            {country}
+                          </p>
+                          <div className="flex flex-col gap-1.5">
+                            {items.map((subpop) => {
+                              const isSubActive =
+                                latamSubpopForChart?.id ===
+                                subpop.id;
+                              return (
+                                <button
+                                  key={subpop.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedLatamSubpop(
+                                      subpop,
+                                    );
+                                    setLatamSubpopPopoverOpen(
+                                      false,
+                                    );
+                                  }}
+                                  className={cn(
+                                    "flex flex-col items-start rounded-xl border px-3 py-2 text-left text-sm transition",
+                                    isSubActive
+                                      ? "border-primary bg-primary/5"
+                                      : "hover:bg-muted",
+                                  )}
+                                >
+                                  <span className="font-medium">
+                                    {subpop.country} —{" "}
+                                    {subpop.region}
+                                  </span>
+                                  <span className="text-xs text-muted-foreground">
+                                    Kit: {subpop.kit} · N
+                                    = {subpop.N}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </span>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-xs text-xs">
+            {populationAbbrevTooltip(pop)}
+          </TooltipContent>
+        </UITooltip>
+      );
+    }
+
+    return (
+      <UITooltip key={pop}>
+        <TooltipTrigger asChild>{button}</TooltipTrigger>
+        <TooltipContent className="max-w-xs text-xs">
+          {isXSTR
+            ? (xstrTables?.[pop]?.label ?? pop)
+            : populationAbbrevTooltip(pop)}
+        </TooltipContent>
+      </UITooltip>
+    );
+  };
+
   // Frequencies tab. Also rendered on its own by the Data page (embed="frequencies"),
   // so both views share the same charts, dataset cards and tooltips.
   const frequenciesContent = (
@@ -715,21 +834,19 @@ export function MarkerView({
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          {/* About the pop.STR / 1000G / RAO sets and STRidER's autosomal pilot;
-              X-STR pages use only published X-STR tables, so it does not apply. */}
+          {/* Names the source of the frequencies on screen, per technology.
+              X-STR pages use only published X-STR tables and say so below. */}
           {!isXSTR && (
             <div className="mb-4 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
               <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
               <span>
-                {renderBold(t("marker.freqReportingNote"))}{" "}
-                <a
-                  href="https://strider.online/frequencies"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline"
-                >
-                  {t("marker.freqStriderPilotLink")}
-                </a>
+                {renderBold(
+                  t(
+                    selectedTechnology === "NGS"
+                      ? "marker.freqSourceNoteNGS"
+                      : "marker.freqSourceNoteCE",
+                  ),
+                )}
               </span>
             </div>
           )}
@@ -737,123 +854,14 @@ export function MarkerView({
             <div className="flex items-center justify-between gap-2 flex-wrap border-b border-border pb-3">
               {selectedTechnology !== "NGS" && (
                 <div className="flex items-center gap-2 flex-wrap">
-                  {availablePopulations.map((pop) => {
-                    const isLatam = pop === "LATAM";
-                    const label = isLatam ? latamButtonLabel : pop;
-                    const isActive =
-                      !showAllPopulations && selectedPopulation === pop;
-
-                    const button = (
-                      <Button
-                        variant={isActive ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => {
-                          setShowAllPopulations(false);
-                          setSelectedPopulation(pop);
-                          if (isLatam) {
-                            setLatamSubpopPopoverOpen(true);
-                          }
-                        }}
-                        className="h-7 text-xs font-normal rounded-sm px-2"
-                      >
-                        {label}
-                      </Button>
-                    );
-
-                    if (isLatam) {
-                      return (
-                        <UITooltip key={pop}>
-                          <TooltipTrigger asChild>
-                            <span className="inline-flex">
-                              <Popover
-                                open={latamSubpopPopoverOpen && isLatamCE}
-                                onOpenChange={(open) => {
-                                  setLatamSubpopPopoverOpen(open);
-                                  if (open) {
-                                    setShowAllPopulations(false);
-                                    setSelectedPopulation("LATAM");
-                                  }
-                                }}
-                              >
-                                <PopoverTrigger asChild>
-                                  {button}
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  className="w-80 max-h-80 overflow-y-auto"
-                                  align="start"
-                                >
-                                  <div className="flex flex-col gap-3">
-                                    {groupedLatamOptions.map(
-                                      ({ country, items }) => (
-                                        <div
-                                          key={country}
-                                          className="space-y-2"
-                                        >
-                                          <p className="text-xs font-semibold text-muted-foreground">
-                                            {country}
-                                          </p>
-                                          <div className="flex flex-col gap-1.5">
-                                            {items.map((subpop) => {
-                                              const isSubActive =
-                                                latamSubpopForChart?.id ===
-                                                subpop.id;
-                                              return (
-                                                <button
-                                                  key={subpop.id}
-                                                  type="button"
-                                                  onClick={() => {
-                                                    setSelectedLatamSubpop(
-                                                      subpop,
-                                                    );
-                                                    setLatamSubpopPopoverOpen(
-                                                      false,
-                                                    );
-                                                  }}
-                                                  className={cn(
-                                                    "flex flex-col items-start rounded-xl border px-3 py-2 text-left text-sm transition",
-                                                    isSubActive
-                                                      ? "border-primary bg-primary/5"
-                                                      : "hover:bg-muted",
-                                                  )}
-                                                >
-                                                  <span className="font-medium">
-                                                    {subpop.country} —{" "}
-                                                    {subpop.region}
-                                                  </span>
-                                                  <span className="text-xs text-muted-foreground">
-                                                    Kit: {subpop.kit} · N
-                                                    = {subpop.N}
-                                                  </span>
-                                                </button>
-                                              );
-                                            })}
-                                          </div>
-                                        </div>
-                                      ),
-                                    )}
-                                  </div>
-                                </PopoverContent>
-                              </Popover>
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent className="max-w-xs text-xs">
-                            {populationAbbrevTooltip(pop)}
-                          </TooltipContent>
-                        </UITooltip>
-                      );
-                    }
-
-                    return (
-                      <UITooltip key={pop}>
-                        <TooltipTrigger asChild>{button}</TooltipTrigger>
-                        <TooltipContent className="max-w-xs text-xs">
-                          {isXSTR
-                            ? (xstrTables?.[pop]?.label ?? pop)
-                            : populationAbbrevTooltip(pop)}
-                        </TooltipContent>
-                      </UITooltip>
-                    );
-                  })}
+                  {!isXSTR && (
+                    <span className="text-xs text-muted-foreground">
+                      {t("marker.frequencies.groupPopStr")}
+                    </span>
+                  )}
+                  {availablePopulations
+                    .filter((pop) => isXSTR || pop !== "LATAM")
+                    .map(renderCePopulationButton)}
                   {!isXSTR && (
                     <>
                       <div className="h-5 w-px bg-border" />
@@ -879,10 +887,24 @@ export function MarkerView({
                       </UITooltip>
                     </>
                   )}
+                  {!isXSTR && availablePopulations.includes("LATAM") && (
+                    <>
+                      <div className="h-5 w-px bg-border" />
+                      <span className="text-xs text-muted-foreground">
+                        {t("marker.frequencies.groupLatam")}
+                      </span>
+                      {renderCePopulationButton("LATAM")}
+                    </>
+                  )}
                 </div>
               )}
               {selectedTechnology === "NGS" && (
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-x-4 gap-y-2 flex-wrap">
+                 {ngs1000GPops.length > 0 && (
+                 <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs text-muted-foreground">
+                    {t("marker.frequencies.group1000G")}
+                  </span>
                   {ngs1000GPops.map((pop) => (
                     <UITooltip key={pop}>
                       <TooltipTrigger asChild>
@@ -904,7 +926,10 @@ export function MarkerView({
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs text-xs">
-                        {populationAbbrevTooltip(pop)}
+                        {t("marker.frequencies.superpopulation1000G", {
+                          name: t(`marker.frequencies.superpopulations1000G.${pop}`),
+                          code: pop,
+                        })}
                       </TooltipContent>
                     </UITooltip>
                   ))}
@@ -924,7 +949,9 @@ export function MarkerView({
                             }}
                             className="h-7 text-xs font-normal rounded-sm px-2"
                           >
-                            1000G
+                            {t("marker.frequencies.compare1000GButton", {
+                              n: String(ngs1000GPops.length),
+                            })}
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs text-xs">
@@ -933,9 +960,13 @@ export function MarkerView({
                       </UITooltip>
                     </>
                   )}
+                 </div>
+                 )}
                   {ngsRaoPops.length > 0 && (
-                    <>
-                      <div className="h-5 w-px bg-border" />
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs text-muted-foreground">
+                        {t("marker.frequencies.groupRao")}
+                      </span>
                       {ngsRaoPops.map((pop) => (
                         <UITooltip key={pop}>
                           <TooltipTrigger asChild>
@@ -961,7 +992,7 @@ export function MarkerView({
                           </TooltipContent>
                         </UITooltip>
                       ))}
-                    </>
+                    </div>
                   )}
                 </div>
               )}
@@ -1030,6 +1061,16 @@ export function MarkerView({
             ? activeAllChartData.length > 0
             : chartData.length > 0) ? (
             <>
+              {showAllPopulations && !isXSTR && (
+                <p className="mb-2 text-xs text-muted-foreground">
+                  {t(
+                    selectedTechnology === "NGS"
+                      ? "marker.frequencies.compareSource1000G"
+                      : "marker.frequencies.compareSourcePopStr",
+                    { pops: activeAllPops.join(", ") },
+                  )}
+                </p>
+              )}
               <div className={showAllPopulations ? "h-[420px]" : "h-80"}>
                 <ResponsiveContainer width="100%" height="100%">
                   {showAllPopulations ? (
@@ -1087,16 +1128,20 @@ export function MarkerView({
                         )}
                       />
                       {activeAllPops.map((pop) => (
+                        // Smooth monotone curves (they never overshoot the
+                        // points they join), a small dot on each published
+                        // frequency, and no line across an allele a population
+                        // does not list, so no value is drawn where none exists.
                         <Line
                           key={pop}
                           type="monotone"
                           dataKey={pop}
                           stroke={POPULATION_COLORS[pop] ?? "#6b7280"}
                           strokeWidth={2}
-                          dot={false}
+                          dot={{ r: 2 }}
                           activeDot={{ r: 5 }}
                           name={pop}
-                          connectNulls
+                          connectNulls={false}
                           hide={hiddenPopulations.has(pop)}
                         />
                       ))}

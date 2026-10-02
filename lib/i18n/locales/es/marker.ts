@@ -60,9 +60,10 @@ marker: {
   reference: "Referencia",
   nistVerified: "Verificado NIST",
   alleleFreqDistribution: "Distribución de Frecuencia de Alelos",
-  freqReportingNote:
-    "Los conjuntos de frecuencias etiquetados como NGS se generaron con secuenciación y herramientas de genotipado específicas para STRs, pero aún se reportan por **tamaño de fragmento** (alelos basados en longitud), no por secuencia. STRhub todavía no integra tablas de frecuencias por secuencia. STRidER publicó un conjunto piloto por secuencia (Países Bajos, 28 loci, junio de 2026, en formato preliminar); incorporarlo requiere revisión y versionado.",
-  freqStriderPilotLink: "Frecuencias en STRidER",
+  freqSourceNoteNGS:
+    "Las frecuencias NGS de esta página provienen del **Proyecto 1000 Genomas** (Frontanilla et al., 2022) y de **Ribeirão Preto, Brasil** (Valle-Silva et al., 2022). Ambos estudios genotiparon datos de secuenciación con HipSTR y reportan los alelos por **longitud de fragmento**, no por secuencia.",
+  freqSourceNoteCE:
+    "Las frecuencias CE de los grupos AFR a OCE provienen del **conjunto STRs Local de pop.STR / SP-SMART (CESGA)**: alelos por longitud, de electroforesis capilar.",
   freqDescription: "Datos de frecuencia poblacional para diferentes alelos",
   dataSource: "Fuente de datos: STRBase – NIST",
   ocePopulationInfo:
@@ -84,6 +85,23 @@ marker: {
     SAS: "Asia del Sur",
   },
   frequencies: {
+    groupPopStr: "pop.STR / SP-SMART",
+    groupLatam: "Latinoamérica",
+    group1000G: "1000 Genomas (Frontanilla et al., 2022)",
+    groupRao: "Ribeirão Preto (Valle-Silva et al., 2022)",
+    superpopulation1000G: "Superpoblación {name} ({code}), Proyecto 1000 Genomas",
+    superpopulations1000G: {
+      AFR: "africana",
+      AMR: "americana mezclada",
+      EAS: "asiática oriental",
+      EUR: "europea",
+      SAS: "surasiática",
+    },
+    compare1000GButton: "Comparar las {n}",
+    compareSource1000G:
+      "Superpoblaciones del Proyecto 1000 Genomas: {pops} (Frontanilla et al., 2022). Cada punto es una frecuencia publicada; no se traza línea a través de un alelo que una población no tiene.",
+    compareSourcePopStr:
+      "Grupos de población de pop.STR / SP-SMART: {pops}. Cada punto es una frecuencia publicada; no se traza línea a través de un alelo que una población no tiene.",
     region: {
       latam: "LAT",
     },

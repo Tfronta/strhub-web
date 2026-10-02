@@ -60,9 +60,10 @@ marker: {
   reference: "Referência",
   nistVerified: "Verificado NIST",
   alleleFreqDistribution: "Distribuição de Frequência de Alelos",
-  freqReportingNote:
-    "Os conjuntos de frequências rotulados como NGS foram gerados com sequenciamento e ferramentas de genotipagem específicas para STRs, mas ainda são reportados por **tamanho de fragmento** (alelos baseados em comprimento), não por sequência. O STRhub ainda não integra tabelas de frequências por sequência. O STRidER publicou um conjunto piloto por sequência (Países Baixos, 28 loci, junho de 2026, em formato preliminar); incorporá-lo requer revisão e versionamento.",
-  freqStriderPilotLink: "Frequências no STRidER",
+  freqSourceNoteNGS:
+    "As frequências NGS desta página vêm do **Projeto 1000 Genomas** (Frontanilla et al., 2022) e de **Ribeirão Preto, Brasil** (Valle-Silva et al., 2022). Ambos os estudos genotiparam dados de sequenciamento com o HipSTR e reportam os alelos por **comprimento de fragmento**, não por sequência.",
+  freqSourceNoteCE:
+    "As frequências CE dos grupos AFR a OCE vêm do **conjunto STRs Local do pop.STR / SP-SMART (CESGA)**: alelos por comprimento, de eletroforese capilar.",
   freqDescription: "Dados de frequência populacional para diferentes alelos",
   dataSource: "Fonte de dados: STRBase – NIST",
   ocePopulationInfo:
@@ -84,6 +85,23 @@ marker: {
     SAS: "Sul da Ásia",
   },
   frequencies: {
+    groupPopStr: "pop.STR / SP-SMART",
+    groupLatam: "América Latina",
+    group1000G: "1000 Genomas (Frontanilla et al., 2022)",
+    groupRao: "Ribeirão Preto (Valle-Silva et al., 2022)",
+    superpopulation1000G: "Superpopulação {name} ({code}), Projeto 1000 Genomas",
+    superpopulations1000G: {
+      AFR: "africana",
+      AMR: "americana miscigenada",
+      EAS: "asiática oriental",
+      EUR: "europeia",
+      SAS: "sul-asiática",
+    },
+    compare1000GButton: "Comparar as {n}",
+    compareSource1000G:
+      "Superpopulações do Projeto 1000 Genomas: {pops} (Frontanilla et al., 2022). Cada ponto é uma frequência publicada; não se traça linha através de um alelo que uma população não tem.",
+    compareSourcePopStr:
+      "Grupos populacionais do pop.STR / SP-SMART: {pops}. Cada ponto é uma frequência publicada; não se traça linha através de um alelo que uma população não tem.",
     region: {
       latam: "LAT",
     },

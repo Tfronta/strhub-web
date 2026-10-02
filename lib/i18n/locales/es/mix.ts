@@ -33,10 +33,10 @@ mixProfiles: {
     isfgLinkText: "Leer el paper original",
     copySequence: "Copiar secuencia",
     copyRepeat: "Copiar nombre STRNaming",
-    ceExplainAria: "Por qué la suma de repeticiones difiere del número de alelo",
-    ceExplainTitle: "¿Por qué sumar las repeticiones no siempre da el número de alelo?",
+    ceExplainAria: "Por qué los conteos entre corchetes pueden diferir del número CE",
+    ceExplainTitle: "¿Por qué los conteos entre corchetes no siempre coinciden con el número CE?",
     ceExplainBody:
-      "El número de alelo (CE) es la designación clásica por longitud. En algunos loci difiere del conteo de bloques por cómo se calibraron las escaleras alélicas originales. En vWA, por ejemplo, los 19 bloques de repetición sobre el ISFG minimum range corresponden a CE 14. La diferencia es propia de cada locus, así que sumar bloques no es una regla general. STRNaming reporta el número CE junto con la estructura completa de la secuencia.",
+      "El número CE conserva la designación alélica convencional basada en la longitud de cada marcador. Los números entre corchetes describen la estructura de repeticiones de la secuencia. Su suma puede coincidir con el número CE, pero no es una regla universal. De acuerdo con las recomendaciones de la ISFG, se recomienda STRNaming para generar nombres de alelos estandarizados que combinan la designación CE con la estructura de la secuencia entre corchetes.",
     ceExplainPaperLink: "Leé la explicación completa en el paper original",
     ceExplainToolLink: "Probalo en STRNaming",
     copiedSequence: "Copiado",

@@ -97,6 +97,14 @@ import {
   MarkerSummarySections,
 } from "./MarkerSummarySections";
 
+/** One population table in public/data/xstr_frequencies.json, as published. */
+type XstrPopulationTable = {
+  label: string;
+  citation: string;
+  url: string;
+  alleles: Record<string, number>;
+};
+
 const POP_SUBPOP_DESCRIPTION_KEYS: Record<string, string> = {
   AFR: "populationAfr",
   NAM: "populationNam",
@@ -164,7 +172,12 @@ export function MarkerView({
 }) {
   const { t, language } = useLanguage();
   const [selectedPopulation, setSelectedPopulation] = useState<string>("AFR");
-  const [xstrFrequencies, setXstrFrequencies] = useState<any>(null);
+  // X-STR population tables from public/data/xstr_frequencies.json, keyed by
+  // population code. null until loaded; {} when the file has no entry for this locus.
+  const [xstrTables, setXstrTables] = useState<Record<
+    string,
+    XstrPopulationTable
+  > | null>(null);
   const [selectedTechnology, setSelectedTechnology] = useState<string>("CE");
   const [selectedDataset, setSelectedDataset] = useState<string>("");
   const [selectedLatamSubpop, setSelectedLatamSubpop] =
@@ -259,8 +272,13 @@ export function MarkerView({
       fetch("/data/xstr_frequencies.json")
         .then((res) => res.json())
         .then((data) => {
-          setXstrFrequencies(data[markerId]);
-          setSelectedPopulation("BRA");
+          const tables: Record<string, XstrPopulationTable> =
+            data[markerId]?.populations ?? {};
+          setXstrTables(tables);
+          const first = Object.keys(tables).find(
+            (pop) => Object.keys(tables[pop].alleles ?? {}).length > 0,
+          );
+          if (first) setSelectedPopulation(first);
         })
         .catch((err) =>
           console.error("[v0] Failed to load X-STR frequencies:", err),
@@ -347,8 +365,16 @@ export function MarkerView({
           }
         : null;
 
+  const isXSTR = marker.type === "X-STR" || marker.chromosome === "X";
+
   // Compute available populations based on technology
   const getAvailablePopulations = (): string[] => {
+    // X-STR loci have no pop.STR or 1000G data: only the published tables,
+    // and only those whose alleles have been loaded.
+    if (isXSTR)
+      return Object.entries(xstrTables ?? {})
+        .filter(([, table]) => Object.keys(table.alleles ?? {}).length > 0)
+        .map(([pop]) => pop);
     if (selectedTechnology === "NGS") {
       // For NGS, check markerFrequenciesNGS for all available populations
       if (hasNGS && markerFreqDataNGS) {
@@ -422,13 +448,12 @@ export function MarkerView({
     ? `LAT: ${selectedLatamSubpop.country} — ${selectedLatamSubpop.region} (N = ${selectedLatamSubpop.N})`
     : "LAT";
 
-  const isXSTR = marker.type === "X-STR" || marker.chromosome === "X";
   const populationDescriptionKey =
     POP_SUBPOP_DESCRIPTION_KEYS[selectedPopulation] ?? "";
   const populationDescription = populationDescriptionKey
     ? t(`marker.frequencies.datasetNotes.${populationDescriptionKey}`)
     : "";
-  const isPopStrDataset = selectedPopulation !== "LATAM";
+  const isPopStrDataset = !isXSTR && selectedPopulation !== "LATAM";
 
   // Get current dataset configuration
   const currentDataset = getDatasetConfig(selectedPopulation);
@@ -609,14 +634,19 @@ export function MarkerView({
   let citationUrl = "";
   let citationText = "";
 
-  if (isXSTR && xstrFrequencies) {
-    const popData = xstrFrequencies.populations?.[selectedPopulation];
-    if (popData?.alleles) {
-      chartData = Object.entries(popData.alleles)
+  const xstrTable =
+    isXSTR && availablePopulations.includes(selectedPopulation)
+      ? xstrTables?.[selectedPopulation]
+      : undefined;
+
+  if (isXSTR) {
+    if (xstrTable?.alleles) {
+      chartData = Object.entries(xstrTable.alleles)
         .map(([allele, frequency]) => ({
           allele,
-          frequency: frequency as number,
-          count: 0,
+          frequency,
+          // The X-STR tables carry frequencies only.
+          count: null,
         }))
         .sort((a, b) => {
           const alleleA = Number.parseFloat(a.allele);
@@ -627,20 +657,8 @@ export function MarkerView({
           return a.allele.localeCompare(b.allele, undefined, { numeric: true });
         });
     }
-    citationUrl = popData?.url || "";
-
-    if (selectedPopulation === "BRA") {
-      citationText =
-        "Nascimento et al., Forensic Science International: Genetics 66 (2023) 102704";
-    } else if (selectedPopulation === "IBER") {
-      citationText =
-        "Freire-Aradas et al., Forensic Science International: Genetics 17 (2015) 110–120";
-    } else if (selectedPopulation === "NOR") {
-      citationText =
-        "Bergseth et al., Forensic Science International: Genetics 59 (2022) 102685";
-    } else if (selectedPopulation === "BOS_HER") {
-      citationText = "PubMed ID 40253804";
-    }
+    citationUrl = xstrTable?.url ?? "";
+    citationText = xstrTable?.citation ?? "";
   } else {
     // Use markerFrequenciesNGS for NGS technology (all populations)
     if (selectedTechnology === "NGS" && markerFreqDataNGS) {
@@ -825,7 +843,9 @@ export function MarkerView({
                       <UITooltip key={pop}>
                         <TooltipTrigger asChild>{button}</TooltipTrigger>
                         <TooltipContent className="max-w-xs text-xs">
-                          {populationAbbrevTooltip(pop)}
+                          {isXSTR
+                            ? (xstrTables?.[pop]?.label ?? pop)
+                            : populationAbbrevTooltip(pop)}
                         </TooltipContent>
                       </UITooltip>
                     );
@@ -1001,7 +1021,7 @@ export function MarkerView({
               )}
             </div>
           </div>
-          {availableTechnologies.includes(selectedTechnology) &&
+          {(isXSTR || availableTechnologies.includes(selectedTechnology)) &&
           (showAllPopulations
             ? activeAllChartData.length > 0
             : chartData.length > 0) ? (
@@ -1111,6 +1131,30 @@ export function MarkerView({
                 <>
                   {/* Show dataset-specific description if available, otherwise show generic description */}
                   {(() => {
+                    if (isXSTR) {
+                      return (
+                        <div className="mt-2 space-y-2 text-sm text-muted-foreground">
+                          <p>
+                            <span className="font-medium">
+                              {t("marker.frequencies.xstr.populationLabel")}
+                            </span>
+                            <br />
+                            {xstrTable?.label}
+                          </p>
+                          <p className="text-xs">
+                            <span className="font-semibold">
+                              {t(
+                                "marker.frequencies.datasetNotes.referenceLabel",
+                              )}
+                              :
+                            </span>
+                            <br />
+                            {citationText}
+                          </p>
+                        </div>
+                      );
+                    }
+
                     // Check if this is NGS 1000G dataset (AFR/EUR/AMR/EAS/SAS, but not RAO)
                     const isNGS1000G =
                       selectedTechnology === "NGS" &&
@@ -1225,6 +1269,25 @@ export function MarkerView({
 
                   <div className="mt-4 flex flex-wrap gap-2">
                     {(() => {
+                      if (isXSTR) {
+                        return citationUrl ? (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="text-xs"
+                          >
+                            <a
+                              href={citationUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {t("marker.originalPublicationButton")}
+                            </a>
+                          </Button>
+                        ) : null;
+                      }
+
                       // Check if this is NGS 1000G dataset (AFR/EUR/AMR/EAS/SAS, but not RAO)
                       const isNGS1000G =
                         selectedTechnology === "NGS" &&
@@ -1598,7 +1661,9 @@ export function MarkerView({
           ) : (
             <div className="flex flex-col items-center justify-center text-center py-10 space-y-4">
               <p className="text-sm text-muted-foreground max-w-md">
-                {isLatamCE
+                {isXSTR
+                  ? t("marker.frequencies.xstr.noTables")
+                  : isLatamCE
                   ? latamSubpopForChart
                     ? "Allele frequencies for this LAT subpopulation are being curated."
                     : "Allele frequencies for LAT are being curated."

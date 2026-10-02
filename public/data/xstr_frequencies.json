@@ -3,21 +3,25 @@
     "populations": {
       "BRA": {
         "label": "Brazil (Espírito Santo)",
+        "citation": "Garcia et al. (2024). Analysis of 12 X-STRs loci in a population from southeastern Brazil. Forensic Sci Int Genet 68:102974. https://doi.org/10.1016/j.fsigen.2023.102974",
         "url": "https://www.fsigenetics.com/article/S1872-4973(23)00149-7/fulltext",
         "alleles": {}
       },
       "IBER": {
         "label": "Iberian Peninsula (Spain)",
+        "citation": "Baeta et al. (2015). Iberian allele frequency database for 10 X-STRs. Forensic Sci Int Genet 19:76-78. https://doi.org/10.1016/j.fsigen.2015.06.009",
         "url": "https://www.fsigenetics.com/article/S1872-4973(15)30030-2/fulltext",
         "alleles": {}
       },
       "NOR": {
         "label": "Norway",
+        "citation": "Bergseth et al. (2022). Extended population genetic analysis of 12 X-STRs – Exemplified using a Norwegian population sample. Forensic Sci Int Genet 60:102745. https://doi.org/10.1016/j.fsigen.2022.102745",
         "url": "https://www.sciencedirect.com/science/article/pii/S1872497322000862",
         "alleles": {}
       },
       "BOS_HER": {
         "label": "Bosnia & Herzegovina",
+        "citation": "Pilav et al. (2025). X-STR analysis: Allele and haplotype diversity in the population of Bosnia and Herzegovina. Forensic Sci Int 370:112472. https://doi.org/10.1016/j.forsciint.2025.112472",
         "url": "https://pubmed.ncbi.nlm.nih.gov/40253804/",
         "alleles": {}
       }
@@ -27,21 +31,25 @@
     "populations": {
       "BRA": {
         "label": "Brazil (Espírito Santo)",
+        "citation": "Garcia et al. (2024). Analysis of 12 X-STRs loci in a population from southeastern Brazil. Forensic Sci Int Genet 68:102974. https://doi.org/10.1016/j.fsigen.2023.102974",
         "url": "https://www.fsigenetics.com/article/S1872-4973(23)00149-7/fulltext",
         "alleles": {}
       },
       "IBER": {
         "label": "Iberian Peninsula (Spain)",
+        "citation": "Baeta et al. (2015). Iberian allele frequency database for 10 X-STRs. Forensic Sci Int Genet 19:76-78. https://doi.org/10.1016/j.fsigen.2015.06.009",
         "url": "https://www.fsigenetics.com/article/S1872-4973(15)30030-2/fulltext",
         "alleles": {}
       },
       "NOR": {
         "label": "Norway",
+        "citation": "Bergseth et al. (2022). Extended population genetic analysis of 12 X-STRs – Exemplified using a Norwegian population sample. Forensic Sci Int Genet 60:102745. https://doi.org/10.1016/j.fsigen.2022.102745",
         "url": "https://www.sciencedirect.com/science/article/pii/S1872497322000862",
         "alleles": {}
       },
       "BOS_HER": {
         "label": "Bosnia & Herzegovina",
+        "citation": "Pilav et al. (2025). X-STR analysis: Allele and haplotype diversity in the population of Bosnia and Herzegovina. Forensic Sci Int 370:112472. https://doi.org/10.1016/j.forsciint.2025.112472",
         "url": "https://pubmed.ncbi.nlm.nih.gov/40253804/",
         "alleles": {}
       }
@@ -51,21 +59,25 @@
     "populations": {
       "BRA": {
         "label": "Brazil (Espírito Santo)",
+        "citation": "Garcia et al. (2024). Analysis of 12 X-STRs loci in a population from southeastern Brazil. Forensic Sci Int Genet 68:102974. https://doi.org/10.1016/j.fsigen.2023.102974",
         "url": "https://www.fsigenetics.com/article/S1872-4973(23)00149-7/fulltext",
         "alleles": {}
       },
       "IBER": {
         "label": "Iberian Peninsula (Spain)",
+        "citation": "Baeta et al. (2015). Iberian allele frequency database for 10 X-STRs. Forensic Sci Int Genet 19:76-78. https://doi.org/10.1016/j.fsigen.2015.06.009",
         "url": "https://www.fsigenetics.com/article/S1872-4973(15)30030-2/fulltext",
         "alleles": {}
       },
       "NOR": {
         "label": "Norway",
+        "citation": "Bergseth et al. (2022). Extended population genetic analysis of 12 X-STRs – Exemplified using a Norwegian population sample. Forensic Sci Int Genet 60:102745. https://doi.org/10.1016/j.fsigen.2022.102745",
         "url": "https://www.sciencedirect.com/science/article/pii/S1872497322000862",
         "alleles": {}
       },
       "BOS_HER": {
         "label": "Bosnia & Herzegovina",
+        "citation": "Pilav et al. (2025). X-STR analysis: Allele and haplotype diversity in the population of Bosnia and Herzegovina. Forensic Sci Int 370:112472. https://doi.org/10.1016/j.forsciint.2025.112472",
         "url": "https://pubmed.ncbi.nlm.nih.gov/40253804/",
         "alleles": {}
       }

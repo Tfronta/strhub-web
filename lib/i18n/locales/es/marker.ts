@@ -375,6 +375,8 @@ marker: {
     basePairs: "{n} pb",
     kitsLabel: "Kits MPS que cubren este locus",
     kitRange: "Rango secuenciado: {chrom}:{start}-{end} · {length} bp",
+    kitColumn: "Columna de la FSSG: {column}. La FSSG restringe este locus al kit indicado.",
+    fssgNotesLabel: "Notas de la FSSG (en inglés, tal como las publica STRidER)",
     frequenciesTitle: "Frecuencias alélicas de un vistazo",
     frequenciesIntro:
       "Alelo más frecuente por grupo poblacional, con su frecuencia y el tamaño muestral, en los datos de electroforesis capilar de",

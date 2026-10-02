@@ -103,14 +103,19 @@ export type MarkerSummary = {
     referenceName: string | null;
     /** MPS kits whose amplicon covers the locus, per STRidER's FSSG, each with the range it sequences (GRCh38). */
     kits: Array<{
+      /** The product the range applies to: the FSSG column header, narrowed where the FSSG itself narrows it (see kitProduct). */
       name: string;
+      /** The FSSG column header, verbatim. */
+      fssgColumn: string;
       chrom: string;
       start: number;
       end: number;
       length: number;
-      /** STRidER's qualifier from the same FSSG cell, verbatim (e.g. "MainstAY only"). */
+      /** STRidER's qualifier from the same FSSG cell, verbatim (e.g. "Included in range of DYS460"), unless folded into name. */
       note: string | null;
     }>;
+    /** The row's Notes cell, verbatim, in English as STRidER writes it. */
+    notes: string | null;
   } | null;
   ce: { populations: PopulationSummary[]; table: FrequencyTable } | null;
   ngs: { populations: string[]; hasRao: boolean } | null;
@@ -172,6 +177,27 @@ export function fssgFor(id: string): FssgMarker | null {
   const locus =
     FSSG_ALIASES[key] ?? fssgByStrippedName[key.replace(/[\s_-]/g, "")];
   return locus ? (FSSG_MARKERS[locus] ?? null) : null;
+}
+
+// The FSSG has one ForenSeq column, headed "ForenSeq Signature Prep/Plus and
+// MainstAY". Two FSSG statements narrow it for a row, and a badge with the bare
+// header would claim both kits:
+// - the cell itself reads "MainstAY only" (SE33, DYS393);
+// - the row's Notes read "Locus included ForenSeq Signature Prep only, not
+//   MainstAY" (seven X-STRs). Plus is not named there, so it is not claimed.
+const FORENSEQ_COLUMN = "ForenSeq Signature Prep/Plus and MainstAY";
+const SIGNATURE_PREP_ONLY = "Locus included ForenSeq Signature Prep only, not MainstAY";
+
+function kitProduct(
+  column: string,
+  cellNote: string | null,
+  rowNotes: string | null
+): { name: string; note: string | null } {
+  if (column !== FORENSEQ_COLUMN) return { name: column, note: cellNote };
+  if (cellNote === "MainstAY only") return { name: "ForenSeq MainstAY", note: null };
+  if (rowNotes?.includes(SIGNATURE_PREP_ONLY))
+    return { name: "ForenSeq Signature Prep", note: cellNote };
+  return { name: column, note: cellNote };
 }
 
 /**
@@ -353,14 +379,15 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
               }
             : null,
           referenceName: STRNAMING.reference[fssg.locus] ?? null,
-          kits: Object.entries(fssg.kits ?? {}).map(([name, range]) => ({
-            name,
+          kits: Object.entries(fssg.kits ?? {}).map(([column, range]) => ({
+            ...kitProduct(column, range.note ?? null, fssg.notes),
+            fssgColumn: column,
             chrom: range.chrom,
             start: range.start,
             end: range.end,
             length: range.length,
-            note: range.note ?? null,
           })),
+          notes: fssg.notes,
         }
       : null,
     ce: ceSummary(key),

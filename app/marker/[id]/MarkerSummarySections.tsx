@@ -178,30 +178,47 @@ function StructureCard({ summary, t }: { summary: MarkerSummary; t: Translate })
               <TooltipProvider delayDuration={100}>
                 <ul className="flex flex-wrap gap-1">
                   {fssg.kits.map((kit) => (
-                    <li key={kit.name}>
+                    <li key={kit.fssgColumn}>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Badge
                             variant="secondary"
                             className="cursor-help text-xs font-normal px-2 py-0.5 bg-muted text-foreground border-0"
                           >
-                            {/* STRidER's own qualifier, verbatim, e.g. "(MainstAY only)". */}
+                            {/* STRidER's own qualifier, verbatim, e.g. "(Included in range of DYS460)". */}
                             {kit.note ? `${kit.name} (${kit.note})` : kit.name}
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="text-xs">
-                          {s("kitRange", {
-                            chrom: kit.chrom,
-                            start: formatInt(kit.start),
-                            end: formatInt(kit.end),
-                            length: formatInt(kit.length),
-                          })}
+                          <p>
+                            {s("kitRange", {
+                              chrom: kit.chrom,
+                              start: formatInt(kit.start),
+                              end: formatInt(kit.end),
+                              length: formatInt(kit.length),
+                            })}
+                          </p>
+                          {kit.name !== kit.fssgColumn && (
+                            <p className="mt-1">
+                              {s("kitColumn", { column: kit.fssgColumn })}
+                            </p>
+                          )}
                         </TooltipContent>
                       </Tooltip>
                     </li>
                   ))}
                 </ul>
               </TooltipProvider>
+            </div>
+          )}
+          {fssg.notes && (
+            <div className="space-y-1 sm:col-span-2">
+              <Label className="text-xs font-normal text-muted-foreground">
+                {s("fssgNotesLabel")}
+              </Label>
+              <p className="text-sm text-foreground" lang="en">
+                {fssg.notes}
+              </p>
             </div>
           )}
         </div>

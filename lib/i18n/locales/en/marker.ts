@@ -375,6 +375,8 @@ marker: {
     basePairs: "{n} bp",
     kitsLabel: "MPS kits covering this locus",
     kitRange: "Sequenced range: {chrom}:{start}-{end} · {length} bp",
+    kitColumn: "FSSG column: {column}. The FSSG restricts this locus to the kit shown.",
+    fssgNotesLabel: "Notes from the FSSG",
     frequenciesTitle: "Allele frequencies at a glance",
     frequenciesIntro:
       "Most common allele per population group, with its frequency and the sample size, in the capillary electrophoresis data of",

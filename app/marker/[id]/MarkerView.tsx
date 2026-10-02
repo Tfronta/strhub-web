@@ -715,20 +715,24 @@ export function MarkerView({
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <div className="mb-4 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
-            <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
-            <span>
-              {renderBold(t("marker.freqReportingNote"))}{" "}
-              <a
-                href="https://strider.online/frequencies"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline"
-              >
-                {t("marker.freqStriderPilotLink")}
-              </a>
-            </span>
-          </div>
+          {/* About the pop.STR / 1000G / RAO sets and STRidER's autosomal pilot;
+              X-STR pages use only published X-STR tables, so it does not apply. */}
+          {!isXSTR && (
+            <div className="mb-4 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
+              <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+              <span>
+                {renderBold(t("marker.freqReportingNote"))}{" "}
+                <a
+                  href="https://strider.online/frequencies"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  {t("marker.freqStriderPilotLink")}
+                </a>
+              </span>
+            </div>
+          )}
           <div className="space-y-4">
             <div className="flex items-center justify-between gap-2 flex-wrap border-b border-border pb-3">
               {selectedTechnology !== "NGS" && (

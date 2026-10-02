@@ -4,7 +4,7 @@ import names from "@/data/strnaming_names.json";
 import { markerData } from "@/lib/markerData";
 import { FSSG_MARKERS } from "@/app/tools/str-motif-explorer/data/fssgData";
 
-type Row = { h: string; name: string | null; status: string };
+type Row = { h: string; name: string | null; status: string; isfg?: string; heldCe?: string };
 const strbase = names.strbase as Record<string, Row[]>;
 const reference = names.reference as Record<string, string>;
 const markers = markerData as unknown as Record<string, { sequences: { allele: string; sequence: string }[] }>;
@@ -30,6 +30,22 @@ describe("STRNaming names (data/strnaming_names.json)", () => {
         }
         const ce = ceOf(row.name ?? "");
         expect(Number(ce), `${id}[${i}] ${row.name}`).toBe(Number(markers[id].sequences[i].allele));
+      });
+    }
+  });
+
+  it("stores the ISFG window that produced each name, cut from the STRbase sequence", () => {
+    for (const [id, rows] of Object.entries(strbase)) {
+      rows.forEach((row, i) => {
+        const where = `${id}[${i}]`;
+        if (row.status === "not_covered") {
+          expect(row.isfg, where).toBeUndefined();
+          return;
+        }
+        expect(markers[id].sequences[i].sequence.toUpperCase(), where).toContain(row.isfg);
+        if (row.status === "held") {
+          expect(Number(row.heldCe), where).not.toBe(Number(markers[id].sequences[i].allele));
+        }
       });
     }
   });

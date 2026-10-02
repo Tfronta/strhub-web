@@ -4,7 +4,7 @@
 // it is part of the server-rendered HTML that search engines index.
 
 import Link from "next/link";
-import { BarChart3, Database, Link2, Waypoints } from "lucide-react";
+import { BarChart3, CircleDashed, Database, Link2, Waypoints } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -176,44 +176,77 @@ function FssgComponentFields({ component, s }: { component: FssgComponentSummary
           </Label>
           <TooltipProvider delayDuration={100}>
             <ul className="flex flex-wrap gap-1">
-              {component.kits.map((kit) => (
-                <li key={kit.fssgColumn}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Badge
-                        variant="secondary"
-                        className="cursor-help text-xs font-normal px-2 py-0.5 bg-muted text-foreground border-0"
-                      >
-                        {/* STRidER's own qualifier, verbatim, e.g. "(Included in range of DYS460)". */}
-                        {kit.note ? `${kit.name} (${kit.note})` : kit.name}
-                      </Badge>
-                    </TooltipTrigger>
-                    <TooltipContent className="text-xs">
-                      <p>
-                        {s("kitRange", {
-                          chrom: kit.chrom,
-                          start: formatInt(kit.start),
-                          end: formatInt(kit.end),
-                          length: formatInt(kit.length),
-                        })}
-                      </p>
-                      {kit.reversedInSource && (
-                        <p className="mt-1">
-                          {s("kitReversed", {
-                            from: formatInt(kit.end),
-                            to: formatInt(kit.start),
+              {component.kits.map((kit) => {
+                const partial = kit.coversMinimum === false;
+                return (
+                  <li key={kit.fssgColumn}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Badge
+                          variant="secondary"
+                          className={
+                            partial
+                              ? "cursor-help gap-1 text-xs font-normal px-2 py-0.5 bg-amber-50 text-amber-900 border border-amber-300 dark:bg-amber-950/30 dark:text-amber-200 dark:border-amber-800"
+                              : "cursor-help text-xs font-normal px-2 py-0.5 bg-muted text-foreground border-0"
+                          }
+                        >
+                          {partial && <CircleDashed className="h-3 w-3 shrink-0" aria-hidden />}
+                          {/* STRidER's own qualifier, verbatim, e.g. "(Included in range of DYS460)". */}
+                          {kit.note ? `${kit.name} (${kit.note})` : kit.name}
+                          {partial && <span className="sr-only">{` (${s("kitPartialMinimum")})`}</span>}
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent className="text-xs max-w-sm">
+                        <p>
+                          {s("kitRange", {
+                            chrom: kit.chrom,
+                            start: formatInt(kit.start),
+                            end: formatInt(kit.end),
+                            length: formatInt(kit.length),
                           })}
                         </p>
-                      )}
-                      {kit.name !== kit.fssgColumn && (
-                        <p className="mt-1">{s("kitColumn", { column: kit.fssgColumn })}</p>
-                      )}
-                    </TooltipContent>
-                  </Tooltip>
-                </li>
-              ))}
+                        {component.minimumRange && (
+                          <p>
+                            {s("kitMinimumRange", {
+                              chrom: component.minimumRange.chrom,
+                              start: formatInt(component.minimumRange.start),
+                              end: formatInt(component.minimumRange.end),
+                              length: formatInt(component.minimumRange.lengthBp),
+                            })}
+                          </p>
+                        )}
+                        {kit.coversMinimum != null && (
+                          <p className="mt-1 font-semibold">
+                            {s(kit.coversMinimum ? "kitCoversMinimum" : "kitPartialMinimum")}
+                          </p>
+                        )}
+                        {kit.reversedInSource && (
+                          <p className="mt-1">
+                            {s("kitReversed", {
+                              from: formatInt(kit.end),
+                              to: formatInt(kit.start),
+                            })}
+                          </p>
+                        )}
+                        <p className="mt-1">{s("kitColumn", { column: kit.fssgHeader })}</p>
+                        {kit.name !== kit.fssgColumn && <p>{s("kitRestricted")}</p>}
+                      </TooltipContent>
+                    </Tooltip>
+                  </li>
+                );
+              })}
             </ul>
           </TooltipProvider>
+          {component.minimumRange && component.kits.some((kit) => kit.coversMinimum === false) && (
+            <p className="flex items-start gap-1.5 pt-1 text-xs text-muted-foreground leading-relaxed">
+              <CircleDashed className="mt-0.5 h-3 w-3 shrink-0 text-amber-700 dark:text-amber-300" aria-hidden />
+              <span>
+                {s("kitPartialLegend", {
+                  range: `${component.minimumRange.chrom}:${formatInt(component.minimumRange.start)}-${formatInt(component.minimumRange.end)}`,
+                })}
+              </span>
+            </p>
+          )}
         </div>
       )}
       {component.notes && (

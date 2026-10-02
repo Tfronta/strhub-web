@@ -98,8 +98,10 @@ export type FssgComponentSummary = {
   kits: Array<{
     /** The product the range applies to: the FSSG column header, narrowed where the FSSG itself narrows it (see kitProduct). */
     name: string;
-    /** The FSSG column header, verbatim. */
+    /** The FSSG column key, e.g. "PowerSeq 46GY". */
     fssgColumn: string;
+    /** The full FSSG column header, verbatim, with the software that defines the range. */
+    fssgHeader: string;
     chrom: string;
     start: number;
     end: number;
@@ -108,6 +110,12 @@ export type FssgComponentSummary = {
     note: string | null;
     /** The FSSG writes this range high coordinate first (reverse strand). */
     reversedInSource: boolean;
+    /**
+     * Whether the kit range, as the FSSG gives it, contains the row's whole ISFG
+     * minimum range. A comparison of two published ranges, not a measure of
+     * assay performance; null when the row has no minimum range.
+     */
+    coversMinimum: boolean | null;
   }>;
   /** The row's Notes cell, verbatim, in English as STRidER writes it. */
   notes: string | null;
@@ -204,6 +212,17 @@ export function fssgFor(id: string): FssgMarker[] {
   return loci.flatMap((locus) => (locus && FSSG_MARKERS[locus] ? [FSSG_MARKERS[locus]] : []));
 }
 
+// The FSSG kit columns, headed with the software or file that defines each range.
+const FSSG_KIT_HEADERS: Record<string, string> = {
+  "PowerSeq 46GY": "PowerSeq 46GY (GeneMarker HTS 2.6.1)",
+  "ForenSeq Signature Prep/Plus and MainstAY":
+    "ForenSeq Signature Prep/Plus and MainstAY (UAS v 2.7 Maximum Range from Flanking Region Report)",
+  "Precision ID GlobalFiler NGS STR Panel v2":
+    "Precision ID GlobalFiler NGS STR Panel v2 (TSS plug-in .bed file)",
+  "IDSeek OmniSTR Global": "IDSeek OmniSTR Global (personal communication)",
+  "IDSeek mYSTR": "IDSeek mYSTR (personal communication)",
+};
+
 // "See DYS385b sequence", "See DYS389I sequence", "See DYF387S1 fragment 1 formatting".
 const isPointer = (text: string | null) => text != null && /^See\s/i.test(text);
 
@@ -228,11 +247,17 @@ function fssgComponent(row: FssgMarker): FssgComponentSummary {
     kits: Object.entries(row.kits ?? {}).map(([column, range]) => ({
       ...kitProduct(column, range.note ?? null, row.notes),
       fssgColumn: column,
+      fssgHeader: FSSG_KIT_HEADERS[column] ?? column,
       chrom: range.chrom,
       start: range.start,
       end: range.end,
       length: range.length,
       reversedInSource: range.reversedInSource === true,
+      coversMinimum: row.minimumRange
+        ? range.chrom === row.minimumRange.chrom &&
+          range.start <= row.minimumRange.start &&
+          range.end >= row.minimumRange.end
+        : null,
     })),
     notes: row.notes,
   };

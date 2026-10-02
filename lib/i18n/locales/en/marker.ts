@@ -87,6 +87,11 @@ marker: {
     region: {
       latam: "LAT",
     },
+    xstr: {
+      populationLabel: "Population",
+      noTables:
+        "No published X-STR allele frequency table has been added to STRhub for this locus yet.",
+    },
     datasetNotes: {
       provenance:
         "These frequencies are derived from the STRs Local dataset of the SP-SMART portal (CESGA), comprising 3,809 genotyped individuals from diverse populations.",

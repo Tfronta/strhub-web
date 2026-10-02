@@ -87,6 +87,11 @@ marker: {
     region: {
       latam: "LAT",
     },
+    xstr: {
+      populationLabel: "População",
+      noTables:
+        "Ainda não foi incorporada ao STRhub uma tabela publicada de frequências alélicas de X-STR para este locus.",
+    },
     datasetNotes: {
       provenance:
         "Essas frequências são derivadas do conjunto de dados STRs Local do portal SP-SMART (CESGA), que inclui 3.809 indivíduos genotipados de populações diversas.",

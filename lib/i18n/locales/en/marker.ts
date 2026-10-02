@@ -377,6 +377,13 @@ marker: {
     kitRange: "Sequenced range: {chrom}:{start}-{end} · {length} bp",
     kitColumn: "FSSG column: {column}. The FSSG restricts this locus to the kit shown.",
     fssgNotesLabel: "Notes from the FSSG",
+    ceEquivalentLabel: "CE equivalent of the GRCh38 reference (FSSG)",
+    crossReferenceLabel: "Sequence given by reference in the FSSG",
+    crossReferenceNote:
+      "The FSSG gives this row's sequence by pointing to another row instead of writing it out. STRhub shows no STRNaming name here until that sequence is resolved and reviewed.",
+    kitReversed: "Written in the FSSG from {from} to {to} (reverse strand).",
+    multiCopyIntro:
+      "This locus has two copies in GRCh38, and the FSSG describes each one in its own row: {copies}. The ranges, CE equivalents and names below belong to the copy named above each block. A typing result usually lists the two alleles of the locus together; their order does not say which physical copy each one comes from.",
     frequenciesTitle: "Allele frequencies at a glance",
     frequenciesIntro:
       "Most common allele per population group, with its frequency and the sample size, in the capillary electrophoresis data of",

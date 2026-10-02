@@ -77,6 +77,42 @@ export type FrequencyTable = {
   rows: Array<{ allele: string; byPop: Partial<Record<CEPop, number>> }>;
 };
 
+/** One FSSG row ("Common Locus Information"), as shown on a marker page. */
+export type FssgComponentSummary = {
+  /** The FSSG row name, e.g. "TPOX" or "DYS385 a". */
+  locus: string;
+  /** CE equivalent of the GRCh38 reference allele, as the FSSG gives it. */
+  ce: string | null;
+  canonicalBracketing: string[];
+  historicalBracketing: string | null;
+  minimumRange: { chrom: string; start: number; end: number; lengthBp: number } | null;
+  /** STRNaming 1.2.1 name of the GRCh38 reference allele over the ISFG minimum range, e.g. "CE13_TCTA[13]". */
+  referenceName: string | null;
+  /**
+   * The FSSG's pointers, verbatim, when the row gives its sequence or bracketing
+   * by reference to another row ("See DYS385b sequence"). No name is generated
+   * for such a row: the pointer is shown instead.
+   */
+  crossReference: { sequence: string | null; formatting: string | null } | null;
+  /** MPS kits whose amplicon covers the locus, per STRidER's FSSG, each with the range it sequences (GRCh38). */
+  kits: Array<{
+    /** The product the range applies to: the FSSG column header, narrowed where the FSSG itself narrows it (see kitProduct). */
+    name: string;
+    /** The FSSG column header, verbatim. */
+    fssgColumn: string;
+    chrom: string;
+    start: number;
+    end: number;
+    length: number;
+    /** STRidER's qualifier from the same FSSG cell, verbatim (e.g. "Included in range of DYS460"), unless folded into name. */
+    note: string | null;
+    /** The FSSG writes this range high coordinate first (reverse strand). */
+    reversedInSource: boolean;
+  }>;
+  /** The row's Notes cell, verbatim, in English as STRidER writes it. */
+  notes: string | null;
+};
+
 export type MarkerSummary = {
   id: string;
   name: string;
@@ -95,28 +131,16 @@ export type MarkerSummary = {
   nomenclatureNote: boolean;
   grch38: GenomicSpan | null;
   grch37: GenomicSpan | null;
-  fssg: {
-    canonicalBracketing: string[];
-    historicalBracketing: string | null;
-    minimumRange: { chrom: string; start: number; end: number; lengthBp: number } | null;
-    /** STRNaming 1.2.1 name of the GRCh38 reference allele over the ISFG minimum range, e.g. "CE13_TCTA[13]". */
-    referenceName: string | null;
-    /** MPS kits whose amplicon covers the locus, per STRidER's FSSG, each with the range it sequences (GRCh38). */
-    kits: Array<{
-      /** The product the range applies to: the FSSG column header, narrowed where the FSSG itself narrows it (see kitProduct). */
-      name: string;
-      /** The FSSG column header, verbatim. */
-      fssgColumn: string;
-      chrom: string;
-      start: number;
-      end: number;
-      length: number;
-      /** STRidER's qualifier from the same FSSG cell, verbatim (e.g. "Included in range of DYS460"), unless folded into name. */
-      note: string | null;
-    }>;
-    /** The row's Notes cell, verbatim, in English as STRidER writes it. */
-    notes: string | null;
-  } | null;
+  /**
+   * On a multi-copy locus, the FSSG copy whose GRCh38 full range holds the
+   * STRBase coordinates (DYS385ab: "DYS385 b"); null elsewhere.
+   */
+  coordinatesCopy: string | null;
+  /**
+   * The FSSG rows for this marker: one for most loci, one per physical copy for
+   * the two multi-copy loci (DYS385 a/b, DYF387S1 fragments 1/2).
+   */
+  fssg: { components: FssgComponentSummary[] } | null;
   ce: { populations: PopulationSummary[]; table: FrequencyTable } | null;
   ngs: { populations: string[]; hasRao: boolean } | null;
   variants: { count: number; alleles: string[] } | null;
@@ -126,7 +150,8 @@ export type MarkerSummary = {
    */
   variantNames: Array<{ name: string | null; status: VariantNameStatus }> | null;
   related: { sameChromosome: MarkerLink[]; sameKind: MarkerLink[] };
-  tools: { motifExplorer: boolean; igv: boolean };
+  /** motifExplorer: the FSSG row the Motif Explorer link opens (e.g. "DYS385 b"), or null. */
+  tools: { motifExplorer: string | null; igv: boolean };
 };
 
 // markerData is typed from an `as const` literal; read it through a loose view.
@@ -158,11 +183,11 @@ export function markerKind(category: string): MarkerKind {
 }
 
 // FSSG rows are keyed by display name ("Penta E", "Y-GATA-H4", "DYS385 b");
-// markerData by a slug. Match on a stripped lowercase form, with the few rows
-// whose slug differs from the name listed by hand.
-const FSSG_ALIASES: Record<string, string> = {
-  dys385ab: "DYS385 b",
-  dyf387s1: "DYF387S1 fragment 1",
+// markerData by a slug. Match on a stripped lowercase form. The two multi-copy
+// loci have one marker page and one FSSG row per physical copy, listed here.
+const FSSG_COMPONENTS: Record<string, string[]> = {
+  dys385ab: ["DYS385 a", "DYS385 b"],
+  dyf387s1: ["DYF387S1 fragment 1", "DYF387S1 fragment 2"],
 };
 
 const fssgByStrippedName: Record<string, string> = Object.fromEntries(
@@ -172,11 +197,45 @@ const fssgByStrippedName: Record<string, string> = Object.fromEntries(
   ])
 );
 
-export function fssgFor(id: string): FssgMarker | null {
+/** The FSSG rows for a marker id, in FSSG order; empty when the FSSG has none. */
+export function fssgFor(id: string): FssgMarker[] {
   const key = id.toLowerCase();
-  const locus =
-    FSSG_ALIASES[key] ?? fssgByStrippedName[key.replace(/[\s_-]/g, "")];
-  return locus ? (FSSG_MARKERS[locus] ?? null) : null;
+  const loci = FSSG_COMPONENTS[key] ?? [fssgByStrippedName[key.replace(/[\s_-]/g, "")]];
+  return loci.flatMap((locus) => (locus && FSSG_MARKERS[locus] ? [FSSG_MARKERS[locus]] : []));
+}
+
+// "See DYS385b sequence", "See DYS389I sequence", "See DYF387S1 fragment 1 formatting".
+const isPointer = (text: string | null) => text != null && /^See\s/i.test(text);
+
+function fssgComponent(row: FssgMarker): FssgComponentSummary {
+  const sequence = isPointer(row.sequenceReference) ? row.sequenceReference : null;
+  const formatting = isPointer(row.canonicalReference) ? row.canonicalReference : null;
+  return {
+    locus: row.locus,
+    ce: row.ce != null ? String(row.ce) : null,
+    canonicalBracketing: row.canonicalBracketing,
+    historicalBracketing: row.historicalBracketing,
+    minimumRange: row.minimumRange
+      ? {
+          chrom: row.minimumRange.chrom,
+          start: row.minimumRange.start,
+          end: row.minimumRange.end,
+          lengthBp: row.minimumRange.length ?? row.minimumRange.end - row.minimumRange.start + 1,
+        }
+      : null,
+    referenceName: STRNAMING.reference[row.locus] ?? null,
+    crossReference: sequence || formatting ? { sequence, formatting } : null,
+    kits: Object.entries(row.kits ?? {}).map(([column, range]) => ({
+      ...kitProduct(column, range.note ?? null, row.notes),
+      fssgColumn: column,
+      chrom: range.chrom,
+      start: range.start,
+      end: range.end,
+      length: range.length,
+      reversedInSource: range.reversedInSource === true,
+    })),
+    notes: row.notes,
+  };
 }
 
 // The FSSG has one ForenSeq column, headed "ForenSeq Signature Prep/Plus and
@@ -215,7 +274,7 @@ export function markerHasContent(id: string): boolean {
     (marker.sequences?.length ?? 0) > 0 ||
     key in markerFrequenciesCE ||
     key in markerFrequenciesNGS ||
-    fssgFor(key) !== null
+    fssgFor(key).length > 0
   );
 }
 
@@ -331,19 +390,36 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
   const marker = rawMarkers[key];
   if (!marker) return null;
 
-  const fssg = fssgFor(key);
+  const fssgRows = fssgFor(key);
   // STRBase's GRCh38 reference allele, replaced by STRidER's CE equivalent when
   // the FSSG has one. They agree everywhere except D6S474, where our STRBase copy
   // counts with the Hill motif (17) and the FSSG uses the harmonized Becker
   // designation (16) recommended by Bodner et al. 2024 (FSI Genet 70:103012).
-  // Loci without a STRBase value show none, so one FSSG row of the two-copy
-  // DYF387S1 is never shown as the locus reference allele.
+  // Loci without a STRBase value show none (DYF387S1, DYS389II). For DYS385ab
+  // STRBase gives one value (11, copy b); the FSSG gives each copy its own, so
+  // both are shown with the copy they belong to.
   const nistReferenceAllele =
     marker.nistReference?.referenceAllele != null
       ? String(marker.nistReference.referenceAllele)
       : null;
+  const fssgCe = fssgRows.filter((row) => row.ce != null);
   const referenceAllele =
-    nistReferenceAllele != null && fssg?.ce != null ? String(fssg.ce) : nistReferenceAllele;
+    nistReferenceAllele == null || fssgCe.length === 0
+      ? nistReferenceAllele
+      : fssgRows.length > 1
+        ? fssgCe.map((row) => `${row.ce} (${row.locus})`).join(" · ")
+        : String(fssgCe[0].ce);
+
+  const grch38 = span(marker.coordinates?.start ?? null, marker.coordinates?.end ?? null);
+  const coordinatesCopy =
+    fssgRows.length > 1 && grch38
+      ? (fssgRows.find(
+          (row) =>
+            row.fullRange != null &&
+            grch38.start >= row.fullRange.start &&
+            grch38.end <= row.fullRange.end
+        )?.locus ?? null)
+      : null;
 
   const sequences = marker.sequences ?? [];
   const variantAlleles = [...new Set(sequences.map((s) => s.allele))].sort(sortAlleles);
@@ -359,37 +435,13 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
     kind: markerKind(marker.category),
     referenceAllele,
     nomenclatureNote: HARMONIZED_NOMENCLATURE.has(key),
-    grch38: span(marker.coordinates?.start ?? null, marker.coordinates?.end ?? null),
+    grch38,
     grch37: span(
       marker.coordinates?.grch37?.start ?? null,
       marker.coordinates?.grch37?.end ?? null
     ),
-    fssg: fssg
-      ? {
-          canonicalBracketing: fssg.canonicalBracketing,
-          historicalBracketing: fssg.historicalBracketing,
-          minimumRange: fssg.minimumRange
-            ? {
-                chrom: fssg.minimumRange.chrom,
-                start: fssg.minimumRange.start,
-                end: fssg.minimumRange.end,
-                lengthBp:
-                  fssg.minimumRange.length ??
-                  fssg.minimumRange.end - fssg.minimumRange.start + 1,
-              }
-            : null,
-          referenceName: STRNAMING.reference[fssg.locus] ?? null,
-          kits: Object.entries(fssg.kits ?? {}).map(([column, range]) => ({
-            ...kitProduct(column, range.note ?? null, fssg.notes),
-            fssgColumn: column,
-            chrom: range.chrom,
-            start: range.start,
-            end: range.end,
-            length: range.length,
-          })),
-          notes: fssg.notes,
-        }
-      : null,
+    coordinatesCopy,
+    fssg: fssgRows.length > 0 ? { components: fssgRows.map(fssgComponent) } : null,
     ce: ceSummary(key),
     ngs: ngsSummary(key),
     variants:
@@ -399,7 +451,7 @@ export function buildMarkerSummary(id: string): MarkerSummary | null {
     variantNames: variantNamesFor(key, sequences.length),
     related: relatedMarkers(key, marker),
     tools: {
-      motifExplorer: fssg ? isDisplayable(fssg) : false,
+      motifExplorer: fssgRows.find(isDisplayable)?.locus ?? null,
       igv: IGV_MARKER_IDS.has(key),
     },
   };

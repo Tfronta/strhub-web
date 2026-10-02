@@ -275,6 +275,6 @@ export const toolsDetailsData: ToolDetails[] = [
     paper_doi: "https://doi.org/10.1016/j.fsigen.2018.07.006",
     last_checked: "2025-11-06",
     notes:
-      "ToaSTR is a browser-based forensic STR genotyping tool for MPS data, with sequence-aware stutter modeling, automatic allele calling, and ISFG-compliant PDF reporting. The Dockerized distribution (labconowl/toastr) runs on macOS, Windows, and Linux. Integrated into STRhub for forensic STR analysis and reference validation.",
+      "ToaSTR is a browser-based forensic STR genotyping tool for MPS data, with sequence-aware stutter modeling, automatic allele calling, and PDF reporting. The Dockerized distribution (labconowl/toastr) runs on macOS, Windows, and Linux. Integrated into STRhub for forensic STR analysis and reference validation.",
   },
 ];

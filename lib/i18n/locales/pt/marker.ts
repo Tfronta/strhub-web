@@ -61,7 +61,8 @@ marker: {
   nistVerified: "Verificado NIST",
   alleleFreqDistribution: "Distribuição de Frequência de Alelos",
   freqReportingNote:
-    "Os conjuntos de frequências rotulados como NGS foram gerados com sequenciamento e ferramentas de genotipagem específicas para STRs, mas ainda são reportados por **tamanho de fragmento** (alelos baseados em comprimento), não por sequência. As frequências baseadas em sequência por marcador serão incorporadas quando esses dados estiverem publicados e validados.",
+    "Os conjuntos de frequências rotulados como NGS foram gerados com sequenciamento e ferramentas de genotipagem específicas para STRs, mas ainda são reportados por **tamanho de fragmento** (alelos baseados em comprimento), não por sequência. O STRhub ainda não integra tabelas de frequências por sequência. O STRidER publicou um conjunto piloto por sequência (Países Baixos, 28 loci, junho de 2026, em formato preliminar); incorporá-lo requer revisão e versionamento.",
+  freqStriderPilotLink: "Frequências no STRidER",
   freqDescription: "Dados de frequência populacional para diferentes alelos",
   dataSource: "Fonte de dados: STRBase – NIST",
   ocePopulationInfo:
@@ -344,7 +345,7 @@ marker: {
           "Interface web inativa em alguns servidores legados.",
       },
       notes:
-        "ToaSTR é uma ferramenta forense de genotipagem STR baseada em navegador para dados MPS, com modelagem de stutter sensível à sequência, chamada automática de alelos e relatórios PDF conformes com ISFG. A distribuição em Docker (labconowl/toastr) funciona em macOS, Windows e Linux. Integrada ao STRhub para análise STR forense e validação de referências.",
+        "ToaSTR é uma ferramenta forense de genotipagem STR baseada em navegador para dados MPS, com modelagem de stutter sensível à sequência, chamada automática de alelos e relatórios em PDF. A distribuição em Docker (labconowl/toastr) funciona em macOS, Windows e Linux. Integrada ao STRhub para análise STR forense e validação de referências.",
     },
   },
   summary: {
@@ -374,6 +375,8 @@ marker: {
     basePairs: "{n} pb",
     kitsLabel: "Kits MPS que cobrem este locus",
     kitRange: "Intervalo sequenciado: {chrom}:{start}-{end} · {length} bp",
+    kitColumn: "Coluna do FSSG: {column}. O FSSG restringe este locus ao kit indicado.",
+    fssgNotesLabel: "Notas do FSSG (em inglês, como o STRidER as publica)",
     frequenciesTitle: "Frequências alélicas em resumo",
     frequenciesIntro:
       "Alelo mais frequente por grupo populacional, com sua frequência e o tamanho amostral, nos dados de eletroforese capilar do",

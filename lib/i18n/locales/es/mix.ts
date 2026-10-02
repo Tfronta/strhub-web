@@ -31,12 +31,12 @@ mixProfiles: {
     disclaimer:
       "Haplotipos individuales inferidos a partir de datos NGS de lecturas cortas Illumina mediante software especializado de genotipado de STRs (HipSTR, hg38), **mostrados únicamente con fines educativos.** Las secuencias de la región repetida siguen las recomendaciones vigentes de nomenclatura de secuencia de STRs de la ISFG (2024), vía STRNaming.",
     isfgLinkText: "Leer el paper original",
-    copySequence: "Copiar secuencia completa",
+    copySequence: "Copiar secuencia",
     copyRepeat: "Copiar nombre STRNaming",
     ceExplainAria: "Por qué la suma de repeticiones difiere del número de alelo",
     ceExplainTitle: "¿Por qué sumar las repeticiones no siempre da el número de alelo?",
     ceExplainBody:
-      "El número de alelo (CE) es la designación clásica por longitud. En algunos loci incluye un desfase fijo que viene de cómo se calibraron las escaleras alélicas originales. En vWA, por ejemplo, los 19 bloques de repetición menos 5 dan CE 14. STRNaming reporta el número CE junto con la estructura completa de la secuencia.",
+      "El número de alelo (CE) es la designación clásica por longitud. En algunos loci difiere del conteo de bloques por cómo se calibraron las escaleras alélicas originales. En vWA, por ejemplo, los 19 bloques de repetición sobre el ISFG minimum range corresponden a CE 14. La diferencia es propia de cada locus, así que sumar bloques no es una regla general. STRNaming reporta el número CE junto con la estructura completa de la secuencia.",
     ceExplainPaperLink: "Leé la explicación completa en el paper original",
     ceExplainToolLink: "Probalo en STRNaming",
     copiedSequence: "Copiado",
@@ -49,21 +49,19 @@ mixProfiles: {
     tableMixedSupport: "PDP o soporte de lecturas simulado",
     simulatedTag: "sim.",
     simulatedTagTitle: "Soporte de lecturas simulado, no PDP de HipSTR",
-    tableRepeatSequence: "Secuencia de Repetición",
+    tableRepeatSequence: "Nombre del alelo (STRNaming 1.2.1)",
     axisLabelAllele: "Alelo",
     axisLabelCoverage: "PDP sumado por alelo",
     axisLabelSimulated: "Soporte de lecturas simulado",
     axisLabelMixed: "PDP + soporte de lecturas simulado, sumados por alelo",
-    fullSequenceColumnLabel: "Secuencia completa",
-    fullSequenceTooltipAria: "Explicación sobre la secuencia completa del amplicón",
+    fullSequenceColumnLabel: "Secuencia (ISFG minimum range, GRCh38)",
+    fullSequenceTooltipAria: "Sobre la secuencia en el ISFG minimum range",
     fullSequenceNote:
-      "Secuencia sobre el rango reportado ISFG (GRCh38) que usa STRNaming: la región repetitiva más sus flancos inmediatos. Es exactamente el input que produce el nombre de Repeat Sequence.",
+      "Secuencia sobre el ISFG minimum range (FSSG v6.1, hebra directa de GRCh38) que usa STRNaming: la región repetitiva más las bases flanqueantes dentro de ese rango. Es exactamente el input que produce el nombre del alelo.",
     strnamingVerifyNote:
       "Para reproducir el nombre, pegá esta secuencia en STRNaming con el rango ISFG:",
-    fullSequenceDidacticNote:
-      "Los flancos no cuentan para el alelo CE; la región repetitiva es la utilizada para el llamado del alelo.",
     isoTooltip:
-      "Isoalelos en este ejemplo: misma designación alélica, distinta secuencia de repetición.",
+      "Isoalelos en este ejemplo: misma designación alélica, distinta secuencia dentro del ISFG minimum range.",
     pdpNote:
       "**PDP (HipSTR):** soporte fraccional de lecturas asignado a cada genotipo haploide. Los dos valores de PDP de un llamado suman DP, así que PDP no es una profundidad de secuenciación independiente por alelo. Los valores provienen de la corrida de HipSTR de cada muestra sola y no cambian con las proporciones de la mezcla.",
     simulatedNote:

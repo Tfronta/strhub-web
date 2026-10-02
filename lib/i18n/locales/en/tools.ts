@@ -339,7 +339,7 @@ tools: {
   toastr: {
     title: "toaSTR",
     description:
-      "Browser-based forensic STR genotyping tool for MPS data, with sequence-aware stutter modeling, automatic allele calling, and ISFG-compliant PDF reporting.",
+      "Browser-based forensic STR genotyping tool for MPS data, with sequence-aware stutter modeling, automatic allele calling, and PDF reporting.",
     tags: {
       category: "Genotyping",
       language: "Docker",
@@ -536,16 +536,16 @@ motifExplorerPage: {
   },
   sequence: {
     title: "Reference sequence (ISFG minimum range, GRCh38 forward strand)",
-    note: "Green blocks are the canonical repeat units over the minimum range. Amber blocks are interruptions or internal variants. Grey bases are the residual flanking sequence inside the reported window and are not counted toward the allele.",
+    note: "Colors show the structure of the reference sequence as STRidER segments it in the FSSG: green blocks are canonical repeat units, amber blocks are interruptions or internal variants, grey bases are flanking sequence inside the reported window. The coloring describes structure; it is not a formula for the CE number, which follows each locus's length convention.",
     legendRepeat: "Repeat unit",
     legendMinorRepeat: "Secondary repeat (lowercase)",
     legendInterruption: "Interruption / internal variant",
     legendFlank: "Flanking region",
-    flankMotifLabel: "Motif unit in flanking region, excluded from allele calling.",
-    repeatTooltip: "Canonical repeat that counts toward the allele size.",
+    flankMotifLabel: "Motif unit in the flanking region, outside the repeat bracketing.",
+    repeatTooltip: "Canonical repeat unit of the reference structure.",
     minorRepeatTooltip: "Secondary / variant repeat block: it repeats, but it is not the primary motif that names the allele.",
-    interruptionTooltip: "Interruption / internal variant; does not add repeats.",
-    flankTooltip: "Flanking sequence, not counted toward the allele.",
+    interruptionTooltip: "Interruption / internal variant; not counted as a repeat unit.",
+    flankTooltip: "Flanking sequence inside the reported window; variants here are named by position.",
     phaseNote:
       "The sequence structure (repeat, interruption, flank) follows STRidER's Forensic Sequence Structure Guide (FSSG v6.1); the ISFG / STRNaming name above is a complementary view, not a re-implementation of the naming rules. This section will be updated as STRidER and the official ISFG nomenclature guidance are revised.",
     notAligned:
@@ -554,7 +554,7 @@ motifExplorerPage: {
   kits: {
     title: "Kit ranges vs the minimum range",
     minimumRangeLabel: "ISFG minimum range",
-    note: "MPS kits usually sequence a wider window than the ISFG minimum range, so the same allele can look longer or shorter in raw kit output while its STRNaming name stays comparable.",
+    note: "Many MPS kits sequence a wider window than the ISFG minimum range, but not all of them cover it completely, so compare each kit range with the minimum range. Raw kit output can look longer or shorter, while names over the minimum range stay comparable.",
     clipped: "Extends beyond the stored reference window.",
     empty: "No kit range information for this marker.",
     bp: "bp",

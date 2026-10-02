@@ -339,7 +339,7 @@ tools: {
   toastr: {
     title: "toaSTR",
     description:
-      "Ferramenta forense de genotipagem STR baseada em navegador para dados MPS, com modelagem de stutter sensível à sequência, chamada automática de alelos e relatórios PDF conformes com ISFG.",
+      "Ferramenta forense de genotipagem STR baseada em navegador para dados MPS, com modelagem de stutter sensível à sequência, chamada automática de alelos e relatórios em PDF.",
     tags: {
       category: "Genotipagem",
       language: "Docker",
@@ -536,16 +536,16 @@ motifExplorerPage: {
   },
   sequence: {
     title: "Sequência de referência (ISFG minimum range, fita direta do GRCh38)",
-    note: "Os blocos verdes são as unidades canônicas de repetição sobre o minimum range. Os blocos âmbar são interrupções ou variantes internas. As bases cinzas são a sequência flanqueadora residual dentro da janela reportada e não contam para o alelo.",
+    note: "As cores mostram a estrutura da sequência de referência tal como o STRidER a segmenta no FSSG: os blocos verdes são unidades canônicas de repetição, os âmbar são interrupções ou variantes internas e as bases cinzas são sequência flanqueadora dentro da janela reportada. A coloração descreve a estrutura; não é uma fórmula para o número CE, que segue a convenção de comprimento de cada locus.",
     legendRepeat: "Unidade de repetição",
     legendMinorRepeat: "Repetição secundária (minúscula)",
     legendInterruption: "Interrupção / variante interna",
     legendFlank: "Região flanqueadora",
-    flankMotifLabel: "Unidade de motivo na região flanqueadora, excluída da chamada de alelo.",
-    repeatTooltip: "Repetição canônica que conta para o tamanho do alelo.",
+    flankMotifLabel: "Unidade de motivo na região flanqueadora, fora do bracketing de repetição.",
+    repeatTooltip: "Unidade de repetição canônica da estrutura de referência.",
     minorRepeatTooltip: "Bloco de repetição secundário / variante: repete, mas não é o motivo principal que nomeia o alelo.",
-    interruptionTooltip: "Interrupção / variante interna; não soma repetições.",
-    flankTooltip: "Sequência flanqueadora, não conta para o alelo.",
+    interruptionTooltip: "Interrupção / variante interna; não é contada como unidade de repetição.",
+    flankTooltip: "Sequência flanqueadora dentro da janela reportada; suas variantes são nomeadas por posição.",
     phaseNote:
       "A estrutura da sequência (repeat, interrupção, flanco) segue o Forensic Sequence Structure Guide do STRidER (FSSG v6.1); o nome ISFG / STRNaming acima é uma vista complementar, não uma reimplementação das regras de nomenclatura. Esta seção será atualizada conforme o STRidER e o guia oficial de nomenclatura ISFG forem revisados.",
     notAligned:
@@ -554,7 +554,7 @@ motifExplorerPage: {
   kits: {
     title: "Intervalos de kits vs o minimum range",
     minimumRangeLabel: "ISFG minimum range",
-    note: "Os kits MPS costumam sequenciar uma janela mais ampla que o ISFG minimum range, por isso o mesmo alelo pode parecer maior ou menor na saída bruta enquanto seu nome STRNaming permanece comparável.",
+    note: "Muitos kits MPS sequenciam uma janela mais ampla que o ISFG minimum range, mas nem todos o cobrem por completo, então compare cada intervalo de kit com o minimum range. A saída bruta pode parecer maior ou menor, enquanto os nomes sobre o minimum range permanecem comparáveis.",
     clipped: "Estende-se além da janela de referência armazenada.",
     empty: "Não há informação de intervalos de kits para este marcador.",
     bp: "pb",

@@ -61,7 +61,8 @@ marker: {
   nistVerified: "NIST Verified",
   alleleFreqDistribution: "Allele Frequency Distribution",
   freqReportingNote:
-    "The NGS-labelled frequency sets were generated with sequencing and STR-specific genotyping tools, but are still reported by **fragment size** (length-based alleles), not by sequence. Sequence-based per-marker frequencies will be added once published and validated.",
+    "The NGS-labelled frequency sets were generated with sequencing and STR-specific genotyping tools, but are still reported by **fragment size** (length-based alleles), not by sequence. STRhub does not yet integrate sequence-based frequency tables. STRidER has published a sequence-based pilot dataset (Netherlands, 28 loci, June 2026, preliminary format); adding it would require review and versioning.",
+  freqStriderPilotLink: "STRidER frequencies",
   freqDescription: "Population frequency data for different alleles",
   dataSource: "Data source: STRBase – NIST",
   ocePopulationInfo:
@@ -344,7 +345,7 @@ marker: {
           "Web interface inactive on some legacy servers.",
       },
       notes:
-        "ToaSTR is a browser-based forensic STR genotyping tool for MPS data, with sequence-aware stutter modeling, automatic allele calling, and ISFG-compliant PDF reporting. The Dockerized distribution (labconowl/toastr) runs on macOS, Windows, and Linux. Integrated into STRhub for forensic STR analysis and reference validation.",
+        "ToaSTR is a browser-based forensic STR genotyping tool for MPS data, with sequence-aware stutter modeling, automatic allele calling, and PDF reporting. The Dockerized distribution (labconowl/toastr) runs on macOS, Windows, and Linux. Integrated into STRhub for forensic STR analysis and reference validation.",
     },
   },
   summary: {
@@ -374,6 +375,8 @@ marker: {
     basePairs: "{n} bp",
     kitsLabel: "MPS kits covering this locus",
     kitRange: "Sequenced range: {chrom}:{start}-{end} · {length} bp",
+    kitColumn: "FSSG column: {column}. The FSSG restricts this locus to the kit shown.",
+    fssgNotesLabel: "Notes from the FSSG",
     frequenciesTitle: "Allele frequencies at a glance",
     frequenciesIntro:
       "Most common allele per population group, with its frequency and the sample size, in the capillary electrophoresis data of",

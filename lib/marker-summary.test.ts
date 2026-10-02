@@ -177,20 +177,43 @@ describe("reference allele", () => {
 describe("FSSG kit ranges", () => {
   const FORENSEQ = "ForenSeq Signature Prep/Plus and MainstAY";
   const forenseq = (id: string) =>
-    buildMarkerSummary(id)?.fssg?.kits.find((k) => k.name === FORENSEQ);
+    buildMarkerSummary(id)?.fssg?.kits.find((k) => k.fssgColumn === FORENSEQ);
 
-  it("includes the ForenSeq ranges whose FSSG cells carry a qualifier, kept verbatim", () => {
+  it("includes the ForenSeq ranges whose FSSG cells carry a qualifier", () => {
     // FSSG v6.1 (STRidER; distributed as FSSG_v6-1_beta.xlsx), Common Locus Information.
+    // "MainstAY only" in the cell names the kit; the badge says MainstAY, not both.
     expect(forenseq("se33")).toMatchObject({
-      chrom: "chr6", start: 88277130, end: 88277367, length: 238, note: "MainstAY only",
+      name: "ForenSeq MainstAY", note: null,
+      chrom: "chr6", start: 88277130, end: 88277367, length: 238,
     });
     expect(forenseq("dys393")).toMatchObject({
-      chrom: "chrY", start: 3263111, end: 3263183, length: 73, note: "MainstAY only",
+      name: "ForenSeq MainstAY", note: null,
+      chrom: "chrY", start: 3263111, end: 3263183, length: 73,
     });
     // DYS461's cell reads "Included in range of DYS460"; the range is DYS460's ForenSeq range.
     expect(forenseq("dys461")).toMatchObject({
       chrom: "chrY", start: 18888748, end: 18889046, length: 299, note: "Included in range of DYS460",
     });
+  });
+
+  it("does not claim MainstAY for the X-STRs the FSSG restricts to Signature Prep", () => {
+    // Each row's Notes: "Locus included ForenSeq Signature Prep only, not MainstAY".
+    const xStrs = ["dxs10074", "dxs10103", "dxs10135", "dxs7132", "dxs7423", "dxs8378", "hprtb"];
+    for (const id of xStrs) {
+      expect(forenseq(id)?.name, id).toBe("ForenSeq Signature Prep");
+    }
+    for (const id of indexableMarkerIds()) {
+      const notes = buildMarkerSummary(id)?.fssg?.notes ?? "";
+      if (!notes.includes("Signature Prep only, not MainstAY")) continue;
+      expect(xStrs, id).toContain(id);
+    }
+  });
+
+  it("carries the FSSG row notes verbatim", () => {
+    expect(buildMarkerSummary("hprtb")?.fssg?.notes).toBe(
+      "Locus included ForenSeq Signature Prep only, not MainstAY. Originally characterized on the reverse strand."
+    );
+    expect(buildMarkerSummary("d12ata63")?.fssg?.notes).toBeNull();
   });
 
   it("keeps every kit range well formed", () => {

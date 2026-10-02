@@ -13,6 +13,7 @@ import esMarker from "./i18n/locales/es/marker";
 import ptMarker from "./i18n/locales/pt/marker";
 import { markerFrequenciesCE } from "@/app/marker/[id]/markerFrequencies";
 import { markerStatisticsCE } from "@/app/marker/[id]/markerStatisticsCE";
+import { FSSG_MARKERS } from "@/app/tools/str-motif-explorer/data/fssgData";
 
 describe("markerHasContent / indexableMarkerIds", () => {
   it("keeps loci with coordinates, sequences, frequencies or an FSSG record", () => {
@@ -313,5 +314,39 @@ describe("multi-copy loci and FSSG cross-references", () => {
     expect(buildMarkerSummary("dys385ab")?.tools.motifExplorer).toBe("DYS385 b");
     expect(buildMarkerSummary("dyf387s1")?.tools.motifExplorer).toBe("DYF387S1 fragment 1");
     expect(buildMarkerSummary("dys389ii")?.tools.motifExplorer).toBeNull();
+  });
+});
+
+describe("kit coverage of the ISFG minimum range", () => {
+  const kit = (id: string, column: string, copy = 0) =>
+    buildMarkerSummary(id)?.fssg?.components[copy].kits.find((k) => k.fssgColumn === column);
+
+  it("flags kit ranges that start or end inside the minimum range", () => {
+    // TPOX minimum chr2:1,489,647-692; ForenSeq chr2:1,489,657-689 (FSSG v6.1).
+    expect(kit("tpox", "ForenSeq Signature Prep/Plus and MainstAY")?.coversMinimum).toBe(false);
+    // CSF1PO minimum starts at 150,076,318; IDSeek OmniSTR Global at 150,076,324.
+    expect(kit("csf1po", "IDSeek OmniSTR Global")?.coversMinimum).toBe(false);
+    expect(kit("tpox", "PowerSeq 46GY")?.coversMinimum).toBe(true);
+  });
+
+  it("counts the 56 partial kit and row pairs of the FSSG, the audit's count", () => {
+    let partial = 0;
+    for (const row of Object.values(FSSG_MARKERS)) {
+      const min = row.minimumRange;
+      if (!min) continue;
+      for (const range of Object.values(row.kits)) {
+        if (range.start > min.start || range.end < min.end) partial++;
+      }
+    }
+    expect(partial).toBe(56);
+  });
+
+  it("names every kit column with the full FSSG header, software version included", () => {
+    expect(kit("tpox", "PowerSeq 46GY")?.fssgHeader).toBe("PowerSeq 46GY (GeneMarker HTS 2.6.1)");
+    for (const id of indexableMarkerIds()) {
+      for (const c of buildMarkerSummary(id)?.fssg?.components ?? []) {
+        for (const k of c.kits) expect(k.fssgHeader, `${id} ${k.fssgColumn}`).not.toBe(k.fssgColumn);
+      }
+    }
   });
 });

@@ -76,10 +76,13 @@ export function isDisplayable(m: FssgMarker): boolean {
   return Boolean(m.minimumRangeSequence && m.canonicalBracketing.length);
 }
 
+// Classified by the FSSG chromosome, not the locus name: HPRTB is an X-STR
+// without a DXS prefix.
 function classOf(name: string): "autosomal" | "x" | "y" {
-  if (name.startsWith("DXS")) return "x";
-  if (name.startsWith("DYS") || name.startsWith("DYF") || name === "Y-GATA-H4")
-    return "y";
+  const m = FSSG_MARKERS[name];
+  const chrom = (m?.minimumRange ?? m?.fullRange)?.chrom;
+  if (chrom === "chrX") return "x";
+  if (chrom === "chrY") return "y";
   return "autosomal";
 }
 

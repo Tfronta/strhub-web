@@ -61,7 +61,8 @@ marker: {
   nistVerified: "Verificado NIST",
   alleleFreqDistribution: "Distribución de Frecuencia de Alelos",
   freqReportingNote:
-    "Los conjuntos de frecuencias etiquetados como NGS se generaron con secuenciación y herramientas de genotipado específicas para STRs, pero aún se reportan por **tamaño de fragmento** (alelos basados en longitud), no por secuencia. Las frecuencias basadas en secuencia por marcador se incorporarán cuando esos datos estén publicados y validados.",
+    "Los conjuntos de frecuencias etiquetados como NGS se generaron con secuenciación y herramientas de genotipado específicas para STRs, pero aún se reportan por **tamaño de fragmento** (alelos basados en longitud), no por secuencia. STRhub todavía no integra tablas de frecuencias por secuencia. STRidER publicó un conjunto piloto por secuencia (Países Bajos, 28 loci, junio de 2026, en formato preliminar); incorporarlo requiere revisión y versionado.",
+  freqStriderPilotLink: "Frecuencias en STRidER",
   freqDescription: "Datos de frecuencia poblacional para diferentes alelos",
   dataSource: "Fuente de datos: STRBase – NIST",
   ocePopulationInfo:
@@ -344,7 +345,7 @@ marker: {
           "Interfaz web inactiva en algunos servidores heredados.",
       },
       notes:
-        "ToaSTR es una herramienta forense de genotipado STR basada en navegador para datos MPS, con modelado de stutter consciente de la secuencia, llamada automática de alelos e informes PDF conformes con ISFG. La distribución en Docker (labconowl/toastr) se ejecuta en macOS, Windows y Linux. Integrada en STRhub para análisis STR forense y validación de referencias.",
+        "ToaSTR es una herramienta forense de genotipado STR basada en navegador para datos MPS, con modelado de stutter consciente de la secuencia, llamada automática de alelos e informes en PDF. La distribución en Docker (labconowl/toastr) se ejecuta en macOS, Windows y Linux. Integrada en STRhub para análisis STR forense y validación de referencias.",
     },
   },
   summary: {

@@ -25,9 +25,9 @@ type Entry = { term: string; short: string; anchor: string };
 
 export const NOMENCLATURE_GLOSSARY: Record<GlossaryTermKey, Record<Language, Entry>> = {
   ceAllele: {
-    en: { term: "CE allele", anchor: "ce-allele", short: "Length-based allele number from capillary electrophoresis (fragment size). The traditional, kit-independent designation, e.g. 8 or 9.3." },
-    es: { term: "Alelo CE", anchor: "ce-allele", short: "Número de alelo por longitud (electroforesis capilar). La designación tradicional, independiente del kit, ej. 8 o 9.3." },
-    pt: { term: "Alelo CE", anchor: "ce-allele", short: "Número de alelo por comprimento (eletroforese capilar). A designação tradicional, independente do kit, ex. 8 ou 9.3." },
+    en: { term: "CE allele", anchor: "ce-allele", short: "Length-based allele number from capillary electrophoresis (fragment size), e.g. 8 or 9.3. It follows the calibrated length convention of each locus; check compatibility between kits and systems, since a flanking indel inside the amplicon also changes the size." },
+    es: { term: "Alelo CE", anchor: "ce-allele", short: "Número de alelo por longitud (electroforesis capilar), ej. 8 o 9.3. Sigue la convención de longitud calibrada de cada locus; conviene verificar la compatibilidad entre kits y sistemas, porque un indel flanqueante dentro del amplicón también cambia el tamaño." },
+    pt: { term: "Alelo CE", anchor: "ce-allele", short: "Número de alelo por comprimento (eletroforese capilar), ex. 8 ou 9.3. Segue a convenção de comprimento calibrada de cada locus; convém verificar a compatibilidade entre kits e sistemas, porque um indel flanqueador dentro do amplicon também altera o tamanho." },
   },
   mpsAllele: {
     en: { term: "Sequence-based (MPS) allele", anchor: "mps-allele", short: "Allele defined by its actual sequence, not only length. Two alleles of the same CE size can differ in sequence." },
@@ -40,19 +40,19 @@ export const NOMENCLATURE_GLOSSARY: Record<GlossaryTermKey, Record<Language, Ent
     pt: { term: "Nome STRNaming", anchor: "strnaming-name", short: "Nome padronizado do alelo por sequência: CE<n>_ mais a estrutura em blocos MOTIF[n], mais as variantes de sequência." },
   },
   minimumRange: {
-    en: { term: "ISFG minimum range", anchor: "minimum-range", short: "The minimum genomic window the ISFG 2024 recommendations define for reporting a locus. It is the region common to all kits, so names stay comparable. STRhub reports on it." },
-    es: { term: "ISFG minimum range", anchor: "minimum-range", short: "La ventana genómica mínima que la recomendación ISFG 2024 define para reportar un locus. Es la región común a todos los kits, así los nombres son comparables. STRhub reporta sobre ella." },
-    pt: { term: "ISFG minimum range", anchor: "minimum-range", short: "A janela genômica mínima que a recomendação ISFG 2024 define para reportar um locus. É a região comum a todos os kits, mantendo os nomes comparáveis. O STRhub reporta sobre ela." },
+    en: { term: "ISFG minimum range", anchor: "minimum-range", short: "The minimum genomic window the ISFG 2024 recommendations define for reporting and comparing alleles by sequence. Not every kit covers it completely; any bases filled in from the reference should be flagged, with their source. STRhub reports on it." },
+    es: { term: "ISFG minimum range", anchor: "minimum-range", short: "La ventana genómica mínima que la recomendación ISFG 2024 define para reportar y comparar alelos por secuencia. No todos los kits la cubren completamente; si se completan bases desde la referencia, deben identificarse junto con su fuente. STRhub reporta sobre ella." },
+    pt: { term: "ISFG minimum range", anchor: "minimum-range", short: "A janela genômica mínima que a recomendação ISFG 2024 define para reportar e comparar alelos por sequência. Nem todos os kits a cobrem completamente; se bases forem completadas a partir da referência, devem ser identificadas junto com sua fonte. O STRhub reporta sobre ela." },
   },
   kitRange: {
-    en: { term: "Kit range", anchor: "kit-range", short: "The window a specific MPS kit actually sequences. It varies by kit and usually differs from the minimum range, so raw kit output can look longer or shorter." },
-    es: { term: "Kit range", anchor: "kit-range", short: "La ventana que realmente secuencia un kit MPS. Varía por kit y suele diferir del minimum range, por eso la salida cruda puede verse más larga o corta." },
-    pt: { term: "Kit range", anchor: "kit-range", short: "A janela que um kit MPS realmente sequencia. Varia por kit e costuma diferir do minimum range, por isso a saída bruta pode parecer maior ou menor." },
+    en: { term: "Kit range", anchor: "kit-range", short: "The window a specific MPS kit actually sequences. It varies by kit, usually differs from the minimum range and does not always cover all of it, so raw kit output can look longer or shorter." },
+    es: { term: "Kit range", anchor: "kit-range", short: "La ventana que realmente secuencia un kit MPS. Varía por kit, suele diferir del minimum range y no siempre lo cubre por completo, por eso la salida cruda puede verse más larga o corta." },
+    pt: { term: "Kit range", anchor: "kit-range", short: "A janela que um kit MPS realmente sequencia. Varia por kit, costuma diferir do minimum range e nem sempre o cobre por completo, por isso a saída bruta pode parecer maior ou menor." },
   },
   lengthAdjustment: {
-    en: { term: "Length adjustment", anchor: "length-adjustment", short: "A fixed per-locus offset (historical ladder calibration) that makes the CE number differ from the raw block count, e.g. vWA subtracts 5 repeats." },
-    es: { term: "Length adjustment", anchor: "length-adjustment", short: "Un offset fijo por locus (calibración histórica de la escalera) que hace que el número CE difiera del conteo crudo de bloques, ej. vWA resta 5 repeticiones." },
-    pt: { term: "Length adjustment", anchor: "length-adjustment", short: "Um deslocamento fixo por locus (calibração histórica da escada) que faz o número CE diferir da contagem bruta de blocos, ex. vWA subtrai 5 repetições." },
+    en: { term: "Length adjustment", anchor: "length-adjustment", short: "A per-locus offset (historical ladder calibration) that makes the CE number differ from the raw block count over the ISFG minimum range, e.g. in vWA 19 blocks give CE 14. It is specific to each locus, not a general rule." },
+    es: { term: "Length adjustment", anchor: "length-adjustment", short: "Un offset por locus (calibración histórica de la escalera) que hace que el número CE difiera del conteo crudo de bloques sobre el ISFG minimum range, ej. en vWA 19 bloques dan CE 14. Es propio de cada locus, no una regla general." },
+    pt: { term: "Length adjustment", anchor: "length-adjustment", short: "Um deslocamento por locus (calibração histórica da escada) que faz o número CE diferir da contagem bruta de blocos sobre o ISFG minimum range, ex. no vWA 19 blocos dão CE 14. É próprio de cada locus, não uma regra geral." },
   },
   isoallele: {
     en: { term: "Isoallele", anchor: "isoallele", short: "Two alleles with the same CE number but a different sequence within the reported range." },
@@ -60,14 +60,14 @@ export const NOMENCLATURE_GLOSSARY: Record<GlossaryTermKey, Record<Language, Ent
     pt: { term: "Isoalelo", anchor: "isoallele", short: "Dois alelos com o mesmo número CE mas sequência diferente dentro do intervalo reportado." },
   },
   coreRepeat: {
-    en: { term: "Core repeat region", anchor: "core-repeat", short: "The run of repeat units that defines the allele. Only these count toward the allele designation." },
-    es: { term: "Región core de repetición", anchor: "core-repeat", short: "El bloque de repeticiones que define el alelo. Solo estas cuentan para la designación." },
-    pt: { term: "Região core de repetição", anchor: "core-repeat", short: "O bloco de repetições que define o alelo. Apenas estas contam para a designação." },
+    en: { term: "Core repeat region", anchor: "core-repeat", short: "The run of repeat units that gives the allele its structure and most of its length variation. The CE number follows each locus's length convention, so adding up blocks does not always give it (e.g. vWA, D6S474)." },
+    es: { term: "Región core de repetición", anchor: "core-repeat", short: "El bloque de repeticiones que da al alelo su estructura y la mayor parte de su variación de longitud. El número CE sigue la convención de longitud de cada locus, así que sumar los bloques no siempre lo da (ej. vWA, D6S474)." },
+    pt: { term: "Região core de repetição", anchor: "core-repeat", short: "O bloco de repetições que dá ao alelo sua estrutura e a maior parte de sua variação de comprimento. O número CE segue a convenção de comprimento de cada locus, então somar os blocos nem sempre o dá (ex. vWA, D6S474)." },
   },
   flankingRegion: {
-    en: { term: "Flanking region", anchor: "flanking-region", short: "Sequence just outside the core repeat. It is not counted in the allele size, but it can carry variants named by position." },
-    es: { term: "Región flanqueante", anchor: "flanking-region", short: "Secuencia justo por fuera del core. No cuenta para el tamaño del alelo, pero puede llevar variantes nombradas por posición." },
-    pt: { term: "Região flanqueadora", anchor: "flanking-region", short: "Sequência logo fora do core. Não conta para o tamanho do alelo, mas pode carregar variantes nomeadas por posição." },
+    en: { term: "Flanking region", anchor: "flanking-region", short: "Sequence just outside the core repeat. It can carry SNPs and indels, named by position; an indel inside the amplicon changes the fragment length and can affect CE concordance." },
+    es: { term: "Región flanqueante", anchor: "flanking-region", short: "Secuencia justo por fuera del core. Puede llevar SNP e indels, nombrados por posición; un indel dentro del amplicón cambia la longitud del fragmento y puede afectar la concordancia con CE." },
+    pt: { term: "Região flanqueadora", anchor: "flanking-region", short: "Sequência logo fora do core. Pode carregar SNPs e indels, nomeados por posição; um indel dentro do amplicon altera o comprimento do fragmento e pode afetar a concordância com CE." },
   },
   strbaseSequence: {
     en: { term: "STRbase sequence", anchor: "mps-allele", short: "Full allele sequences catalogued by STRbase (NIST), reported over STRbase's own sequence window, which can differ from the ISFG minimum range used for STRNaming names. Ranges can vary between databases, so compare alleles with the sequence range in mind." },

@@ -31,12 +31,12 @@ mixProfiles: {
     disclaimer:
       "Individual haplotypes inferred from Illumina short-read NGS data using specialized STR genotyping software (HipSTR, hg38), **displayed for educational purposes only.** Repeat-region sequences follow the current ISFG STR sequence nomenclature recommendations (2024), via STRNaming.",
     isfgLinkText: "Read the original paper",
-    copySequence: "Copy full sequence",
+    copySequence: "Copy sequence",
     copyRepeat: "Copy STRNaming name",
     ceExplainAria: "Why the repeat count differs from the allele number",
     ceExplainTitle: "Why doesn't adding up the repeats always give the allele?",
     ceExplainBody:
-      "The allele number (CE) is the classic length-based designation. At some loci it includes a fixed offset that comes from how the original allelic ladders were calibrated. For vWA, for example, the 19 repeat blocks minus 5 give CE 14. STRNaming reports the CE number together with the full sequence structure.",
+      "The allele number (CE) is the classic length-based designation. At some loci it differs from the block count because of how the original allelic ladders were calibrated. For vWA, for example, the 19 repeat blocks over the ISFG minimum range correspond to CE 14. The difference is specific to each locus, so adding up blocks is not a general rule. STRNaming reports the CE number together with the full sequence structure.",
     ceExplainPaperLink: "Read the full explanation in the original paper",
     ceExplainToolLink: "Try it in STRNaming",
     copiedSequence: "Copied",
@@ -49,21 +49,19 @@ mixProfiles: {
     tableMixedSupport: "PDP or simulated read support",
     simulatedTag: "sim.",
     simulatedTagTitle: "Simulated read support, not HipSTR PDP",
-    tableRepeatSequence: "Repeat Sequence",
+    tableRepeatSequence: "Allele name (STRNaming 1.2.1)",
     axisLabelAllele: "Allele",
     axisLabelCoverage: "PDP summed per allele",
     axisLabelSimulated: "Simulated read support",
     axisLabelMixed: "PDP + simulated read support, summed per allele",
-    fullSequenceColumnLabel: "Full Sequence",
-    fullSequenceTooltipAria: "Explanation about full amplicon sequence",
+    fullSequenceColumnLabel: "Sequence (ISFG minimum range, GRCh38)",
+    fullSequenceTooltipAria: "About the sequence over the ISFG minimum range",
     fullSequenceNote:
-      "Sequence over the ISFG reported range (GRCh38) that STRNaming uses: the repeat region plus its immediate flanks. This is exactly the input that produces the Repeat Sequence name.",
+      "Sequence over the ISFG minimum range (FSSG v6.1, GRCh38 forward strand) that STRNaming uses: the repeat region plus the flanking bases inside that range. This is exactly the input that produces the allele name.",
     strnamingVerifyNote:
       "To reproduce the name, paste this sequence into STRNaming with the ISFG range:",
-    fullSequenceDidacticNote:
-      "Flanks do not count toward the CE allele call; the repeat region is what is used for allele calling.",
     isoTooltip:
-      "Isoalleles in this example: same allele designation, different repeat sequence.",
+      "Isoalleles in this example: same allele designation, different sequence within the ISFG minimum range.",
     pdpNote:
       "**PDP (HipSTR):** fractional read support assigned to each haploid genotype. The two PDP values of a call sum to DP, so PDP is not independent allele-specific sequencing depth. Values come from each sample's single-source HipSTR run and do not change with the mixture proportions.",
     simulatedNote:

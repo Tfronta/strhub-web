@@ -182,7 +182,7 @@ export function buildToolCards(t: (key: string) => string): ToolCard[] {
         t("tools.toastr.features.3"),
       ],
       input: "FASTQ (MPS reads)",
-      output: "Interactive allele calls and ISFG-compliant PDF reports",
+      output: "Interactive allele calls and PDF reports",
       github: "https://github.com/labconowl/toastr",
       publication: "https://www.fsigenetics.com/article/S1872-4973(18)30063-2/fulltext",
     },

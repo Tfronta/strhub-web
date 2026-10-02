@@ -26,7 +26,21 @@ export type VariantNameStatus = "ok" | "held" | "not_covered";
 
 type StrnamingNames = {
   reference: Record<string, string>;
-  strbase: Record<string, Array<{ h: string; name: string | null; status: VariantNameStatus }>>;
+  strbase: Record<
+    string,
+    Array<{ h: string; name: string | null; status: VariantNameStatus; isfg?: string; heldCe?: string }>
+  >;
+};
+
+/** One STRbase Variant Allele's STRNaming result. */
+export type VariantName = {
+  /** Published STRNaming name; null unless status is "ok". */
+  name: string | null;
+  status: VariantNameStatus;
+  /** The STRbase sequence cut to the ISFG minimum range: the exact STRNaming input. Null when not_covered. */
+  isfg: string | null;
+  /** For held rows, the CE STRNaming gives, which differs from the STRbase designation. */
+  heldCe: string | null;
 };
 // STRNaming 1.2.1 names over the ISFG minimum range, generated offline and
 // verified (see the file's `source` block). Only verified names are stored.
@@ -156,7 +170,7 @@ export type MarkerSummary = {
    * STRNaming names for the STRbase Variant Alleles, index-aligned with
    * markerData[id].sequences; name is null unless status is "ok".
    */
-  variantNames: Array<{ name: string | null; status: VariantNameStatus }> | null;
+  variantNames: VariantName[] | null;
   related: { sameChromosome: MarkerLink[]; sameKind: MarkerLink[] };
   /** motifExplorer: the FSSG row the Motif Explorer link opens (e.g. "DYS385 b"), or null. */
   tools: { motifExplorer: string | null; igv: boolean };
@@ -407,7 +421,12 @@ function relatedMarkers(id: string, marker: RawMarker): MarkerSummary["related"]
 function variantNamesFor(id: string, sequenceCount: number): MarkerSummary["variantNames"] {
   const rows = STRNAMING.strbase[id];
   if (!rows || rows.length !== sequenceCount) return null;
-  return rows.map(({ name, status }) => ({ name, status }));
+  return rows.map(({ name, status, isfg, heldCe }) => ({
+    name,
+    status,
+    isfg: isfg ?? null,
+    heldCe: heldCe ?? null,
+  }));
 }
 
 export function buildMarkerSummary(id: string): MarkerSummary | null {

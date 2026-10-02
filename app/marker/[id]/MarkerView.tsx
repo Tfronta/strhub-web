@@ -79,6 +79,17 @@ import { InfoTip } from "@/components/InfoTip";
 import { NomenclatureNote } from "@/components/NomenclatureNote";
 import { LATAMCatalog, type LatamSubpop } from "@/lib/latamCatalog";
 import { getDatasetConfig } from "./datasetConfig";
+import {
+  NGS_1000G,
+  NGS_RAO,
+  POPSTR_CE,
+  frequencyCsv,
+  frequencyCsvFilename,
+  variantAllelesCsv,
+  xstrSource,
+  type FrequencyRow,
+} from "./csvExport";
+import { FSSG_SOURCE } from "@/lib/fssgSource";
 import { cn } from "@/lib/utils";
 import type { MarkerSummary } from "@/lib/marker-summary";
 import {
@@ -127,6 +138,18 @@ const POPULATION_COLORS: Record<string, string> = {
 };
 
 const NGS_1000G_POPS = new Set(["AFR", "AMR", "EUR", "EAS", "SAS"]);
+
+function downloadCsv(content: string, filename: string) {
+  const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+}
 
 export function MarkerView({
   params,
@@ -1323,54 +1346,53 @@ export function MarkerView({
                     size="sm"
                     className="h-7 text-xs font-normal rounded-sm px-2"
                     onClick={() => {
+                      // One row per population and allele, with the dataset's
+                      // technology, allele type and source on every row.
                       if (showAllPopulations) {
-                        const csvContent = [
-                          [t("common.allele"), ...activeAllPops],
-                          ...activeAllChartData.map((item) => [
-                            item.allele,
-                            ...activeAllPops.map((pop) =>
-                              item[pop] != null
-                                ? Number(item[pop]).toFixed(4)
-                                : "",
-                            ),
-                          ]),
-                        ]
-                          .map((row) => row.join(","))
-                          .join("\n");
-
-                        const blob = new Blob([csvContent], {
-                          type: "text/csv",
+                        const ngs = isNgsAllMode;
+                        const rows: FrequencyRow[] = activeAllPops.flatMap((pop) => {
+                          const entries = (
+                            ngs
+                              ? markerFreqDataNGS?.[pop as keyof typeof markerFreqDataNGS]
+                              : marker?.populationFrequencies?.[
+                                  pop as keyof typeof marker.populationFrequencies
+                                ]
+                          ) as Array<{ allele: string; frequency: number; count?: number }> | undefined;
+                          return (entries ?? [])
+                            .filter((e) => e.frequency > 0)
+                            .map((e) => ({
+                              population: pop,
+                              allele: e.allele,
+                              frequency: e.frequency,
+                              count: e.count ?? null,
+                            }));
                         });
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement("a");
-                        a.href = url;
-                        a.download = `${marker.name}_ALL_${selectedTechnology}_frequencies.csv`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        window.URL.revokeObjectURL(url);
+                        downloadCsv(
+                          frequencyCsv(marker.name, rows, () => (ngs ? NGS_1000G : POPSTR_CE)),
+                          frequencyCsvFilename(marker.name, selectedTechnology, "ALL"),
+                        );
                       } else {
-                        const csvContent = [
-                          [t("common.allele"), t("common.frequency")],
-                          ...chartData.map((item) => [
-                            item.allele,
-                            item.frequency.toString(),
-                          ]),
-                        ]
-                          .map((row) => row.join(","))
-                          .join("\n");
-
-                        const blob = new Blob([csvContent], {
-                          type: "text/csv",
-                        });
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement("a");
-                        a.href = url;
-                        a.download = `${marker.name}_${selectedPopulation}_frequencies.csv`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        window.URL.revokeObjectURL(url);
+                        const source = isXSTR
+                          ? xstrSource(citationText, citationUrl)
+                          : selectedTechnology === "NGS"
+                            ? selectedPopulation === "RAO"
+                              ? NGS_RAO
+                              : NGS_1000G
+                            : POPSTR_CE;
+                        const rows: FrequencyRow[] = chartData.map((item) => ({
+                          population: selectedPopulation,
+                          allele: item.allele,
+                          frequency: item.frequency,
+                          count: item.count ?? null,
+                        }));
+                        downloadCsv(
+                          frequencyCsv(marker.name, rows, () => source),
+                          frequencyCsvFilename(
+                            marker.name,
+                            isXSTR ? "XSTR" : selectedTechnology,
+                            selectedPopulation,
+                          ),
+                        );
                       }
                     }}
                   >
@@ -2183,36 +2205,19 @@ export function MarkerView({
                       <Button
                         variant="default"
                         className="h-7 text-xs font-normal rounded-sm px-3"
-                        onClick={() => {
-                          const csvContent = [
-                            [
-                              t("marker.alleleDesignation"),
-                              ...(variantNames ? [t("marker.strnamingName")] : []),
-                              t("marker.sequence"),
-                            ],
-                            ...marker.sequences.map((seq, index) => [
-                              seq.allele,
-                              ...(variantNames ? [variantNames[index]?.name ?? ""] : []),
-                              seq.sequence,
-                            ]),
-                          ]
-                            .map((row) =>
-                              row.map((cell) => `"${cell}"`).join(","),
-                            )
-                            .join("\n");
-
-                          const blob = new Blob([csvContent], {
-                            type: "text/csv;charset=utf-8;",
-                          });
-                          const url = window.URL.createObjectURL(blob);
-                          const a = document.createElement("a");
-                          a.href = url;
-                          a.download = `${marker.name}_variant_alleles.csv`;
-                          document.body.appendChild(a);
-                          a.click();
-                          document.body.removeChild(a);
-                          window.URL.revokeObjectURL(url);
-                        }}
+                        onClick={() =>
+                          downloadCsv(
+                            variantAllelesCsv({
+                              locus: marker.name,
+                              sequences: marker.sequences,
+                              names: variantNames,
+                              minimumRange:
+                                summary?.fssg?.components[0]?.minimumRange ?? null,
+                              fssgVersion: FSSG_SOURCE.version,
+                            }),
+                            `${marker.name}_variant_alleles.csv`,
+                          )
+                        }
                       >
                         <Download className="h-3 w-3 mr-1" />
                         {t("marker.download")}

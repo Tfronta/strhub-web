@@ -33,10 +33,10 @@ mixProfiles: {
     isfgLinkText: "Read the original paper",
     copySequence: "Copy sequence",
     copyRepeat: "Copy STRNaming name",
-    ceExplainAria: "Why the repeat count differs from the allele number",
-    ceExplainTitle: "Why doesn't adding up the repeats always give the allele?",
+    ceExplainAria: "Why the bracketed counts can differ from the CE number",
+    ceExplainTitle: "Why don’t the bracketed counts always match the CE number?",
     ceExplainBody:
-      "The allele number (CE) is the classic length-based designation. At some loci it differs from the block count because of how the original allelic ladders were calibrated. For vWA, for example, the 19 repeat blocks over the ISFG minimum range correspond to CE 14. The difference is specific to each locus, so adding up blocks is not a general rule. STRNaming reports the CE number together with the full sequence structure.",
+      "The CE number preserves the conventional length-based allele designation for each marker. The numbers in brackets describe the sequence’s repeat structure. Their sum may match the CE number, but this is not a universal rule. In accordance with ISFG recommendations, STRNaming is recommended for generating standardized allele names that combine the CE designation with the bracketed sequence structure.",
     ceExplainPaperLink: "Read the full explanation in the original paper",
     ceExplainToolLink: "Try it in STRNaming",
     copiedSequence: "Copied",

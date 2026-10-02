@@ -60,9 +60,10 @@ marker: {
   reference: "Reference",
   nistVerified: "NIST Verified",
   alleleFreqDistribution: "Allele Frequency Distribution",
-  freqReportingNote:
-    "The NGS-labelled frequency sets were generated with sequencing and STR-specific genotyping tools, but are still reported by **fragment size** (length-based alleles), not by sequence. STRhub does not yet integrate sequence-based frequency tables. STRidER has published a sequence-based pilot dataset (Netherlands, 28 loci, June 2026, preliminary format); adding it would require review and versioning.",
-  freqStriderPilotLink: "STRidER frequencies",
+  freqSourceNoteNGS:
+    "The NGS frequencies on this page come from the **1000 Genomes Project** (Frontanilla et al., 2022) and from **Ribeirão Preto, Brazil** (Valle-Silva et al., 2022). Both studies genotyped sequencing data with HipSTR and report alleles by **fragment length**, not by sequence.",
+  freqSourceNoteCE:
+    "The CE frequencies of the AFR to OCE groups come from the **STRs Local dataset of pop.STR / SP-SMART (CESGA)**: length-based alleles from capillary electrophoresis.",
   freqDescription: "Population frequency data for different alleles",
   dataSource: "Data source: STRBase – NIST",
   ocePopulationInfo:
@@ -84,6 +85,23 @@ marker: {
     SAS: "South Asian",
   },
   frequencies: {
+    groupPopStr: "pop.STR / SP-SMART",
+    groupLatam: "Latin America",
+    group1000G: "1000 Genomes (Frontanilla et al., 2022)",
+    groupRao: "Ribeirão Preto (Valle-Silva et al., 2022)",
+    superpopulation1000G: "{name} superpopulation ({code}), 1000 Genomes Project",
+    superpopulations1000G: {
+      AFR: "African",
+      AMR: "Admixed American",
+      EAS: "East Asian",
+      EUR: "European",
+      SAS: "South Asian",
+    },
+    compare1000GButton: "Compare all {n}",
+    compareSource1000G:
+      "1000 Genomes Project superpopulations: {pops} (Frontanilla et al., 2022). Each dot is a published frequency; no line is drawn across an allele a population does not have.",
+    compareSourcePopStr:
+      "pop.STR / SP-SMART population groups: {pops}. Each dot is a published frequency; no line is drawn across an allele a population does not have.",
     region: {
       latam: "LAT",
     },

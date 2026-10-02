@@ -1128,16 +1128,17 @@ export function MarkerView({
                         )}
                       />
                       {activeAllPops.map((pop) => (
-                        // Straight segments between the alleles a population
-                        // has, a dot on each, and no line across an allele it
-                        // does not list: nothing drawn is interpolated.
+                        // Smooth monotone curves (they never overshoot the
+                        // points they join), a small dot on each published
+                        // frequency, and no line across an allele a population
+                        // does not list, so no value is drawn where none exists.
                         <Line
                           key={pop}
-                          type="linear"
+                          type="monotone"
                           dataKey={pop}
                           stroke={POPULATION_COLORS[pop] ?? "#6b7280"}
                           strokeWidth={2}
-                          dot={{ r: 3 }}
+                          dot={{ r: 2 }}
                           activeDot={{ r: 5 }}
                           name={pop}
                           connectNulls={false}

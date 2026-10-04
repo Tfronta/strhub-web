@@ -543,6 +543,8 @@ motifExplorerPage: {
   historical: {
     title: "GRCh38 Historical bracketing (2016-2023)",
     none: "Not available",
+    note:
+      "Same bases as the sequence above, written in one fixed repeat phase; lowercase letters mark bases outside the main repeat units. STRNaming can change phase and has no interruptions, so the two can look very different for the same allele.",
   },
   sequence: {
     title: "Reference sequence (ISFG minimum range, GRCh38 forward strand)",

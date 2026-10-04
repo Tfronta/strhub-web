@@ -543,6 +543,8 @@ motifExplorerPage: {
   historical: {
     title: "GRCh38 Historical bracketing (2016-2023)",
     none: "Não disponível",
+    note:
+      "As mesmas bases da sequência acima, escritas em uma única fase de repetição; as minúsculas marcam bases fora das unidades repetidas principais. O STRNaming pode mudar de fase e não tem interrupções, por isso os dois podem parecer muito diferentes para o mesmo alelo.",
   },
   sequence: {
     title: "Sequência de referência (ISFG minimum range, fita direta do GRCh38)",

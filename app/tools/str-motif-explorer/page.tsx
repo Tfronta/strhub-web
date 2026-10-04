@@ -29,17 +29,20 @@ import { InfoTip } from "@/components/InfoTip";
 function useStrings() {
   const { language } = useLanguage();
   const en = translations.en.motifExplorerPage as Record<string, unknown>;
-  const loc = (translations[language] as { motifExplorerPage?: Record<string, unknown> })
-    .motifExplorerPage;
+  const loc = (
+    translations[language] as { motifExplorerPage?: Record<string, unknown> }
+  ).motifExplorerPage;
   return (path: string): string => {
     const get = (obj: Record<string, unknown> | undefined) =>
-      path.split(".").reduce<unknown>(
-        (cur, key) =>
-          cur && typeof cur === "object"
-            ? (cur as Record<string, unknown>)[key]
-            : undefined,
-        obj
-      );
+      path
+        .split(".")
+        .reduce<unknown>(
+          (cur, key) =>
+            cur && typeof cur === "object"
+              ? (cur as Record<string, unknown>)[key]
+              : undefined,
+          obj,
+        );
     return (get(loc) as string) ?? (get(en) as string) ?? path;
   };
 }
@@ -93,24 +96,10 @@ export default function MotifExplorerPage() {
     referenceFitsOnlyForm: t("canonical.referenceFitsOnlyForm"),
     historicalTitle: t("historical.title"),
     historicalNone: t("historical.none"),
+    historicalNote: t("historical.note"),
     sequenceTitle: t("sequence.title"),
-    sequenceNote: t("sequence.note"),
-    legendRepeat: t("sequence.legendRepeat"),
-    legendMinorRepeat: t("sequence.legendMinorRepeat"),
-    legendInterruption: t("sequence.legendInterruption"),
-    legendFlank: t("sequence.legendFlank"),
     flankMotifLabel: t("sequence.flankMotifLabel"),
-    repeatTooltip: t("sequence.repeatTooltip"),
-    minorRepeatTooltip: t("sequence.minorRepeatTooltip"),
-    interruptionTooltip: t("sequence.interruptionTooltip"),
-    flankTooltip: t("sequence.flankTooltip"),
-    phaseNote: t("sequence.phaseNote"),
     updateNote: t("sequence.updateNote"),
-    viewStrnaming: t("sequence.viewStrnaming"),
-    viewHistorical: t("sequence.viewHistorical"),
-    legendVariableBlock: t("sequence.legendVariableBlock"),
-    legendFixedBlock: t("sequence.legendFixedBlock"),
-    legendStrnamingFlank: t("sequence.legendStrnamingFlank"),
     variableBlockTooltip: t("sequence.variableBlockTooltip"),
     fixedBlockTooltip: t("sequence.fixedBlockTooltip"),
     flank5Tooltip: t("sequence.flank5Tooltip"),
@@ -120,7 +109,6 @@ export default function MotifExplorerPage() {
     gridDiffers: t("sequence.gridDiffers"),
     noFlank5: t("sequence.noFlank5"),
     noFlank3: t("sequence.noFlank3"),
-    notAlignedNote: t("sequence.notAligned"),
     hoverHint: t("sequence.hoverHint"),
     detailsSummary: t("sequence.detailsSummary"),
   };
@@ -138,9 +126,7 @@ export default function MotifExplorerPage() {
 
       <div className="container mx-auto px-4 pb-12 pt-6">
         <div className="mx-auto max-w-6xl">
-          <p className="mb-8 text-lg text-muted-foreground">
-            {t("subtitle")}
-          </p>
+          <p className="mb-8 text-lg text-muted-foreground">{t("subtitle")}</p>
 
           <div className="grid gap-6 lg:grid-cols-[30%_70%]">
             {/* Configuration */}
@@ -171,12 +157,16 @@ export default function MotifExplorerPage() {
                               {GROUP_LABEL[g]}
                             </div>
                             {grouped[g].map((m) => (
-                              <SelectItem key={m} value={m} className="text-base">
+                              <SelectItem
+                                key={m}
+                                value={m}
+                                className="text-base"
+                              >
                                 {m}
                               </SelectItem>
                             ))}
                           </div>
-                        ) : null
+                        ) : null,
                       )}
                     </SelectContent>
                   </Select>
@@ -203,7 +193,11 @@ export default function MotifExplorerPage() {
                       className="h-7 px-3 text-xs"
                       asChild
                     >
-                      <a href={FSSG_SOURCE.url} target="_blank" rel="noreferrer">
+                      <a
+                        href={FSSG_SOURCE.url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
                         {t("sourceButtonLabel")}
                       </a>
                     </Button>
@@ -216,7 +210,10 @@ export default function MotifExplorerPage() {
             <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm">
               <CardHeader className="space-y-1.5 pb-2">
                 <CardTitle className="text-2xl font-semibold tracking-tight">
-                  {t("visualizationTitle").replace("{marker}", selectedMarkerId)}
+                  {t("visualizationTitle").replace(
+                    "{marker}",
+                    selectedMarkerId,
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-8 pt-2">

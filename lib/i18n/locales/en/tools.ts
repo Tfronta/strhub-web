@@ -517,7 +517,7 @@ motifExplorerPage: {
       "Pick a marker to see its reference sequence over the ISFG minimum range and its canonical repeat motif.",
   },
   scientificNote:
-    "Naming note: STRNaming and the ISFG recommendations report the repeat structure over the minimum range. Older 2016 bracketing was often defined over a wider window (STRbase / NIST), so the two can look different for the same allele.",
+    "Naming note: names generated with STRNaming follow the 2024 ISFG recommendations (Gettings et al. 2024) and describe the ISFG minimum range. For some loci the historical 2016-2023 bracketing in the FSSG reads the repeats from a different starting base, so the two can look different for the same allele.",
   sourceLabel: "Source",
   sourceValue: "{version} ({publisher}; distributed as {file})",
   sourceButtonLabel: "Open STRidER",

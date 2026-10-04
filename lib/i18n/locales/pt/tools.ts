@@ -517,7 +517,7 @@ motifExplorerPage: {
       "Escolha um marcador para ver sua sequência de referência sobre o ISFG minimum range e seu motivo canônico de repetição.",
   },
   scientificNote:
-    "Nota sobre nomenclatura: STRNaming e as recomendações ISFG reportam a estrutura de repetição sobre o minimum range. O bracketing histórico de 2016 costumava ser definido sobre uma janela mais ampla (STRbase / NIST), por isso ambos podem parecer diferentes para o mesmo alelo.",
+    "Nota sobre nomenclatura: os nomes gerados com o STRNaming seguem as recomendações ISFG 2024 (Gettings et al. 2024) e descrevem o ISFG minimum range. Em alguns loci o bracketing histórico 2016-2023 do FSSG lê as repetições a partir de outra base inicial, por isso ambos podem parecer diferentes para o mesmo alelo.",
   sourceLabel: "Fonte",
   sourceValue: "{version} ({publisher}; distribuído como {file})",
   sourceButtonLabel: "Abrir STRidER",

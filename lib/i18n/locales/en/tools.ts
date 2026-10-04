@@ -561,15 +561,15 @@ motifExplorerPage: {
     viewHistorical:
       "Historical bracketing (2016-2023)",
     legendVariableBlock:
-      "[n] block: the number of repeats varies between alleles",
+      "[n] block: its number of repeats changes between alleles",
     legendFixedBlock:
-      "Block with a fixed count in the template",
+      "Block that stays the same in common alleles following this template",
     legendStrnamingFlank:
       "Flanking region inside the ISFG minimum range (e.g. -1, +1)",
     variableBlockTooltip:
-      "Its count varies between common alleles ([n] in STRidER's template).",
+      "Its number of repeats changes between alleles ([n] in STRidER's template).",
     fixedBlockTooltip:
-      "Its count is fixed in STRidER's template for common alleles.",
+      "Stays the same in common alleles following this template (fixed count in STRidER's template).",
     flank5Tooltip:
       "Flank before the repeat region: positions -{n} to -1. Variants here are named by these positions (e.g. _-1T>-).",
     flank3Tooltip:

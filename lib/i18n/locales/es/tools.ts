@@ -561,15 +561,15 @@ motifExplorerPage: {
     viewHistorical:
       "Bracketing histórico (2016-2023)",
     legendVariableBlock:
-      "Bloque [n]: el número de repeticiones varía entre alelos",
+      "Bloque [n]: su número de repeticiones cambia entre alelos",
     legendFixedBlock:
-      "Bloque con número fijo en la plantilla",
+      "Bloque que se mantiene igual en los alelos comunes que siguen esta plantilla",
     legendStrnamingFlank:
       "Región flanqueadora dentro del ISFG minimum range (ej. -1, +1)",
     variableBlockTooltip:
-      "Su número varía entre alelos comunes ([n] en la plantilla de STRidER).",
+      "Su número de repeticiones cambia entre alelos ([n] en la plantilla de STRidER).",
     fixedBlockTooltip:
-      "Su número es fijo en la plantilla de STRidER para alelos comunes.",
+      "Se mantiene igual en los alelos comunes que siguen esta plantilla (número fijo en la plantilla de STRidER).",
     flank5Tooltip:
       "Flanco antes de la región repetitiva: posiciones -{n} a -1. Las variantes aquí se nombran por estas posiciones (ej. _-1T>-).",
     flank3Tooltip:

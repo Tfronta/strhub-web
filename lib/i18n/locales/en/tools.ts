@@ -584,8 +584,10 @@ motifExplorerPage: {
       "In {marker} the ISFG minimum range starts at the first base of the repeat region; there is no 5' flank inside the range.",
     noFlank3:
       "In {marker} the ISFG minimum range ends at the last base of the repeat region; there is no 3' flank inside the range.",
+    updateNote:
+      "This section is kept up to date with new releases of the FSSG and STRNaming.",
     phaseNote:
-      "The sequence structure (repeat, interruption, flank) follows STRidER's Forensic Sequence Structure Guide (FSSG v6.1); the ISFG / STRNaming name above is a complementary view, not a re-implementation of the naming rules. This section will be updated as STRidER and the official ISFG nomenclature guidance are revised.",
+      "The sequence structure (repeat, interruption, flank) follows STRidER's Forensic Sequence Structure Guide (FSSG v6.1); the ISFG / STRNaming name above is a complementary view, not a re-implementation of the naming rules.",
     notAligned:
       "This locus has a complex structure that does not tile cleanly; the sequence is shown without per-unit coloring. The canonical bracketing above remains authoritative.",
   },

@@ -105,6 +105,7 @@ export default function MotifExplorerPage() {
     interruptionTooltip: t("sequence.interruptionTooltip"),
     flankTooltip: t("sequence.flankTooltip"),
     phaseNote: t("sequence.phaseNote"),
+    updateNote: t("sequence.updateNote"),
     viewStrnaming: t("sequence.viewStrnaming"),
     viewHistorical: t("sequence.viewHistorical"),
     legendVariableBlock: t("sequence.legendVariableBlock"),

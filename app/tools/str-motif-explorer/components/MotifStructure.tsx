@@ -76,6 +76,7 @@ export type MotifStructureStrings = {
   interruptionTooltip: string;
   flankTooltip: string;
   phaseNote: string;
+  updateNote: string;
   viewStrnaming: string;
   viewHistorical: string;
   legendVariableBlock: string;
@@ -566,6 +567,9 @@ export function MotifStructure({
               </p>
             </>
           )}
+          <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+            {strings.updateNote}
+          </p>
         </div>
       </div>
     </TooltipProvider>

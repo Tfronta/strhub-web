@@ -584,8 +584,10 @@ motifExplorerPage: {
       "En {marker} el ISFG minimum range empieza en la primera base de la región repetitiva; no hay flanco 5' dentro del rango.",
     noFlank3:
       "En {marker} el ISFG minimum range termina en la última base de la región repetitiva; no hay flanco 3' dentro del rango.",
+    updateNote:
+      "Esta sección se mantiene al día con las nuevas versiones del FSSG y de STRNaming.",
     phaseNote:
-      "La estructura de la secuencia (repeat, interrupción, flanco) sigue la Forensic Sequence Structure Guide de STRidER (FSSG v6.1); el nombre ISFG / STRNaming de arriba es una vista complementaria, no una re-implementación de las reglas de nomenclatura. Esta sección se irá actualizando a medida que STRidER y la guía oficial de nomenclatura ISFG se revisen.",
+      "La estructura de la secuencia (repeat, interrupción, flanco) sigue la Forensic Sequence Structure Guide de STRidER (FSSG v6.1); el nombre ISFG / STRNaming de arriba es una vista complementaria, no una re-implementación de las reglas de nomenclatura.",
     notAligned:
       "Este locus tiene una estructura compleja que no encaja de forma limpia; la secuencia se muestra sin coloreado por unidad. El bracketing canónico de arriba sigue siendo la referencia.",
   },

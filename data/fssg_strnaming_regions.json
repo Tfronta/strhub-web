@@ -1,0 +1,567 @@
+{
+ "source": {
+  "fssg": "FSSG v6.1 (STRidER; distributed as FSSG_v6-1_beta.xlsx, SHA-256 acf2fa7f16e911474152e52654e77c160d7b34f3d7a72e158def303fff9449e1), sheets 'Common Use A-STRs' and 'Common Use XY-STRs', row 'STRNaming Bracketing of ISFG Minimum Range'.",
+  "fields": "start/end: 0-based, end-exclusive offsets into the ISFG minimum-range sequence of the cells STRidER leaves unnumbered in that row (the repeat region); the numbered cells around them are the flanks (-n..-1 and +1..+n). sheet/row locate the grid row (1-based Excel row).",
+  "generated": "2026-10-04"
+ },
+ "regions": {
+  "D1S1677": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 11,
+    "start": 4,
+    "end": 72
+   }
+  ],
+  "D1S1656": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 23,
+    "start": 4,
+    "end": 80
+   }
+  ],
+  "TPOX": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 35,
+    "start": 4,
+    "end": 36
+   }
+  ],
+  "D2S441": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 47,
+    "start": 4,
+    "end": 52
+   }
+  ],
+  "D2S1776": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 59,
+    "start": 4,
+    "end": 48
+   }
+  ],
+  "D2S1338": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 71,
+    "start": 4,
+    "end": 96
+   }
+  ],
+  "D3S1358": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 83,
+    "start": 4,
+    "end": 68
+   }
+  ],
+  "D3S4529": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 95,
+    "start": 10,
+    "end": 62
+   }
+  ],
+  "D4S2408": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 107,
+    "start": 4,
+    "end": 40
+   }
+  ],
+  "FGA": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 119,
+    "start": 0,
+    "end": 92
+   }
+  ],
+  "D5S2800": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 131,
+    "start": 5,
+    "end": 65
+   }
+  ],
+  "D5S818": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 143,
+    "start": 5,
+    "end": 49
+   }
+  ],
+  "CSF1PO": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 155,
+    "start": 7,
+    "end": 59
+   }
+  ],
+  "SE33": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 167,
+    "start": 19,
+    "end": 157
+   }
+  ],
+  "D6S1043": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 179,
+    "start": 4,
+    "end": 52
+   }
+  ],
+  "D6S474": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 191,
+    "start": 5,
+    "end": 73
+   }
+  ],
+  "D7S820": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 203,
+    "start": 5,
+    "end": 77
+   }
+  ],
+  "D8S1179": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 215,
+    "start": 4,
+    "end": 56
+   }
+  ],
+  "D9S1122": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 227,
+    "start": 6,
+    "end": 62
+   }
+  ],
+  "D10S1248": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 239,
+    "start": 5,
+    "end": 57
+   }
+  ],
+  "TH01": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 251,
+    "start": 4,
+    "end": 32
+   }
+  ],
+  "vWA": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 263,
+    "start": 4,
+    "end": 92
+   }
+  ],
+  "D12S391": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 275,
+    "start": 8,
+    "end": 84
+   }
+  ],
+  "D12ATA63": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 287,
+    "start": 4,
+    "end": 43
+   }
+  ],
+  "D13S317": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 299,
+    "start": 4,
+    "end": 68
+   }
+  ],
+  "D14S1434": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 311,
+    "start": 4,
+    "end": 56
+   }
+  ],
+  "Penta E": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 323,
+    "start": 4,
+    "end": 29
+   }
+  ],
+  "D16S539": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 335,
+    "start": 4,
+    "end": 48
+   }
+  ],
+  "D17S1301": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 347,
+    "start": 4,
+    "end": 52
+   }
+  ],
+  "D18S51": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 359,
+    "start": 5,
+    "end": 94
+   }
+  ],
+  "D19S433": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 371,
+    "start": 22,
+    "end": 74
+   }
+  ],
+  "D20S482": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 383,
+    "start": 4,
+    "end": 60
+   }
+  ],
+  "D21S11": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 395,
+    "start": 4,
+    "end": 133
+   }
+  ],
+  "Penta D": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 407,
+    "start": 11,
+    "end": 90
+   }
+  ],
+  "D22S1045": [
+   {
+    "sheet": "Common Use A-STRs",
+    "row": 419,
+    "start": 4,
+    "end": 55
+   }
+  ],
+  "DYS393": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 11,
+    "start": 4,
+    "end": 52
+   }
+  ],
+  "DYS505": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 22,
+    "start": 4,
+    "end": 52
+   }
+  ],
+  "DYS456": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 33,
+    "start": 4,
+    "end": 64
+   }
+  ],
+  "DYS570": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 44,
+    "start": 4,
+    "end": 72
+   }
+  ],
+  "DYS576": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 55,
+    "start": 4,
+    "end": 72
+   }
+  ],
+  "DYS522": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 66,
+    "start": 4,
+    "end": 44
+   }
+  ],
+  "DYS458": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 77,
+    "start": 8,
+    "end": 72
+   }
+  ],
+  "DYS481": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 88,
+    "start": 9,
+    "end": 75
+   }
+  ],
+  "DYS627": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 99,
+    "start": 6,
+    "end": 116
+   }
+  ],
+  "DYS19": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 110,
+    "start": 2,
+    "end": 70
+   }
+  ],
+  "DYS391": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 121,
+    "start": 6,
+    "end": 58
+   }
+  ],
+  "DYS635": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 132,
+    "start": 4,
+    "end": 96
+   }
+  ],
+  "DYS437": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 143,
+    "start": 4,
+    "end": 64
+   }
+  ],
+  "DYS439": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 154,
+    "start": 4,
+    "end": 52
+   }
+  ],
+  "DYS389I": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 166,
+    "start": 1,
+    "end": 61
+   },
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 167,
+    "start": 1,
+    "end": 61
+   }
+  ],
+  "DYS438": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 182,
+    "start": 4,
+    "end": 64
+   }
+  ],
+  "DYS612": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 193,
+    "start": 4,
+    "end": 112
+   }
+  ],
+  "DYS390": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 204,
+    "start": 4,
+    "end": 108
+   }
+  ],
+  "DYS643": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 215,
+    "start": 4,
+    "end": 59
+   }
+  ],
+  "DYS533": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 226,
+    "start": 4,
+    "end": 52
+   }
+  ],
+  "Y-GATA-H4": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 237,
+    "start": 4,
+    "end": 52
+   }
+  ],
+  "DYS385 b": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 248,
+    "start": 0,
+    "end": 81
+   }
+  ],
+  "DYS461": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 271,
+    "start": 9,
+    "end": 52
+   }
+  ],
+  "DYS549": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 282,
+    "start": 4,
+    "end": 56
+   }
+  ],
+  "DYS392": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 293,
+    "start": 4,
+    "end": 43
+   }
+  ],
+  "DYS448": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 304,
+    "start": 4,
+    "end": 164
+   }
+  ],
+  "DYF387S1 fragment 1": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 316,
+    "start": 0,
+    "end": 148
+   }
+  ],
+  "DXS10135": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 339,
+    "start": 9,
+    "end": 101
+   }
+  ],
+  "DXS8378": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 350,
+    "start": 6,
+    "end": 46
+   }
+  ],
+  "DXS7132": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 361,
+    "start": 4,
+    "end": 60
+   }
+  ],
+  "DXS10074": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 372,
+    "start": 4,
+    "end": 91
+   }
+  ],
+  "DXS10103": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 383,
+    "start": 14,
+    "end": 86
+   }
+  ],
+  "HPRTB": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 394,
+    "start": 18,
+    "end": 74
+   }
+  ],
+  "DXS7423": [
+   {
+    "sheet": "Common Use XY-STRs",
+    "row": 405,
+    "start": 4,
+    "end": 72
+   }
+  ]
+ }
+}

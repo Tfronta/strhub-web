@@ -271,3 +271,60 @@ export function buildHighlight(
 
   return { formIndex: bestForm, spans, repeatMotifs, repeatLens, aligned: true };
 }
+
+export type StrNamingUnit = { seq: string };
+
+export type StrNamingBlock = {
+  motif: string;
+  count: number;
+  /** "[n]" in the FSSG template the name fits: the count varies between common alleles. */
+  variable: boolean;
+  units: StrNamingUnit[];
+};
+
+export type StrNamingLayout = {
+  flank5: string;
+  blocks: StrNamingBlock[];
+  flank3: string;
+  /** 0-based, end-exclusive offsets of the repeat region in the minimum-range sequence. */
+  start: number;
+  end: number;
+};
+
+// Lay the STRNaming name of the reference allele onto the minimum-range
+// sequence: every block of the name spelled out unit by unit, the rest of the
+// range as 5' and 3' flanks. Nothing is inferred: the blocks and counts are the
+// name's, and the name spells out exactly one stretch of the sequence (checked
+// for every locus in lib/strnaming-names.test.ts). Returns null when the name
+// does not parse or does not occur exactly once.
+export function strnamingLayout(
+  seq: string,
+  name: string,
+  forms: string[]
+): StrNamingLayout | null {
+  const parsed = parseStrNamingName(name);
+  if (!parsed || !seq) return null;
+  const expanded = parsed.blocks
+    .map((b) => b.motif.repeat(b.count ?? 0))
+    .join("");
+  const start = seq.indexOf(expanded);
+  if (!expanded || start === -1 || seq.indexOf(expanded, start + 1) !== -1) {
+    return null;
+  }
+  const fi = templateIndexOf(name, forms);
+  const template = fi >= 0 ? parseBracketing(forms[fi]).blocks : null;
+  const blocks = parsed.blocks.map((b, i) => ({
+    motif: b.motif,
+    count: b.count ?? 0,
+    variable: template ? template[i].count === null : false,
+    units: Array.from({ length: b.count ?? 0 }, () => ({ seq: b.motif })),
+  }));
+  const end = start + expanded.length;
+  return {
+    flank5: seq.slice(0, start),
+    blocks,
+    flank3: seq.slice(end),
+    start,
+    end,
+  };
+}

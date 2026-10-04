@@ -556,6 +556,30 @@ motifExplorerPage: {
     minorRepeatTooltip: "Bloque de repetición secundario / variante: repite, pero no es el motivo principal que nombra al alelo.",
     interruptionTooltip: "Interrupción / variante interna; no se cuenta como unidad de repetición.",
     flankTooltip: "Secuencia flanqueante dentro de la ventana reportada; sus variantes se nombran por posición.",
+    viewStrnaming:
+      "STRNaming (2024 en adelante)",
+    viewHistorical:
+      "Bracketing histórico (2016-2023)",
+    legendVariableBlock:
+      "Bloque variable ([n] en la plantilla de STRidER)",
+    legendFixedBlock:
+      "Bloque con número fijo en la plantilla de STRidER",
+    legendStrnamingFlank:
+      "Flanco dentro del ISFG minimum range",
+    variableBlockTooltip:
+      "Su número varía entre alelos comunes ([n] en la plantilla de STRidER).",
+    fixedBlockTooltip:
+      "Su número es fijo en la plantilla de STRidER para alelos comunes.",
+    flank5Tooltip:
+      "Flanco antes de la región repetitiva: posiciones -{n} a -1. Las variantes aquí se nombran por estas posiciones (ej. _-1T>-).",
+    flank3Tooltip:
+      "Flanco después de la región repetitiva: posiciones +1 a +{n}. Las variantes aquí se nombran por estas posiciones (ej. _+1T>C).",
+    strnamingNote:
+      "Los bloques y sus números son los del nombre STRNaming 1.2.1 del alelo de referencia indicado arriba; el resto del ISFG minimum range es flanco.",
+    gridAgrees:
+      "Esta región repetitiva es exactamente la que STRidER marca en la fila del FSSG \"STRNaming Bracketing of ISFG Minimum Range\".",
+    gridDiffers:
+      "La fila del FSSG \"STRNaming Bracketing of ISFG Minimum Range\" de STRidER marca las posiciones {grid} del minimum range como región repetitiva, mientras que el nombre STRNaming cubre las posiciones {name}.",
     phaseNote:
       "La estructura de la secuencia (repeat, interrupción, flanco) sigue la Forensic Sequence Structure Guide de STRidER (FSSG v6.1); el nombre ISFG / STRNaming de arriba es una vista complementaria, no una re-implementación de las reglas de nomenclatura. Esta sección se irá actualizando a medida que STRidER y la guía oficial de nomenclatura ISFG se revisen.",
     notAligned:

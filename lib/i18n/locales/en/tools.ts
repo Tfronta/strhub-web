@@ -556,6 +556,30 @@ motifExplorerPage: {
     minorRepeatTooltip: "Secondary / variant repeat block: it repeats, but it is not the primary motif that names the allele.",
     interruptionTooltip: "Interruption / internal variant; not counted as a repeat unit.",
     flankTooltip: "Flanking sequence inside the reported window; variants here are named by position.",
+    viewStrnaming:
+      "STRNaming (2024 onward)",
+    viewHistorical:
+      "Historical bracketing (2016-2023)",
+    legendVariableBlock:
+      "Variable block ([n] in STRidER's template)",
+    legendFixedBlock:
+      "Block with a fixed count in STRidER's template",
+    legendStrnamingFlank:
+      "Flank inside the ISFG minimum range",
+    variableBlockTooltip:
+      "Its count varies between common alleles ([n] in STRidER's template).",
+    fixedBlockTooltip:
+      "Its count is fixed in STRidER's template for common alleles.",
+    flank5Tooltip:
+      "Flank before the repeat region: positions -{n} to -1. Variants here are named by these positions (e.g. _-1T>-).",
+    flank3Tooltip:
+      "Flank after the repeat region: positions +1 to +{n}. Variants here are named by these positions (e.g. _+1T>C).",
+    strnamingNote:
+      "Blocks and counts are those of the STRNaming 1.2.1 name of the reference allele shown above; the rest of the ISFG minimum range is flank.",
+    gridAgrees:
+      "This repeat region is exactly the one STRidER marks in the FSSG row \"STRNaming Bracketing of ISFG Minimum Range\".",
+    gridDiffers:
+      "STRidER's FSSG row \"STRNaming Bracketing of ISFG Minimum Range\" marks positions {grid} of the minimum range as the repeat region, while the STRNaming name covers positions {name}.",
     phaseNote:
       "The sequence structure (repeat, interruption, flank) follows STRidER's Forensic Sequence Structure Guide (FSSG v6.1); the ISFG / STRNaming name above is a complementary view, not a re-implementation of the naming rules. This section will be updated as STRidER and the official ISFG nomenclature guidance are revised.",
     notAligned:

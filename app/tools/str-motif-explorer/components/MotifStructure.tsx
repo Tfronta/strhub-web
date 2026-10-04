@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -12,10 +13,15 @@ import type { FssgMarker } from "../data/fssgData";
 import {
   buildHighlight,
   parseBracketing,
+  strnamingLayout,
   templateIndexOf,
   tokenizeFlank,
   type CanonBlock,
 } from "../utils/bracketing";
+import {
+  agreesWithFssgGrid,
+  fssgStrnamingRegions,
+} from "../data/strnamingRegions";
 
 // Role-based color scheme, matching the production tool:
 // green = canonical repeat, amber = interruption / internal variant,
@@ -26,6 +32,13 @@ const REPEAT_CHIP =
 // rendered lowercase, mirroring STRidER's historical notation (uppercase primary
 // vs lowercase minor).
 const MINOR_REPEAT_CHIP = `${REPEAT_CHIP} lowercase`;
+// STRNaming view: a block whose count is fixed in STRidER's template (e.g.
+// GAAG[2]) in a lighter green than a variable "[n]" block. Both are part of the
+// named repeat region; STRNaming has no "interruption" category.
+const FIXED_BLOCK_CHIP =
+  "inline-flex items-center rounded-md border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300";
+const BLOCK_GROUP =
+  "inline-flex flex-wrap items-center gap-1 rounded-lg border border-dashed border-emerald-300 p-0.5 dark:border-emerald-500/40";
 const INTERRUPTION_CHIP =
   "inline-flex items-center rounded-md border border-amber-300 bg-amber-100 px-1.5 py-0.5 font-medium text-amber-800 dark:border-amber-500/50 dark:bg-amber-500/20 dark:text-amber-200";
 const FLANK_CHIP =
@@ -63,6 +76,18 @@ export type MotifStructureStrings = {
   interruptionTooltip: string;
   flankTooltip: string;
   phaseNote: string;
+  viewStrnaming: string;
+  viewHistorical: string;
+  legendVariableBlock: string;
+  legendFixedBlock: string;
+  legendStrnamingFlank: string;
+  variableBlockTooltip: string;
+  fixedBlockTooltip: string;
+  flank5Tooltip: string;
+  flank3Tooltip: string;
+  strnamingNote: string;
+  gridAgrees: string;
+  gridDiffers: string;
   notAlignedNote: string;
 };
 
@@ -106,9 +131,7 @@ function FlankPill({
           <TooltipTrigger asChild>
             <span
               className={
-                tk.motifLike
-                  ? `${FLANK_MOTIF_CHIP} cursor-help`
-                  : "cursor-help"
+                tk.motifLike ? `${FLANK_MOTIF_CHIP} cursor-help` : "cursor-help"
               }
             >
               {tk.text}
@@ -142,8 +165,19 @@ export function MotifStructure({
   // STRidER's own order: the first line of the FSSG cell, then the others.
   const primaryForm = forms[0] ?? "";
   const altForms = forms.slice(1);
-  const referenceForm = referenceName ? templateIndexOf(referenceName, forms) : -1;
+  const referenceForm = referenceName
+    ? templateIndexOf(referenceName, forms)
+    : -1;
   const min = marker.minimumRange;
+  const layout = referenceName
+    ? strnamingLayout(seq, referenceName, forms)
+    : null;
+  const [view, setView] = useState<"strnaming" | "historical">("strnaming");
+  const showStrnaming = Boolean(layout) && view === "strnaming";
+  const gridRegions = fssgStrnamingRegions(marker.locus);
+  const gridAgrees = layout
+    ? agreesWithFssgGrid(marker.locus, layout.start, layout.end)
+    : false;
 
   // Prefer STRidER's authoritative segmentation (the FSSG grid boxes) for the
   // reference sequence; fall back to the aligner only when it is missing.
@@ -158,8 +192,8 @@ export function MotifStructure({
           new Set(
             segs!
               .filter((s) => s.role === "repeat" || s.role === "minorRepeat")
-              .map((s) => s.seq)
-          )
+              .map((s) => s.seq),
+          ),
         )
       : highlight.repeatMotifs
   ).filter((m) => m.length >= 3);
@@ -267,11 +301,94 @@ export function MotifStructure({
 
         {/* Reference sequence, minimum range, with roles highlighted */}
         <div>
-          <div className="mb-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-            {strings.sequenceTitle}
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+            <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+              {strings.sequenceTitle}
+            </div>
+            {layout ? (
+              <div
+                role="group"
+                className="inline-flex rounded-md border border-slate-300 p-0.5 text-xs dark:border-slate-600"
+              >
+                {(["strnaming", "historical"] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    aria-pressed={view === v}
+                    onClick={() => setView(v)}
+                    className={`rounded px-2 py-1 font-medium transition-colors ${
+                      view === v
+                        ? "bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900"
+                        : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                    }`}
+                  >
+                    {v === "strnaming"
+                      ? strings.viewStrnaming
+                      : strings.viewHistorical}
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-900/50">
-            {useSegments ? (
+            {showStrnaming && layout ? (
+              <div className="flex flex-wrap items-center gap-1 font-mono text-sm">
+                {layout.flank5 ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className={`cursor-help ${FLANK_CHIP}`}>
+                        {layout.flank5}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent sideOffset={6}>
+                      {strings.flank5Tooltip.replace(
+                        "{n}",
+                        String(layout.flank5.length),
+                      )}
+                    </TooltipContent>
+                  </Tooltip>
+                ) : null}
+                {layout.blocks.map((b, bi) => (
+                  <Tooltip key={bi}>
+                    <TooltipTrigger asChild>
+                      <span className={`cursor-help ${BLOCK_GROUP}`}>
+                        {b.units.map((u, ui) => (
+                          <span
+                            key={ui}
+                            className={
+                              b.variable ? REPEAT_CHIP : FIXED_BLOCK_CHIP
+                            }
+                          >
+                            {u.seq}
+                          </span>
+                        ))}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent sideOffset={6}>
+                      {b.motif}[{b.count}] ·{" "}
+                      {b.variable
+                        ? strings.variableBlockTooltip
+                        : strings.fixedBlockTooltip}
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+                {layout.flank3 ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className={`cursor-help ${FLANK_CHIP}`}>
+                        {layout.flank3}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent sideOffset={6}>
+                      {strings.flank3Tooltip.replace(
+                        "{n}",
+                        String(layout.flank3.length),
+                      )}
+                    </TooltipContent>
+                  </Tooltip>
+                ) : null}
+              </div>
+            ) : useSegments ? (
               <div className="flex flex-wrap items-center gap-1 font-mono text-sm">
                 {segs!.map((s, idx) => {
                   if (s.role === "flank") {
@@ -353,47 +470,85 @@ export function MotifStructure({
               </p>
             )}
           </div>
-          {!useSegments && !highlight.aligned ? (
+          {!showStrnaming && !useSegments && !highlight.aligned ? (
             <p className="mt-2 text-xs text-amber-700 dark:text-amber-400">
               {strings.notAlignedNote}
             </p>
           ) : null}
 
-          {/* Legend */}
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="inline-block h-3 w-3 rounded-sm border border-emerald-300 bg-emerald-200 dark:border-emerald-500/50 dark:bg-emerald-500/40" />
-              {strings.legendRepeat}
-              <InfoTip term="coreRepeat" />
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="inline-flex h-3 items-center rounded-sm border border-emerald-300 bg-emerald-200 px-0.5 text-[0.5rem] font-mono lowercase leading-none text-emerald-800 dark:border-emerald-500/50 dark:bg-emerald-500/40 dark:text-emerald-200">
-                aa
-              </span>
-              {strings.legendMinorRepeat}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="inline-block h-3 w-3 rounded-sm border border-amber-300 bg-amber-200 dark:border-amber-500/50 dark:bg-amber-500/40" />
-              {strings.legendInterruption}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="inline-block h-3 w-3 rounded-sm border border-slate-300 bg-slate-200 dark:border-slate-600 dark:bg-slate-700" />
-              {strings.legendFlank}
-              <InfoTip term="flankingRegion" />
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span
-                className="inline-flex h-4 items-center rounded-md border border-slate-400 px-1 text-[0.6rem] leading-none text-slate-500 dark:text-slate-300"
-                aria-hidden="true"
-              >
-                motif
-              </span>
-              {strings.flankMotifLabel}
-            </span>
-          </div>
-          <p className="mt-3 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
-            {strings.phaseNote}
-          </p>
+          {showStrnaming ? (
+            <>
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-sm border border-emerald-300 bg-emerald-200 dark:border-emerald-500/50 dark:bg-emerald-500/40" />
+                  {strings.legendVariableBlock}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-sm border border-emerald-400 bg-emerald-50 dark:border-emerald-500/60 dark:bg-emerald-500/10" />
+                  {strings.legendFixedBlock}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-sm border border-slate-300 bg-slate-200 dark:border-slate-600 dark:bg-slate-700" />
+                  {strings.legendStrnamingFlank}
+                  <InfoTip term="flankingRegion" />
+                </span>
+              </div>
+              <p className="mt-3 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+                {strings.strnamingNote}{" "}
+                {gridAgrees
+                  ? strings.gridAgrees
+                  : gridRegions.length
+                    ? strings.gridDiffers
+                        .replace(
+                          "{grid}",
+                          `${gridRegions[0].start + 1}-${gridRegions[0].end}`,
+                        )
+                        .replace(
+                          "{name}",
+                          `${layout!.start + 1}-${layout!.end}`,
+                        )
+                    : null}
+              </p>
+            </>
+          ) : (
+            <>
+              {/* Legend */}
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-sm border border-emerald-300 bg-emerald-200 dark:border-emerald-500/50 dark:bg-emerald-500/40" />
+                  {strings.legendRepeat}
+                  <InfoTip term="coreRepeat" />
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-flex h-3 items-center rounded-sm border border-emerald-300 bg-emerald-200 px-0.5 text-[0.5rem] font-mono lowercase leading-none text-emerald-800 dark:border-emerald-500/50 dark:bg-emerald-500/40 dark:text-emerald-200">
+                    aa
+                  </span>
+                  {strings.legendMinorRepeat}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-sm border border-amber-300 bg-amber-200 dark:border-amber-500/50 dark:bg-amber-500/40" />
+                  {strings.legendInterruption}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-sm border border-slate-300 bg-slate-200 dark:border-slate-600 dark:bg-slate-700" />
+                  {strings.legendFlank}
+                  <InfoTip term="flankingRegion" />
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span
+                    className="inline-flex h-4 items-center rounded-md border border-slate-400 px-1 text-[0.6rem] leading-none text-slate-500 dark:text-slate-300"
+                    aria-hidden="true"
+                  >
+                    motif
+                  </span>
+                  {strings.flankMotifLabel}
+                </span>
+              </div>
+              <p className="mt-3 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+                {strings.phaseNote}
+              </p>
+            </>
+          )}
         </div>
       </div>
     </TooltipProvider>

@@ -105,6 +105,18 @@ export default function MotifExplorerPage() {
     interruptionTooltip: t("sequence.interruptionTooltip"),
     flankTooltip: t("sequence.flankTooltip"),
     phaseNote: t("sequence.phaseNote"),
+    viewStrnaming: t("sequence.viewStrnaming"),
+    viewHistorical: t("sequence.viewHistorical"),
+    legendVariableBlock: t("sequence.legendVariableBlock"),
+    legendFixedBlock: t("sequence.legendFixedBlock"),
+    legendStrnamingFlank: t("sequence.legendStrnamingFlank"),
+    variableBlockTooltip: t("sequence.variableBlockTooltip"),
+    fixedBlockTooltip: t("sequence.fixedBlockTooltip"),
+    flank5Tooltip: t("sequence.flank5Tooltip"),
+    flank3Tooltip: t("sequence.flank3Tooltip"),
+    strnamingNote: t("sequence.strnamingNote"),
+    gridAgrees: t("sequence.gridAgrees"),
+    gridDiffers: t("sequence.gridDiffers"),
     notAlignedNote: t("sequence.notAligned"),
   };
 

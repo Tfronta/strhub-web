@@ -556,6 +556,30 @@ motifExplorerPage: {
     minorRepeatTooltip: "Bloco de repetição secundário / variante: repete, mas não é o motivo principal que nomeia o alelo.",
     interruptionTooltip: "Interrupção / variante interna; não é contada como unidade de repetição.",
     flankTooltip: "Sequência flanqueadora dentro da janela reportada; suas variantes são nomeadas por posição.",
+    viewStrnaming:
+      "STRNaming (2024 em diante)",
+    viewHistorical:
+      "Bracketing histórico (2016-2023)",
+    legendVariableBlock:
+      "Bloco variável ([n] no modelo do STRidER)",
+    legendFixedBlock:
+      "Bloco com número fixo no modelo do STRidER",
+    legendStrnamingFlank:
+      "Flanco dentro do ISFG minimum range",
+    variableBlockTooltip:
+      "Seu número varia entre alelos comuns ([n] no modelo do STRidER).",
+    fixedBlockTooltip:
+      "Seu número é fixo no modelo do STRidER para alelos comuns.",
+    flank5Tooltip:
+      "Flanco antes da região repetitiva: posições -{n} a -1. As variantes aqui são nomeadas por estas posições (ex. _-1T>-).",
+    flank3Tooltip:
+      "Flanco depois da região repetitiva: posições +1 a +{n}. As variantes aqui são nomeadas por estas posições (ex. _+1T>C).",
+    strnamingNote:
+      "Os blocos e seus números são os do nome STRNaming 1.2.1 do alelo de referência indicado acima; o resto do ISFG minimum range é flanco.",
+    gridAgrees:
+      "Esta região repetitiva é exatamente a que o STRidER marca na linha do FSSG \"STRNaming Bracketing of ISFG Minimum Range\".",
+    gridDiffers:
+      "A linha do FSSG \"STRNaming Bracketing of ISFG Minimum Range\" do STRidER marca as posições {grid} do minimum range como região repetitiva, enquanto o nome STRNaming cobre as posições {name}.",
     phaseNote:
       "A estrutura da sequência (repeat, interrupção, flanco) segue o Forensic Sequence Structure Guide do STRidER (FSSG v6.1); o nome ISFG / STRNaming acima é uma vista complementar, não uma reimplementação das regras de nomenclatura. Esta seção será atualizada conforme o STRidER e o guia oficial de nomenclatura ISFG forem revisados.",
     notAligned:

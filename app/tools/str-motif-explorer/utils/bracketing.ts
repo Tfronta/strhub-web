@@ -75,7 +75,7 @@ export function templateIndexOf(name: string, forms: string[]): number {
       t.blocks.every(
         (b, i) =>
           b.motif === parsed.blocks[i].motif &&
-          (b.count === null || b.count === parsed.blocks[i].count)
+          (b.count === null || b.count === parsed.blocks[i].count),
       )
     );
   });
@@ -167,7 +167,7 @@ export type MotifHighlight = {
 export function isCoreMotif(
   motif: string,
   repeatMotifs: string[],
-  repeatLens: number[]
+  repeatLens: number[],
 ): boolean {
   if (repeatMotifs.length === 0) return true;
   return repeatMotifs.includes(motif) || repeatLens.includes(motif.length);
@@ -221,10 +221,7 @@ export function tokenizeFlank(text: string, motifs: string[]): FlankToken[] {
  * interruption), and a trailing flank. Falls back to a single flank span (plain
  * sequence) when no form aligns, so the component never has to guess.
  */
-export function buildHighlight(
-  seq: string,
-  forms: string[]
-): MotifHighlight {
+export function buildHighlight(seq: string, forms: string[]): MotifHighlight {
   const empty: MotifHighlight = {
     formIndex: 0,
     spans: seq ? [{ text: seq, kind: "flank" }] : [],
@@ -269,7 +266,13 @@ export function buildHighlight(
     spans.push({ text: seq.slice(alignment.end), kind: "flank" });
   }
 
-  return { formIndex: bestForm, spans, repeatMotifs, repeatLens, aligned: true };
+  return {
+    formIndex: bestForm,
+    spans,
+    repeatMotifs,
+    repeatLens,
+    aligned: true,
+  };
 }
 
 export type StrNamingUnit = { seq: string };
@@ -300,7 +303,7 @@ export type StrNamingLayout = {
 export function strnamingLayout(
   seq: string,
   name: string,
-  forms: string[]
+  forms: string[],
 ): StrNamingLayout | null {
   const parsed = parseStrNamingName(name);
   if (!parsed || !seq) return null;
@@ -327,4 +330,45 @@ export function strnamingLayout(
     start,
     end,
   };
+}
+
+export type FlankVariant = {
+  /** As written in the name, e.g. "-4" or "+1". */
+  position: string;
+  ref: string;
+  /** "-" for a deletion. */
+  alt: string;
+};
+
+// One "_"-separated flanking variant of a STRNaming name or template, e.g.
+// "-4C>T" (substitution) or "-4CTTC>-" (deletion). Positions count from the
+// repeat region: -1 is the base just before it, +1 the base just after.
+export function parseFlankVariant(text: string): FlankVariant | null {
+  const m = /^([+-]\d+)([ACGT]+)>([ACGT]+|-)$/.exec(text.trim());
+  return m ? { position: m[1], ref: m[2], alt: m[3] } : null;
+}
+
+const IUPAC_BASES: Record<string, string> = {
+  R: "AG",
+  Y: "CT",
+  K: "GT",
+  M: "AC",
+  S: "CG",
+  W: "AT",
+};
+
+/** True when an IUPAC code covers both bases of a single-base substitution. */
+export function iupacCovers(code: string, ref: string, alt: string): boolean {
+  const bases = IUPAC_BASES[code];
+  return Boolean(
+    bases &&
+    ref.length === 1 &&
+    alt.length === 1 &&
+    bases.includes(ref) &&
+    bases.includes(alt),
+  );
+}
+
+export function iupacBases(code: string): string {
+  return (IUPAC_BASES[code] ?? "").split("").join("/");
 }

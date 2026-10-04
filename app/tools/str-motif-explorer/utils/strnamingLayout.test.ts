@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import names from "@/data/strnaming_reference_names.json";
 import { FSSG_MARKERS } from "../data/fssgData";
 import { agreesWithFssgGrid } from "../data/strnamingRegions";
-import { strnamingLayout } from "./bracketing";
+import { parseBracketing, parseFlankVariant, strnamingLayout } from "./bracketing";
 
 const reference = names.reference as Record<string, string>;
 
@@ -38,5 +38,26 @@ describe("strnamingLayout", () => {
     // DYS461/DYS460 block; in both the FSSG row starts the region one base after
     // the STRNaming name does.
     expect(differ.sort()).toEqual(["DYS389I", "DYS461"]);
+  });
+
+  it("finds the GRCh38 base of every template variant at its position", () => {
+    let checked = 0;
+    for (const [locus, name] of Object.entries(reference)) {
+      const m = FSSG_MARKERS[locus];
+      const layout = strnamingLayout(m.minimumRangeSequence!, name, m.canonicalBracketing)!;
+      for (const form of m.canonicalBracketing) {
+        const suffix = parseBracketing(form).variantSuffix;
+        if (!suffix) continue;
+        for (const text of suffix.split("_")) {
+          const v = parseFlankVariant(text);
+          expect(v, `${locus} ${text}`).not.toBeNull();
+          const p = Number(v!.position);
+          const at = p < 0 ? layout.start + p : layout.end + p - 1;
+          expect(m.minimumRangeSequence!.slice(at, at + v!.ref.length), `${locus} ${text}`).toBe(v!.ref);
+          checked++;
+        }
+      }
+    }
+    expect(checked).toBe(8);
   });
 });

@@ -528,6 +528,20 @@ motifExplorerPage: {
   canonical: {
     title: "STRNaming Formatted ISFG Minimum Range for Common Alleles (2024 onward)",
     altForms: "Other valid forms",
+    subtitle:
+      "Structures of common alleles in populations, not the reference allele. [n] is a count that varies between alleles; a suffix such as -4C>T is a flanking difference from GRCh38.",
+    referenceBadge:
+      "reference allele",
+    variantSubst:
+      "Position {pos}, {side}: GRCh38 has {ref}, these alleles have {alt}.",
+    variantDel:
+      "Position {pos}, {side}: these alleles lack {ref}, which GRCh38 has.",
+    variantBefore:
+      "before the repeat region",
+    variantAfter:
+      "after the repeat region",
+    variantIupac:
+      "The FSSG marks this position as a known SNP ({code} = {bases}).",
     templateNote:
       "STRidER's template for the common alleles of this locus, as written in the FSSG. [n] marks a block whose repeat count varies between alleles. It is not an allele name: a full STRNaming name starts with the CE allele (for example CE13_) and gives the count of every block, as in the reference allele below.",
     referenceNameLabel:

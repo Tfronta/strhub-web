@@ -11,7 +11,10 @@ import { InfoTip } from "@/components/InfoTip";
 import { NomenclatureNote } from "@/components/NomenclatureNote";
 import type { FssgMarker } from "../data/fssgData";
 import {
+  iupacBases,
+  iupacCovers,
   parseBracketing,
+  parseFlankVariant,
   strnamingLayout,
   templateIndexOf,
   tokenizeFlank,
@@ -19,6 +22,7 @@ import {
 } from "../utils/bracketing";
 import {
   agreesWithFssgGrid,
+  flankIupacOf,
   fssgStrnamingRegions,
 } from "../data/strnamingRegions";
 
@@ -48,6 +52,13 @@ export type MotifStructureStrings = {
   canonicalTitle: string;
   canonicalAltForms: string;
   canonicalTemplateNote: string;
+  canonicalSubtitle: string;
+  referenceBadge: string;
+  variantSubst: string;
+  variantDel: string;
+  variantBefore: string;
+  variantAfter: string;
+  variantIupac: string;
   referenceNameLabel: string;
   referenceNameSource: string;
   referenceFitsForm: string;
@@ -71,7 +82,48 @@ export type MotifStructureStrings = {
   detailsSummary: string;
 };
 
-function BracketingPills({ form }: { form: string }) {
+const BADGE =
+  "inline-flex items-center rounded-full bg-primary/15 px-2 py-0.5 font-sans text-[0.7rem] font-medium text-primary";
+const VARIANT_CHIP =
+  "inline-flex cursor-help items-center rounded-md border border-dashed border-slate-400 bg-slate-100 px-1.5 py-0.5 text-xs text-slate-600 dark:border-slate-500 dark:bg-slate-800 dark:text-slate-300";
+
+// The "_"-separated flanking variants of a template, each with a tooltip that
+// spells it out against GRCh38.
+function VariantChips({
+  suffix,
+  variantTip,
+  className,
+}: {
+  suffix: string | null;
+  variantTip: (v: string) => string;
+  className: string;
+}) {
+  if (!suffix) return null;
+  return (
+    <>
+      {suffix.split("_").map((v, i) => (
+        <Tooltip key={i}>
+          <TooltipTrigger asChild>
+            <span className={className}>{v}</span>
+          </TooltipTrigger>
+          <TooltipContent sideOffset={6} className="max-w-xs">
+            {variantTip(v)}
+          </TooltipContent>
+        </Tooltip>
+      ))}
+    </>
+  );
+}
+
+function BracketingPills({
+  form,
+  variantTip,
+  badge,
+}: {
+  form: string;
+  variantTip: (v: string) => string;
+  badge?: string;
+}) {
   const parsed = parseBracketing(form);
   return (
     <div className="flex flex-wrap items-center gap-1.5 font-mono">
@@ -83,11 +135,12 @@ function BracketingPills({ form }: { form: string }) {
           </sub>
         </span>
       ))}
-      {parsed.variantSuffix ? (
-        <span className="inline-flex items-center rounded-md border border-slate-300 bg-slate-100 px-1.5 py-0.5 text-xs text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300">
-          {parsed.variantSuffix}
-        </span>
-      ) : null}
+      <VariantChips
+        suffix={parsed.variantSuffix}
+        variantTip={variantTip}
+        className={VARIANT_CHIP}
+      />
+      {badge ? <span className={BADGE}>{badge}</span> : null}
     </div>
   );
 }
@@ -174,6 +227,24 @@ export function MotifStructure({
       )
     : [];
   const activeBlock = active !== null ? layout?.blocks[active] : undefined;
+  const variantTip = (text: string): string => {
+    const v = parseFlankVariant(text);
+    if (!v) return text;
+    const side = v.position.startsWith("-")
+      ? strings.variantBefore
+      : strings.variantAfter;
+    const base = (v.alt === "-" ? strings.variantDel : strings.variantSubst)
+      .replace("{pos}", v.position)
+      .replace("{side}", side)
+      .replace("{ref}", v.ref)
+      .replace("{alt}", v.alt);
+    const code = flankIupacOf(marker.locus, v.position);
+    return code && iupacCovers(code, v.ref, v.alt)
+      ? `${base} ${strings.variantIupac
+          .replace("{code}", code)
+          .replace("{bases}", iupacBases(code))}`
+      : base;
+  };
 
   return (
     <TooltipProvider>
@@ -330,21 +401,41 @@ export function MotifStructure({
             {strings.canonicalTitle}
             <InfoTip term="canonicalMotif" />
           </div>
-          <BracketingPills form={primaryForm} />
+          <p className="mb-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+            {strings.canonicalSubtitle}
+          </p>
+          <BracketingPills
+            form={primaryForm}
+            variantTip={variantTip}
+            badge={referenceForm === 0 ? strings.referenceBadge : undefined}
+          />
           {altForms.length > 0 ? (
             <div className="mt-2">
               <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                 {strings.canonicalAltForms}:
               </p>
               <ul className="mt-1 space-y-0.5">
-                {altForms.map((f, i) => (
-                  <li
-                    key={i}
-                    className="font-mono text-xs text-slate-500 dark:text-slate-400 break-all"
-                  >
-                    {f}
-                  </li>
-                ))}
+                {altForms.map((f, i) => {
+                  const cut = f.indexOf("_");
+                  return (
+                    <li
+                      key={i}
+                      className="flex flex-wrap items-center gap-1.5 font-mono text-xs text-slate-500 dark:text-slate-400"
+                    >
+                      <span className="break-all">
+                        {cut === -1 ? f : f.slice(0, cut)}
+                      </span>
+                      <VariantChips
+                        suffix={cut === -1 ? null : f.slice(cut + 1)}
+                        variantTip={variantTip}
+                        className={`${VARIANT_CHIP} py-0 text-[0.7rem]`}
+                      />
+                      {referenceForm === i + 1 ? (
+                        <span className={BADGE}>{strings.referenceBadge}</span>
+                      ) : null}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ) : null}

@@ -20,7 +20,23 @@ export function fssgStrnamingRegions(locus: string): FssgStrnamingRegion[] {
 }
 
 /** True when STRidER's grid row marks exactly [start, end) as the repeat region. */
-export function agreesWithFssgGrid(locus: string, start: number, end: number): boolean {
+export function agreesWithFssgGrid(
+  locus: string,
+  start: number,
+  end: number,
+): boolean {
   const regions = fssgStrnamingRegions(locus);
-  return regions.length > 0 && regions.every((r) => r.start === start && r.end === end);
+  return (
+    regions.length > 0 &&
+    regions.every((r) => r.start === start && r.end === end)
+  );
+}
+
+const FLANK_IUPAC =
+  (raw as { flankIupac?: Record<string, Record<string, string>> }).flankIupac ??
+  {};
+
+/** IUPAC code STRidER writes over a flank position ("-4", "+1") of the locus, if any. */
+export function flankIupacOf(locus: string, position: string): string | null {
+  return FLANK_IUPAC[locus]?.[position] ?? null;
 }

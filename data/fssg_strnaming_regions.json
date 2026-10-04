@@ -2,7 +2,8 @@
  "source": {
   "fssg": "FSSG v6.1 (STRidER; distributed as FSSG_v6-1_beta.xlsx, SHA-256 acf2fa7f16e911474152e52654e77c160d7b34f3d7a72e158def303fff9449e1), sheets 'Common Use A-STRs' and 'Common Use XY-STRs', row 'STRNaming Bracketing of ISFG Minimum Range'.",
   "fields": "start/end: 0-based, end-exclusive offsets into the ISFG minimum-range sequence of the cells STRidER leaves unnumbered in that row (the repeat region); the numbered cells around them are the flanks (-n..-1 and +1..+n). sheet/row locate the grid row (1-based Excel row).",
-  "generated": "2026-10-04"
+  "generated": "2026-10-04",
+  "flankIupac": "Row 'Flanking SNP IUPAC codes' of the same grids: the IUPAC code STRidER writes over a flank base inside the ISFG minimum range, keyed by the flank position used in STRNaming variant suffixes (-n..-1 before the repeat region of the reference name, +1..+n after it)."
  },
  "regions": {
   "D1S1677": [
@@ -563,5 +564,77 @@
     "end": 72
    }
   ]
+ },
+ "flankIupac": {
+  "TPOX": {
+   "+3": "W",
+   "+4": "W"
+  },
+  "D3S4529": {
+   "-9": "K",
+   "-1": "Y"
+  },
+  "D5S818": {
+   "-1": "M"
+  },
+  "SE33": {
+   "-12": "K",
+   "-11": "Y",
+   "-4": "Y"
+  },
+  "D6S1043": {
+   "+3": "R"
+  },
+  "D7S820": {
+   "-1": "W"
+  },
+  "D9S1122": {
+   "-6": "Y"
+  },
+  "D12S391": {
+   "+1": "Y"
+  },
+  "D14S1434": {
+   "-2": "R"
+  },
+  "Penta E": {
+   "+4": "K",
+   "+7": "W"
+  },
+  "DYS576": {
+   "+4": "R"
+  },
+  "DYS458": {
+   "-1": "R"
+  },
+  "DYS481": {
+   "-8": "K",
+   "-1": "K",
+   "+1": "Y"
+  },
+  "DYS627": {
+   "+4": "R"
+  },
+  "DYS437": {
+   "-3": "Y"
+  },
+  "DXS10135": {
+   "+13": "R",
+   "+19": "R"
+  },
+  "DXS8378": {
+   "-5": "R",
+   "-1": "K"
+  },
+  "DXS7132": {
+   "+3": "Y"
+  },
+  "DXS10074": {
+   "+3": "R"
+  },
+  "HPRTB": {
+   "-11": "R",
+   "-1": "M"
+  }
  }
 }

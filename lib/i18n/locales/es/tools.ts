@@ -528,6 +528,20 @@ motifExplorerPage: {
   canonical: {
     title: "STRNaming Formatted ISFG Minimum Range for Common Alleles (2024 onward)",
     altForms: "Otras formas válidas",
+    subtitle:
+      "Estructuras de alelos comunes en las poblaciones, no del alelo de referencia. [n] es un número que varía entre alelos; un sufijo como -4C>T es una diferencia en el flanco respecto de GRCh38.",
+    referenceBadge:
+      "alelo de referencia",
+    variantSubst:
+      "Posición {pos}, {side}: GRCh38 tiene {ref}, estos alelos tienen {alt}.",
+    variantDel:
+      "Posición {pos}, {side}: a estos alelos les falta {ref}, que GRCh38 sí tiene.",
+    variantBefore:
+      "antes de la región repetitiva",
+    variantAfter:
+      "después de la región repetitiva",
+    variantIupac:
+      "El FSSG marca esta posición como un SNP conocido ({code} = {bases}).",
     templateNote:
       "Plantilla de STRidER para los alelos comunes de este locus, tal como figura en el FSSG. [n] indica un bloque cuyo número de repeticiones varía entre alelos. No es un nombre de alelo: un nombre STRNaming completo empieza con el alelo CE (por ejemplo CE13_) e indica el número de cada bloque, como en el alelo de referencia de abajo.",
     referenceNameLabel:

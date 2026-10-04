@@ -37,13 +37,10 @@ const MINOR_REPEAT_CHIP = `${REPEAT_CHIP} lowercase`;
 // named repeat region; STRNaming has no "interruption" category.
 const FIXED_BLOCK_CHIP =
   "inline-flex items-center rounded-md border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300";
-// STRNaming view: the sequence flows as one strip; a thin rule marks where a
-// block of the name ends and its count sits under the block's first unit.
-const UNIT_CELL = "inline-flex flex-col items-start";
-const UNIT_LABEL =
-  "mt-0.5 pl-0.5 font-sans text-[0.7rem] leading-none text-slate-500 dark:text-slate-400";
-const BLOCK_SEPARATOR =
-  "mb-3.5 w-px self-stretch bg-slate-300 dark:bg-slate-600";
+// STRNaming view: the sequence flows as one strip and a thin rule marks where
+// a block of the name ends; counts and flank positions live in the tooltips.
+const UNIT_CELL = "contents";
+const BLOCK_SEPARATOR = "w-px self-stretch bg-slate-300 dark:bg-slate-600";
 const INTERRUPTION_CHIP =
   "inline-flex items-center rounded-md border border-amber-300 bg-amber-100 px-1.5 py-0.5 font-medium text-amber-800 dark:border-amber-500/50 dark:bg-amber-500/20 dark:text-amber-200";
 const FLANK_CHIP =
@@ -348,7 +345,7 @@ export function MotifStructure({
           </div>
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-900/50">
             {showStrnaming && layout ? (
-              <div className="flex flex-wrap items-start gap-x-1 gap-y-1.5 font-mono text-sm">
+              <div className="flex flex-wrap items-center gap-1 font-mono text-sm">
                 {layout.flank5 ? (
                   <>
                     <span className={UNIT_CELL}>
@@ -361,9 +358,6 @@ export function MotifStructure({
                         )}
                         flankMotifLabel={strings.flankMotifLabel}
                       />
-                      <span className={UNIT_LABEL}>
-                        -{layout.flank5.length}…-1
-                      </span>
                     </span>
                     <span aria-hidden="true" className={BLOCK_SEPARATOR} />
                   </>
@@ -392,9 +386,6 @@ export function MotifStructure({
                               : strings.fixedBlockTooltip}
                           </TooltipContent>
                         </Tooltip>
-                        <span className={UNIT_LABEL}>
-                          {ui === 0 ? `[${b.count}]` : "\u00a0"}
-                        </span>
                       </span>
                     ))}
                   </Fragment>
@@ -412,9 +403,6 @@ export function MotifStructure({
                         )}
                         flankMotifLabel={strings.flankMotifLabel}
                       />
-                      <span className={UNIT_LABEL}>
-                        +1…+{layout.flank3.length}
-                      </span>
                     </span>
                   </>
                 ) : null}

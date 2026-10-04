@@ -117,6 +117,8 @@ export default function MotifExplorerPage() {
     strnamingNote: t("sequence.strnamingNote"),
     gridAgrees: t("sequence.gridAgrees"),
     gridDiffers: t("sequence.gridDiffers"),
+    noFlank5: t("sequence.noFlank5"),
+    noFlank3: t("sequence.noFlank3"),
     notAlignedNote: t("sequence.notAligned"),
   };
 

@@ -551,7 +551,7 @@ motifExplorerPage: {
     legendMinorRepeat: "Secondary repeat (lowercase)",
     legendInterruption: "Interruption / internal variant",
     legendFlank: "Flanking region",
-    flankMotifLabel: "Motif unit in the flanking region, outside the repeat bracketing.",
+    flankMotifLabel: "Same sequence as a repeat motif, but in the flanking region: it is not counted in the allele name.",
     repeatTooltip: "Canonical repeat unit of the reference structure.",
     minorRepeatTooltip: "Secondary / variant repeat block: it repeats, but it is not the primary motif that names the allele.",
     interruptionTooltip: "Interruption / internal variant; not counted as a repeat unit.",
@@ -561,11 +561,11 @@ motifExplorerPage: {
     viewHistorical:
       "Historical bracketing (2016-2023)",
     legendVariableBlock:
-      "Variable block ([n] in STRidER's template)",
+      "[n] block: the number of repeats varies between alleles",
     legendFixedBlock:
-      "Block with a fixed count in STRidER's template",
+      "Block with a fixed count in the template",
     legendStrnamingFlank:
-      "Flank inside the ISFG minimum range",
+      "Flanking region inside the ISFG minimum range (e.g. -1, +1)",
     variableBlockTooltip:
       "Its count varies between common alleles ([n] in STRidER's template).",
     fixedBlockTooltip:
@@ -580,6 +580,10 @@ motifExplorerPage: {
       "This repeat region is exactly the one STRidER marks in the FSSG row \"STRNaming Bracketing of ISFG Minimum Range\".",
     gridDiffers:
       "STRidER's FSSG row \"STRNaming Bracketing of ISFG Minimum Range\" marks positions {grid} of the minimum range as the repeat region, while the STRNaming name covers positions {name}.",
+    noFlank5:
+      "In {marker} the ISFG minimum range starts at the first base of the repeat region; there is no 5' flank inside the range.",
+    noFlank3:
+      "In {marker} the ISFG minimum range ends at the last base of the repeat region; there is no 3' flank inside the range.",
     phaseNote:
       "The sequence structure (repeat, interruption, flank) follows STRidER's Forensic Sequence Structure Guide (FSSG v6.1); the ISFG / STRNaming name above is a complementary view, not a re-implementation of the naming rules. This section will be updated as STRidER and the official ISFG nomenclature guidance are revised.",
     notAligned:

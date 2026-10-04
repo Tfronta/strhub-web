@@ -88,6 +88,8 @@ export type MotifStructureStrings = {
   strnamingNote: string;
   gridAgrees: string;
   gridDiffers: string;
+  noFlank5: string;
+  noFlank3: string;
   notAlignedNote: string;
 };
 
@@ -175,6 +177,14 @@ export function MotifStructure({
   const [view, setView] = useState<"strnaming" | "historical">("strnaming");
   const showStrnaming = Boolean(layout) && view === "strnaming";
   const gridRegions = fssgStrnamingRegions(marker.locus);
+  // Repeat motifs of the name (>= 3 bp, as in the historical view) whose exact
+  // sequence also occurs in a flank: outlined there, since flank bases are not
+  // counted in the name.
+  const strnamingFlankMotifs = layout
+    ? Array.from(new Set(layout.blocks.map((b) => b.motif))).filter(
+        (m) => m.length >= 3,
+      )
+    : [];
   const gridAgrees = layout
     ? agreesWithFssgGrid(marker.locus, layout.start, layout.end)
     : false;
@@ -318,7 +328,7 @@ export function MotifStructure({
                     onClick={() => setView(v)}
                     className={`rounded px-2 py-1 font-medium transition-colors ${
                       view === v
-                        ? "bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900"
+                        ? "bg-primary text-primary-foreground"
                         : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
                     }`}
                   >
@@ -334,19 +344,15 @@ export function MotifStructure({
             {showStrnaming && layout ? (
               <div className="flex flex-wrap items-center gap-1 font-mono text-sm">
                 {layout.flank5 ? (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className={`cursor-help ${FLANK_CHIP}`}>
-                        {layout.flank5}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent sideOffset={6}>
-                      {strings.flank5Tooltip.replace(
-                        "{n}",
-                        String(layout.flank5.length),
-                      )}
-                    </TooltipContent>
-                  </Tooltip>
+                  <FlankPill
+                    text={layout.flank5}
+                    motifs={strnamingFlankMotifs}
+                    tooltip={strings.flank5Tooltip.replace(
+                      "{n}",
+                      String(layout.flank5.length),
+                    )}
+                    flankMotifLabel={strings.flankMotifLabel}
+                  />
                 ) : null}
                 {layout.blocks.map((b, bi) => (
                   <Tooltip key={bi}>
@@ -373,19 +379,15 @@ export function MotifStructure({
                   </Tooltip>
                 ))}
                 {layout.flank3 ? (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className={`cursor-help ${FLANK_CHIP}`}>
-                        {layout.flank3}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent sideOffset={6}>
-                      {strings.flank3Tooltip.replace(
-                        "{n}",
-                        String(layout.flank3.length),
-                      )}
-                    </TooltipContent>
-                  </Tooltip>
+                  <FlankPill
+                    text={layout.flank3}
+                    motifs={strnamingFlankMotifs}
+                    tooltip={strings.flank3Tooltip.replace(
+                      "{n}",
+                      String(layout.flank3.length),
+                    )}
+                    flankMotifLabel={strings.flankMotifLabel}
+                  />
                 ) : null}
               </div>
             ) : useSegments ? (
@@ -492,9 +494,24 @@ export function MotifStructure({
                   {strings.legendStrnamingFlank}
                   <InfoTip term="flankingRegion" />
                 </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span
+                    className="inline-flex h-4 items-center rounded-md border border-slate-400 px-1 text-[0.6rem] leading-none text-slate-500 dark:text-slate-300"
+                    aria-hidden="true"
+                  >
+                    motif
+                  </span>
+                  {strings.flankMotifLabel}
+                </span>
               </div>
               <p className="mt-3 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
                 {strings.strnamingNote}{" "}
+                {!layout!.flank5
+                  ? `${strings.noFlank5.replace("{marker}", marker.locus)} `
+                  : null}
+                {!layout!.flank3
+                  ? `${strings.noFlank3.replace("{marker}", marker.locus)} `
+                  : null}
                 {gridAgrees
                   ? strings.gridAgrees
                   : gridRegions.length

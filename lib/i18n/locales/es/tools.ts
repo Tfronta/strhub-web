@@ -551,7 +551,7 @@ motifExplorerPage: {
     legendMinorRepeat: "Repetición secundaria (minúscula)",
     legendInterruption: "Interrupción / variante interna",
     legendFlank: "Región flanqueante",
-    flankMotifLabel: "Unidad de motivo en la región flanqueante, fuera del bracketing de repetición.",
+    flankMotifLabel: "Misma secuencia que un motivo repetido, pero en la región flanqueadora: no se cuenta en el nombre del alelo.",
     repeatTooltip: "Unidad de repetición canónica de la estructura de referencia.",
     minorRepeatTooltip: "Bloque de repetición secundario / variante: repite, pero no es el motivo principal que nombra al alelo.",
     interruptionTooltip: "Interrupción / variante interna; no se cuenta como unidad de repetición.",
@@ -561,11 +561,11 @@ motifExplorerPage: {
     viewHistorical:
       "Bracketing histórico (2016-2023)",
     legendVariableBlock:
-      "Bloque variable ([n] en la plantilla de STRidER)",
+      "Bloque [n]: el número de repeticiones varía entre alelos",
     legendFixedBlock:
-      "Bloque con número fijo en la plantilla de STRidER",
+      "Bloque con número fijo en la plantilla",
     legendStrnamingFlank:
-      "Flanco dentro del ISFG minimum range",
+      "Región flanqueadora dentro del ISFG minimum range (ej. -1, +1)",
     variableBlockTooltip:
       "Su número varía entre alelos comunes ([n] en la plantilla de STRidER).",
     fixedBlockTooltip:
@@ -580,6 +580,10 @@ motifExplorerPage: {
       "Esta región repetitiva es exactamente la que STRidER marca en la fila del FSSG \"STRNaming Bracketing of ISFG Minimum Range\".",
     gridDiffers:
       "La fila del FSSG \"STRNaming Bracketing of ISFG Minimum Range\" de STRidER marca las posiciones {grid} del minimum range como región repetitiva, mientras que el nombre STRNaming cubre las posiciones {name}.",
+    noFlank5:
+      "En {marker} el ISFG minimum range empieza en la primera base de la región repetitiva; no hay flanco 5' dentro del rango.",
+    noFlank3:
+      "En {marker} el ISFG minimum range termina en la última base de la región repetitiva; no hay flanco 3' dentro del rango.",
     phaseNote:
       "La estructura de la secuencia (repeat, interrupción, flanco) sigue la Forensic Sequence Structure Guide de STRidER (FSSG v6.1); el nombre ISFG / STRNaming de arriba es una vista complementaria, no una re-implementación de las reglas de nomenclatura. Esta sección se irá actualizando a medida que STRidER y la guía oficial de nomenclatura ISFG se revisen.",
     notAligned:

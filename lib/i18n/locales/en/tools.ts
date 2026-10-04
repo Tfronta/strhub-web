@@ -503,7 +503,7 @@ fastaGeneratorPage: {
 motifExplorerPage: {
   title: "STR Motif Explorer",
   subtitle:
-    "This section helps you understand the internal structure of each STR marker along the HG38 reference sequence, over the ISFG minimum range. It shows that not every locus is a continuous run of its canonical motif, and highlights the complexity of compound and interrupted loci.",
+    "This section helps you understand the internal structure of each STR marker along the GRCh38 reference sequence, over the ISFG minimum range. It shows that not every locus is a continuous run of its canonical motif, and highlights the complexity of compound and interrupted loci.",
   visualizationTitle: "Structure of {marker}",
   configuration: {
     title: "Configuration",
@@ -528,6 +528,16 @@ motifExplorerPage: {
   canonical: {
     title: "STRNaming Formatted ISFG Minimum Range for Common Alleles (2024 onward)",
     altForms: "Other valid forms",
+    templateNote:
+      "STRidER's template for the common alleles of this locus, as written in the FSSG. [n] marks a block whose repeat count varies between alleles. It is not an allele name: a full STRNaming name starts with the CE allele (for example CE13_) and gives the count of every block, as in the reference allele below.",
+    referenceNameLabel:
+      "Reference allele (GRCh38) named with STRNaming 1.2.1",
+    referenceNameSource:
+      "STRNaming 1.2.1 name of the GRCh38 reference sequence over the ISFG minimum range; its CE equals the FSSG CE equivalent.",
+    referenceFitsForm:
+      "Its structure follows form {n} of the {total} listed above.",
+    referenceFitsOnlyForm:
+      "Its structure follows the template above.",
     variant: "Sequence variant",
   },
   historical: {

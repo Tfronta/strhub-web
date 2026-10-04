@@ -2,7 +2,12 @@ import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import names from "@/data/strnaming_names.json";
 import { markerData } from "@/lib/markerData";
+import referenceCopy from "@/data/strnaming_reference_names.json";
 import { FSSG_MARKERS } from "@/app/tools/str-motif-explorer/data/fssgData";
+import {
+  parseStrNamingName,
+  templateIndexOf,
+} from "@/app/tools/str-motif-explorer/utils/bracketing";
 
 type Row = { h: string; name: string | null; status: string; isfg?: string; heldCe?: string };
 const strbase = names.strbase as Record<string, Row[]>;
@@ -55,6 +60,25 @@ describe("STRNaming names (data/strnaming_names.json)", () => {
       const fssg = FSSG_MARKERS[locus];
       expect(fssg, locus).toBeDefined();
       expect(Number(ceOf(name)), `${locus} ${name}`).toBe(Number(fssg.ce));
+    }
+  });
+
+  it("keeps the Motif Explorer's copy of the reference names identical", () => {
+    expect(referenceCopy.reference).toEqual(reference);
+  });
+
+  it("spells out a stretch of the reference sequence over the ISFG minimum range", () => {
+    for (const [locus, name] of Object.entries(reference)) {
+      const { blocks } = parseStrNamingName(name)!;
+      const expanded = blocks.map((b) => b.motif.repeat(b.count ?? 0)).join("");
+      expect(FSSG_MARKERS[locus].minimumRangeSequence, `${locus} ${name}`).toContain(expanded);
+    }
+  });
+
+  it("fits one of STRidER's STRNaming-formatted templates for the locus", () => {
+    for (const [locus, name] of Object.entries(reference)) {
+      const forms = FSSG_MARKERS[locus].canonicalBracketing;
+      expect(templateIndexOf(name, forms), `${locus} ${name}`).toBeGreaterThanOrEqual(0);
     }
   });
 });

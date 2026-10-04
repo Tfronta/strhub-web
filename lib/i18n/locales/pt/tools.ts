@@ -503,7 +503,7 @@ fastaGeneratorPage: {
 motifExplorerPage: {
   title: "Explorador de Motivos STR",
   subtitle:
-    "Esta seção ajuda a entender a estrutura interna de cada marcador STR ao longo da sequência do genoma de referência HG38, sobre o ISFG minimum range. Mostra que nem todo locus é uma sequência contínua do seu motivo canônico, e destaca a complexidade dos loci compostos e interrompidos.",
+    "Esta seção ajuda a entender a estrutura interna de cada marcador STR ao longo da sequência do genoma de referência GRCh38, sobre o ISFG minimum range. Mostra que nem todo locus é uma sequência contínua do seu motivo canônico, e destaca a complexidade dos loci compostos e interrompidos.",
   visualizationTitle: "Estrutura de {marker}",
   configuration: {
     title: "Configuração",
@@ -528,6 +528,16 @@ motifExplorerPage: {
   canonical: {
     title: "STRNaming Formatted ISFG Minimum Range for Common Alleles (2024 onward)",
     altForms: "Outras formas válidas",
+    templateNote:
+      "Modelo do STRidER para os alelos comuns deste locus, tal como aparece no FSSG. [n] indica um bloco cujo número de repetições varia entre alelos. Não é um nome de alelo: um nome STRNaming completo começa com o alelo CE (por exemplo CE13_) e indica o número de cada bloco, como no alelo de referência abaixo.",
+    referenceNameLabel:
+      "Alelo de referência (GRCh38) nomeado com o STRNaming 1.2.1",
+    referenceNameSource:
+      "Nome STRNaming 1.2.1 da sequência de referência GRCh38 sobre o ISFG minimum range; seu CE coincide com o CE equivalente do FSSG.",
+    referenceFitsForm:
+      "Sua estrutura segue a forma {n} das {total} listadas acima.",
+    referenceFitsOnlyForm:
+      "Sua estrutura segue o modelo acima.",
     variant: "Variante de sequência",
   },
   historical: {

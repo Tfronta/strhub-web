@@ -19,6 +19,7 @@ import {
   DISPLAY_MARKERS,
   FSSG_SOURCE,
   markerClass,
+  referenceNameOf,
 } from "./data/fssgData";
 import { MotifStructure } from "./components/MotifStructure";
 import { HARMONIZED_NOMENCLATURE } from "@/lib/nomenclatureHarmonization";
@@ -85,6 +86,11 @@ export default function MotifExplorerPage() {
     minimumRangeLabel: t("marker.minimumRange"),
     canonicalTitle: t("canonical.title"),
     canonicalAltForms: t("canonical.altForms"),
+    canonicalTemplateNote: t("canonical.templateNote"),
+    referenceNameLabel: t("canonical.referenceNameLabel"),
+    referenceNameSource: t("canonical.referenceNameSource"),
+    referenceFitsForm: t("canonical.referenceFitsForm"),
+    referenceFitsOnlyForm: t("canonical.referenceFitsOnlyForm"),
     historicalTitle: t("historical.title"),
     historicalNone: t("historical.none"),
     sequenceTitle: t("sequence.title"),
@@ -203,6 +209,7 @@ export default function MotifExplorerPage() {
                       marker={marker}
                       strings={structureStrings}
                       nomenclatureNote={nomenclatureNote}
+                      referenceName={referenceNameOf(selectedMarkerId)}
                     />
                     <div className="flex items-start gap-1.5 border-t pt-4 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                       <span>{t("kits.note")}</span>

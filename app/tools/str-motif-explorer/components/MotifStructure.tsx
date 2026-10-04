@@ -12,6 +12,7 @@ import type { FssgMarker } from "../data/fssgData";
 import {
   buildHighlight,
   parseBracketing,
+  templateIndexOf,
   tokenizeFlank,
   type CanonBlock,
 } from "../utils/bracketing";
@@ -43,6 +44,11 @@ export type MotifStructureStrings = {
   minimumRangeLabel: string;
   canonicalTitle: string;
   canonicalAltForms: string;
+  canonicalTemplateNote: string;
+  referenceNameLabel: string;
+  referenceNameSource: string;
+  referenceFitsForm: string;
+  referenceFitsOnlyForm: string;
   historicalTitle: string;
   historicalNone: string;
   sequenceTitle: string;
@@ -121,17 +127,22 @@ export function MotifStructure({
   marker,
   strings,
   nomenclatureNote,
+  referenceName,
 }: {
   marker: FssgMarker;
   strings: MotifStructureStrings;
+  /** STRNaming 1.2.1 name of the GRCh38 reference allele, e.g. "CE22_GAAG[1]...". */
+  referenceName?: string | null;
   /** Cited designation note for the loci harmonized by Bodner et al. 2024 (D6S474, DYS612). */
   nomenclatureNote?: string;
 }) {
   const forms = marker.canonicalBracketing;
   const seq = marker.minimumRangeSequence ?? "";
   const highlight = buildHighlight(seq, forms);
-  const primaryForm = forms[highlight.formIndex] ?? forms[0] ?? "";
-  const altForms = forms.filter((_, i) => i !== highlight.formIndex);
+  // STRidER's own order: the first line of the FSSG cell, then the others.
+  const primaryForm = forms[0] ?? "";
+  const altForms = forms.slice(1);
+  const referenceForm = referenceName ? templateIndexOf(referenceName, forms) : -1;
   const min = marker.minimumRange;
 
   // Prefer STRidER's authoritative segmentation (the FSSG grid boxes) for the
@@ -190,6 +201,9 @@ export function MotifStructure({
             {strings.canonicalTitle}
             <InfoTip term="canonicalMotif" />
           </div>
+          <p className="mb-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+            {strings.canonicalTemplateNote}
+          </p>
           <BracketingPills form={primaryForm} />
           {altForms.length > 0 ? (
             <div className="mt-2">
@@ -209,6 +223,30 @@ export function MotifStructure({
             </div>
           ) : null}
         </div>
+
+        {/* Full STRNaming name of the GRCh38 reference allele */}
+        {referenceName ? (
+          <div>
+            <div className="mb-1 flex items-center gap-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+              {strings.referenceNameLabel}
+            </div>
+            <span className="inline-block max-w-full break-all rounded-md border border-slate-300 bg-slate-50 px-2 py-1 font-mono text-sm text-slate-700 dark:border-slate-600 dark:bg-slate-800/60 dark:text-slate-200">
+              {referenceName}
+            </span>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+              {strings.referenceNameSource}
+              {referenceForm >= 0
+                ? ` ${
+                    forms.length === 1
+                      ? strings.referenceFitsOnlyForm
+                      : strings.referenceFitsForm
+                          .replace("{n}", String(referenceForm + 1))
+                          .replace("{total}", String(forms.length))
+                  }`
+                : null}
+            </p>
+          </div>
+        ) : null}
 
         {/* Historical bracketing (2016) */}
         <div>

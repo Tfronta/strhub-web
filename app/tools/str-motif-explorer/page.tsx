@@ -121,6 +121,8 @@ export default function MotifExplorerPage() {
     noFlank5: t("sequence.noFlank5"),
     noFlank3: t("sequence.noFlank3"),
     notAlignedNote: t("sequence.notAligned"),
+    hoverHint: t("sequence.hoverHint"),
+    detailsSummary: t("sequence.detailsSummary"),
   };
 
   return (

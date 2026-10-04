@@ -586,6 +586,9 @@ motifExplorerPage: {
       "Em {marker} o ISFG minimum range termina na última base da região repetitiva; não há flanco 3' dentro do intervalo.",
     updateNote:
       "Esta seção é mantida em dia com as novas versões do FSSG e do STRNaming.",
+    hoverHint:
+      "Passe o cursor ou toque em um bloco do nome ou da sequência: ele se ilumina nos dois.",
+    detailsSummary: "Fontes e notas",
     phaseNote:
       "A estrutura da sequência (repeat, interrupção, flanco) segue o Forensic Sequence Structure Guide do STRidER (FSSG v6.1); o nome ISFG / STRNaming acima é uma vista complementar, não uma reimplementação das regras de nomenclatura.",
     notAligned:

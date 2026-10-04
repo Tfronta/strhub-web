@@ -586,6 +586,9 @@ motifExplorerPage: {
       "In {marker} the ISFG minimum range ends at the last base of the repeat region; there is no 3' flank inside the range.",
     updateNote:
       "This section is kept up to date with new releases of the FSSG and STRNaming.",
+    hoverHint:
+      "Hover over or tap a block of the name or the sequence: it lights up in both.",
+    detailsSummary: "Sources and notes",
     phaseNote:
       "The sequence structure (repeat, interruption, flank) follows STRidER's Forensic Sequence Structure Guide (FSSG v6.1); the ISFG / STRNaming name above is a complementary view, not a re-implementation of the naming rules.",
     notAligned:

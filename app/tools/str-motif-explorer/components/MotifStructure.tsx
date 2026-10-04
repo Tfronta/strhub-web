@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -37,10 +37,9 @@ const MINOR_REPEAT_CHIP = `${REPEAT_CHIP} lowercase`;
 // named repeat region; STRNaming has no "interruption" category.
 const FIXED_BLOCK_CHIP =
   "inline-flex items-center rounded-md border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300";
-// STRNaming view: the sequence flows as one strip and a thin rule marks where
-// a block of the name ends; counts and flank positions live in the tooltips.
-const UNIT_CELL = "contents";
-const BLOCK_SEPARATOR = "w-px self-stretch bg-slate-300 dark:bg-slate-600";
+// A block of the name lit up (hovered, focused or tapped) in the sequence.
+const ACTIVE_CHIP =
+  "inline-flex items-center rounded-md border border-primary bg-primary px-1.5 py-0.5 font-medium text-primary-foreground";
 const INTERRUPTION_CHIP =
   "inline-flex items-center rounded-md border border-amber-300 bg-amber-100 px-1.5 py-0.5 font-medium text-amber-800 dark:border-amber-500/50 dark:bg-amber-500/20 dark:text-amber-200";
 const FLANK_CHIP =
@@ -94,6 +93,8 @@ export type MotifStructureStrings = {
   noFlank5: string;
   noFlank3: string;
   notAlignedNote: string;
+  hoverHint: string;
+  detailsSummary: string;
 };
 
 function BracketingPills({ form }: { form: string }) {
@@ -179,6 +180,17 @@ export function MotifStructure({
     : null;
   const [view, setView] = useState<"strnaming" | "historical">("strnaming");
   const showStrnaming = Boolean(layout) && view === "strnaming";
+  // Block of the name under the pointer (or tapped), lit up in both the name
+  // and the sequence.
+  const [active, setActive] = useState<number | null>(null);
+  const linkProps = (bi: number) => ({
+    tabIndex: 0,
+    onMouseEnter: () => setActive(bi),
+    onMouseLeave: () => setActive(null),
+    onFocus: () => setActive(bi),
+    onBlur: () => setActive(null),
+    onClick: () => setActive((cur) => (cur === bi ? null : bi)),
+  });
   const gridRegions = fssgStrnamingRegions(marker.locus);
   // Repeat motifs of the name (>= 3 bp, as in the historical view) whose exact
   // sequence also occurs in a flank: outlined there, since flank bases are not
@@ -242,81 +254,20 @@ export function MotifStructure({
           ) : null}
         </div>
 
-        {/* Canonical bracketing (2024) */}
-        <div>
-          <div className="mb-2 flex items-center gap-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
-            {strings.canonicalTitle}
-            <InfoTip term="canonicalMotif" />
-          </div>
-          <p className="mb-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-            {strings.canonicalTemplateNote}
-          </p>
-          <BracketingPills form={primaryForm} />
-          {altForms.length > 0 ? (
-            <div className="mt-2">
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                {strings.canonicalAltForms}:
-              </p>
-              <ul className="mt-1 space-y-0.5">
-                {altForms.map((f, i) => (
-                  <li
-                    key={i}
-                    className="font-mono text-xs text-slate-500 dark:text-slate-400 break-all"
-                  >
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-        </div>
-
-        {/* Full STRNaming name of the GRCh38 reference allele */}
-        {referenceName ? (
-          <div>
-            <div className="mb-1 flex items-center gap-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
-              {strings.referenceNameLabel}
-            </div>
-            <span className="inline-block max-w-full break-all rounded-md border border-slate-300 bg-slate-50 px-2 py-1 font-mono text-sm text-slate-700 dark:border-slate-600 dark:bg-slate-800/60 dark:text-slate-200">
-              {referenceName}
-            </span>
-            <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-              {strings.referenceNameSource}
-              {referenceForm >= 0
-                ? ` ${
-                    forms.length === 1
-                      ? strings.referenceFitsOnlyForm
-                      : strings.referenceFitsForm
-                          .replace("{n}", String(referenceForm + 1))
-                          .replace("{total}", String(forms.length))
-                  }`
-                : null}
-            </p>
-          </div>
-        ) : null}
-
-        {/* Historical bracketing (2016) */}
-        <div>
-          <div className="mb-1 flex items-center gap-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
-            {strings.historicalTitle}
-            <InfoTip term="historicalMotif" />
-          </div>
-          {marker.historicalBracketing ? (
-            <span className="inline-block rounded-md border border-slate-300 bg-slate-50 px-2 py-1 font-mono text-sm text-slate-600 dark:border-slate-600 dark:bg-slate-800/60 dark:text-slate-300">
-              {marker.historicalBracketing}
-            </span>
-          ) : (
-            <span className="text-sm text-slate-400">
-              {strings.historicalNone}
-            </span>
-          )}
-        </div>
-
-        {/* Reference sequence, minimum range, with roles highlighted */}
-        <div>
+        {/* Name + sequence panel: the STRNaming name of the reference allele
+            sits right above its sequence, and hovering a block in either
+            lights up the same block in both. */}
+        <div className="rounded-xl border border-slate-200 bg-white/60 p-4 dark:border-slate-700 dark:bg-slate-900/40">
           <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-            <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-              {strings.sequenceTitle}
+            <div className="flex items-center gap-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+              {showStrnaming ? (
+                strings.referenceNameLabel
+              ) : (
+                <>
+                  {strings.historicalTitle}
+                  <InfoTip term="historicalMotif" />
+                </>
+              )}
             </div>
             {layout ? (
               <div
@@ -328,7 +279,10 @@ export function MotifStructure({
                     key={v}
                     type="button"
                     aria-pressed={view === v}
-                    onClick={() => setView(v)}
+                    onClick={() => {
+                      setView(v);
+                      setActive(null);
+                    }}
                     className={`rounded px-2 py-1 font-medium transition-colors ${
                       view === v
                         ? "bg-primary text-primary-foreground"
@@ -343,68 +297,93 @@ export function MotifStructure({
               </div>
             ) : null}
           </div>
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-900/50">
+
+          {/* The name (or the historical bracketing) */}
+          {showStrnaming && layout ? (
+            <div className="mb-3 flex flex-wrap items-baseline gap-x-0.5 gap-y-1 font-mono text-base">
+              <span className="text-slate-500 dark:text-slate-400">
+                {referenceName!.slice(0, referenceName!.indexOf("_") + 1)}
+              </span>
+              {layout.blocks.map((b, bi) => (
+                <span
+                  key={bi}
+                  {...linkProps(bi)}
+                  className={`cursor-pointer rounded px-1 transition-colors ${
+                    active === bi
+                      ? "bg-primary/15 text-slate-900 dark:text-white"
+                      : "text-slate-800 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800"
+                  }`}
+                >
+                  {b.motif}
+                  <span
+                    className={
+                      b.variable
+                        ? "text-sm font-semibold text-primary"
+                        : "text-sm text-slate-500 dark:text-slate-400"
+                    }
+                  >
+                    [{b.count}]
+                  </span>
+                </span>
+              ))}
+            </div>
+          ) : marker.historicalBracketing ? (
+            <div className="mb-3 font-mono text-base text-slate-700 dark:text-slate-200">
+              {marker.historicalBracketing}
+            </div>
+          ) : (
+            <div className="mb-3 text-sm text-slate-400">
+              {strings.historicalNone}
+            </div>
+          )}
+
+          {/* The reference sequence over the minimum range */}
+          <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            {strings.sequenceTitle}
+          </div>
+          <div className="mt-1 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-900/50">
             {showStrnaming && layout ? (
               <div className="flex flex-wrap items-center gap-1 font-mono text-sm">
                 {layout.flank5 ? (
-                  <>
-                    <span className={UNIT_CELL}>
-                      <FlankPill
-                        text={layout.flank5}
-                        motifs={strnamingFlankMotifs}
-                        tooltip={strings.flank5Tooltip.replace(
-                          "{n}",
-                          String(layout.flank5.length),
-                        )}
-                        flankMotifLabel={strings.flankMotifLabel}
-                      />
-                    </span>
-                    <span aria-hidden="true" className={BLOCK_SEPARATOR} />
-                  </>
+                  <span className="mr-2 inline-flex">
+                    <FlankPill
+                      text={layout.flank5}
+                      motifs={strnamingFlankMotifs}
+                      tooltip={strings.flank5Tooltip.replace(
+                        "{n}",
+                        String(layout.flank5.length),
+                      )}
+                      flankMotifLabel={strings.flankMotifLabel}
+                    />
+                  </span>
                 ) : null}
-                {layout.blocks.map((b, bi) => (
-                  <Fragment key={bi}>
-                    {bi > 0 ? (
-                      <span aria-hidden="true" className={BLOCK_SEPARATOR} />
-                    ) : null}
-                    {b.units.map((u, ui) => (
-                      <span key={ui} className={UNIT_CELL}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span
-                              className={`cursor-help ${
-                                b.variable ? REPEAT_CHIP : FIXED_BLOCK_CHIP
-                              }`}
-                            >
-                              {u.seq}
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent sideOffset={6}>
-                            {b.motif}[{b.count}] ·{" "}
-                            {b.variable
-                              ? strings.variableBlockTooltip
-                              : strings.fixedBlockTooltip}
-                          </TooltipContent>
-                        </Tooltip>
-                      </span>
-                    ))}
-                  </Fragment>
-                ))}
-                {layout.flank3 ? (
-                  <>
-                    <span aria-hidden="true" className={BLOCK_SEPARATOR} />
-                    <span className={UNIT_CELL}>
-                      <FlankPill
-                        text={layout.flank3}
-                        motifs={strnamingFlankMotifs}
-                        tooltip={strings.flank3Tooltip.replace(
-                          "{n}",
-                          String(layout.flank3.length),
-                        )}
-                        flankMotifLabel={strings.flankMotifLabel}
-                      />
+                {layout.blocks.map((b, bi) =>
+                  b.units.map((u, ui) => (
+                    <span
+                      key={`${bi}-${ui}`}
+                      {...linkProps(bi)}
+                      className={`cursor-pointer transition-colors ${
+                        active === bi
+                          ? ACTIVE_CHIP
+                          : b.variable
+                            ? REPEAT_CHIP
+                            : FIXED_BLOCK_CHIP
+                      } ${ui === b.units.length - 1 ? "mr-2" : ""}`}
+                    >
+                      {u.seq}
                     </span>
-                  </>
+                  )),
+                )}
+                {layout.flank3 ? (
+                  <FlankPill
+                    text={layout.flank3}
+                    motifs={strnamingFlankMotifs}
+                    tooltip={strings.flank3Tooltip.replace(
+                      "{n}",
+                      String(layout.flank3.length),
+                    )}
+                    flankMotifLabel={strings.flankMotifLabel}
+                  />
                 ) : null}
               </div>
             ) : useSegments ? (
@@ -447,86 +426,115 @@ export function MotifStructure({
                   );
                 })}
               </div>
-            ) : highlight.aligned ? (
-              <div className="flex flex-wrap items-center gap-1 font-mono text-sm">
-                {highlight.spans.map((s, idx) => {
-                  if (s.kind === "flank") {
-                    return (
-                      <FlankPill
-                        key={idx}
-                        text={s.text}
-                        motifs={highlight.repeatMotifs}
-                        tooltip={strings.flankTooltip}
-                        flankMotifLabel={strings.flankMotifLabel}
-                      />
-                    );
-                  }
-                  const isRepeat = s.kind === "repeat";
-                  return (
-                    <Tooltip key={idx}>
-                      <TooltipTrigger asChild>
-                        <span
-                          className={`cursor-help ${
-                            isRepeat ? REPEAT_CHIP : INTERRUPTION_CHIP
-                          }`}
-                        >
-                          {s.text}
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent sideOffset={6}>
-                        {s.motif} ·{" "}
-                        {isRepeat
-                          ? strings.repeatTooltip
-                          : strings.interruptionTooltip}
-                      </TooltipContent>
-                    </Tooltip>
-                  );
-                })}
-              </div>
             ) : (
               <p className="font-mono text-sm leading-relaxed break-all text-slate-500 dark:text-slate-400">
                 {seq}
               </p>
             )}
           </div>
-          {!showStrnaming && !useSegments && !highlight.aligned ? (
-            <p className="mt-2 text-xs text-amber-700 dark:text-amber-400">
-              {strings.notAlignedNote}
-            </p>
-          ) : null}
 
-          {showStrnaming ? (
-            <>
-              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block h-3 w-3 rounded-sm border border-emerald-300 bg-emerald-200 dark:border-emerald-500/50 dark:bg-emerald-500/40" />
-                  {strings.legendVariableBlock}
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block h-3 w-3 rounded-sm border border-emerald-400 bg-emerald-50 dark:border-emerald-500/60 dark:bg-emerald-500/10" />
-                  {strings.legendFixedBlock}
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block h-3 w-3 rounded-sm border border-slate-300 bg-slate-200 dark:border-slate-600 dark:bg-slate-700" />
-                  {strings.legendStrnamingFlank}
-                  <InfoTip term="flankingRegion" />
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span
-                    className="inline-flex h-4 items-center rounded-md border border-slate-400 px-1 text-[0.6rem] leading-none text-slate-500 dark:text-slate-300"
-                    aria-hidden="true"
-                  >
-                    motif
+          {/* What the highlighted block means, or how to use the panel */}
+          {showStrnaming && layout ? (
+            <p
+              aria-live="polite"
+              className="mt-2 min-h-[1.25rem] text-[13px] text-slate-600 dark:text-slate-300"
+            >
+              {active !== null && layout.blocks[active] ? (
+                <>
+                  <span className="font-mono font-medium">
+                    {layout.blocks[active].motif}[{layout.blocks[active].count}]
                   </span>
-                  {strings.flankMotifLabel}
+                  {": "}
+                  {layout.blocks[active].variable
+                    ? strings.variableBlockTooltip
+                    : strings.fixedBlockTooltip}
+                </>
+              ) : (
+                <span className="text-slate-500 dark:text-slate-400">
+                  {strings.hoverHint}
                 </span>
-              </div>
-              <p className="mt-3 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+              )}
+            </p>
+          ) : (
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block h-3 w-3 rounded-sm border border-emerald-300 bg-emerald-200 dark:border-emerald-500/50 dark:bg-emerald-500/40" />
+                {strings.legendRepeat}
+                <InfoTip term="coreRepeat" />
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-flex h-3 items-center rounded-sm border border-emerald-300 bg-emerald-200 px-0.5 text-[0.5rem] font-mono lowercase leading-none text-emerald-800 dark:border-emerald-500/50 dark:bg-emerald-500/40 dark:text-emerald-200">
+                  aa
+                </span>
+                {strings.legendMinorRepeat}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block h-3 w-3 rounded-sm border border-amber-300 bg-amber-200 dark:border-amber-500/50 dark:bg-amber-500/40" />
+                {strings.legendInterruption}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block h-3 w-3 rounded-sm border border-slate-300 bg-slate-200 dark:border-slate-600 dark:bg-slate-700" />
+                {strings.legendFlank}
+                <InfoTip term="flankingRegion" />
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* STRidER's template for the common alleles */}
+        <div>
+          <div className="mb-2 flex items-center gap-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+            {strings.canonicalTitle}
+            <InfoTip term="canonicalMotif" />
+          </div>
+          <BracketingPills form={primaryForm} />
+          {altForms.length > 0 ? (
+            <div className="mt-2">
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                {strings.canonicalAltForms}:
+              </p>
+              <ul className="mt-1 space-y-0.5">
+                {altForms.map((f, i) => (
+                  <li
+                    key={i}
+                    className="font-mono text-xs text-slate-500 dark:text-slate-400 break-all"
+                  >
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </div>
+
+        {/* Sources and notes, in one place */}
+        <details className="group rounded-lg border border-slate-200 px-3 py-2 text-[13px] leading-relaxed text-slate-600 dark:border-slate-700 dark:text-slate-300">
+          <summary className="cursor-pointer select-none text-xs font-medium text-slate-500 dark:text-slate-400">
+            {strings.detailsSummary}
+          </summary>
+          <div className="mt-2 space-y-2">
+            <p>{strings.canonicalTemplateNote}</p>
+            {referenceName ? (
+              <p>
+                {strings.referenceNameSource}
+                {referenceForm >= 0
+                  ? ` ${
+                      forms.length === 1
+                        ? strings.referenceFitsOnlyForm
+                        : strings.referenceFitsForm
+                            .replace("{n}", String(referenceForm + 1))
+                            .replace("{total}", String(forms.length))
+                    }`
+                  : null}
+              </p>
+            ) : null}
+            {layout ? (
+              <p>
                 {strings.strnamingNote}{" "}
-                {!layout!.flank5
+                {!layout.flank5
                   ? `${strings.noFlank5.replace("{marker}", marker.locus)} `
                   : null}
-                {!layout!.flank3
+                {!layout.flank3
                   ? `${strings.noFlank3.replace("{marker}", marker.locus)} `
                   : null}
                 {gridAgrees
@@ -537,56 +545,14 @@ export function MotifStructure({
                           "{grid}",
                           `${gridRegions[0].start + 1}-${gridRegions[0].end}`,
                         )
-                        .replace(
-                          "{name}",
-                          `${layout!.start + 1}-${layout!.end}`,
-                        )
+                        .replace("{name}", `${layout.start + 1}-${layout.end}`)
                     : null}
               </p>
-            </>
-          ) : (
-            <>
-              {/* Legend */}
-              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block h-3 w-3 rounded-sm border border-emerald-300 bg-emerald-200 dark:border-emerald-500/50 dark:bg-emerald-500/40" />
-                  {strings.legendRepeat}
-                  <InfoTip term="coreRepeat" />
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-flex h-3 items-center rounded-sm border border-emerald-300 bg-emerald-200 px-0.5 text-[0.5rem] font-mono lowercase leading-none text-emerald-800 dark:border-emerald-500/50 dark:bg-emerald-500/40 dark:text-emerald-200">
-                    aa
-                  </span>
-                  {strings.legendMinorRepeat}
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block h-3 w-3 rounded-sm border border-amber-300 bg-amber-200 dark:border-amber-500/50 dark:bg-amber-500/40" />
-                  {strings.legendInterruption}
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block h-3 w-3 rounded-sm border border-slate-300 bg-slate-200 dark:border-slate-600 dark:bg-slate-700" />
-                  {strings.legendFlank}
-                  <InfoTip term="flankingRegion" />
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span
-                    className="inline-flex h-4 items-center rounded-md border border-slate-400 px-1 text-[0.6rem] leading-none text-slate-500 dark:text-slate-300"
-                    aria-hidden="true"
-                  >
-                    motif
-                  </span>
-                  {strings.flankMotifLabel}
-                </span>
-              </div>
-              <p className="mt-3 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
-                {strings.phaseNote}
-              </p>
-            </>
-          )}
-          <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-            {strings.updateNote}
-          </p>
-        </div>
+            ) : null}
+            <p>{strings.phaseNote}</p>
+            <p>{strings.updateNote}</p>
+          </div>
+        </details>
       </div>
     </TooltipProvider>
   );

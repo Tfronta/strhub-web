@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { ClientBackToBasicsGrid, ClientCoreConceptsGrid } from "./client-components";
 import { PageTitle } from "@/components/page-title";
 import { useLanguage } from "@/contexts/language-context";
 import { KaryotypeExplorer } from "@/components/explorer/KaryotypeExplorer";
 import { Separator } from "@/components/ui/separator";
+import { basicsArticlePath } from "@/lib/seo";
 import type { ReactNode } from "react";
 import type { BasicsListItem } from "@/lib/back-to-basics-types";
 import type { Language } from "@/lib/translations";
@@ -13,6 +15,19 @@ export type BasicsInitialData = {
   language: Language;
   coreConcepts: BasicsListItem[];
   bioinformatics: BasicsListItem[];
+};
+
+/** Every Foundations article in a language other than the one on screen. */
+export type BasicsOtherLanguage = {
+  language: Language;
+  articles: BasicsListItem[];
+};
+
+/** Each language named in itself, the usual convention for a language list. */
+const LOCALE_NAMES: Record<Language, string> = {
+  en: "English",
+  es: "Español",
+  pt: "Português",
 };
 
 function withItalicLoci(text: string): ReactNode[] {
@@ -26,8 +41,10 @@ function withItalicLoci(text: string): ReactNode[] {
 
 export default function BasicsPageClient({
   initialData,
+  otherLanguages = [],
 }: {
   initialData: BasicsInitialData;
+  otherLanguages?: BasicsOtherLanguage[];
 }) {
   const { t } = useLanguage();
   return (
@@ -83,6 +100,47 @@ export default function BasicsPageClient({
           />
         </div>
       </section>
+
+      {/* Section C — The same articles in the other languages. Server-rendered
+          so every translation is reachable from here, whatever language the
+          grids above happen to be showing. */}
+      {otherLanguages.some((entry) => entry.articles.length > 0) && (
+        <section className="pb-16 px-4">
+          <div className="container mx-auto space-y-6">
+            <Separator />
+            <h2 className="text-xl font-semibold">
+              {t("basics.otherLanguagesTitle")}
+            </h2>
+            {otherLanguages
+              .filter((entry) => entry.articles.length > 0)
+              .map((entry) => (
+                <div key={entry.language} className="space-y-2">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    {LOCALE_NAMES[entry.language]}
+                  </h3>
+                  <ul className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                    {entry.articles
+                      .filter((article) => article.fields.slug)
+                      .map((article) => (
+                        <li key={`${entry.language}-${article.sys.id}`}>
+                          <Link
+                            href={basicsArticlePath(
+                              entry.language,
+                              article.fields.slug!
+                            )}
+                            hrefLang={entry.language}
+                            className="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline transition-colors"
+                          >
+                            {article.fields.title}
+                          </Link>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

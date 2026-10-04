@@ -8,6 +8,7 @@ basics: {
   readArticle: "Read Article",
   backToArticles: "Back to Foundations",
   readTime: "min read",
+  otherLanguagesTitle: "Foundations in other languages",
   topicsCovered: "Topics covered:",
   explorerSectionTitle: "Explore STR loci in the Genome",
   explorerSectionDesc:

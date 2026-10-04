@@ -8,6 +8,7 @@ basics: {
   readArticle: "Ler Artigo",
   backToArticles: "Voltar a Fundamentos",
   readTime: "min de leitura",
+  otherLanguagesTitle: "Fundamentos em outros idiomas",
   topicsCovered: "Tópicos:",
   explorerSectionTitle: "Explorar STRs no genoma",
   explorerSectionDesc:

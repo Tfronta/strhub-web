@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -12,9 +13,15 @@ import type { FssgMarker } from "../data/fssgData";
 import {
   buildHighlight,
   parseBracketing,
+  strnamingLayout,
+  templateIndexOf,
   tokenizeFlank,
   type CanonBlock,
 } from "../utils/bracketing";
+import {
+  agreesWithFssgGrid,
+  fssgStrnamingRegions,
+} from "../data/strnamingRegions";
 
 // Role-based color scheme, matching the production tool:
 // green = canonical repeat, amber = interruption / internal variant,
@@ -25,6 +32,15 @@ const REPEAT_CHIP =
 // rendered lowercase, mirroring STRidER's historical notation (uppercase primary
 // vs lowercase minor).
 const MINOR_REPEAT_CHIP = `${REPEAT_CHIP} lowercase`;
+// STRNaming view: a block whose count is fixed in STRidER's template (e.g.
+// GAAG[2]) in a lighter green than a variable "[n]" block. Both are part of the
+// named repeat region; STRNaming has no "interruption" category.
+const FIXED_BLOCK_CHIP =
+  "inline-flex items-center rounded-md border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300";
+// STRNaming view: the sequence flows as one strip and a thin rule marks where
+// a block of the name ends; counts and flank positions live in the tooltips.
+const UNIT_CELL = "contents";
+const BLOCK_SEPARATOR = "w-px self-stretch bg-slate-300 dark:bg-slate-600";
 const INTERRUPTION_CHIP =
   "inline-flex items-center rounded-md border border-amber-300 bg-amber-100 px-1.5 py-0.5 font-medium text-amber-800 dark:border-amber-500/50 dark:bg-amber-500/20 dark:text-amber-200";
 const FLANK_CHIP =
@@ -43,6 +59,11 @@ export type MotifStructureStrings = {
   minimumRangeLabel: string;
   canonicalTitle: string;
   canonicalAltForms: string;
+  canonicalTemplateNote: string;
+  referenceNameLabel: string;
+  referenceNameSource: string;
+  referenceFitsForm: string;
+  referenceFitsOnlyForm: string;
   historicalTitle: string;
   historicalNone: string;
   sequenceTitle: string;
@@ -57,6 +78,21 @@ export type MotifStructureStrings = {
   interruptionTooltip: string;
   flankTooltip: string;
   phaseNote: string;
+  updateNote: string;
+  viewStrnaming: string;
+  viewHistorical: string;
+  legendVariableBlock: string;
+  legendFixedBlock: string;
+  legendStrnamingFlank: string;
+  variableBlockTooltip: string;
+  fixedBlockTooltip: string;
+  flank5Tooltip: string;
+  flank3Tooltip: string;
+  strnamingNote: string;
+  gridAgrees: string;
+  gridDiffers: string;
+  noFlank5: string;
+  noFlank3: string;
   notAlignedNote: string;
 };
 
@@ -100,9 +136,7 @@ function FlankPill({
           <TooltipTrigger asChild>
             <span
               className={
-                tk.motifLike
-                  ? `${FLANK_MOTIF_CHIP} cursor-help`
-                  : "cursor-help"
+                tk.motifLike ? `${FLANK_MOTIF_CHIP} cursor-help` : "cursor-help"
               }
             >
               {tk.text}
@@ -121,18 +155,42 @@ export function MotifStructure({
   marker,
   strings,
   nomenclatureNote,
+  referenceName,
 }: {
   marker: FssgMarker;
   strings: MotifStructureStrings;
+  /** STRNaming 1.2.1 name of the GRCh38 reference allele, e.g. "CE22_GAAG[1]...". */
+  referenceName?: string | null;
   /** Cited designation note for the loci harmonized by Bodner et al. 2024 (D6S474, DYS612). */
   nomenclatureNote?: string;
 }) {
   const forms = marker.canonicalBracketing;
   const seq = marker.minimumRangeSequence ?? "";
   const highlight = buildHighlight(seq, forms);
-  const primaryForm = forms[highlight.formIndex] ?? forms[0] ?? "";
-  const altForms = forms.filter((_, i) => i !== highlight.formIndex);
+  // STRidER's own order: the first line of the FSSG cell, then the others.
+  const primaryForm = forms[0] ?? "";
+  const altForms = forms.slice(1);
+  const referenceForm = referenceName
+    ? templateIndexOf(referenceName, forms)
+    : -1;
   const min = marker.minimumRange;
+  const layout = referenceName
+    ? strnamingLayout(seq, referenceName, forms)
+    : null;
+  const [view, setView] = useState<"strnaming" | "historical">("strnaming");
+  const showStrnaming = Boolean(layout) && view === "strnaming";
+  const gridRegions = fssgStrnamingRegions(marker.locus);
+  // Repeat motifs of the name (>= 3 bp, as in the historical view) whose exact
+  // sequence also occurs in a flank: outlined there, since flank bases are not
+  // counted in the name.
+  const strnamingFlankMotifs = layout
+    ? Array.from(new Set(layout.blocks.map((b) => b.motif))).filter(
+        (m) => m.length >= 3,
+      )
+    : [];
+  const gridAgrees = layout
+    ? agreesWithFssgGrid(marker.locus, layout.start, layout.end)
+    : false;
 
   // Prefer STRidER's authoritative segmentation (the FSSG grid boxes) for the
   // reference sequence; fall back to the aligner only when it is missing.
@@ -147,8 +205,8 @@ export function MotifStructure({
           new Set(
             segs!
               .filter((s) => s.role === "repeat" || s.role === "minorRepeat")
-              .map((s) => s.seq)
-          )
+              .map((s) => s.seq),
+          ),
         )
       : highlight.repeatMotifs
   ).filter((m) => m.length >= 3);
@@ -190,6 +248,9 @@ export function MotifStructure({
             {strings.canonicalTitle}
             <InfoTip term="canonicalMotif" />
           </div>
+          <p className="mb-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+            {strings.canonicalTemplateNote}
+          </p>
           <BracketingPills form={primaryForm} />
           {altForms.length > 0 ? (
             <div className="mt-2">
@@ -210,6 +271,30 @@ export function MotifStructure({
           ) : null}
         </div>
 
+        {/* Full STRNaming name of the GRCh38 reference allele */}
+        {referenceName ? (
+          <div>
+            <div className="mb-1 flex items-center gap-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+              {strings.referenceNameLabel}
+            </div>
+            <span className="inline-block max-w-full break-all rounded-md border border-slate-300 bg-slate-50 px-2 py-1 font-mono text-sm text-slate-700 dark:border-slate-600 dark:bg-slate-800/60 dark:text-slate-200">
+              {referenceName}
+            </span>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+              {strings.referenceNameSource}
+              {referenceForm >= 0
+                ? ` ${
+                    forms.length === 1
+                      ? strings.referenceFitsOnlyForm
+                      : strings.referenceFitsForm
+                          .replace("{n}", String(referenceForm + 1))
+                          .replace("{total}", String(forms.length))
+                  }`
+                : null}
+            </p>
+          </div>
+        ) : null}
+
         {/* Historical bracketing (2016) */}
         <div>
           <div className="mb-1 flex items-center gap-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
@@ -229,11 +314,100 @@ export function MotifStructure({
 
         {/* Reference sequence, minimum range, with roles highlighted */}
         <div>
-          <div className="mb-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-            {strings.sequenceTitle}
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+            <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+              {strings.sequenceTitle}
+            </div>
+            {layout ? (
+              <div
+                role="group"
+                className="inline-flex rounded-md border border-slate-300 p-0.5 text-xs dark:border-slate-600"
+              >
+                {(["strnaming", "historical"] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    aria-pressed={view === v}
+                    onClick={() => setView(v)}
+                    className={`rounded px-2 py-1 font-medium transition-colors ${
+                      view === v
+                        ? "bg-primary text-primary-foreground"
+                        : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                    }`}
+                  >
+                    {v === "strnaming"
+                      ? strings.viewStrnaming
+                      : strings.viewHistorical}
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-900/50">
-            {useSegments ? (
+            {showStrnaming && layout ? (
+              <div className="flex flex-wrap items-center gap-1 font-mono text-sm">
+                {layout.flank5 ? (
+                  <>
+                    <span className={UNIT_CELL}>
+                      <FlankPill
+                        text={layout.flank5}
+                        motifs={strnamingFlankMotifs}
+                        tooltip={strings.flank5Tooltip.replace(
+                          "{n}",
+                          String(layout.flank5.length),
+                        )}
+                        flankMotifLabel={strings.flankMotifLabel}
+                      />
+                    </span>
+                    <span aria-hidden="true" className={BLOCK_SEPARATOR} />
+                  </>
+                ) : null}
+                {layout.blocks.map((b, bi) => (
+                  <Fragment key={bi}>
+                    {bi > 0 ? (
+                      <span aria-hidden="true" className={BLOCK_SEPARATOR} />
+                    ) : null}
+                    {b.units.map((u, ui) => (
+                      <span key={ui} className={UNIT_CELL}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span
+                              className={`cursor-help ${
+                                b.variable ? REPEAT_CHIP : FIXED_BLOCK_CHIP
+                              }`}
+                            >
+                              {u.seq}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent sideOffset={6}>
+                            {b.motif}[{b.count}] ·{" "}
+                            {b.variable
+                              ? strings.variableBlockTooltip
+                              : strings.fixedBlockTooltip}
+                          </TooltipContent>
+                        </Tooltip>
+                      </span>
+                    ))}
+                  </Fragment>
+                ))}
+                {layout.flank3 ? (
+                  <>
+                    <span aria-hidden="true" className={BLOCK_SEPARATOR} />
+                    <span className={UNIT_CELL}>
+                      <FlankPill
+                        text={layout.flank3}
+                        motifs={strnamingFlankMotifs}
+                        tooltip={strings.flank3Tooltip.replace(
+                          "{n}",
+                          String(layout.flank3.length),
+                        )}
+                        flankMotifLabel={strings.flankMotifLabel}
+                      />
+                    </span>
+                  </>
+                ) : null}
+              </div>
+            ) : useSegments ? (
               <div className="flex flex-wrap items-center gap-1 font-mono text-sm">
                 {segs!.map((s, idx) => {
                   if (s.role === "flank") {
@@ -315,46 +489,102 @@ export function MotifStructure({
               </p>
             )}
           </div>
-          {!useSegments && !highlight.aligned ? (
+          {!showStrnaming && !useSegments && !highlight.aligned ? (
             <p className="mt-2 text-xs text-amber-700 dark:text-amber-400">
               {strings.notAlignedNote}
             </p>
           ) : null}
 
-          {/* Legend */}
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="inline-block h-3 w-3 rounded-sm border border-emerald-300 bg-emerald-200 dark:border-emerald-500/50 dark:bg-emerald-500/40" />
-              {strings.legendRepeat}
-              <InfoTip term="coreRepeat" />
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="inline-flex h-3 items-center rounded-sm border border-emerald-300 bg-emerald-200 px-0.5 text-[0.5rem] font-mono lowercase leading-none text-emerald-800 dark:border-emerald-500/50 dark:bg-emerald-500/40 dark:text-emerald-200">
-                aa
-              </span>
-              {strings.legendMinorRepeat}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="inline-block h-3 w-3 rounded-sm border border-amber-300 bg-amber-200 dark:border-amber-500/50 dark:bg-amber-500/40" />
-              {strings.legendInterruption}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="inline-block h-3 w-3 rounded-sm border border-slate-300 bg-slate-200 dark:border-slate-600 dark:bg-slate-700" />
-              {strings.legendFlank}
-              <InfoTip term="flankingRegion" />
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span
-                className="inline-flex h-4 items-center rounded-md border border-slate-400 px-1 text-[0.6rem] leading-none text-slate-500 dark:text-slate-300"
-                aria-hidden="true"
-              >
-                motif
-              </span>
-              {strings.flankMotifLabel}
-            </span>
-          </div>
-          <p className="mt-3 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
-            {strings.phaseNote}
+          {showStrnaming ? (
+            <>
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-sm border border-emerald-300 bg-emerald-200 dark:border-emerald-500/50 dark:bg-emerald-500/40" />
+                  {strings.legendVariableBlock}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-sm border border-emerald-400 bg-emerald-50 dark:border-emerald-500/60 dark:bg-emerald-500/10" />
+                  {strings.legendFixedBlock}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-sm border border-slate-300 bg-slate-200 dark:border-slate-600 dark:bg-slate-700" />
+                  {strings.legendStrnamingFlank}
+                  <InfoTip term="flankingRegion" />
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span
+                    className="inline-flex h-4 items-center rounded-md border border-slate-400 px-1 text-[0.6rem] leading-none text-slate-500 dark:text-slate-300"
+                    aria-hidden="true"
+                  >
+                    motif
+                  </span>
+                  {strings.flankMotifLabel}
+                </span>
+              </div>
+              <p className="mt-3 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+                {strings.strnamingNote}{" "}
+                {!layout!.flank5
+                  ? `${strings.noFlank5.replace("{marker}", marker.locus)} `
+                  : null}
+                {!layout!.flank3
+                  ? `${strings.noFlank3.replace("{marker}", marker.locus)} `
+                  : null}
+                {gridAgrees
+                  ? strings.gridAgrees
+                  : gridRegions.length
+                    ? strings.gridDiffers
+                        .replace(
+                          "{grid}",
+                          `${gridRegions[0].start + 1}-${gridRegions[0].end}`,
+                        )
+                        .replace(
+                          "{name}",
+                          `${layout!.start + 1}-${layout!.end}`,
+                        )
+                    : null}
+              </p>
+            </>
+          ) : (
+            <>
+              {/* Legend */}
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-sm border border-emerald-300 bg-emerald-200 dark:border-emerald-500/50 dark:bg-emerald-500/40" />
+                  {strings.legendRepeat}
+                  <InfoTip term="coreRepeat" />
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-flex h-3 items-center rounded-sm border border-emerald-300 bg-emerald-200 px-0.5 text-[0.5rem] font-mono lowercase leading-none text-emerald-800 dark:border-emerald-500/50 dark:bg-emerald-500/40 dark:text-emerald-200">
+                    aa
+                  </span>
+                  {strings.legendMinorRepeat}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-sm border border-amber-300 bg-amber-200 dark:border-amber-500/50 dark:bg-amber-500/40" />
+                  {strings.legendInterruption}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-sm border border-slate-300 bg-slate-200 dark:border-slate-600 dark:bg-slate-700" />
+                  {strings.legendFlank}
+                  <InfoTip term="flankingRegion" />
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span
+                    className="inline-flex h-4 items-center rounded-md border border-slate-400 px-1 text-[0.6rem] leading-none text-slate-500 dark:text-slate-300"
+                    aria-hidden="true"
+                  >
+                    motif
+                  </span>
+                  {strings.flankMotifLabel}
+                </span>
+              </div>
+              <p className="mt-3 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+                {strings.phaseNote}
+              </p>
+            </>
+          )}
+          <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+            {strings.updateNote}
           </p>
         </div>
       </div>

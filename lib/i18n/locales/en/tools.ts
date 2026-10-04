@@ -503,7 +503,7 @@ fastaGeneratorPage: {
 motifExplorerPage: {
   title: "STR Motif Explorer",
   subtitle:
-    "This section helps you understand the internal structure of each STR marker along the HG38 reference sequence, over the ISFG minimum range. It shows that not every locus is a continuous run of its canonical motif, and highlights the complexity of compound and interrupted loci.",
+    "This section helps you understand the internal structure of each STR marker along the GRCh38 reference sequence, over the ISFG minimum range. It shows that not every locus is a continuous run of its canonical motif, and highlights the complexity of compound and interrupted loci.",
   visualizationTitle: "Structure of {marker}",
   configuration: {
     title: "Configuration",
@@ -517,7 +517,7 @@ motifExplorerPage: {
       "Pick a marker to see its reference sequence over the ISFG minimum range and its canonical repeat motif.",
   },
   scientificNote:
-    "Naming note: STRNaming and the ISFG recommendations report the repeat structure over the minimum range. Older 2016 bracketing was often defined over a wider window (STRbase / NIST), so the two can look different for the same allele.",
+    "Naming note: names generated with STRNaming follow the 2024 ISFG recommendations (Gettings et al. 2024) and describe the ISFG minimum range. For some loci the historical 2016-2023 bracketing in the FSSG reads the repeats from a different starting base, so the two can look different for the same allele.",
   sourceLabel: "Source",
   sourceValue: "{version} ({publisher}; distributed as {file})",
   sourceButtonLabel: "Open STRidER",
@@ -528,6 +528,16 @@ motifExplorerPage: {
   canonical: {
     title: "STRNaming Formatted ISFG Minimum Range for Common Alleles (2024 onward)",
     altForms: "Other valid forms",
+    templateNote:
+      "STRidER's template for the common alleles of this locus, as written in the FSSG. [n] marks a block whose repeat count varies between alleles. It is not an allele name: a full STRNaming name starts with the CE allele (for example CE13_) and gives the count of every block, as in the reference allele below.",
+    referenceNameLabel:
+      "Reference allele (GRCh38) named with STRNaming 1.2.1",
+    referenceNameSource:
+      "STRNaming 1.2.1 name of the GRCh38 reference sequence over the ISFG minimum range; its CE equals the FSSG CE equivalent.",
+    referenceFitsForm:
+      "Its structure follows form {n} of the {total} listed above.",
+    referenceFitsOnlyForm:
+      "Its structure follows the template above.",
     variant: "Sequence variant",
   },
   historical: {
@@ -541,13 +551,43 @@ motifExplorerPage: {
     legendMinorRepeat: "Secondary repeat (lowercase)",
     legendInterruption: "Interruption / internal variant",
     legendFlank: "Flanking region",
-    flankMotifLabel: "Motif unit in the flanking region, outside the repeat bracketing.",
+    flankMotifLabel: "Same sequence as a repeat motif, but in the flanking region: it is not counted in the allele name.",
     repeatTooltip: "Canonical repeat unit of the reference structure.",
     minorRepeatTooltip: "Secondary / variant repeat block: it repeats, but it is not the primary motif that names the allele.",
     interruptionTooltip: "Interruption / internal variant; not counted as a repeat unit.",
     flankTooltip: "Flanking sequence inside the reported window; variants here are named by position.",
+    viewStrnaming:
+      "STRNaming (2024 onward)",
+    viewHistorical:
+      "Historical bracketing (2016-2023)",
+    legendVariableBlock:
+      "[n] block: the number of repeats varies between alleles",
+    legendFixedBlock:
+      "Block with a fixed count in the template",
+    legendStrnamingFlank:
+      "Flanking region inside the ISFG minimum range (e.g. -1, +1)",
+    variableBlockTooltip:
+      "Its count varies between common alleles ([n] in STRidER's template).",
+    fixedBlockTooltip:
+      "Its count is fixed in STRidER's template for common alleles.",
+    flank5Tooltip:
+      "Flank before the repeat region: positions -{n} to -1. Variants here are named by these positions (e.g. _-1T>-).",
+    flank3Tooltip:
+      "Flank after the repeat region: positions +1 to +{n}. Variants here are named by these positions (e.g. _+1T>C).",
+    strnamingNote:
+      "Blocks and counts are those of the STRNaming 1.2.1 name of the reference allele shown above; the rest of the ISFG minimum range is flank.",
+    gridAgrees:
+      "This repeat region is exactly the one STRidER marks in the FSSG row \"STRNaming Bracketing of ISFG Minimum Range\".",
+    gridDiffers:
+      "STRidER's FSSG row \"STRNaming Bracketing of ISFG Minimum Range\" marks positions {grid} of the minimum range as the repeat region, while the STRNaming name covers positions {name}.",
+    noFlank5:
+      "In {marker} the ISFG minimum range starts at the first base of the repeat region; there is no 5' flank inside the range.",
+    noFlank3:
+      "In {marker} the ISFG minimum range ends at the last base of the repeat region; there is no 3' flank inside the range.",
+    updateNote:
+      "This section is kept up to date with new releases of the FSSG and STRNaming.",
     phaseNote:
-      "The sequence structure (repeat, interruption, flank) follows STRidER's Forensic Sequence Structure Guide (FSSG v6.1); the ISFG / STRNaming name above is a complementary view, not a re-implementation of the naming rules. This section will be updated as STRidER and the official ISFG nomenclature guidance are revised.",
+      "The sequence structure (repeat, interruption, flank) follows STRidER's Forensic Sequence Structure Guide (FSSG v6.1); the ISFG / STRNaming name above is a complementary view, not a re-implementation of the naming rules.",
     notAligned:
       "This locus has a complex structure that does not tile cleanly; the sequence is shown without per-unit coloring. The canonical bracketing above remains authoritative.",
   },

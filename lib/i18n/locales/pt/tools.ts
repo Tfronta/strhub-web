@@ -503,7 +503,7 @@ fastaGeneratorPage: {
 motifExplorerPage: {
   title: "Explorador de Motivos STR",
   subtitle:
-    "Esta seção ajuda a entender a estrutura interna de cada marcador STR ao longo da sequência do genoma de referência HG38, sobre o ISFG minimum range. Mostra que nem todo locus é uma sequência contínua do seu motivo canônico, e destaca a complexidade dos loci compostos e interrompidos.",
+    "Esta seção ajuda a entender a estrutura interna de cada marcador STR ao longo da sequência do genoma de referência GRCh38, sobre o ISFG minimum range. Mostra que nem todo locus é uma sequência contínua do seu motivo canônico, e destaca a complexidade dos loci compostos e interrompidos.",
   visualizationTitle: "Estrutura de {marker}",
   configuration: {
     title: "Configuração",
@@ -517,7 +517,7 @@ motifExplorerPage: {
       "Escolha um marcador para ver sua sequência de referência sobre o ISFG minimum range e seu motivo canônico de repetição.",
   },
   scientificNote:
-    "Nota sobre nomenclatura: STRNaming e as recomendações ISFG reportam a estrutura de repetição sobre o minimum range. O bracketing histórico de 2016 costumava ser definido sobre uma janela mais ampla (STRbase / NIST), por isso ambos podem parecer diferentes para o mesmo alelo.",
+    "Nota sobre nomenclatura: os nomes gerados com o STRNaming seguem as recomendações ISFG 2024 (Gettings et al. 2024) e descrevem o ISFG minimum range. Em alguns loci o bracketing histórico 2016-2023 do FSSG lê as repetições a partir de outra base inicial, por isso ambos podem parecer diferentes para o mesmo alelo.",
   sourceLabel: "Fonte",
   sourceValue: "{version} ({publisher}; distribuído como {file})",
   sourceButtonLabel: "Abrir STRidER",
@@ -528,6 +528,16 @@ motifExplorerPage: {
   canonical: {
     title: "STRNaming Formatted ISFG Minimum Range for Common Alleles (2024 onward)",
     altForms: "Outras formas válidas",
+    templateNote:
+      "Modelo do STRidER para os alelos comuns deste locus, tal como aparece no FSSG. [n] indica um bloco cujo número de repetições varia entre alelos. Não é um nome de alelo: um nome STRNaming completo começa com o alelo CE (por exemplo CE13_) e indica o número de cada bloco, como no alelo de referência abaixo.",
+    referenceNameLabel:
+      "Alelo de referência (GRCh38) nomeado com o STRNaming 1.2.1",
+    referenceNameSource:
+      "Nome STRNaming 1.2.1 da sequência de referência GRCh38 sobre o ISFG minimum range; seu CE coincide com o CE equivalente do FSSG.",
+    referenceFitsForm:
+      "Sua estrutura segue a forma {n} das {total} listadas acima.",
+    referenceFitsOnlyForm:
+      "Sua estrutura segue o modelo acima.",
     variant: "Variante de sequência",
   },
   historical: {
@@ -541,13 +551,43 @@ motifExplorerPage: {
     legendMinorRepeat: "Repetição secundária (minúscula)",
     legendInterruption: "Interrupção / variante interna",
     legendFlank: "Região flanqueadora",
-    flankMotifLabel: "Unidade de motivo na região flanqueadora, fora do bracketing de repetição.",
+    flankMotifLabel: "Mesma sequência que um motivo repetido, mas na região flanqueadora: não é contada no nome do alelo.",
     repeatTooltip: "Unidade de repetição canônica da estrutura de referência.",
     minorRepeatTooltip: "Bloco de repetição secundário / variante: repete, mas não é o motivo principal que nomeia o alelo.",
     interruptionTooltip: "Interrupção / variante interna; não é contada como unidade de repetição.",
     flankTooltip: "Sequência flanqueadora dentro da janela reportada; suas variantes são nomeadas por posição.",
+    viewStrnaming:
+      "STRNaming (2024 em diante)",
+    viewHistorical:
+      "Bracketing histórico (2016-2023)",
+    legendVariableBlock:
+      "Bloco [n]: o número de repetições varia entre alelos",
+    legendFixedBlock:
+      "Bloco com número fixo no modelo",
+    legendStrnamingFlank:
+      "Região flanqueadora dentro do ISFG minimum range (ex. -1, +1)",
+    variableBlockTooltip:
+      "Seu número varia entre alelos comuns ([n] no modelo do STRidER).",
+    fixedBlockTooltip:
+      "Seu número é fixo no modelo do STRidER para alelos comuns.",
+    flank5Tooltip:
+      "Flanco antes da região repetitiva: posições -{n} a -1. As variantes aqui são nomeadas por estas posições (ex. _-1T>-).",
+    flank3Tooltip:
+      "Flanco depois da região repetitiva: posições +1 a +{n}. As variantes aqui são nomeadas por estas posições (ex. _+1T>C).",
+    strnamingNote:
+      "Os blocos e seus números são os do nome STRNaming 1.2.1 do alelo de referência indicado acima; o resto do ISFG minimum range é flanco.",
+    gridAgrees:
+      "Esta região repetitiva é exatamente a que o STRidER marca na linha do FSSG \"STRNaming Bracketing of ISFG Minimum Range\".",
+    gridDiffers:
+      "A linha do FSSG \"STRNaming Bracketing of ISFG Minimum Range\" do STRidER marca as posições {grid} do minimum range como região repetitiva, enquanto o nome STRNaming cobre as posições {name}.",
+    noFlank5:
+      "Em {marker} o ISFG minimum range começa na primeira base da região repetitiva; não há flanco 5' dentro do intervalo.",
+    noFlank3:
+      "Em {marker} o ISFG minimum range termina na última base da região repetitiva; não há flanco 3' dentro do intervalo.",
+    updateNote:
+      "Esta seção é mantida em dia com as novas versões do FSSG e do STRNaming.",
     phaseNote:
-      "A estrutura da sequência (repeat, interrupção, flanco) segue o Forensic Sequence Structure Guide do STRidER (FSSG v6.1); o nome ISFG / STRNaming acima é uma vista complementar, não uma reimplementação das regras de nomenclatura. Esta seção será atualizada conforme o STRidER e o guia oficial de nomenclatura ISFG forem revisados.",
+      "A estrutura da sequência (repeat, interrupção, flanco) segue o Forensic Sequence Structure Guide do STRidER (FSSG v6.1); o nome ISFG / STRNaming acima é uma vista complementar, não uma reimplementação das regras de nomenclatura.",
     notAligned:
       "Este locus tem uma estrutura complexa que não encaixa de forma limpa; a sequência é mostrada sem coloração por unidade. O bracketing canônico acima continua sendo a referência.",
   },

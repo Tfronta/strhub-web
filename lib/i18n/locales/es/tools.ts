@@ -503,7 +503,7 @@ fastaGeneratorPage: {
 motifExplorerPage: {
   title: "Explorador de Motivos STR",
   subtitle:
-    "Esta sección ayuda a entender la estructura interna de cada marcador STR a lo largo de la secuencia del genoma de referencia HG38, sobre el ISFG minimum range. Muestra que no todos los loci son una corrida continua de su motivo canónico, y resalta la complejidad de los loci compuestos e interrumpidos.",
+    "Esta sección ayuda a entender la estructura interna de cada marcador STR a lo largo de la secuencia del genoma de referencia GRCh38, sobre el ISFG minimum range. Muestra que no todos los loci son una corrida continua de su motivo canónico, y resalta la complejidad de los loci compuestos e interrumpidos.",
   visualizationTitle: "Estructura de {marker}",
   configuration: {
     title: "Configuración",
@@ -517,7 +517,7 @@ motifExplorerPage: {
       "Elegí un marcador para ver su secuencia de referencia sobre el ISFG minimum range y su motivo canónico de repetición.",
   },
   scientificNote:
-    "Nota sobre nomenclatura: STRNaming y las recomendaciones ISFG reportan la estructura de repetición sobre el minimum range. El bracketing histórico de 2016 solía definirse sobre una ventana más ancha (STRbase / NIST), por eso ambos pueden verse distintos para el mismo alelo.",
+    "Nota sobre nomenclatura: los nombres generados con STRNaming siguen las recomendaciones ISFG 2024 (Gettings et al. 2024) y describen el ISFG minimum range. En algunos loci el bracketing histórico 2016-2023 del FSSG lee las repeticiones desde otra base inicial, por eso ambos pueden verse distintos para el mismo alelo.",
   sourceLabel: "Fuente",
   sourceValue: "{version} ({publisher}; distribuido como {file})",
   sourceButtonLabel: "Abrir STRidER",
@@ -528,6 +528,16 @@ motifExplorerPage: {
   canonical: {
     title: "STRNaming Formatted ISFG Minimum Range for Common Alleles (2024 onward)",
     altForms: "Otras formas válidas",
+    templateNote:
+      "Plantilla de STRidER para los alelos comunes de este locus, tal como figura en el FSSG. [n] indica un bloque cuyo número de repeticiones varía entre alelos. No es un nombre de alelo: un nombre STRNaming completo empieza con el alelo CE (por ejemplo CE13_) e indica el número de cada bloque, como en el alelo de referencia de abajo.",
+    referenceNameLabel:
+      "Alelo de referencia (GRCh38) nombrado con STRNaming 1.2.1",
+    referenceNameSource:
+      "Nombre STRNaming 1.2.1 de la secuencia de referencia GRCh38 sobre el ISFG minimum range; su CE coincide con el CE equivalente del FSSG.",
+    referenceFitsForm:
+      "Su estructura sigue la forma {n} de las {total} listadas arriba.",
+    referenceFitsOnlyForm:
+      "Su estructura sigue la plantilla de arriba.",
     variant: "Variante de secuencia",
   },
   historical: {
@@ -541,13 +551,43 @@ motifExplorerPage: {
     legendMinorRepeat: "Repetición secundaria (minúscula)",
     legendInterruption: "Interrupción / variante interna",
     legendFlank: "Región flanqueante",
-    flankMotifLabel: "Unidad de motivo en la región flanqueante, fuera del bracketing de repetición.",
+    flankMotifLabel: "Misma secuencia que un motivo repetido, pero en la región flanqueadora: no se cuenta en el nombre del alelo.",
     repeatTooltip: "Unidad de repetición canónica de la estructura de referencia.",
     minorRepeatTooltip: "Bloque de repetición secundario / variante: repite, pero no es el motivo principal que nombra al alelo.",
     interruptionTooltip: "Interrupción / variante interna; no se cuenta como unidad de repetición.",
     flankTooltip: "Secuencia flanqueante dentro de la ventana reportada; sus variantes se nombran por posición.",
+    viewStrnaming:
+      "STRNaming (2024 en adelante)",
+    viewHistorical:
+      "Bracketing histórico (2016-2023)",
+    legendVariableBlock:
+      "Bloque [n]: el número de repeticiones varía entre alelos",
+    legendFixedBlock:
+      "Bloque con número fijo en la plantilla",
+    legendStrnamingFlank:
+      "Región flanqueadora dentro del ISFG minimum range (ej. -1, +1)",
+    variableBlockTooltip:
+      "Su número varía entre alelos comunes ([n] en la plantilla de STRidER).",
+    fixedBlockTooltip:
+      "Su número es fijo en la plantilla de STRidER para alelos comunes.",
+    flank5Tooltip:
+      "Flanco antes de la región repetitiva: posiciones -{n} a -1. Las variantes aquí se nombran por estas posiciones (ej. _-1T>-).",
+    flank3Tooltip:
+      "Flanco después de la región repetitiva: posiciones +1 a +{n}. Las variantes aquí se nombran por estas posiciones (ej. _+1T>C).",
+    strnamingNote:
+      "Los bloques y sus números son los del nombre STRNaming 1.2.1 del alelo de referencia indicado arriba; el resto del ISFG minimum range es flanco.",
+    gridAgrees:
+      "Esta región repetitiva es exactamente la que STRidER marca en la fila del FSSG \"STRNaming Bracketing of ISFG Minimum Range\".",
+    gridDiffers:
+      "La fila del FSSG \"STRNaming Bracketing of ISFG Minimum Range\" de STRidER marca las posiciones {grid} del minimum range como región repetitiva, mientras que el nombre STRNaming cubre las posiciones {name}.",
+    noFlank5:
+      "En {marker} el ISFG minimum range empieza en la primera base de la región repetitiva; no hay flanco 5' dentro del rango.",
+    noFlank3:
+      "En {marker} el ISFG minimum range termina en la última base de la región repetitiva; no hay flanco 3' dentro del rango.",
+    updateNote:
+      "Esta sección se mantiene al día con las nuevas versiones del FSSG y de STRNaming.",
     phaseNote:
-      "La estructura de la secuencia (repeat, interrupción, flanco) sigue la Forensic Sequence Structure Guide de STRidER (FSSG v6.1); el nombre ISFG / STRNaming de arriba es una vista complementaria, no una re-implementación de las reglas de nomenclatura. Esta sección se irá actualizando a medida que STRidER y la guía oficial de nomenclatura ISFG se revisen.",
+      "La estructura de la secuencia (repeat, interrupción, flanco) sigue la Forensic Sequence Structure Guide de STRidER (FSSG v6.1); el nombre ISFG / STRNaming de arriba es una vista complementaria, no una re-implementación de las reglas de nomenclatura.",
     notAligned:
       "Este locus tiene una estructura compleja que no encaja de forma limpia; la secuencia se muestra sin coloreado por unidad. El bracketing canónico de arriba sigue siendo la referencia.",
   },

@@ -19,6 +19,7 @@ import {
   DISPLAY_MARKERS,
   FSSG_SOURCE,
   markerClass,
+  referenceNameOf,
 } from "./data/fssgData";
 import { MotifStructure } from "./components/MotifStructure";
 import { HARMONIZED_NOMENCLATURE } from "@/lib/nomenclatureHarmonization";
@@ -85,6 +86,11 @@ export default function MotifExplorerPage() {
     minimumRangeLabel: t("marker.minimumRange"),
     canonicalTitle: t("canonical.title"),
     canonicalAltForms: t("canonical.altForms"),
+    canonicalTemplateNote: t("canonical.templateNote"),
+    referenceNameLabel: t("canonical.referenceNameLabel"),
+    referenceNameSource: t("canonical.referenceNameSource"),
+    referenceFitsForm: t("canonical.referenceFitsForm"),
+    referenceFitsOnlyForm: t("canonical.referenceFitsOnlyForm"),
     historicalTitle: t("historical.title"),
     historicalNone: t("historical.none"),
     sequenceTitle: t("sequence.title"),
@@ -99,6 +105,21 @@ export default function MotifExplorerPage() {
     interruptionTooltip: t("sequence.interruptionTooltip"),
     flankTooltip: t("sequence.flankTooltip"),
     phaseNote: t("sequence.phaseNote"),
+    updateNote: t("sequence.updateNote"),
+    viewStrnaming: t("sequence.viewStrnaming"),
+    viewHistorical: t("sequence.viewHistorical"),
+    legendVariableBlock: t("sequence.legendVariableBlock"),
+    legendFixedBlock: t("sequence.legendFixedBlock"),
+    legendStrnamingFlank: t("sequence.legendStrnamingFlank"),
+    variableBlockTooltip: t("sequence.variableBlockTooltip"),
+    fixedBlockTooltip: t("sequence.fixedBlockTooltip"),
+    flank5Tooltip: t("sequence.flank5Tooltip"),
+    flank3Tooltip: t("sequence.flank3Tooltip"),
+    strnamingNote: t("sequence.strnamingNote"),
+    gridAgrees: t("sequence.gridAgrees"),
+    gridDiffers: t("sequence.gridDiffers"),
+    noFlank5: t("sequence.noFlank5"),
+    noFlank3: t("sequence.noFlank3"),
     notAlignedNote: t("sequence.notAligned"),
   };
 
@@ -203,6 +224,7 @@ export default function MotifExplorerPage() {
                       marker={marker}
                       strings={structureStrings}
                       nomenclatureNote={nomenclatureNote}
+                      referenceName={referenceNameOf(selectedMarkerId)}
                     />
                     <div className="flex items-start gap-1.5 border-t pt-4 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                       <span>{t("kits.note")}</span>

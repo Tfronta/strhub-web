@@ -16,6 +16,7 @@
 // characterized on the reverse strand.
 
 import raw from "@/data/fssg_motif_data.json";
+import referenceNames from "@/data/strnaming_reference_names.json";
 
 export type GenomicRange = {
   chrom: string;
@@ -78,6 +79,14 @@ export type FssgMarker = {
 };
 
 export const FSSG_MARKERS = raw as unknown as Record<string, FssgMarker>;
+
+// STRNaming 1.2.1 name of the GRCh38 reference allele over the ISFG minimum
+// range (data/strnaming_reference_names.json, a copy of the "reference" field
+// of data/strnaming_names.json; provenance in its "source"). Null for the rows
+// the FSSG gives by reference to another row.
+export function referenceNameOf(locus: string): string | null {
+  return (referenceNames.reference as Record<string, string>)[locus] ?? null;
+}
 
 // Markers we can visualise: those with both a sliced reference sequence and a
 // canonical bracketing. The four cross-reference rows (DYS389II, DYS385 a,

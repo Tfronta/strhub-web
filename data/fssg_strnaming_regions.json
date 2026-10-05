@@ -3,7 +3,8 @@
   "fssg": "FSSG v6.1 (STRidER; distributed as FSSG_v6-1_beta.xlsx, SHA-256 acf2fa7f16e911474152e52654e77c160d7b34f3d7a72e158def303fff9449e1), sheets 'Common Use A-STRs' and 'Common Use XY-STRs', row 'STRNaming Bracketing of ISFG Minimum Range'.",
   "fields": "start/end: 0-based, end-exclusive offsets into the ISFG minimum-range sequence of the cells STRidER leaves unnumbered in that row (the repeat region); the numbered cells around them are the flanks (-n..-1 and +1..+n). sheet/row locate the grid row (1-based Excel row).",
   "generated": "2026-10-04",
-  "flankIupac": "Row 'Flanking SNP IUPAC codes' of the same grids: the IUPAC code STRidER writes over a flank base inside the ISFG minimum range, keyed by the flank position used in STRNaming variant suffixes (-n..-1 before the repeat region of the reference name, +1..+n after it)."
+  "flankIupac": "Row 'Flanking SNP IUPAC codes' of the same grids: the IUPAC code STRidER writes over a flank base inside the ISFG minimum range, keyed by the flank position used in STRNaming variant suffixes (-n..-1 before the repeat region of the reference name, +1..+n after it).",
+  "templateVariantFrequencies": "FSSG sheet 'Variant Frequencies' (gnomAD v3.1.2): for template variants that match a substitution row exactly (same coordinate, reference and alternate base), the rsID and the alternate-allele frequency in the five gnomAD population groups the FSSG lists. When the FSSG gives only one set of five values (minor allele frequency) and does not note that the reference allele is the minor allele, those values are the alternate-allele frequencies."
  },
  "regions": {
   "D1S1677": [
@@ -635,6 +636,77 @@
   "HPRTB": {
    "-11": "R",
    "-1": "M"
+  }
+ },
+ "templateVariantFrequencies": {
+  "D5S818": {
+   "-1C>A": {
+    "rs": "rs73801920",
+    "alt": "A",
+    "min": 0.031,
+    "max": 0.047,
+    "populations": [
+     "African/African American",
+     "East Asian",
+     "European (non-Finnish)",
+     "Latino/Admixed American",
+     "South Asian"
+    ],
+    "altFrequencies": [
+     0.0336,
+     0.0473,
+     0.0359,
+     0.0417,
+     0.0311
+    ],
+    "fssgNote": null
+   }
+  },
+  "SE33": {
+   "-4C>T": {
+    "rs": "rs9362477",
+    "alt": "T",
+    "min": 0.36,
+    "max": 0.619,
+    "populations": [
+     "African/African American",
+     "East Asian",
+     "European (non-Finnish)",
+     "Latino/Admixed American",
+     "South Asian"
+    ],
+    "altFrequencies": [
+     0.6187,
+     0.3601,
+     0.4357,
+     0.5025,
+     0.5237
+    ],
+    "fssgNote": "Reference allele is minor allele"
+   }
+  },
+  "D12S391": {
+   "+1T>C": {
+    "rs": "rs77312049",
+    "alt": "C",
+    "min": 0.115,
+    "max": 0.316,
+    "populations": [
+     "African/African American",
+     "East Asian",
+     "European (non-Finnish)",
+     "Latino/Admixed American",
+     "South Asian"
+    ],
+    "altFrequencies": [
+     0.1148,
+     0.1418,
+     0.3159,
+     0.1917,
+     0.2853
+    ],
+    "fssgNote": "Alternate allele results in the appearance of an additional repeat"
+   }
   }
  }
 }

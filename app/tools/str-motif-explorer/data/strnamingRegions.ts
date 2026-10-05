@@ -40,3 +40,28 @@ const FLANK_IUPAC =
 export function flankIupacOf(locus: string, position: string): string | null {
   return FLANK_IUPAC[locus]?.[position] ?? null;
 }
+
+export type TemplateVariantFrequency = {
+  rs: string;
+  alt: string;
+  min: number;
+  max: number;
+};
+
+const VARIANT_FREQ =
+  (
+    raw as {
+      templateVariantFrequencies?: Record<
+        string,
+        Record<string, TemplateVariantFrequency>
+      >;
+    }
+  ).templateVariantFrequencies ?? {};
+
+/** rsID and alternate-allele frequency range the FSSG gives for a template variant ("-4C>T"). */
+export function templateVariantFrequencyOf(
+  locus: string,
+  variant: string,
+): TemplateVariantFrequency | null {
+  return VARIANT_FREQ[locus]?.[variant] ?? null;
+}

@@ -97,6 +97,7 @@ export default function MotifExplorerPage() {
     variantBefore: t("canonical.variantBefore"),
     variantAfter: t("canonical.variantAfter"),
     variantIupac: t("canonical.variantIupac"),
+    variantFrequency: t("canonical.variantFrequency"),
     referenceNameLabel: t("canonical.referenceNameLabel"),
     referenceNameSource: t("canonical.referenceNameSource"),
     referenceFitsForm: t("canonical.referenceFitsForm"),

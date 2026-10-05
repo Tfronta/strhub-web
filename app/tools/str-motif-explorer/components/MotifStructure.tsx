@@ -24,6 +24,7 @@ import {
   agreesWithFssgGrid,
   flankIupacOf,
   fssgStrnamingRegions,
+  templateVariantFrequencyOf,
 } from "../data/strnamingRegions";
 
 // Sequence chips. A block that is "[n]" in STRidER's template is a stronger
@@ -59,6 +60,7 @@ export type MotifStructureStrings = {
   variantBefore: string;
   variantAfter: string;
   variantIupac: string;
+  variantFrequency: string;
   referenceNameLabel: string;
   referenceNameSource: string;
   referenceFitsForm: string;
@@ -239,11 +241,21 @@ export function MotifStructure({
       .replace("{ref}", v.ref)
       .replace("{alt}", v.alt);
     const code = flankIupacOf(marker.locus, v.position);
-    return code && iupacCovers(code, v.ref, v.alt)
-      ? `${base} ${strings.variantIupac
-          .replace("{code}", code)
-          .replace("{bases}", iupacBases(code))}`
-      : base;
+    const snp =
+      code && iupacCovers(code, v.ref, v.alt)
+        ? ` ${strings.variantIupac
+            .replace("{code}", code)
+            .replace("{bases}", iupacBases(code))}`
+        : "";
+    const freq = templateVariantFrequencyOf(marker.locus, text);
+    const freqText = freq
+      ? ` ${strings.variantFrequency
+          .replace("{rs}", freq.rs)
+          .replace("{alt}", freq.alt)
+          .replace("{min}", freq.min.toFixed(2))
+          .replace("{max}", freq.max.toFixed(2))}`
+      : "";
+    return `${base}${snp}${freqText}`;
   };
 
   return (

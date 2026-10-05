@@ -643,8 +643,8 @@
    "-1C>A": {
     "rs": "rs73801920",
     "alt": "A",
-    "min": 0.031,
-    "max": 0.047,
+    "min": 0.0311,
+    "max": 0.0473,
     "populations": [
      "African/African American",
      "East Asian",
@@ -666,8 +666,8 @@
    "-4C>T": {
     "rs": "rs9362477",
     "alt": "T",
-    "min": 0.36,
-    "max": 0.619,
+    "min": 0.3601,
+    "max": 0.6187,
     "populations": [
      "African/African American",
      "East Asian",
@@ -689,8 +689,8 @@
    "+1T>C": {
     "rs": "rs77312049",
     "alt": "C",
-    "min": 0.115,
-    "max": 0.316,
+    "min": 0.1148,
+    "max": 0.3159,
     "populations": [
      "African/African American",
      "East Asian",

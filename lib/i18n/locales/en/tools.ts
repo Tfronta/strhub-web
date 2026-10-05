@@ -503,7 +503,7 @@ fastaGeneratorPage: {
 motifExplorerPage: {
   title: "STR Motif Explorer",
   subtitle:
-    "This section helps you understand the internal structure of each STR marker along the GRCh38 reference sequence, over the ISFG minimum range. It shows that not every locus is a continuous run of its canonical motif, and highlights the complexity of compound and interrupted loci.",
+    "This section helps you understand the internal structure of each STR marker along the GRCh38 reference sequence, over the ISFG minimum range. It shows that not every locus is a continuous run of a single repeat motif, and highlights the complexity of compound and interrupted loci.",
   visualizationTitle: "Structure of {marker}",
   configuration: {
     title: "Configuration",
@@ -514,7 +514,7 @@ motifExplorerPage: {
   },
   help: {
     general:
-      "Pick a marker to see its reference sequence over the ISFG minimum range and its canonical repeat motif.",
+      "Pick a marker to see the STRNaming name of its GRCh38 reference allele, its sequence over the ISFG minimum range, and STRidER's templates for common alleles.",
   },
   scientificNote:
     "Naming note: names generated with STRNaming follow the 2024 ISFG recommendations (Gettings et al. 2024) and describe the ISFG minimum range. For some loci the historical 2016-2023 bracketing in the FSSG reads the repeats from a different starting base, so the two can look different for the same allele.",

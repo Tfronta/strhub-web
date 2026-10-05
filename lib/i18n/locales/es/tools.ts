@@ -503,7 +503,7 @@ fastaGeneratorPage: {
 motifExplorerPage: {
   title: "Explorador de Motivos STR",
   subtitle:
-    "Esta sección ayuda a entender la estructura interna de cada marcador STR a lo largo de la secuencia del genoma de referencia GRCh38, sobre el ISFG minimum range. Muestra que no todos los loci son una corrida continua de su motivo canónico, y resalta la complejidad de los loci compuestos e interrumpidos.",
+    "Esta sección ayuda a entender la estructura interna de cada marcador STR a lo largo de la secuencia del genoma de referencia GRCh38, sobre el ISFG minimum range. Muestra que no todos los loci son una corrida continua de un único motivo repetido, y resalta la complejidad de los loci compuestos e interrumpidos.",
   visualizationTitle: "Estructura de {marker}",
   configuration: {
     title: "Configuración",
@@ -514,7 +514,7 @@ motifExplorerPage: {
   },
   help: {
     general:
-      "Elegí un marcador para ver su secuencia de referencia sobre el ISFG minimum range y su motivo canónico de repetición.",
+      "Elegí un marcador para ver el nombre STRNaming de su alelo de referencia GRCh38, su secuencia sobre el ISFG minimum range y las plantillas de STRidER para los alelos comunes.",
   },
   scientificNote:
     "Nota sobre nomenclatura: los nombres generados con STRNaming siguen las recomendaciones ISFG 2024 (Gettings et al. 2024) y describen el ISFG minimum range. En algunos loci el bracketing histórico 2016-2023 del FSSG lee las repeticiones desde otra base inicial, por eso ambos pueden verse distintos para el mismo alelo.",

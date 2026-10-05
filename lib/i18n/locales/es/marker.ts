@@ -265,7 +265,7 @@ marker: {
   noVariantsForMarker: "Aún no se han reportado variantes alélicas en STRbase para este marcador.",
   addNewVariant: "Agregar una nueva variante",
   alleleDesignation: "Designación del alelo",
-  strnamingName: "STRNaming (ISFG 2024)",
+  strnamingName: "Nombre STRNaming 1.2.1 (ISFG minimum range)",
   strnamingNotAvailable: "n/a",
   strnamingNotCovered: "Esta secuencia de STRbase no cubre el ISFG minimum range",
   sequence: "Secuencia",

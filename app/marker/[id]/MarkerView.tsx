@@ -92,6 +92,7 @@ import {
 import { FSSG_SOURCE } from "@/lib/fssgSource";
 import { cn } from "@/lib/utils";
 import type { MarkerSummary } from "@/lib/marker-summary";
+import { markerMotif } from "@/lib/markerMotif";
 import {
   MarkerSummaryDescription,
   MarkerSummarySections,
@@ -192,6 +193,9 @@ export function MarkerView({
 
   const markerId = params.id.toLowerCase();
   const marker = markerData[markerId as keyof typeof markerData];
+  // FSSG STRNaming template for FSSG loci, else the STRbase motif labelled as
+  // historical notation (see lib/markerMotif).
+  const shownMotif = markerMotif(markerId, marker?.motif);
   // The FSSG row the Motif Explorer opens ("DYS385 b" for the DYS385ab page), or null.
   const motifExplorerMarker = summary?.tools.motifExplorer ?? null;
   // STRNaming names for the STRbase Variant Alleles, index-aligned with marker.sequences.
@@ -1784,9 +1788,15 @@ export function MarkerView({
               <span className="text-foreground">{marker.chromosome}</span>
             </span>
             {/* Empty fields get no chip here; the Overview says "Not available". */}
-            {marker.motif ? (
-              <span className="border-l border-border pl-4 font-mono text-foreground">
-                {marker.motif}
+            {shownMotif ? (
+              <span
+                className="border-l border-border pl-4"
+                title={t(shownMotif.kind === "fssgTemplate" ? "marker.motifTemplate" : "marker.motifStrbase")}
+              >
+                {shownMotif.kind === "strbaseMotif" ? (
+                  <span className="mr-1 text-muted-foreground">STRbase</span>
+                ) : null}
+                <span className="font-mono text-foreground">{shownMotif.value}</span>
               </span>
             ) : null}
             {marker.type ? (
@@ -1878,11 +1888,17 @@ export function MarkerView({
                     )}
                     <div className="space-y-1">
                       <Label className="text-xs font-normal text-muted-foreground">
-                        {t("marker.motif")}
+                        {t(
+                          shownMotif?.kind === "fssgTemplate"
+                            ? "marker.motifTemplate"
+                            : shownMotif?.kind === "strbaseMotif"
+                              ? "marker.motifStrbase"
+                              : "marker.motif"
+                        )}
                       </Label>
-                      {marker.motif ? (
-                        <p className="text-sm font-normal font-mono text-foreground">
-                          {marker.motif}
+                      {shownMotif ? (
+                        <p className="text-sm font-normal font-mono text-foreground break-all">
+                          {shownMotif.value}
                         </p>
                       ) : (
                         <p className="text-sm font-normal text-muted-foreground">

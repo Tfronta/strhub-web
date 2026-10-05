@@ -28,6 +28,8 @@ catalog: {
   chromosome: "Chr",
   allChromosomes: "All",
   motif: "Motif",
+  motifTemplate: "STRNaming template",
+  motifStrbase: "STRbase motif",
   complex: "Complex",
   alleles: "Alleles",
   repeatType: "Repeat Type",

@@ -28,6 +28,8 @@ catalog: {
   chromosome: "Crom",
   allChromosomes: "Todos",
   motif: "Motivo",
+  motifTemplate: "Plantilla STRNaming",
+  motifStrbase: "Motivo STRbase",
   complex: "Complejo",
   alleles: "Alelos",
   repeatType: "Tipo de Repetición",

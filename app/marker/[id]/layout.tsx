@@ -5,6 +5,7 @@ import { pageMetadata } from "@/lib/seo";
 import { markerData } from "@/lib/markerData";
 import { buildMarkerSummary, markerHasContent } from "@/lib/marker-summary";
 import { countNoun } from "@/lib/plural";
+import { markerMotif } from "@/lib/markerMotif";
 
 type Props = {
   params: { id: string };
@@ -36,7 +37,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (marker.cytogeneticLocation) parts.push(marker.cytogeneticLocation);
   const where = parts.length ? ` (${parts.join(", ")})` : "";
   const kind = [marker.type, marker.category].filter(Boolean).join(", ");
-  const motif = marker.motif ? ` Repeat motif ${marker.motif}.` : "";
+  const shown = markerMotif(params.id, marker.motif);
+  const motif = !shown
+    ? ""
+    : shown.kind === "fssgTemplate"
+      ? ` STRNaming template (FSSG) ${shown.value}.`
+      : ` STRbase motif (historical notation) ${shown.value}.`;
   // Say what the page actually has, so the snippet is specific to this locus.
   const contents: string[] = [];
   if (summary?.ce)

@@ -31,6 +31,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/contexts/language-context"; // Fixed import path to use correct location
 import { PageTitle } from "@/components/page-title";
 import { markers } from "@/lib/catalogMarkers";
+import { markerMotif } from "@/lib/markerMotif";
 import { cn } from "@/lib/utils";
 import {
   Sheet,
@@ -529,13 +530,17 @@ export default function CatalogPage() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">
-                          {t("catalog.motif")}:
+                          {t(
+                            markerMotif(marker.id, marker.motif)?.kind === "fssgTemplate"
+                              ? "catalog.motifTemplate"
+                              : "catalog.motifStrbase"
+                          )}:
                         </span>
                         {marker.motif ? (
-                          <span className="font-medium">
-                            {marker.motif.length > 20
+                          <span className="font-mono font-medium">
+                            {markerMotif(marker.id, marker.motif)!.value.length > 20
                               ? t("catalog.complex")
-                              : marker.motif}
+                              : markerMotif(marker.id, marker.motif)!.value}
                           </span>
                         ) : (
                           <span className="text-muted-foreground">

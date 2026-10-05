@@ -1,0 +1,288 @@
+{
+ "source": {
+  "fssg": "FSSG v6.1 (STRidER; distributed as FSSG_v6-1_beta.xlsx), sheet \"Common Locus Information\", column \"STRNaming Formatted ISFG Minimum Range for Common Alleles\": the first form listed, verbatim.",
+  "use": "Shown as the repeat structure on marker pages and the Catalog for the markers the FSSG covers, instead of the STRbase motif in historical notation. Kept in sync with data/fssg_motif_data.json by lib/markerMotif.test.ts (the marker-to-FSSG-row mapping is lib/marker-summary.ts fssgFor; multi-copy loci use the first row that has its own template)."
+ },
+ "byMarker": {
+  "csf1po": {
+   "locus": "CSF1PO",
+   "template": "TCTA[n]"
+  },
+  "d10s1248": {
+   "locus": "D10S1248",
+   "template": "GGAA[n]"
+  },
+  "d12s391": {
+   "locus": "D12S391",
+   "template": "TAGA[n]CAGA[n]"
+  },
+  "d13s317": {
+   "locus": "D13S317",
+   "template": "TATC[n]AATC[2]ATCT[3]"
+  },
+  "d16s539": {
+   "locus": "D16S539",
+   "template": "GATA[n]"
+  },
+  "d18s51": {
+   "locus": "D18S51",
+   "template": "GAAA[n]A[1]AG[4]GAAA[2]"
+  },
+  "d19s433": {
+   "locus": "D19S433",
+   "template": "TCCT[n]"
+  },
+  "d1s1656": {
+   "locus": "D1S1656",
+   "template": "AC[n]CTAT[n]"
+  },
+  "d21s11": {
+   "locus": "D21S11",
+   "template": "TCTA[n]TCTG[n]TCTA[n]TATC[n]A[1]TCTA[2]TCCA[1]TATC[n]"
+  },
+  "d22s1045": {
+   "locus": "D22S1045",
+   "template": "ATT[n]ACT[1]ATT[2]"
+  },
+  "d2s1338": {
+   "locus": "D2S1338",
+   "template": "GGAA[n]GGCA[n]"
+  },
+  "d2s441": {
+   "locus": "D2S441",
+   "template": "TCTA[n]"
+  },
+  "d3s1358": {
+   "locus": "D3S1358",
+   "template": "TATC[2]TGTC[n]TATC[n]"
+  },
+  "d5s818": {
+   "locus": "D5S818",
+   "template": "TCTA[n]"
+  },
+  "d7s820": {
+   "locus": "D7S820",
+   "template": "A[n]CTAT[1]CAATCTGT[1]CTAT[n]_-1T>-"
+  },
+  "d8s1179": {
+   "locus": "D8S1179",
+   "template": "TATC[n]"
+  },
+  "fga": {
+   "locus": "FGA",
+   "template": "GAAG[1]AAAG[1]GAAG[2]GAG[1]AAAG[n]AGAAA[1]AAAG[3]"
+  },
+  "th01": {
+   "locus": "TH01",
+   "template": "TGAA[n]"
+  },
+  "tpox": {
+   "locus": "TPOX",
+   "template": "TGAA[n]"
+  },
+  "vwa": {
+   "locus": "vWA",
+   "template": "GGAT[n]AGAT[1]GGAT[1]AGAT[n]AGAC[n]AGAT[2]"
+  },
+  "d1s1677": {
+   "locus": "D1S1677",
+   "template": "TTCC[n]TTCA[1]TTCC[1]"
+  },
+  "d6s1043": {
+   "locus": "D6S1043",
+   "template": "CTAT[n]"
+  },
+  "d6s474": {
+   "locus": "D6S474",
+   "template": "AGAT[n]GATA[n]"
+  },
+  "pentad": {
+   "locus": "Penta D",
+   "template": "A[8]GAAAG[1]AAAAG[n]A[6]"
+  },
+  "pentae": {
+   "locus": "Penta E",
+   "template": "TTTTC[n]"
+  },
+  "se33": {
+   "locus": "SE33",
+   "template": "CTTT[n]CT[2]TTCT[3]CTTT[3]TTCT[2]_-4C>T"
+  },
+  "d2s1776": {
+   "locus": "D2S1776",
+   "template": "AGAT[n]"
+  },
+  "d3s4529": {
+   "locus": "D3S4529",
+   "template": "AGAT[4]AAAT[1]AGAT[n]"
+  },
+  "d4s2408": {
+   "locus": "D4S2408",
+   "template": "ATCT[n]"
+  },
+  "d5s2800": {
+   "locus": "D5S2800",
+   "template": "AGGT[n]AGAC[n]AGAT[n]"
+  },
+  "d9s1122": {
+   "locus": "D9S1122",
+   "template": "TAGA[1]TAGG[1]TAGA[n]"
+  },
+  "d12ata63": {
+   "locus": "D12ATA63",
+   "template": "TGT[4]TAT[n]"
+  },
+  "d14s1434": {
+   "locus": "D14S1434",
+   "template": "CTGT[3]CTAT[n]"
+  },
+  "d17s1301": {
+   "locus": "D17S1301",
+   "template": "AGAT[n]"
+  },
+  "d20s482": {
+   "locus": "D20S482",
+   "template": "AGAT[n]"
+  },
+  "dxs10074": {
+   "locus": "DXS10074",
+   "template": "AC[n]AG[n]AGAA[1]AAAGA[1]AGAA[n]"
+  },
+  "dxs10103": {
+   "locus": "DXS10103",
+   "template": "GACA[1]GATA[n]GACA[n]GATA[2]"
+  },
+  "dxs10135": {
+   "locus": "DXS10135",
+   "template": "AGAAAG[2]GAAA[n]"
+  },
+  "dxs7132": {
+   "locus": "DXS7132",
+   "template": "GATA[n]"
+  },
+  "dxs7423": {
+   "locus": "DXS7423",
+   "template": "TGGA[n]AGGACAGA[1]TGGA[3]"
+  },
+  "dxs8378": {
+   "locus": "DXS8378",
+   "template": "ATAG[n]"
+  },
+  "hprtb": {
+   "locus": "HPRTB",
+   "template": "TCTA[n]"
+  },
+  "dys19": {
+   "locus": "DYS19",
+   "template": "TA[2]TCTA[n]CCTA[1]TCTA[3]"
+  },
+  "dys385ab": {
+   "locus": "DYS385 b",
+   "template": "CTTT[2]TTCT[1]CTTT[n]C[1]CCTT[n]"
+  },
+  "dys390": {
+   "locus": "DYS390",
+   "template": "GATA[4]GACA[1]GATA[n]GACA[n]GATA[n]"
+  },
+  "dys391": {
+   "locus": "DYS391",
+   "template": "TATC[n]TGCC[1]TATC[1]"
+  },
+  "dys392": {
+   "locus": "DYS392",
+   "template": "AAT[n]"
+  },
+  "dys393": {
+   "locus": "DYS393",
+   "template": "AGAT[n]"
+  },
+  "dys437": {
+   "locus": "DYS437",
+   "template": "TCTA[n]TCTG[n]TCTA[4]"
+  },
+  "dys438": {
+   "locus": "DYS438",
+   "template": "TTTTC[n]"
+  },
+  "dys439": {
+   "locus": "DYS439",
+   "template": "AGAT[n]"
+  },
+  "dys448": {
+   "locus": "DYS448",
+   "template": "AGAGAT[n]ATAGAG[2]AG[1]ATAGAG[2]ATAG[2]ATAGAG[1]AAAGAG[1]ATAGAG[n]"
+  },
+  "dys456": {
+   "locus": "DYS456",
+   "template": "AGAT[n]"
+  },
+  "dys458": {
+   "locus": "DYS458",
+   "template": "GAAA[n]"
+  },
+  "dys481": {
+   "locus": "DYS481",
+   "template": "CTT[n]"
+  },
+  "dys533": {
+   "locus": "DYS533",
+   "template": "ATCT[n]"
+  },
+  "dys549": {
+   "locus": "DYS549",
+   "template": "GATA[n]"
+  },
+  "dys570": {
+   "locus": "DYS570",
+   "template": "TTTC[n]"
+  },
+  "dys576": {
+   "locus": "DYS576",
+   "template": "AAAG[n]"
+  },
+  "dys635": {
+   "locus": "DYS635",
+   "template": "GATA[n]CATA[n]GATA[2]CATA[2]GATA[3]"
+  },
+  "dys643": {
+   "locus": "DYS643",
+   "template": "CTTTT[n]"
+  },
+  "ygatah4": {
+   "locus": "Y-GATA-H4",
+   "template": "TCTA[n]"
+  },
+  "dyf387s1": {
+   "locus": "DYF387S1 fragment 1",
+   "template": "A[5]AAGA[2]AAGG[1]TAGG[1]AAGG[3]AAGA[2]AAGG[1]AAGA[2]AAGG[n]AAGA[n]A[3]"
+  },
+  "dys389ii": {
+   "locus": "DYS389II",
+   "template": "AGGG[2]ATAG[n]ACAG[3][]ATAG[n]ACAG[n]AC[4]"
+  },
+  "dys460": {
+   "locus": "DYS460",
+   "template": "TATC[n]"
+  },
+  "dys461": {
+   "locus": "DYS461",
+   "template": "TCTA[n]"
+  },
+  "dys505": {
+   "locus": "DYS505",
+   "template": "TCCT[n]"
+  },
+  "dys522": {
+   "locus": "DYS522",
+   "template": "GATA[n]"
+  },
+  "dys612": {
+   "locus": "DYS612",
+   "template": "CCT[5]CTT[1]TCT[4]CCT[1]TCT[n]"
+  },
+  "dys627": {
+   "locus": "DYS627",
+   "template": "AAAG[3]GAAA[1]AAAG[3]AG[5]AAAG[n]"
+  }
+ }
+}

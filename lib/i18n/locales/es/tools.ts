@@ -508,8 +508,6 @@ motifExplorerPage: {
   configuration: {
     title: "Configuración",
     markerLabel: "Marcador STR",
-    rangeLabel: "Resaltar rango",
-    allRanges: "Todos los rangos",
     emptyState: "Seleccione un marcador en el panel de configuración.",
   },
   help: {
@@ -554,7 +552,6 @@ motifExplorerPage: {
       "Su estructura sigue la forma {n} de las {total} listadas arriba.",
     referenceFitsOnlyForm:
       "Su estructura sigue la plantilla de arriba.",
-    variant: "Variante de secuencia",
   },
   historical: {
     title: "GRCh38 Historical bracketing (2016-2023)",
@@ -564,26 +561,7 @@ motifExplorerPage: {
   },
   sequence: {
     title: "Secuencia de referencia (ISFG minimum range, hebra directa de GRCh38)",
-    note: "Los colores muestran la estructura de la secuencia de referencia tal como STRidER la segmenta en la FSSG: los bloques verdes son unidades canónicas de repetición, los ámbar son interrupciones o variantes internas y las bases grises son secuencia flanqueante dentro de la ventana reportada. El coloreado describe la estructura; no es una fórmula para el número CE, que sigue la convención de longitud de cada locus.",
-    legendRepeat: "Unidad de repetición",
-    legendMinorRepeat: "Repetición secundaria (minúscula)",
-    legendInterruption: "Interrupción / variante interna",
-    legendFlank: "Región flanqueante",
     flankMotifLabel: "Misma secuencia que un motivo repetido, pero en la región flanqueadora: no se cuenta en el nombre del alelo.",
-    repeatTooltip: "Unidad de repetición canónica de la estructura de referencia.",
-    minorRepeatTooltip: "Bloque de repetición secundario / variante: repite, pero no es el motivo principal que nombra al alelo.",
-    interruptionTooltip: "Interrupción / variante interna; no se cuenta como unidad de repetición.",
-    flankTooltip: "Secuencia flanqueante dentro de la ventana reportada; sus variantes se nombran por posición.",
-    viewStrnaming:
-      "STRNaming (2024 en adelante)",
-    viewHistorical:
-      "Bracketing histórico (2016-2023)",
-    legendVariableBlock:
-      "Bloque [n]: su número de repeticiones cambia entre alelos",
-    legendFixedBlock:
-      "Bloque que se mantiene igual en los alelos comunes que siguen esta plantilla",
-    legendStrnamingFlank:
-      "Región flanqueadora dentro del ISFG minimum range (ej. -1, +1)",
     variableBlockTooltip:
       "Su número de repeticiones cambia entre alelos ([n] en la plantilla de STRidER).",
     fixedBlockTooltip:
@@ -607,18 +585,9 @@ motifExplorerPage: {
     hoverHint:
       "Pasá el cursor o tocá un bloque del nombre o de la secuencia: se ilumina en los dos.",
     detailsSummary: "Fuentes y notas",
-    phaseNote:
-      "La estructura de la secuencia (repeat, interrupción, flanco) sigue la Forensic Sequence Structure Guide de STRidER (FSSG v6.1); el nombre ISFG / STRNaming de arriba es una vista complementaria, no una re-implementación de las reglas de nomenclatura.",
-    notAligned:
-      "Este locus tiene una estructura compleja que no encaja de forma limpia; la secuencia se muestra sin coloreado por unidad. El bracketing canónico de arriba sigue siendo la referencia.",
   },
   kits: {
-    title: "Rangos de kits vs el minimum range",
-    minimumRangeLabel: "ISFG minimum range",
     note: "Muchos kits MPS secuencian una ventana más ancha que el ISFG minimum range, pero no todos lo cubren por completo, así que compará cada rango de kit con el minimum range. La salida cruda puede verse más larga o corta, mientras los nombres sobre el minimum range se mantienen comparables.",
-    clipped: "Se extiende más allá de la ventana de referencia almacenada.",
-    empty: "No hay información de rangos de kits para este marcador.",
-    bp: "pb",
   },
 },
 } as const

@@ -391,7 +391,7 @@ marker: {
     structureTitle: "Estrutura da sequência (FSSG)",
     structureSource:
       "Intervalo mínimo ISFG, bracketing e cobertura por kit segundo o Forensic Sequence Structure Guide, {version} ({strider}; distribuído como {file}).",
-    canonicalLabel: "Bracketing ISFG / STRNaming (a partir de 2024)",
+    canonicalLabel: "STRNaming Formatted ISFG Minimum Range for Common Alleles (FSSG)",
     referenceNameLabel: "Alelo de referência (GRCh38) nomeado com o STRNaming 1.2.1",
     historicalLabel: "Bracketing histórico (2016-2023)",
     minimumRangeLabel: "Intervalo mínimo ISFG (GRCh38)",
@@ -452,7 +452,7 @@ marker: {
 overview: {
   motifExplorer: {
     title: "Explorar estrutura interna da sequência",
-    desc: "Entenda como os motivos canônicos, variantes internas e regiões flanqueadoras definem o alelo.",
+    desc: "Veja como o nome STRNaming do alelo de referência se posiciona sobre sua sequência: blocos de repetição, regiões flanqueadoras e variantes no flanco.",
     button: "Abrir STR Motif Explorer",
   },
   igvViewer: {

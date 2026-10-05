@@ -63,7 +63,7 @@ the CE number attached, so the sequence name always carries its CE equivalent.
 - Alt: "A STRNaming allele name split into CE prefix, repeat blocks, and variant."
 
 ### 4. Anatomy of the repeat region
-- Canonical repeat motif: the reference repeat unit used to describe the locus.
+- Repeat motif: the repeat unit written in each block of the STRNaming name (for example TCTA in TCTA[13]).
 - Core repeat region: the run of repeats that defines the allele; only these
   count toward the allele size.
 - Flanking region: sequence just outside the core; not counted, but it can carry
@@ -140,10 +140,11 @@ anchored term so tooltips can deep link, e.g. `#minimum-range`.)
   only length. Two alleles of the same CE size can differ in sequence.
 - **STRNaming name** — Standardized sequence allele name: `CE<n>_` plus the
   repeat structure in `MOTIF[n]` blocks plus any variants.
-- **Canonical repeat motif** — The reference repeat unit used to describe a locus
-  in the current recommendations, in the recommended orientation.
+- **STRNaming template (FSSG)** — STRidER's template for the common alleles of a
+  locus over the ISFG minimum range, written relative to GRCh38: MOTIF[count]
+  blocks with [n] where the count varies between alleles.
 - **Historical motif** — The motif or orientation used in earlier nomenclature;
-  may differ from the canonical motif. Kept for continuity.
+  may differ from the STRNaming blocks. Kept for continuity.
 - **MOTIF[n] vs [MOTIF]n** — The 2023/2024 format puts the count after the motif
   (`TGAA[8]`); the 2016 format wrote `[TGAA]8`. STRhub uses `MOTIF[n]`.
 - **Core repeat region** — The run of repeat units that defines the allele. Only

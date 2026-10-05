@@ -391,7 +391,7 @@ marker: {
     structureTitle: "Sequence structure (FSSG)",
     structureSource:
       "ISFG minimum range, bracketing and kit coverage from the Forensic Sequence Structure Guide, {version} ({strider}; distributed as {file}).",
-    canonicalLabel: "ISFG / STRNaming bracketing (2024 onward)",
+    canonicalLabel: "STRNaming Formatted ISFG Minimum Range for Common Alleles (FSSG)",
     referenceNameLabel: "Reference allele (GRCh38) named with STRNaming 1.2.1",
     historicalLabel: "Historical bracketing (2016-2023)",
     minimumRangeLabel: "ISFG minimum range (GRCh38)",
@@ -452,7 +452,7 @@ marker: {
 overview: {
   motifExplorer: {
     title: "Explore internal sequence structure",
-    desc: "Understand how canonical motifs, internal variants and flanking regions define the allele.",
+    desc: "See how the STRNaming name of the reference allele maps onto its sequence: repeat blocks, flanking regions and flanking variants.",
     button: "Open STR Motif Explorer",
   },
   igvViewer: {

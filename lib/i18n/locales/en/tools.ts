@@ -508,8 +508,6 @@ motifExplorerPage: {
   configuration: {
     title: "Configuration",
     markerLabel: "STR marker",
-    rangeLabel: "Highlight range",
-    allRanges: "All ranges",
     emptyState: "Please select a marker from the configuration panel.",
   },
   help: {
@@ -554,7 +552,6 @@ motifExplorerPage: {
       "Its structure follows form {n} of the {total} listed above.",
     referenceFitsOnlyForm:
       "Its structure follows the template above.",
-    variant: "Sequence variant",
   },
   historical: {
     title: "GRCh38 Historical bracketing (2016-2023)",
@@ -564,26 +561,7 @@ motifExplorerPage: {
   },
   sequence: {
     title: "Reference sequence (ISFG minimum range, GRCh38 forward strand)",
-    note: "Colors show the structure of the reference sequence as STRidER segments it in the FSSG: green blocks are canonical repeat units, amber blocks are interruptions or internal variants, grey bases are flanking sequence inside the reported window. The coloring describes structure; it is not a formula for the CE number, which follows each locus's length convention.",
-    legendRepeat: "Repeat unit",
-    legendMinorRepeat: "Secondary repeat (lowercase)",
-    legendInterruption: "Interruption / internal variant",
-    legendFlank: "Flanking region",
     flankMotifLabel: "Same sequence as a repeat motif, but in the flanking region: it is not counted in the allele name.",
-    repeatTooltip: "Canonical repeat unit of the reference structure.",
-    minorRepeatTooltip: "Secondary / variant repeat block: it repeats, but it is not the primary motif that names the allele.",
-    interruptionTooltip: "Interruption / internal variant; not counted as a repeat unit.",
-    flankTooltip: "Flanking sequence inside the reported window; variants here are named by position.",
-    viewStrnaming:
-      "STRNaming (2024 onward)",
-    viewHistorical:
-      "Historical bracketing (2016-2023)",
-    legendVariableBlock:
-      "[n] block: its number of repeats changes between alleles",
-    legendFixedBlock:
-      "Block that stays the same in common alleles following this template",
-    legendStrnamingFlank:
-      "Flanking region inside the ISFG minimum range (e.g. -1, +1)",
     variableBlockTooltip:
       "Its number of repeats changes between alleles ([n] in STRidER's template).",
     fixedBlockTooltip:
@@ -607,18 +585,9 @@ motifExplorerPage: {
     hoverHint:
       "Hover over or tap a block of the name or the sequence: it lights up in both.",
     detailsSummary: "Sources and notes",
-    phaseNote:
-      "The sequence structure (repeat, interruption, flank) follows STRidER's Forensic Sequence Structure Guide (FSSG v6.1); the ISFG / STRNaming name above is a complementary view, not a re-implementation of the naming rules.",
-    notAligned:
-      "This locus has a complex structure that does not tile cleanly; the sequence is shown without per-unit coloring. The canonical bracketing above remains authoritative.",
   },
   kits: {
-    title: "Kit ranges vs the minimum range",
-    minimumRangeLabel: "ISFG minimum range",
     note: "Many MPS kits sequence a wider window than the ISFG minimum range, but not all of them cover it completely, so compare each kit range with the minimum range. Raw kit output can look longer or shorter, while names over the minimum range stay comparable.",
-    clipped: "Extends beyond the stored reference window.",
-    empty: "No kit range information for this marker.",
-    bp: "bp",
   },
 },
 } as const

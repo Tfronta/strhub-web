@@ -65,6 +65,14 @@ const nextConfig = {
       { source: '/community/:path*', destination: '/about#get-involved', permanent: true },
       { source: '/blog', destination: '/about#get-involved', permanent: true },
       { source: '/blog/:path*', destination: '/about#get-involved', permanent: true },
+      // Analytics shows visits landing on the tool path without its final "r",
+      // which 404s. Nothing on the site links there, so it comes from the URL
+      // being shared truncated.
+      {
+        source: '/tools/str-motif-explore',
+        destination: '/tools/str-motif-explorer',
+        permanent: true,
+      },
     ]
   },
 }

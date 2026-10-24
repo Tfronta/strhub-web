@@ -9,6 +9,13 @@ describe("youtubeEmbedUrl", () => {
     expect(url.searchParams.get("cc_load_policy")).toBe("1");
     expect(url.searchParams.get("cc_lang_pref")).toBe("pt");
     expect(url.searchParams.get("hl")).toBe("pt");
+    expect(url.searchParams.has("autoplay")).toBe(false);
+  });
+
+  it("autoplays only when the player is loaded by a click on the cover", () => {
+    const url = new URL(youtubeEmbedUrl("abc", "es", { autoplay: true }));
+    expect(url.searchParams.get("autoplay")).toBe("1");
+    expect(url.searchParams.get("cc_lang_pref")).toBe("es");
   });
 });
 

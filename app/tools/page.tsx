@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ExternalLink, Github, Info, FileText, Filter, Eye, Dna, Search } from "lucide-react";
+import { ExternalLink, Github, Info, FileText, Filter, Eye, Dna, Search, GraduationCap } from "lucide-react";
 
 const BUILT_IN_TOOLS = [
   {
@@ -29,7 +29,6 @@ const BUILT_IN_TOOLS = [
     descriptionKey: "home.explore.fastaGenerator.description",
   },
 ];
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CodeBlock } from "@/components/ui/code-block";
@@ -55,6 +54,7 @@ import type {
   ToolCard,
 } from "@/lib/tools";
 import { ToolCardCompact } from "@/components/tools/ToolCardCompact";
+import { HIPSTR_TUTORIAL_PATH } from "@/lib/tutorials/paths";
 
 export type { TechnologyKey, ReadTypeKey, AnalysisKey, UsageKey, ToolCard };
 
@@ -583,15 +583,28 @@ export default function ToolsPage() {
       {/* Tutorials Section */}
       <section className="pt-8 pb-16 px-4">
         <div className="container mx-auto">
-          <h3 className="text-3xl font-bold mb-12">
+          <h3 className="text-3xl font-bold mb-6">
             {t("tools.tutorials.title")}
           </h3>
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertDescription>
-              {t("tools.tutorials.comingSoon")}
-            </AlertDescription>
-          </Alert>
+          <div className="grid gap-4 md:grid-cols-3">
+            <Link href={HIPSTR_TUTORIAL_PATH} className="group">
+              <Card className="h-full border-0 bg-gradient-to-br from-card to-card/50 transition-all duration-300 hover:shadow-lg hover:from-primary/5 hover:to-accent/5">
+                <CardHeader>
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
+                    <GraduationCap className="h-5 w-5 text-primary-foreground" aria-hidden />
+                  </div>
+                  <CardTitle className="text-lg">{t("tools.hipstr.title")}</CardTitle>
+                  <CardDescription>{t("tools.tutorials.description")}</CardDescription>
+                  <p className="pt-2 text-sm font-medium text-primary group-hover:underline">
+                    {t("tools.tutorials.open")}
+                  </p>
+                </CardHeader>
+              </Card>
+            </Link>
+          </div>
+          <p className="mt-4 text-sm text-muted-foreground">
+            {t("tools.tutorials.moreSoon")}
+          </p>
         </div>
       </section>
     </div>

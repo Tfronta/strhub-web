@@ -211,6 +211,13 @@ export function buildSearchIndex(t: (key: string) => string, language: Language 
       tags: ["motif", "explorer", "str", "repeats"],
       href: "/tools/str-motif-explorer",
     },
+    {
+      id: "hipstr-tutorial",
+      title: `${t("tools.hipstr.title")}: ${t("tools.common.tutorial")}`,
+      description: t("tools.tutorials.description"),
+      tags: ["hipstr", "tutorial", "genotyping", "vcf", "terminal"],
+      href: "/tools/hipstr/tutorial",
+    },
   ];
 
   staticPages.forEach((page) => {

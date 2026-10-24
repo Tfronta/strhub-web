@@ -24,6 +24,7 @@ const STATIC_ROUTES: Array<{
   { path: "/tools", changeFrequency: "monthly", priority: 0.8 },
   { path: "/tools/fasta-generator", changeFrequency: "monthly", priority: 0.7 },
   { path: "/tools/igv-viewer", changeFrequency: "monthly", priority: 0.7 },
+  { path: "/tools/hipstr/tutorial", changeFrequency: "monthly", priority: 0.7 },
   {
     path: "/tools/str-motif-explorer",
     changeFrequency: "monthly",

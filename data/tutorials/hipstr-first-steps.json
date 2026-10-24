@@ -1,0 +1,1229 @@
+{
+ "id": "hipstr-first-steps",
+ "tool": "HipSTR",
+ "version": "v0.7 (commit b2033bf)",
+ "youtube": "Jn4G8V_FL8w",
+ "zip": {
+  "name": "hipstr-tutorial.zip",
+  "url": null,
+  "size_mb": 10.3
+ },
+ "tested": {
+  "date": "2026-10-24",
+  "system": "Debian GNU/Linux 12 (bookworm), aarch64",
+  "commit": "b2033bf",
+  "ok": 13,
+  "total": 13
+ },
+ "i18n": {
+  "en": {
+   "title": "HipSTR: genotyping forensic STRs from a BAM",
+   "summary": "You will genotype 24 forensic STRs of a public sample (NA12878) with HipSTR, using the official command from the HipSTR README. You will see why it leaves 3 loci out without telling you on screen, fix it, read the VCF, filter it with HipSTR's own script and look at the reads with VizAln.",
+   "duration": "15 minutes + installation",
+   "get_started": "Everything runs in your own terminal: Linux, macOS, or Windows with WSL.\nFirst install the tools for your system, then download the tutorial data\nand set up the folder. You do this once.",
+   "install": [
+    {
+     "os": "Linux (Ubuntu, Debian) and Windows with WSL",
+     "note": "On Windows, first install WSL: open PowerShell as administrator, run `wsl --install`, restart, open \"Ubuntu\" from the Start menu and continue there. On Ubuntu 24.04 or newer (the one WSL installs today), compile HipSTR with `make CXX=\"g++ -include cstdint\"` instead of `make` (see the error below).",
+     "commands": "sudo apt update\nsudo apt install -y build-essential git unzip zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev samtools bcftools tabix bsdextrautils python3-venv"
+    },
+    {
+     "os": "macOS",
+     "note": "You need Homebrew (brew.sh). `xcode-select --install` opens a window to install the compilers; if it says they are already installed, go on. coreutils is for VizAln (step 13).",
+     "commands": "xcode-select --install\nbrew install samtools bcftools coreutils"
+    }
+   ],
+   "setup": "unzip hipstr-tutorial.zip\ncd hipstr-tutorial\ngit clone https://github.com/tfwillems/HipSTR.git\ncd HipSTR\nmake\ncd ..\npython3 -m venv hipstr-env\nhipstr-env/bin/pip install PyVCF3",
+   "setup_explain": "This compiles HipSTR inside the tutorial folder, exactly as the official HipSTR tutorial does (`git clone` + `make`), and creates a small Python environment (`hipstr-env`) with PyVCF3, which HipSTR's filter script needs. The `Makefile` uses both by itself.",
+   "install_errors": [
+    {
+     "error": "src/region.h:62:49: error: 'uint32_t' has not been declared",
+     "fix": "Linux with a recent compiler (gcc 13, Ubuntu 24.04 and newer). HipSTR's code relies on a header that new compilers no longer include by themselves. Inside the `HipSTR` folder run `make CXX=\"g++ -include cstdint\"`: it adds that header without changing HipSTR's code. We tested it on a clean Ubuntu 24.04."
+    },
+    {
+     "error": "Undefined symbols for architecture arm64 (and before it: ld: warning: ignoring file '/usr/local/lib/liblzma.dylib': found architecture 'x86_64', required architecture 'arm64')",
+     "fix": "macOS with Apple Silicon that still has libraries from an old Intel Homebrew in `/usr/local`. Build HipSTR with `LIBRARY_PATH=/opt/homebrew/lib make` instead of `make`. We hit this on our own Mac and this fixed it."
+    }
+   ],
+   "files": [
+    {
+     "file": "NA12878.bam",
+     "what": "Illumina reads of NA12878 (Genome in a Bottle, NIST), aligned to GRCh38. Only the regions of 24 forensic STRs, with 1,000 bp on each side. Reads are 148 bp long."
+    },
+    {
+     "file": "NA12878.bam.bai",
+     "what": "Index of the BAM. HipSTR needs it to jump straight to each region."
+    },
+    {
+     "file": "regions.bed",
+     "what": "Which STRs to genotype and where they are."
+    },
+    {
+     "file": "GRCh38_STR_regions.fa.gz",
+     "what": "Reduced reference: GRCh38 with everything set to N except 5,000 bp around each STR. 9 MB instead of 3.3 GB. We checked that HipSTR writes exactly the same VCF records with this file and with the full reference. For your own data, use the full reference."
+    },
+    {
+     "file": "Makefile",
+     "what": "The commands of this tutorial. `make` prints every command before running it, so you always see the full HipSTR command."
+    },
+    {
+     "file": "HipSTR/",
+     "what": "HipSTR, cloned from GitHub and compiled during the setup."
+    },
+    {
+     "file": "hipstr-env/",
+     "what": "Python environment with PyVCF3, created during the setup."
+    }
+   ],
+   "steps": [
+    {
+     "id": "files",
+     "title": "Look at the files",
+     "explain": "Before running anything, look at what you have: the reads (`.bam`) with\ntheir index (`.bai`), the list of STRs (`.bed`), the reference\n(`.fa.gz`, with its indexes `.fai` and `.gzi`), the `Makefile`, and the\ntwo folders from the setup: `HipSTR/` and `hipstr-env/`.",
+     "command": "ls -lh",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "total 20M\n-rw-r--r-- 1 student student 9.0M Oct 23 13:21 GRCh38_STR_regions.fa.gz\n-rw-r--r-- 1 student student  568 Oct 23 13:21 GRCh38_STR_regions.fa.gz.fai\n-rw-r--r-- 1 student student 604K Oct 23 13:21 GRCh38_STR_regions.fa.gz.gzi\ndrwxr-xr-x 8 student student 4.0K Oct 24 11:53 HipSTR\n-rw-r--r-- 1 student student 4.0K Oct 23 17:35 Makefile\n-rw-r--r-- 1 student student 9.4M Oct 23 13:21 NA12878.bam\n-rw-r--r-- 1 student student 825K Oct 23 13:21 NA12878.bam.bai\n-rw------- 1 student student  305 Oct 24 11:52 README.txt\ndrwxr-xr-x 5 student student 4.0K Oct 24 11:54 hipstr-env\n-rw-r--r-- 1 student student  961 Oct 23 13:21 regions.bed",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "read-group",
+     "title": "Does the BAM have a read group?",
+     "explain": "HipSTR takes the sample name from the *read group* of the BAM (the `@RG`\nline): `SM` is the sample and `LB` the library. If your BAM has no read\ngroup, HipSTR does not start.",
+     "command": "samtools view -H NA12878.bam | grep '^@RG'",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "@RG\tID:NA12878\tSM:NA12878\tLB:GIAB300x\tPL:ILLUMINA",
+     "output_note": null,
+     "errors": [
+      {
+       "error": "ERROR: Provided BAM/CRAM files don't contain read groups in the header and the --bam-samps flag was not specified",
+       "fix": "Your BAM has no `@RG`. Two ways out (we tested both): add one with `samtools addreplacerg -r 'ID:sample1' -r 'SM:sample1' -r 'LB:lib1' -o with_rg.bam your.bam` and then `samtools index with_rg.bam`; or give HipSTR the names with `--bam-samps sample1 --bam-libs lib1` (always together)."
+      }
+     ]
+    },
+    {
+     "id": "bed",
+     "title": "Read the BED of regions",
+     "explain": "Each line is one STR. The columns, as the HipSTR README defines them:\nchromosome, start, end, motif length (4 = tetranucleotide), number of\ncopies of the motif in the reference allele, and (optional) the locus\nname, which HipSTR writes in the ID column of the VCF. The BED has **no**\nheader line.",
+     "command": "head -3 regions.bed",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "chr1\t230769616\t230769683\t4\t17\tD1S1656\tN/A\nchr2\t1489653\t1489684\t4\t8\tTPOX\tN/A\nchr2\t68011947\t68011994\t4\t12\tD2S441\tN/A",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "make-help",
+     "title": "What can make do here?",
+     "explain": "`make` with no target prints the help of this `Makefile`: what each target\ndoes and the parameters you can set. Every parameter has the name of the\nHipSTR option it fills in, so you can find it later in the HipSTR README.\nYou set them after the target: `make genotype MAX_STR_LEN=150`.",
+     "command": "make",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "Targets:\n  make genotype   run HipSTR (log on screen, copy in NA12878.log)\n  make table      one line per locus from NA12878.vcf.gz\n  make reads      reads per allele length at LOCUS\n  make filter     HipSTR's filter_vcf.py with the README thresholds\n  make viz        VizAln alignments for LOCUS, saved in results/\n\nParameters (HipSTR option they fill in), current value:\n  MAX_STR_LEN        --max-str-len         HipSTR default\n  DEF_STUTTER_MODEL  --def-stutter-model   off\n  OUTPUT_FILTERS     --output-filters      off\n  MAX_CALL_STUTTER   --max-call-stutter    0.15  (filter_vcf.py)\n  LOCUS              locus for reads/viz   D13S317",
+     "output_note": null,
+     "errors": [
+      {
+       "error": "Makefile:2: *** missing separator.  Stop.",
+       "fix": "You edited the `Makefile` and a command line starts with spaces. In a Makefile, command lines must start with a TAB."
+      }
+     ]
+    },
+    {
+     "id": "genotype-readme",
+     "title": "Genotype with the official command",
+     "explain": "This is the basic command of the HipSTR README (`--bams`, `--fasta`,\n`--regions`, `--str-vcf`) plus `--viz-out`, which the official HipSTR\ntutorial also uses and which you need for VizAln (step 13). The log goes\nto the screen and `tee` keeps a copy in `NA12878.log`.\n\nThe summary at the end says that only **21 of the 24 loci** were\ngenotyped, and nothing else on screen warns you:\n\n- **2 loci skipped for length**: SE33 (102 bp in the reference) and D21S11\n  (127 bp) are longer than `--max-str-len` (default 100 bp).\n- **1 locus skipped for too few reads to learn the stutter model**:\n  D2S1338 (in the log: `TOTAL=62, MIN=100`). HipSTR learns a stutter model\n  per locus from the reads of **all** samples; with one sample this may\n  not be enough.\n\nThe log suggests `--min-reads`, but for very few samples the HipSTR README\nrecommends `--def-stutter-model`.",
+     "command": "make genotype",
+     "make_runs": "HipSTR/HipSTR --bams NA12878.bam --fasta GRCh38_STR_regions.fa.gz --regions regions.bed \\\n       --str-vcf NA12878.vcf.gz --viz-out NA12878.viz.gz  \\\n       2>&1 | tee NA12878.log",
+     "parameters": [
+      {
+       "name": "BAMS",
+       "option": "--bams",
+       "what": "BAM/CRAM files with the reads (comma-separated list). Each needs its index."
+      },
+      {
+       "name": "FASTA",
+       "option": "--fasta",
+       "what": "Reference genome. Its coordinates must match those of the BED."
+      },
+      {
+       "name": "REGIONS",
+       "option": "--regions",
+       "what": "BED with the STRs to genotype."
+      },
+      {
+       "name": "STR_VCF",
+       "option": "--str-vcf",
+       "what": "Output: bgzipped VCF with the genotypes."
+      },
+      {
+       "name": "VIZ_OUT",
+       "option": "--viz-out",
+       "what": "Output: the read alignments of each call, for VizAln."
+      },
+      {
+       "name": "LOG",
+       "option": "(tee)",
+       "what": "Copy of the log. HipSTR also has `--log FILE`, which writes the log only to the file."
+      }
+     ],
+     "fields": [],
+     "output": "\n\n------HipSTR Execution Summary------\nSkipped 2 loci whose lengths were above the maximum threshold.\n\t If this is a sizeable portion of your loci, see the --max-str-len command line option\nSkipped 1 loci with too few reads for stutter model model training or genotyping.\n\t If this is a sizeable portion of your loci, see the --min-reads command line option\nStutter model training succeeded for 21/21 loci\nGenotyping succeeded for 21/21 loci\n\nApproximate timing breakdown\n BAM seek time       = 9.1e-05 seconds\n Read filtering      = 0.178181 seconds\n SNP info extraction = 0.001282 seconds\n Stutter estimation  = 0.00566 seconds\n Genotyping          = 2.12139 seconds\n\t Left alignment        = 0.341273 seconds\n\t Haplotype generation  = 0.009099 seconds\n\t Haplotype alignment   = 1.10297 seconds\n\t Flank assembly        = 0.015968 seconds\n\t Posterior computation = 0.00085 seconds\n\t Alignment traceback   = 0.601921 seconds\nHipSTR execution finished: Total runtime = 10.3252 sec\n-----------------",
+     "output_note": "Last 24 of 972 lines (the whole log scrolls by on your screen).",
+     "errors": []
+    },
+    {
+     "id": "genotype-fixed",
+     "title": "Genotype again, fixed",
+     "explain": "Three parameters change. The summary now says 23 of 24 (careful: in step\n8 you will see that this is not 23 genotypes).",
+     "command": "make genotype MAX_STR_LEN=150 DEF_STUTTER_MODEL=1 OUTPUT_FILTERS=1",
+     "make_runs": "HipSTR/HipSTR --bams NA12878.bam --fasta GRCh38_STR_regions.fa.gz --regions regions.bed \\\n       --str-vcf NA12878.vcf.gz --viz-out NA12878.viz.gz --max-str-len 150 --def-stutter-model --output-filters \\\n       2>&1 | tee NA12878.log",
+     "parameters": [
+      {
+       "name": "MAX_STR_LEN",
+       "option": "--max-str-len",
+       "what": "Only genotype STRs shorter than this many bp in the reference (default 100). 150 lets SE33 and D21S11 in."
+      },
+      {
+       "name": "DEF_STUTTER_MODEL",
+       "option": "--def-stutter-model",
+       "what": "Use a fixed stutter model (PGEOM=0.9, UP=DOWN=0.05 in-frame, 0.01 out-of-frame) instead of learning one per locus. The README: only when there are too few samples, because learned models are more accurate."
+      },
+      {
+       "name": "OUTPUT_FILTERS",
+       "option": "--output-filters",
+       "what": "Write why each call was filtered, in the FORMAT field FILTER. Without it, a filtered call is just empty."
+      }
+     ],
+     "fields": [],
+     "output": "\n------HipSTR Execution Summary------\nGenotyping succeeded for 23/24 loci\n\nApproximate timing breakdown\n BAM seek time       = 0.000128 seconds\n Read filtering      = 0.194778 seconds\n SNP info extraction = 0.001491 seconds\n Stutter estimation  = 7.2e-05 seconds\n Genotyping          = 2.57138 seconds\n\t Left alignment        = 0.42145 seconds\n\t Haplotype generation  = 0.010275 seconds\n\t Haplotype alignment   = 1.34872 seconds\n\t Flank assembly        = 0.018335 seconds\n\t Posterior computation = 0.001041 seconds\n\t Alignment traceback   = 0.714649 seconds\nHipSTR execution finished: Total runtime = 10.5244 sec\n-----------------",
+     "output_note": "Last 18 of 976 lines (the whole log scrolls by on your screen).",
+     "errors": []
+    },
+    {
+     "id": "vcf",
+     "title": "Open the VCF",
+     "explain": "HipSTR writes its result to `NA12878.vcf.gz`: a VCF (Variant Call Format)\nfile compressed with bgzip. `gunzip -k` decompresses it and **keeps** the\n`.gz`, which the next steps read (`-f` overwrites `NA12878.vcf` if you run\nit again). Without `-k`, the `.gz` disappears and `make table`, `make\nreads` and `make filter` stop working.\n\nThe lines that start with `##` are the header, and they define every field\n(try `grep '^##FORMAT' NA12878.vcf`). Then comes one line per STR, with\ntab-separated columns: `CHROM`, `POS`, `ID` (the locus name), `REF` and\n`ALT` (the allele sequences), `QUAL`, `FILTER`, `INFO` (data for the\nlocus), `FORMAT` (the names of the per-sample fields, separated by `:`)\nand one column per sample, with the values in the same order.\n\nTo open it in a spreadsheet (Excel, LibreOffice Calc, Google Sheets), open\nit from inside the program and choose tab as the separator. Do not\ndouble-click it: `.vcf` is also the extension of contact cards (vCard),\nand your computer may open your contacts app instead. To see each field\nnext to its value, split the `FORMAT` and `NA12878` columns at `:` (menu\nData, Text to Columns).\n\nThe fields below are the ones in the `FORMAT` column. The descriptions\ncome from the VCF header and from the HipSTR README.",
+     "command": "gunzip -kf NA12878.vcf.gz && ls -lh NA12878.vcf*",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [
+      {
+       "name": "GT",
+       "what": "Genotype: which alleles, as indexes (0 = REF, 1 = first ALT, ...). `|` means phased."
+      },
+      {
+       "name": "GB",
+       "what": "Base pair difference of each allele from the reference. With the size of the reference allele, it gives the repeat number."
+      },
+      {
+       "name": "Q",
+       "what": "Posterior probability of the genotype, from 0 to 1. The HipSTR README calls it the best quality indicator; the filter keeps Q ≥ 0.9."
+      },
+      {
+       "name": "PQ",
+       "what": "The same probability for the phased genotype. Without phasing information (no SNPs nearby), a heterozygote has PQ ≈ Q/2."
+      },
+      {
+       "name": "DP",
+       "what": "Number of valid reads used for this sample's genotype: the total coverage at the locus."
+      },
+      {
+       "name": "PDP",
+       "what": "Reads supporting each allele (fractional: a read can count partly for each allele). Adds up to DP. It is not a probability."
+      },
+      {
+       "name": "AB",
+       "what": "Allele bias, as log10 of a p-value: 0 = reads balanced between the two alleles; very negative = one allele has fewer reads than expected for that genotype. The filter keeps AB ≥ -2."
+      },
+      {
+       "name": "FS",
+       "what": "Strand bias, as log10 of a Fisher test p-value: very negative = an allele seen mostly on one DNA strand, a sign of sequencing errors. The filter keeps FS ≥ -2."
+      },
+      {
+       "name": "DSTUTTER",
+       "what": "Reads with a stutter indel in the STR. The filter removes a call if DSTUTTER / DP > 0.15."
+      },
+      {
+       "name": "DFLANKINDEL",
+       "what": "Reads with an indel in the flanks of the STR. The filter removes a call if DFLANKINDEL / DP > 0.15."
+      },
+      {
+       "name": "MALLREADS",
+       "what": "For reads that span the repeat by at least 5 bp: bp difference | number of reads (step 10)."
+      },
+      {
+       "name": "ALLREADS",
+       "what": "The same idea, from each read's own alignment, for all reads."
+      },
+      {
+       "name": "FILTER",
+       "what": "PASS, or why the call was filtered (written because of OUTPUT_FILTERS)."
+      },
+      {
+       "name": "Others",
+       "what": "GLDIFF: likelihood gap to the next best genotype. DSNP and PSNP: reads with SNP phasing information. DAB: reads used for AB and FS."
+      }
+     ],
+     "output": "-rw-r--r-- 1 student student  19K Oct 24 16:23 NA12878.vcf\n-rw-r--r-- 1 student student 3.8K Oct 24 16:23 NA12878.vcf.gz",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "table",
+     "title": "The genotypes, one line per locus",
+     "explain": "`bcftools query` (bcftools is **not** part of HipSTR: it comes from the\nsamtools team) prints only the fields you ask for:\n\n- `GT`: which sequences were called (indexes into REF/ALT, not alleles).\n- `GB`: difference in bp of each allele from the reference. `0|4` at\n  D13S317 = one allele as long as the reference, the other 4 bp longer.\n  When GB is not a multiple of the motif, it is a microvariant: TH01\n  (motif of 4) shows `0|11` = 2 repeats plus 3 bases.\n- `DP`: valid reads HipSTR used (the total coverage). `Q`: posterior\n  probability of the genotype.\n- `FILTER`: `PASS`, or why the call was filtered (thanks to\n  `OUTPUT_FILTERS`).\n\nTwo loci are not genotyped although the summary said 23 of 24: **D21S11**\nis not in the table at all, and **SE33** has dots and\n`FLANK_ASSEMBLY_CYCLIC`. HipSTR rebuilds the flanking sequences from the\nreads; in SE33 that did not work out. In the log you can see that the left\nflank of SE33 is itself repetitive (it ends in `CTTTCTTTCTTTC`). To turn\nGB into a CE allele number you need the reference allele of each locus.",
+     "command": "make table",
+     "make_runs": "bcftools query -f '%ID\\t[%GT\\t%GB\\t%DP\\t%Q\\t%FILTER]\\n' NA12878.vcf.gz | column -t",
+     "parameters": [],
+     "fields": [],
+     "output": "bcftools query -f '%ID\\t[%GT\\t%GB\\t%DP\\t%Q\\t%FILTER]\\n' NA12878.vcf.gz | column -t\nD1S1656   1|2  -12|-5   359  1  PASS\nD10S1248  1|2  8|12     309  1  PASS\nTH01      0|1  0|11     275  1  PASS\nvWA       1|2  -8|0     456  1  PASS\nD12S391   1|2  -12|-8   349  1  PASS\nD13S317   0|1  0|4      316  1  PASS\nPentaE    1|2  10|35    401  1  PASS\nD16S539   0|1  0|-4     371  1  PASS\nD18S51    1|2  -8|-4    517  1  PASS\nD19S433   0|1  0|-8     289  1  PASS\nTPOX      0|0  0|0      255  1  PASS\nD2S441    1|2  -4|8     428  1  PASS\nD2S1338   1|2  -24|-12  263  1  PASS\nPentaD    0|1  0|-10    431  1  PASS\nD22S1045  1|2  -12|-6   414  1  PASS\nD3S1358   1|2  0|4      419  1  PASS\nFGA       0|1  0|8      477  1  PASS\nD5S818    1|1  4|4      399  1  PASS\nCSF1PO    1|2  -12|-8   275  1  PASS\nSE33      .    .        .    .  FLANK_ASSEMBLY_CYCLIC\nD6S1043   0|1  0|-4     360  1  PASS\nD7S820    2|1  -12|-20  405  1  PASS\nD8S1179   1|1  -4|-4    346  1  PASS",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "d21s11",
+     "title": "Why is D21S11 missing?",
+     "explain": "HipSTR found no read that crosses the whole repeat of D21S11 (the log\nprints the region 0-based: `chr21 19181972` is the line of D21S11 in\n`regions.bed`). The repeat is 127 bp in the reference and the reads are\n148 bp, which leaves almost no room for flank. **No option fixes this**:\nit is a limit of read length.",
+     "command": "grep -B17 \"No spanning\" NA12878.log",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "Processing region chr21 19181972 19182099\nAdapter trimming removed\n\t76 likely adapter bases from 12/290 R1 reads (4.1%)\n\t63 likely adapter bases from 9/285 R2 reads (3.2%)\n575 reads overlapped region, of which \n\t0 were hard clipped\n\t1 had an 'N' base call\n\t7 had low base quality scores\n\t2 did not have a unique mapping\n\t7 did not have a mate pair\n\t558 PASSED ALL FILTERS\nFound 558 fully paired reads and 0 unpaired reads for downstream analyses\nRemoved 4 sets of PCR duplicate reads\nPhased SNPs add info for 0 out of 554 reads and 0 out of 1 samples\nUsing default stutter model\nLeft aligning reads\nGenerating candidate haplotypes\nHaplotype construction failed: No spanning alignments",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "reads",
+     "title": "How many reads support each allele?",
+     "explain": "`MALLREADS` (from the HipSTR VCF) gives, for each length difference in bp,\nhow many reads cross the repeat with at least 5 bp on each side. At\nD13S317: 79 reads at 0 bp and 56 at +4 bp, about 60/40: a well-balanced\nheterozygote. The VCF field `AB` tests this same balance (here -0.33,\nclose to 0 = balanced).",
+     "command": "make reads LOCUS=D13S317",
+     "make_runs": "bcftools query -i 'ID=\"D13S317\"' -f '%ID\\t[%GB\\t%MALLREADS]\\n' NA12878.vcf.gz",
+     "parameters": [
+      {
+       "name": "LOCUS",
+       "option": "(make only)",
+       "what": "Locus name, as in column 6 of the BED. Used by `make reads` and `make viz`."
+      }
+     ],
+     "fields": [],
+     "output": "bcftools query -i 'ID=\"D13S317\"' -f '%ID\\t[%GB\\t%MALLREADS]\\n' NA12878.vcf.gz\nD13S317\t0|4\t0|79;4|56",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "filter",
+     "title": "Filter with HipSTR's own script",
+     "explain": "HipSTR comes with `scripts/filter_vcf.py`, and its README suggests these\nthresholds. The filtered VCF keeps every locus but removes, sample by\nsample, the calls that fail, and writes the reason in `FILTER`. The\ntarget then lists every call that is not `PASS`.\n\nHere nothing new is removed: this sample has ~300x and all its calls\npass (Q = 1, stutter ≤ 2.7 %, allele bias ≥ -1.45).",
+     "command": "make filter",
+     "make_runs": "python HipSTR/scripts/filter_vcf.py --vcf NA12878.vcf.gz \\\n       --min-call-qual 0.9 --max-call-flank-indel 0.15 \\\n       --max-call-stutter 0.15 \\\n       --min-call-allele-bias -2 --min-call-strand-bias -2 \\\n       > NA12878.filtered.vcf\nbcftools query -f '%ID\\t[%GT\\t%FILTER]\\n' NA12878.filtered.vcf | awk '$3 != \"PASS\"'",
+     "parameters": [
+      {
+       "name": "MIN_CALL_QUAL",
+       "option": "--min-call-qual 0.9",
+       "what": "Minimum posterior probability of the genotype (Q). The README: Q is the best quality indicator."
+      },
+      {
+       "name": "MAX_CALL_FLANK_INDEL",
+       "option": "--max-call-flank-indel 0.15",
+       "what": "Maximum fraction of reads with an indel in the flanks (DFLANKINDEL / DP)."
+      },
+      {
+       "name": "MAX_CALL_STUTTER",
+       "option": "--max-call-stutter 0.15",
+       "what": "Maximum fraction of reads with a stutter artifact (DSTUTTER / DP)."
+      },
+      {
+       "name": "MIN_CALL_ALLELE_BIAS",
+       "option": "--min-call-allele-bias -2",
+       "what": "Minimum allele bias (AB, log10 p-value). Very negative = reads very unbalanced between the alleles."
+      },
+      {
+       "name": "MIN_CALL_STRAND_BIAS",
+       "option": "--min-call-strand-bias -2",
+       "what": "Minimum strand bias (FS, log10 p-value)."
+      }
+     ],
+     "fields": [],
+     "output": "python HipSTR/scripts/filter_vcf.py --vcf NA12878.vcf.gz \\\n       --min-call-qual 0.9 --max-call-flank-indel 0.15 \\\n       --max-call-stutter 0.15 \\\n       --min-call-allele-bias -2 --min-call-strand-bias -2 \\\n       > NA12878.filtered.vcf\nbcftools query -f '%ID\\t[%GT\\t%FILTER]\\n' NA12878.filtered.vcf | awk '$3 != \"PASS\"'\nSE33\t./.\tFLANK_ASSEMBLY_CYCLIC",
+     "output_note": null,
+     "errors": [
+      {
+       "error": "error: externally-managed-environment",
+       "fix": "You used the system `pip`. Current Python does not let it install into the system. Install into the environment of the setup instead: `hipstr-env/bin/pip install PyVCF3`. (If `python3 -m venv` fails on Debian/Ubuntu, install `python3-venv` first.)"
+      },
+      {
+       "error": "error in PyVCF setup command: use_2to3 is invalid.",
+       "fix": "PyVCF, the package `filter_vcf.py` asks for, no longer installs on current Python. Install `PyVCF3`, a maintained fork: the script imports it in the same way (`import vcf`). We tested it with this tutorial."
+      }
+     ]
+    },
+    {
+     "id": "filter-strict",
+     "title": "What does a removed call look like?",
+     "explain": "Only to see what a removed call looks like: with a 2 % stutter threshold,\nD2S1338 (2.7 % of its reads with stutter) and D6S1043 (2.5 %) are removed.\nThe genotype becomes `./.` and `FILTER` says `STUTTER_FRACTION`. Use the\nREADME thresholds for real data.",
+     "command": "make filter MAX_CALL_STUTTER=0.02",
+     "make_runs": "python HipSTR/scripts/filter_vcf.py --vcf NA12878.vcf.gz \\\n       --min-call-qual 0.9 --max-call-flank-indel 0.15 \\\n       --max-call-stutter 0.02 \\\n       --min-call-allele-bias -2 --min-call-strand-bias -2 \\\n       > NA12878.filtered.vcf\nbcftools query -f '%ID\\t[%GT\\t%FILTER]\\n' NA12878.filtered.vcf | awk '$3 != \"PASS\"'",
+     "parameters": [],
+     "fields": [],
+     "output": "python HipSTR/scripts/filter_vcf.py --vcf NA12878.vcf.gz \\\n       --min-call-qual 0.9 --max-call-flank-indel 0.15 \\\n       --max-call-stutter 0.02 \\\n       --min-call-allele-bias -2 --min-call-strand-bias -2 \\\n       > NA12878.filtered.vcf\nbcftools query -f '%ID\\t[%GT\\t%FILTER]\\n' NA12878.filtered.vcf | awk '$3 != \"PASS\"'\nD2S1338\t./.\tSTUTTER_FRACTION\nSE33\t./.\tFLANK_ASSEMBLY_CYCLIC\nD6S1043\t./.\tSTUTTER_FRACTION",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "viz",
+     "title": "Look at the reads with VizAln",
+     "explain": "`--viz-out` (step 5) saved the alignments. `make viz` indexes them with\n`tabix -p bed` (as the HipSTR README says) and runs `VizAln` with the\nchromosome and start of the locus taken from `regions.bed`. VizAln writes\nan HTML file in `/tmp` and tries to open it in your browser. On macOS it\nusually opens; on WSL or a server there is no browser to open, so\n`make` always keeps a copy in `results/`. Open\n`results/NA12878_D13S317.html`: the reference on top, the call in red\n(`NA12878: 0|4`) and one line per read.",
+     "command": "make viz LOCUS=D13S317",
+     "make_runs": "echo x | cut -f 1 --complement >/dev/null 2>&1 || { echo \"VizAln needs GNU cut. On macOS: brew install coreutils\"; exit 1; }\ntabix -f -p bed NA12878.viz.gz\nHipSTR/VizAln NA12878.viz.gz chr13 82148025 NA12878\nmkdir -p results\ncp \"$(ls -t /tmp/vizaln.*.html | head -1)\" results/NA12878_D13S317.html",
+     "parameters": [
+      {
+       "name": "VIZ_OUT",
+       "option": "VizAln argument 1",
+       "what": "The file written by `--viz-out`, indexed with tabix."
+      },
+      {
+       "name": "CHROM, START",
+       "option": "VizAln arguments 2 and 3",
+       "what": "Chromosome and start of the locus, from columns 1 and 2 of the BED (make finds them from LOCUS)."
+      },
+      {
+       "name": "SAMPLE",
+       "option": "VizAln argument 4",
+       "what": "Sample to draw. Without it, VizAln draws all samples."
+      }
+     ],
+     "fields": [],
+     "output": "tabix -f -p bed NA12878.viz.gz\nHipSTR/VizAln NA12878.viz.gz chr13 82148025 NA12878\nVizAln successfully generated the alignment visualization file, but failed to open it. Please open /tmp/vizaln.13534.html using a web browser\nmkdir -p results\ncp \"$(ls -t /tmp/vizaln.*.html | head -1)\" results/NA12878_D13S317.html",
+     "output_note": null,
+     "errors": [
+      {
+       "error": "VizAln successfully generated the alignment visualization file, but failed to open it. Please open /tmp/vizaln.NNNNN.html using a web browser",
+       "fix": "There is no browser where VizAln runs (WSL, a server). Nothing is wrong: open the copy that `make viz` saved in `results/`. On WSL, `explorer.exe results` opens that folder in Windows."
+      },
+      {
+       "error": "cut: illegal option -- -",
+       "fix": "macOS: VizAln uses GNU `cut` (`--complement`), which macOS does not have. Run `brew install coreutils`; the `Makefile` finds GNU cut by itself. (Without it, `make viz` stops and tells you.)"
+      },
+      {
+       "error": "ERROR: VizAln requires python. Please check that it's appropriately installed",
+       "fix": "You ran VizAln outside `make`. VizAln calls `python`, not `python3`. Activate the environment first (`source hipstr-env/bin/activate`), or use `make viz`, which does it for you."
+      }
+     ]
+    }
+   ],
+   "closing": "You genotyped 22 of 24 STRs and saw why the basic command leaves loci out,\nthat \"Genotyping succeeded\" is not the same as having a genotype, and why\nD21S11 cannot be genotyped with 148 bp reads. Next: name the sequences in\nISFG nomenclature with STRNaming (coming tutorial)."
+  },
+  "es": {
+   "title": "HipSTR: genotipar STR forenses desde un BAM",
+   "summary": "Vas a genotipar 24 STR forenses de una muestra pública (NA12878) con HipSTR, usando el comando oficial del README de HipSTR. Vas a ver por qué deja 3 loci afuera sin avisarte en pantalla, lo vas a arreglar, vas a leer el VCF, filtrarlo con el script del propio HipSTR y mirar las lecturas con VizAln.",
+   "duration": "15 minutos + instalación",
+   "get_started": "Todo corre en tu propia terminal: Linux, macOS o Windows con WSL. Primero\ninstalá las herramientas para tu sistema, después bajá los datos del\ntutorial y prepará la carpeta. Esto se hace una sola vez.",
+   "install": [
+    {
+     "os": "Linux (Ubuntu, Debian) y Windows con WSL",
+     "note": "En Windows, primero instalá WSL: abrí PowerShell como administrador, corré `wsl --install`, reiniciá, abrí \"Ubuntu\" desde el menú Inicio y seguí ahí. En Ubuntu 24.04 o más nuevo (el que instala WSL hoy), compilá HipSTR con `make CXX=\"g++ -include cstdint\"` en vez de `make` (ver el error más abajo).",
+     "commands": "sudo apt update\nsudo apt install -y build-essential git unzip zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev samtools bcftools tabix bsdextrautils python3-venv"
+    },
+    {
+     "os": "macOS",
+     "note": "Necesitás Homebrew (brew.sh). `xcode-select --install` abre una ventana para instalar los compiladores; si dice que ya están instalados, seguí. coreutils es para VizAln (paso 13).",
+     "commands": "xcode-select --install\nbrew install samtools bcftools coreutils"
+    }
+   ],
+   "setup": "unzip hipstr-tutorial.zip\ncd hipstr-tutorial\ngit clone https://github.com/tfwillems/HipSTR.git\ncd HipSTR\nmake\ncd ..\npython3 -m venv hipstr-env\nhipstr-env/bin/pip install PyVCF3",
+   "setup_explain": "Esto compila HipSTR dentro de la carpeta del tutorial, igual que el tutorial oficial de HipSTR (`git clone` + `make`), y crea un pequeño entorno de Python (`hipstr-env`) con PyVCF3, que necesita el script de filtrado de HipSTR. El `Makefile` usa los dos solo.",
+   "install_errors": [
+    {
+     "error": "src/region.h:62:49: error: 'uint32_t' has not been declared",
+     "fix": "Linux con un compilador reciente (gcc 13, Ubuntu 24.04 y más nuevos). El código de HipSTR depende de un archivo de cabecera que los compiladores nuevos ya no incluyen solos. Dentro de la carpeta `HipSTR` corré `make CXX=\"g++ -include cstdint\"`: agrega esa cabecera sin cambiar el código de HipSTR. Lo probamos en un Ubuntu 24.04 limpio."
+    },
+    {
+     "error": "Undefined symbols for architecture arm64 (and before it: ld: warning: ignoring file '/usr/local/lib/liblzma.dylib': found architecture 'x86_64', required architecture 'arm64')",
+     "fix": "macOS con Apple Silicon que todavía tiene librerías de un Homebrew viejo de Intel en `/usr/local`. Compilá HipSTR con `LIBRARY_PATH=/opt/homebrew/lib make` en vez de `make`. Nos pasó en nuestra propia Mac y esto lo resolvió."
+    }
+   ],
+   "files": [
+    {
+     "file": "NA12878.bam",
+     "what": "Lecturas Illumina de NA12878 (Genome in a Bottle, NIST), alineadas a GRCh38. Solo las regiones de 24 STR forenses, con 1.000 pb de cada lado. Las lecturas miden 148 pb."
+    },
+    {
+     "file": "NA12878.bam.bai",
+     "what": "Índice del BAM. HipSTR lo necesita para ir directo a cada región."
+    },
+    {
+     "file": "regions.bed",
+     "what": "Qué STR genotipar y dónde están."
+    },
+    {
+     "file": "GRCh38_STR_regions.fa.gz",
+     "what": "Referencia reducida: GRCh38 con todo en N salvo 5.000 pb alrededor de cada STR. 9 MB en vez de 3,3 GB. Comprobamos que HipSTR escribe exactamente los mismos registros del VCF con este archivo y con la referencia completa. Para tus propios datos, usá la referencia completa."
+    },
+    {
+     "file": "Makefile",
+     "what": "Los comandos de este tutorial. `make` muestra cada comando antes de correrlo, así siempre ves el comando completo de HipSTR."
+    },
+    {
+     "file": "HipSTR/",
+     "what": "HipSTR, clonado de GitHub y compilado durante la preparación."
+    },
+    {
+     "file": "hipstr-env/",
+     "what": "Entorno de Python con PyVCF3, creado durante la preparación."
+    }
+   ],
+   "steps": [
+    {
+     "id": "files",
+     "title": "Mirar los archivos",
+     "explain": "Antes de correr nada, mirá qué tenés: las lecturas (`.bam`) con su índice\n(`.bai`), la lista de STR (`.bed`), la referencia (`.fa.gz`, con sus\níndices `.fai` y `.gzi`), el `Makefile` y las dos carpetas de la\npreparación: `HipSTR/` y `hipstr-env/`.",
+     "command": "ls -lh",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "total 20M\n-rw-r--r-- 1 student student 9.0M Oct 23 13:21 GRCh38_STR_regions.fa.gz\n-rw-r--r-- 1 student student  568 Oct 23 13:21 GRCh38_STR_regions.fa.gz.fai\n-rw-r--r-- 1 student student 604K Oct 23 13:21 GRCh38_STR_regions.fa.gz.gzi\ndrwxr-xr-x 8 student student 4.0K Oct 24 11:53 HipSTR\n-rw-r--r-- 1 student student 4.0K Oct 23 17:35 Makefile\n-rw-r--r-- 1 student student 9.4M Oct 23 13:21 NA12878.bam\n-rw-r--r-- 1 student student 825K Oct 23 13:21 NA12878.bam.bai\n-rw------- 1 student student  305 Oct 24 11:52 README.txt\ndrwxr-xr-x 5 student student 4.0K Oct 24 11:54 hipstr-env\n-rw-r--r-- 1 student student  961 Oct 23 13:21 regions.bed",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "read-group",
+     "title": "¿El BAM tiene read group?",
+     "explain": "HipSTR toma el nombre de la muestra del *read group* del BAM (la línea\n`@RG`): `SM` es la muestra y `LB` la librería. Si tu BAM no tiene read\ngroup, HipSTR no arranca.",
+     "command": "samtools view -H NA12878.bam | grep '^@RG'",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "@RG\tID:NA12878\tSM:NA12878\tLB:GIAB300x\tPL:ILLUMINA",
+     "output_note": null,
+     "errors": [
+      {
+       "error": "ERROR: Provided BAM/CRAM files don't contain read groups in the header and the --bam-samps flag was not specified",
+       "fix": "Tu BAM no tiene `@RG`. Hay dos salidas (probamos las dos): agregar uno con `samtools addreplacerg -r 'ID:sample1' -r 'SM:sample1' -r 'LB:lib1' -o with_rg.bam your.bam` y después `samtools index with_rg.bam`; o darle los nombres a HipSTR con `--bam-samps sample1 --bam-libs lib1` (siempre juntos)."
+      }
+     ]
+    },
+    {
+     "id": "bed",
+     "title": "Leer el BED de regiones",
+     "explain": "Cada línea es un STR. Las columnas, como las define el README de HipSTR:\ncromosoma, inicio, fin, largo del motivo (4 = tetranucleótido), cantidad\nde copias del motivo en el alelo de referencia y (opcional) el nombre del\nlocus, que HipSTR escribe en la columna ID del VCF. El BED **no** tiene\nlínea de encabezado.",
+     "command": "head -3 regions.bed",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "chr1\t230769616\t230769683\t4\t17\tD1S1656\tN/A\nchr2\t1489653\t1489684\t4\t8\tTPOX\tN/A\nchr2\t68011947\t68011994\t4\t12\tD2S441\tN/A",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "make-help",
+     "title": "¿Qué puede hacer make acá?",
+     "explain": "`make` sin objetivo muestra la ayuda de este `Makefile`: qué hace cada\nobjetivo y qué parámetros podés cambiar. Cada parámetro se llama como la\nopción de HipSTR que completa, así después la encontrás en el README de\nHipSTR. Se ponen después del objetivo: `make genotype MAX_STR_LEN=150`.",
+     "command": "make",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "Targets:\n  make genotype   run HipSTR (log on screen, copy in NA12878.log)\n  make table      one line per locus from NA12878.vcf.gz\n  make reads      reads per allele length at LOCUS\n  make filter     HipSTR's filter_vcf.py with the README thresholds\n  make viz        VizAln alignments for LOCUS, saved in results/\n\nParameters (HipSTR option they fill in), current value:\n  MAX_STR_LEN        --max-str-len         HipSTR default\n  DEF_STUTTER_MODEL  --def-stutter-model   off\n  OUTPUT_FILTERS     --output-filters      off\n  MAX_CALL_STUTTER   --max-call-stutter    0.15  (filter_vcf.py)\n  LOCUS              locus for reads/viz   D13S317",
+     "output_note": null,
+     "errors": [
+      {
+       "error": "Makefile:2: *** missing separator.  Stop.",
+       "fix": "Editaste el `Makefile` y una línea de comando empieza con espacios. En un Makefile, las líneas de comando tienen que empezar con un TAB."
+      }
+     ]
+    },
+    {
+     "id": "genotype-readme",
+     "title": "Genotipar con el comando oficial",
+     "explain": "Este es el comando básico del README de HipSTR (`--bams`, `--fasta`,\n`--regions`, `--str-vcf`) más `--viz-out`, que también usa el tutorial\noficial de HipSTR y que hace falta para VizAln (paso 13). El log sale en\nla pantalla y `tee` guarda una copia en `NA12878.log`.\n\nEl resumen del final dice que se genotiparon solo **21 de los 24 loci**, y\nnada más en la pantalla te avisa:\n\n- **2 loci salteados por largo**: SE33 (102 pb en la referencia) y D21S11\n  (127 pb) son más largos que `--max-str-len` (100 pb por defecto).\n- **1 locus salteado por tener pocas lecturas para aprender el modelo de\n  stutter**: D2S1338 (en el log: `TOTAL=62, MIN=100`). HipSTR aprende un\n  modelo de stutter por locus con las lecturas de **todas** las muestras;\n  con una sola muestra puede no alcanzar.\n\nEl log sugiere `--min-reads`, pero para muy pocas muestras el README de\nHipSTR recomienda `--def-stutter-model`.",
+     "command": "make genotype",
+     "make_runs": "HipSTR/HipSTR --bams NA12878.bam --fasta GRCh38_STR_regions.fa.gz --regions regions.bed \\\n       --str-vcf NA12878.vcf.gz --viz-out NA12878.viz.gz  \\\n       2>&1 | tee NA12878.log",
+     "parameters": [
+      {
+       "name": "BAMS",
+       "option": "--bams",
+       "what": "Archivos BAM/CRAM con las lecturas (lista separada por comas). Cada uno necesita su índice."
+      },
+      {
+       "name": "FASTA",
+       "option": "--fasta",
+       "what": "Genoma de referencia. Sus coordenadas tienen que coincidir con las del BED."
+      },
+      {
+       "name": "REGIONS",
+       "option": "--regions",
+       "what": "BED con los STR a genotipar."
+      },
+      {
+       "name": "STR_VCF",
+       "option": "--str-vcf",
+       "what": "Salida: VCF comprimido con bgzip, con los genotipos."
+      },
+      {
+       "name": "VIZ_OUT",
+       "option": "--viz-out",
+       "what": "Salida: los alineamientos de las lecturas de cada llamada, para VizAln."
+      },
+      {
+       "name": "LOG",
+       "option": "(tee)",
+       "what": "Copia del log. HipSTR también tiene `--log ARCHIVO`, que escribe el log solo en el archivo."
+      }
+     ],
+     "fields": [],
+     "output": "\n\n------HipSTR Execution Summary------\nSkipped 2 loci whose lengths were above the maximum threshold.\n\t If this is a sizeable portion of your loci, see the --max-str-len command line option\nSkipped 1 loci with too few reads for stutter model model training or genotyping.\n\t If this is a sizeable portion of your loci, see the --min-reads command line option\nStutter model training succeeded for 21/21 loci\nGenotyping succeeded for 21/21 loci\n\nApproximate timing breakdown\n BAM seek time       = 9.1e-05 seconds\n Read filtering      = 0.178181 seconds\n SNP info extraction = 0.001282 seconds\n Stutter estimation  = 0.00566 seconds\n Genotyping          = 2.12139 seconds\n\t Left alignment        = 0.341273 seconds\n\t Haplotype generation  = 0.009099 seconds\n\t Haplotype alignment   = 1.10297 seconds\n\t Flank assembly        = 0.015968 seconds\n\t Posterior computation = 0.00085 seconds\n\t Alignment traceback   = 0.601921 seconds\nHipSTR execution finished: Total runtime = 10.3252 sec\n-----------------",
+     "output_note": "Últimas 24 de 972 líneas (en tu pantalla pasa el log entero).",
+     "errors": []
+    },
+    {
+     "id": "genotype-fixed",
+     "title": "Genotipar de nuevo, arreglado",
+     "explain": "Cambian tres parámetros. Ahora el resumen dice 23 de 24 (ojo: en el paso 8\nvas a ver que no son 23 genotipos).",
+     "command": "make genotype MAX_STR_LEN=150 DEF_STUTTER_MODEL=1 OUTPUT_FILTERS=1",
+     "make_runs": "HipSTR/HipSTR --bams NA12878.bam --fasta GRCh38_STR_regions.fa.gz --regions regions.bed \\\n       --str-vcf NA12878.vcf.gz --viz-out NA12878.viz.gz --max-str-len 150 --def-stutter-model --output-filters \\\n       2>&1 | tee NA12878.log",
+     "parameters": [
+      {
+       "name": "MAX_STR_LEN",
+       "option": "--max-str-len",
+       "what": "Genotipar solo los STR de menos de esta cantidad de pb en la referencia (100 por defecto). Con 150 entran SE33 y D21S11."
+      },
+      {
+       "name": "DEF_STUTTER_MODEL",
+       "option": "--def-stutter-model",
+       "what": "Usar un modelo de stutter fijo (PGEOM=0.9, UP=DOWN=0.05 en fase, 0.01 fuera de fase) en vez de aprender uno por locus. El README: solo cuando hay muy pocas muestras, porque los modelos aprendidos son más exactos."
+      },
+      {
+       "name": "OUTPUT_FILTERS",
+       "option": "--output-filters",
+       "what": "Escribir por qué se filtró cada llamada, en el campo FILTER de FORMAT. Sin esto, una llamada filtrada queda simplemente vacía."
+      }
+     ],
+     "fields": [],
+     "output": "\n------HipSTR Execution Summary------\nGenotyping succeeded for 23/24 loci\n\nApproximate timing breakdown\n BAM seek time       = 0.000128 seconds\n Read filtering      = 0.194778 seconds\n SNP info extraction = 0.001491 seconds\n Stutter estimation  = 7.2e-05 seconds\n Genotyping          = 2.57138 seconds\n\t Left alignment        = 0.42145 seconds\n\t Haplotype generation  = 0.010275 seconds\n\t Haplotype alignment   = 1.34872 seconds\n\t Flank assembly        = 0.018335 seconds\n\t Posterior computation = 0.001041 seconds\n\t Alignment traceback   = 0.714649 seconds\nHipSTR execution finished: Total runtime = 10.5244 sec\n-----------------",
+     "output_note": "Últimas 18 de 976 líneas (en tu pantalla pasa el log entero).",
+     "errors": []
+    },
+    {
+     "id": "vcf",
+     "title": "Abrir el VCF",
+     "explain": "HipSTR escribe su resultado en `NA12878.vcf.gz`: un archivo VCF (Variant\nCall Format) comprimido con bgzip. `gunzip -k` lo descomprime y **guarda**\nel `.gz`, que leen los pasos siguientes (`-f` sobrescribe `NA12878.vcf` si\nlo corrés de nuevo). Sin `-k`, el `.gz` desaparece y `make table`, `make\nreads` y `make filter` dejan de funcionar.\n\nLas líneas que empiezan con `##` son el encabezado y definen cada campo\n(probá `grep '^##FORMAT' NA12878.vcf`). Después viene una línea por STR,\ncon columnas separadas por tabulaciones: `CHROM`, `POS`, `ID` (el nombre\ndel locus), `REF` y `ALT` (las secuencias de los alelos), `QUAL`,\n`FILTER`, `INFO` (datos del locus), `FORMAT` (los nombres de los campos de\ncada muestra, separados por `:`) y una columna por muestra, con los\nvalores en el mismo orden.\n\nPara abrirlo en una planilla (Excel, LibreOffice Calc, Google Sheets),\nabrilo desde adentro del programa y elegí la tabulación como separador. No\nle hagas doble clic: `.vcf` es también la extensión de las tarjetas de\ncontacto (vCard), y tu computadora puede abrir la app de contactos. Para\nver cada campo al lado de su valor, separá las columnas `FORMAT` y\n`NA12878` en cada `:` (menú Datos, opción Texto en columnas).\n\nLos campos de abajo son los de la columna `FORMAT`. Las descripciones\nsalen del encabezado del VCF y del README de HipSTR.",
+     "command": "gunzip -kf NA12878.vcf.gz && ls -lh NA12878.vcf*",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [
+      {
+       "name": "GT",
+       "what": "Genotipo: qué alelos, como índices (0 = REF, 1 = primer ALT, ...). `|` quiere decir con fase."
+      },
+      {
+       "name": "GB",
+       "what": "Diferencia en pares de bases de cada alelo con la referencia. Con el tamaño del alelo de referencia, da el número de repeticiones."
+      },
+      {
+       "name": "Q",
+       "what": "Probabilidad posterior del genotipo, de 0 a 1. El README de HipSTR dice que es el mejor indicador de calidad; el filtro se queda con Q ≥ 0,9."
+      },
+      {
+       "name": "PQ",
+       "what": "La misma probabilidad para el genotipo con fase. Sin información de fase (sin SNP cerca), un heterocigoto tiene PQ ≈ Q/2."
+      },
+      {
+       "name": "DP",
+       "what": "Cantidad de lecturas válidas usadas para el genotipo de esta muestra: la cobertura total en el locus."
+      },
+      {
+       "name": "PDP",
+       "what": "Lecturas que apoyan cada alelo (fraccionarias: una lectura puede contar en parte para cada alelo). Suman DP. No es una probabilidad."
+      },
+      {
+       "name": "AB",
+       "what": "Sesgo alélico, como log10 de un p-valor: 0 = lecturas balanceadas entre los dos alelos; muy negativo = un alelo tiene menos lecturas de las esperadas para ese genotipo. El filtro se queda con AB ≥ -2."
+      },
+      {
+       "name": "FS",
+       "what": "Sesgo de hebra, como log10 del p-valor de una prueba de Fisher: muy negativo = un alelo que se ve casi solo en una hebra del ADN, señal de errores de secuenciación. El filtro se queda con FS ≥ -2."
+      },
+      {
+       "name": "DSTUTTER",
+       "what": "Lecturas con un indel de stutter en el STR. El filtro saca una llamada si DSTUTTER / DP > 0,15."
+      },
+      {
+       "name": "DFLANKINDEL",
+       "what": "Lecturas con un indel en los flancos del STR. El filtro saca una llamada si DFLANKINDEL / DP > 0,15."
+      },
+      {
+       "name": "MALLREADS",
+       "what": "Para las lecturas que cruzan la repetición con al menos 5 pb de margen: diferencia en pb | cantidad de lecturas (paso 10)."
+      },
+      {
+       "name": "ALLREADS",
+       "what": "La misma idea, a partir del alineamiento de cada lectura, para todas las lecturas."
+      },
+      {
+       "name": "FILTER",
+       "what": "PASS, o por qué se filtró la llamada (se escribe gracias a OUTPUT_FILTERS)."
+      },
+      {
+       "name": "Otros\n",
+       "what": "GLDIFF: distancia de verosimilitud con el siguiente mejor genotipo. DSNP y PSNP: lecturas con información de fase por SNP. DAB: lecturas usadas para AB y FS."
+      }
+     ],
+     "output": "-rw-r--r-- 1 student student  19K Oct 24 16:23 NA12878.vcf\n-rw-r--r-- 1 student student 3.8K Oct 24 16:23 NA12878.vcf.gz",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "table",
+     "title": "Los genotipos, una línea por locus",
+     "explain": "`bcftools query` (bcftools **no** es parte de HipSTR: viene del equipo de\nsamtools) muestra solo los campos que le pedís:\n\n- `GT`: qué secuencias se llamaron (índices de REF/ALT, no alelos).\n- `GB`: diferencia en pb de cada alelo con la referencia. `0|4` en D13S317\n  = un alelo del largo de la referencia y el otro 4 pb más largo. Cuando\n  GB no es múltiplo del motivo, es una microvariante: TH01 (motivo de 4)\n  muestra `0|11` = 2 repeticiones más 3 bases.\n- `DP`: lecturas válidas que usó HipSTR (la cobertura total). `Q`:\n  probabilidad posterior del genotipo.\n- `FILTER`: `PASS`, o por qué se filtró la llamada (gracias a\n  `OUTPUT_FILTERS`).\n\nDos loci no están genotipados aunque el resumen decía 23 de 24: **D21S11**\ndirectamente no está en la tabla, y **SE33** tiene puntos y\n`FLANK_ASSEMBLY_CYCLIC`. HipSTR rearma las secuencias de los flancos a\npartir de las lecturas; en SE33 eso no salió bien. En el log se ve que el\nflanco izquierdo de SE33 es repetitivo (termina en `CTTTCTTTCTTTC`). Para\npasar GB a un número de alelo de CE necesitás el alelo de referencia de\ncada locus.",
+     "command": "make table",
+     "make_runs": "bcftools query -f '%ID\\t[%GT\\t%GB\\t%DP\\t%Q\\t%FILTER]\\n' NA12878.vcf.gz | column -t",
+     "parameters": [],
+     "fields": [],
+     "output": "bcftools query -f '%ID\\t[%GT\\t%GB\\t%DP\\t%Q\\t%FILTER]\\n' NA12878.vcf.gz | column -t\nD1S1656   1|2  -12|-5   359  1  PASS\nD10S1248  1|2  8|12     309  1  PASS\nTH01      0|1  0|11     275  1  PASS\nvWA       1|2  -8|0     456  1  PASS\nD12S391   1|2  -12|-8   349  1  PASS\nD13S317   0|1  0|4      316  1  PASS\nPentaE    1|2  10|35    401  1  PASS\nD16S539   0|1  0|-4     371  1  PASS\nD18S51    1|2  -8|-4    517  1  PASS\nD19S433   0|1  0|-8     289  1  PASS\nTPOX      0|0  0|0      255  1  PASS\nD2S441    1|2  -4|8     428  1  PASS\nD2S1338   1|2  -24|-12  263  1  PASS\nPentaD    0|1  0|-10    431  1  PASS\nD22S1045  1|2  -12|-6   414  1  PASS\nD3S1358   1|2  0|4      419  1  PASS\nFGA       0|1  0|8      477  1  PASS\nD5S818    1|1  4|4      399  1  PASS\nCSF1PO    1|2  -12|-8   275  1  PASS\nSE33      .    .        .    .  FLANK_ASSEMBLY_CYCLIC\nD6S1043   0|1  0|-4     360  1  PASS\nD7S820    2|1  -12|-20  405  1  PASS\nD8S1179   1|1  -4|-4    346  1  PASS",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "d21s11",
+     "title": "¿Por qué falta D21S11?",
+     "explain": "HipSTR no encontró ninguna lectura que cruce toda la repetición de D21S11\n(el log muestra la región en base 0: `chr21 19181972` es la línea de\nD21S11 en `regions.bed`). La repetición mide 127 pb en la referencia y las\nlecturas 148 pb, lo que deja casi nada de flanco. **Ninguna opción lo\narregla**: es un límite del largo de lectura.",
+     "command": "grep -B17 \"No spanning\" NA12878.log",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "Processing region chr21 19181972 19182099\nAdapter trimming removed\n\t76 likely adapter bases from 12/290 R1 reads (4.1%)\n\t63 likely adapter bases from 9/285 R2 reads (3.2%)\n575 reads overlapped region, of which \n\t0 were hard clipped\n\t1 had an 'N' base call\n\t7 had low base quality scores\n\t2 did not have a unique mapping\n\t7 did not have a mate pair\n\t558 PASSED ALL FILTERS\nFound 558 fully paired reads and 0 unpaired reads for downstream analyses\nRemoved 4 sets of PCR duplicate reads\nPhased SNPs add info for 0 out of 554 reads and 0 out of 1 samples\nUsing default stutter model\nLeft aligning reads\nGenerating candidate haplotypes\nHaplotype construction failed: No spanning alignments",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "reads",
+     "title": "¿Cuántas lecturas apoyan cada alelo?",
+     "explain": "`MALLREADS` (del VCF de HipSTR) da, para cada diferencia de largo en pb,\ncuántas lecturas cruzan la repetición con al menos 5 pb de cada lado. En\nD13S317: 79 lecturas en 0 pb y 56 en +4 pb, más o menos 60/40: un\nheterocigoto bien balanceado. El campo `AB` del VCF prueba este mismo\nbalance (acá -0,33, cerca de 0 = balanceado).",
+     "command": "make reads LOCUS=D13S317",
+     "make_runs": "bcftools query -i 'ID=\"D13S317\"' -f '%ID\\t[%GB\\t%MALLREADS]\\n' NA12878.vcf.gz",
+     "parameters": [
+      {
+       "name": "LOCUS",
+       "option": "(make only)",
+       "what": "Nombre del locus, como en la columna 6 del BED. Lo usan `make reads` y `make viz`."
+      }
+     ],
+     "fields": [],
+     "output": "bcftools query -i 'ID=\"D13S317\"' -f '%ID\\t[%GB\\t%MALLREADS]\\n' NA12878.vcf.gz\nD13S317\t0|4\t0|79;4|56",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "filter",
+     "title": "Filtrar con el script de HipSTR",
+     "explain": "HipSTR trae `scripts/filter_vcf.py`, y su README sugiere estos umbrales.\nEl VCF filtrado conserva todos los loci pero saca, muestra por muestra,\nlas llamadas que no pasan, y escribe el motivo en `FILTER`. Después el\nobjetivo lista cada llamada que no es `PASS`.\n\nAcá no se saca nada nuevo: esta muestra tiene ~300x y todas sus llamadas\npasan (Q = 1, stutter ≤ 2,7 %, sesgo alélico ≥ -1,45).",
+     "command": "make filter",
+     "make_runs": "python HipSTR/scripts/filter_vcf.py --vcf NA12878.vcf.gz \\\n       --min-call-qual 0.9 --max-call-flank-indel 0.15 \\\n       --max-call-stutter 0.15 \\\n       --min-call-allele-bias -2 --min-call-strand-bias -2 \\\n       > NA12878.filtered.vcf\nbcftools query -f '%ID\\t[%GT\\t%FILTER]\\n' NA12878.filtered.vcf | awk '$3 != \"PASS\"'",
+     "parameters": [
+      {
+       "name": "MIN_CALL_QUAL",
+       "option": "--min-call-qual 0.9",
+       "what": "Probabilidad posterior mínima del genotipo (Q). El README: Q es el mejor indicador de calidad."
+      },
+      {
+       "name": "MAX_CALL_FLANK_INDEL",
+       "option": "--max-call-flank-indel 0.15",
+       "what": "Fracción máxima de lecturas con un indel en los flancos (DFLANKINDEL / DP)."
+      },
+      {
+       "name": "MAX_CALL_STUTTER",
+       "option": "--max-call-stutter 0.15",
+       "what": "Fracción máxima de lecturas con un artefacto de stutter (DSTUTTER / DP)."
+      },
+      {
+       "name": "MIN_CALL_ALLELE_BIAS",
+       "option": "--min-call-allele-bias -2",
+       "what": "Sesgo alélico mínimo (AB, p-valor en log10). Muy negativo = lecturas muy desbalanceadas entre los alelos."
+      },
+      {
+       "name": "MIN_CALL_STRAND_BIAS",
+       "option": "--min-call-strand-bias -2",
+       "what": "Sesgo de hebra mínimo (FS, p-valor en log10)."
+      }
+     ],
+     "fields": [],
+     "output": "python HipSTR/scripts/filter_vcf.py --vcf NA12878.vcf.gz \\\n       --min-call-qual 0.9 --max-call-flank-indel 0.15 \\\n       --max-call-stutter 0.15 \\\n       --min-call-allele-bias -2 --min-call-strand-bias -2 \\\n       > NA12878.filtered.vcf\nbcftools query -f '%ID\\t[%GT\\t%FILTER]\\n' NA12878.filtered.vcf | awk '$3 != \"PASS\"'\nSE33\t./.\tFLANK_ASSEMBLY_CYCLIC",
+     "output_note": null,
+     "errors": [
+      {
+       "error": "error: externally-managed-environment",
+       "fix": "Usaste el `pip` del sistema. El Python actual no deja instalar en el sistema. Instalá en el entorno de la preparación: `hipstr-env/bin/pip install PyVCF3`. (Si `python3 -m venv` falla en Debian/Ubuntu, instalá antes `python3-venv`.)"
+      },
+      {
+       "error": "error in PyVCF setup command: use_2to3 is invalid.",
+       "fix": "PyVCF, el paquete que pide `filter_vcf.py`, ya no se instala en el Python actual. Instalá `PyVCF3`, una versión mantenida: el script la importa igual (`import vcf`). La probamos con este tutorial."
+      }
+     ]
+    },
+    {
+     "id": "filter-strict",
+     "title": "¿Cómo se ve una llamada eliminada?",
+     "explain": "Solo para ver cómo queda una llamada sacada: con un umbral de stutter de 2\n%, se sacan D2S1338 (2,7 % de sus lecturas con stutter) y D6S1043 (2,5 %).\nEl genotipo pasa a ser `./.` y `FILTER` dice `STUTTER_FRACTION`. Para\ndatos reales, usá los umbrales del README.",
+     "command": "make filter MAX_CALL_STUTTER=0.02",
+     "make_runs": "python HipSTR/scripts/filter_vcf.py --vcf NA12878.vcf.gz \\\n       --min-call-qual 0.9 --max-call-flank-indel 0.15 \\\n       --max-call-stutter 0.02 \\\n       --min-call-allele-bias -2 --min-call-strand-bias -2 \\\n       > NA12878.filtered.vcf\nbcftools query -f '%ID\\t[%GT\\t%FILTER]\\n' NA12878.filtered.vcf | awk '$3 != \"PASS\"'",
+     "parameters": [],
+     "fields": [],
+     "output": "python HipSTR/scripts/filter_vcf.py --vcf NA12878.vcf.gz \\\n       --min-call-qual 0.9 --max-call-flank-indel 0.15 \\\n       --max-call-stutter 0.02 \\\n       --min-call-allele-bias -2 --min-call-strand-bias -2 \\\n       > NA12878.filtered.vcf\nbcftools query -f '%ID\\t[%GT\\t%FILTER]\\n' NA12878.filtered.vcf | awk '$3 != \"PASS\"'\nD2S1338\t./.\tSTUTTER_FRACTION\nSE33\t./.\tFLANK_ASSEMBLY_CYCLIC\nD6S1043\t./.\tSTUTTER_FRACTION",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "viz",
+     "title": "Mirar las lecturas con VizAln",
+     "explain": "`--viz-out` (paso 5) guardó los alineamientos. `make viz` los indexa con\n`tabix -p bed` (como dice el README de HipSTR) y corre `VizAln` con el\ncromosoma y el inicio del locus tomados de `regions.bed`. VizAln escribe\nun archivo HTML en `/tmp` e intenta abrirlo en tu navegador. En macOS\nsuele abrirse; en WSL o en un servidor no hay navegador para abrirlo, por\neso `make` siempre guarda una copia en `results/`. Abrí\n`results/NA12878_D13S317.html`: la referencia arriba, la llamada en rojo\n(`NA12878: 0|4`) y una línea por lectura.",
+     "command": "make viz LOCUS=D13S317",
+     "make_runs": "echo x | cut -f 1 --complement >/dev/null 2>&1 || { echo \"VizAln needs GNU cut. On macOS: brew install coreutils\"; exit 1; }\ntabix -f -p bed NA12878.viz.gz\nHipSTR/VizAln NA12878.viz.gz chr13 82148025 NA12878\nmkdir -p results\ncp \"$(ls -t /tmp/vizaln.*.html | head -1)\" results/NA12878_D13S317.html",
+     "parameters": [
+      {
+       "name": "VIZ_OUT",
+       "option": "VizAln argument 1",
+       "what": "El archivo que escribió `--viz-out`, indexado con tabix."
+      },
+      {
+       "name": "CHROM, START",
+       "option": "VizAln arguments 2 and 3",
+       "what": "Cromosoma e inicio del locus, de las columnas 1 y 2 del BED (make los busca a partir de LOCUS)."
+      },
+      {
+       "name": "SAMPLE",
+       "option": "VizAln argument 4",
+       "what": "Muestra a dibujar. Sin esto, VizAln dibuja todas las muestras."
+      }
+     ],
+     "fields": [],
+     "output": "tabix -f -p bed NA12878.viz.gz\nHipSTR/VizAln NA12878.viz.gz chr13 82148025 NA12878\nVizAln successfully generated the alignment visualization file, but failed to open it. Please open /tmp/vizaln.13534.html using a web browser\nmkdir -p results\ncp \"$(ls -t /tmp/vizaln.*.html | head -1)\" results/NA12878_D13S317.html",
+     "output_note": null,
+     "errors": [
+      {
+       "error": "VizAln successfully generated the alignment visualization file, but failed to open it. Please open /tmp/vizaln.NNNNN.html using a web browser",
+       "fix": "No hay navegador donde corre VizAln (WSL, un servidor). No está mal nada: abrí la copia que guardó `make viz` en `results/`. En WSL, `explorer.exe results` abre esa carpeta en Windows."
+      },
+      {
+       "error": "cut: illegal option -- -",
+       "fix": "macOS: VizAln usa el `cut` de GNU (`--complement`), que macOS no tiene. Corré `brew install coreutils`; el `Makefile` encuentra solo el cut de GNU. (Sin eso, `make viz` se detiene y te avisa.)"
+      },
+      {
+       "error": "ERROR: VizAln requires python. Please check that it's appropriately installed",
+       "fix": "Corriste VizAln fuera de `make`. VizAln llama a `python`, no a `python3`. Activá antes el entorno (`source hipstr-env/bin/activate`), o usá `make viz`, que lo hace por vos."
+      }
+     ]
+    }
+   ],
+   "closing": "Genotipaste 22 de 24 STR y viste por qué el comando básico deja loci\nafuera, que \"Genotyping succeeded\" no es lo mismo que tener un genotipo, y\npor qué D21S11 no se puede genotipar con lecturas de 148 pb. Lo próximo:\nnombrar las secuencias con la nomenclatura de la ISFG usando STRNaming\n(próximo tutorial)."
+  },
+  "pt": {
+   "title": "HipSTR: genotipar STRs forenses a partir de um BAM",
+   "summary": "Você vai genotipar 24 STRs forenses de uma amostra pública (NA12878) com o HipSTR, usando o comando oficial do README do HipSTR. Vai ver por que ele deixa 3 loci de fora sem avisar na tela, vai corrigir isso, ler o VCF, filtrá-lo com o script do próprio HipSTR e olhar as leituras com o VizAln.",
+   "duration": "15 minutos + instalação",
+   "get_started": "Tudo roda no seu próprio terminal: Linux, macOS ou Windows com WSL.\nPrimeiro instale as ferramentas para o seu sistema, depois baixe os dados\ndo tutorial e prepare a pasta. Isso se faz uma vez só.",
+   "install": [
+    {
+     "os": "Linux (Ubuntu, Debian) e Windows com WSL",
+     "note": "No Windows, primeiro instale o WSL: abra o PowerShell como administrador, rode `wsl --install`, reinicie, abra o \"Ubuntu\" pelo menu Iniciar e continue lá. No Ubuntu 24.04 ou mais novo (o que o WSL instala hoje), compile o HipSTR com `make CXX=\"g++ -include cstdint\"` em vez de `make` (veja o erro mais abaixo).",
+     "commands": "sudo apt update\nsudo apt install -y build-essential git unzip zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev samtools bcftools tabix bsdextrautils python3-venv"
+    },
+    {
+     "os": "macOS",
+     "note": "Você precisa do Homebrew (brew.sh). `xcode-select --install` abre uma janela para instalar os compiladores; se disser que já estão instalados, continue. O coreutils é para o VizAln (passo 13).",
+     "commands": "xcode-select --install\nbrew install samtools bcftools coreutils"
+    }
+   ],
+   "setup": "unzip hipstr-tutorial.zip\ncd hipstr-tutorial\ngit clone https://github.com/tfwillems/HipSTR.git\ncd HipSTR\nmake\ncd ..\npython3 -m venv hipstr-env\nhipstr-env/bin/pip install PyVCF3",
+   "setup_explain": "Isso compila o HipSTR dentro da pasta do tutorial, exatamente como o tutorial oficial do HipSTR (`git clone` + `make`), e cria um pequeno ambiente Python (`hipstr-env`) com o PyVCF3, que o script de filtragem do HipSTR precisa. O `Makefile` usa os dois sozinho.",
+   "install_errors": [
+    {
+     "error": "src/region.h:62:49: error: 'uint32_t' has not been declared",
+     "fix": "Linux com um compilador recente (gcc 13, Ubuntu 24.04 e mais novos). O código do HipSTR depende de um arquivo de cabeçalho que os compiladores novos já não incluem sozinhos. Dentro da pasta `HipSTR`, rode `make CXX=\"g++ -include cstdint\"`: ele adiciona esse cabeçalho sem mudar o código do HipSTR. Testamos num Ubuntu 24.04 limpo."
+    },
+    {
+     "error": "Undefined symbols for architecture arm64 (and before it: ld: warning: ignoring file '/usr/local/lib/liblzma.dylib': found architecture 'x86_64', required architecture 'arm64')",
+     "fix": "macOS com Apple Silicon que ainda tem bibliotecas de um Homebrew antigo de Intel em `/usr/local`. Compile o HipSTR com `LIBRARY_PATH=/opt/homebrew/lib make` em vez de `make`. Aconteceu no nosso próprio Mac e isso resolveu."
+    }
+   ],
+   "files": [
+    {
+     "file": "NA12878.bam",
+     "what": "Leituras Illumina do NA12878 (Genome in a Bottle, NIST), alinhadas ao GRCh38. Só as regiões de 24 STRs forenses, com 1.000 pb de cada lado. As leituras têm 148 pb."
+    },
+    {
+     "file": "NA12878.bam.bai",
+     "what": "Índice do BAM. O HipSTR precisa dele para ir direto a cada região."
+    },
+    {
+     "file": "regions.bed",
+     "what": "Quais STRs genotipar e onde estão."
+    },
+    {
+     "file": "GRCh38_STR_regions.fa.gz",
+     "what": "Referência reduzida: GRCh38 com tudo em N, exceto 5.000 pb ao redor de cada STR. 9 MB em vez de 3,3 GB. Verificamos que o HipSTR escreve exatamente os mesmos registros do VCF com este arquivo e com a referência completa. Para os seus próprios dados, use a referência completa."
+    },
+    {
+     "file": "Makefile",
+     "what": "Os comandos deste tutorial. O `make` mostra cada comando antes de rodá-lo, assim você sempre vê o comando completo do HipSTR."
+    },
+    {
+     "file": "HipSTR/",
+     "what": "O HipSTR, clonado do GitHub e compilado durante a preparação."
+    },
+    {
+     "file": "hipstr-env/",
+     "what": "Ambiente Python com o PyVCF3, criado durante a preparação."
+    }
+   ],
+   "steps": [
+    {
+     "id": "files",
+     "title": "Olhar os arquivos",
+     "explain": "Antes de rodar qualquer coisa, veja o que você tem: as leituras (`.bam`)\ncom o índice (`.bai`), a lista de STRs (`.bed`), a referência (`.fa.gz`,\ncom os índices `.fai` e `.gzi`), o `Makefile` e as duas pastas da\npreparação: `HipSTR/` e `hipstr-env/`.",
+     "command": "ls -lh",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "total 20M\n-rw-r--r-- 1 student student 9.0M Oct 23 13:21 GRCh38_STR_regions.fa.gz\n-rw-r--r-- 1 student student  568 Oct 23 13:21 GRCh38_STR_regions.fa.gz.fai\n-rw-r--r-- 1 student student 604K Oct 23 13:21 GRCh38_STR_regions.fa.gz.gzi\ndrwxr-xr-x 8 student student 4.0K Oct 24 11:53 HipSTR\n-rw-r--r-- 1 student student 4.0K Oct 23 17:35 Makefile\n-rw-r--r-- 1 student student 9.4M Oct 23 13:21 NA12878.bam\n-rw-r--r-- 1 student student 825K Oct 23 13:21 NA12878.bam.bai\n-rw------- 1 student student  305 Oct 24 11:52 README.txt\ndrwxr-xr-x 5 student student 4.0K Oct 24 11:54 hipstr-env\n-rw-r--r-- 1 student student  961 Oct 23 13:21 regions.bed",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "read-group",
+     "title": "O BAM tem read group?",
+     "explain": "O HipSTR pega o nome da amostra do *read group* do BAM (a linha `@RG`):\n`SM` é a amostra e `LB` a biblioteca. Se o seu BAM não tiver read group, o\nHipSTR não começa.",
+     "command": "samtools view -H NA12878.bam | grep '^@RG'",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "@RG\tID:NA12878\tSM:NA12878\tLB:GIAB300x\tPL:ILLUMINA",
+     "output_note": null,
+     "errors": [
+      {
+       "error": "ERROR: Provided BAM/CRAM files don't contain read groups in the header and the --bam-samps flag was not specified",
+       "fix": "O seu BAM não tem `@RG`. Há duas saídas (testamos as duas): adicionar um com `samtools addreplacerg -r 'ID:sample1' -r 'SM:sample1' -r 'LB:lib1' -o with_rg.bam your.bam` e depois `samtools index with_rg.bam`; ou passar os nomes ao HipSTR com `--bam-samps sample1 --bam-libs lib1` (sempre juntos)."
+      }
+     ]
+    },
+    {
+     "id": "bed",
+     "title": "Ler o BED de regiões",
+     "explain": "Cada linha é um STR. As colunas, como o README do HipSTR as define:\ncromossomo, início, fim, tamanho do motivo (4 = tetranucleotídeo), número\nde cópias do motivo no alelo de referência e (opcional) o nome do locus,\nque o HipSTR escreve na coluna ID do VCF. O BED **não** tem linha de\ncabeçalho.",
+     "command": "head -3 regions.bed",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "chr1\t230769616\t230769683\t4\t17\tD1S1656\tN/A\nchr2\t1489653\t1489684\t4\t8\tTPOX\tN/A\nchr2\t68011947\t68011994\t4\t12\tD2S441\tN/A",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "make-help",
+     "title": "O que o make pode fazer aqui?",
+     "explain": "`make` sem alvo mostra a ajuda deste `Makefile`: o que cada alvo faz e\nquais parâmetros você pode definir. Cada parâmetro tem o nome da opção do\nHipSTR que ele preenche, assim depois você a encontra no README do HipSTR.\nEles vão depois do alvo: `make genotype MAX_STR_LEN=150`.",
+     "command": "make",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "Targets:\n  make genotype   run HipSTR (log on screen, copy in NA12878.log)\n  make table      one line per locus from NA12878.vcf.gz\n  make reads      reads per allele length at LOCUS\n  make filter     HipSTR's filter_vcf.py with the README thresholds\n  make viz        VizAln alignments for LOCUS, saved in results/\n\nParameters (HipSTR option they fill in), current value:\n  MAX_STR_LEN        --max-str-len         HipSTR default\n  DEF_STUTTER_MODEL  --def-stutter-model   off\n  OUTPUT_FILTERS     --output-filters      off\n  MAX_CALL_STUTTER   --max-call-stutter    0.15  (filter_vcf.py)\n  LOCUS              locus for reads/viz   D13S317",
+     "output_note": null,
+     "errors": [
+      {
+       "error": "Makefile:2: *** missing separator.  Stop.",
+       "fix": "Você editou o `Makefile` e uma linha de comando começa com espaços. Num Makefile, as linhas de comando precisam começar com um TAB."
+      }
+     ]
+    },
+    {
+     "id": "genotype-readme",
+     "title": "Genotipar com o comando oficial",
+     "explain": "Este é o comando básico do README do HipSTR (`--bams`, `--fasta`,\n`--regions`, `--str-vcf`) mais `--viz-out`, que o tutorial oficial do\nHipSTR também usa e que é necessário para o VizAln (passo 13). O log sai\nna tela e o `tee` guarda uma cópia em `NA12878.log`.\n\nO resumo do final diz que só **21 dos 24 loci** foram genotipados, e nada\nmais na tela avisa você:\n\n- **2 loci pulados por tamanho**: SE33 (102 pb na referência) e D21S11\n  (127 pb) são mais longos que `--max-str-len` (100 pb por padrão).\n- **1 locus pulado por ter poucas leituras para aprender o modelo de\n  stutter**: D2S1338 (no log: `TOTAL=62, MIN=100`). O HipSTR aprende um\n  modelo de stutter por locus com as leituras de **todas** as amostras;\n  com uma só amostra isso pode não bastar.\n\nO log sugere `--min-reads`, mas para muito poucas amostras o README do\nHipSTR recomenda `--def-stutter-model`.",
+     "command": "make genotype",
+     "make_runs": "HipSTR/HipSTR --bams NA12878.bam --fasta GRCh38_STR_regions.fa.gz --regions regions.bed \\\n       --str-vcf NA12878.vcf.gz --viz-out NA12878.viz.gz  \\\n       2>&1 | tee NA12878.log",
+     "parameters": [
+      {
+       "name": "BAMS",
+       "option": "--bams",
+       "what": "Arquivos BAM/CRAM com as leituras (lista separada por vírgulas). Cada um precisa do seu índice."
+      },
+      {
+       "name": "FASTA",
+       "option": "--fasta",
+       "what": "Genoma de referência. As coordenadas precisam coincidir com as do BED."
+      },
+      {
+       "name": "REGIONS",
+       "option": "--regions",
+       "what": "BED com os STRs a genotipar."
+      },
+      {
+       "name": "STR_VCF",
+       "option": "--str-vcf",
+       "what": "Saída: VCF comprimido com bgzip, com os genótipos."
+      },
+      {
+       "name": "VIZ_OUT",
+       "option": "--viz-out",
+       "what": "Saída: os alinhamentos das leituras de cada chamada, para o VizAln."
+      },
+      {
+       "name": "LOG",
+       "option": "(tee)",
+       "what": "Cópia do log. O HipSTR também tem `--log ARQUIVO`, que escreve o log só no arquivo."
+      }
+     ],
+     "fields": [],
+     "output": "\n\n------HipSTR Execution Summary------\nSkipped 2 loci whose lengths were above the maximum threshold.\n\t If this is a sizeable portion of your loci, see the --max-str-len command line option\nSkipped 1 loci with too few reads for stutter model model training or genotyping.\n\t If this is a sizeable portion of your loci, see the --min-reads command line option\nStutter model training succeeded for 21/21 loci\nGenotyping succeeded for 21/21 loci\n\nApproximate timing breakdown\n BAM seek time       = 9.1e-05 seconds\n Read filtering      = 0.178181 seconds\n SNP info extraction = 0.001282 seconds\n Stutter estimation  = 0.00566 seconds\n Genotyping          = 2.12139 seconds\n\t Left alignment        = 0.341273 seconds\n\t Haplotype generation  = 0.009099 seconds\n\t Haplotype alignment   = 1.10297 seconds\n\t Flank assembly        = 0.015968 seconds\n\t Posterior computation = 0.00085 seconds\n\t Alignment traceback   = 0.601921 seconds\nHipSTR execution finished: Total runtime = 10.3252 sec\n-----------------",
+     "output_note": "Últimas 24 de 972 linhas (na sua tela passa o log inteiro).",
+     "errors": []
+    },
+    {
+     "id": "genotype-fixed",
+     "title": "Genotipar de novo, corrigido",
+     "explain": "Mudam três parâmetros. Agora o resumo diz 23 de 24 (atenção: no passo 8\nvocê vai ver que não são 23 genótipos).",
+     "command": "make genotype MAX_STR_LEN=150 DEF_STUTTER_MODEL=1 OUTPUT_FILTERS=1",
+     "make_runs": "HipSTR/HipSTR --bams NA12878.bam --fasta GRCh38_STR_regions.fa.gz --regions regions.bed \\\n       --str-vcf NA12878.vcf.gz --viz-out NA12878.viz.gz --max-str-len 150 --def-stutter-model --output-filters \\\n       2>&1 | tee NA12878.log",
+     "parameters": [
+      {
+       "name": "MAX_STR_LEN",
+       "option": "--max-str-len",
+       "what": "Genotipar só os STRs com menos que esse número de pb na referência (padrão 100). Com 150 entram o SE33 e o D21S11."
+      },
+      {
+       "name": "DEF_STUTTER_MODEL",
+       "option": "--def-stutter-model",
+       "what": "Usar um modelo de stutter fixo (PGEOM=0.9, UP=DOWN=0.05 em fase, 0.01 fora de fase) em vez de aprender um por locus. O README: só quando há poucas amostras, porque os modelos aprendidos são mais precisos."
+      },
+      {
+       "name": "OUTPUT_FILTERS",
+       "option": "--output-filters",
+       "what": "Escrever por que cada chamada foi filtrada, no campo FILTER do FORMAT. Sem isso, uma chamada filtrada fica simplesmente vazia."
+      }
+     ],
+     "fields": [],
+     "output": "\n------HipSTR Execution Summary------\nGenotyping succeeded for 23/24 loci\n\nApproximate timing breakdown\n BAM seek time       = 0.000128 seconds\n Read filtering      = 0.194778 seconds\n SNP info extraction = 0.001491 seconds\n Stutter estimation  = 7.2e-05 seconds\n Genotyping          = 2.57138 seconds\n\t Left alignment        = 0.42145 seconds\n\t Haplotype generation  = 0.010275 seconds\n\t Haplotype alignment   = 1.34872 seconds\n\t Flank assembly        = 0.018335 seconds\n\t Posterior computation = 0.001041 seconds\n\t Alignment traceback   = 0.714649 seconds\nHipSTR execution finished: Total runtime = 10.5244 sec\n-----------------",
+     "output_note": "Últimas 18 de 976 linhas (na sua tela passa o log inteiro).",
+     "errors": []
+    },
+    {
+     "id": "vcf",
+     "title": "Abrir o VCF",
+     "explain": "O HipSTR escreve o resultado em `NA12878.vcf.gz`: um arquivo VCF (Variant\nCall Format) comprimido com bgzip. `gunzip -k` o descomprime e **mantém**\no `.gz`, que os próximos passos leem (`-f` sobrescreve o `NA12878.vcf` se\nvocê rodar de novo). Sem `-k`, o `.gz` desaparece e `make table`, `make\nreads` e `make filter` param de funcionar.\n\nAs linhas que começam com `##` são o cabeçalho e definem cada campo\n(experimente `grep '^##FORMAT' NA12878.vcf`). Depois vem uma linha por\nSTR, com colunas separadas por tabulações: `CHROM`, `POS`, `ID` (o nome do\nlocus), `REF` e `ALT` (as sequências dos alelos), `QUAL`, `FILTER`, `INFO`\n(dados do locus), `FORMAT` (os nomes dos campos de cada amostra, separados\npor `:`) e uma coluna por amostra, com os valores na mesma ordem.\n\nPara abri-lo numa planilha (Excel, LibreOffice Calc, Google Sheets), abra\npelo próprio programa e escolha a tabulação como separador. Não dê duplo\nclique: `.vcf` também é a extensão dos cartões de contato (vCard), e o seu\ncomputador pode abrir o app de contatos. Para ver cada campo ao lado do\nseu valor, separe as colunas `FORMAT` e `NA12878` em cada `:` (menu Dados,\nopção Texto para colunas).\n\nOs campos abaixo são os da coluna `FORMAT`. As descrições vêm do cabeçalho\ndo VCF e do README do HipSTR.",
+     "command": "gunzip -kf NA12878.vcf.gz && ls -lh NA12878.vcf*",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [
+      {
+       "name": "GT",
+       "what": "Genótipo: quais alelos, como índices (0 = REF, 1 = primeiro ALT, ...). `|` significa com fase."
+      },
+      {
+       "name": "GB",
+       "what": "Diferença em pares de bases de cada alelo em relação à referência. Com o tamanho do alelo de referência, dá o número de repetições."
+      },
+      {
+       "name": "Q",
+       "what": "Probabilidade posterior do genótipo, de 0 a 1. O README do HipSTR diz que é o melhor indicador de qualidade; o filtro mantém Q ≥ 0,9."
+      },
+      {
+       "name": "PQ",
+       "what": "A mesma probabilidade para o genótipo com fase. Sem informação de fase (sem SNPs perto), um heterozigoto tem PQ ≈ Q/2."
+      },
+      {
+       "name": "DP",
+       "what": "Número de leituras válidas usadas para o genótipo desta amostra: a cobertura total no locus."
+      },
+      {
+       "name": "PDP",
+       "what": "Leituras que apoiam cada alelo (fracionárias: uma leitura pode contar em parte para cada alelo). Somam DP. Não é uma probabilidade."
+      },
+      {
+       "name": "AB",
+       "what": "Viés alélico, como log10 de um p-valor: 0 = leituras equilibradas entre os dois alelos; muito negativo = um alelo tem menos leituras do que o esperado para esse genótipo. O filtro mantém AB ≥ -2."
+      },
+      {
+       "name": "FS",
+       "what": "Viés de fita, como log10 do p-valor de um teste de Fisher: muito negativo = um alelo visto quase só numa fita do DNA, sinal de erros de sequenciamento. O filtro mantém FS ≥ -2."
+      },
+      {
+       "name": "DSTUTTER",
+       "what": "Leituras com um indel de stutter no STR. O filtro remove uma chamada se DSTUTTER / DP > 0,15."
+      },
+      {
+       "name": "DFLANKINDEL",
+       "what": "Leituras com um indel nos flancos do STR. O filtro remove uma chamada se DFLANKINDEL / DP > 0,15."
+      },
+      {
+       "name": "MALLREADS",
+       "what": "Para as leituras que atravessam a repetição com pelo menos 5 pb de margem: diferença em pb | número de leituras (passo 10)."
+      },
+      {
+       "name": "ALLREADS",
+       "what": "A mesma ideia, a partir do alinhamento de cada leitura, para todas as leituras."
+      },
+      {
+       "name": "FILTER",
+       "what": "PASS, ou por que a chamada foi filtrada (escrito graças ao OUTPUT_FILTERS)."
+      },
+      {
+       "name": "Outros\n",
+       "what": "GLDIFF: diferença de verossimilhança para o próximo melhor genótipo. DSNP e PSNP: leituras com informação de fase por SNP. DAB: leituras usadas para AB e FS."
+      }
+     ],
+     "output": "-rw-r--r-- 1 student student  19K Oct 24 16:23 NA12878.vcf\n-rw-r--r-- 1 student student 3.8K Oct 24 16:23 NA12878.vcf.gz",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "table",
+     "title": "Os genótipos, uma linha por locus",
+     "explain": "`bcftools query` (o bcftools **não** é parte do HipSTR: vem da equipe do\nsamtools) mostra só os campos que você pede:\n\n- `GT`: quais sequências foram chamadas (índices de REF/ALT, não alelos).\n- `GB`: diferença em pb de cada alelo em relação à referência. `0|4` no\n  D13S317 = um alelo do tamanho da referência e o outro 4 pb mais longo.\n  Quando GB não é múltiplo do motivo, é uma microvariante: o TH01 (motivo\n  de 4) mostra `0|11` = 2 repetições mais 3 bases.\n- `DP`: leituras válidas que o HipSTR usou (a cobertura total). `Q`:\n  probabilidade posterior do genótipo.\n- `FILTER`: `PASS`, ou por que a chamada foi filtrada (graças ao\n  `OUTPUT_FILTERS`).\n\nDois loci não estão genotipados, embora o resumo dissesse 23 de 24: o\n**D21S11** nem está na tabela, e o **SE33** tem pontos e\n`FLANK_ASSEMBLY_CYCLIC`. O HipSTR remonta as sequências dos flancos a\npartir das leituras; no SE33 isso não deu certo. No log dá para ver que o\nflanco esquerdo do SE33 é repetitivo (termina em `CTTTCTTTCTTTC`). Para\ntransformar GB num número de alelo de CE, você precisa do alelo de\nreferência de cada locus.",
+     "command": "make table",
+     "make_runs": "bcftools query -f '%ID\\t[%GT\\t%GB\\t%DP\\t%Q\\t%FILTER]\\n' NA12878.vcf.gz | column -t",
+     "parameters": [],
+     "fields": [],
+     "output": "bcftools query -f '%ID\\t[%GT\\t%GB\\t%DP\\t%Q\\t%FILTER]\\n' NA12878.vcf.gz | column -t\nD1S1656   1|2  -12|-5   359  1  PASS\nD10S1248  1|2  8|12     309  1  PASS\nTH01      0|1  0|11     275  1  PASS\nvWA       1|2  -8|0     456  1  PASS\nD12S391   1|2  -12|-8   349  1  PASS\nD13S317   0|1  0|4      316  1  PASS\nPentaE    1|2  10|35    401  1  PASS\nD16S539   0|1  0|-4     371  1  PASS\nD18S51    1|2  -8|-4    517  1  PASS\nD19S433   0|1  0|-8     289  1  PASS\nTPOX      0|0  0|0      255  1  PASS\nD2S441    1|2  -4|8     428  1  PASS\nD2S1338   1|2  -24|-12  263  1  PASS\nPentaD    0|1  0|-10    431  1  PASS\nD22S1045  1|2  -12|-6   414  1  PASS\nD3S1358   1|2  0|4      419  1  PASS\nFGA       0|1  0|8      477  1  PASS\nD5S818    1|1  4|4      399  1  PASS\nCSF1PO    1|2  -12|-8   275  1  PASS\nSE33      .    .        .    .  FLANK_ASSEMBLY_CYCLIC\nD6S1043   0|1  0|-4     360  1  PASS\nD7S820    2|1  -12|-20  405  1  PASS\nD8S1179   1|1  -4|-4    346  1  PASS",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "d21s11",
+     "title": "Por que falta o D21S11?",
+     "explain": "O HipSTR não encontrou nenhuma leitura que atravesse toda a repetição do\nD21S11 (o log mostra a região em base 0: `chr21 19181972` é a linha do\nD21S11 no `regions.bed`). A repetição tem 127 pb na referência e as\nleituras 148 pb, o que deixa quase nada de flanco. **Nenhuma opção resolve\nisso**: é um limite do tamanho de leitura.",
+     "command": "grep -B17 \"No spanning\" NA12878.log",
+     "make_runs": null,
+     "parameters": [],
+     "fields": [],
+     "output": "Processing region chr21 19181972 19182099\nAdapter trimming removed\n\t76 likely adapter bases from 12/290 R1 reads (4.1%)\n\t63 likely adapter bases from 9/285 R2 reads (3.2%)\n575 reads overlapped region, of which \n\t0 were hard clipped\n\t1 had an 'N' base call\n\t7 had low base quality scores\n\t2 did not have a unique mapping\n\t7 did not have a mate pair\n\t558 PASSED ALL FILTERS\nFound 558 fully paired reads and 0 unpaired reads for downstream analyses\nRemoved 4 sets of PCR duplicate reads\nPhased SNPs add info for 0 out of 554 reads and 0 out of 1 samples\nUsing default stutter model\nLeft aligning reads\nGenerating candidate haplotypes\nHaplotype construction failed: No spanning alignments",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "reads",
+     "title": "Quantas leituras apoiam cada alelo?",
+     "explain": "`MALLREADS` (do VCF do HipSTR) dá, para cada diferença de tamanho em pb,\nquantas leituras atravessam a repetição com pelo menos 5 pb de cada lado.\nNo D13S317: 79 leituras em 0 pb e 56 em +4 pb, mais ou menos 60/40: um\nheterozigoto bem equilibrado. O campo `AB` do VCF testa esse mesmo\nequilíbrio (aqui -0,33, perto de 0 = equilibrado).",
+     "command": "make reads LOCUS=D13S317",
+     "make_runs": "bcftools query -i 'ID=\"D13S317\"' -f '%ID\\t[%GB\\t%MALLREADS]\\n' NA12878.vcf.gz",
+     "parameters": [
+      {
+       "name": "LOCUS",
+       "option": "(make only)",
+       "what": "Nome do locus, como na coluna 6 do BED. Usado pelo `make reads` e pelo `make viz`."
+      }
+     ],
+     "fields": [],
+     "output": "bcftools query -i 'ID=\"D13S317\"' -f '%ID\\t[%GB\\t%MALLREADS]\\n' NA12878.vcf.gz\nD13S317\t0|4\t0|79;4|56",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "filter",
+     "title": "Filtrar com o script do HipSTR",
+     "explain": "O HipSTR traz `scripts/filter_vcf.py`, e o README dele sugere estes\nlimiares. O VCF filtrado mantém todos os loci, mas remove, amostra por\namostra, as chamadas que não passam, e escreve o motivo em `FILTER`.\nDepois o alvo lista cada chamada que não é `PASS`.\n\nAqui nada novo é removido: esta amostra tem ~300x e todas as chamadas\npassam (Q = 1, stutter ≤ 2,7 %, viés alélico ≥ -1,45).",
+     "command": "make filter",
+     "make_runs": "python HipSTR/scripts/filter_vcf.py --vcf NA12878.vcf.gz \\\n       --min-call-qual 0.9 --max-call-flank-indel 0.15 \\\n       --max-call-stutter 0.15 \\\n       --min-call-allele-bias -2 --min-call-strand-bias -2 \\\n       > NA12878.filtered.vcf\nbcftools query -f '%ID\\t[%GT\\t%FILTER]\\n' NA12878.filtered.vcf | awk '$3 != \"PASS\"'",
+     "parameters": [
+      {
+       "name": "MIN_CALL_QUAL",
+       "option": "--min-call-qual 0.9",
+       "what": "Probabilidade posterior mínima do genótipo (Q). O README: Q é o melhor indicador de qualidade."
+      },
+      {
+       "name": "MAX_CALL_FLANK_INDEL",
+       "option": "--max-call-flank-indel 0.15",
+       "what": "Fração máxima de leituras com um indel nos flancos (DFLANKINDEL / DP)."
+      },
+      {
+       "name": "MAX_CALL_STUTTER",
+       "option": "--max-call-stutter 0.15",
+       "what": "Fração máxima de leituras com um artefato de stutter (DSTUTTER / DP)."
+      },
+      {
+       "name": "MIN_CALL_ALLELE_BIAS",
+       "option": "--min-call-allele-bias -2",
+       "what": "Viés alélico mínimo (AB, p-valor em log10). Muito negativo = leituras muito desequilibradas entre os alelos."
+      },
+      {
+       "name": "MIN_CALL_STRAND_BIAS",
+       "option": "--min-call-strand-bias -2",
+       "what": "Viés de fita mínimo (FS, p-valor em log10)."
+      }
+     ],
+     "fields": [],
+     "output": "python HipSTR/scripts/filter_vcf.py --vcf NA12878.vcf.gz \\\n       --min-call-qual 0.9 --max-call-flank-indel 0.15 \\\n       --max-call-stutter 0.15 \\\n       --min-call-allele-bias -2 --min-call-strand-bias -2 \\\n       > NA12878.filtered.vcf\nbcftools query -f '%ID\\t[%GT\\t%FILTER]\\n' NA12878.filtered.vcf | awk '$3 != \"PASS\"'\nSE33\t./.\tFLANK_ASSEMBLY_CYCLIC",
+     "output_note": null,
+     "errors": [
+      {
+       "error": "error: externally-managed-environment",
+       "fix": "Você usou o `pip` do sistema. O Python atual não deixa instalar no sistema. Instale no ambiente da preparação: `hipstr-env/bin/pip install PyVCF3`. (Se `python3 -m venv` falhar no Debian/Ubuntu, instale antes o `python3-venv`.)"
+      },
+      {
+       "error": "error in PyVCF setup command: use_2to3 is invalid.",
+       "fix": "O PyVCF, o pacote que o `filter_vcf.py` pede, não instala mais no Python atual. Instale o `PyVCF3`, uma versão mantida: o script a importa do mesmo jeito (`import vcf`). Testamos com este tutorial."
+      }
+     ]
+    },
+    {
+     "id": "filter-strict",
+     "title": "Como fica uma chamada removida?",
+     "explain": "Só para ver como fica uma chamada removida: com um limiar de stutter de 2\n%, o D2S1338 (2,7 % das leituras com stutter) e o D6S1043 (2,5 %) são\nremovidos. O genótipo vira `./.` e o `FILTER` diz `STUTTER_FRACTION`. Para\ndados reais, use os limiares do README.",
+     "command": "make filter MAX_CALL_STUTTER=0.02",
+     "make_runs": "python HipSTR/scripts/filter_vcf.py --vcf NA12878.vcf.gz \\\n       --min-call-qual 0.9 --max-call-flank-indel 0.15 \\\n       --max-call-stutter 0.02 \\\n       --min-call-allele-bias -2 --min-call-strand-bias -2 \\\n       > NA12878.filtered.vcf\nbcftools query -f '%ID\\t[%GT\\t%FILTER]\\n' NA12878.filtered.vcf | awk '$3 != \"PASS\"'",
+     "parameters": [],
+     "fields": [],
+     "output": "python HipSTR/scripts/filter_vcf.py --vcf NA12878.vcf.gz \\\n       --min-call-qual 0.9 --max-call-flank-indel 0.15 \\\n       --max-call-stutter 0.02 \\\n       --min-call-allele-bias -2 --min-call-strand-bias -2 \\\n       > NA12878.filtered.vcf\nbcftools query -f '%ID\\t[%GT\\t%FILTER]\\n' NA12878.filtered.vcf | awk '$3 != \"PASS\"'\nD2S1338\t./.\tSTUTTER_FRACTION\nSE33\t./.\tFLANK_ASSEMBLY_CYCLIC\nD6S1043\t./.\tSTUTTER_FRACTION",
+     "output_note": null,
+     "errors": []
+    },
+    {
+     "id": "viz",
+     "title": "Ver as leituras com o VizAln",
+     "explain": "O `--viz-out` (passo 5) guardou os alinhamentos. O `make viz` os indexa\ncom `tabix -p bed` (como diz o README do HipSTR) e roda o `VizAln` com o\ncromossomo e o início do locus tirados do `regions.bed`. O VizAln escreve\num arquivo HTML em `/tmp` e tenta abri-lo no seu navegador. No macOS\ncostuma abrir; no WSL ou num servidor não há navegador para abrir, por\nisso o `make` sempre guarda uma cópia em `results/`. Abra\n`results/NA12878_D13S317.html`: a referência em cima, a chamada em\nvermelho (`NA12878: 0|4`) e uma linha por leitura.",
+     "command": "make viz LOCUS=D13S317",
+     "make_runs": "echo x | cut -f 1 --complement >/dev/null 2>&1 || { echo \"VizAln needs GNU cut. On macOS: brew install coreutils\"; exit 1; }\ntabix -f -p bed NA12878.viz.gz\nHipSTR/VizAln NA12878.viz.gz chr13 82148025 NA12878\nmkdir -p results\ncp \"$(ls -t /tmp/vizaln.*.html | head -1)\" results/NA12878_D13S317.html",
+     "parameters": [
+      {
+       "name": "VIZ_OUT",
+       "option": "VizAln argument 1",
+       "what": "O arquivo escrito pelo `--viz-out`, indexado com tabix."
+      },
+      {
+       "name": "CHROM, START",
+       "option": "VizAln arguments 2 and 3",
+       "what": "Cromossomo e início do locus, das colunas 1 e 2 do BED (o make os encontra a partir do LOCUS)."
+      },
+      {
+       "name": "SAMPLE",
+       "option": "VizAln argument 4",
+       "what": "Amostra a desenhar. Sem isso, o VizAln desenha todas as amostras."
+      }
+     ],
+     "fields": [],
+     "output": "tabix -f -p bed NA12878.viz.gz\nHipSTR/VizAln NA12878.viz.gz chr13 82148025 NA12878\nVizAln successfully generated the alignment visualization file, but failed to open it. Please open /tmp/vizaln.13534.html using a web browser\nmkdir -p results\ncp \"$(ls -t /tmp/vizaln.*.html | head -1)\" results/NA12878_D13S317.html",
+     "output_note": null,
+     "errors": [
+      {
+       "error": "VizAln successfully generated the alignment visualization file, but failed to open it. Please open /tmp/vizaln.NNNNN.html using a web browser",
+       "fix": "Não há navegador onde o VizAln roda (WSL, um servidor). Não há nada errado: abra a cópia que o `make viz` guardou em `results/`. No WSL, `explorer.exe results` abre essa pasta no Windows."
+      },
+      {
+       "error": "cut: illegal option -- -",
+       "fix": "macOS: o VizAln usa o `cut` do GNU (`--complement`), que o macOS não tem. Rode `brew install coreutils`; o `Makefile` encontra o cut do GNU sozinho. (Sem isso, o `make viz` para e avisa você.)"
+      },
+      {
+       "error": "ERROR: VizAln requires python. Please check that it's appropriately installed",
+       "fix": "Você rodou o VizAln fora do `make`. O VizAln chama `python`, não `python3`. Ative antes o ambiente (`source hipstr-env/bin/activate`), ou use `make viz`, que faz isso por você."
+      }
+     ]
+    }
+   ],
+   "closing": "Você genotipou 22 de 24 STRs e viu por que o comando básico deixa loci de\nfora, que \"Genotyping succeeded\" não é o mesmo que ter um genótipo, e por\nque o D21S11 não pode ser genotipado com leituras de 148 pb. Próximo\npasso: nomear as sequências na nomenclatura da ISFG com o STRNaming\n(próximo tutorial)."
+  }
+ }
+}

@@ -55,7 +55,7 @@ function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
         <thead className="hidden sm:table-header-group">
           <tr>
             {head.map((h) => (
-              <th key={h} className="border-b px-2 py-2 text-left text-xs font-semibold text-muted-foreground">
+              <th key={h} className="whitespace-nowrap border-b px-2 py-2 text-left text-xs font-semibold text-muted-foreground">
                 {h}
               </th>
             ))}
@@ -115,7 +115,7 @@ export function TutorialPage({ tutorial }: { tutorial: Tutorial }) {
   const text = tutorial.i18n[language] ?? tutorial.i18n.en;
   const tp = (key: string, params?: Record<string, string>) =>
     t(`tools.tutorialPage.${key}`, params);
-  const size = new Intl.NumberFormat(NUMBER_LOCALE[language] ?? "en-GB").format(tutorial.zip.size_mb);
+  const zip = tutorial.zip;
   const errorTitle = tp("errorTitle");
 
   return (
@@ -184,19 +184,17 @@ export function TutorialPage({ tutorial }: { tutorial: Tutorial }) {
           ))}
 
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold">{tp("downloadHeading")}</h3>
-            {tutorial.zip.url ? (
+            <h3 className="text-lg font-semibold">{tp("setupHeading")}</h3>
+            {zip?.url && (
               <Button asChild size="sm">
-                <a href={tutorial.zip.url} download>
+                <a href={zip.url} download>
                   <Download className="h-4 w-4" aria-hidden />
-                  {tp("download", { name: tutorial.zip.name, size })}
+                  {tp("download", {
+                    name: zip.name,
+                    size: new Intl.NumberFormat(NUMBER_LOCALE[language] ?? "en-GB").format(zip.size_mb),
+                  })}
                 </a>
               </Button>
-            ) : (
-              <p className="inline-flex items-center gap-2 rounded-md border border-dashed px-3 py-1.5 text-sm text-muted-foreground">
-                <Download className="h-4 w-4" aria-hidden />
-                {tp("downloadSoon", { name: tutorial.zip.name, size })}
-              </p>
             )}
             <TerminalBlock code={text.setup.trimEnd()} />
             <TutorialMarkdown text={text.setup_explain} className="text-sm" />
@@ -242,17 +240,12 @@ export function TutorialPage({ tutorial }: { tutorial: Tutorial }) {
               </h3>
               <TutorialMarkdown text={step.explain} />
               <TerminalBlock code={step.command} />
-              {step.make_runs && (
-                <Disclosure summary={tp("makeRuns")}>
-                  <TerminalBlock code={step.make_runs} />
-                </Disclosure>
-              )}
               {!!step.parameters?.length && (
                 <Table
-                  head={[tp("parameter"), tp("option"), tp("what")]}
+                  head={[tp("option"), tp("inExample"), tp("withYourData")]}
                   rows={step.parameters.map((p) => [
-                    <InlineCode key="n">{p.name}</InlineCode>,
                     <InlineCode key="o">{p.option}</InlineCode>,
+                    p.example != null ? <InlineCode key="e">{p.example}</InlineCode> : null,
                     <TutorialLine key="w" text={p.what} />,
                   ])}
                 />

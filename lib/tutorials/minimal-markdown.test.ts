@@ -62,6 +62,10 @@ describe("the HipSTR tutorial JSON", () => {
       expect(other.steps.map((s) => s.id)).toEqual(en.steps.map((s) => s.id));
       expect(other.steps.map((s) => s.command)).toEqual(en.steps.map((s) => s.command));
       expect(other.steps.map((s) => s.output ?? null)).toEqual(en.steps.map((s) => s.output ?? null));
+      // Options and their example values are part of the command; only `what` is translated.
+      const optionsOf = (t: typeof en) =>
+        t.steps.map((s) => (s.parameters ?? []).map((p) => [p.option, p.example]));
+      expect(optionsOf(other)).toEqual(optionsOf(en));
       expect(other.setup).toBe(en.setup);
     }
   });

@@ -5,8 +5,11 @@
 import type { Language } from "@/lib/translations";
 
 export interface TutorialParameter {
-  name: string;
+  /** The option as typed (`--bams`), or a positional argument's name. */
   option: string;
+  /** Its value in the example command; null for flags without a value. */
+  example: string | null;
+  /** What the reader puts there with their own data. */
   what: string;
 }
 
@@ -24,9 +27,8 @@ export interface TutorialStep {
   id: string;
   title: string;
   explain: string;
+  /** The full command, as typed; can span lines (`\`) or be several commands. */
   command: string;
-  /** What `make` prints and runs, when the command is a make target. */
-  make_runs?: string | null;
   parameters?: TutorialParameter[];
   fields?: TutorialField[];
   /** Real output from the automatic test. */
@@ -62,7 +64,8 @@ export interface Tutorial {
   version: string;
   /** YouTube video id, null until the video is uploaded. */
   youtube: string | null;
-  zip: { name: string; url: string | null; size_mb: number };
+  /** Example data to download; null when readers use their own files. */
+  zip: { name: string; url: string | null; size_mb: number } | null;
   tested: {
     date: string;
     system: string;

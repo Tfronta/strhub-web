@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight, Clock, Download, PlayCircle, TriangleAlert, Wrench } from "lucide-react";
+import { ChevronRight, Clock, Download, Play, PlayCircle, TriangleAlert, Wrench } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
@@ -83,8 +84,14 @@ function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
   );
 }
 
-function Video({ id, title }: { id: string | null; title: string }) {
+/**
+ * With a cover, the page shows it with a play button and loads YouTube only
+ * on the click: the reader sees our cover rather than YouTube's thumbnail,
+ * and nothing is fetched from YouTube until they ask for the video.
+ */
+function Video({ id, title, poster }: { id: string | null; title: string; poster?: string }) {
   const { language, t } = useLanguage();
+  const [playing, setPlaying] = useState(false);
   if (!id) {
     return (
       <div className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed bg-muted/40 px-4 py-10 text-center text-muted-foreground">
@@ -93,12 +100,30 @@ function Video({ id, title }: { id: string | null; title: string }) {
       </div>
     );
   }
+  if (poster && !playing) {
+    return (
+      <button
+        type="button"
+        onClick={() => setPlaying(true)}
+        aria-label={`${t("tools.tutorialPage.playVideo")}: ${title}`}
+        className="group relative block aspect-video w-full overflow-hidden rounded-xl border bg-muted outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      >
+        <img src={poster} alt="" width={1280} height={720} className="h-full w-full object-cover" />
+        <span className="absolute inset-0 flex items-center justify-center transition-colors group-hover:bg-black/5">
+          {/* Small on phones: it sits in the gap between the cover's title and its terminal. */}
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-2 ring-white/70 transition-transform group-hover:scale-110 sm:h-16 sm:w-16 sm:ring-4">
+            <Play className="h-4 w-4 translate-x-px fill-current sm:h-7 sm:w-7 sm:translate-x-0.5" aria-hidden />
+          </span>
+        </span>
+      </button>
+    );
+  }
   return (
     <div className="aspect-video w-full overflow-hidden rounded-xl bg-black">
       <iframe
         // Remount on a language change so the player picks up the new captions.
         key={language}
-        src={youtubeEmbedUrl(id, language)}
+        src={youtubeEmbedUrl(id, language, { autoplay: playing })}
         title={title}
         className="h-full w-full"
         loading="lazy"
@@ -110,7 +135,8 @@ function Video({ id, title }: { id: string | null; title: string }) {
   );
 }
 
-export function TutorialPage({ tutorial }: { tutorial: Tutorial }) {
+/** `poster`: the video's cover in `public/`, shown until the reader presses play. */
+export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?: string }) {
   const { language, t } = useLanguage();
   const text = tutorial.i18n[language] ?? tutorial.i18n.en;
   const tp = (key: string, params?: Record<string, string>) =>
@@ -167,7 +193,7 @@ export function TutorialPage({ tutorial }: { tutorial: Tutorial }) {
         </header>
 
         <section className="mt-6 space-y-2">
-          <Video id={tutorial.youtube} title={tp("videoTitle", { tool: tutorial.tool })} />
+          <Video id={tutorial.youtube} title={tp("videoTitle", { tool: tutorial.tool })} poster={poster} />
           {tutorial.youtube && <p className="text-xs text-muted-foreground">{tp("subtitles")}</p>}
         </section>
 

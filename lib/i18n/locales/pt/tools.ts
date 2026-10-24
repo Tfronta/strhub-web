@@ -185,6 +185,7 @@ tools: {
     steps_other: "{count} passos",
     englishNote: "Os comandos e as saídas estão em inglês, do jeito que você vai vê-los no seu terminal.",
     videoTitle: "Vídeo do tutorial do {tool}",
+    playVideo: "Reproduzir o vídeo",
     videoSoon: "O vídeo estará disponível em breve.",
     subtitles: "Legendas em inglês, espanhol e português (botão CC do player).",
     beforeStart: "Antes de começar",

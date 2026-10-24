@@ -4,7 +4,7 @@ import hipstrJson from "@/data/tutorials/hipstr-first-steps.json";
 import type { Tutorial } from "./types";
 
 export type * from "./types";
-export { HIPSTR_TUTORIAL_PATH } from "./paths";
+export { HIPSTR_TUTORIAL_PATH, HIPSTR_TUTORIAL_POSTER } from "./paths";
 
 /**
  * Copied from the strhub-tutorials project
@@ -16,15 +16,21 @@ export const hipstrTutorial = hipstrJson as Tutorial;
 /**
  * Privacy-enhanced YouTube embed, with captions on in the page language:
  * `cc_load_policy=1` turns them on, `cc_lang_pref` picks the track and `hl`
- * sets the player's own language.
+ * sets the player's own language. `autoplay` is for a player loaded by a
+ * click on the cover, so the reader does not have to click twice.
  */
-export function youtubeEmbedUrl(id: string, language: Language): string {
+export function youtubeEmbedUrl(
+  id: string,
+  language: Language,
+  { autoplay = false }: { autoplay?: boolean } = {},
+): string {
   const params = new URLSearchParams({
     cc_load_policy: "1",
     cc_lang_pref: language,
     hl: language,
     rel: "0",
   });
+  if (autoplay) params.set("autoplay", "1");
   return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?${params}`;
 }
 

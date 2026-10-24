@@ -30,6 +30,8 @@ export interface ToolCard {
   uiPublication?: string;
   website?: string;
   websiteLabel?: string;
+  /** STRhub tutorial page for this tool. */
+  tutorial?: string;
 }
 
 /** NGS-only view for marker Tools tab. Not derived from frequency data. */

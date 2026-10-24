@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, Github, FileText } from "lucide-react";
+import { ExternalLink, Github, FileText, GraduationCap } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -254,6 +254,14 @@ export function ToolCardCompact({
             </>
           ) : (
             <div className="flex gap-2 flex-wrap">
+              {card.tutorial && (
+                <Button size="sm" asChild>
+                  <Link href={card.tutorial}>
+                    <GraduationCap className="h-4 w-4 mr-1" />
+                    {t("tools.common.tutorial")}
+                  </Link>
+                </Button>
+              )}
               {card.github && (
                 <Button size="sm" variant="outline" asChild>
                   <a

@@ -2,6 +2,7 @@
 // Used by /tools page and by marker Tools tab (filtered).
 
 import type { ToolCard, UsageKey } from "./types";
+import { HIPSTR_TUTORIAL_PATH } from "@/lib/tutorials/paths";
 
 // STRait Razor URLs (no longer read from marker toolsData)
 const STRAITRAZOR_REPO = "https://github.com/Ahhgust/STRaitRazor";
@@ -87,6 +88,7 @@ export function buildToolCards(t: (key: string) => string): ToolCard[] {
       publication: "https://www.nature.com/articles/nmeth.4267",
       uiPublication:
         "https://www.fsigenetics.com/article/S1872-4973(26)00037-2/fulltext",
+      tutorial: HIPSTR_TUTORIAL_PATH,
     },
     {
       id: "longtr",

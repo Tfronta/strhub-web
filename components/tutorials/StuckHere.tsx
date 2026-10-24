@@ -69,7 +69,8 @@ export function StuckHere({
         type="button"
         variant="outline"
         size="sm"
-        className="rounded-full border-primary/60 text-primary hover:text-primary"
+        // The outline variant hovers to bg-accent, the same teal as the text.
+        className="rounded-full border-primary/60 text-primary hover:bg-primary/10 hover:text-primary"
         aria-expanded={open}
         aria-controls={`${id}-form`}
         onClick={() => setOpen((v) => !v)}

@@ -1,15 +1,18 @@
 /**
  * Reference assemblies the FASTA Generator can slice flanking sequence from.
  *
- * Slice files live in the public data repo (NEXT_PUBLIC_SLICES_BASE):
- *   GRCh38:  <base>/<MARKER>__slice.fa            (historical layout, root)
- *   others:  <base>/<build id>/<MARKER>__slice.fa
+ * Slice files are served by this site from public/slices/ (copied from
+ * slices/ in github.com/Tfronta/strhub-demo-data, see lib/load-slice.ts):
+ *   GRCh38:  /slices/<MARKER>__slice.fa            (historical layout, root)
+ *   others:  /slices/<build id>/<MARKER>__slice.fa
  * Each slice header carries the region it was cut from, e.g.
  *   >CSF1PO_|chr5:150076125-150076575(+)
  *
  * To add an assembly: cut the slices (samtools faidx on the assembly FASTA,
- * plus strand, same marker names), commit them under `slices/<id>/`, then add
- * the entry here with `available: true`.
+ * plus strand, same marker names), commit them under `public/slices/<id>/`,
+ * add the ISFG minimum ranges in that assembly's coordinates (lib/isfg-ranges.ts
+ * has GRCh38 only, and the generator refuses any other build until then), then
+ * add the entry here with `available: true`.
  *
  * Note: GRCh38 patch releases (p13, p14, ...) only add alt/patch scaffolds;
  * primary chromosome sequence and coordinates are unchanged, so a single
@@ -23,7 +26,7 @@ export interface ReferenceGenome {
   label: string;
   /** UCSC genome name, for links to the browser. */
   ucsc: string;
-  /** Sub-directory under NEXT_PUBLIC_SLICES_BASE ("" = root). */
+  /** Sub-directory under /slices/ ("" = root). */
   slicesDir: string;
   /** Slices exist in the data repo. */
   available: boolean;

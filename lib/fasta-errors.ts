@@ -3,11 +3,12 @@
 // text is hard-coded in one language.
 
 export type FastaErrorCode =
-  | "configMissing"
   | "sliceUnavailable"
   | "sliceInvalid"
   | "genomeUnavailable"
-  | "coreNotFound";
+  | "rangeUnavailable"
+  | "coreNotFound"
+  | "alleleTooSmall";
 
 export class FastaGeneratorError extends Error {
   readonly code: FastaErrorCode;

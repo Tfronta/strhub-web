@@ -1,59 +1,71 @@
 // lib/find-core.ts
-// Detector robusto del core STR dentro de un slice FASTA.
+// Variable repeat block of an STR inside its ISFG minimum range, read from the
+// STRNaming structure of the locus (lib/isfg-ranges.ts).
 
-export interface CoreRegion {
-  start: number;
-  end: number;
-  core: string;
-}
-
-/** "[ATCT]n" -> "ATCT" ; "ATCT" -> "ATCT" */
-export function parseMotif(field: string): string {
-  const m = field.match(/\[([ACGT]+)\]n/i);
-  return (m ? m[1] : field).toUpperCase();
-}
-
-/** Reverse-complemento */
-function revcomp(s: string): string {
-  const map: Record<string, string> = { A: "T", C: "G", G: "C", T: "A", N: "N" };
-  return s.split("").reverse().map(c => map[c] ?? "N").join("");
-}
-
-/** Rotaciones (ATCT → ATCT, TCTA, CTAT, TATC) */
-function rotations(motif: string): string[] {
-  const L = motif.length, out: string[] = [];
-  for (let i = 0; i < L; i++) out.push(motif.slice(i) + motif.slice(0, i));
-  return Array.from(new Set(out)); // evita duplicados si palíndromo
+export interface RepeatUnit {
+  motif: string;
+  /** Fixed copy number, or "n" for a block whose length varies between alleles. */
+  count: number | "n";
 }
 
 /**
- * Busca el bloque repetitivo más largo del motivo (o su rev-comp), incluyendo todas las rotaciones.
- * - `motifField` puede ser "[ATCT]n" o "ATCT".
- * - `minRepeats` = 2 por defecto (más tolerante). Usá 3 si querés ser más estricto.
+ * "TATC[n]AATC[2]ATCT[3]" -> [{TATC, n}, {AATC, 2}, {ATCT, 3}]. A STRNaming
+ * variant suffix after "_" (D7S820 "..._-1T>-") is dropped. Anything else
+ * that is not a run of MOTIF[count] units throws, so a typo in the range table
+ * cannot pass silently.
  */
-export function findCoreRegion(
-  seq: string,
-  motifField: string,
-  minRepeats = 2
-): CoreRegion | null {
-  const canonical = parseMotif(motifField);        // ej. "[ATCT]n" -> "ATCT"
-  const rc = revcomp(canonical);                   // "AGAT"
-  const alts = Array.from(new Set([
-    ...rotations(canonical),
-    ...rotations(rc),
-  ])).join("|");
-
-  const re = new RegExp(`(?:${alts}){${minRepeats},}`, "gi");
-
-  let best: CoreRegion | null = null;
+export function parseStrnamingFormat(format: string): RepeatUnit[] {
+  const structure = format.split("_")[0];
+  const units: RepeatUnit[] = [];
+  // Sticky: each unit must start where the previous one ended.
+  const re = /([ACGT]+)\[(n|\d+)\]/y;
+  let read = 0;
   let m: RegExpExecArray | null;
-  while ((m = re.exec(seq)) !== null) {
-    const start = m.index;
-    const end = start + m[0].length;
-    if (!best || (end - start) > (best.end - best.start)) {
-      best = { start, end, core: m[0] };
+  while ((m = re.exec(structure)) !== null) {
+    units.push({ motif: m[1], count: m[2] === "n" ? "n" : Number(m[2]) });
+    read = re.lastIndex;
+  }
+  if (!units.length || read !== structure.length) {
+    throw new Error(`Not a STRNaming repeat structure: ${format}`);
+  }
+  return units;
+}
+
+export interface VariableBlock {
+  /** 0-based, end-exclusive offsets into the searched sequence. */
+  start: number;
+  end: number;
+  motif: string;
+  copies: number;
+}
+
+/**
+ * Longest (in bases) exact, in-phase run of one of the [n] motifs of `format`
+ * in `seq`, the GRCh38 forward-strand sequence of the ISFG minimum range. The
+ * motifs are taken as written: no rotations and no reverse complement, since
+ * the STRNaming structure already fixes the strand and the phase. Ties go to
+ * the leftmost run. Null when no [n] motif occurs in `seq`.
+ */
+export function findVariableBlock(seq: string, format: string): VariableBlock | null {
+  const s = seq.toUpperCase();
+  const motifs = Array.from(
+    new Set(parseStrnamingFormat(format).filter((u) => u.count === "n").map((u) => u.motif)),
+  );
+
+  let best: VariableBlock | null = null;
+  for (const motif of motifs) {
+    const p = motif.length;
+    for (let i = 0; i + p <= s.length; i++) {
+      // Only maximal runs: skip a start that continues a run to its left.
+      if (!s.startsWith(motif, i) || (i >= p && s.startsWith(motif, i - p))) continue;
+      let copies = 1;
+      while (s.startsWith(motif, i + copies * p)) copies++;
+      const len = copies * p;
+      const bestLen: number = best ? best.end - best.start : 0;
+      if (!best || len > bestLen || (len === bestLen && i < best.start)) {
+        best = { start: i, end: i + len, motif, copies };
+      }
     }
-    if (re.lastIndex === m.index) re.lastIndex++; // evita loops en regex global
   }
   return best;
 }

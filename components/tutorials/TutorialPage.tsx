@@ -293,6 +293,17 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
                   <TerminalBlock code={step.output} variant="output" />
                 </Disclosure>
               )}
+              {step.extra && (
+                <div className="space-y-3 border-t pt-3">
+                  <TutorialMarkdown text={step.extra.intro} />
+                  <TerminalBlock code={step.extra.command} />
+                  {step.extra.output && (
+                    <Disclosure summary={tp("output")}>
+                      <TerminalBlock code={step.extra.output} variant="output" />
+                    </Disclosure>
+                  )}
+                </div>
+              )}
               {(step.errors ?? []).map((e) => (
                 <ErrorBox key={e.error} error={e} title={errorTitle} />
               ))}

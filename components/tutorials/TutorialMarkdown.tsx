@@ -30,6 +30,18 @@ function renderInline(nodes: Inline[]): React.ReactNode {
         return n.text;
       case "code":
         return <InlineCode key={i}>{n.text}</InlineCode>;
+      case "link":
+        return (
+          <a
+            key={i}
+            href={n.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-primary underline underline-offset-2 hover:no-underline"
+          >
+            {renderInline(n.children)}
+          </a>
+        );
       case "strong":
         return (
           <strong key={i} className="font-semibold text-foreground">

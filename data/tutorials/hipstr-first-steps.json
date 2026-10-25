@@ -14,14 +14,14 @@
  "i18n": {
   "en": {
    "title": "HipSTR: genotyping forensic STRs from a BAM",
-   "summary": "You will learn to run HipSTR on your own files, step by step: where your samples (BAM or CRAM), your reference and your list of STRs go in the command, and how to read and filter the result. As an example we genotype 22 forensic STRs of a public sample (NA12878) over their ISFG minimum ranges, which give forensic allele numbers: you will see why the basic command leaves 8 loci out without telling you on screen, how to fix it, how to read the VCF, turn its length differences into allele numbers, filter it with HipSTR's own script and look at the reads with VizAln.",
+   "summary": "You will learn to run HipSTR on your own files, step by step: where your samples (BAM or CRAM), your reference and your list of STRs go in the command, and how to read and filter the result. As an example we genotype 22 forensic STRs of a public sample (NA12878) over their ISFG minimum ranges, which give forensic allele numbers: you will see why the basic command leaves 8 loci out without telling you on screen, how to fix it, how to read the VCF, turn its length differences into allele numbers, filter it with HipSTR's own script and look at the reads with VizAln. We give you the practice data (the exact files of the video), so you can run every step before trying your own files.",
    "duration": "15 minutes + installation",
-   "get_started": "Everything runs in your own terminal: Linux, macOS, or Windows with WSL.\nFirst install the tools for your system, then set up a working folder with\nHipSTR. You do this once. Then each step shows the command with our\nexample files, and the table under it says what you put there with yours.",
+   "get_started": "Everything runs in your own terminal: Linux, macOS, or Windows with WSL.\nFirst install the tools for your system, then set up a working folder with\nHipSTR. You do this once. Then each step shows the command with our\nexample files, and the table under it says what you put there with yours.\nNo data yet? Download ours with one command (Practice data, below).",
    "install": [
     {
      "os": "Linux (Ubuntu, Debian) and Windows with WSL",
      "note": "On Windows, first install WSL: open PowerShell as administrator, run `wsl --install`, restart, open \"Ubuntu\" from the Start menu and continue there. On Ubuntu 24.04 or newer (the one WSL installs today), compile HipSTR with `make CXX=\"g++ -include cstdint\"` instead of `make` (see the error below).",
-     "commands": "sudo apt update\nsudo apt install -y build-essential git zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev samtools bcftools tabix bsdextrautils python3-venv"
+     "commands": "sudo apt update\nsudo apt install -y build-essential git curl zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev samtools bcftools tabix bsdextrautils python3-venv"
     },
     {
      "os": "macOS",
@@ -71,6 +71,12 @@
      "what": "Python environment with PyVCF3, created during the setup."
     }
    ],
+   "practice_data": {
+    "label": "Practice data",
+    "intro": "No data of your own yet? Practice with ours: the exact files of the video (a public sample, the reduced reference and the ISFG BED, about 20 MB). Run this inside your working folder and every step gives the same output as the tutorial. Sources and checksums are in the README of the folder.",
+    "command": "for f in NA12878.bam NA12878.bam.bai GRCh38_STR_regions.fa.gz GRCh38_STR_regions.fa.gz.fai \\\n         GRCh38_STR_regions.fa.gz.gzi regions.bed isfg_ranges_grch38.tsv; do\n  curl -fLO https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/tutorials/hipstr/$f\ndone",
+    "url": "https://github.com/Tfronta/strhub-demo-data/tree/main/tutorials/hipstr"
+   },
    "steps": [
     {
      "id": "files",
@@ -79,7 +85,7 @@
      "command": "ls -lh",
      "parameters": [],
      "fields": [],
-     "output": "total 20M\n-rw-r--r-- 1 student student 9.0M Oct 23 13:21 GRCh38_STR_regions.fa.gz\n-rw-r--r-- 1 student student  568 Oct 23 13:21 GRCh38_STR_regions.fa.gz.fai\n-rw-r--r-- 1 student student 604K Oct 23 13:21 GRCh38_STR_regions.fa.gz.gzi\ndrwxr-xr-x 8 student student 4.0K Oct 25 15:43 HipSTR\n-rw-r--r-- 1 student student 9.4M Oct 23 13:21 NA12878.bam\n-rw-r--r-- 1 student student 825K Oct 23 13:21 NA12878.bam.bai\ndrwxr-xr-x 5 student student 4.0K Oct 25 15:43 hipstr-env\n-rw-r--r-- 1 student student 1.3K Oct 25 15:36 isfg_ranges_grch38.tsv\n-rw-r--r-- 1 student student  789 Oct 25 15:36 regions.bed",
+     "output": "total 20M\n-rw-r--r-- 1 student student 9.0M Oct 23 13:21 GRCh38_STR_regions.fa.gz\n-rw-r--r-- 1 student student  568 Oct 23 13:21 GRCh38_STR_regions.fa.gz.fai\n-rw-r--r-- 1 student student 604K Oct 23 13:21 GRCh38_STR_regions.fa.gz.gzi\ndrwxr-xr-x 8 student student 4.0K Oct 25 22:03 HipSTR\n-rw-r--r-- 1 student student 9.4M Oct 23 13:21 NA12878.bam\n-rw-r--r-- 1 student student 825K Oct 23 13:21 NA12878.bam.bai\ndrwxr-xr-x 5 student student 4.0K Oct 25 22:04 hipstr-env\n-rw-r--r-- 1 student student 1.3K Oct 25 15:36 isfg_ranges_grch38.tsv\n-rw-r--r-- 1 student student  789 Oct 25 15:36 regions.bed",
      "output_note": null,
      "extra": null,
      "errors": []
@@ -151,7 +157,7 @@
       }
      ],
      "fields": [],
-     "output": "\n\n------HipSTR Execution Summary------\nSkipped 2 loci whose lengths were above the maximum threshold.\n\t If this is a sizeable portion of your loci, see the --max-str-len command line option\nSkipped 6 loci with too few reads for stutter model model training or genotyping.\n\t If this is a sizeable portion of your loci, see the --min-reads command line option\nStutter model training succeeded for 14/14 loci\nGenotyping succeeded for 14/14 loci\n\nApproximate timing breakdown\n BAM seek time       = 0.000123 seconds\n Read filtering      = 0.16743 seconds\n SNP info extraction = 0.001378 seconds\n Stutter estimation  = 0.003519 seconds\n Genotyping          = 2.44864 seconds\n\t Left alignment        = 0.307601 seconds\n\t Haplotype generation  = 0.007299 seconds\n\t Haplotype alignment   = 1.37583 seconds\n\t Flank assembly        = 0.009626 seconds\n\t Posterior computation = 0.000378 seconds\n\t Alignment traceback   = 0.711461 seconds\nHipSTR execution finished: Total runtime = 10.2077 sec\n-----------------",
+     "output": "\n\n------HipSTR Execution Summary------\nSkipped 2 loci whose lengths were above the maximum threshold.\n\t If this is a sizeable portion of your loci, see the --max-str-len command line option\nSkipped 6 loci with too few reads for stutter model model training or genotyping.\n\t If this is a sizeable portion of your loci, see the --min-reads command line option\nStutter model training succeeded for 14/14 loci\nGenotyping succeeded for 14/14 loci\n\nApproximate timing breakdown\n BAM seek time       = 8e-05 seconds\n Read filtering      = 0.162134 seconds\n SNP info extraction = 0.001323 seconds\n Stutter estimation  = 0.003236 seconds\n Genotyping          = 2.33122 seconds\n\t Left alignment        = 0.285253 seconds\n\t Haplotype generation  = 0.006718 seconds\n\t Haplotype alignment   = 1.31133 seconds\n\t Flank assembly        = 0.009349 seconds\n\t Posterior computation = 0.000337 seconds\n\t Alignment traceback   = 0.684836 seconds\nHipSTR execution finished: Total runtime = 9.45423 sec\n-----------------",
      "output_note": "Last 24 of 762 lines (the whole log scrolls by on your screen).",
      "extra": null,
      "errors": []
@@ -179,7 +185,7 @@
       }
      ],
      "fields": [],
-     "output": "\n------HipSTR Execution Summary------\nGenotyping succeeded for 22/22 loci\n\nApproximate timing breakdown\n BAM seek time       = 0.00012 seconds\n Read filtering      = 0.190565 seconds\n SNP info extraction = 0.001524 seconds\n Stutter estimation  = 7.6e-05 seconds\n Genotyping          = 4.35733 seconds\n\t Left alignment        = 0.4652 seconds\n\t Haplotype generation  = 0.010632 seconds\n\t Haplotype alignment   = 2.48522 seconds\n\t Flank assembly        = 0.014947 seconds\n\t Posterior computation = 0.000669 seconds\n\t Alignment traceback   = 1.32147 seconds\nHipSTR execution finished: Total runtime = 11.9109 sec\n-----------------",
+     "output": "\n------HipSTR Execution Summary------\nGenotyping succeeded for 22/22 loci\n\nApproximate timing breakdown\n BAM seek time       = 8.2e-05 seconds\n Read filtering      = 0.180311 seconds\n SNP info extraction = 0.001512 seconds\n Stutter estimation  = 4.8e-05 seconds\n Genotyping          = 4.30741 seconds\n\t Left alignment        = 0.463101 seconds\n\t Haplotype generation  = 0.010816 seconds\n\t Haplotype alignment   = 2.45377 seconds\n\t Flank assembly        = 0.014728 seconds\n\t Posterior computation = 0.000606 seconds\n\t Alignment traceback   = 1.30609 seconds\nHipSTR execution finished: Total runtime = 11.4984 sec\n-----------------",
      "output_note": "Last 18 of 881 lines (the whole log scrolls by on your screen).",
      "extra": null,
      "errors": []
@@ -248,7 +254,7 @@
        "what": "GLDIFF: likelihood gap to the next best genotype. DSNP and PSNP: reads with SNP phasing information. DAB: reads used for AB and FS."
       }
      ],
-     "output": "-rw-r--r-- 1 student student  19K Oct 25 16:01 NA12878.vcf\n-rw-r--r-- 1 student student 4.0K Oct 25 16:01 NA12878.vcf.gz",
+     "output": "-rw-r--r-- 1 student student  19K Oct 25 22:04 NA12878.vcf\n-rw-r--r-- 1 student student 4.0K Oct 25 22:04 NA12878.vcf.gz",
      "output_note": null,
      "extra": null,
      "errors": []
@@ -396,7 +402,7 @@
       }
      ],
      "fields": [],
-     "output": "VizAln successfully generated the alignment visualization file, but failed to open it. Please open /tmp/vizaln.22234.html using a web browser",
+     "output": "VizAln successfully generated the alignment visualization file, but failed to open it. Please open /tmp/vizaln.9266.html using a web browser",
      "output_note": null,
      "extra": null,
      "errors": [
@@ -419,14 +425,14 @@
   },
   "es": {
    "title": "HipSTR: genotipar STR forenses desde un BAM",
-   "summary": "Vas a aprender a correr HipSTR con tus propios archivos, paso a paso: dónde van en el comando tus muestras (BAM o CRAM), tu referencia y tu lista de STR, y cómo leer y filtrar el resultado. Como ejemplo genotipamos 22 STR forenses de una muestra pública (NA12878) sobre sus rangos mínimos ISFG, que dan números de alelo forenses: vas a ver por qué el comando básico deja 8 loci afuera sin avisarte en pantalla, cómo arreglarlo, cómo leer el VCF, pasar sus diferencias de largo a números de alelo, filtrarlo con el script del propio HipSTR y mirar las lecturas con VizAln.",
+   "summary": "Vas a aprender a correr HipSTR con tus propios archivos, paso a paso: dónde van en el comando tus muestras (BAM o CRAM), tu referencia y tu lista de STR, y cómo leer y filtrar el resultado. Como ejemplo genotipamos 22 STR forenses de una muestra pública (NA12878) sobre sus rangos mínimos ISFG, que dan números de alelo forenses: vas a ver por qué el comando básico deja 8 loci afuera sin avisarte en pantalla, cómo arreglarlo, cómo leer el VCF, pasar sus diferencias de largo a números de alelo, filtrarlo con el script del propio HipSTR y mirar las lecturas con VizAln. Te damos los datos de práctica (los mismos archivos del video), así podés correr cada paso antes de probar con tus archivos.",
    "duration": "15 minutos + instalación",
-   "get_started": "Todo corre en tu propia terminal: Linux, macOS o Windows con WSL. Primero\ninstalá las herramientas para tu sistema y después prepará una carpeta de\ntrabajo con HipSTR. Esto se hace una sola vez. Después, cada paso muestra\nel comando con nuestros archivos de ejemplo, y la tabla de abajo dice qué\nponés ahí con los tuyos.",
+   "get_started": "Todo corre en tu propia terminal: Linux, macOS o Windows con WSL. Primero\ninstalá las herramientas para tu sistema y después prepará una carpeta de\ntrabajo con HipSTR. Esto se hace una sola vez. Después, cada paso muestra\nel comando con nuestros archivos de ejemplo, y la tabla de abajo dice qué\nponés ahí con los tuyos. ¿Todavía no tenés datos? Bajá los nuestros con un\ncomando (Datos de práctica, más abajo).",
    "install": [
     {
      "os": "Linux (Ubuntu, Debian) y Windows con WSL",
      "note": "En Windows, primero instalá WSL: abrí PowerShell como administrador, corré `wsl --install`, reiniciá, abrí \"Ubuntu\" desde el menú Inicio y seguí ahí. En Ubuntu 24.04 o más nuevo (el que instala WSL hoy), compilá HipSTR con `make CXX=\"g++ -include cstdint\"` en vez de `make` (ver el error más abajo).",
-     "commands": "sudo apt update\nsudo apt install -y build-essential git zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev samtools bcftools tabix bsdextrautils python3-venv"
+     "commands": "sudo apt update\nsudo apt install -y build-essential git curl zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev samtools bcftools tabix bsdextrautils python3-venv"
     },
     {
      "os": "macOS",
@@ -476,6 +482,12 @@
      "what": "Entorno de Python con PyVCF3, creado durante la preparación."
     }
    ],
+   "practice_data": {
+    "label": "Datos de práctica",
+    "intro": "¿Todavía no tenés tus datos? Practicá con los nuestros: los mismos archivos del video (una muestra pública, la referencia reducida y el BED ISFG, unos 20 MB). Corré esto dentro de tu carpeta de trabajo y cada paso te da la misma salida que el tutorial. El origen y las huellas de cada archivo están en el README de la carpeta.",
+    "command": "for f in NA12878.bam NA12878.bam.bai GRCh38_STR_regions.fa.gz GRCh38_STR_regions.fa.gz.fai \\\n         GRCh38_STR_regions.fa.gz.gzi regions.bed isfg_ranges_grch38.tsv; do\n  curl -fLO https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/tutorials/hipstr/$f\ndone",
+    "url": "https://github.com/Tfronta/strhub-demo-data/tree/main/tutorials/hipstr"
+   },
    "steps": [
     {
      "id": "files",
@@ -484,7 +496,7 @@
      "command": "ls -lh",
      "parameters": [],
      "fields": [],
-     "output": "total 20M\n-rw-r--r-- 1 student student 9.0M Oct 23 13:21 GRCh38_STR_regions.fa.gz\n-rw-r--r-- 1 student student  568 Oct 23 13:21 GRCh38_STR_regions.fa.gz.fai\n-rw-r--r-- 1 student student 604K Oct 23 13:21 GRCh38_STR_regions.fa.gz.gzi\ndrwxr-xr-x 8 student student 4.0K Oct 25 15:43 HipSTR\n-rw-r--r-- 1 student student 9.4M Oct 23 13:21 NA12878.bam\n-rw-r--r-- 1 student student 825K Oct 23 13:21 NA12878.bam.bai\ndrwxr-xr-x 5 student student 4.0K Oct 25 15:43 hipstr-env\n-rw-r--r-- 1 student student 1.3K Oct 25 15:36 isfg_ranges_grch38.tsv\n-rw-r--r-- 1 student student  789 Oct 25 15:36 regions.bed",
+     "output": "total 20M\n-rw-r--r-- 1 student student 9.0M Oct 23 13:21 GRCh38_STR_regions.fa.gz\n-rw-r--r-- 1 student student  568 Oct 23 13:21 GRCh38_STR_regions.fa.gz.fai\n-rw-r--r-- 1 student student 604K Oct 23 13:21 GRCh38_STR_regions.fa.gz.gzi\ndrwxr-xr-x 8 student student 4.0K Oct 25 22:03 HipSTR\n-rw-r--r-- 1 student student 9.4M Oct 23 13:21 NA12878.bam\n-rw-r--r-- 1 student student 825K Oct 23 13:21 NA12878.bam.bai\ndrwxr-xr-x 5 student student 4.0K Oct 25 22:04 hipstr-env\n-rw-r--r-- 1 student student 1.3K Oct 25 15:36 isfg_ranges_grch38.tsv\n-rw-r--r-- 1 student student  789 Oct 25 15:36 regions.bed",
      "output_note": null,
      "extra": null,
      "errors": []
@@ -556,7 +568,7 @@
       }
      ],
      "fields": [],
-     "output": "\n\n------HipSTR Execution Summary------\nSkipped 2 loci whose lengths were above the maximum threshold.\n\t If this is a sizeable portion of your loci, see the --max-str-len command line option\nSkipped 6 loci with too few reads for stutter model model training or genotyping.\n\t If this is a sizeable portion of your loci, see the --min-reads command line option\nStutter model training succeeded for 14/14 loci\nGenotyping succeeded for 14/14 loci\n\nApproximate timing breakdown\n BAM seek time       = 0.000123 seconds\n Read filtering      = 0.16743 seconds\n SNP info extraction = 0.001378 seconds\n Stutter estimation  = 0.003519 seconds\n Genotyping          = 2.44864 seconds\n\t Left alignment        = 0.307601 seconds\n\t Haplotype generation  = 0.007299 seconds\n\t Haplotype alignment   = 1.37583 seconds\n\t Flank assembly        = 0.009626 seconds\n\t Posterior computation = 0.000378 seconds\n\t Alignment traceback   = 0.711461 seconds\nHipSTR execution finished: Total runtime = 10.2077 sec\n-----------------",
+     "output": "\n\n------HipSTR Execution Summary------\nSkipped 2 loci whose lengths were above the maximum threshold.\n\t If this is a sizeable portion of your loci, see the --max-str-len command line option\nSkipped 6 loci with too few reads for stutter model model training or genotyping.\n\t If this is a sizeable portion of your loci, see the --min-reads command line option\nStutter model training succeeded for 14/14 loci\nGenotyping succeeded for 14/14 loci\n\nApproximate timing breakdown\n BAM seek time       = 8e-05 seconds\n Read filtering      = 0.162134 seconds\n SNP info extraction = 0.001323 seconds\n Stutter estimation  = 0.003236 seconds\n Genotyping          = 2.33122 seconds\n\t Left alignment        = 0.285253 seconds\n\t Haplotype generation  = 0.006718 seconds\n\t Haplotype alignment   = 1.31133 seconds\n\t Flank assembly        = 0.009349 seconds\n\t Posterior computation = 0.000337 seconds\n\t Alignment traceback   = 0.684836 seconds\nHipSTR execution finished: Total runtime = 9.45423 sec\n-----------------",
      "output_note": "Últimas 24 de 762 líneas (en tu pantalla pasa el log entero).",
      "extra": null,
      "errors": []
@@ -584,7 +596,7 @@
       }
      ],
      "fields": [],
-     "output": "\n------HipSTR Execution Summary------\nGenotyping succeeded for 22/22 loci\n\nApproximate timing breakdown\n BAM seek time       = 0.00012 seconds\n Read filtering      = 0.190565 seconds\n SNP info extraction = 0.001524 seconds\n Stutter estimation  = 7.6e-05 seconds\n Genotyping          = 4.35733 seconds\n\t Left alignment        = 0.4652 seconds\n\t Haplotype generation  = 0.010632 seconds\n\t Haplotype alignment   = 2.48522 seconds\n\t Flank assembly        = 0.014947 seconds\n\t Posterior computation = 0.000669 seconds\n\t Alignment traceback   = 1.32147 seconds\nHipSTR execution finished: Total runtime = 11.9109 sec\n-----------------",
+     "output": "\n------HipSTR Execution Summary------\nGenotyping succeeded for 22/22 loci\n\nApproximate timing breakdown\n BAM seek time       = 8.2e-05 seconds\n Read filtering      = 0.180311 seconds\n SNP info extraction = 0.001512 seconds\n Stutter estimation  = 4.8e-05 seconds\n Genotyping          = 4.30741 seconds\n\t Left alignment        = 0.463101 seconds\n\t Haplotype generation  = 0.010816 seconds\n\t Haplotype alignment   = 2.45377 seconds\n\t Flank assembly        = 0.014728 seconds\n\t Posterior computation = 0.000606 seconds\n\t Alignment traceback   = 1.30609 seconds\nHipSTR execution finished: Total runtime = 11.4984 sec\n-----------------",
      "output_note": "Últimas 18 de 881 líneas (en tu pantalla pasa el log entero).",
      "extra": null,
      "errors": []
@@ -653,7 +665,7 @@
        "what": "GLDIFF: distancia de verosimilitud con el siguiente mejor genotipo. DSNP y PSNP: lecturas con información de fase por SNP. DAB: lecturas usadas para AB y FS."
       }
      ],
-     "output": "-rw-r--r-- 1 student student  19K Oct 25 16:01 NA12878.vcf\n-rw-r--r-- 1 student student 4.0K Oct 25 16:01 NA12878.vcf.gz",
+     "output": "-rw-r--r-- 1 student student  19K Oct 25 22:04 NA12878.vcf\n-rw-r--r-- 1 student student 4.0K Oct 25 22:04 NA12878.vcf.gz",
      "output_note": null,
      "extra": null,
      "errors": []
@@ -801,7 +813,7 @@
       }
      ],
      "fields": [],
-     "output": "VizAln successfully generated the alignment visualization file, but failed to open it. Please open /tmp/vizaln.22234.html using a web browser",
+     "output": "VizAln successfully generated the alignment visualization file, but failed to open it. Please open /tmp/vizaln.9266.html using a web browser",
      "output_note": null,
      "extra": null,
      "errors": [
@@ -824,14 +836,14 @@
   },
   "pt": {
    "title": "HipSTR: genotipar STRs forenses a partir de um BAM",
-   "summary": "Você vai aprender a rodar o HipSTR com os seus próprios arquivos, passo a passo: onde vão no comando as suas amostras (BAM ou CRAM), a sua referência e a sua lista de STRs, e como ler e filtrar o resultado. Como exemplo, genotipamos 22 STRs forenses de uma amostra pública (NA12878) sobre os seus intervalos mínimos ISFG, que dão números de alelo forenses: você vai ver por que o comando básico deixa 8 loci de fora sem avisar na tela, como corrigir isso, como ler o VCF, transformar as diferenças de tamanho em números de alelo, filtrá-lo com o script do próprio HipSTR e olhar as leituras com o VizAln.",
+   "summary": "Você vai aprender a rodar o HipSTR com os seus próprios arquivos, passo a passo: onde vão no comando as suas amostras (BAM ou CRAM), a sua referência e a sua lista de STRs, e como ler e filtrar o resultado. Como exemplo, genotipamos 22 STRs forenses de uma amostra pública (NA12878) sobre os seus intervalos mínimos ISFG, que dão números de alelo forenses: você vai ver por que o comando básico deixa 8 loci de fora sem avisar na tela, como corrigir isso, como ler o VCF, transformar as diferenças de tamanho em números de alelo, filtrá-lo com o script do próprio HipSTR e olhar as leituras com o VizAln. Damos a você os dados de prática (os mesmos arquivos do vídeo), assim você pode rodar cada passo antes de testar com os seus arquivos.",
    "duration": "15 minutos + instalação",
-   "get_started": "Tudo roda no seu próprio terminal: Linux, macOS ou Windows com WSL.\nPrimeiro instale as ferramentas para o seu sistema e depois prepare uma\npasta de trabalho com o HipSTR. Isso se faz uma vez só. Depois, cada passo\nmostra o comando com os nossos arquivos de exemplo, e a tabela abaixo diz\no que você coloca ali com os seus.",
+   "get_started": "Tudo roda no seu próprio terminal: Linux, macOS ou Windows com WSL.\nPrimeiro instale as ferramentas para o seu sistema e depois prepare uma\npasta de trabalho com o HipSTR. Isso se faz uma vez só. Depois, cada passo\nmostra o comando com os nossos arquivos de exemplo, e a tabela abaixo diz\no que você coloca ali com os seus. Ainda não tem dados? Baixe os nossos\ncom um comando (Dados de prática, mais abaixo).",
    "install": [
     {
      "os": "Linux (Ubuntu, Debian) e Windows com WSL",
      "note": "No Windows, primeiro instale o WSL: abra o PowerShell como administrador, rode `wsl --install`, reinicie, abra o \"Ubuntu\" pelo menu Iniciar e continue lá. No Ubuntu 24.04 ou mais novo (o que o WSL instala hoje), compile o HipSTR com `make CXX=\"g++ -include cstdint\"` em vez de `make` (veja o erro mais abaixo).",
-     "commands": "sudo apt update\nsudo apt install -y build-essential git zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev samtools bcftools tabix bsdextrautils python3-venv"
+     "commands": "sudo apt update\nsudo apt install -y build-essential git curl zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev samtools bcftools tabix bsdextrautils python3-venv"
     },
     {
      "os": "macOS",
@@ -881,6 +893,12 @@
      "what": "Ambiente Python com o PyVCF3, criado durante a preparação."
     }
    ],
+   "practice_data": {
+    "label": "Dados de prática",
+    "intro": "Ainda não tem os seus dados? Pratique com os nossos: os mesmos arquivos do vídeo (uma amostra pública, a referência reduzida e o BED ISFG, uns 20 MB). Rode isto dentro da sua pasta de trabalho e cada passo dá a mesma saída do tutorial. A origem e as impressões digitais de cada arquivo estão no README da pasta.",
+    "command": "for f in NA12878.bam NA12878.bam.bai GRCh38_STR_regions.fa.gz GRCh38_STR_regions.fa.gz.fai \\\n         GRCh38_STR_regions.fa.gz.gzi regions.bed isfg_ranges_grch38.tsv; do\n  curl -fLO https://raw.githubusercontent.com/Tfronta/strhub-demo-data/main/tutorials/hipstr/$f\ndone",
+    "url": "https://github.com/Tfronta/strhub-demo-data/tree/main/tutorials/hipstr"
+   },
    "steps": [
     {
      "id": "files",
@@ -889,7 +907,7 @@
      "command": "ls -lh",
      "parameters": [],
      "fields": [],
-     "output": "total 20M\n-rw-r--r-- 1 student student 9.0M Oct 23 13:21 GRCh38_STR_regions.fa.gz\n-rw-r--r-- 1 student student  568 Oct 23 13:21 GRCh38_STR_regions.fa.gz.fai\n-rw-r--r-- 1 student student 604K Oct 23 13:21 GRCh38_STR_regions.fa.gz.gzi\ndrwxr-xr-x 8 student student 4.0K Oct 25 15:43 HipSTR\n-rw-r--r-- 1 student student 9.4M Oct 23 13:21 NA12878.bam\n-rw-r--r-- 1 student student 825K Oct 23 13:21 NA12878.bam.bai\ndrwxr-xr-x 5 student student 4.0K Oct 25 15:43 hipstr-env\n-rw-r--r-- 1 student student 1.3K Oct 25 15:36 isfg_ranges_grch38.tsv\n-rw-r--r-- 1 student student  789 Oct 25 15:36 regions.bed",
+     "output": "total 20M\n-rw-r--r-- 1 student student 9.0M Oct 23 13:21 GRCh38_STR_regions.fa.gz\n-rw-r--r-- 1 student student  568 Oct 23 13:21 GRCh38_STR_regions.fa.gz.fai\n-rw-r--r-- 1 student student 604K Oct 23 13:21 GRCh38_STR_regions.fa.gz.gzi\ndrwxr-xr-x 8 student student 4.0K Oct 25 22:03 HipSTR\n-rw-r--r-- 1 student student 9.4M Oct 23 13:21 NA12878.bam\n-rw-r--r-- 1 student student 825K Oct 23 13:21 NA12878.bam.bai\ndrwxr-xr-x 5 student student 4.0K Oct 25 22:04 hipstr-env\n-rw-r--r-- 1 student student 1.3K Oct 25 15:36 isfg_ranges_grch38.tsv\n-rw-r--r-- 1 student student  789 Oct 25 15:36 regions.bed",
      "output_note": null,
      "extra": null,
      "errors": []
@@ -961,7 +979,7 @@
       }
      ],
      "fields": [],
-     "output": "\n\n------HipSTR Execution Summary------\nSkipped 2 loci whose lengths were above the maximum threshold.\n\t If this is a sizeable portion of your loci, see the --max-str-len command line option\nSkipped 6 loci with too few reads for stutter model model training or genotyping.\n\t If this is a sizeable portion of your loci, see the --min-reads command line option\nStutter model training succeeded for 14/14 loci\nGenotyping succeeded for 14/14 loci\n\nApproximate timing breakdown\n BAM seek time       = 0.000123 seconds\n Read filtering      = 0.16743 seconds\n SNP info extraction = 0.001378 seconds\n Stutter estimation  = 0.003519 seconds\n Genotyping          = 2.44864 seconds\n\t Left alignment        = 0.307601 seconds\n\t Haplotype generation  = 0.007299 seconds\n\t Haplotype alignment   = 1.37583 seconds\n\t Flank assembly        = 0.009626 seconds\n\t Posterior computation = 0.000378 seconds\n\t Alignment traceback   = 0.711461 seconds\nHipSTR execution finished: Total runtime = 10.2077 sec\n-----------------",
+     "output": "\n\n------HipSTR Execution Summary------\nSkipped 2 loci whose lengths were above the maximum threshold.\n\t If this is a sizeable portion of your loci, see the --max-str-len command line option\nSkipped 6 loci with too few reads for stutter model model training or genotyping.\n\t If this is a sizeable portion of your loci, see the --min-reads command line option\nStutter model training succeeded for 14/14 loci\nGenotyping succeeded for 14/14 loci\n\nApproximate timing breakdown\n BAM seek time       = 8e-05 seconds\n Read filtering      = 0.162134 seconds\n SNP info extraction = 0.001323 seconds\n Stutter estimation  = 0.003236 seconds\n Genotyping          = 2.33122 seconds\n\t Left alignment        = 0.285253 seconds\n\t Haplotype generation  = 0.006718 seconds\n\t Haplotype alignment   = 1.31133 seconds\n\t Flank assembly        = 0.009349 seconds\n\t Posterior computation = 0.000337 seconds\n\t Alignment traceback   = 0.684836 seconds\nHipSTR execution finished: Total runtime = 9.45423 sec\n-----------------",
      "output_note": "Últimas 24 de 762 linhas (na sua tela passa o log inteiro).",
      "extra": null,
      "errors": []
@@ -989,7 +1007,7 @@
       }
      ],
      "fields": [],
-     "output": "\n------HipSTR Execution Summary------\nGenotyping succeeded for 22/22 loci\n\nApproximate timing breakdown\n BAM seek time       = 0.00012 seconds\n Read filtering      = 0.190565 seconds\n SNP info extraction = 0.001524 seconds\n Stutter estimation  = 7.6e-05 seconds\n Genotyping          = 4.35733 seconds\n\t Left alignment        = 0.4652 seconds\n\t Haplotype generation  = 0.010632 seconds\n\t Haplotype alignment   = 2.48522 seconds\n\t Flank assembly        = 0.014947 seconds\n\t Posterior computation = 0.000669 seconds\n\t Alignment traceback   = 1.32147 seconds\nHipSTR execution finished: Total runtime = 11.9109 sec\n-----------------",
+     "output": "\n------HipSTR Execution Summary------\nGenotyping succeeded for 22/22 loci\n\nApproximate timing breakdown\n BAM seek time       = 8.2e-05 seconds\n Read filtering      = 0.180311 seconds\n SNP info extraction = 0.001512 seconds\n Stutter estimation  = 4.8e-05 seconds\n Genotyping          = 4.30741 seconds\n\t Left alignment        = 0.463101 seconds\n\t Haplotype generation  = 0.010816 seconds\n\t Haplotype alignment   = 2.45377 seconds\n\t Flank assembly        = 0.014728 seconds\n\t Posterior computation = 0.000606 seconds\n\t Alignment traceback   = 1.30609 seconds\nHipSTR execution finished: Total runtime = 11.4984 sec\n-----------------",
      "output_note": "Últimas 18 de 881 linhas (na sua tela passa o log inteiro).",
      "extra": null,
      "errors": []
@@ -1058,7 +1076,7 @@
        "what": "GLDIFF: diferença de verossimilhança para o próximo melhor genótipo. DSNP e PSNP: leituras com informação de fase por SNP. DAB: leituras usadas para AB e FS."
       }
      ],
-     "output": "-rw-r--r-- 1 student student  19K Oct 25 16:01 NA12878.vcf\n-rw-r--r-- 1 student student 4.0K Oct 25 16:01 NA12878.vcf.gz",
+     "output": "-rw-r--r-- 1 student student  19K Oct 25 22:04 NA12878.vcf\n-rw-r--r-- 1 student student 4.0K Oct 25 22:04 NA12878.vcf.gz",
      "output_note": null,
      "extra": null,
      "errors": []
@@ -1206,7 +1224,7 @@
       }
      ],
      "fields": [],
-     "output": "VizAln successfully generated the alignment visualization file, but failed to open it. Please open /tmp/vizaln.22234.html using a web browser",
+     "output": "VizAln successfully generated the alignment visualization file, but failed to open it. Please open /tmp/vizaln.9266.html using a web browser",
      "output_note": null,
      "extra": null,
      "errors": [

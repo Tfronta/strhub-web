@@ -52,6 +52,14 @@ export interface TutorialInstall {
   commands: string;
 }
 
+/** The example files of the video, downloadable with one command. */
+export interface TutorialPracticeData {
+  label: string;
+  intro: string;
+  command: string;
+  url: string;
+}
+
 export interface TutorialText {
   title: string;
   summary: string;
@@ -60,6 +68,7 @@ export interface TutorialText {
   install: TutorialInstall[];
   setup: string;
   setup_explain?: string | null;
+  practice_data?: TutorialPracticeData | null;
   install_errors?: TutorialError[];
   files: { file: string; what: string }[];
   steps: TutorialStep[];

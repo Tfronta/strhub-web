@@ -2,7 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight, Clock, Download, Play, PlayCircle, TriangleAlert, Wrench } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Clock,
+  Download,
+  FolderDown,
+  Github,
+  Play,
+  PlayCircle,
+  TriangleAlert,
+  Wrench,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
@@ -142,6 +153,7 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
   const tp = (key: string, params?: Record<string, string>) =>
     t(`tools.tutorialPage.${key}`, params);
   const zip = tutorial.zip;
+  const practice = text.practice_data;
   const errorTitle = tp("errorTitle");
 
   return (
@@ -190,6 +202,25 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
           {language !== "en" && (
             <p className="text-sm text-muted-foreground">{tp("englishNote")}</p>
           )}
+          {practice && (
+            // Seen from the top: points to the full box under "Set up a working folder".
+            <a
+              href="#practice-data"
+              className="group flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4 transition-colors hover:bg-primary/10"
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <FolderDown className="h-5 w-5" aria-hidden />
+              </span>
+              <span className="min-w-0">
+                <span className="block font-semibold">{practice.label}</span>
+                <span className="block text-sm text-muted-foreground">{tp("practiceTeaser")}</span>
+                <span className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:underline">
+                  {tp("practiceJump")}
+                  <ChevronDown className="h-4 w-4" aria-hidden />
+                </span>
+              </span>
+            </a>
+          )}
         </header>
 
         <section className="mt-6 space-y-2">
@@ -235,6 +266,26 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
               stepTitle={tp("stuck.installStep")}
             />
           </div>
+
+          {practice && (
+            <div
+              id="practice-data"
+              className="scroll-mt-24 space-y-3 rounded-xl border border-primary/30 bg-primary/5 p-4 sm:p-5"
+            >
+              <h3 className="flex items-center gap-2 text-lg font-semibold">
+                <FolderDown className="h-5 w-5 text-primary" aria-hidden />
+                {practice.label}
+              </h3>
+              <TutorialMarkdown text={practice.intro} />
+              <TerminalBlock code={practice.command} />
+              <Button asChild variant="outline" size="sm">
+                <a href={practice.url} target="_blank" rel="noopener noreferrer">
+                  <Github className="h-4 w-4" aria-hidden />
+                  {tp("practiceOnGithub")}
+                </a>
+              </Button>
+            </div>
+          )}
 
           <div className="space-y-2">
             <h3 className="text-lg font-semibold">{tp("filesHeading")}</h3>

@@ -16,6 +16,18 @@ describe("minimal markdown", () => {
     ]);
   });
 
+  it("reads http(s) links and leaves other brackets as text", () => {
+    expect(parseInline("from [strhub-demo-data](https://github.com/Tfronta/strhub-demo-data) and [x](javascript:alert(1))")).toEqual([
+      { type: "text", text: "from " },
+      {
+        type: "link",
+        href: "https://github.com/Tfronta/strhub-demo-data",
+        children: [{ type: "text", text: "strhub-demo-data" }],
+      },
+      { type: "text", text: " and [x](javascript:alert(1))" },
+    ]);
+  });
+
   it("joins wrapped lines into one paragraph and keeps a line that starts with >", () => {
     const blocks = parseBlocks("split them at `:` (Data\n> Text to Columns).\n");
     expect(blocks).toEqual([
@@ -67,6 +79,10 @@ describe("the HipSTR tutorial JSON", () => {
         t.steps.map((s) => (s.parameters ?? []).map((p) => [p.option, p.example]));
       expect(optionsOf(other)).toEqual(optionsOf(en));
       expect(other.setup).toBe(en.setup);
+      // The page-only command and its output are not translated either.
+      const extraOf = (t: typeof en) =>
+        t.steps.map((s) => (s.extra ? [s.extra.command, s.extra.output ?? null] : null));
+      expect(extraOf(other)).toEqual(extraOf(en));
     }
   });
 

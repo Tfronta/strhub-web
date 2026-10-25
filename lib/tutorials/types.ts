@@ -23,6 +23,13 @@ export interface TutorialError {
   fix: string;
 }
 
+/** A second command that only the page shows, with its real output. */
+export interface TutorialExtra {
+  intro: string;
+  command: string;
+  output?: string | null;
+}
+
 export interface TutorialStep {
   id: string;
   title: string;
@@ -36,6 +43,7 @@ export interface TutorialStep {
   /** E.g. "Last 24 of 972 lines". */
   output_note?: string | null;
   errors?: TutorialError[];
+  extra?: TutorialExtra | null;
 }
 
 export interface TutorialInstall {

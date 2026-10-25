@@ -7,7 +7,7 @@
  * - a block whose first line starts with "- " is a list (indented lines
  *   continue the item above);
  * - anything else is a paragraph, its lines joined with spaces;
- * - inline: `code`, **bold** and *italics*.
+ * - inline: `code`, [links](https://...), **bold** and *italics*.
  *
  * Full markdown would misread this text: step 7 wraps "(Data > Text to
  * Columns)" so that a line starts with ">", which markdown turns into a quote.
@@ -16,6 +16,7 @@
 export type Inline =
   | { type: "text"; text: string }
   | { type: "code"; text: string }
+  | { type: "link"; href: string; children: Inline[] }
   | { type: "strong"; children: Inline[] }
   | { type: "em"; children: Inline[] };
 
@@ -24,8 +25,9 @@ export type Block =
   | { type: "list"; items: Inline[][] }
   | { type: "code"; text: string };
 
-// Left to right, so a code span wins over asterisks inside it.
-const INLINE = /`([^`]+)`|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
+// Left to right, so a code span wins over asterisks inside it. Links only
+// to http(s) addresses.
+const INLINE = /`([^`]+)`|\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
 
 export function parseInline(text: string): Inline[] {
   const out: Inline[] = [];
@@ -34,8 +36,9 @@ export function parseInline(text: string): Inline[] {
     const at = m.index ?? 0;
     if (at > last) out.push({ type: "text", text: text.slice(last, at) });
     if (m[1] != null) out.push({ type: "code", text: m[1] });
-    else if (m[2] != null) out.push({ type: "strong", children: parseInline(m[2]) });
-    else out.push({ type: "em", children: parseInline(m[3]) });
+    else if (m[2] != null) out.push({ type: "link", href: m[3], children: parseInline(m[2]) });
+    else if (m[4] != null) out.push({ type: "strong", children: parseInline(m[4]) });
+    else out.push({ type: "em", children: parseInline(m[5]) });
     last = at + m[0].length;
   }
   if (last < text.length) out.push({ type: "text", text: text.slice(last) });

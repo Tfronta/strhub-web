@@ -83,6 +83,9 @@ describe("the HipSTR tutorial JSON", () => {
       const extraOf = (t: typeof en) =>
         t.steps.map((s) => (s.extra ? [s.extra.command, s.extra.output ?? null] : null));
       expect(extraOf(other)).toEqual(extraOf(en));
+      // The practice-data download is the same command and folder in every language.
+      expect(other.practice_data?.command).toBe(en.practice_data?.command);
+      expect(other.practice_data?.url).toBe(en.practice_data?.url);
     }
   });
 

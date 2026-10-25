@@ -473,15 +473,15 @@ fastaGeneratorPage: {
   languageLabel: "Idioma actual",
   title: "Generador FASTA",
   subtitle:
-    "Constructos simplificados de secuencias STR basados en motivos, con flancos de referencia GRCh38. **Con fines educativos.**",
+    "Constructos simplificados de alelos STR para números de alelo CE, a partir de la referencia GRCh38. **Con fines educativos.**",
   config: {
     title: "Parámetros de configuración de secuencia",
     markerLabel: "Marcador STR",
     markerPlaceholder: "Selecciona un marcador",
-    allelesLabel: "Número de repeticiones (lista o rango)",
+    allelesLabel: "Alelos CE (lista o rango)",
     allelesPlaceholder: "p. ej. 10-12 o 9,10,11",
     allelesHint:
-      "Números enteros de 1 a {max} (un límite técnico de entrada de esta herramienta): cada valor es la cantidad de copias del motivo de construcción, que se indica en el encabezado de la salida. Por ahora no se admiten microvariantes (por ejemplo 9.3). En loci complejos, el número de repeticiones no equivale necesariamente a una designación alélica forense de CE.",
+      "Números de alelo CE enteros de 1 a {max} (un límite técnico de entrada de esta herramienta). Se conserva la referencia GRCh38 y solo su bloque de repeticiones variable dentro del ISFG minimum range gana o pierde copias enteras de su motivo, así cada constructo tiene el largo de ese alelo CE; el encabezado indica el motivo y su número de copias. Por ahora no se admiten microvariantes (por ejemplo 9.3).",
     flankingLabel: "Región flanqueante (pb por lado)",
     outputLabel: "Tipo de salida",
     referenceLabel: "Genoma de referencia",
@@ -497,42 +497,47 @@ fastaGeneratorPage: {
     copyButton: "Copiar",
     downloadButton: "Descargar FASTA",
     downloadCsvButton: "Descargar CSV",
-    referenceLine: "Flancos de {build}, hebra positiva, ventana de referencia {region}, verificada contra UCSC {ucsc}. El bloque de repeticiones es un constructo simplificado, no la secuencia de referencia.",
+    referenceLine: "Referencia {build}, hebra positiva, ventana {region}, verificada contra UCSC {ucsc}. Solo el bloque {motif} cambia con el alelo CE: GRCh38 tiene {copies} copias en {block} y es el alelo CE {ceRef}.",
+    flankShortened:
+      "El fragmento de referencia termina antes de {requested} pb en al menos un lado: el flanco 5' tiene {flank5} pb y el 3', {flank3} pb, como indica el encabezado.",
   },
   messages: {
-    enterAlleles: "Ingresa uno o más números de repeticiones enteros (p. ej. 10-12 o 9,10,11).",
+    enterAlleles: "Ingresa uno o más números de alelo CE enteros (p. ej. 10-12 o 9,10,11).",
     microvariantsUnsupported:
-      "Por ahora no se admiten microvariantes ni valores decimales (por ejemplo 9.3). Ingresa números de repeticiones enteros.",
+      "Por ahora no se admiten microvariantes ni valores decimales (por ejemplo 9.3). Ingresa números de alelo CE enteros.",
     invalidRepeatCounts:
-      "Ingresa números de repeticiones enteros entre 1 y {max}, como lista o rango (p. ej. 10-12 o 9,10,11). El máximo es un límite técnico de entrada de esta herramienta.",
+      "Ingresa números de alelo CE enteros entre 1 y {max}, como lista o rango (p. ej. 10-12 o 9,10,11). El máximo es un límite técnico de entrada de esta herramienta.",
     markerNotFound: "Marcador no encontrado en la lista.",
     coreNotFound:
-      "No se encontró una serie del motivo {motif} en el fragmento de referencia de {marker}, así que no se puede generar un constructo para este locus.",
+      "No se encontró una serie de {motif} en el ISFG minimum range del fragmento de referencia de {marker}, así que no se puede generar un constructo para este locus.",
+    alleleTooSmall:
+      "No se puede construir {marker} para {alleles}: el menor alelo CE posible es {min}, que deja una copia de {motif} en el bloque variable.",
+    rangeUnavailable: "{marker} no tiene un ISFG minimum range en esta herramienta, así que no se puede generar un constructo para este locus.",
     sliceUnavailable: "No se pudo cargar el fragmento de referencia de {marker} (HTTP {status}). Intenta de nuevo más tarde.",
-    sliceInvalid: "El fragmento de referencia de {marker} no es un archivo FASTA válido.",
+    sliceInvalid: "El fragmento de referencia de {marker} no es válido o no cubre el ISFG minimum range del locus.",
     genomeUnavailable: "La referencia {genome} todavía no está disponible.",
-    configMissing: "Los fragmentos de referencia no están configurados en este servidor.",
     unexpected: "No se pudo generar la secuencia.",
     errorPrefix: "ERROR",
   },
   about: {
     title: "Acerca de la generación FASTA",
     intro:
-      "Genera constructos simplificados de secuencias STR basados en motivos, con flancos de referencia y un número de repeticiones definido por el usuario. No se modelan estructuras repetitivas compuestas, interrupciones ni microvariantes. Los resultados no deben interpretarse como secuencias alélicas forenses validadas.",
+      "Genera constructos simplificados de alelos STR para números de alelo CE definidos por el usuario. Cada uno es la referencia GRCh38 con un único bloque de repeticiones cambiado; no se varían ni se modelan los otros bloques, las interrupciones ni las microvariantes. Los resultados no deben interpretarse como secuencias alélicas forenses validadas.",
     detail:
-      "Cada constructo une el flanco 5' de GRCh38, la cantidad pedida de copias del motivo de construcción (indicado en cada encabezado) y el flanco 3' de GRCh38. En loci complejos, el número de repeticiones no equivale necesariamente a una designación alélica forense de CE, y por ahora no se admiten microvariantes.",
+      "En cada locus, el bloque variable es la serie ininterrumpida más larga de un motivo variable de su estructura STRNaming dentro del ISFG minimum range (STRidER FSSG v6-1; Gettings et al. 2024). El alelo N recibe tantas copias de ese motivo como tiene la referencia, más N menos el alelo CE de la referencia: el alelo de la referencia reconstruye GRCh38 exactamente, y cada uno de los otros difiere de ella en motivos enteros. Por ahora no se admiten microvariantes.",
     overview: {
       title: "Descripción general",
       paragraphs: [
-        "Elige un locus, ingresa números de repeticiones enteros como lista o rango, ajusta el largo de los flancos y exporta los constructos en uno de varios formatos estándar.",
-        "El conjunto actual incluye 19 de los 20 loci del núcleo CODIS (D22S1045 no está incluido).",
+        "Elige un locus, ingresa números de alelo CE enteros como lista o rango, ajusta el largo de los flancos y exporta los constructos en uno de varios formatos estándar.",
+        "El conjunto actual incluye 22 loci: los 20 del núcleo CODIS más Penta D y Penta E.",
       ],
     },
     features: {
       title: "Características",
       items: [
-        "19 de los 20 loci del núcleo CODIS (D22S1045 no está incluido)",
-        "Flancos cortados de fragmentos de referencia GRCh38 (hebra positiva)",
+        "Los 20 loci del núcleo CODIS más Penta D y Penta E",
+        "Bloque de repeticiones variable ubicado en el ISFG minimum range de cada locus",
+        "Secuencia de referencia de fragmentos GRCh38 (hebra positiva)",
         "Regiones flanqueantes personalizables (0–200 pb por lado)",
         "Formatos de exportación: FASTA estándar, FASTA estilo referencia, Multi-FASTA y CSV tabular",
         "Opciones de descarga y copia directas",
@@ -542,7 +547,7 @@ fastaGeneratorPage: {
       title: "Casos de uso",
       items: [
         "Propósitos educativos y de formación en genómica forense",
-        "Entradas simples in silico, por ejemplo para ver cómo un software maneja un cambio en el número de repeticiones",
+        "Entradas simples in silico, por ejemplo para ver cómo un software maneja alelos de distinto largo",
       ],
     },
   },

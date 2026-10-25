@@ -39,7 +39,8 @@ import {
   REFERENCE_GENOMES,
   type ReferenceGenomeId,
 } from "@/lib/reference-genomes";
-import { markerData } from "@/lib/markerData";
+import { ISFG_RANGES_GRCH38 } from "@/lib/isfg-ranges";
+import type { SliceRegion } from "@/lib/load-slice";
 import { useLanguage } from "@/contexts/language-context";
 import { renderBold } from "@/lib/i18n/renderBold";
 import { translations, type Language } from "@/lib/translations";
@@ -49,6 +50,23 @@ const languageNames: Record<Language, string> = {
   es: "Español",
   pt: "Português",
 };
+
+// The loci with an ISFG minimum range (lib/isfg-ranges.ts): the 20 CODIS core
+// loci plus Penta D and Penta E. The name is also the slice file name.
+const markers = ISFG_RANGES_GRCH38.map((r) => ({
+  name: r.locus,
+  chromosome: r.chrom.replace(/^chr/, ""),
+})).sort((a, b) => a.name.localeCompare(b.name));
+
+const formatRegion = (r: SliceRegion) =>
+  `${r.chrom}:${r.start.toLocaleString("en-US")}-${r.end.toLocaleString("en-US")} (${r.strand})`;
+
+/** Fill {key} placeholders of a translated template. */
+const fill = (template: string, params: Record<string, string | number>) =>
+  Object.entries(params).reduce(
+    (s, [key, value]) => s.split(`{${key}}`).join(String(value)),
+    template
+  );
 
 export default function FastaGeneratorPage() {
   const [selectedMarker, setSelectedMarker] = useState("");
@@ -75,44 +93,7 @@ export default function FastaGeneratorPage() {
   const outputContent = pageContent?.output ?? defaultPageContent.output;
   const messages = pageContent?.messages ?? defaultPageContent.messages;
 
-  const markers = [
-    { id: "csf1po", name: "CSF1PO", chromosome: "5" },
-    { id: "d10s1248", name: "D10S1248", chromosome: "10" },
-    { id: "d12s391", name: "D12S391", chromosome: "12" },
-    { id: "d13s317", name: "D13S317", chromosome: "13" },
-    { id: "d16s539", name: "D16S539", chromosome: "16" },
-    { id: "d18s51", name: "D18S51", chromosome: "18" },
-    { id: "d19s433", name: "D19S433", chromosome: "19" },
-    { id: "d1s1656", name: "D1S1656", chromosome: "1" },
-    { id: "d21s11", name: "D21S11", chromosome: "21" },
-    { id: "d2s1338", name: "D2S1338", chromosome: "2" },
-    { id: "d2s441", name: "D2S441", chromosome: "2" },
-    { id: "d3s1358", name: "D3S1358", chromosome: "3" },
-    { id: "d5s818", name: "D5S818", chromosome: "5" },
-    { id: "d7s820", name: "D7S820", chromosome: "7" },
-    { id: "d8s1179", name: "D8S1179", chromosome: "8" },
-    { id: "fga", name: "FGA", chromosome: "4" },
-    { id: "th01", name: "TH01", chromosome: "11" },
-    { id: "tpox", name: "TPOX", chromosome: "2" },
-    { id: "vwa", name: "vWA", chromosome: "12" },
-  ];
-
-  const getMarkerInfo = (markerId: string) => {
-    const uiMarker = markers.find((m) => m.id === markerId);
-    const markerName = uiMarker?.name;
-    const data =
-      (markerData as Record<string, any>)[markerId] ||
-      (markerName
-        ? (markerData as Record<string, any>)[markerName]
-        : undefined) ||
-      (markerName
-        ? (markerData as Record<string, any>)[markerName.toUpperCase()]
-        : undefined);
-
-    return { uiMarker, data };
-  };
-
-  // No pre-filled repeat counts: the old default came from an unsourced
+  // No pre-filled allele numbers: the old default came from an unsourced
   // per-marker allele range.
 
   const showMessage = (text: string) => {
@@ -136,26 +117,21 @@ export default function FastaGeneratorPage() {
       );
       return;
     }
-    const repeatCounts = parsed.counts;
+    const ceAlleles = parsed.counts;
 
     try {
-      // 1) Resolver el objeto del marcador para obtener el nombre EXACTO (CSF1PO, D21S11, etc.)
-      const { uiMarker, data } = getMarkerInfo(selectedMarker);
+      // Nombre EXACTO del marcador (CSF1PO, PentaD, vWA...), que es el del slice.
+      const uiMarker = markers.find((m) => m.name === selectedMarker);
       if (!uiMarker) {
         showMessage(messages.markerNotFound);
         return;
       }
-      const markerName = uiMarker.name; // "CSF1PO" / "D21S11" ...
 
-      // 2) Obtener motivo desde markerData (aceptamos llave en id o en nombre)
-      const motif: string = data?.motif ?? "[AGAT]n"; // fallback seguro
-
-      // 3) Generar a partir del slice (usa detector robusto + normaliza nombre internamente)
+      // Generar a partir del slice: bloque variable del ISFG minimum range.
       const { fasta, info } = await generateContentFromSlice(
-        markerName,
-        motif,
-        repeatCounts,
-        Number(flankingRegion) || 0,
+        uiMarker.name,
+        ceAlleles,
+        Math.max(0, Math.round(Number(flankingRegion) || 0)),
         outputFormat,
         referenceGenome
       );
@@ -170,10 +146,7 @@ export default function FastaGeneratorPage() {
       let text: string = messages.unexpected;
       if (e instanceof FastaGeneratorError) {
         const template = (messages as Record<string, string>)[e.code] ?? messages.unexpected;
-        text = Object.entries(e.params).reduce(
-          (s, [key, value]) => s.replace(`{${key}}`, value),
-          template
-        );
+        text = fill(template, e.params);
       } else {
         console.error("[FASTA Generator]", e);
       }
@@ -245,8 +218,8 @@ export default function FastaGeneratorPage() {
                     <SelectContent>
                       {markers.map((marker) => (
                         <SelectItem
-                          key={marker.id}
-                          value={marker.id}
+                          key={marker.name}
+                          value={marker.name}
                           className="text-base"
                         >
                           {marker.name} (Chr {marker.chromosome})
@@ -396,16 +369,26 @@ export default function FastaGeneratorPage() {
                       placeholder={outputContent.description}
                     />
                     <p className="text-sm text-muted-foreground">
-                      {outputContent.referenceLine
-                        .replace("{build}", getReferenceGenome(generatedInfo.build).label)
-                        .replace(
-                          "{region}",
-                          generatedInfo.window
-                            ? `${generatedInfo.window.chrom}:${generatedInfo.window.start.toLocaleString("en-US")}-${generatedInfo.window.end.toLocaleString("en-US")} (${generatedInfo.window.strand})`
-                            : "n/a"
-                        )
-                        .replace("{ucsc}", getReferenceGenome(generatedInfo.build).ucsc)}
+                      {fill(outputContent.referenceLine, {
+                        build: getReferenceGenome(generatedInfo.build).label,
+                        region: formatRegion(generatedInfo.window),
+                        ucsc: getReferenceGenome(generatedInfo.build).ucsc,
+                        motif: generatedInfo.motif,
+                        copies: generatedInfo.refCopies,
+                        block: formatRegion(generatedInfo.block),
+                        ceRef: generatedInfo.ceRef,
+                      })}
                     </p>
+                    {(generatedInfo.flank5Bp < generatedInfo.flankBp ||
+                      generatedInfo.flank3Bp < generatedInfo.flankBp) && (
+                      <p className="text-sm text-muted-foreground">
+                        {fill(outputContent.flankShortened, {
+                          requested: generatedInfo.flankBp,
+                          flank5: generatedInfo.flank5Bp,
+                          flank3: generatedInfo.flank3Bp,
+                        })}
+                      </p>
+                    )}
                     <div className="flex flex-wrap gap-2">
                       <Button
                         onClick={copyToClipboard}

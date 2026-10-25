@@ -473,15 +473,15 @@ fastaGeneratorPage: {
   languageLabel: "Current language",
   title: "FASTA Generator",
   subtitle:
-    "Simplified motif-based STR sequence constructs with GRCh38 reference flanks. **For educational purposes.**",
+    "Simplified STR allele constructs for CE allele numbers, built on the GRCh38 reference. **For educational purposes.**",
   config: {
     title: "Sequence configuration parameters",
     markerLabel: "STR Marker",
     markerPlaceholder: "Select a marker",
-    allelesLabel: "Repeat counts (list or range)",
+    allelesLabel: "CE alleles (list or range)",
     allelesPlaceholder: "e.g. 10-12 or 9,10,11",
     allelesHint:
-      "Whole numbers from 1 to {max} (a technical input limit of this tool): each value is the number of copies of the construction motif, which the output header reports. Microvariants (for example 9.3) are not currently supported. For complex loci the repeat count is not necessarily equivalent to a forensic CE allele designation.",
+      "Whole CE allele numbers from 1 to {max} (a technical input limit of this tool). The GRCh38 reference is kept and only its variable repeat block in the ISFG minimum range gains or loses whole copies of its motif, so each construct has the length of that CE allele; the header names the motif and its copy number. Microvariants (for example 9.3) are not currently supported.",
     flankingLabel: "Flanking Region (bp per side)",
     outputLabel: "Output Type",
     referenceLabel: "Reference genome",
@@ -497,42 +497,47 @@ fastaGeneratorPage: {
     copyButton: "Copy",
     downloadButton: "Download FASTA",
     downloadCsvButton: "Download CSV",
-    referenceLine: "Flanks from {build}, plus strand, reference window {region}, verified against UCSC {ucsc}. The repeat block is a simplified construct, not the reference sequence.",
+    referenceLine: "Reference from {build}, plus strand, window {region}, verified against UCSC {ucsc}. Only the {motif} block changes with the CE allele: GRCh38 has {copies} copies of it at {block} and is CE allele {ceRef}.",
+    flankShortened:
+      "The reference slice ends before {requested} bp on at least one side: the 5' flank has {flank5} bp and the 3' flank {flank3} bp, as the header states.",
   },
   messages: {
-    enterAlleles: "Enter one or more whole repeat counts (e.g. 10-12 or 9,10,11).",
+    enterAlleles: "Enter one or more whole CE allele numbers (e.g. 10-12 or 9,10,11).",
     microvariantsUnsupported:
-      "Microvariants and decimal values (for example 9.3) are not currently supported. Enter whole repeat counts.",
+      "Microvariants and decimal values (for example 9.3) are not currently supported. Enter whole CE allele numbers.",
     invalidRepeatCounts:
-      "Enter whole repeat counts from 1 to {max}, as a list or a range (e.g. 10-12 or 9,10,11). The maximum is a technical input limit of this tool.",
+      "Enter whole CE allele numbers from 1 to {max}, as a list or a range (e.g. 10-12 or 9,10,11). The maximum is a technical input limit of this tool.",
     markerNotFound: "Marker not found in list.",
     coreNotFound:
-      "No run of the motif {motif} was found in the {marker} reference slice, so no construct can be generated for this locus.",
+      "No run of {motif} was found in the ISFG minimum range of the {marker} reference slice, so no construct can be generated for this locus.",
+    alleleTooSmall:
+      "{marker} cannot be built for {alleles}: the smallest CE allele is {min}, which leaves one copy of {motif} in the variable block.",
+    rangeUnavailable: "{marker} has no ISFG minimum range in this tool, so no construct can be generated for this locus.",
     sliceUnavailable: "The {marker} reference slice could not be loaded (HTTP {status}). Please try again later.",
-    sliceInvalid: "The {marker} reference slice is not a valid FASTA file.",
+    sliceInvalid: "The {marker} reference slice is not valid or does not cover the ISFG minimum range of the locus.",
     genomeUnavailable: "The {genome} reference is not available yet.",
-    configMissing: "The reference slices are not configured on this server.",
     unexpected: "The sequence could not be generated.",
     errorPrefix: "ERROR",
   },
   about: {
     title: "About FASTA Generation",
     intro:
-      "Generates simplified motif-based STR sequence constructs using reference flanks and a user-defined repeat count. Compound repeat structures, interruptions and microvariants are not modeled. Outputs should not be interpreted as validated forensic allele sequences.",
+      "Generates simplified STR allele constructs for user-defined CE allele numbers. Each one is the GRCh38 reference with a single repeat block changed; other repeat blocks, interruptions and microvariants are not varied or modeled. Outputs should not be interpreted as validated forensic allele sequences.",
     detail:
-      "Each construct joins the GRCh38 5' flank, the requested number of copies of the construction motif (reported in each header) and the GRCh38 3' flank. For complex loci the repeat count is not necessarily equivalent to a forensic CE allele designation, and microvariants are not currently supported.",
+      "For each locus, the variable block is the longest uninterrupted run of a variable motif of its STRNaming structure inside the ISFG minimum range (STRidER FSSG v6-1; Gettings et al. 2024). Allele N gets as many copies of that motif as the reference has, plus N minus the reference CE allele: the reference allele rebuilds GRCh38 exactly, and every other allele differs from it by whole motifs. Microvariants are not currently supported.",
     overview: {
       title: "Overview",
       paragraphs: [
-        "Choose a locus, enter whole repeat counts as a list or a range, set the flank length and export the constructs in one of several standard formats.",
-        "The current set contains 19 of the 20 CODIS core loci (D22S1045 is not included).",
+        "Choose a locus, enter whole CE allele numbers as a list or a range, set the flank length and export the constructs in one of several standard formats.",
+        "The current set contains 22 loci: the 20 CODIS core loci plus Penta D and Penta E.",
       ],
     },
     features: {
       title: "Features",
       items: [
-        "19 of the 20 CODIS core loci (D22S1045 is not included)",
-        "Flanks cut from GRCh38 reference slices (plus strand)",
+        "The 20 CODIS core loci plus Penta D and Penta E",
+        "Variable repeat block located in the ISFG minimum range of each locus",
+        "Reference sequence from GRCh38 slices (plus strand)",
         "Customizable flanking regions (0–200 bp per side)",
         "Export formats: Standard FASTA, Reference-style FASTA, Multi-FASTA and Tabular CSV",
         "Direct download and copy options",
@@ -542,7 +547,7 @@ fastaGeneratorPage: {
       title: "Use cases",
       items: [
         "Educational and training purposes in forensic genomics",
-        "Simple in silico inputs, for example to see how software handles a change in repeat count",
+        "Simple in silico inputs, for example to see how software handles alleles of different lengths",
       ],
     },
   },

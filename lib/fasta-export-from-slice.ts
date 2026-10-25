@@ -1,14 +1,20 @@
 // lib/fasta-export-from-slice.ts
 //
-// Simplified motif-based constructs: GRCh38 5' flank + N copies of the locus
-// motif + GRCh38 3' flank, where N is the repeat count the user typed. The
-// longest pure run of the motif in the reference slice is what gets replaced,
-// so compound repeat structures, interruptions and microvariants are not
-// modelled and N is not necessarily the forensic CE allele designation.
-// Headers and CSV columns say "repeats"/"construct", never "allele".
+// Simplified allele constructs for a CE allele number N: the GRCh38 reference
+// slice of the locus with one block changed, the variable repeat block of its
+// ISFG minimum range (lib/isfg-ranges.ts). That block is the longest exact,
+// in-phase run of one of the [n] motifs of the STRNaming structure
+// (findVariableBlock). GRCh38 has k_ref copies of it and is CE allele ce_ref
+// over the range, so allele N gets k_ref + (N - ce_ref) copies: N = ce_ref
+// rebuilds the reference exactly, and each step of N adds or removes one copy
+// of the motif. Everything else (other blocks, interruptions, flanks) stays as
+// in GRCh38 and microvariants are not modelled, so a construct has the length
+// of allele N, not necessarily the sequence of an observed allele N. Headers
+// and CSV rows say "simplified_construct" for that reason.
 import { fetchSliceFA, type SliceRegion } from "@/lib/load-slice";
 import { FastaGeneratorError } from "@/lib/fasta-errors";
-import { findCoreRegion, parseMotif } from "@/lib/find-core";
+import { findVariableBlock, parseStrnamingFormat } from "@/lib/find-core";
+import { getIsfgRange } from "@/lib/isfg-ranges";
 import type { ExportType } from "@/lib/fasta-export";
 import {
   DEFAULT_REFERENCE_GENOME,
@@ -18,60 +24,46 @@ import {
 
 export interface SliceExportInfo {
   marker: string;
+  /** Motif of the varied block, as written in the STRNaming structure. */
   motif: string;
+  /** Copies of that motif in GRCh38. */
+  refCopies: number;
+  /** CE allele designation of GRCh38 over the ISFG minimum range. */
+  ceRef: number;
+  /** Smallest CE allele that can be built: one copy of the motif. */
+  minAllele: number;
   source: string;
+  /** Flank length requested per side. */
   flankBp: number;
-  /** Assembly the flanks were cut from. */
+  /** Flank lengths written; shorter than flankBp where the slice ends first. */
+  flank5Bp: number;
+  flank3Bp: number;
+  /** Assembly the sequence was cut from. */
   build: ReferenceGenomeId;
   /** Region of the slice file (whole slice, not just the exported window). */
-  region: SliceRegion | null;
+  region: SliceRegion;
+  /** ISFG minimum range of the locus. */
+  isfgRange: SliceRegion;
+  /** The varied block in the reference, 1-based inclusive. */
+  block: SliceRegion;
   /**
-   * Reference window the flanks come from (the reference repeat run plus the
-   * requested flanks), 1-based inclusive. The construct replaces that repeat
-   * run, so its length differs from this window.
+   * Reference window the output comes from (the varied block plus the flanks
+   * written), 1-based inclusive. Allele N replaces the block, so its length
+   * differs from this window by (N - ce_ref) motif lengths.
    */
-  window: SliceRegion | null;
+  window: SliceRegion;
 }
-
-/**
- * FASTA-Generator-only construction motifs, used in place of the catalog motif.
- * The catalog motif, FSSG data, STRNaming names and ISFG nomenclature are
- * untouched, and the repeat count still counts copies of this motif (no mapping
- * to CE allele designations).
- *
- * Each override is the rotation that starts the block the detector selects in
- * GRCh38, so the reference copy count rebuilds that block and its flanks
- * exactly. Writing the catalog rotation instead shifts the block by one or more
- * bases (same length, different sequence at the junctions).
- *
- * - D1S1656: CTAT x 16, chr1:230769617-230769680. The catalog motif
- *   "[CCTA]n [TCTA]n" starts with CCTA, which never forms a run in GRCh38, so no
- *   construct could be built at all. CTAT is a motif of the FSSG v6.1 canonical
- *   bracketing (AC[n]CTAT[n]).
- * - CSF1PO: CTAT x 13, chr5:150076322-150076373 (catalog [ATCT]n).
- * - D5S818: TCTA x 11, chr5:123775553-123775596 (catalog [ATCT]n).
- * - D7S820: TCTA x 13, chr7:84160224-84160275 (catalog [TATC]n).
- * - TH01: TGAA x 7, chr11:2171086-2171113 (catalog [AATG]n).
- * - TPOX: TGAA x 8, chr2:1489651-1489682 (catalog [AATG]n).
- */
-export const CONSTRUCTION_MOTIF_OVERRIDES: Readonly<Record<string, string>> = {
-  D1S1656: "CTAT",
-  CSF1PO: "CTAT",
-  D5S818: "TCTA",
-  D7S820: "TCTA",
-  TH01: "TGAA",
-  TPOX: "TGAA",
-};
 
 // Función auxiliar para insertar saltos de línea cada N bases
 function wrapSequence(seq: string, width = 80): string {
   return seq.replace(new RegExp(`(.{1,${width}})`, "g"), "$1\n").trim();
 }
 
+const formatRegion = (r: SliceRegion) => `${r.chrom}:${r.start}-${r.end}(${r.strand})`;
+
 export async function generateContentFromSlice(
   marker: string,
-  motif: string,
-  repeatCounts: number[],
+  ceAlleles: number[],
   flankBp: number = 50,
   outputFormat: ExportType = "reference",
   build: ReferenceGenomeId = DEFAULT_REFERENCE_GENOME
@@ -79,100 +71,148 @@ export async function generateContentFromSlice(
   fasta: string;
   info: SliceExportInfo;
 }> {
-  // parseRepeatCounts already rejects these; String.repeat would silently
-  // truncate 9.3 to 9 copies.
-  if (!repeatCounts.every((n) => Number.isInteger(n) && n > 0)) {
-    throw new RangeError("Repeat counts must be positive whole numbers");
+  // parseRepeatCounts already rejects these; microvariants such as 9.3 are not
+  // modelled, and String.repeat would silently truncate them.
+  if (!ceAlleles.every((n) => Number.isInteger(n) && n > 0)) {
+    throw new RangeError("CE allele numbers must be positive whole numbers");
+  }
+  if (!Number.isInteger(flankBp) || flankBp < 0) {
+    throw new RangeError("The flank length must be a whole number of bases, 0 or more");
   }
 
   const genome = getReferenceGenome(build);
-  if (!genome.available) {
+  // The ISFG ranges are GRCh38 coordinates; another assembly needs its own.
+  if (!genome.available || genome.id !== "GRCh38") {
     throw new FastaGeneratorError("genomeUnavailable", { genome: genome.label });
   }
 
   // Nombre tal como está en el catálogo (el archivo respeta el caso: "vWA__slice.fa").
   const markerName = marker.replace(/\s*\(.*\)\s*$/, "").trim();
-
-  const constructionMotif = CONSTRUCTION_MOTIF_OVERRIDES[markerName] ?? motif;
+  const range = getIsfgRange(markerName);
+  if (!range) {
+    throw new FastaGeneratorError("rangeUnavailable", { marker: markerName });
+  }
 
   // Cargar slice
   const { seq, url, region } = await fetchSliceFA(markerName, genome.slicesDir);
 
-  // Detectar core (rotaciones + revcomp)
-  const core = findCoreRegion(seq, constructionMotif, 2);
-  if (!core) {
+  // Offsets come from the header coordinates, so the slice must be the plus
+  // strand of the same chromosome, exactly as long as its header says, and
+  // contain the whole ISFG range.
+  const offset = region ? range.start - region.start : -1;
+  if (
+    !region ||
+    region.strand !== "+" ||
+    region.chrom !== range.chrom ||
+    seq.length !== region.end - region.start + 1 ||
+    offset < 0 ||
+    range.end > region.end
+  ) {
+    throw new FastaGeneratorError("sliceInvalid", { marker: markerName });
+  }
+
+  // Bloque variable: dentro del ISFG minimum range, hebra positiva, en fase.
+  const found = findVariableBlock(
+    seq.slice(offset, offset + range.end - range.start + 1),
+    range.strnaming
+  );
+  if (!found) {
+    const motifs = parseStrnamingFormat(range.strnaming)
+      .filter((u) => u.count === "n")
+      .map((u) => u.motif);
     throw new FastaGeneratorError("coreNotFound", {
-      motif: parseMotif(constructionMotif),
+      motif: Array.from(new Set(motifs)).join(", "),
       marker: markerName,
     });
   }
 
-  // Flancos reales
-  const start = Math.max(0, core.start - flankBp);
-  const end = Math.min(seq.length, core.end + flankBp);
-  const left = seq.slice(start, core.start);
-  const right = seq.slice(core.end, end);
+  const copiesFor = (allele: number) => found.copies + (allele - range.ceRef);
+  const minAllele = range.ceRef - found.copies + 1;
+  const tooSmall = ceAlleles.filter((n) => copiesFor(n) < 1);
+  if (tooSmall.length) {
+    throw new FastaGeneratorError("alleleTooSmall", {
+      marker: markerName,
+      alleles: tooSmall.join(", "),
+      min: String(minAllele),
+      motif: found.motif,
+    });
+  }
 
-  // Motivo canónico (p.ej. "[ATCT]n" -> "ATCT")
-  const canonical = parseMotif(constructionMotif);
+  // Flancos reales: lo que hay en el slice a cada lado del bloque, hasta flankBp.
+  const blockStart = offset + found.start; // 0-based in the slice
+  const blockEnd = offset + found.end; // end-exclusive
+  const left = seq.slice(Math.max(0, blockStart - flankBp), blockStart);
+  const right = seq.slice(blockEnd, blockEnd + flankBp);
 
-  // Coordenadas genómicas de la ventana exportada (1-based, inclusivas).
-  const window: SliceRegion | null = region
-    ? {
-        chrom: region.chrom,
-        start: region.start + start,
-        end: region.start + end - 1,
-        strand: region.strand,
-      }
-    : null;
-  const locus = window
-    ? `${window.chrom}:${window.start}-${window.end}(${window.strand})`
-    : "";
-  // Cabecera FASTA: marcador, número de repeticiones, motivo, ensamblado, ventana
-  // de referencia de donde salen los flancos y largo del flanco.
-  const fastaHeader = (repeats: number) =>
-    `>${markerName}_repeats_${repeats} motif=${canonical} ${genome.id}${locus ? ` ref_window=${locus}` : ""} flank=${flankBp}bp simplified_construct`;
+  // Coordenadas genómicas (1-based, inclusivas).
+  const at = (from: number, to: number): SliceRegion => ({
+    chrom: region.chrom,
+    start: region.start + from,
+    end: region.start + to - 1,
+    strand: region.strand,
+  });
+  const block = at(blockStart, blockEnd);
+  const window = at(blockStart - left.length, blockEnd + right.length);
+  const locus = formatRegion(window);
+  // The flank lengths written, never just the requested one: one value when
+  // both sides have it, one per side when the slice cuts a side short.
+  const flankField =
+    left.length === right.length
+      ? `flank=${left.length}bp`
+      : `flank5=${left.length}bp flank3=${right.length}bp`;
+  // Cabecera FASTA: marcador y alelo CE, motivo variado y sus copias, ensamblado,
+  // ventana de referencia y largo de los flancos.
+  const fastaHeader = (allele: number) =>
+    `>${markerName}_CE${allele} motif=${found.motif} copies=${copiesFor(allele)} ${genome.id} ref_window=${locus} ${flankField} simplified_construct`;
+  const blockFor = (allele: number) => found.motif.repeat(copiesFor(allele));
   const info: SliceExportInfo = {
     marker: markerName,
-    motif: canonical,
+    motif: found.motif,
+    refCopies: found.copies,
+    ceRef: range.ceRef,
+    minAllele,
     source: url,
     flankBp,
+    flank5Bp: left.length,
+    flank3Bp: right.length,
     build: genome.id,
     region,
+    isfgRange: { chrom: range.chrom, start: range.start, end: range.end, strand: "+" },
+    block,
     window,
   };
 
   // -------- Formateo según outputFormat --------
   if (outputFormat === "tabular") {
-    const header = "marker,repeat_count,motif,build,ref_window,flank_bp,sequence\n";
-    const rows = repeatCounts.map((a) => {
-      const seqOut = (left + canonical.repeat(a) + right).toUpperCase();
-      return `${markerName},${a},${canonical},${genome.id},${locus},${flankBp},${seqOut}`;
+    const header =
+      "marker,ce_allele,motif,copies,build,ref_window,flank5_bp,flank3_bp,sequence\n";
+    const rows = ceAlleles.map((a) => {
+      const seqOut = (left + blockFor(a) + right).toUpperCase();
+      return `${markerName},${a},${found.motif},${copiesFor(a)},${genome.id},${locus},${left.length},${right.length},${seqOut}`;
     });
     return { fasta: header + rows.join("\n"), info };
   }
 
   if (outputFormat === "multi") {
-    const lines = repeatCounts.map((a) => {
-      const seqOut = wrapSequence((left + canonical.repeat(a) + right).toUpperCase());
+    const lines = ceAlleles.map((a) => {
+      const seqOut = wrapSequence((left + blockFor(a) + right).toUpperCase());
       return `${fastaHeader(a)}\n${seqOut}`;
     });
     return { fasta: lines.join("\n"), info };
   }
 
   if (outputFormat === "reference") {
-    // Flancos en minúsculas, core en MAYÚSCULAS
-    const lines = repeatCounts.map((a) => {
-      const coreSeq = canonical.repeat(a).toUpperCase();
-      const seqRef = left.toLowerCase() + coreSeq + right.toLowerCase();
+    // Flancos en minúsculas, bloque variado en MAYÚSCULAS
+    const lines = ceAlleles.map((a) => {
+      const seqRef = left.toLowerCase() + blockFor(a).toUpperCase() + right.toLowerCase();
       return `${fastaHeader(a)}\n${wrapSequence(seqRef)}`;
     });
     return { fasta: lines.join("\n\n"), info };
   }
 
   // STANDARD (por defecto): todo en mayúsculas
-  const lines = repeatCounts.map((a) => {
-    const seqStd = (left + canonical.repeat(a) + right).toUpperCase();
+  const lines = ceAlleles.map((a) => {
+    const seqStd = (left + blockFor(a) + right).toUpperCase();
     return `${fastaHeader(a)}\n${wrapSequence(seqStd)}`;
   });
   return { fasta: lines.join("\n\n"), info };

@@ -1,19 +1,16 @@
 // lib/load-slice.ts
-// Lee un FASTA "slice" desde tu repo público (jsDelivr/GitHub) y lo parsea.
-// Requiere en .env.local:
-//   NEXT_PUBLIC_SLICES_BASE="https://cdn.jsdelivr.net/gh/Tfronta/strhub-demo-data@main/slices/"
+// Lee un FASTA "slice" servido por este mismo sitio (public/slices/) y lo parsea.
+//
+// The slices are copies of slices/ in github.com/Tfronta/strhub-demo-data
+// (main, commit 1c431bc). They used to come from jsDelivr
+// (NEXT_PUBLIC_SLICES_BASE), which refuses that repository for being over its
+// 50 MB package limit, so slices failed to load with intermittent 403s.
+// Same-origin files need no configuration, and the variable is no longer read.
 
 import { FastaGeneratorError } from "@/lib/fasta-errors";
 
-const BASE = process.env.NEXT_PUBLIC_SLICES_BASE;
-
-// Util: valida que BASE esté configurada (NEXT_PUBLIC_SLICES_BASE en .env.local)
-function requireBase() {
-  if (!BASE) {
-    throw new FastaGeneratorError("configMissing");
-  }
-  return BASE.replace(/\/+$/, "") + "/"; // asegura una sola barra final
-}
+/** Public path of the slices: public/slices/ in the repo. */
+export const SLICES_PATH = "/slices/";
 
 export interface SliceRegion {
   chrom: string;
@@ -35,18 +32,21 @@ export function parseSliceHeader(header: string): SliceRegion | null {
   };
 }
 
+/** URL of a slice: /slices/<slicesDir><markerName>__slice.fa */
+export function sliceUrlFor(markerName: string, slicesDir = "") {
+  return `${SLICES_PATH}${slicesDir}${markerName}__slice.fa`;
+}
+
 /**
  * Descarga un archivo FASTA de slice y devuelve { header, seq, url, region }.
  * - `markerName` debe coincidir con el nombre del archivo: <markerName>__slice.fa
- *   Ej: "D21S11" -> .../D21S11__slice.fa   (se respeta el caso: "vWA" -> vWA__slice.fa)
+ *   Ej: "D21S11" -> /slices/D21S11__slice.fa   (se respeta el caso: "vWA" -> vWA__slice.fa)
  * - `slicesDir` es el subdirectorio del ensamblado ("" para GRCh38, "GRCh37/", ...).
  */
 export async function fetchSliceFA(markerName: string, slicesDir = "") {
-  const base = requireBase() + slicesDir;
   const file = `${markerName}__slice.fa`;
-  const url = `${base}${file}`;
+  const url = sliceUrlFor(markerName, slicesDir);
 
-  // Importante para Next.js en cliente/servidor: usar fetch nativo
   const res = await fetch(url, {
     cache: "force-cache", // deja que el navegador/edge lo cachee
   });
@@ -73,12 +73,4 @@ export async function fetchSliceFA(markerName: string, slicesDir = "") {
   }
 
   return { header, seq, url, region: parseSliceHeader(header) };
-}
-
-/**
- * (Opcional) helper: arma la URL absoluta al slice por si la querés mostrar o linkear.
- */
-export function sliceUrlFor(markerName: string, slicesDir = "") {
-  const base = requireBase() + slicesDir;
-  return `${base}${markerName}__slice.fa`;
 }

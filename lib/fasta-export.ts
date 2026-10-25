@@ -5,9 +5,9 @@ import { markerData, type MarkerEntry } from "@/lib/markerData";
 export type ExportType = "standard" | "reference" | "tabular" | "multi";
 
 /**
- * Largest repeat count the FASTA Generator accepts: a technical input limit of
- * the tool (keeps each output small), not a biological or forensic bound. The
- * page states it in the input hint and in the validation message.
+ * Largest CE allele number the FASTA Generator accepts: a technical input limit
+ * of the tool (keeps each output small), not a biological or forensic bound.
+ * The page states it in the input hint and in the validation message.
  */
 export const MAX_REPEAT_COUNT = 100;
 
@@ -16,11 +16,11 @@ export type RepeatCountsResult =
   | { ok: false; reason: "empty" | "decimal" | "invalid" };
 
 /**
- * Repeat counts for the FASTA Generator: whole numbers from 1 to
+ * CE allele numbers for the FASTA Generator: whole numbers from 1 to
  * MAX_REPEAT_COUNT, as a list and/or ranges ("10", "10,11,12", "10-13",
  * "9,10-12,14"). Microvariants such as 9.3 are rejected, never truncated:
  * they are not supported by the simplified constructs, and String.repeat
- * would silently turn 9.3 into 9 copies.
+ * would silently drop the partial repeat.
  */
 export function parseRepeatCounts(input: string): RepeatCountsResult {
   const parts = input.split(",").map((s) => s.trim()).filter(Boolean);

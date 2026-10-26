@@ -83,6 +83,7 @@ export interface Tutorial {
   youtube: string | null;
   /** Example data to download; null when readers use their own files. */
   zip: { name: string; url: string | null; size_mb: number } | null;
+  /** Internal record of the automatic test; the page does not show it. */
   tested: {
     date: string;
     system: string;

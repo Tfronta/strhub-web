@@ -18,7 +18,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
 import { youtubeEmbedUrl, type Tutorial, type TutorialError } from "@/lib/tutorials";
-import { formatDate } from "@/lib/verified/format-date";
 import { cn } from "@/lib/utils";
 import { StuckHere } from "./StuckHere";
 import { TerminalBlock } from "./TerminalBlock";
@@ -373,17 +372,6 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
           <h2 className="text-2xl font-semibold tracking-tight">{tp("closingHeading")}</h2>
           <TutorialMarkdown text={text.closing} />
         </section>
-
-        <p className="mt-10 border-t pt-4 text-xs text-muted-foreground">
-          {tp("tested", {
-            date: formatDate(tutorial.tested.date, language),
-            system: tutorial.tested.system,
-            tool: tutorial.tool,
-            commit: tutorial.tested.commit,
-            ok: String(tutorial.tested.ok),
-            total: String(tutorial.tested.total),
-          })}
-        </p>
       </div>
     </div>
   );

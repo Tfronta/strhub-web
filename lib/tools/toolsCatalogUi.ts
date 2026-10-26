@@ -62,7 +62,7 @@ export function buildToolCards(t: (key: string) => string): ToolCard[] {
         t("tools.fdstools.features.2"),
         t("tools.fdstools.features.3"),
       ],
-      input: "FASTQ (any MPS platform; BAM not supported)",
+      input: "FASTQ (any MPS platform); aligned BAM with Bam2fds (since v2.2.0)",
       output: "Allele calls, stutter-filtered data, STRNaming nomenclature",
       website: "https://www.fdstools.nl/",
       websiteLabel: t("tools.fdstools.buttons.website"),

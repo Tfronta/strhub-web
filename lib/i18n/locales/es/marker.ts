@@ -339,7 +339,7 @@ marker: {
       },
       limitations: {
         fastqOnly:
-          "Acepta FASTQ de cualquier plataforma MPS; BAM no soportado actualmente.",
+          "Acepta FASTQ de cualquier plataforma MPS; desde la versión 2.2.0, también BAM alineados (Bam2fds).",
         homopolymerScrutiny:
           "Mejor adaptado a lecturas cortas Illumina; aplicar escrutinio extra en plataformas propensas a errores de homopolímeros.",
       },

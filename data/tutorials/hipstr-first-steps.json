@@ -1,7 +1,7 @@
 {
  "id": "hipstr-first-steps",
  "tool": "HipSTR",
- "version": "v0.7 (commit b2033bf)",
+ "version": "v0.7",
  "youtube": "F5qQQ19xAnA",
  "zip": null,
  "tested": {
@@ -30,7 +30,7 @@
     }
    ],
    "setup": "mkdir hipstr-tutorial\ncd hipstr-tutorial\ngit clone https://github.com/tfwillems/HipSTR.git\ncd HipSTR\nmake\ncd ..\npython3 -m venv hipstr-env\nhipstr-env/bin/pip install PyVCF3",
-   "setup_explain": "This creates a working folder, compiles HipSTR inside it exactly as the official HipSTR tutorial does (`git clone` + `make`), and creates a small Python environment (`hipstr-env`) with PyVCF3, which HipSTR's filter script needs. Then put your files in this folder (or write their full paths in the commands): your BAM or CRAM files with their indexes, your reference genome with its `.fai`, and your BED. The video uses our example files: a public sample (NA12878), a reduced GRCh38 and a BED with the ISFG minimum ranges of 22 forensic STRs.",
+   "setup_explain": "This creates a working folder, compiles HipSTR inside it exactly as the official HipSTR tutorial does (`git clone` + `make`), and creates a small Python environment (`hipstr-env`) with PyVCF3, which HipSTR's filter script needs. Then put your files in this folder (or write their full paths in the commands): your BAM or CRAM files with their indexes, your reference genome with its `.fai`, and your BED. The video uses our example files: a public sample (NA12878), a reduced GRCh38 and a BED with the ISFG minimum ranges of 22 forensic STRs. We tested this tutorial with HipSTR commit `b2033bf`. `git clone` gets the latest version: if your results differ from the ones shown here, go back to the tested one with `git checkout b2033bf` inside the `HipSTR` folder and run `make` again.",
    "install_errors": [
     {
      "error": "src/region.h:62:49: error: 'uint32_t' has not been declared",
@@ -441,7 +441,7 @@
     }
    ],
    "setup": "mkdir hipstr-tutorial\ncd hipstr-tutorial\ngit clone https://github.com/tfwillems/HipSTR.git\ncd HipSTR\nmake\ncd ..\npython3 -m venv hipstr-env\nhipstr-env/bin/pip install PyVCF3",
-   "setup_explain": "Esto crea una carpeta de trabajo, compila HipSTR adentro igual que el tutorial oficial de HipSTR (`git clone` + `make`), y crea un pequeño entorno de Python (`hipstr-env`) con PyVCF3, que necesita el script de filtrado de HipSTR. Después poné tus archivos en esta carpeta (o escribí sus rutas completas en los comandos): tus archivos BAM o CRAM con sus índices, tu genoma de referencia con su `.fai` y tu BED. El video usa nuestros archivos de ejemplo: una muestra pública (NA12878), un GRCh38 reducido y un BED con los rangos mínimos ISFG de 22 STR forenses.",
+   "setup_explain": "Esto crea una carpeta de trabajo, compila HipSTR adentro igual que el tutorial oficial de HipSTR (`git clone` + `make`), y crea un pequeño entorno de Python (`hipstr-env`) con PyVCF3, que necesita el script de filtrado de HipSTR. Después poné tus archivos en esta carpeta (o escribí sus rutas completas en los comandos): tus archivos BAM o CRAM con sus índices, tu genoma de referencia con su `.fai` y tu BED. El video usa nuestros archivos de ejemplo: una muestra pública (NA12878), un GRCh38 reducido y un BED con los rangos mínimos ISFG de 22 STR forenses. Probamos este tutorial con el commit `b2033bf` de HipSTR. `git clone` baja la última versión: si tus resultados no coinciden con los que se muestran acá, volvé a la versión probada con `git checkout b2033bf` dentro de la carpeta `HipSTR` y corré `make` de nuevo.",
    "install_errors": [
     {
      "error": "src/region.h:62:49: error: 'uint32_t' has not been declared",
@@ -852,7 +852,7 @@
     }
    ],
    "setup": "mkdir hipstr-tutorial\ncd hipstr-tutorial\ngit clone https://github.com/tfwillems/HipSTR.git\ncd HipSTR\nmake\ncd ..\npython3 -m venv hipstr-env\nhipstr-env/bin/pip install PyVCF3",
-   "setup_explain": "Isso cria uma pasta de trabalho, compila o HipSTR dentro dela exatamente como o tutorial oficial do HipSTR (`git clone` + `make`), e cria um pequeno ambiente Python (`hipstr-env`) com o PyVCF3, que o script de filtragem do HipSTR precisa. Depois coloque os seus arquivos nesta pasta (ou escreva os caminhos completos nos comandos): os seus arquivos BAM ou CRAM com os índices, o seu genoma de referência com o `.fai` e o seu BED. O vídeo usa os nossos arquivos de exemplo: uma amostra pública (NA12878), um GRCh38 reduzido e um BED com os intervalos mínimos ISFG de 22 STRs forenses.",
+   "setup_explain": "Isso cria uma pasta de trabalho, compila o HipSTR dentro dela exatamente como o tutorial oficial do HipSTR (`git clone` + `make`), e cria um pequeno ambiente Python (`hipstr-env`) com o PyVCF3, que o script de filtragem do HipSTR precisa. Depois coloque os seus arquivos nesta pasta (ou escreva os caminhos completos nos comandos): os seus arquivos BAM ou CRAM com os índices, o seu genoma de referência com o `.fai` e o seu BED. O vídeo usa os nossos arquivos de exemplo: uma amostra pública (NA12878), um GRCh38 reduzido e um BED com os intervalos mínimos ISFG de 22 STRs forenses. Testamos este tutorial com o commit `b2033bf` do HipSTR. O `git clone` baixa a versão mais recente: se os seus resultados não coincidirem com os mostrados aqui, volte à versão testada com `git checkout b2033bf` dentro da pasta `HipSTR` e rode `make` de novo.",
    "install_errors": [
     {
      "error": "src/region.h:62:49: error: 'uint32_t' has not been declared",

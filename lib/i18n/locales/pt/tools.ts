@@ -207,7 +207,6 @@ tools: {
     meaning: "O que significa",
     errorTitle: "Se aparecer este erro:",
     closingHeading: "Próximos passos",
-    tested: "Testado automaticamente em {date} no {system}, com o commit {commit} do {tool}: {ok} de {total} passos deram o resultado esperado. As saídas mostradas são as reais desse teste.",
     stuck: {
       button: "Problemas com este passo?",
       intro: "Conte o que aconteceu e a gente ajuda. Abre o seu programa de e-mail com o passo já preenchido; nada é enviado até você enviar por lá.",

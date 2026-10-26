@@ -207,7 +207,6 @@ tools: {
     meaning: "What it means",
     errorTitle: "If you see this error:",
     closingHeading: "What's next",
-    tested: "Tested automatically on {date} on {system}, with {tool} commit {commit}: {ok} of {total} steps gave the expected result. The outputs shown are the real ones from that test.",
     stuck: {
       button: "Stuck here?",
       intro: "Tell us what happened and we will help. This opens your email app with the step already filled in; nothing is sent until you send it from there.",

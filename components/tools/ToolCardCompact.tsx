@@ -198,6 +198,14 @@ export function ToolCardCompact({
           {isMarker ? (
             <>
               <div className="flex flex-wrap gap-2">
+                {card.tutorial && (
+                  <Button size="sm" className="text-xs h-7 py-1.5 px-2.5" asChild>
+                    <Link href={card.tutorial}>
+                      <GraduationCap className="h-3.5 w-3.5 mr-1" />
+                      {t("tools.common.tutorial")}
+                    </Link>
+                  </Button>
+                )}
                 {card.github && (
                   <Button
                     size="sm"

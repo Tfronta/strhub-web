@@ -482,7 +482,7 @@ export default {
       referenceDatasetIlluminaBamYDesc:
         "slice GIAB HG002 300x hg38 (open access, 14 loci Y-STR)",
       referenceDatasetsScope:
-        "No hay datasets de referencia para paneles SNP, ONT FASTQ crudo ni capilar FSA/HID. Para esos tipos, la verificación usa solo tu archivo (no es un fallo). STRhub no es custodio de datos. Aplican las licencias upstream.",
+        "No hay datasets de referencia para paneles SNP ni capilar FSA/HID. Para esos tipos, la verificación usa solo tu archivo (no es un fallo). STRhub no es custodio de datos. Aplican las licencias upstream.",
       inputTypeGroupWithReference: "Datasets STRhub de referencia",
       inputTypeGroupOwnOnly: "Solo tu archivo de prueba",
       inputTypeGroupAdvanced: "Avanzado",

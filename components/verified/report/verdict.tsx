@@ -9,7 +9,7 @@
  * trial has).
  */
 import type { ReactNode } from "react";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
 import { step1For, type Step1Tone } from "@/lib/verified/step1";
@@ -82,6 +82,34 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
                   <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
                     {v.readme_gaps.map((g) => <li key={g.item}>{g.text}</li>)}
                   </ul>
+                </div>
+              )}
+              {v.code !== "runs" && (
+                <div className="mt-5 rounded-lg border border-teal-200/80 bg-teal-50/50 p-4 dark:border-teal-900/60 dark:bg-teal-950/20">
+                  <h3 className="flex items-center gap-1.5 text-sm font-semibold text-teal-950 dark:text-teal-200">
+                    <LifeBuoy className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                    {t("verified.trial.reproTipsTitle")}
+                  </h3>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t("verified.trial.reproTipsSubtitle")}
+                  </p>
+                  <ul className="mt-2.5 list-disc space-y-1.5 pl-4 text-xs text-muted-foreground">
+                    <li>{t("verified.trial.reproTips.outputDir")}</li>
+                    <li>{t("verified.trial.reproTips.deps")}</li>
+                    <li>{t("verified.trial.reproTips.exampleData")}</li>
+                    <li>{t("verified.trial.reproTips.nonInteractive")}</li>
+                  </ul>
+                  <div className="mt-3">
+                    <a
+                      href="https://github.com/Tfronta/strhub-verified/blob/main/docs/GUIA-PASO-1.md"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs font-medium text-teal-700 hover:underline dark:text-teal-400"
+                    >
+                      {t("verified.trial.reproTips.guideLink")}
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
                 </div>
               )}
             </section>

@@ -12,6 +12,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { ExternalLink, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,6 +21,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
 import type { TrialRole } from "@/lib/verified/trial";
 import { repoSlugOf } from "@/lib/verified/repo-url";
+import { GUIDE_URL } from "@/lib/verified/step1";
 
 const ROLES: TrialRole[] = ["owner", "reviewer", "user"];
 
@@ -234,6 +236,41 @@ export function VerifiedStart({
           </ol>
         </CardContent>
       </Card>}
+
+      {!compact && (
+        <Card className="mt-6 border-teal-200/60 bg-teal-50/40 dark:border-teal-900/50 dark:bg-teal-950/20">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <Lightbulb className="h-5 w-5 mt-0.5 shrink-0 text-teal-600 dark:text-teal-400" />
+              <div className="space-y-1">
+                <h2 className="text-base font-semibold text-teal-950 dark:text-teal-200">
+                  {t("verified.start.readmeTipsTitle")}
+                </h2>
+                <p className="text-xs text-muted-foreground">
+                  {t("verified.start.readmeTipsSubtitle")}
+                </p>
+                <ul className="mt-3 list-disc space-y-1.5 pl-4 text-xs text-muted-foreground">
+                  <li>{t("verified.start.readmeTips.command")}</li>
+                  <li>{t("verified.start.readmeTips.inputs")}</li>
+                  <li>{t("verified.start.readmeTips.environment")}</li>
+                  <li>{t("verified.start.readmeTips.nonInteractive")}</li>
+                </ul>
+                <div className="pt-3">
+                  <a
+                    href={GUIDE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-teal-700 hover:underline dark:text-teal-400"
+                  >
+                    {t("verified.start.readmeTips.guideLink")}
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {role === "owner" && !compact && (
         <p className="mt-6 text-sm text-muted-foreground">

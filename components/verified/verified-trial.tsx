@@ -12,7 +12,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -324,8 +324,8 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
         <Card className="mt-6">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <span className="inline-block h-3 w-3 animate-pulse rounded-full bg-teal-600" aria-hidden />
-              <p className="text-sm">{t(`verified.trial.state.${stalled ? "stalled" : status?.state ?? "pending"}`)}</p>
+              <Loader2 className="h-5 w-5 animate-spin text-teal-600 shrink-0" aria-hidden />
+              <p className="text-sm font-medium">{t(`verified.trial.state.${stalled ? "stalled" : status?.state ?? "pending"}`)}</p>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">{t("verified.trial.elapsed", { minutes: String(elapsedMin) })}</p>
             {status?.runUrl && (

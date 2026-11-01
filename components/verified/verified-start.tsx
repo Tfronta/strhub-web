@@ -12,7 +12,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ExternalLink, Lightbulb } from "lucide-react";
+import { ExternalLink, Lightbulb, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -169,7 +169,10 @@ export function VerifiedStart({
             }}
           />
           {resolving ? (
-            <p className="text-sm text-muted-foreground" aria-live="polite">{t("verified.start.refResolving")}</p>
+            <p className="flex items-center gap-1.5 text-sm text-muted-foreground" aria-live="polite">
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-600" />
+              {t("verified.start.refResolving")}
+            </p>
           ) : resolved ? (
             <p className="text-sm" aria-live="polite">
               <span className="font-medium">{t("verified.start.refPinnedLabel")}</span>{" "}
@@ -219,6 +222,7 @@ export function VerifiedStart({
 
         <div className="flex flex-wrap items-center gap-4">
           <Button type="submit" disabled={busy || !repo.trim()}>
+            {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {busy ? t("verified.start.starting") : t("verified.start.cta")}
           </Button>
           <p className="text-sm text-muted-foreground">{t("verified.start.noPublish")}</p>

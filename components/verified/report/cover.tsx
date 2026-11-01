@@ -79,7 +79,7 @@ export function Cover({
       label: t("verified.files.heading"),
       value: (
         <span className="flex flex-wrap gap-x-4 gap-y-1">
-          {pdfUrl && <a href={pdfUrl} className="inline-flex items-center gap-1 font-medium text-primary hover:underline"><FileDown className="h-3.5 w-3.5" /> {t("verified.files.pdf")}</a>}
+          {pdfUrl && <a href={pdfUrl} download className="inline-flex items-center gap-1 font-medium text-primary hover:underline"><FileDown className="h-3.5 w-3.5" /> {t("verified.files.pdf")}</a>}
           {staticPageUrl && <a href={staticPageUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-primary hover:underline">{t("verified.files.html")} <ExternalLink className="h-3 w-3" /></a>}
           {jsonUrl && <a href={jsonUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-primary hover:underline"><FileJson className="h-3.5 w-3.5" /> {t("verified.files.json")}</a>}
         </span>
@@ -89,12 +89,24 @@ export function Cover({
 
   return (
     <div className="mt-6 rounded-lg border bg-card p-5 sm:p-6">
-      <div className="flex flex-wrap items-center gap-2">
-        <Badge className={cn("w-fit", TONE[level.tone])}>{level.label}</Badge>
-        {panel && (
-          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs text-muted-foreground">
-            {t(`verified.panel.${panel}`)}
-          </span>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge className={cn("w-fit", TONE[level.tone])}>{level.label}</Badge>
+          {panel && (
+            <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs text-muted-foreground">
+              {t(`verified.panel.${panel}`)}
+            </span>
+          )}
+        </div>
+        {pdfUrl && (
+          <a
+            href={pdfUrl}
+            download
+            className="inline-flex items-center gap-1.5 rounded-md border border-teal-600/50 bg-teal-50/70 px-3 py-1.5 text-xs font-semibold text-teal-800 shadow-sm transition-colors hover:bg-teal-100/80 dark:bg-teal-950/40 dark:text-teal-300 dark:hover:bg-teal-950/70"
+          >
+            <FileDown className="h-3.5 w-3.5" />
+            {t("verified.files.pdf")}
+          </a>
         )}
       </div>
       <h1 className="mt-3 text-3xl font-bold tracking-tight">

@@ -18,7 +18,7 @@
  */
 import { type NextRequest, NextResponse } from "next/server";
 import { resolveRef } from "@/lib/verified/trial";
-import { repoSlugOf } from "@/lib/verified/repo-url";
+import { repoRefOf, repoSlugOf } from "@/lib/verified/repo-url";
 import { SHA_OR_TAG } from "@/lib/verified/submission";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   }
 
   const repo = request.nextUrl.searchParams.get("repo") ?? "";
-  const ref = (request.nextUrl.searchParams.get("ref") ?? "").trim();
+  const ref = (request.nextUrl.searchParams.get("ref") ?? "").trim() || repoRefOf(repo) || "";
   const repoSlug = repoSlugOf(repo);
   if (!repoSlug) return NextResponse.json({ ok: false, error: "not_a_github_repo" }, { status: 400 });
   if (ref && (ref.length > 100 || !SHA_OR_TAG.test(ref))) {

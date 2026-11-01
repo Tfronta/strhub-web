@@ -102,10 +102,15 @@ export function VerifiedStart({
     setError(null);
     setBusy(true);
     try {
+      const effectiveRef = refTyped.current
+        ? ref.trim()
+        : resolved?.how === "release" || resolved?.how === "tag"
+          ? resolved.label
+          : "";
       const res = await fetch("/api/verify/trial", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ repo: repo.trim(), ref: ref.trim(), role }),
+        body: JSON.stringify({ repo: repo.trim(), ref: effectiveRef, role }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {

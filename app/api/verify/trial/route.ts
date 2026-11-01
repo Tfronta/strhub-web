@@ -53,16 +53,18 @@ export async function POST(request: NextRequest) {
   }
   const { repo, ref, role } = parsed.data;
   const ip = clientIp(request);
-  for (const [key, max] of [
-    [`trial:client:${ip}`, PER_CLIENT],
-    [`trial:repo:${normalizeRepo(repo)}`, PER_REPO],
-  ] as const) {
-    const limit = rateLimit(key, max, WINDOW_MS);
-    if (!limit.ok) {
-      return NextResponse.json(
-        { ok: false, error: "rate_limited", retryAfterSeconds: limit.retryAfterSeconds },
-        { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } }
-      );
+  if (process.env.NODE_ENV === "production") {
+    for (const [key, max] of [
+      [`trial:client:${ip}`, PER_CLIENT],
+      [`trial:repo:${normalizeRepo(repo)}`, PER_REPO],
+    ] as const) {
+      const limit = rateLimit(key, max, WINDOW_MS);
+      if (!limit.ok) {
+        return NextResponse.json(
+          { ok: false, error: "rate_limited", retryAfterSeconds: limit.retryAfterSeconds },
+          { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } }
+        );
+      }
     }
   }
   try {

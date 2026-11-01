@@ -950,7 +950,37 @@ export default {
         runsFallback: "Corrió y produjo su salida documentada, pero sobre el entorno listo al que apunta el README, porque su código fuente no se pudo compilar en el commit fijado.",
         fails: "No lo hizo. La evidencia apunta a la herramienta o a su forma documentada de correr.",
         undetermined: "STRhub no pudo deducir cómo correrla desde el repositorio. Es un hallazgo sobre la documentación, no sobre el software.",
+        // Cuando el motivo es nuestro, no es un hallazgo sobre la documentación.
+        undeterminedOurs: "STRhub no pudo intentar la corrida con lo que tiene. No es un hallazgo sobre la documentación ni sobre el software.",
         out_of_scope: "Necesita algo que el runner automático no puede dar. Una verificación manual puede cubrirlo.",
+      },
+      // Paso 1: la ejecución documentada. Es el titular, y el pipeline forense
+      // va después sin cambiarlo (docs/PLAN-Paso-1.md del engine). Ninguna de
+      // estas frases dice que la herramienta no funciona.
+      step1: {
+        heading: "Paso 1: la ejecución documentada",
+        pipelineHeading: "Paso 2: el pipeline forense de STRhub",
+        pipelineSkipped: "El paso 2 no se hizo. Eso no cambia el resultado del paso 1.",
+        headline: {
+          runs: "Así como está documentado, corre.",
+          does_not_run: "Así como está documentado, no corre.",
+          cannot_tell: "Así como está documentado, un tercero no puede saber cómo correrla.",
+          ours: "STRhub no pudo intentar la corrida documentada.",
+        },
+        body: {
+          runs: "Un tercero instaló la herramienta con los pasos que este commit enuncia y corrió el comando que escribe, y apareció el archivo de salida que ese comando nombra. No dice nada sobre genotipos ni sobre el panel forense.",
+          does_not_run: "Eso no significa que la herramienta no funcione. Significa que un tercero, siguiendo el README en este commit, no llegó al final. Corregí la documentación, o el paso que se rompió, y volvé a probar con el link sobre el commit nuevo.",
+          cannot_tell: "No se ejecutó nada. Eso no significa que la herramienta no funcione: falta en el README de este commit lo que la guía pide. Agregalo y volvé a probar con el link sobre el commit nuevo.",
+          ours: "No se ejecutó nada, y la limitación es nuestra y no de la documentación. Nada de esto es un hallazgo sobre la herramienta. Un archivo de ejemplo chico en el repositorio, o un slice que cubra las coordenadas que este comando lee, alcanzaría para que la corrida ocurra.",
+        },
+        missingTitle: "Lo que falta, por los bloques que pide la guía",
+        blocks: {
+          install: "Instalación copiable",
+          command: "Un comando",
+          input: "La entrada declarada",
+          output: "La salida declarada",
+        },
+        guideLink: "Leer la guía del paso 1",
       },
       gapsTitle: "Lo que el README no dice",
       knownIssuesTitle: "Lo que el autor documenta como problema conocido",

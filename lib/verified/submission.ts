@@ -243,7 +243,7 @@ const httpsUrl = z
   .refine((u) => u.startsWith("https://"), "Must be an https:// URL");
 
 export const githubRepoUrl = httpsUrl.refine(
-  (u) => /^https:\/\/github\.com\/[^/]+\/[^/]+\/?$/.test(u.replace(/\.git$/, "")),
+  (u) => /^https:\/\/github\.com\/[^/]+\/[^/]+(?:\/(?:tree|commit|releases\/tag|blob)\/[^?#]+)?\/?$/.test(u.replace(/\.git$/, "")),
   "Must be a public GitHub repo URL (https://github.com/owner/name)"
 );
 

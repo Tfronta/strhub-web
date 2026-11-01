@@ -292,7 +292,9 @@ export async function deleteFile(path: string, message: string): Promise<void> {
 export async function dispatchWorkflow(
   inputs: Record<string, string>
 ): Promise<void> {
-  assertWritable("dispatch a verification run");
+  if (!(inputs.mode === "trial" && inputs.publish === "false")) {
+    assertWritable("dispatch a verification run");
+  }
   await gh(
     `/repos/${ENGINE_REPO}/actions/workflows/${WORKFLOW_FILE}/dispatches`,
     {

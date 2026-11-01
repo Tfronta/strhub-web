@@ -21,6 +21,7 @@ import { PageTitle } from "@/components/page-title";
 import type { TrialRole, TrialStatus } from "@/lib/verified/trial";
 import { VERDICT_TONE } from "@/lib/verified/badge";
 import { extraGateRowsFor } from "@/lib/verified/extra-gates";
+import { step1For, type Step1Tone } from "@/lib/verified/step1";
 import { ownerIssueUrl, prepareSelfFix } from "@/lib/verified/trial-next-steps";
 import { commandFromManifest } from "@/lib/verified/command";
 import { useRouter } from "next/navigation";
@@ -29,6 +30,13 @@ import { VerifiedReportBody, type ReportLog, type ExtraGateRow } from "./report/
 const POLL_MS = 8000;
 const STALL_AFTER_MS = 6 * 60 * 1000;
 const GIVE_UP_AFTER_MS = 45 * 60 * 1000;
+
+/** Step 1 leads the page, so its border carries the result. */
+const STEP1_BORDER: Record<Step1Tone, string> = {
+  green: "border-teal-600/60",
+  red: "border-red-600/60",
+  grey: "border-slate-400/60",
+};
 
 
 export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
@@ -120,13 +128,62 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const gates = (report?.gates ?? {}) as Record<string, boolean>;
   const extraGateRows: ExtraGateRow[] = extraGateRowsFor(gates, t);
 
+  // Step 1, the documented run, is the headline; the forensic pipeline is a
+  // later section and never changes it (engine docs/PLAN-Paso-1.md). Absent on
+  // a report written before the engine carried it, and then the verdict leads
+  // as it always did.
+  const step1 = step1For(report?.step1, t);
+  const step1Block = step1 && (
+    <section
+      className={`mt-6 rounded-lg border-2 p-5 ${STEP1_BORDER[step1.tone]}`}
+      aria-labelledby="trial-step1"
+    >
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        {t("verified.trial.step1.heading")}
+      </p>
+      <h2 id="trial-step1" className="mt-1 text-lg font-semibold">
+        {step1.headline}
+      </h2>
+      <p className="mt-2 text-sm text-muted-foreground">{step1.body}</p>
+      {step1.missing.length > 0 && (
+        <div className="mt-4">
+          <h3 className="text-sm font-semibold">{step1.missingTitle}</h3>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+            {step1.missing.map((block) => (
+              <li key={block}>{block}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {step1.code !== "runs" && (
+        <Button asChild variant="outline" size="sm" className="mt-4">
+          <a href={step1.guideHref} target="_blank" rel="noreferrer">
+            {step1.guideLabel}
+            <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+          </a>
+        </Button>
+      )}
+    </section>
+  );
+
+  // An `undetermined` whose cause is ours must not be read as a finding about
+  // the documentation: STRhub not holding a sample of that kind, or its own
+  // reader rewriting the command, is not a gap in anybody's README.
+  const verdictMeaningKey =
+    verdict?.code === "runs" && fallbackUsed
+      ? "runsFallback"
+      : verdict?.code === "undetermined" && step1?.code === "ours"
+        ? "undeterminedOurs"
+        : verdict?.code;
+
   const verdictBlock = report && verdict && (
     <>
+      {step1Block}
       <section className="mt-6 rounded-lg border p-5" aria-labelledby="trial-verdict">
         <div className="flex flex-wrap items-center gap-3">
           <Badge className={`${VERDICT_TONE[verdict.code]} border-transparent text-sm`}>{t(`verified.trial.verdict.${verdict.code}`)}</Badge>
           <h2 id="trial-verdict" className="text-lg font-semibold">
-            {t(`verified.trial.verdictMeaning.${verdict.code === "runs" && fallbackUsed ? "runsFallback" : verdict.code}`)}
+            {t(`verified.trial.verdictMeaning.${verdictMeaningKey}`)}
           </h2>
         </div>
         <p className="mt-3 text-sm text-muted-foreground">{verdict.reason}</p>

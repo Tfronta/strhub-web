@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseBed3 } from "./validate-regions";
+import { parseBed3, validateRegions, type BedInterval } from "./validate-regions";
 
 /**
  * These cases are the contract with `harness/validate_bed.py` in the engine.
@@ -91,5 +91,40 @@ describe("parseBed3", () => {
 
   it("rejects end <= start", () => {
     expect(() => parseBed3("chr1\t200\t100\n")).toThrow(/end must be greater than start/);
+  });
+});
+
+/**
+ * The pre-flight rule, mirrored by harness/tests/test_validate_rule.py: a BED is
+ * rejected for reaching too few panel loci, never for listing loci beyond the
+ * slice (a medical tool's shipped catalog lists dozens).
+ */
+describe("validateRegions", () => {
+  const panel: BedInterval[] = [
+    { chrom: "chr4", start: 3073876, end: 3075933, name: "HTT", line: 1 },
+    { chrom: "chrX", start: 147911049, end: 147913111, name: "FMR1", line: 2 },
+    { chrom: "chr9", start: 27572484, end: 27574546, name: "C9orf72", line: 3 },
+  ];
+  const row = (chrom: string, start: number, end: number, line: number): BedInterval => ({
+    chrom, start, end, name: `${chrom}:${start}-${end}`, line,
+  });
+
+  it("accepts a BED whose extra rows fall outside the panel", () => {
+    const r = validateRegions(
+      [row("chr4", 3074876, 3074933, 1), row("chrX", 147912049, 147912111, 2), row("chr1", 100, 200, 3)],
+      panel,
+      2,
+    );
+    expect(r.ok).toBe(true);
+    expect(r.coveredLoci).toEqual(["FMR1", "HTT"]);
+    expect(r.outOfPanel.map((x) => x.line)).toEqual([3]);
+    expect(r.reasons).toEqual([]);
+  });
+
+  it("rejects too few loci and names the rows outside the panel", () => {
+    const r = validateRegions([row("chr4", 3074876, 3074933, 1), row("chr1", 100, 200, 2)], panel, 2);
+    expect(r.ok).toBe(false);
+    expect(r.reasons[0]).toMatch(/covers 1 supported loci, at least 2 required/);
+    expect(r.reasons[1]).toMatch(/chr1:100-200 \(line 2\)/);
   });
 });

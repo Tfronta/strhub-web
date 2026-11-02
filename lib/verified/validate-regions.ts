@@ -1,11 +1,16 @@
 /**
  * Validate an author's regions BED against a dataset's supported-loci panel.
  *
- * STRhub Verified runs tools against SLICES, not whole genomes. A BED targeting
- * coordinates the slice doesn't cover would make a healthy tool look broken, so
- * it is a REJECTED SUBMISSION, never a failed verification. Catching it here —
- * in the form, before dispatch — is what keeps that promise cheap: the author
- * fixes it in seconds instead of burning a CI run to be told no.
+ * STRhub Verified runs tools against SLICES, not whole genomes. A BED reaching
+ * too few of the slice's loci would make a healthy tool look broken, so it is a
+ * REJECTED SUBMISSION, never a failed verification. Catching it here — in the
+ * form, before dispatch — is what keeps that promise cheap: the author fixes it
+ * in seconds instead of burning a CI run to be told no.
+ *
+ * Rows outside the panel do not reject the BED: a medical repeat tool's shipped
+ * catalog lists dozens of disease loci, and cutting it down to the slice would
+ * amend the documented procedure. They are shown to the author and the report
+ * states them as not assessed.
  *
  * This is the web mirror of the engine's `harness/validate_bed.py`. Both read
  * only BED columns 1-3, so any tool's layout works (HipSTR 7-col, GangSTR 5-col,
@@ -31,7 +36,7 @@ export interface RegionsValidation {
   ok: boolean;
   /** Panel loci the BED covers, by name. */
   coveredLoci: string[];
-  /** BED rows that overlap no supported window — the actionable errors. */
+  /** BED rows that overlap no supported window: allowed, reported as not assessed. */
   outOfPanel: BedInterval[];
   minLoci: number;
   panelSize: number;
@@ -201,18 +206,19 @@ export function validateRegions(
   }
 
   const reasons: string[] = [];
-  if (outOfPanel.length > 0) {
-    const preview = outOfPanel
-      .slice(0, 3)
-      .map((r) => `${r.chrom}:${r.start}-${r.end} (line ${r.line})`)
-      .join(", ");
-    const more = outOfPanel.length > 3 ? ` and ${outOfPanel.length - 3} more` : "";
-    reasons.push(
-      `${outOfPanel.length} region${outOfPanel.length > 1 ? "s" : ""} outside the panel: ${preview}${more}`,
-    );
-  }
   if (covered.size < minLoci) {
     reasons.push(`covers ${covered.size} supported loci, at least ${minLoci} required`);
+    // Only worth naming when they are why so little is covered.
+    if (outOfPanel.length > 0) {
+      const preview = outOfPanel
+        .slice(0, 3)
+        .map((r) => `${r.chrom}:${r.start}-${r.end} (line ${r.line})`)
+        .join(", ");
+      const more = outOfPanel.length > 3 ? ` and ${outOfPanel.length - 3} more` : "";
+      reasons.push(
+        `${outOfPanel.length} region${outOfPanel.length > 1 ? "s" : ""} outside the panel: ${preview}${more}`,
+      );
+    }
   }
 
   return {

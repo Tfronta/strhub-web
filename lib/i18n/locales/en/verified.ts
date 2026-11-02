@@ -83,6 +83,8 @@ export default {
       ont: "ONT CODIS",
       hifi: "PacBio HiFi CODIS",
       ystr: "Y-STR",
+      medical: "Medical STR",
+      hifiMedical: "PacBio HiFi medical STR",
     },
     whatVerified: {
       verifiedHeading: "What was verified",
@@ -469,6 +471,8 @@ export default {
         "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently five:",
       referenceDatasetsIntro6:
         "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently six:",
+      referenceDatasetsIntro8:
+        "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently eight:",
       referenceDatasetIllumina:
         "NIST Forensic DNA Open Dataset (ForenSeq & PowerSeq 46GY, research/training use)",
       referenceDatasetOnt:
@@ -481,6 +485,10 @@ export default {
         "GIAB NA12878 300x hg38 slice (open access, 24 autosomal forensic loci)",
       referenceDatasetIlluminaBamYDesc:
         "GIAB HG002 300x hg38 slice (open access, 14 Y-STR loci)",
+      referenceDatasetIlluminaBamMedDesc:
+        "GIAB NA12878 300x hg38 slice (open access, 51 disease-associated STR loci that most medical STR tools ship in their catalogs; execution only, not a clinical validation)",
+      referenceDatasetPacbioHifiMedDesc:
+        "GIAB HG002 PacBio HiFi (Revio) hg38 slice (open access, the same 51 disease-associated STR loci; execution only, not a clinical validation)",
       referenceDatasetsScope:
         "No reference datasets for SNP panels, raw ONT FASTQ, or capillary FSA/HID. For those types, verification uses only your test file (not a failure). STRhub is not a data custodian. See upstream licenses.",
       inputTypeGroupWithReference: "STRhub reference datasets",
@@ -640,7 +648,7 @@ export default {
       canonicalPathsDescription: "STRhub renames all input files to standard names so the same command works for both your data and our reference dataset. Use exactly these paths:",
       sliceNoticeTitle: "Our reference sample is a slice, not a whole genome",
       sliceNoticeBody:
-        "STRhub does not host full genomes. The reference data for this input type is a small extract around forensic STR markers. A tool aimed outside those markers finds no reads there, so the run says nothing about the tool.",
+        "STRhub does not host full genomes. The reference data for this input type is a small extract around a panel of STR loci (forensic or disease-associated, depending on the type). A tool aimed outside those loci finds no reads there, so the run says nothing about the tool at those loci.",
       sliceNoticeDownload: "Download the supported coordinates (BED, GRCh38)",
       timeout: "Timeout (minutes)",
       inputType: "What kind of data does your tool take?",
@@ -651,6 +659,8 @@ export default {
       inputTypeDescPacbioHifiBamHg38: "PacBio HiFi BAM aligned to hg38 (CODIS regions)",
       inputTypeDescIlluminaBamHg38: "Illumina WGS BAM aligned to hg38 (autosomal forensic STR loci)",
       inputTypeDescIlluminaBamHg38Y: "Illumina WGS BAM aligned to hg38 (Y-chromosome STR loci)",
+      inputTypeDescIlluminaBamHg38Med: "Illumina WGS BAM aligned to hg38 (disease-associated STR loci)",
+      inputTypeDescPacbioHifiBamHg38Med: "PacBio HiFi BAM aligned to hg38 (disease-associated STR loci)",
       inputTypeDescOntFastq: "Oxford Nanopore raw FASTQ reads",
       inputTypeDescIlluminaSnpFastq: "Illumina FASTQ for identity/ancestry SNP panels",
       inputTypeDescCapillaryFsa: "ABI .fsa or .hid capillary fragment analysis files",
@@ -672,6 +682,10 @@ export default {
         "The reference is a GIAB HG002 PacBio HiFi (Revio) hg38 CODIS slice (~19 MB, male sample).",
       externalDetailIlluminaBam:
         "The reference is a GIAB NA12878 300x hg38 slice covering 24 autosomal forensic STR loci (female sample, no Y markers).",
+      externalDetailIlluminaBamMed:
+        "The reference is a GIAB NA12878 300x hg38 slice around the disease-associated STR loci that most medical STR tools ship in their catalogs (female sample).",
+      externalDetailPacbioHifiMed:
+        "The reference is a GIAB HG002 PacBio HiFi (Revio) hg38 slice around the disease-associated STR loci that most medical STR tools ship in their catalogs (male sample).",
       externalDetailIlluminaBamY:
         "The reference is a GIAB HG002 300x hg38 slice covering 14 Y-STR forensic loci (male sample).",
       externalNoteIllumina:
@@ -710,7 +724,7 @@ export default {
       regionsExplainer:
         "Required for tools that read BAM files. Every tool expects its own BED layout (HipSTR, GangSTR and others use different columns), so the BED is yours to define. STRhub supplies the coordinates: download the panel below, convert it to your tool's format, and upload it.",
       regionsLibraryLabel: "Regions file",
-      regionsLibraryHint: "STRhub has the reference sample's forensic loci ready in each of these layouts, generated from hg38. Pick the one your tool reads; upload your own only if none fits.",
+      regionsLibraryHint: "STRhub has the reference sample's loci ready in each of these layouts, generated from hg38. Pick the one your tool reads; upload your own only if none fits.",
       regionsLibraryOption: {
         hipstr: "7 columns: chrom, start, end, period, reference copies, name, motif",
         gangstr: "5 columns: chrom, start, end, period, motif",
@@ -738,7 +752,7 @@ export default {
         "That file is gzipped. Decompress it first (gunzip) and upload the plain-text .bed.",
       supportedLociTitle: "Loci our sample supports ({count})",
       supportedLociExplainer:
-        "Our test sample is a slice around these forensic loci, not a whole genome. Your BED must target these regions: outside them there are no reads, so your tool could not call anything.",
+        "Our test sample is a slice around these loci, not a whole genome: it has reads only there. Your BED has to reach at least five of them; regions outside them are allowed, and the report lists them as not assessed.",
       supportedLociDownload: "Download coordinates (BED, GRCh38)",
       panelLoading: "Loading supported loci…",
       panelError:
@@ -750,9 +764,11 @@ export default {
       regionsRepoTip:
         "Tip: commit this BED to your tool's repo (e.g. regions/strhub-verified.bed) so anyone using your tool has the exact regions this attestation covers. STRhub verifies the file you upload here, not the repo copy.",
       regionsOk: "Your BED covers {covered} of {total} supported loci. Ready to verify.",
-      regionsRejectedTitle: "This BED targets regions outside our sample",
+      regionsOutsideNotAssessed:
+        "{n} of its regions are outside our slice; the report will list them as not assessed.",
+      regionsRejectedTitle: "This BED reaches too few of our sample's loci",
       regionsRejectedExplainer:
-        "These regions aren't covered by our slice, so your tool would find no reads there. This is not a problem with your tool. Adjust the BED to the panel above.",
+        "Our slice has reads only at the panel loci above, so your tool would find almost nothing to genotype. This is not a problem with your tool. Regions outside the panel are fine; add loci from the panel.",
       regionsLinePrefix: "line {line}:",
       regionsAndMore: "…and {n} more.",
       regionsTooFewLoci:

@@ -10,6 +10,7 @@
  * needed the same table.
  */
 import type { VerifiedReport } from "@/types/verified";
+import { MEDICAL_PANEL_LOCI } from "./medical-panel";
 
 // Mirrors datasets/{ont-bam-hg38,ont-fastq,pacbio-hifi-bam-hg38}/loci.bed: the
 // Illumina panel loci inside the CODIS ±10 kb windows the long-read slices
@@ -107,6 +108,22 @@ export const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
     loci: HG002_YSTR_LOCI,
     referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
+  "illumina-bam-hg38-med": {
+    name: "GIAB NA12878 300x, hg38 medical STR slice",
+    source:
+      "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/",
+    license: "Open access (GIAB / NIST). Research use.",
+    loci: MEDICAL_PANEL_LOCI,
+    referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
+  },
+  "pacbio-hifi-bam-hg38-med": {
+    name: "GIAB HG002 PacBio HiFi (Revio), hg38 medical STR slice",
+    source:
+      "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/",
+    license: "Open access (GIAB / NIST). Research use.",
+    loci: MEDICAL_PANEL_LOCI,
+    referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
+  },
 };
 
 /** Reports written before `datasets` existed: the input type, by slug. */
@@ -114,7 +131,7 @@ const LEGACY_SLUG_DATASETS: Record<string, string[]> = {
   "strait-razor-ForenSeqv1.27": ["illumina-str-fastq"],
 };
 
-export type PanelKind = "ystr" | "ont" | "hifi" | "autosomal";
+export type PanelKind = "ystr" | "ont" | "hifi" | "autosomal" | "medical" | "hifiMedical";
 
 /**
  * Which panel family a run's input types belong to, for its tag. The one place
@@ -124,6 +141,10 @@ export type PanelKind = "ystr" | "ont" | "hifi" | "autosomal";
  */
 export function panelKind(types: string[] | null | undefined): PanelKind | null {
   if (!types || types.length === 0) return null;
+  // First: a medical slice is told apart by its loci, whatever the platform.
+  if (types.some((dt) => dt.endsWith("-med"))) {
+    return types.some((dt) => dt.startsWith("pacbio-")) ? "hifiMedical" : "medical";
+  }
   if (types.some((dt) => dt.endsWith("-y"))) return "ystr";
   if (types.some((dt) => dt.startsWith("ont-"))) return "ont";
   if (types.some((dt) => dt.startsWith("pacbio-"))) return "hifi";

@@ -74,6 +74,8 @@ const INPUT_TYPE_DESC_KEYS: Record<string, string> = {
   "pacbio-hifi-bam-hg38": "verified.submit.inputTypeDescPacbioHifiBamHg38",
   "illumina-bam-hg38": "verified.submit.inputTypeDescIlluminaBamHg38",
   "illumina-bam-hg38-y": "verified.submit.inputTypeDescIlluminaBamHg38Y",
+  "illumina-bam-hg38-med": "verified.submit.inputTypeDescIlluminaBamHg38Med",
+  "pacbio-hifi-bam-hg38-med": "verified.submit.inputTypeDescPacbioHifiBamHg38Med",
   "ont-fastq": "verified.submit.inputTypeDescOntFastq",
   "illumina-snp-fastq": "verified.submit.inputTypeDescIlluminaSnpFastq",
   "capillary-fsa": "verified.submit.inputTypeDescCapillaryFsa",
@@ -1295,6 +1297,8 @@ export function VerifiedSubmitForm() {
       "ont-fastq": "verified.submit.externalDetailOntFastq",
       "illumina-bam-hg38": "verified.submit.externalDetailIlluminaBam",
       "illumina-bam-hg38-y": "verified.submit.externalDetailIlluminaBamY",
+      "illumina-bam-hg38-med": "verified.submit.externalDetailIlluminaBamMed",
+      "pacbio-hifi-bam-hg38-med": "verified.submit.externalDetailPacbioHifiMed",
     };
     const detailKey = DETAIL_KEYS[resolvedInputType] ?? "";
     // No STRhub dataset for this assay: their file is the only thing to run on.
@@ -2410,7 +2414,7 @@ export function VerifiedSubmitForm() {
               <Info className="h-4 w-4 mt-0.5 shrink-0" />
               <div className="space-y-2">
                 <p className="font-medium text-foreground">{t("verified.submit.referenceDatasetsTitle")}</p>
-                <p>{t("verified.submit.referenceDatasetsIntro6")}</p>
+                <p>{t("verified.submit.referenceDatasetsIntro8")}</p>
                 <ul className="list-disc space-y-1 pl-4">
                   <li>
                     <strong>Illumina STR FASTQ</strong>: {t("verified.submit.referenceDatasetIllumina")}{" "}
@@ -2476,6 +2480,28 @@ export function VerifiedSubmitForm() {
                       className="text-primary underline underline-offset-2"
                     >
                       GIAB HG002 300x
+                    </a>
+                  </li>
+                  <li>
+                    <strong>Illumina BAM (hg38), medical STR</strong>: {t("verified.submit.referenceDatasetIlluminaBamMedDesc")}{" "}
+                    <a
+                      href="https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2"
+                    >
+                      GIAB NA12878 300x
+                    </a>
+                  </li>
+                  <li>
+                    <strong>PacBio HiFi BAM (hg38), medical STR</strong>: {t("verified.submit.referenceDatasetPacbioHifiMedDesc")}{" "}
+                    <a
+                      href="https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2"
+                    >
+                      GIAB HG002 PacBio HiFi
                     </a>
                   </li>
                 </ul>
@@ -2787,6 +2813,15 @@ export function VerifiedSubmitForm() {
                           covered: String(regionsCheck.coveredLoci.length),
                           total: String(regionsCheck.panelSize),
                         })}
+                        {/* Allowed: a shipped catalog may list more loci than the slice holds. */}
+                        {regionsCheck.outOfPanel.length > 0 && (
+                          <>
+                            {" "}
+                            {t("verified.submit.regionsOutsideNotAssessed", {
+                              n: String(regionsCheck.outOfPanel.length),
+                            })}
+                          </>
+                        )}
                       </span>
                     </div>
                   ) : (

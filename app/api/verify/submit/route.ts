@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
           return NextResponse.json(
             {
               ok: false,
-              error: `Your regions BED targets coordinates our reference slice does not cover, so your tool would find no reads there — this is not a failure of your tool. ${result.reasons.join("; ")}.`,
+              error: `Your regions BED reaches too few of the loci our reference slice covers, so your tool would find almost no reads — this is not a failure of your tool. ${result.reasons.join("; ")}.`,
               regions: {
                 outOfPanel: result.outOfPanel.map(
                   (r) => `${r.chrom}:${r.start}-${r.end} (line ${r.line})`

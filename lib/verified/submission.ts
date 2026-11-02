@@ -11,6 +11,7 @@
  * author's PUBLIC repo by URL + immutable ref.
  */
 import { z } from "zod";
+import { MEDICAL_PANEL_LOCI } from "./medical-panel";
 
 /** Metadata for a STRhub external reference dataset (open-access, STR loci only). */
 export type ExternalDatasetInfo = {
@@ -160,6 +161,46 @@ export const INPUT_TYPES = [
       "DYS389I/DYS389II", "DYS438", "DYS390", "Y-GATA-A10", "Y-GATA-H4",
       "DYS385_2", "DYS392", "DYS448",
     ],
+  },
+  {
+    slug: "illumina-bam-hg38-med",
+    label: "Illumina BAM (hg38), medical STR",
+    description: "Illumina WGS BAM aligned to hg38 (disease-associated STR loci)",
+    hasExternalDataset: true,
+    externalDataset: {
+      name: "GIAB NA12878 300x, hg38 medical STR slice",
+      sourceUrl:
+        "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/",
+    },
+    referenceGenome: {
+      assembly: "GRCh38 / hg38",
+      mountPath: "/data/ref/hg38.fa",
+    },
+    canonicalPaths: ["/data/in/input.bam", "/data/ref/hg38.fa"],
+    requiresRegions: true,
+    minLoci: 5,
+    // Mirrors datasets/illumina-bam-hg38-med/loci.bed: the STRchive loci that at
+    // least 3 of 4 medical tool catalogs ship (ExpansionHunter, TRGT, STRipy,
+    // str-analysis). Source of truth is that BED; keep in sync.
+    supportedLoci: MEDICAL_PANEL_LOCI,
+  },
+  {
+    slug: "pacbio-hifi-bam-hg38-med",
+    label: "PacBio HiFi BAM (hg38), medical STR",
+    description: "PacBio HiFi aligned BAM against hg38 (disease-associated STR loci)",
+    hasExternalDataset: true,
+    externalDataset: {
+      name: "GIAB HG002 PacBio HiFi (Revio), hg38 medical STR slice",
+      sourceUrl:
+        "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/",
+    },
+    referenceGenome: {
+      assembly: "GRCh38 / hg38",
+      mountPath: "/data/ref/hg38.fa",
+    },
+    canonicalPaths: ["/data/in/input.bam", "/data/ref/hg38.fa"],
+    // Like the CODIS HiFi slice, no requiresRegions: the engine hands the tool its
+    // panel file (datasets/pacbio-hifi-bam-hg38-med/regions/) in the layout it reads.
   },
   {
     slug: "ont-fastq",
@@ -481,6 +522,8 @@ const TYPE_SLUG_SUFFIX: Record<string, string> = {
   "ont-bam-hg38":        "ont",
   "ont-fastq":           "ont",
   "pacbio-hifi-bam-hg38": "hifi",  // not "hg38", the last hyphen-segment
+  "illumina-bam-hg38-med": "med",       // disease-associated STR loci
+  "pacbio-hifi-bam-hg38-med": "hifi-med",
   "illumina-snp-fastq":  "snp",
   "capillary-fsa":       "fsa",
 };

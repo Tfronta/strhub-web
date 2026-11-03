@@ -76,6 +76,7 @@ const INPUT_TYPE_DESC_KEYS: Record<string, string> = {
   "illumina-bam-hg38-y": "verified.submit.inputTypeDescIlluminaBamHg38Y",
   "illumina-bam-hg38-med": "verified.submit.inputTypeDescIlluminaBamHg38Med",
   "pacbio-hifi-bam-hg38-med": "verified.submit.inputTypeDescPacbioHifiBamHg38Med",
+  "ont-bam-hg38-med": "verified.submit.inputTypeDescOntBamHg38Med",
   "ont-fastq": "verified.submit.inputTypeDescOntFastq",
   "illumina-snp-fastq": "verified.submit.inputTypeDescIlluminaSnpFastq",
   "capillary-fsa": "verified.submit.inputTypeDescCapillaryFsa",
@@ -1299,6 +1300,7 @@ export function VerifiedSubmitForm() {
       "illumina-bam-hg38-y": "verified.submit.externalDetailIlluminaBamY",
       "illumina-bam-hg38-med": "verified.submit.externalDetailIlluminaBamMed",
       "pacbio-hifi-bam-hg38-med": "verified.submit.externalDetailPacbioHifiMed",
+      "ont-bam-hg38-med": "verified.submit.externalDetailOntMed",
     };
     const detailKey = DETAIL_KEYS[resolvedInputType] ?? "";
     // No STRhub dataset for this assay: their file is the only thing to run on.
@@ -2502,6 +2504,17 @@ export function VerifiedSubmitForm() {
                       className="text-primary underline underline-offset-2"
                     >
                       GIAB HG002 PacBio HiFi
+                    </a>
+                  </li>
+                  <li>
+                    <strong>ONT BAM (hg38), medical STR</strong>: {t("verified.submit.referenceDatasetOntMedDesc")}{" "}
+                    <a
+                      href="https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2"
+                    >
+                      1000G ONT HG00113
                     </a>
                   </li>
                 </ul>

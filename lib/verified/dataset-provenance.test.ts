@@ -17,6 +17,7 @@ describe("panelKind", () => {
     expect(panelKind(["pacbio-hifi-bam-hg38"])).toBe("hifi");
     expect(panelKind(["illumina-bam-hg38-med"])).toBe("medical");
     expect(panelKind(["pacbio-hifi-bam-hg38-med"])).toBe("hifiMedical");
+    expect(panelKind(["ont-bam-hg38-med"])).toBe("ontMedical");
     expect(panelKind([])).toBeNull();
     expect(panelKind(undefined)).toBeNull();
   });
@@ -55,13 +56,14 @@ describe("the ONT FASTQ dataset", () => {
 });
 
 describe("the medical STR datasets", () => {
-  it("are offered on both platforms, with the same loci and their own cards", () => {
-    for (const slug of ["illumina-bam-hg38-med", "pacbio-hifi-bam-hg38-med"]) {
+  it("are offered across Illumina, HiFi and ONT, with the same loci and their own cards", () => {
+    for (const slug of ["illumina-bam-hg38-med", "pacbio-hifi-bam-hg38-med", "ont-bam-hg38-med"]) {
       expect(INPUT_TYPES.find((t) => t.slug === slug)?.hasExternalDataset).toBe(true);
       expect(DATASET_PROVENANCE[slug].loci).toContain("HTT");
       expect(DATASET_PROVENANCE[slug].loci).not.toContain("D18S51");
     }
     expect(deriveSlug("ExpansionHunter", "v5.0.0", "illumina-bam-hg38-med")).toBe("expansionhunter-v5-0-0-med");
     expect(deriveSlug("TRGT", "v5.1.0", "pacbio-hifi-bam-hg38-med")).toBe("trgt-v5-1-0-hifi-med");
+    expect(deriveSlug("straglr", "v1.5.0", "ont-bam-hg38-med")).toBe("straglr-v1-5-0-ont-med");
   });
 });

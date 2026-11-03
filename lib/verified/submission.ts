@@ -203,6 +203,22 @@ export const INPUT_TYPES = [
     // panel file (datasets/pacbio-hifi-bam-hg38-med/regions/) in the layout it reads.
   },
   {
+    slug: "ont-bam-hg38-med",
+    label: "ONT BAM (hg38), medical STR",
+    description: "Oxford Nanopore aligned BAM against hg38 (disease-associated STR loci)",
+    hasExternalDataset: true,
+    externalDataset: {
+      name: "1000 Genomes ONT, hg38 medical STR slice (R10 SUP)",
+      sourceUrl:
+        "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
+    },
+    referenceGenome: {
+      assembly: "GRCh38 / hg38",
+      mountPath: "/data/ref/hg38.fa",
+    },
+    canonicalPaths: ["/data/in/input.bam", "/data/ref/hg38.fa"],
+  },
+  {
     slug: "ont-fastq",
     label: "ONT FASTQ",
     description: "Oxford Nanopore raw FASTQ reads",
@@ -524,6 +540,7 @@ const TYPE_SLUG_SUFFIX: Record<string, string> = {
   "pacbio-hifi-bam-hg38": "hifi",  // not "hg38", the last hyphen-segment
   "illumina-bam-hg38-med": "med",       // disease-associated STR loci
   "pacbio-hifi-bam-hg38-med": "hifi-med",
+  "ont-bam-hg38-med":    "ont-med",
   "illumina-snp-fastq":  "snp",
   "capillary-fsa":       "fsa",
 };

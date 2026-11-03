@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import en from "@/lib/i18n/locales/en/verified";
 import es from "@/lib/i18n/locales/es/verified";
 import pt from "@/lib/i18n/locales/pt/verified";
-import { step1For } from "./step1";
-import type { VerifiedStep1 } from "@/types/verified";
+import { buildReadmeTemplate, step1For } from "./step1";
+import type { VerifiedReport, VerifiedStep1 } from "@/types/verified";
 
 /** Reads the real locale files, so a missing key fails here and not in a page. */
 const translator = (locale: Record<string, unknown>) => (key: string) => {
@@ -85,5 +85,28 @@ describe("step 1, the documented run", () => {
       expect(got.tone, name).toBe("grey");
       expect(got.missing, name).toEqual([]);
     }
+  });
+
+  it("builds a ready-to-paste README template pre-filling detected evidence and marking missing blocks", () => {
+    const snippet = buildReadmeTemplate({
+      tool: { id: "my-tool", name: "MyTool" } as VerifiedReport["tool"],
+      step1: step1({ code: "cannot_tell", missing: ["command", "output"] }),
+      evidence: [
+        {
+          claim: "install_method",
+          kind: "readme",
+          path: "README.md",
+          line: 12,
+          text: "conda install -c bioconda mytool=1.2.0",
+          url: "https://github.com/example/mytool/blob/main/README.md#L12",
+        },
+      ],
+      io_detail: undefined,
+      run: undefined,
+    });
+    expect(snippet).toContain("## Installation");
+    expect(snippet).toContain("conda install -c bioconda mytool=1.2.0");
+    expect(snippet).toContain("# TODO: one concrete command for a single sample");
+    expect(snippet).toContain("TODO: name the output file explicitly");
   });
 });

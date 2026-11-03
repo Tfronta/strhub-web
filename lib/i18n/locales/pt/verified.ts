@@ -85,6 +85,7 @@ export default {
       ystr: "Y-STR",
       medical: "STR médico",
       hifiMedical: "STR médico PacBio HiFi",
+      ontMedical: "STR médico ONT",
     },
     whatVerified: {
       verifiedHeading: "O que foi verificado",
@@ -489,6 +490,8 @@ export default {
         "slice GIAB NA12878 300x hg38 (open access, 51 loci STR associados a doenças que os catálogos da maioria das ferramentas de STR médicos trazem; prova execução, não é uma validação clínica)",
       referenceDatasetPacbioHifiMedDesc:
         "slice GIAB HG002 PacBio HiFi (Revio) hg38 (open access, os mesmos 51 loci STR associados a doenças; prova execução, não é uma validação clínica)",
+      referenceDatasetOntMedDesc:
+        "slice 1000 Genomes ONT (HG00113, R10 SUP) hg38 (open access, os mesmos 51 loci STR associados a doenças; prova execução, não é uma validação clínica)",
       referenceDatasetsScope:
         "Não há datasets de referência para painéis SNP, ONT FASTQ bruto ou capilar FSA/HID. Para esses tipos, a verificação usa apenas seu arquivo (não é falha). O STRhub não é custodiante de dados. Aplicam-se as licenças upstream.",
       inputTypeGroupWithReference: "Datasets STRhub de referência",
@@ -661,6 +664,7 @@ export default {
       inputTypeDescIlluminaBamHg38Y: "BAM Illumina WGS alinhado ao hg38 (loci STR do cromossomo Y)",
       inputTypeDescIlluminaBamHg38Med: "BAM Illumina WGS alinhado ao hg38 (loci STR associados a doenças)",
       inputTypeDescPacbioHifiBamHg38Med: "BAM PacBio HiFi alinhado ao hg38 (loci STR associados a doenças)",
+      inputTypeDescOntBamHg38Med: "BAM Oxford Nanopore alinhado ao hg38 (loci STR associados a doenças)",
       inputTypeDescOntFastq: "FASTQ bruto Oxford Nanopore",
       inputTypeDescIlluminaSnpFastq: "FASTQ Illumina para painéis SNP de identidade/ancestralidade",
       inputTypeDescCapillaryFsa: "Arquivos de eletroforese capilar ABI .fsa ou .hid",
@@ -686,6 +690,8 @@ export default {
         "A referência é um recorte hg38 de GIAB NA12878 300x em torno dos loci STR associados a doenças que os catálogos da maioria das ferramentas de STR médicos trazem (amostra feminina).",
       externalDetailPacbioHifiMed:
         "A referência é um recorte hg38 de GIAB HG002 PacBio HiFi (Revio) em torno dos loci STR associados a doenças que os catálogos da maioria das ferramentas de STR médicos trazem (amostra masculina).",
+      externalDetailOntMed:
+        "A referência é um recorte hg38 de 1000 Genomes ONT (HG00113, R10 SUP) em torno dos loci STR associados a doenças que os catálogos da maioria das ferramentas de STR médicos trazem (~40 MB, amostra masculina).",
       externalDetailIlluminaBamY:
         "A referência é um slice GIAB HG002 300x hg38 cobrindo 14 loci Y-STR forenses (amostra masculina).",
       externalNoteIllumina:
@@ -1006,6 +1012,11 @@ export default {
           output: "A saída declarada",
         },
         guideLink: "Ler o guia do passo 1",
+        copyTemplate: "Copiar modelo de README",
+        templateCopied: "Copiado para a área de transferência!",
+        showTemplate: "Ver modelo de README",
+        hideTemplate: "Ocultar modelo de README",
+        templateHint: "Cole estas quatro seções no seu README.md (e preencha os TODOs) para que qualquer usuário, revisor ou o STRhub Verified possa executar sua ferramenta em um clique:",
       },
       gapsTitle: "O que o README não diz",
       reproTipsTitle: "Recomendações para garantir a reprodutibilidade",

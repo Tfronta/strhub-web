@@ -22,6 +22,7 @@ import type { TrialRole, TrialStatus } from "@/lib/verified/trial";
 import { VERDICT_TONE } from "@/lib/verified/badge";
 import { extraGateRowsFor } from "@/lib/verified/extra-gates";
 import { step1For, type Step1Tone } from "@/lib/verified/step1";
+import { ReadmeTemplateAction } from "@/components/verified/report/verdict";
 import { ownerIssueUrl, prepareSelfFix } from "@/lib/verified/trial-next-steps";
 import { commandFromManifest } from "@/lib/verified/command";
 import { useRouter } from "next/navigation";
@@ -155,13 +156,16 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
           </ul>
         </div>
       )}
-      {step1.code !== "runs" && (
-        <Button asChild variant="outline" size="sm" className="mt-4">
-          <a href={step1.guideHref} target="_blank" rel="noreferrer">
-            {step1.guideLabel}
-            <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
-          </a>
-        </Button>
+      {step1.code !== "runs" && report && (
+        <div className="mt-4 space-y-2">
+          <Button asChild variant="outline" size="sm">
+            <a href={step1.guideHref} target="_blank" rel="noreferrer">
+              {step1.guideLabel}
+              <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+            </a>
+          </Button>
+          <ReadmeTemplateAction report={report} />
+        </div>
       )}
     </section>
   );

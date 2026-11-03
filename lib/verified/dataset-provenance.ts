@@ -124,6 +124,14 @@ export const DATASET_PROVENANCE: Record<string, DatasetProvenance> = {
     loci: MEDICAL_PANEL_LOCI,
     referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
   },
+  "ont-bam-hg38-med": {
+    name: "1000 Genomes ONT, hg38 medical STR slice (R10 SUP)",
+    source:
+      "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
+    license: "Open access (1000 Genomes / HPRC). Research use.",
+    loci: MEDICAL_PANEL_LOCI,
+    referenceGenome: { assembly: "GRCh38 / hg38", mountPath: "/data/ref/hg38.fa" },
+  },
 };
 
 /** Reports written before `datasets` existed: the input type, by slug. */
@@ -131,7 +139,7 @@ const LEGACY_SLUG_DATASETS: Record<string, string[]> = {
   "strait-razor-ForenSeqv1.27": ["illumina-str-fastq"],
 };
 
-export type PanelKind = "ystr" | "ont" | "hifi" | "autosomal" | "medical" | "hifiMedical";
+export type PanelKind = "ystr" | "ont" | "hifi" | "autosomal" | "medical" | "hifiMedical" | "ontMedical";
 
 /**
  * Which panel family a run's input types belong to, for its tag. The one place
@@ -143,7 +151,9 @@ export function panelKind(types: string[] | null | undefined): PanelKind | null 
   if (!types || types.length === 0) return null;
   // First: a medical slice is told apart by its loci, whatever the platform.
   if (types.some((dt) => dt.endsWith("-med"))) {
-    return types.some((dt) => dt.startsWith("pacbio-")) ? "hifiMedical" : "medical";
+    if (types.some((dt) => dt.startsWith("pacbio-"))) return "hifiMedical";
+    if (types.some((dt) => dt.startsWith("ont-"))) return "ontMedical";
+    return "medical";
   }
   if (types.some((dt) => dt.endsWith("-y"))) return "ystr";
   if (types.some((dt) => dt.startsWith("ont-"))) return "ont";

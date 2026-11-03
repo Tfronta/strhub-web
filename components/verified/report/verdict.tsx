@@ -8,19 +8,72 @@
  * block here (the same Step 1 and verdict, with the two ways out that only a
  * trial has).
  */
-import type { ReactNode } from "react";
-import { ExternalLink, LifeBuoy } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { Check, Copy, ExternalLink, FileCode2, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
-import { step1For, type Step1Tone } from "@/lib/verified/step1";
+import { buildReadmeTemplate, step1For, type Step1Tone } from "@/lib/verified/step1";
 import type { VerifiedReport } from "@/types/verified";
 import { useHeaded } from "./certificate";
+
+export { buildReadmeTemplate };
 
 const STEP1_BORDER: Record<Step1Tone, string> = {
   green: "border-teal-600/60",
   red: "border-red-600/60",
   grey: "border-slate-400/60",
 };
+
+export function ReadmeTemplateAction({ report }: { report: VerifiedReport }) {
+  const { t } = useLanguage();
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const snippet = buildReadmeTemplate(report);
+
+  async function copySnippet() {
+    try {
+      await navigator.clipboard.writeText(snippet);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setOpen(true);
+    }
+  }
+
+  return (
+    <div className="mt-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <Button type="button" variant="secondary" size="sm" onClick={copySnippet}>
+          {copied ? (
+            <>
+              <Check className="mr-1.5 h-3.5 w-3.5 text-teal-600" />
+              {t("verified.trial.step1.templateCopied")}
+            </>
+          ) : (
+            <>
+              <Copy className="mr-1.5 h-3.5 w-3.5" />
+              {t("verified.trial.step1.copyTemplate")}
+            </>
+          )}
+        </Button>
+        <Button type="button" variant="ghost" size="sm" onClick={() => setOpen((v) => !v)}>
+          <FileCode2 className="mr-1.5 h-3.5 w-3.5" />
+          {open ? t("verified.trial.step1.hideTemplate") : t("verified.trial.step1.showTemplate")}
+        </Button>
+      </div>
+      {open && (
+        <div className="mt-3 rounded-md border bg-muted/60 p-3">
+          <p className="mb-2 text-xs text-muted-foreground">
+            {t("verified.trial.step1.templateHint")}
+          </p>
+          <pre className="overflow-x-auto rounded bg-background p-3 text-xs leading-relaxed">
+            <code>{snippet}</code>
+          </pre>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function AsItIsOpening({ report, children }: { report: VerifiedReport; children?: ReactNode }) {
   const { t } = useLanguage();
@@ -62,12 +115,15 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
                 </div>
               )}
               {step1.code !== "runs" && (
-                <Button asChild variant="outline" size="sm" className="mt-4">
-                  <a href={step1.guideHref} target="_blank" rel="noreferrer">
-                    {step1.guideLabel}
-                    <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
-                  </a>
-                </Button>
+                <div className="mt-4 space-y-2">
+                  <Button asChild variant="outline" size="sm">
+                    <a href={step1.guideHref} target="_blank" rel="noreferrer">
+                      {step1.guideLabel}
+                      <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+                    </a>
+                  </Button>
+                  <ReadmeTemplateAction report={report} />
+                </div>
               )}
             </section>
           )}

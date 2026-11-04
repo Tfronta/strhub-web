@@ -961,10 +961,12 @@ export default {
     trial: {
       title: "Prueba",
       of: "Prueba de {repo} en {ref}",
+      estimatedTime: "Suele tardar entre 2 y 5 minutos. La verificación se ejecuta en un contenedor limpio y aislado en GitHub Actions.",
+      queueDelayNotice: "Los servidores de GitHub Actions están demorando más de lo habitual en asignar un runner libre. La prueba se iniciará automáticamente; podés dejar esta pestaña abierta.",
       state: {
-        pending: "En cola. GitHub Actions está tomando la corrida.",
-        queued: "En cola. GitHub Actions está tomando la corrida.",
-        in_progress: "Corriendo: instalando la herramienta y ejecutándola en un contenedor limpio. Suele tardar de 2 a 10 minutos.",
+        pending: "En cola. GitHub Actions está asignando una máquina virtual limpia para la prueba.",
+        queued: "En cola. GitHub Actions está asignando una máquina virtual limpia para la prueba.",
+        in_progress: "Corriendo: instalando la herramienta y verificando las compuertas en un contenedor limpio. Suele tardar de 2 a 5 minutos.",
         completed: "Terminado.",
         expired: "El resultado de esta prueba venció (se guardan 30 días). Iniciá uno nuevo.",
         stalled: "Todavía no hay corrida después de varios minutos. GitHub puede estar ocupado; el link sigue funcionando.",

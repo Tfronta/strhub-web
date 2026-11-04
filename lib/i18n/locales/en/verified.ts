@@ -961,10 +961,12 @@ export default {
     trial: {
       title: "Test run",
       of: "Test run of {repo} at {ref}",
+      estimatedTime: "Usually takes 2 to 5 minutes. Verification runs in a clean, isolated container on GitHub Actions.",
+      queueDelayNotice: "GitHub Actions cloud runners are taking longer than usual to allocate. The run will start automatically as soon as a runner is ready; you can keep this tab open.",
       state: {
-        pending: "Queued. GitHub Actions is picking up the run.",
-        queued: "Queued. GitHub Actions is picking up the run.",
-        in_progress: "Running: installing the tool and running it in a clean container. Usually 2 to 10 minutes.",
+        pending: "Queued. GitHub Actions is allocating a clean runner for the trial.",
+        queued: "Queued. GitHub Actions is allocating a clean runner for the trial.",
+        in_progress: "Running: installing the tool and checking gates in a clean container. Usually 2 to 5 minutes.",
         completed: "Finished.",
         expired: "This test run's result has expired (results are kept 30 days). Start a new one.",
         stalled: "Still no run after several minutes. GitHub may be busy; the link keeps working.",

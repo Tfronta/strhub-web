@@ -961,10 +961,12 @@ export default {
     trial: {
       title: "Teste",
       of: "Teste de {repo} em {ref}",
+      estimatedTime: "Geralmente leva de 2 a 5 minutos. A verificação é executada em um contêiner limpo e isolado no GitHub Actions.",
+      queueDelayNotice: "Os servidores do GitHub Actions estão demorando mais do que o habitual para alocar uma máquina. O teste começará automaticamente; você pode manter esta aba aberta.",
       state: {
-        pending: "Na fila. O GitHub Actions está pegando a execução.",
-        queued: "Na fila. O GitHub Actions está pegando a execução.",
-        in_progress: "Executando: instalando a ferramenta e rodando em um contêiner limpo. Costuma levar de 2 a 10 minutos.",
+        pending: "Na fila. O GitHub Actions está alocando um ambiente limpo para o teste.",
+        queued: "Na fila. O GitHub Actions está alocando um ambiente limpo para o teste.",
+        in_progress: "Executando: instalando a ferramenta e verificando as etapas em um contêiner limpo. Costuma levar de 2 a 5 minutos.",
         completed: "Concluído.",
         expired: "O resultado deste teste expirou (resultados ficam 30 dias). Inicie um novo.",
         stalled: "Ainda sem execução depois de vários minutos. O GitHub pode estar ocupado; o link continua funcionando.",

@@ -325,18 +325,28 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
       )}
 
       {running && !fetchError && (
-        <Card className="mt-6">
+        <Card className="mt-6 border-slate-200 dark:border-slate-800 shadow-sm">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <Loader2 className="h-5 w-5 animate-spin text-teal-600 shrink-0" aria-hidden />
-              <p className="text-sm font-medium">{t(`verified.trial.state.${stalled ? "stalled" : status?.state ?? "pending"}`)}</p>
+            <div className="flex items-start gap-3">
+              <Loader2 className="h-5 w-5 animate-spin text-teal-600 shrink-0 mt-0.5" aria-hidden />
+              <div className="flex-1 space-y-1">
+                <p className="text-sm font-semibold">{t(`verified.trial.state.${stalled ? "stalled" : status?.state ?? "pending"}`)}</p>
+                <p className="text-xs text-muted-foreground">{t("verified.trial.estimatedTime")}</p>
+                {elapsedMin >= 2 && (status?.state === "pending" || !status?.state || status?.state === "queued") && (
+                  <p className="mt-2 text-xs text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded px-2.5 py-1.5">
+                    {t("verified.trial.queueDelayNotice")}
+                  </p>
+                )}
+              </div>
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">{t("verified.trial.elapsed", { minutes: String(elapsedMin) })}</p>
-            {status?.runUrl && (
-              <a href={status.runUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1 text-sm underline underline-offset-2">
-                {t("verified.trial.runLink")} <ExternalLink className="h-3.5 w-3.5" />
-              </a>
-            )}
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-xs text-muted-foreground">
+              <span>{t("verified.trial.elapsed", { minutes: String(elapsedMin) })}</span>
+              {status?.runUrl && (
+                <a href={status.runUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-foreground hover:underline">
+                  {t("verified.trial.runLink")} <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+              )}
+            </div>
           </CardContent>
         </Card>
       )}

@@ -325,27 +325,44 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
       )}
 
       {running && !fetchError && (
-        <Card className="mt-6 border-slate-200 dark:border-slate-800 shadow-sm">
+        <Card className="mt-6 border-teal-200/80 bg-teal-50/40 shadow-sm dark:border-teal-900/60 dark:bg-teal-950/20">
           <CardContent className="pt-6">
-            <div className="flex items-start gap-3">
-              <Loader2 className="h-5 w-5 animate-spin text-teal-600 shrink-0 mt-0.5" aria-hidden />
-              <div className="flex-1 space-y-1">
-                <p className="text-sm font-semibold">{t(`verified.trial.state.${stalled ? "stalled" : status?.state ?? "pending"}`)}</p>
-                <p className="text-xs text-muted-foreground">{t("verified.trial.estimatedTime")}</p>
+            <div className="flex items-start gap-3.5">
+              <Loader2 className="h-5 w-5 animate-spin text-teal-600 shrink-0 mt-0.5 dark:text-teal-400" aria-hidden />
+              <div className="flex-1 space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h2 className="text-base font-semibold text-teal-950 dark:text-teal-100">
+                    {t("verified.trial.waitingBannerTitle")}
+                  </h2>
+                  <span className="rounded bg-teal-100/80 px-2 py-0.5 font-mono text-xs font-medium text-teal-900 dark:bg-teal-900/60 dark:text-teal-200">
+                    {t("verified.trial.elapsed", { minutes: String(elapsedMin) })}
+                  </span>
+                </div>
+                <p className="text-sm leading-relaxed text-teal-900/85 dark:text-teal-300/85">
+                  {t("verified.trial.waitingBannerDescription")}
+                </p>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-teal-200/60 pt-3 text-xs dark:border-teal-900/50">
+                  <span className="text-muted-foreground">
+                    <span className="font-medium text-foreground">{t("verified.trial.currentStatusLabel")}:</span>{" "}
+                    {t(`verified.trial.state.${stalled ? "stalled" : status?.state ?? "pending"}`)}
+                  </span>
+                  {status?.runUrl && (
+                    <a
+                      href={status.runUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 font-medium text-teal-700 hover:underline dark:text-teal-400"
+                    >
+                      {t("verified.trial.runLink")} <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  )}
+                </div>
                 {elapsedMin >= 2 && (status?.state === "pending" || !status?.state || status?.state === "queued") && (
-                  <p className="mt-2 text-xs text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded px-2.5 py-1.5">
+                  <p className="mt-2 rounded border border-amber-200 bg-amber-50 p-2.5 text-xs text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-300">
                     {t("verified.trial.queueDelayNotice")}
                   </p>
                 )}
               </div>
-            </div>
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-xs text-muted-foreground">
-              <span>{t("verified.trial.elapsed", { minutes: String(elapsedMin) })}</span>
-              {status?.runUrl && (
-                <a href={status.runUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-foreground hover:underline">
-                  {t("verified.trial.runLink")} <ExternalLink className="h-3.5 w-3.5" />
-                </a>
-              )}
             </div>
           </CardContent>
         </Card>

@@ -2,7 +2,7 @@ export default {
   verified: {
     title: "STRhub Verified",
     description:
-      "Independent, automated attestations that a forensic STR tool installs and runs end-to-end and produces plausible output, checked on its public source at a pinned commit. Not a claim of genotype accuracy or casework fitness.",
+      "Independent, automated attestations of documented execution: we verify whether a forensic STR tool installs and runs end-to-end strictly following the instructions in its public repository, in a clean and reproducible environment. Does not evaluate genotype concordance (not a biological benchmark) nor constitute a claim of diagnostic accuracy or casework fitness.",
     summary: {
       heading: "Summary",
       level: "Result",
@@ -909,10 +909,10 @@ export default {
       },
       repoLabel: "Public GitHub repository",
       repoPlaceholder: "https://github.com/owner/tool",
-      refLabel: "Version, tag or commit",
-      refPlaceholder: "v2.1.0, or a commit SHA",
-      refHint: "Filled in for you with the latest release the moment you paste the repository. Any tag or commit works: the version a manuscript cites, or an older one, to see what changed. The result is always pinned to one commit.",
-      refResolving: "Finding the commit to pin…",
+      refLabel: "Version, tag or commit (optional)",
+      refPlaceholder: "Auto-detected latest release (or specify v2.1.0, commit...)",
+      refHint: "Optional. When you enter the repository, STRhub automatically resolves and pins the latest published version or release. If you wish to evaluate an earlier version or specific commit, you can enter it here.",
+      refResolving: "Automatically detecting the latest version…",
       refPinnedLabel: "Pinned commit:",
       refResolved: "{label} ({how})",
       refHow: {
@@ -922,6 +922,8 @@ export default {
         head: "head of the default branch",
       },
       refUnresolved: "Could not find that repository or ref. Check the URL, or type a commit SHA.",
+      ownerNotice: "If you maintain this tool, we recommend reviewing the documentation tips before starting:",
+      ownerNoticeLink: "Tips for 1-click verification",
       roleLabel: "I am",
       role: {
         owner: "the tool's maintainer",
@@ -961,6 +963,9 @@ export default {
     trial: {
       title: "Test run",
       of: "Test run of {repo} at {ref}",
+      waitingBannerTitle: "Estimated execution time: 2 to 5 minutes",
+      waitingBannerDescription: "Verification runs in a clean, isolated container on GitHub Actions. This page will update automatically once completed; no need to refresh.",
+      currentStatusLabel: "Current status",
       estimatedTime: "Usually takes 2 to 5 minutes. Verification runs in a clean, isolated container on GitHub Actions.",
       queueDelayNotice: "GitHub Actions cloud runners are taking longer than usual to allocate. The run will start automatically as soon as a runner is ready; you can keep this tab open.",
       state: {

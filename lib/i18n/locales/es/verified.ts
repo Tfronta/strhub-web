@@ -2,7 +2,7 @@ export default {
   verified: {
     title: "STRhub Verified",
     description:
-      "Atestaciones independientes y automáticas de que una herramienta forense de STR se instala, corre de principio a fin y produce un output plausible, verificado sobre su código público en un commit fijado. No afirma exactitud de genotipos ni aptitud para casework.",
+      "Verificación independiente y automatizada de ejecución documentada: comprobamos si una herramienta forense de STR se instala y ejecuta de punta a punta siguiendo estrictamente las instrucciones de su repositorio público, en un entorno limpio y reproducible. No evalúa concordancia de genotipos (no es un benchmarking biológico) ni constituye un reclamo de exactitud diagnóstica o aptitud pericial.",
     summary: {
       heading: "Resumen",
       level: "Resultado",
@@ -909,10 +909,10 @@ export default {
       },
       repoLabel: "Repositorio público de GitHub",
       repoPlaceholder: "https://github.com/owner/tool",
-      refLabel: "Versión, tag o commit",
-      refPlaceholder: "v2.1.0, o un SHA de commit",
-      refHint: "Se completa solo con el último release apenas pegás el repositorio. Vale cualquier tag o commit: la versión que cita un manuscrito, o una anterior, para ver qué cambió. El resultado siempre queda fijado a un commit.",
-      refResolving: "Buscando el commit a fijar…",
+      refLabel: "Versión, tag o commit (opcional)",
+      refPlaceholder: "Se autodetecta la última versión (o escribe v2.1.0, commit...)",
+      refHint: "Opcional. Al ingresar el repositorio, STRhub busca y fija automáticamente la última versión o release publicado. Si deseas evaluar una versión anterior o un commit específico, podés ingresarlo acá.",
+      refResolving: "Detectando automáticamente la última versión…",
       refPinnedLabel: "Commit fijo:",
       refResolved: "{label} ({how})",
       refHow: {
@@ -922,6 +922,8 @@ export default {
         head: "cabeza de la rama por defecto",
       },
       refUnresolved: "No se encontró ese repositorio o ref. Revisá la URL, o escribí un SHA de commit.",
+      ownerNotice: "Si mantienes la herramienta, te recomendamos revisar los consejos de documentación antes de iniciar:",
+      ownerNoticeLink: "Consejos para verificación en 1 clic",
       roleLabel: "Soy",
       role: {
         owner: "quien mantiene la herramienta",
@@ -961,6 +963,9 @@ export default {
     trial: {
       title: "Prueba",
       of: "Prueba de {repo} en {ref}",
+      waitingBannerTitle: "Tiempo estimado de ejecución: 2 a 5 minutos",
+      waitingBannerDescription: "La verificación se ejecuta en un contenedor limpio e independiente en GitHub Actions. La página se actualizará automáticamente al finalizar; no es necesario recargar.",
+      currentStatusLabel: "Estado actual",
       estimatedTime: "Suele tardar entre 2 y 5 minutos. La verificación se ejecuta en un contenedor limpio y aislado en GitHub Actions.",
       queueDelayNotice: "Los servidores de GitHub Actions están demorando más de lo habitual en asignar un runner libre. La prueba se iniciará automáticamente; podés dejar esta pestaña abierta.",
       state: {

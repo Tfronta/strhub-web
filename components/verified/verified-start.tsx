@@ -138,6 +138,18 @@ export function VerifiedStart({
             {t("verified.start.eyebrow")}
           </p>
           <PageTitle title={t(`verified.start.title.${role}`)} description={t(`verified.start.lead.${role}`)} />
+          {role === "owner" && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              {t("verified.start.ownerNotice")}{" "}
+              <a
+                href="#readme-tips"
+                className="font-medium text-teal-700 underline underline-offset-2 hover:text-teal-800 dark:text-teal-400"
+              >
+                {t("verified.start.ownerNoticeLink")}
+              </a>
+              .
+            </p>
+          )}
         </>
       )}
 
@@ -169,30 +181,33 @@ export function VerifiedStart({
             }}
           />
           {resolving ? (
-            <p className="flex items-center gap-1.5 text-sm text-muted-foreground" aria-live="polite">
+            <p className="flex items-center gap-1.5 text-xs text-muted-foreground" aria-live="polite">
               <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-600" />
               {t("verified.start.refResolving")}
             </p>
           ) : resolved ? (
-            <p className="text-sm" aria-live="polite">
-              <span className="font-medium">{t("verified.start.refPinnedLabel")}</span>{" "}
-              <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{resolved.sha.slice(0, 7)}</code>{" "}
-              <span className="text-muted-foreground">
-                {t("verified.start.refResolved", {
-                  label: resolved.label,
-                  how: t(`verified.start.refHow.${resolved.how}`),
-                })}
-              </span>
-            </p>
+            <div className="space-y-1 text-xs" aria-live="polite">
+              <p>
+                <span className="font-medium text-foreground">{t("verified.start.refPinnedLabel")}</span>{" "}
+                <code className="rounded bg-muted px-1.5 py-0.5 font-mono">{resolved.sha.slice(0, 7)}</code>{" "}
+                <span className="text-muted-foreground">
+                  {t("verified.start.refResolved", {
+                    label: resolved.label,
+                    how: t(`verified.start.refHow.${resolved.how}`),
+                  })}
+                </span>
+              </p>
+              <p className="text-muted-foreground">{t("verified.start.refHint")}</p>
+            </div>
           ) : unresolved ? (
-            <p className="text-sm text-amber-700 dark:text-amber-500" aria-live="polite">{t("verified.start.refUnresolved")}</p>
+            <p className="text-xs text-amber-700 dark:text-amber-500" aria-live="polite">{t("verified.start.refUnresolved")}</p>
           ) : (
-            <p className="text-sm text-muted-foreground">{t("verified.start.refHint")}</p>
+            <p className="text-xs text-muted-foreground">{t("verified.start.refHint")}</p>
           )}
         </div>
         <fieldset className="space-y-2">
           <legend className="text-sm font-medium">{t("verified.start.roleLabel")}</legend>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {ROLES.map((r) => (
               <label
                 key={r}
@@ -211,6 +226,14 @@ export function VerifiedStart({
                 {t(`verified.start.role.${r}`)}
               </label>
             ))}
+            {role === "owner" && !compact && (
+              <a
+                href="#readme-tips"
+                className="ml-1 inline-flex items-center gap-1 text-xs text-teal-700 underline underline-offset-2 hover:text-teal-800 dark:text-teal-400"
+              >
+                {t("verified.start.ownerNoticeLink")}
+              </a>
+            )}
           </div>
         </fieldset>
 
@@ -242,7 +265,7 @@ export function VerifiedStart({
       </Card>}
 
       {!compact && (
-        <Card className="mt-6 border-teal-200/60 bg-teal-50/40 dark:border-teal-900/50 dark:bg-teal-950/20">
+        <Card id="readme-tips" className="mt-6 scroll-mt-8 border-teal-200/60 bg-teal-50/40 dark:border-teal-900/50 dark:bg-teal-950/20">
           <CardContent className="pt-6">
             <div className="flex items-start gap-3">
               <Lightbulb className="h-5 w-5 mt-0.5 shrink-0 text-teal-600 dark:text-teal-400" />

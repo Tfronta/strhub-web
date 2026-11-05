@@ -43,11 +43,6 @@ const nextConfig = {
         destination: 'https://strhub.app/:path*',
         permanent: true,
       },
-      {
-        source: '/favicon.ico',
-        destination: '/strhub-isologo.svg',
-        permanent: false,
-      },
       // Global Frequencies merged into the Data section (Explore tab).
       {
         source: '/global-frequencies',

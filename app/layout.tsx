@@ -127,9 +127,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
   },
   icons: {
-    icon: [{ url: "/strhub-isologo.svg", type: "image/svg+xml", sizes: "any" }],
-    shortcut: "/strhub-isologo.svg",
-    apple: "/strhub-isologo.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/strhub-favicon.svg", type: "image/svg+xml", sizes: "any" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
   },
 };
 

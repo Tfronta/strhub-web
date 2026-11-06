@@ -42,7 +42,7 @@ export default {
     scopeNote:
       "Isto não afirma que os genótipos estão corretos, nem que a ferramenta é apta para casework ou cumpre algum padrão regulatório. A concordância contra verdade conhecida está fora do escopo.",
     disclaimer:
-      "Cada resultado é um instantâneo datado, verificado sobre o repositório público da ferramenta em um commit fixado. O STRhub não armazena código-fonte de nenhuma ferramenta.",
+      "Cada resultado é uma atestação fixa e datada, verificada no repositório público da ferramenta em um commit imutável. Não constitui monitoramento contínuo nem garantia para versões posteriores ou ambientes modificados. O STRhub não armazena código-fonte de nenhuma ferramenta.",
     dispute: {
       heading: "Viu algo errado?",
       note: "Você não precisa acreditar em nada disto às cegas. Se uma afirmação, um portão, um diagnóstico ou uma linha de evidência estiver errada, avise o STRhub: o autor da ferramenta e um revisor atento são quem detecta mais rápido uma afirmação falsa.",

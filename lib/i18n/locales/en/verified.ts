@@ -42,7 +42,7 @@ export default {
     scopeNote:
       "This is not a claim that the genotypes are correct, nor that the tool is fit for casework or meets any regulatory standard. Concordance against known truth is out of scope.",
     disclaimer:
-      "Each result is a dated snapshot, verified on the tool's public repository at a pinned commit. STRhub stores no tool source code.",
+      "Each result is a fixed, dated attestation verified on the tool's public repository at an immutable commit. It does not constitute continuous monitoring nor a guarantee for subsequent versions or modified environments. STRhub stores no tool source code.",
     dispute: {
       heading: "Something look wrong?",
       note: "You do not have to take any of this on trust. If a claim, a gate, a diagnostic or an evidence line reads wrong, tell STRhub. The tool's author and an attentive reviewer are who catch a false claim fastest.",

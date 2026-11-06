@@ -8,7 +8,7 @@
  * its own box. What a person holding the PDF and the page sees in the same
  * place on both.
  */
-import { ExternalLink, FileDown, FileJson } from "lucide-react";
+import { ExternalLink, FileDown, FileJson, Flag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedCertificate, VerifiedReport } from "@/types/verified";
@@ -82,6 +82,9 @@ export function Cover({
           {pdfUrl && <a href={pdfUrl} download className="inline-flex items-center gap-1 font-medium text-primary hover:underline"><FileDown className="h-3.5 w-3.5" /> {t("verified.files.pdf")}</a>}
           {staticPageUrl && <a href={staticPageUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-primary hover:underline">{t("verified.files.html")} <ExternalLink className="h-3 w-3" /></a>}
           {jsonUrl && <a href={jsonUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-primary hover:underline"><FileJson className="h-3.5 w-3.5" /> {t("verified.files.json")}</a>}
+          <a href="#dispute" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground hover:underline">
+            <Flag className="h-3.5 w-3.5" /> {t("verified.dispute.cta")}
+          </a>
         </span>
       ),
     });

@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: { absolute: "STRhub Verified: reproducible-execution attestations" },
   description:
-    "Independent, automated attestations of documented execution: verifying whether forensic STR tools install and run end-to-end strictly following public repository instructions in clean, reproducible environments. Does not evaluate genotype concordance or claim casework fitness.",
+    "Independent, automated attestations of documented execution. We verify whether an STR tool installs and runs end-to-end strictly following the instructions in its public repository, in a clean and reproducible environment. Our purpose is to help authors and users identify documentation or environment friction to collaborate on fixes. Does not evaluate genotype concordance nor constitute evidence for forensic casework fitness.",
 };
 
 export default async function VerifiedPage() {

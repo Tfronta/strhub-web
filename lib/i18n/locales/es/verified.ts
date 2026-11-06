@@ -2,7 +2,7 @@ export default {
   verified: {
     title: "STRhub Verified",
     description:
-      "Verificación independiente y automatizada de ejecución documentada: comprobamos si una herramienta forense de STR se instala y ejecuta de punta a punta siguiendo estrictamente las instrucciones de su repositorio público, en un entorno limpio y reproducible. No evalúa concordancia de genotipos (no es un benchmarking biológico) ni constituye un reclamo de exactitud diagnóstica o aptitud pericial.",
+      "Atestaciones independientes y automatizadas de ejecución documentada. Comprobamos si una herramienta de STR se instala y ejecuta de punta a punta siguiendo estrictamente las instrucciones de su repositorio público, en un entorno limpio y reproducible. Nuestro propósito es ayudar a autores y usuarios a detectar fricciones de documentación o entorno para colaborar en su resolución. No evalúa concordancia de genotipos (no es un benchmark biológico) ni constituye una evidencia de uso pericial.",
     summary: {
       heading: "Resumen",
       level: "Resultado",
@@ -915,8 +915,8 @@ export default {
       },
       repoLabel: "Repositorio público de GitHub",
       repoPlaceholder: "https://github.com/owner/tool",
-      refLabel: "Versión, tag o commit (opcional)",
-      refPlaceholder: "Se autodetecta la última versión (o escribe v2.1.0, commit...)",
+      refLabel: "Versión, tag o commit (STRhub carga automáticamente el último commit)",
+      refPlaceholder: "Dejar vacío para el último commit automático o escribir v1.0, main, sha...",
       refHint: "Opcional. Al ingresar el repositorio, STRhub busca y fija automáticamente la última versión o release publicado. Si deseas evaluar una versión anterior o un commit específico, podés ingresarlo acá.",
       refResolving: "Detectando automáticamente la última versión…",
       refPinnedLabel: "Commit fijo:",

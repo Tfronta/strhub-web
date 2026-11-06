@@ -139,16 +139,16 @@ export function VerifiedStart({
           </p>
           <PageTitle title={t(`verified.start.title.${role}`)} description={t(`verified.start.lead.${role}`)} />
           {role === "owner" && (
-            <p className="mt-3 text-xs text-muted-foreground">
-              {t("verified.start.ownerNotice")}{" "}
+            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              <span>{t("verified.start.ownerNotice")}</span>
               <a
                 href="#readme-tips"
-                className="font-medium text-teal-700 underline underline-offset-2 hover:text-teal-800 dark:text-teal-400"
+                className="inline-flex items-center gap-1.5 rounded-md border border-teal-600/30 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-800 transition-colors hover:bg-teal-100 hover:text-teal-900 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 dark:hover:bg-teal-900/60"
               >
+                <Lightbulb className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
                 {t("verified.start.ownerNoticeLink")}
               </a>
-              .
-            </p>
+            </div>
           )}
         </>
       )}
@@ -229,8 +229,9 @@ export function VerifiedStart({
             {role === "owner" && !compact && (
               <a
                 href="#readme-tips"
-                className="ml-1 inline-flex items-center gap-1 text-xs text-teal-700 underline underline-offset-2 hover:text-teal-800 dark:text-teal-400"
+                className="ml-2 inline-flex items-center gap-1.5 rounded-md border border-teal-600/30 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-800 transition-colors hover:bg-teal-100 hover:text-teal-900 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 dark:hover:bg-teal-900/60"
               >
+                <Lightbulb className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
                 {t("verified.start.ownerNoticeLink")}
               </a>
             )}
@@ -252,7 +253,7 @@ export function VerifiedStart({
         </div>
       </form>
 
-      {!compact && <Card className="mt-10">
+      {!compact && <Card className="mt-6">
         <CardContent className="pt-6">
           <h2 className="mb-3 text-base font-semibold">{t("verified.start.howItWorks")}</h2>
           <ol className="list-decimal space-y-2 pl-5 text-sm text-muted-foreground">

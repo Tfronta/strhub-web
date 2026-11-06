@@ -45,7 +45,7 @@ export function DisputeCard({
   const dispute = buildDisputeLink(report, slug, staticPageUrl);
   const mailto = attestationContactMailto(report, slug, staticPageUrl, t("verified.dispute.mailSubject"));
   return (
-    <div className="mt-6 rounded-lg border bg-muted/40 p-4">
+    <div id="dispute" className="mt-6 scroll-mt-8 rounded-lg border bg-muted/40 p-4">
       <h2 className="text-sm font-semibold">{t("verified.dispute.heading")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">{t("verified.dispute.note")}</p>
       {dispute.url && !dispute.tooLong && (

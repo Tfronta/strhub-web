@@ -328,6 +328,7 @@ export default {
       depthNote: "Reads que a ferramenta reportou em cada locus que chamou, do mais profundo ao menos. A profundidade reflete a cobertura da fatia de referência tanto quanto a ferramenta; está aqui para que um leitor veja que a saída é real, não para ranquear loci.",
       showAll: "Ver todos os {n}",
       showFewer: "Ver menos",
+      noOutputGenerated: "Nenhum arquivo de saída foi gerado porque a execução foi interrompida antes do término.",
     },
     run: {
       heading: "Comando executado",
@@ -347,12 +348,12 @@ export default {
     },
     matrix: {
       heading: "Matriz de verificação",
-      own: "Dados de teste da ferramenta",
-      external: "Dataset de referência",
+      own: "Execução com dados do repositório",
+      external: "Execução com dataset de referência",
       readme: "README",
       na: "N/A",
-      pass: "OK",
-      fail: "Falha",
+      pass: "Concluída",
+      fail: "Falhou",
       dataset: "Dataset",
       strhubFixture: "Fixture STRhub",
       strhubFixtureNote:
@@ -995,7 +996,7 @@ export default {
       verdictMeaning: {
         runs: "Instalou a partir do código público e produziu a saída documentada em um ambiente limpo.",
         runsFallback: "Rodou e produziu sua saída documentada, mas no ambiente pronto que o README indica, porque seu código-fonte não compilou no commit fixado.",
-        fails: "Não produziu. A evidência aponta para a ferramenta ou para sua forma documentada de executar.",
+        fails: "A execução falhou. A evidência aponta para a ferramenta ou para a sua forma documentada de execução.",
         undetermined: "O STRhub não conseguiu deduzir como executá-la a partir do repositório. É um achado sobre a documentação, não sobre o software.",
         // Quando o motivo é nosso, não é um achado sobre a documentação.
         undeterminedOurs: "O STRhub não pôde tentar a execução com o que tem. Não é um achado sobre a documentação nem sobre o software.",
@@ -1046,7 +1047,8 @@ export default {
       },
       knownIssuesTitle: "O que o autor documenta como problema conhecido",
       knownIssuesHint: "Citado do README do repositório no commit verificado. O STRhub não estabeleceu nada disso executando a ferramenta; é a nota do próprio autor sobre o próprio software.",
-      knownIssuesLine: "README linha {line}",
+      knownIssuesLine: "README oficial, linha {line}",
+      authorAcknowledgedLabel: "Documentado pelo autor no repositório oficial",
       evidenceTitle: "Evidência",
       evidenceHint: "No que a configuração desta execução se apoia, cada item no commit verificado. Abra qualquer um para conferir a afirmação que sustenta.",
       evidenceClaim: {

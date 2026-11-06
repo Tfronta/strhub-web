@@ -45,3 +45,4 @@ Running pipeline...
     expect(excerpt?.hintKey).toBe("verified.trial.hint.pathOrFile");
   });
 });
+

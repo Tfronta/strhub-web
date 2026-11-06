@@ -33,14 +33,31 @@ export function GatesLadder({
   const st = gateStates(gates, VERIFIED_GATES.map((g) => g.key));
   const failed = VERIFIED_GATES.filter((g) => !gates?.[g.key]);
   const onlyContent = failed.length === 1 && failed[0].key === "content";
+  const startsRow = extraRows.find((r) => r.key === "starts");
+  const trailingExtraRows = extraRows.filter((r) => r.key !== "starts");
+
+  const renderExtraRow = (r: ExtraGateRow) => (
+    <div key={r.key} className="flex items-center gap-3 px-4 py-2.5 text-sm">
+      <span
+        className={cn(
+          "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
+          r.passed ? "bg-teal-600 text-white" : "bg-muted text-muted-foreground",
+        )}
+      >
+        {r.passed ? <Check className="h-3 w-3" /> : <Minus className="h-3 w-3" />}
+      </span>
+      <span className="font-medium whitespace-nowrap">{r.label}</span>
+      <span className="text-muted-foreground">{r.meaning}</span>
+    </div>
+  );
 
   return (
     <>
       {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.gates")}</h2>)}
       <div className="mt-3 divide-y rounded-lg border">
-        {VERIFIED_GATES.map((g) => {
+        {VERIFIED_GATES.flatMap((g) => {
           const state = st[g.key];
-          return (
+          const gateRow = (
             <div key={g.key} className="flex items-center gap-3 px-4 py-2.5 text-sm">
               <span
                 className={cn(
@@ -68,21 +85,12 @@ export function GatesLadder({
               </span>
             </div>
           );
+          if (g.key === "installs" && startsRow) {
+            return [gateRow, renderExtraRow(startsRow)];
+          }
+          return [gateRow];
         })}
-        {extraRows.map((r) => (
-          <div key={r.key} className="flex items-center gap-3 px-4 py-2.5 text-sm">
-            <span
-              className={cn(
-                "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
-                r.passed ? "bg-teal-600 text-white" : "bg-muted text-muted-foreground",
-              )}
-            >
-              {r.passed ? <Check className="h-3 w-3" /> : <Minus className="h-3 w-3" />}
-            </span>
-            <span className="font-medium whitespace-nowrap">{r.label}</span>
-            <span className="text-muted-foreground">{r.meaning}</span>
-          </div>
-        ))}
+        {trailingExtraRows.map(renderExtraRow)}
       </div>
 
       {/* A run that stopped before the top step used to say nothing at all

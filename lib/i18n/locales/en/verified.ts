@@ -328,6 +328,7 @@ export default {
       depthNote: "Reads the tool reported at each locus it called, deepest first. Depth reflects the coverage of the reference slice as much as the tool; it is here so a reader can see the output is real, not to rank loci.",
       showAll: "Show all {n}",
       showFewer: "Show fewer",
+      noOutputGenerated: "No output files were generated because execution stopped before completion.",
     },
     run: {
       heading: "Command that ran",
@@ -347,12 +348,12 @@ export default {
     },
     matrix: {
       heading: "Verification matrix",
-      own: "Tool test data",
-      external: "Reference dataset",
+      own: "Run on repository test data",
+      external: "Run on reference dataset",
       readme: "README",
       na: "N/A",
-      pass: "Pass",
-      fail: "Fail",
+      pass: "Completed",
+      fail: "Failed",
       dataset: "Dataset",
       strhubFixture: "STRhub fixture",
       strhubFixtureNote:
@@ -995,7 +996,7 @@ export default {
       verdictMeaning: {
         runs: "It installed from its public source and produced its documented output in a clean environment.",
         runsFallback: "It ran and produced its documented output, but on the ready-made environment the README points at, because its source did not build at the pinned commit.",
-        fails: "It did not. The evidence points at the tool or its documented way of running.",
+        fails: "Execution failed. The evidence points to the tool or its documented invocation.",
         undetermined: "STRhub could not work out how to run it from the repository. That is a finding about the documentation, not about the software.",
         // When the cause is ours, it is not a finding about the documentation.
         undeterminedOurs: "STRhub could not attempt the run with what it holds. That is a finding about neither the documentation nor the software.",
@@ -1046,7 +1047,8 @@ export default {
       },
       knownIssuesTitle: "What the author documents as a known issue",
       knownIssuesHint: "Quoted from the repository's README at the verified commit. STRhub did not establish any of this by running the tool; it is the author's own note about their own software.",
-      knownIssuesLine: "README line {line}",
+      knownIssuesLine: "official repository README, line {line}",
+      authorAcknowledgedLabel: "Documented by the author in the official repository",
       evidenceTitle: "Evidence",
       evidenceHint: "What this run's configuration rests on, each item at the verified commit. Open any of them to check the claim it supports.",
       evidenceClaim: {

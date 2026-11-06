@@ -46,7 +46,13 @@ export function OutputContent({
 }) {
   const { t, language } = useLanguage();
   const [showAll, setShowAll] = useState(false);
-  if (!stats) return null;
+  if (!stats) {
+    return (
+      <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground bg-muted/20">
+        <p className="italic">{t("verified.content.noOutputGenerated")}</p>
+      </div>
+    );
+  }
 
   const n = (v: number | undefined) => new Intl.NumberFormat(language).format(v ?? 0);
   const checks = ioChecks(io);

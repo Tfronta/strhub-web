@@ -336,6 +336,9 @@ export function AuthorKnownIssues({ items }: { items: VerifiedReport["author_kno
       <div className="mt-3 space-y-4 rounded-lg border p-4">
         {items.map((k) => (
           <div key={`${k.heading}-${k.line}`}>
+            <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {t("verified.trial.authorAcknowledgedLabel")}
+            </span>
             <p className="text-sm font-medium">
               {k.heading}{" "}
               <span className="font-normal text-muted-foreground">

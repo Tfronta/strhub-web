@@ -966,6 +966,15 @@ export default {
       waitingBannerTitle: "Tempo estimado de execução: 2 a 5 minutos",
       waitingBannerDescription: "A verificação é executada em um contêiner limpo e isolado no GitHub Actions. A página será atualizada automaticamente ao término; não é necessário recarregar.",
       currentStatusLabel: "Status atual",
+      errorExcerptTitle: "Últimas linhas capturadas antes da falha:",
+      probableCauseLabel: "Diagnóstico preliminar",
+      hint: {
+        pathOrFile: "Possível erro de caminho ou arquivo não encontrado no diretório de trabalho.",
+        missingDependency: "Possível comando, binário ou dependência ausente no ambiente de execução.",
+        invalidOption: "Parâmetro, flag ou argumento não reconhecido por esta versão da ferramenta.",
+        permission: "Erro de permissão de acesso ou escrita no sistema de arquivos.",
+        resourceLimit: "Limite de memória ou recursos excedido durante a execução.",
+      },
       estimatedTime: "Geralmente leva de 2 a 5 minutos. A verificação é executada em um contêiner limpo e isolado no GitHub Actions.",
       queueDelayNotice: "Os servidores do GitHub Actions estão demorando mais do que o habitual para alocar uma máquina. O teste começará automaticamente; você pode manter esta aba aberta.",
       state: {

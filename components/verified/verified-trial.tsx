@@ -24,6 +24,7 @@ import { extraGateRowsFor } from "@/lib/verified/extra-gates";
 import { step1For, type Step1Tone } from "@/lib/verified/step1";
 import { ReadmeTemplateAction } from "@/components/verified/report/verdict";
 import { ownerIssueUrl, prepareSelfFix } from "@/lib/verified/trial-next-steps";
+import { extractFailureExcerpt } from "@/lib/verified/failure-excerpt";
 import { commandFromManifest } from "@/lib/verified/command";
 import { useRouter } from "next/navigation";
 import { VerifiedReportBody, type ReportLog, type ExtraGateRow } from "./report/verified-report-body";
@@ -126,6 +127,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
     label: t(`verified.trial.log.${leg}`),
     text,
   }));
+  const failureExcerpt = extractFailureExcerpt(status?.logs);
   const gates = (report?.gates ?? {}) as Record<string, boolean>;
   const extraGateRows: ExtraGateRow[] = extraGateRowsFor(gates, t);
 
@@ -209,6 +211,24 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             <p className="text-xs text-muted-foreground">{t("verified.trial.stoppedHint")}</p>
           </CardHeader>
           <CardContent>
+            {failureExcerpt && (
+              <div className="mb-5 rounded-lg border border-slate-300 bg-slate-950 p-4 text-slate-100 shadow-sm dark:border-slate-800">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  {t("verified.trial.errorExcerptTitle")}
+                </p>
+                <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs leading-relaxed text-slate-200">
+                  <code>{failureExcerpt.text}</code>
+                </pre>
+                {failureExcerpt.hintKey && (
+                  <p className="mt-3 border-t border-slate-800 pt-2 text-xs text-amber-300">
+                    <span className="font-semibold text-slate-200">
+                      {t("verified.trial.probableCauseLabel")}:
+                    </span>{" "}
+                    {t(failureExcerpt.hintKey)}
+                  </p>
+                )}
+              </div>
+            )}
             <ol className="space-y-5">
               {verdict.blockers.map((b) => {
                 const issue = ownerIssueUrl(report, b, typeof window !== "undefined" ? window.location.href.split("?")[0] : "");

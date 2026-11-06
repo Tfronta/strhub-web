@@ -966,6 +966,15 @@ export default {
       waitingBannerTitle: "Estimated execution time: 2 to 5 minutes",
       waitingBannerDescription: "Verification runs in a clean, isolated container on GitHub Actions. This page will update automatically once completed; no need to refresh.",
       currentStatusLabel: "Current status",
+      errorExcerptTitle: "Last lines captured before failure:",
+      probableCauseLabel: "Preliminary diagnosis",
+      hint: {
+        pathOrFile: "Possible path error or missing file in the working directory.",
+        missingDependency: "Possible command, binary, or dependency missing in the execution environment.",
+        invalidOption: "Parameter, flag, or argument not recognized by this tool version.",
+        permission: "File access or write permission error.",
+        resourceLimit: "Memory or resource limit exceeded during execution.",
+      },
       estimatedTime: "Usually takes 2 to 5 minutes. Verification runs in a clean, isolated container on GitHub Actions.",
       queueDelayNotice: "GitHub Actions cloud runners are taking longer than usual to allocate. The run will start automatically as soon as a runner is ready; you can keep this tab open.",
       state: {

@@ -34,12 +34,14 @@ import { OutputContent } from "./output";
 import {
   BuildFailedCard,
   AutoDiagnostics,
+  FailureExcerptCard,
   ManualOffer,
   ReadmeCheck,
   BulletCard,
   AuthorKnownIssues,
   EvidenceList,
 } from "./findings";
+import { extractFailureExcerpt } from "@/lib/verified/failure-excerpt";
 import { DisputeCard } from "./closing";
 import { VersionHistory, OlderVersionNotice, RetiredNotice, rowHref } from "./history";
 import { AsItIsOpening } from "./verdict";
@@ -129,9 +131,13 @@ export function VerifiedReportBody({
   const data = summarizeDatasets(report, slug);
   const isStrhubRun = instrument === "curated";
   const permalink = history ? `${SITE}${rowHref(history.current)}` : undefined;
+  const failureExcerpt = !report.gates.runs || !report.gates.installs
+    ? extractFailureExcerpt(logs)
+    : null;
   const hasCause = !!report.install_detail?.diagnostics?.length
     || Object.values(report.diagnostics ?? {}).some((issues) => issues.length > 0)
-    || !!report.author_known_issues?.length;
+    || !!report.author_known_issues?.length
+    || !!failureExcerpt;
   const next = sectionCounter();
 
   const summaryRows = [
@@ -212,6 +218,7 @@ export function VerifiedReportBody({
           <Section n={next()} title={t(report.verdict?.code === "runs" ? "verified.certificate.section.reported" : "verified.certificate.section.why")}>
             <BuildFailedCard report={report} buildLogHref={buildLogHref} />
             <AutoDiagnostics diagnostics={report.diagnostics} hasStrhubFixture={data.hasStrhubFixture} />
+            {failureExcerpt && <FailureExcerptCard excerpt={failureExcerpt} />}
             <AuthorKnownIssues items={report.author_known_issues} />
           </Section>
         )}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Check, Minus, X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { useHeaded } from "./certificate";
 import { VERIFIED_GATES, type VerifiedLevel } from "@/types/verified";
@@ -37,17 +38,28 @@ export function GatesLadder({
   const trailingExtraRows = extraRows.filter((r) => r.key !== "starts");
 
   const renderExtraRow = (r: ExtraGateRow) => (
-    <div key={r.key} className="flex items-center gap-3 px-4 py-2.5 text-sm">
+    <div key={r.key} className="flex items-center gap-3 px-4 py-3 text-sm">
       <span
         className={cn(
-          "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
+          "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs",
           r.passed ? "bg-teal-600 text-white" : "bg-muted text-muted-foreground",
         )}
       >
-        {r.passed ? <Check className="h-3 w-3" /> : <Minus className="h-3 w-3" />}
+        {r.passed ? <Check className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
       </span>
-      <span className="font-medium whitespace-nowrap">{r.label}</span>
+      <span className="font-semibold whitespace-nowrap text-foreground">{r.label}</span>
       <span className="text-muted-foreground">{r.meaning}</span>
+      <div className="ml-auto shrink-0 pl-2">
+        {r.passed ? (
+          <Badge variant="outline" className="border-teal-600/30 bg-teal-50 text-teal-700 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 font-semibold text-xs">
+            {t("verified.gate.state.pass")}
+          </Badge>
+        ) : (
+          <Badge variant="secondary" className="bg-muted text-muted-foreground font-normal text-xs">
+            {t("verified.gate.state.skipped")}
+          </Badge>
+        )}
+      </div>
     </div>
   );
 
@@ -58,10 +70,10 @@ export function GatesLadder({
         {VERIFIED_GATES.flatMap((g) => {
           const state = st[g.key];
           const gateRow = (
-            <div key={g.key} className="flex items-center gap-3 px-4 py-2.5 text-sm">
+            <div key={g.key} className="flex items-center gap-3 px-4 py-3 text-sm">
               <span
                 className={cn(
-                  "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
+                  "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs",
                   state === "pass"
                     ? "bg-teal-600 text-white"
                     : state === "stopped"
@@ -69,11 +81,11 @@ export function GatesLadder({
                       : "bg-muted text-muted-foreground",
                 )}
               >
-                {state === "pass" ? <Check className="h-3 w-3" />
-                  : state === "stopped" ? <X className="h-3 w-3" />
-                    : <Minus className="h-3 w-3" />}
+                {state === "pass" ? <Check className="h-3.5 w-3.5" />
+                  : state === "stopped" ? <X className="h-3.5 w-3.5" />
+                    : <Minus className="h-3.5 w-3.5" />}
               </span>
-              <span className="font-medium whitespace-nowrap">{g.label}</span>
+              <span className="font-semibold whitespace-nowrap text-foreground">{g.label}</span>
               <span className="text-muted-foreground">
                 {t(g.meaningKey)}
                 {state === "stopped" && (
@@ -83,6 +95,23 @@ export function GatesLadder({
                   <span className="ml-2 italic">{t("verified.gate.notReached")}</span>
                 )}
               </span>
+              <div className="ml-auto shrink-0 pl-2">
+                {state === "pass" && (
+                  <Badge variant="outline" className="border-teal-600/30 bg-teal-50 text-teal-700 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 font-semibold text-xs">
+                    {t("verified.gate.state.pass")}
+                  </Badge>
+                )}
+                {state === "stopped" && (
+                  <Badge variant="destructive" className="bg-red-600 text-white dark:bg-red-700 font-semibold text-xs">
+                    {t("verified.gate.state.fail")}
+                  </Badge>
+                )}
+                {state === "not-reached" && (
+                  <Badge variant="secondary" className="bg-muted text-muted-foreground font-normal text-xs">
+                    {t("verified.gate.state.skipped")}
+                  </Badge>
+                )}
+              </div>
             </div>
           );
           if (g.key === "installs" && startsRow) {

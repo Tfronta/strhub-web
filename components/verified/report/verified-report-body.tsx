@@ -20,6 +20,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
+import { cn } from "@/lib/utils";
 import { type VerifiedInstrument, type VerifiedReport } from "@/types/verified";
 import { hasReportedErrors } from "@/lib/verified/diagnostics";
 import { badgeFor } from "@/lib/verified/badge";
@@ -142,7 +143,23 @@ export function VerifiedReportBody({
 
   const summaryRows = [
     { label: t("verified.certificate.summary.purpose"), value: certificate.summary.purpose },
-    { label: t("verified.certificate.summary.result"), value: <span className="font-semibold text-teal-700 dark:text-teal-400">{certificate.summary.result}</span> },
+    {
+      label: t("verified.certificate.summary.result"),
+      value: (
+        <span
+          className={cn(
+            "font-bold",
+            level.tone === "red"
+              ? "text-red-700 dark:text-red-400"
+              : level.tone === "amber"
+                ? "text-amber-700 dark:text-amber-400"
+                : "text-teal-700 dark:text-teal-400"
+          )}
+        >
+          {certificate.summary.result}
+        </span>
+      ),
+    },
     { label: t("verified.certificate.summary.reached"), value: certificate.summary.reached },
     ...(certificate.summary.why ? [{ label: t("verified.certificate.summary.why"), value: certificate.summary.why }] : []),
     { label: t("verified.certificate.summary.datasets"), value: data.provenance.length ? data.provenance.map((p) => p.name).join("; ") : t("verified.summary.noDatasets") },

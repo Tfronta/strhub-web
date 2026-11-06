@@ -117,6 +117,11 @@ export default {
       stoppedEarlyNote:
         "Detenerse en este paso no es un hallazgo de que el software esté defectuoso. Registra hasta dónde llegó este intento en particular. Un software puede detenerse antes porque una dependencia que declara ya no está disponible, porque espera la entrada dispuesta de otra forma que la muestra de referencia, o porque el entorno automático no puede proveerle algo que necesita.",
       howToReadLink: "Cómo leer este resultado",
+      state: {
+        pass: "Pass",
+        fail: "Fail",
+        skipped: "Omitido",
+      },
     },
     howToRead: {
       title: "Cómo leer un resultado",

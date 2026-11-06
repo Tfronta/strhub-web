@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Minus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { useHeaded } from "./certificate";
 import { cn } from "@/lib/utils";
@@ -62,10 +63,10 @@ export function VerificationMatrix({ legs }: { legs: VerifiedMatrixLeg[] }) {
         {visible.map((leg) => {
           const state = !leg.available ? "na" : leg.passed ? "pass" : "fail";
           return (
-            <div key={leg.leg} className="flex items-center gap-3 px-4 py-2.5 text-sm">
+            <div key={leg.leg} className="flex items-center gap-3 px-4 py-3 text-sm">
               <span
                 className={cn(
-                  "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
+                  "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
                   state === "pass"
                     ? "bg-teal-600 text-white"
                     : state === "fail"
@@ -73,25 +74,35 @@ export function VerificationMatrix({ legs }: { legs: VerifiedMatrixLeg[] }) {
                       : "bg-muted text-muted-foreground",
                 )}
               >
-                {state === "pass" ? <Check className="h-3 w-3" /> : <Minus className="h-3 w-3" />}
+                {state === "pass" ? <Check className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
               </span>
-              <span className="font-medium">
+              <span className="font-semibold text-foreground">
                 {leg.leg === "own"
                   ? t("verified.matrix.own")
                   : leg.leg === "external"
                     ? t("verified.matrix.external")
                     : leg.label}
               </span>
-              <span className="text-muted-foreground">
-                {state === "na"
-                  ? t("verified.matrix.na")
-                  : state === "pass"
-                    ? t("verified.matrix.pass")
-                    : t("verified.matrix.fail")}
-              </span>
               {leg.dataset && (
-                <span className="ml-auto truncate text-xs text-muted-foreground">{leg.dataset}</span>
+                <span className="truncate text-xs text-muted-foreground">{leg.dataset}</span>
               )}
+              <div className="ml-auto shrink-0 pl-2">
+                {state === "pass" && (
+                  <Badge variant="outline" className="border-teal-600/30 bg-teal-50 text-teal-700 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 font-semibold text-xs">
+                    {t("verified.gate.state.pass")}
+                  </Badge>
+                )}
+                {state === "fail" && (
+                  <Badge variant="outline" className="border-amber-500/40 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300 font-semibold text-xs">
+                    {t("verified.gate.state.fail")}
+                  </Badge>
+                )}
+                {state === "na" && (
+                  <Badge variant="secondary" className="bg-muted text-muted-foreground font-normal text-xs">
+                    {t("verified.matrix.na")}
+                  </Badge>
+                )}
+              </div>
             </div>
           );
         })}

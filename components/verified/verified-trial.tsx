@@ -12,7 +12,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ExternalLink, Loader2 } from "lucide-react";
+import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -314,10 +314,13 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   );
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 pt-10">
-      <p className="mb-2 text-sm text-muted-foreground">
-        <Link href="/verified" className="underline underline-offset-2">STRhub Verified</Link>
-      </p>
+    <div className="container mx-auto max-w-3xl px-4 pt-8">
+      <Link
+        href="/verified"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4"
+      >
+        <ArrowLeft className="h-4 w-4" /> {t("verified.backToList")}
+      </Link>
       {!report && <PageTitle title={t("verified.trial.title")} />}
 
       {fetchError && (

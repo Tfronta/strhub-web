@@ -65,7 +65,7 @@ export function Cover({
         </span>
       ),
     },
-    { label: t("verified.certificate.cover.result"), value: <Badge className={cn(TONE[level.tone])}>{level.label}</Badge> },
+    { label: t("verified.certificate.cover.result"), value: <Badge className={cn("font-bold text-xs tracking-wide", TONE[level.tone])}>{level.label}</Badge> },
     { label: t("verified.certificate.cover.reached"), value: certificate.reached },
     {
       label: t("verified.certificate.cover.permalink"),
@@ -91,7 +91,7 @@ export function Cover({
     <div className="mt-6 rounded-lg border bg-card p-5 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge className={cn("w-fit", TONE[level.tone])}>{level.label}</Badge>
+          <Badge className={cn("w-fit font-bold", TONE[level.tone])}>{level.label}</Badge>
           {panel && (
             <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs text-muted-foreground">
               {t(`verified.panel.${panel}`)}

@@ -117,6 +117,11 @@ export default {
       stoppedEarlyNote:
         "Stopping at this step is not a finding that the software is faulty. It records how far this particular attempt got. Software can stop early because a dependency it names is no longer available, because it expects input arranged differently from the reference sample, or because the automated environment cannot supply something it needs.",
       howToReadLink: "How to read this result",
+      state: {
+        pass: "Pass",
+        fail: "Fail",
+        skipped: "Skipped",
+      },
     },
     howToRead: {
       title: "How to read a result",

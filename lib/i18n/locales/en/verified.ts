@@ -506,7 +506,7 @@ export default {
       referenceDatasetOntMedDesc:
         "1000 Genomes ONT (HG00113, R10 SUP) hg38 slice (open access, the same 51 disease-associated STR loci; execution only, not a clinical validation)",
       referenceDatasetsScope:
-        "No reference datasets for SNP panels, raw ONT FASTQ, or capillary FSA/HID. For those types, verification uses only your test file (not a failure). STRhub is not a data custodian. See upstream licenses.",
+        "No reference datasets for SNP panels or capillary FSA/HID. For those types, verification uses only your test file (not a failure). STRhub is not a data custodian. See upstream licenses.",
       inputTypeGroupWithReference: "STRhub reference datasets",
       inputTypeGroupOwnOnly: "Your test file only",
       inputTypeGroupAdvanced: "Advanced",

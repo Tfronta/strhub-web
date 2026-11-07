@@ -351,7 +351,7 @@ export default {
       strLociList: "STR loci",
       outputFile: "Output file",
       format: "Format",
-      maxDepth: "Deepest locus",
+      maxDepth: "Highest-coverage locus",
       panelCoverage: "Panel loci called",
       panelCoverageValue: "{hit} of {given}",
       notCalled: "Not called:",

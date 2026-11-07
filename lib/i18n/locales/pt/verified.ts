@@ -351,7 +351,7 @@ export default {
       strLociList: "Loci STR",
       outputFile: "Arquivo de saída",
       format: "Formato",
-      maxDepth: "Locus mais profundo",
+      maxDepth: "Locus com maior cobertura",
       panelCoverage: "Loci do painel chamados",
       panelCoverageValue: "{hit} de {given}",
       notCalled: "Não chamados:",

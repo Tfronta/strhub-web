@@ -126,7 +126,11 @@ export function OutputContent({
             value={n(stats.total_reads)}
           />
           {deepest && (
-            <Stat label={t("verified.content.maxDepth")} value={n(stats.max_sequence_depth ?? deepest[1])} detail={deepest[0]} />
+            <Stat
+              label={t("verified.content.maxDepth")}
+              value={deepest[0]}
+              detail={`${n(stats.max_sequence_depth ?? deepest[1])} ${t("verified.col.reads")}`}
+            />
           )}
         </div>
 

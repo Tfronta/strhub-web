@@ -19,6 +19,6 @@ export default function VerifiedTrialPage({
 }) {
   if (!TRIAL_ID_RE.test(params.id)) notFound();
   const as = searchParams.as ?? "";
-  const role: TrialRole = (TRIAL_ROLES as readonly string[]).includes(as) ? (as as TrialRole) : "reviewer";
+  const role: TrialRole = (TRIAL_ROLES as readonly string[]).includes(as) ? (as as TrialRole) : "user";
   return <VerifiedTrial id={params.id} role={role} />;
 }

@@ -85,7 +85,7 @@ export function GatesLadder({
                   : state === "stopped" ? <X className="h-3.5 w-3.5" />
                     : <Minus className="h-3.5 w-3.5" />}
               </span>
-              <span className="font-semibold whitespace-nowrap text-foreground">{g.label}</span>
+              <span className="font-semibold whitespace-nowrap text-foreground">{t(g.labelKey)}</span>
               <span className="text-muted-foreground">
                 {t(g.meaningKey)}
                 {state === "stopped" && (

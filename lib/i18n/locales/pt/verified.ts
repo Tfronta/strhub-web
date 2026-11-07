@@ -105,6 +105,13 @@ export default {
       reads: "reads",
     },
     gate: {
+      name: {
+        available: "Disponível",
+        installs: "Instala",
+        runs: "Executa",
+        io: "Saída esperada",
+        content: "Saída plausível",
+      },
       stoppedHere: "a execução parou aqui",
       notReached: "Não foi tentado, porque a execução já havia parado.",
       available: "o código público fixado existe",
@@ -118,8 +125,8 @@ export default {
         "Parar nesta etapa não é uma constatação de que o software esteja defeituoso. Registra até onde esta tentativa em particular chegou. Um software pode parar antes porque uma dependência que ele declara não está mais disponível, porque espera a entrada organizada de forma diferente da amostra de referência, ou porque o ambiente automático não consegue fornecer algo de que ele precisa.",
       howToReadLink: "Como ler este resultado",
       state: {
-        pass: "Pass",
-        fail: "Fail",
+        pass: "Passou",
+        fail: "Falhou",
         skipped: "Ignorado",
       },
     },
@@ -1097,7 +1104,7 @@ export default {
         trial_not_finished: "O teste não terminou.",
         generic: "Não foi possível registrar o resultado. Tente de novo.",
       },
-      share: "Compartilhe este link com o editor ou com outro revisor. Não precisa de conta.",
+      share: "Você pode compartilhar este link com o editor da revista ou com outro revisor como comprovante de execução. Não precisa de conta.",
       again: "Testar outra ferramenta",
       asOwnerCta: "Você mantém esta ferramenta? Publique a partir desta página.",
       gates: "Etapas",

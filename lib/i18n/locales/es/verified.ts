@@ -105,6 +105,13 @@ export default {
       reads: "reads",
     },
     gate: {
+      name: {
+        available: "Disponible",
+        installs: "Instala",
+        runs: "Ejecuta",
+        io: "Salida esperada",
+        content: "Salida verosímil",
+      },
       stoppedHere: "acá se detuvo la corrida",
       notReached: "No se intentó, porque la corrida ya se había detenido.",
       available: "el código público fijado existe",
@@ -118,8 +125,8 @@ export default {
         "Detenerse en este paso no es un hallazgo de que el software esté defectuoso. Registra hasta dónde llegó este intento en particular. Un software puede detenerse antes porque una dependencia que declara ya no está disponible, porque espera la entrada dispuesta de otra forma que la muestra de referencia, o porque el entorno automático no puede proveerle algo que necesita.",
       howToReadLink: "Cómo leer este resultado",
       state: {
-        pass: "Pass",
-        fail: "Fail",
+        pass: "Pasa",
+        fail: "Falla",
         skipped: "Omitido",
       },
     },
@@ -1097,7 +1104,7 @@ export default {
         trial_not_finished: "La prueba no terminó.",
         generic: "No se pudo enviar el resultado. Probá de nuevo.",
       },
-      share: "Compartí este link con el editor o con otro revisor. No necesita cuenta.",
+      share: "Podés compartir este enlace con el editor de la revista o con otros revisores como constancia de ejecución. No requiere iniciar sesión.",
       again: "Probar otra herramienta",
       asOwnerCta: "¿Mantenés esta herramienta? Publicala desde esta página.",
       gates: "Compuertas",

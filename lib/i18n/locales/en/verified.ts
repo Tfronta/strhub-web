@@ -105,6 +105,13 @@ export default {
       reads: "reads",
     },
     gate: {
+      name: {
+        available: "Available",
+        installs: "Installs",
+        runs: "Runs",
+        io: "Expected IO",
+        content: "Plausible Output",
+      },
       stoppedHere: "The run stopped here.",
       notReached: "Not attempted, because the run had already stopped.",
       available: "the pinned public source exists",
@@ -1097,7 +1104,7 @@ export default {
         trial_not_finished: "The test run has not finished.",
         generic: "Could not file the result. Try again.",
       },
-      share: "Share this link with the editor or a co-reviewer. It needs no account.",
+      share: "You can share this link with the journal editor or co-reviewers as proof of execution. No account required.",
       again: "Test another tool",
       asOwnerCta: "Are you this tool's maintainer? Publish it from this page.",
       gates: "Gates",

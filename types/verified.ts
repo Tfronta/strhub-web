@@ -500,11 +500,12 @@ export const VERIFIED_LEVELS: Record<
 export const VERIFIED_GATES: {
   key: VerifiedLevel;
   label: string;
+  labelKey: string;
   meaningKey: string;
 }[] = [
-  { key: "available", label: "Available", meaningKey: "verified.gate.available" },
-  { key: "installs", label: "Installs", meaningKey: "verified.gate.installs" },
-  { key: "runs", label: "Runs", meaningKey: "verified.gate.runs" },
-  { key: "io", label: "Expected IO", meaningKey: "verified.gate.io" },
-  { key: "content", label: "Plausible Output", meaningKey: "verified.gate.content" },
+  { key: "available", label: "Available", labelKey: "verified.gate.name.available", meaningKey: "verified.gate.available" },
+  { key: "installs", label: "Installs", labelKey: "verified.gate.name.installs", meaningKey: "verified.gate.installs" },
+  { key: "runs", label: "Runs", labelKey: "verified.gate.name.runs", meaningKey: "verified.gate.runs" },
+  { key: "io", label: "Expected IO", labelKey: "verified.gate.name.io", meaningKey: "verified.gate.io" },
+  { key: "content", label: "Plausible Output", labelKey: "verified.gate.name.content", meaningKey: "verified.gate.content" },
 ];

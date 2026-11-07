@@ -187,6 +187,8 @@ export interface VerifiedContentStats {
   snp_markers?: string[];
   total_reads?: number;
   max_sequence_depth?: number;
+  /** Which VCF field (e.g. "FORMAT/DP", "FORMAT/SD") or table column provided the read depth. */
+  depth_source?: string;
   /** Deepest first, as `most_common()` left it. */
   top_loci_by_depth?: [string, number][];
   called_genotypes?: number;

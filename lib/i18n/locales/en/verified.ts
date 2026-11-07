@@ -367,6 +367,7 @@ export default {
       },
       depthHeading: "Read depth per locus",
       depthNote: "Reads the tool reported at each locus it called, deepest first. Depth reflects the coverage of the reference slice as much as the tool; it is here so a reader can see the output is real, not to rank loci.",
+      depthSourceNote: "Coverage values extracted from the {source} field reported by the tool in its VCF output.",
       showAll: "Show all {n}",
       showFewer: "Show fewer",
       noOutputGenerated: "No output files were generated because execution stopped before completion.",

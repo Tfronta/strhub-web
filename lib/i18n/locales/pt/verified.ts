@@ -367,6 +367,7 @@ export default {
       },
       depthHeading: "Profundidade de leitura por locus",
       depthNote: "Reads que a ferramenta reportou em cada locus que chamou, do mais profundo ao menos. A profundidade reflete a cobertura da fatia de referência tanto quanto a ferramenta; está aqui para que um leitor veja que a saída é real, não para ranquear loci.",
+      depthSourceNote: "Valores de cobertura extraídos do campo {source} reportado pela ferramenta em seu arquivo VCF.",
       showAll: "Ver todos os {n}",
       showFewer: "Ver menos",
       noOutputGenerated: "Nenhum arquivo de saída foi gerado porque a execução foi interrompida antes do término.",

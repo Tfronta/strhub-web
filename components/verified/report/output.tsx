@@ -62,6 +62,9 @@ export function OutputContent({
   const deepest = stats.top_loci_by_depth?.[0];
   const outputFile = io?.resolved ?? io?.path;
   const format = io?.format?.toUpperCase();
+  const isVcf = format === "VCF" || Boolean(outputFile && /\.vcf(\.gz)?$/i.test(outputFile));
+  const depthSource =
+    stats.depth_source || (isVcf && (stats.total_reads ?? 0) > 0 ? "FORMAT/DP" : undefined);
 
   return (
     <>
@@ -114,7 +117,14 @@ export function OutputContent({
           {(stats.distinct_snp_markers ?? 0) > 0 && (
             <Stat label={t("verified.content.snps")} value={n(stats.distinct_snp_markers)} />
           )}
-          <Stat label={t("verified.content.totalReads")} value={n(stats.total_reads)} />
+          <Stat
+            label={
+              depthSource
+                ? `${t("verified.content.totalReads")} (${depthSource})`
+                : t("verified.content.totalReads")
+            }
+            value={n(stats.total_reads)}
+          />
           {deepest && (
             <Stat label={t("verified.content.maxDepth")} value={n(stats.max_sequence_depth ?? deepest[1])} detail={deepest[0]} />
           )}
@@ -158,8 +168,16 @@ export function OutputContent({
           a header — a reader sees the shape of it in one glance. */}
       {rows.length > 0 && (
         <div className="mt-4 rounded-lg border bg-card p-5">
-          <h3 className="text-sm font-semibold">{t("verified.content.depthHeading")}</h3>
+          <h3 className="text-sm font-semibold">
+            {t("verified.content.depthHeading")}
+            {depthSource ? ` (${depthSource})` : ""}
+          </h3>
           <p className="mt-1 text-xs text-muted-foreground">{t("verified.content.depthNote")}</p>
+          {depthSource && (
+            <p className="mt-1 text-xs font-medium text-muted-foreground">
+              {t("verified.content.depthSourceNote", { source: depthSource })}
+            </p>
+          )}
           <ol className="mt-4 space-y-1.5">
             {visible.map((r) => (
               <li key={r.locus} className="grid grid-cols-[6.5rem_1fr_3.5rem] items-center gap-3 text-xs">

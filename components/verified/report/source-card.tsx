@@ -55,15 +55,17 @@ export function SourceCard({
           : "";
   const refIsFinding = up?.ref_exists === false || up?.repo_exists === false;
 
+  const headed = useHeaded();
+
   return (
     <div className="mt-4 rounded-lg border bg-card p-5">
-      {!useHeaded() && (
+      {!headed && (
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
           {t("verified.source")}
         </h2>
       )}
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-        {report.tool.version && (
+        {!headed && report.tool.version && (
           <>
             <dt className="text-muted-foreground">{t("verified.version")}</dt>
             <dd className="font-semibold">{report.tool.version}</dd>
@@ -71,8 +73,6 @@ export function SourceCard({
         )}
         {report.tool.variant && (
           <>
-            {/* Two cards for one tool otherwise differ by a few characters
-                of URL, which is not a distinction to make a reader squint at. */}
             <dt className="text-muted-foreground">{t("verified.variant")}</dt>
             <dd>{report.tool.variant}</dd>
           </>
@@ -101,10 +101,6 @@ export function SourceCard({
             {report.source.committed ? `${t("verified.commitMadeOn", { date: formatDate(report.source.committed, language) })} ` : ""}
             {t("verified.commitPinnedHint")}
           </span>
-          {/* Where that commit sits now. Context for a reviewer comparing the
-              attestation against the version a manuscript cites — and, when
-              the ref has vanished, a finding: being fetchable is the first
-              thing the badge claims. */}
           {upstreamNote && (
             <span
               className={cn(
@@ -121,8 +117,6 @@ export function SourceCard({
             <dt className="text-muted-foreground">{t("verified.environment")}</dt>
             <dd>
               {report.environment.os.join(", ")}
-              {/* Plan B ran: say so where the environment is named, or the
-                  line reads as "the pinned commit, built and run". */}
               {report.environment.fallback_used && (
                 <span className="mt-1 block text-xs text-amber-700 dark:text-amber-500">
                   {t("verified.environmentFallback", {
@@ -133,8 +127,12 @@ export function SourceCard({
             </dd>
           </>
         )}
-        <dt className="text-muted-foreground">{t("verified.verifiedOn")}</dt>
-        <dd>{formatDateTime(report.generated, language)}</dd>
+        {!headed && (
+          <>
+            <dt className="text-muted-foreground">{t("verified.verifiedOn")}</dt>
+            <dd>{formatDateTime(report.generated, language)}</dd>
+          </>
+        )}
         {report.ci_run && (
           <>
             <dt className="text-muted-foreground">{t("verified.ciRun")}</dt>

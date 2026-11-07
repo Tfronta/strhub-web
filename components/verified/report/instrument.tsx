@@ -18,8 +18,10 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedReport, VerifiedWorkaround } from "@/types/verified";
 import { badgeFor, reachedLabel, TONE } from "@/lib/verified/badge";
+import { localizeVerdictReason } from "@/lib/verified/certificate";
 import { shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
 import { cn } from "@/lib/utils";
+import { useHeaded } from "./certificate";
 import { rowHref } from "./history";
 
 /** "v2.0 (dafdee7)", or just the commit when no version was recorded. */
@@ -88,10 +90,11 @@ export function StrhubDidSection({ run, row }: { run: VerifiedReport; row?: Hist
   const { t } = useLanguage();
   const items = run.recipe?.workarounds;
   const reached = reachedLabel(run.level, t);
+  const localizedReason = localizeVerdictReason(run.verdict?.reason, t);
   return (
     <>
-      <h2 className="mt-10 text-xl font-semibold">{t("verified.strhubDid.heading")}</h2>
-      <div className="mt-3 rounded-lg border border-amber-300/70 bg-amber-50/40 p-4 dark:border-amber-800/70 dark:bg-amber-950/10">
+      {!useHeaded() && <h2 className="mt-10 text-xl font-semibold">{t("verified.strhubDid.heading")}</h2>}
+      <div className="mt-3 rounded-lg border bg-card p-5">
         <p className="text-sm">
           {row ? t("verified.strhubDid.leadAt", { what: nameOf(row) }) : t("verified.strhubDid.lead")}
         </p>
@@ -99,12 +102,10 @@ export function StrhubDidSection({ run, row }: { run: VerifiedReport; row?: Hist
         <div className="mt-3">
           <WorkaroundList items={items} />
         </div>
-        {/* A div, not a p: the badge is a block, and a block inside a
-            paragraph is invalid HTML that breaks hydration. */}
         <div className="mt-3 text-sm">
           {t("verified.strhubDid.reached")}{" "}
           <Badge className={cn("align-middle text-[10px]", TONE[run.level === "io" || run.level === "content" ? "green" : "amber"])}>{reached}</Badge>
-          {run.verdict?.reason && <span className="ml-2 text-muted-foreground">{run.verdict.reason}</span>}
+          {localizedReason && <span className="ml-2 text-muted-foreground">{localizedReason}</span>}
         </div>
         {!!items?.length && (
           <p className="mt-3 text-sm text-muted-foreground">{t("verified.strhubDid.recommendations")}</p>

@@ -11,17 +11,52 @@ import { summarizeErrors, externalLegNoteKeys, installFaultKey } from "@/lib/ver
 import { isManualEligible, reasonI18nKey } from "@/lib/verified/manual";
 
 function getDiagnosticText(
-  t: (key: string) => string,
-  issue: { id: string; title: string; suggestion?: string },
+  t: (key: string, params?: Record<string, string>) => string,
+  issue: { id: string; title: string; suggestion?: string; examples?: string[] },
 ): { title: string; suggestion?: string } {
-  const i18nTitle = t(`verified.diagnostics.ids.${issue.id}.title`);
-  const i18nSuggestion = t(`verified.diagnostics.ids.${issue.id}.suggestion`);
-  const hasI18nTitle = i18nTitle !== `verified.diagnostics.ids.${issue.id}.title`;
+  const params: Record<string, string> = {};
+  if (issue.examples?.[0]) params["0"] = issue.examples[0];
+  if (issue.examples?.[1]) params["1"] = issue.examples[1];
+
+  const mStrLen = issue.title.match(/\((\d+)\s+vs\s+max\s+(\d+)\)/i);
+  if (mStrLen) {
+    params["0"] = mStrLen[1];
+    params["1"] = mStrLen[2];
+  }
+  const mTimeout = issue.title.match(/\((\d+)\s+minutes\)/i);
+  if (mTimeout) {
+    params["0"] = mTimeout[1];
+  }
+  const mPyExc = issue.title.match(/^The tool raised\s+([^:]+):\s*(.+)$/i);
+  if (mPyExc) {
+    params["0"] = mPyExc[1];
+    params["1"] = mPyExc[2];
+  }
+  if (!params["0"]) {
+    const mColon = issue.title.match(/:\s+(--[\w-]+|\/[^\s]+|\S+)$/);
+    if (mColon) {
+      params["0"] = mColon[1].replace(/^--/, "");
+    }
+  }
+
+  const titleKey = `verified.diagnostics.ids.${issue.id}.title`;
+  const suggKey = `verified.diagnostics.ids.${issue.id}.suggestion`;
+  const i18nTitle = t(titleKey, params);
+  const i18nSuggestion = t(suggKey, params);
+  const hasI18nTitle = i18nTitle !== titleKey;
+
+  let finalTitle = hasI18nTitle ? i18nTitle : issue.title;
+  if (hasI18nTitle && params["0"] && !finalTitle.includes(params["0"]) && issue.id !== "str_too_long" && issue.id !== "run_timeout") {
+    const suffix = issue.id === "bad_option" ? `--${params["0"]}` : params["0"];
+    finalTitle = `${finalTitle}: ${suffix}`;
+  }
+
   return {
-    title: hasI18nTitle ? i18nTitle : issue.title,
-    suggestion: hasI18nTitle && i18nSuggestion !== `verified.diagnostics.ids.${issue.id}.suggestion`
-      ? i18nSuggestion
-      : issue.suggestion,
+    title: finalTitle,
+    suggestion:
+      hasI18nTitle && i18nSuggestion !== suggKey
+        ? i18nSuggestion
+        : issue.suggestion,
   };
 }
 
@@ -29,14 +64,6 @@ function getDiagnosticText(
  * The build that failed, in plain words. Directly under the source block,
  * because nothing below it ran (or, on plan B, because what ran is not a
  * build of the pinned commit).
- *
- * This used to open with "Why the pinned commit did not build" and the line
- * "the published image … the README points at was built instead", which is
- * the mechanism in the engine's words: a reader who did not know what a
- * pinned commit or a plan B was learnt only that something had failed. Three
- * people read this card — someone about to run the tool, a reviewer holding
- * a manuscript, its maintainer — and each gets the finding in their own
- * terms before the table of causes.
  */
 export function BuildFailedCard({
   report,
@@ -53,8 +80,6 @@ export function BuildFailedCard({
   const params = {
     name: report.tool.name,
     sha: (report.source.ref_resolved ?? report.source.ref ?? "").slice(0, 7),
-    // The engine phrases the reason mid-sentence ("the published image …");
-    // here it opens one.
     reason: reason.charAt(0).toUpperCase() + reason.slice(1),
   };
   const meaning: [string, string][] = [
@@ -63,12 +88,12 @@ export function BuildFailedCard({
     ["verified.install.meaning.maintainLabel", installFaultKey(d.faults)],
   ];
   return (
-    <div className="mt-6 rounded-lg border border-amber-300 dark:border-amber-800 bg-amber-50/60 dark:bg-amber-950/20 p-5">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-500">
+    <div className="mt-6 rounded-lg border border-amber-500/40 bg-amber-50/40 dark:border-amber-800/60 dark:bg-amber-950/20 p-5">
+      <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-400">
         {t(fallback ? "verified.install.headingFallback" : "verified.install.heading")}
       </h2>
       <p className="mt-2 text-sm">{t(fallback ? "verified.install.noteFallback" : "verified.install.note", params)}</p>
-      <div className="mt-3 rounded-md border border-amber-300/60 dark:border-amber-800/60 bg-background/60 p-3">
+      <div className="mt-3 rounded-md border border-border bg-background/70 p-3">
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("verified.install.meaningHeading")}</p>
         <ul className="mt-2 space-y-1.5 text-sm">
           {meaning.map(([labelKey, textKey]) => (
@@ -80,15 +105,18 @@ export function BuildFailedCard({
         </ul>
       </div>
       <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("verified.install.whatFailed")}</p>
-      <ul className="mt-2 space-y-2 border-t border-amber-300/60 dark:border-amber-800/60 pt-3">
-        {d.diagnostics.map((issue) => (
-          <li key={issue.id + issue.title} className="text-sm">
-            <span className="font-medium">{issue.title}</span>
-            {issue.suggestion && (
-              <span className="mt-0.5 block text-xs text-muted-foreground">{issue.suggestion}</span>
-            )}
-          </li>
-        ))}
+      <ul className="mt-2 space-y-2 border-t border-border pt-3">
+        {d.diagnostics.map((issue) => {
+          const txt = getDiagnosticText(t, issue);
+          return (
+            <li key={issue.id + issue.title} className="text-sm">
+              <span className="font-medium">{txt.title}</span>
+              {txt.suggestion && (
+                <span className="mt-0.5 block text-xs text-muted-foreground">{txt.suggestion}</span>
+              )}
+            </li>
+          );
+        })}
       </ul>
       {buildLogHref && (
         <a
@@ -105,104 +133,110 @@ export function BuildFailedCard({
   );
 }
 
+/**
+ * Actionable issues from the execution log: errors on any run, plus warnings
+ * when the run did not pass. Routine info lines and slice-filter warnings on
+ * passing runs are suppressed so a clean run does not display failure cards.
+ */
+export function actionableDiagnostics(
+  diagnostics: Record<string, VerifiedDiagnostic[]> | undefined,
+  passedRun = false,
+): VerifiedDiagnostic[] {
+  if (!diagnostics || Object.keys(diagnostics).length === 0) return [];
+  const HIDDEN_IDS = new Set(["genotyping_summary", "low_bq_reads", "unpaired_reads"]);
+  const seen = new Set<string>();
+  return Object.values(diagnostics)
+    .flat()
+    .filter((issue) => {
+      if (HIDDEN_IDS.has(issue.id)) return false;
+      if (issue.severity === "info") return false;
+      if (passedRun && issue.severity !== "error") return false;
+      if (seen.has(issue.id)) return false;
+      seen.add(issue.id);
+      return true;
+    });
+}
+
 /** Errors the tool itself reported while it ran, with scale and affected items. */
 export function AutoDiagnostics({
   diagnostics,
   hasStrhubFixture,
+  passedRun = false,
 }: {
   diagnostics: Record<string, VerifiedDiagnostic[]> | undefined;
   hasStrhubFixture: boolean;
+  passedRun?: boolean;
 }) {
   const { t } = useLanguage();
-  if (!diagnostics || Object.keys(diagnostics).length === 0) return null;
-  const HIDDEN_IDS = new Set(["genotyping_summary"]);
-  const seen = new Set<string>();
-  const deduped = Object.values(diagnostics).flat().filter((issue) => {
-    if (HIDDEN_IDS.has(issue.id)) return false;
-    if (seen.has(issue.id)) return false;
-    seen.add(issue.id);
-    return true;
-  });
-  const hasActionable = deduped.some((i) => i.severity === "error" || i.severity === "warning");
-  if (!hasActionable) return null;
-  const errorSummary = summarizeErrors(diagnostics);
-  const noteKeys = externalLegNoteKeys(diagnostics);
+  const deduped = actionableDiagnostics(diagnostics, passedRun);
+  if (deduped.length === 0) return null;
+  const errorSummary = summarizeErrors(diagnostics ?? {});
+  const noteKeys = externalLegNoteKeys(diagnostics ?? {});
 
   return (
     <>
       {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.diagnostics.heading")}</h2>)}
       <p className="mt-1 text-sm text-muted-foreground">{t("verified.diagnostics.note")}</p>
       {hasStrhubFixture && (
-        <div className="mt-3 rounded-lg border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-950/20 px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-sky-700 dark:text-sky-400 mb-1">
+        <div className="mt-3 rounded-lg border border-border bg-muted/40 px-4 py-3">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
             {t("verified.diagnostics.strhubNoteLabel")}
           </p>
-          <p className="text-sm text-muted-foreground italic">{t("verified.diagnostics.sampleNote")}</p>
+          <p className="text-sm text-muted-foreground">{t("verified.diagnostics.sampleNote")}</p>
         </div>
       )}
-      {deduped.length > 0 && (
-        <>
-          <p className="mt-4 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            {t("verified.diagnostics.logIssuesLabel")}
-          </p>
-          <div className="space-y-2">
-            {deduped.map((issue) => {
-              const txt = getDiagnosticText(t, issue);
-              // The scale and the affected items (which loci) are what a
-              // reviewer needs; without them nine failed loci read as one
-              // stray error. Both are already stored on the diagnostic.
-              const summary = errorSummary.find((e) => e.id === issue.id);
-              const items = summary?.items ?? [];
-              const count = summary?.count ?? issue.count;
-              return (
-                <div
-                  key={issue.id}
-                  className={cn(
-                    "rounded-lg border-l-4 px-4 py-3 text-sm",
-                    issue.severity === "error"
-                      ? "border-red-500 bg-red-50 dark:bg-red-950/20"
-                      : issue.severity === "warning"
-                        ? "border-amber-400 bg-amber-50 dark:bg-amber-950/20"
-                        : "border-blue-400 bg-blue-50 dark:bg-blue-950/20",
-                  )}
-                >
-                  <div className="flex items-start gap-2">
-                    {issue.severity === "error" ? (
-                      <XCircle className="h-4 w-4 mt-0.5 shrink-0 text-red-600" />
-                    ) : issue.severity === "warning" ? (
-                      <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-amber-600" />
-                    ) : (
-                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-blue-600" />
+      <p className="mt-4 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {t("verified.diagnostics.logIssuesLabel")}
+      </p>
+      <div className="space-y-2">
+        {deduped.map((issue) => {
+          const txt = getDiagnosticText(t, issue);
+          const summary = errorSummary.find((e) => e.id === issue.id);
+          const items = summary?.items ?? [];
+          const count = summary?.count ?? issue.count;
+          return (
+            <div
+              key={issue.id}
+              className={cn(
+                "rounded-lg border border-l-4 px-4 py-3 text-sm",
+                issue.severity === "error"
+                  ? "border-red-500/40 border-l-red-600 bg-red-50/40 dark:border-red-900/50 dark:border-l-red-500 dark:bg-red-950/20"
+                  : "border-amber-500/40 border-l-amber-500 bg-amber-50/40 dark:border-amber-900/50 dark:border-l-amber-500 dark:bg-amber-950/20",
+              )}
+            >
+              <div className="flex items-start gap-2">
+                {issue.severity === "error" ? (
+                  <XCircle className="h-4 w-4 mt-0.5 shrink-0 text-red-600 dark:text-red-400" />
+                ) : (
+                  <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+                )}
+                <div className="min-w-0">
+                  <p className="font-medium">
+                    {txt.title}
+                    {count && count > 1 && (
+                      <span className="ml-2 text-xs font-normal text-muted-foreground">
+                        {t("verified.diagnostics.timesLabel").replace("{n}", String(count))}
+                      </span>
                     )}
-                    <div className="min-w-0">
-                      <p className="font-medium">
-                        {txt.title}
-                        {count && count > 1 && (
-                          <span className="ml-2 text-xs font-normal text-muted-foreground">
-                            {t("verified.diagnostics.timesLabel").replace("{n}", String(count))}
-                          </span>
-                        )}
-                      </p>
-                      {items.length > 0 && (
-                        <p className="mt-1 font-mono text-xs text-muted-foreground break-words">
-                          {t("verified.diagnostics.affectedLabel")} {items.join(", ")}
-                        </p>
-                      )}
-                      {txt.suggestion && <p className="mt-1 text-muted-foreground">{txt.suggestion}</p>}
-                    </div>
-                  </div>
+                  </p>
+                  {items.length > 0 && (
+                    <p className="mt-1 font-mono text-xs text-muted-foreground break-words">
+                      {t("verified.diagnostics.affectedLabel")} {items.join(", ")}
+                    </p>
+                  )}
+                  {txt.suggestion && <p className="mt-1 text-muted-foreground">{txt.suggestion}</p>}
                 </div>
-              );
-            })}
-          </div>
-          {noteKeys.length > 0 && (
-            <div className="mt-3 space-y-2 text-sm text-muted-foreground">
-              {noteKeys.map((key) => (
-                <p key={key}>{t(`verified.diagnostics.${key}`)}</p>
-              ))}
+              </div>
             </div>
-          )}
-        </>
+          );
+        })}
+      </div>
+      {noteKeys.length > 0 && (
+        <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+          {noteKeys.map((key) => (
+            <p key={key}>{t(`verified.diagnostics.${key}`)}</p>
+          ))}
+        </div>
       )}
     </>
   );
@@ -416,16 +450,16 @@ export function FailureExcerptCard({
   const { t } = useLanguage();
   if (!excerpt) return null;
   return (
-    <div className="mt-4 rounded-lg border border-slate-300 bg-slate-950 p-4 text-slate-100 shadow-sm dark:border-slate-800">
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+    <div className="mt-4 rounded-lg border bg-card p-5">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         {t("verified.trial.errorExcerptTitle")}
       </p>
-      <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs leading-relaxed text-slate-200">
+      <pre className="overflow-x-auto whitespace-pre-wrap rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
         <code>{excerpt.text}</code>
       </pre>
       {excerpt.hintKey && (
-        <p className="mt-3 border-t border-slate-800 pt-2 text-xs text-amber-300">
-          <span className="font-semibold text-slate-200">{t("verified.trial.probableCauseLabel")}:</span>{" "}
+        <p className="mt-3 border-t pt-2 text-xs text-muted-foreground">
+          <span className="font-semibold text-foreground">{t("verified.trial.probableCauseLabel")}:</span>{" "}
           {t(excerpt.hintKey)}
         </p>
       )}

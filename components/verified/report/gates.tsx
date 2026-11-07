@@ -127,11 +127,11 @@ export function GatesLadder({
           ladder as a verdict on the software, which is the one thing it is not
           entitled to be. */}
       {failed.length > 0 && (
-        <p className="mt-3 text-sm text-muted-foreground italic rounded-lg border-l-4 border-amber-400 bg-amber-50 dark:bg-amber-950/20 px-4 py-3">
+        <p className="mt-3 text-sm text-muted-foreground rounded-lg border border-border bg-muted/40 px-4 py-3">
           {t(onlyContent ? "verified.gate.contentFailNote" : "verified.gate.stoppedEarlyNote")}{" "}
           <Link
             href="/verified/how-to-read"
-            className="not-italic font-medium text-foreground underline underline-offset-2"
+            className="font-medium text-foreground underline underline-offset-2"
           >
             {t("verified.gate.howToReadLink")}
           </Link>

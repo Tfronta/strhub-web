@@ -21,6 +21,11 @@ import { PageTitle } from "@/components/page-title";
 import type { TrialRole, TrialStatus } from "@/lib/verified/trial";
 import { VERDICT_TONE } from "@/lib/verified/badge";
 import { extraGateRowsFor } from "@/lib/verified/extra-gates";
+import {
+  localizeBlocker,
+  localizeReadmeGap,
+  localizeVerdictReason,
+} from "@/lib/verified/certificate";
 import { step1For, type Step1Tone } from "@/lib/verified/step1";
 import { ReadmeTemplateAction } from "@/components/verified/report/verdict";
 import { ownerIssueUrl, prepareSelfFix } from "@/lib/verified/trial-next-steps";
@@ -183,27 +188,31 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const verdictBlock = report && verdict && (
     <>
       {step1Block}
-      <section className="mt-6 rounded-lg border p-5" aria-labelledby="trial-verdict">
-        <div className="flex flex-wrap items-center gap-3">
-          <Badge className={`${VERDICT_TONE[verdict.code]} border-transparent text-sm`}>{t(`verified.trial.verdict.${verdict.code}`)}</Badge>
-          <h2 id="trial-verdict" className="text-lg font-semibold">
-            {t(`verified.trial.verdictMeaning.${verdictMeaningKey}`)}
-          </h2>
-        </div>
-        <p className="mt-3 text-sm text-muted-foreground">{verdict.reason}</p>
-        {verdict.readme_gaps && verdict.readme_gaps.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-sm font-semibold">{t("verified.trial.gapsTitle")}</h3>
-            <p className="mb-2 text-xs text-muted-foreground">{t("verified.trial.gapsHint")}</p>
-            <ul className="list-disc space-y-1 pl-5 text-sm">
-              {verdict.readme_gaps.map((g) => <li key={g.item}>{g.text}</li>)}
-            </ul>
+      {(!step1 || verdict.code !== "runs" || fallbackUsed || (verdict.readme_gaps && verdict.readme_gaps.length > 0)) && (
+        <section className="mt-4 rounded-lg border bg-card p-5" aria-labelledby="trial-verdict">
+          <div className="flex flex-wrap items-center gap-3">
+            <Badge className={`${VERDICT_TONE[verdict.code]} border-transparent text-sm`}>{t(`verified.trial.verdict.${verdict.code}`)}</Badge>
+            <h2 id="trial-verdict" className="text-base font-semibold">
+              {t(`verified.trial.verdictMeaning.${verdictMeaningKey}`)}
+            </h2>
           </div>
-        )}
-      </section>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {localizeVerdictReason(verdict.reason, t) ?? verdict.reason}
+          </p>
+          {verdict.readme_gaps && verdict.readme_gaps.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-sm font-semibold">{t("verified.trial.gapsTitle")}</h3>
+              <p className="mb-2 text-xs text-muted-foreground">{t("verified.trial.gapsHint")}</p>
+              <ul className="list-disc space-y-1 pl-5 text-sm">
+                {verdict.readme_gaps.map((g) => <li key={g.item}>{localizeReadmeGap(g, t)}</li>)}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
 
       {verdict.blockers && verdict.blockers.length > 0 && status?.recipe && (
-        <Card className="mt-6 border-amber-300 dark:border-amber-800">
+        <Card className="mt-6 border-amber-500/40 dark:border-amber-800">
           <CardHeader>
             <CardTitle className="text-base">{t("verified.trial.stoppedTitle")}</CardTitle>
             <p className="text-xs text-muted-foreground">{t("verified.trial.stoppedHint")}</p>
@@ -212,9 +221,10 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             <ol className="space-y-5">
               {verdict.blockers.map((b) => {
                 const issue = ownerIssueUrl(report, b, typeof window !== "undefined" ? window.location.href.split("?")[0] : "");
+                const loc = localizeBlocker(b, t);
                 return (
                   <li key={b.code} className="text-sm">
-                    <p className="font-medium">{b.what}</p>
+                    <p className="font-medium">{loc.what}</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {b.self_fix && (
                         <Button
@@ -233,7 +243,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
                         </Button>
                       )}
                     </div>
-                    <p className="mt-1 text-xs text-muted-foreground">{b.self_fix_text}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{loc.selfFixText}</p>
                   </li>
                 );
               })}

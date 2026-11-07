@@ -16,7 +16,7 @@ import { TONE, type BadgeDisplay } from "@/lib/verified/badge";
 import { formatDate } from "@/lib/verified/format-date";
 import { cn } from "@/lib/utils";
 import type { PanelKind } from "@/lib/verified/dataset-provenance";
-import { KvTable, BoxedText, type KvRow } from "./certificate";
+import { KvTable, type KvRow } from "./certificate";
 
 export function Cover({
   report,
@@ -25,6 +25,7 @@ export function Cover({
   panel,
   title,
   slug,
+  datasetsLabel,
   permalink,
   staticPageUrl,
   pdfUrl,
@@ -36,6 +37,7 @@ export function Cover({
   panel: PanelKind | null;
   title: string;
   slug: string;
+  datasetsLabel?: string;
   /** The page's own permanent address; none for a trial, which is published nowhere. */
   permalink?: string;
   staticPageUrl?: string;
@@ -65,8 +67,13 @@ export function Cover({
         </span>
       ),
     },
-    { label: t("verified.certificate.cover.result"), value: <Badge className={cn("font-bold text-xs tracking-wide", TONE[level.tone])}>{level.label}</Badge> },
-    { label: t("verified.certificate.cover.reached"), value: certificate.reached },
+    { label: t("verified.certificate.cover.reached"), value: certificate.summary.reached },
+    ...(certificate.summary.why
+      ? [{ label: t("verified.certificate.summary.why"), value: certificate.summary.why }]
+      : []),
+    ...(datasetsLabel
+      ? [{ label: t("verified.certificate.summary.datasets"), value: datasetsLabel }]
+      : []),
     {
       label: t("verified.certificate.cover.permalink"),
       value: permalink
@@ -120,12 +127,6 @@ export function Cover({
       </h1>
       <p className="font-mono text-sm text-muted-foreground">{slug}</p>
       <KvTable rows={rows} labelWidth="10rem" />
-      <p className="mt-6 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{t("verified.certificate.cover.scope")}</p>
-      <BoxedText tone="teal">
-        <p>{certificate.scope.statement}</p>
-        <p className="text-muted-foreground">{certificate.scope.not}</p>
-      </BoxedText>
-      <p className="mt-3 text-xs text-muted-foreground">{t("verified.footnote")}</p>
     </div>
   );
 }

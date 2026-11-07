@@ -127,7 +127,7 @@ export function VerificationData({
       <p className="mt-1 text-sm text-muted-foreground">{t("verified.data.note")}</p>
 
       {hasStrhubFixture && (
-        <p className="mt-3 text-sm text-muted-foreground italic rounded-lg border-l-4 border-blue-400 bg-blue-50 dark:bg-blue-950/20 px-4 py-3">
+        <p className="mt-3 text-sm text-muted-foreground rounded-lg border border-border bg-muted/40 px-4 py-3">
           {t("verified.data.noOwnData")}
         </p>
       )}
@@ -135,9 +135,14 @@ export function VerificationData({
       {provenance.length > 0 && (
         <>
           <div className="mt-3 space-y-3">
-            {provenance.map((ds) => (
-              <div key={ds.type} className="rounded-lg border-l-4 border-border bg-muted/50 p-4">
-                <p className="text-sm font-medium">{ds.name}</p>
+            {provenance.map((ds) => {
+              const nameKey = `verified.data.provenance.${ds.type}.name`;
+              const licKey = `verified.data.provenance.${ds.type}.license`;
+              const localizedName = t(nameKey) !== nameKey ? t(nameKey) : ds.name;
+              const localizedLicense = t(licKey) !== licKey ? t(licKey) : ds.license;
+              return (
+              <div key={ds.type} className="rounded-lg border bg-card p-4">
+                <p className="text-sm font-semibold">{localizedName}</p>
                 <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
                   <dt className="text-muted-foreground">{t("verified.data.source")}</dt>
                   <dd>
@@ -166,7 +171,7 @@ export function VerificationData({
                     </>
                   )}
                   <dt className="text-muted-foreground">{t("verified.data.license")}</dt>
-                  <dd className="text-muted-foreground">{ds.license}</dd>
+                  <dd className="text-muted-foreground">{localizedLicense}</dd>
                   {ds.referenceGenome && (
                     <>
                       <dt className="text-muted-foreground">{t("verified.data.refGenome")}</dt>
@@ -187,9 +192,10 @@ export function VerificationData({
                   </dd>
                 </dl>
               </div>
-            ))}
+              );
+            })}
           </div>
-          <p className="mt-3 text-xs text-muted-foreground italic">{t("verified.data.lociScope")}</p>
+          <p className="mt-3 text-xs text-muted-foreground">{t("verified.data.lociScope")}</p>
         </>
       )}
     </>

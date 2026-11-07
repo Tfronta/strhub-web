@@ -12,6 +12,7 @@ import { useState, type ReactNode } from "react";
 import { Check, Copy, ExternalLink, FileCode2, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
+import { localizeReadmeGap, localizeVerdictReason } from "@/lib/verified/certificate";
 import { buildReadmeTemplate, step1For, type Step1Tone } from "@/lib/verified/step1";
 import type { VerifiedReport } from "@/types/verified";
 import { useHeaded } from "./certificate";
@@ -19,9 +20,9 @@ import { useHeaded } from "./certificate";
 export { buildReadmeTemplate };
 
 const STEP1_BORDER: Record<Step1Tone, string> = {
-  green: "border-teal-600/60",
-  red: "border-red-600/60",
-  grey: "border-slate-400/60",
+  green: "border-l-4 border-l-teal-600",
+  red: "border-l-4 border-l-red-600",
+  grey: "border-l-4 border-l-slate-400",
 };
 
 export function ReadmeTemplateAction({ report }: { report: VerifiedReport }) {
@@ -87,6 +88,11 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
         ? "undeterminedOurs"
         : v.code
     : null;
+  const localizedReason = localizeVerdictReason(v?.reason, t);
+  const showSeparateVerdictCard = Boolean(
+    v && (!step1 || v.code !== "runs" || fallbackUsed || (v.readme_gaps && v.readme_gaps.length > 0)),
+  );
+
   return (
     <>
       {!useHeaded() && <h2 className="mt-8 text-xl font-semibold">{t("verified.asIs.heading")}</h2>}
@@ -94,7 +100,7 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
         <>
           {step1 && (
             <section
-              className={`mt-3 rounded-lg border-2 p-5 ${STEP1_BORDER[step1.tone]}`}
+              className={`mt-3 rounded-lg border bg-card p-5 ${STEP1_BORDER[step1.tone]}`}
               aria-labelledby="verified-step1"
             >
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -127,23 +133,23 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
               )}
             </section>
           )}
-          {v && (
-            <section className="mt-3 rounded-lg border p-5" aria-labelledby="verified-verdict">
-              <p id="verified-verdict" className="text-lg font-semibold">{t(`verified.trial.verdictMeaning.${meaning}`)}</p>
-              <p className="mt-2 text-sm text-muted-foreground">{v.reason}</p>
+          {v && showSeparateVerdictCard && (
+            <section className="mt-3 rounded-lg border bg-card p-5" aria-labelledby="verified-verdict">
+              <p id="verified-verdict" className="text-base font-semibold">{t(`verified.trial.verdictMeaning.${meaning}`)}</p>
+              {localizedReason && <p className="mt-1.5 text-sm text-muted-foreground">{localizedReason}</p>}
               {v.readme_gaps && v.readme_gaps.length > 0 && (
                 <div className="mt-4">
                   <h3 className="text-sm font-semibold">{t("verified.trial.gapsTitle")}</h3>
                   <p className="mt-1 text-xs text-muted-foreground">{t("verified.trial.gapsHint")}</p>
                   <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-                    {v.readme_gaps.map((g) => <li key={g.item}>{g.text}</li>)}
+                    {v.readme_gaps.map((g) => <li key={g.item}>{localizeReadmeGap(g, t)}</li>)}
                   </ul>
                 </div>
               )}
               {v.code !== "runs" && (
-                <div className="mt-5 rounded-lg border border-teal-200/80 bg-teal-50/50 p-4 dark:border-teal-900/60 dark:bg-teal-950/20">
-                  <h3 className="flex items-center gap-1.5 text-sm font-semibold text-teal-950 dark:text-teal-200">
-                    <LifeBuoy className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                <div className="mt-4 rounded-lg border border-border bg-muted/40 p-4">
+                  <h3 className="flex items-center gap-1.5 text-sm font-semibold">
+                    <LifeBuoy className="h-4 w-4 text-muted-foreground" />
                     {t("verified.trial.reproTipsTitle")}
                   </h3>
                   <p className="mt-1 text-xs text-muted-foreground">
@@ -155,17 +161,6 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
                     <li>{t("verified.trial.reproTips.exampleData")}</li>
                     <li>{t("verified.trial.reproTips.nonInteractive")}</li>
                   </ul>
-                  <div className="mt-3">
-                    <a
-                      href="https://github.com/Tfronta/strhub-verified/blob/main/docs/GUIA-PASO-1.md"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs font-medium text-teal-700 hover:underline dark:text-teal-400"
-                    >
-                      {t("verified.trial.reproTips.guideLink")}
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </div>
                 </div>
               )}
             </section>

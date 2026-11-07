@@ -461,6 +461,12 @@ export interface VerifiedReport {
    * measured, and answers the question an adopter actually has.
    */
   needed_beyond_repo?: string[] | null;
+  repo_test_data?: {
+    known?: boolean;
+    present?: boolean;
+    count?: number;
+    paths?: string[];
+  } | null;
   scope: string;
 }
 

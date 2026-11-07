@@ -20,14 +20,17 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
-import { cn } from "@/lib/utils";
 import { type VerifiedInstrument, type VerifiedReport } from "@/types/verified";
 import { hasReportedErrors } from "@/lib/verified/diagnostics";
 import { badgeFor } from "@/lib/verified/badge";
-import { certificateOf } from "@/lib/verified/certificate";
+import {
+  certificateOf,
+  localizeCaveatItem,
+  localizeNeededItem,
+} from "@/lib/verified/certificate";
 import { summarizeDatasets } from "@/lib/verified/dataset-provenance";
 import { Cover } from "./cover";
-import { Section, KvTable, BoxedList, BoxedText, ConclusionBox, sectionCounter } from "./certificate";
+import { Section, BoxedList, ConclusionBox, sectionCounter } from "./certificate";
 import { SourceCard, RunCommandCard } from "./source-card";
 import { GatesLadder, LogLinks, type ExtraGateRow, type ReportLog } from "./gates";
 import { WhatWasVerified, VerificationMatrix, VerificationData } from "./verification";
@@ -35,6 +38,7 @@ import { OutputContent } from "./output";
 import {
   BuildFailedCard,
   AutoDiagnostics,
+  actionableDiagnostics,
   FailureExcerptCard,
   ManualOffer,
   ReadmeCheck,
@@ -132,40 +136,34 @@ export function VerifiedReportBody({
   const data = summarizeDatasets(report, slug);
   const isStrhubRun = instrument === "curated";
   const permalink = history ? `${SITE}${rowHref(history.current)}` : undefined;
+  const passedRun =
+    report.verdict?.code === "runs" ||
+    Boolean(report.gates?.runs && report.gates?.io);
   const failureExcerpt = !report.gates.runs || !report.gates.installs
     ? extractFailureExcerpt(logs)
     : null;
+  const actionableIssues = actionableDiagnostics(report.diagnostics, passedRun);
   const hasCause = !!report.install_detail?.diagnostics?.length
-    || Object.values(report.diagnostics ?? {}).some((issues) => issues.length > 0)
+    || actionableIssues.length > 0
     || !!report.author_known_issues?.length
     || !!failureExcerpt;
   const next = sectionCounter();
 
-  const summaryRows = [
-    { label: t("verified.certificate.summary.purpose"), value: certificate.summary.purpose },
-    {
-      label: t("verified.certificate.summary.result"),
-      value: (
-        <span
-          className={cn(
-            "font-bold",
-            level.tone === "red"
-              ? "text-red-700 dark:text-red-400"
-              : level.tone === "amber"
-                ? "text-amber-700 dark:text-amber-400"
-                : "text-teal-700 dark:text-teal-400"
-          )}
-        >
-          {certificate.summary.result}
-        </span>
-      ),
-    },
-    { label: t("verified.certificate.summary.reached"), value: certificate.summary.reached },
-    ...(certificate.summary.why ? [{ label: t("verified.certificate.summary.why"), value: certificate.summary.why }] : []),
-    { label: t("verified.certificate.summary.datasets"), value: data.provenance.length ? data.provenance.map((p) => p.name).join("; ") : t("verified.summary.noDatasets") },
-    { label: t("verified.certificate.summary.scope"), value: certificate.summary.scope },
-    { label: t("verified.certificate.summary.notEvaluated"), value: certificate.summary.not_evaluated.join(" · ") },
-  ];
+  const datasetsLabel = data.provenance.length
+    ? data.provenance
+        .map((p) => {
+          const k = `verified.data.provenance.${p.type}.name`;
+          return t(k) !== k ? t(k) : p.name;
+        })
+        .join("; ")
+    : undefined;
+
+  const localizedNeeded = report.needed_beyond_repo?.map((item) =>
+    localizeNeededItem(item, t),
+  );
+  const localizedCaveats = report.caveats?.items?.map((item) =>
+    localizeCaveatItem(item, t),
+  );
 
   return (
     <div className="flex flex-col min-h-[60vh]">
@@ -183,6 +181,7 @@ export function VerifiedReportBody({
           panel={data.panel}
           title={toolDisplayName(report)}
           slug={slug}
+          datasetsLabel={datasetsLabel}
           permalink={permalink}
           staticPageUrl={staticPageUrl}
           pdfUrl={pdfUrl}
@@ -206,10 +205,6 @@ export function VerifiedReportBody({
             : null;
         })()}
 
-        <Section n={next()} title={t("verified.certificate.section.summary")}>
-          <KvTable rows={summaryRows} />
-        </Section>
-
         {/* Chapter one: the tool as it is. On the page of STRhub's own run,
             chapter two comes first and the run follows in full. */}
         {isStrhubRun ? (
@@ -230,11 +225,15 @@ export function VerifiedReportBody({
           </Section>
         )}
 
-        {/* Why it stopped, or what it reported on the way. */}
+        {/* Why it stopped, or what errors it reported on the way. */}
         {hasCause && (
-          <Section n={next()} title={t(report.verdict?.code === "runs" ? "verified.certificate.section.reported" : "verified.certificate.section.why")}>
+          <Section n={next()} title={t(passedRun ? "verified.certificate.section.reported" : "verified.certificate.section.why")}>
             <BuildFailedCard report={report} buildLogHref={buildLogHref} />
-            <AutoDiagnostics diagnostics={report.diagnostics} hasStrhubFixture={data.hasStrhubFixture} />
+            <AutoDiagnostics
+              diagnostics={report.diagnostics}
+              hasStrhubFixture={data.hasStrhubFixture}
+              passedRun={passedRun}
+            />
             {failureExcerpt && <FailureExcerptCard excerpt={failureExcerpt} />}
             <AuthorKnownIssues items={report.author_known_issues} />
           </Section>
@@ -253,6 +252,26 @@ export function VerifiedReportBody({
           </Section>
         )}
 
+        {(report.content_detail?.outputs?.[0]?.stats || report.io_detail?.outputs?.[0]) && (
+          <Section n={next()} title={t("verified.content.heading")}>
+            <OutputContent
+              stats={report.content_detail?.outputs?.[0]?.stats}
+              io={report.io_detail?.outputs?.[0]}
+              panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
+            />
+          </Section>
+        )}
+
+        <Section n={next()} title={t("verified.data.heading")}>
+          <VerificationData provenance={data.provenance} hasStrhubFixture={data.hasStrhubFixture} />
+        </Section>
+
+        {report.datasets && report.datasets.length > 0 && report.datasets.some((leg) => leg.fixture_source !== "strhub") && (
+          <Section n={next()} title={t("verified.matrix.heading")}>
+            <VerificationMatrix legs={report.datasets} />
+          </Section>
+        )}
+
         <Section n={next()} title={t("verified.certificate.section.metadata")}>
           <SourceCard report={report} />
           {afterSource}
@@ -268,33 +287,6 @@ export function VerifiedReportBody({
           </Section>
         )}
 
-        <Section n={next()} title={t("verified.certificate.section.outOfScope")}>
-          <BoxedList lead={t("verified.certificate.outOfScopeLead")} items={certificate.out_of_scope} />
-        </Section>
-
-        {(report.content_detail?.outputs?.[0]?.stats || report.io_detail?.outputs?.[0]) && (
-          <Section n={next()} title={t("verified.content.heading")}>
-            {/* The IO gate and the content gate describe the same file; the
-                panel list is the reference sample's, so the section can name
-                what the output does not. */}
-            <OutputContent
-              stats={report.content_detail?.outputs?.[0]?.stats}
-              io={report.io_detail?.outputs?.[0]}
-              panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
-            />
-          </Section>
-        )}
-
-        <Section n={next()} title={t("verified.data.heading")}>
-          <VerificationData provenance={data.provenance} hasStrhubFixture={data.hasStrhubFixture} />
-        </Section>
-
-        {report.datasets && report.datasets.length > 0 && (
-          <Section n={next()} title={t("verified.matrix.heading")}>
-            <VerificationMatrix legs={report.datasets} />
-          </Section>
-        )}
-
         <ManualOffer report={report} slug={slug} />
 
         {report.readme_check && (
@@ -303,9 +295,9 @@ export function VerifiedReportBody({
           </Section>
         )}
 
-        {!!report.needed_beyond_repo?.length && (
+        {!!localizedNeeded?.length && (
           <Section n={next()} title={t("verified.needed.heading")}>
-            <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={report.needed_beyond_repo} />
+            <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={localizedNeeded} />
           </Section>
         )}
 
@@ -315,23 +307,16 @@ export function VerifiedReportBody({
           </Section>
         )}
 
-        {!!report.caveats?.items?.length && (
+        {!!localizedCaveats?.length && (
           <Section n={next()} title={t("verified.caveats.heading")}>
-            <BulletCard headingKey="verified.caveats.heading" noteKey="verified.caveats.note" items={report.caveats.items} />
+            <BulletCard headingKey="verified.caveats.heading" noteKey="verified.caveats.note" items={localizedCaveats} />
           </Section>
         )}
 
-        <Section n={next()} title={t("verified.certificate.section.limitations")}>
-          <BoxedList items={certificate.limitations} />
-        </Section>
-
         <Section n={next()} title={t("verified.certificate.section.scope")}>
-          <BoxedText>
-            <p>{t("verified.certificate.text.scopeExec")}</p>
-            <p className="text-muted-foreground">{certificate.scope.disclaimer}</p>
-            <p className="text-muted-foreground">{t("verified.scopeNote")}</p>
-          </BoxedText>
           <WhatWasVerified />
+          <BoxedList lead={t("verified.certificate.text.scopeExec")} items={certificate.limitations} />
+          <p className="mt-3 text-xs text-muted-foreground">{certificate.scope.disclaimer}</p>
         </Section>
 
         {certificate.conclusion.length > 0 && (
@@ -341,8 +326,6 @@ export function VerifiedReportBody({
         )}
 
         {staticPageUrl && <DisputeCard report={report} slug={slug} staticPageUrl={staticPageUrl} />}
-
-        <p className="mt-8 text-xs text-muted-foreground">{t("verified.disclaimer")}</p>
       </div>
     </div>
   );

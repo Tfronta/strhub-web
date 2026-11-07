@@ -121,7 +121,7 @@ export function VersionHistory({
                     className={cn("flex items-center gap-2 px-3 pb-2 pl-10 text-xs text-muted-foreground hover:text-primary", strhubIsCurrent && "bg-muted/60")}
                     aria-current={strhubIsCurrent ? "page" : undefined}
                   >
-                    <span>{t("verified.strhubDid.rowNote", { label: reachedLabel(strhub.level) })}</span>
+                    <span>{t("verified.strhubDid.rowNote", { label: reachedLabel(strhub.level, t) })}</span>
                     {strhubIsCurrent && (
                       <span className="text-[10px] font-semibold uppercase tracking-wider">{t("verified.history.thisPage")}</span>
                     )}

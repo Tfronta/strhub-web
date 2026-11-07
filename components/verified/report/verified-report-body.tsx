@@ -128,7 +128,7 @@ export function VerifiedReportBody({
     },
     t,
   );
-  const certificate = certificateOf(report, level.label);
+  const certificate = certificateOf(report, level.label, t);
   const data = summarizeDatasets(report, slug);
   const isStrhubRun = instrument === "curated";
   const permalink = history ? `${SITE}${rowHref(history.current)}` : undefined;
@@ -327,7 +327,7 @@ export function VerifiedReportBody({
 
         <Section n={next()} title={t("verified.certificate.section.scope")}>
           <BoxedText>
-            <p>{report.scope}</p>
+            <p>{t("verified.certificate.text.scopeExec")}</p>
             <p className="text-muted-foreground">{certificate.scope.disclaimer}</p>
             <p className="text-muted-foreground">{t("verified.scopeNote")}</p>
           </BoxedText>

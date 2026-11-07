@@ -35,26 +35,89 @@ export const LIMITATIONS = [
 
 const GATES = ["available", "installs", "runs", "io", "content"] as const;
 
+type Translate = (key: string, params?: Record<string, string>) => string;
+
 /** The block the report carries, or the same texts assembled for an older one. */
-export function certificateOf(report: VerifiedReport, label: string): VerifiedCertificate {
-  if (report.certificate?.schema) return report.certificate;
-  const reached = (VERIFIED_LEVELS[report.level] ?? VERIFIED_LEVELS.none).label;
+export function certificateOf(
+  report: VerifiedReport,
+  label: string,
+  t?: Translate,
+): VerifiedCertificate {
+  if (!t) {
+    if (report.certificate?.schema) return report.certificate;
+    const reached = (VERIFIED_LEVELS[report.level] ?? VERIFIED_LEVELS.none).label;
+    const passed = GATES.filter((g) => report.gates?.[g]).length;
+    return {
+      schema: "strhub-verified/certificate/fallback",
+      label,
+      reached,
+      summary: {
+        purpose: PURPOSE,
+        result: label,
+        reached: `${reached}, ${passed}/${GATES.length} gates passed`,
+        ...(report.verdict?.reason ? { why: report.verdict.reason } : {}),
+        scope: EXEC_SCOPE,
+        not_evaluated: NOT_EVALUATED,
+      },
+      conclusion: [],
+      out_of_scope: OUT_OF_SCOPE,
+      limitations: LIMITATIONS,
+      scope: { statement: SCOPE_STATEMENT, not: SCOPE_NOT, disclaimer: DISCLAIMER },
+    };
+  }
+
+  const levelKey = `verified.level.${report.level}`;
+  const localizedLevel = t(levelKey);
+  const reached =
+    localizedLevel && localizedLevel !== levelKey
+      ? localizedLevel
+      : (VERIFIED_LEVELS[report.level] ?? VERIFIED_LEVELS.none).label;
   const passed = GATES.filter((g) => report.gates?.[g]).length;
+  const gatesPassed = t("verified.summary.gatesPassed", {
+    passed: String(passed),
+    total: String(GATES.length),
+  });
+  const base = report.certificate;
+  const why = base?.summary?.why ?? report.verdict?.reason;
+
   return {
-    schema: "strhub-verified/certificate/fallback",
+    schema: base?.schema ?? "strhub-verified/certificate/fallback",
     label,
     reached,
     summary: {
-      purpose: PURPOSE,
+      purpose: t("verified.certificate.text.purpose"),
       result: label,
-      reached: `${reached}, ${passed}/${GATES.length} gates passed`,
-      ...(report.verdict?.reason ? { why: report.verdict.reason } : {}),
-      scope: EXEC_SCOPE,
-      not_evaluated: NOT_EVALUATED,
+      reached: `${reached}, ${gatesPassed}`,
+      ...(why ? { why } : {}),
+      scope: t("verified.certificate.text.execScope"),
+      not_evaluated: [
+        t("verified.whatVerified.accuracy"),
+        t("verified.whatVerified.concordance"),
+        t("verified.whatVerified.forensicValidity"),
+        t("verified.whatVerified.regulatory"),
+      ],
     },
-    conclusion: [],
-    out_of_scope: OUT_OF_SCOPE,
-    limitations: LIMITATIONS,
-    scope: { statement: SCOPE_STATEMENT, not: SCOPE_NOT, disclaimer: DISCLAIMER },
+    conclusion: base?.conclusion ?? [],
+    out_of_scope: [
+      t("verified.certificate.outOfScopeItems.item1"),
+      t("verified.certificate.outOfScopeItems.item2"),
+      t("verified.certificate.outOfScopeItems.item3"),
+      t("verified.certificate.outOfScopeItems.item4"),
+      t("verified.certificate.outOfScopeItems.item5"),
+      t("verified.certificate.outOfScopeItems.item6"),
+    ],
+    limitations: [
+      t("verified.certificate.limitationItems.item1"),
+      t("verified.certificate.limitationItems.item2"),
+      t("verified.certificate.limitationItems.item3"),
+      t("verified.certificate.limitationItems.item4"),
+      t("verified.certificate.limitationItems.item5"),
+      t("verified.certificate.limitationItems.item6"),
+    ],
+    scope: {
+      statement: t("verified.trial.scope1"),
+      not: t("verified.trial.scope2"),
+      disclaimer: t("verified.disclaimer"),
+    },
   };
 }

@@ -77,6 +77,11 @@ export function badgeFor(run: BadgeInput, t: Translate): BadgeDisplay {
 }
 
 /** The rung reached, for the line under the label. */
-export function reachedLabel(level: VerifiedLevel): string {
+export function reachedLabel(level: VerifiedLevel, t?: Translate): string {
+  const key = `verified.level.${level}`;
+  if (t) {
+    const localized = t(key);
+    if (localized && localized !== key) return localized;
+  }
   return (VERIFIED_LEVELS[level] ?? VERIFIED_LEVELS.none).label;
 }

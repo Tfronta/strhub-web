@@ -134,9 +134,17 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="space-y-1.5">
-                        <Badge className={cn("w-fit", TONE[badge.tone])}>
-                          {badge.label}
-                        </Badge>
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <Badge className={cn("w-fit", TONE[badge.tone])}>
+                            {badge.label}
+                          </Badge>
+                          <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium text-muted-foreground tabular-nums">
+                            {t("verified.summary.gatesPassed", {
+                              passed: String(LEVEL_RANK[group.head.level] ?? 0),
+                              total: "5",
+                            })}
+                          </span>
+                        </div>
                         <CardTitle className="text-lg">
                           {group.name}
                         </CardTitle>
@@ -212,7 +220,7 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                                 href={rowHref(strhub)}
                                 className="block border-t px-3 py-1.5 text-[10px] text-muted-foreground hover:bg-muted/50 hover:text-primary"
                               >
-                                {t("verified.strhubDid.rowNote", { label: reachedLabel(strhub.level) })}
+                                {t("verified.strhubDid.rowNote", { label: reachedLabel(strhub.level, t) })}
                               </Link>
                             )}
                             </div>

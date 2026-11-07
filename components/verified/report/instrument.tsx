@@ -87,7 +87,7 @@ export function WorkaroundList({ items }: { items: VerifiedWorkaround[] | undefi
 export function StrhubDidSection({ run, row }: { run: VerifiedReport; row?: HistoryRow }) {
   const { t } = useLanguage();
   const items = run.recipe?.workarounds;
-  const reached = reachedLabel(run.level);
+  const reached = reachedLabel(run.level, t);
   return (
     <>
       <h2 className="mt-10 text-xl font-semibold">{t("verified.strhubDid.heading")}</h2>

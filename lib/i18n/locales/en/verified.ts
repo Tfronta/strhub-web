@@ -1103,6 +1103,7 @@ export default {
         invalidOption: "Parameter, flag, or argument not recognized by this tool version.",
         permission: "File access or write permission error.",
         resourceLimit: "Memory or resource limit exceeded during execution.",
+        runtimeError: "Execution stopped with a runtime error or unhandled exception in the log above.",
       },
       estimatedTime: "Usually takes 2 to 5 minutes. Verification runs in a clean, isolated container on GitHub Actions.",
       queueDelayNotice: "GitHub Actions cloud runners are taking longer than usual to allocate. The run will start automatically as soon as a runner is ready; you can keep this tab open.",

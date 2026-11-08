@@ -450,16 +450,16 @@ export function FailureExcerptCard({
   const { t } = useLanguage();
   if (!excerpt) return null;
   return (
-    <div className="mt-4 rounded-lg border bg-card p-5">
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+    <div className="mt-4 rounded-lg border border-slate-300 bg-slate-950 p-4 text-slate-100 shadow-sm dark:border-slate-800">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
         {t("verified.trial.errorExcerptTitle")}
       </p>
-      <pre className="overflow-x-auto whitespace-pre-wrap rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
+      <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs leading-relaxed text-slate-200">
         <code>{excerpt.text}</code>
       </pre>
       {excerpt.hintKey && (
-        <p className="mt-3 border-t pt-2 text-xs text-muted-foreground">
-          <span className="font-semibold text-foreground">{t("verified.trial.probableCauseLabel")}:</span>{" "}
+        <p className="mt-3 border-t border-slate-800 pt-2 text-xs text-amber-300">
+          <span className="font-semibold text-slate-200">{t("verified.trial.probableCauseLabel")}:</span>{" "}
           {t(excerpt.hintKey)}
         </p>
       )}

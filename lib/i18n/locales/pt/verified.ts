@@ -1103,6 +1103,7 @@ export default {
         invalidOption: "Parâmetro, flag ou argumento não reconhecido por esta versão da ferramenta.",
         permission: "Erro de permissão de acesso ou escrita no sistema de arquivos.",
         resourceLimit: "Limite de memória ou recursos excedido durante a execução.",
+        runtimeError: "A execução parou devido a um erro em tempo de execução ou exceção registrada no console.",
       },
       estimatedTime: "Geralmente leva de 2 a 5 minutos. A verificação é executada em um contêiner limpo e isolado no GitHub Actions.",
       queueDelayNotice: "Os servidores do GitHub Actions estão demorando mais do que o habitual para alocar uma máquina. O teste começará automaticamente; você pode manter esta aba aberta.",

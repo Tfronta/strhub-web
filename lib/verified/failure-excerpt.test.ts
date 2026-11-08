@@ -44,5 +44,35 @@ Running pipeline...
     expect(excerpt?.leg).toBe("external");
     expect(excerpt?.hintKey).toBe("verified.trial.hint.pathOrFile");
   });
+
+  it("matches /bin/sh command not found (e.g. STRsearch sh: 1: YOUR: not found)", () => {
+    const logs = {
+      build: "#12 naming to docker.io/library/toolimg:ci done\n#12 DONE 2.4s",
+      example:
+        "mesg: ttyname failed: Inappropriate ioctl for device\nsh: 1: YOUR: not found\nsh: 1: YOUR: not found\n",
+    };
+    const excerpt = extractFailureExcerpt(logs, 14, {
+      installs: true,
+      runs: false,
+      example: true,
+    });
+    expect(excerpt).not.toBeNull();
+    expect(excerpt?.leg).toBe("example");
+    expect(excerpt?.text).toContain("sh: 1: YOUR: not found");
+    expect(excerpt?.hintKey).toBe("verified.trial.hint.missingDependency");
+  });
+
+  it("skips a successful build log when installs passed and no execution failed", () => {
+    const logs = {
+      build: "#12 naming to docker.io/library/toolimg:ci done\n#12 DONE 2.4s",
+      starts: "usage: mytool [--help]",
+    };
+    const excerpt = extractFailureExcerpt(logs, 14, {
+      installs: true,
+      starts: true,
+      runs: false,
+    });
+    expect(excerpt).toBeNull();
+  });
 });
 

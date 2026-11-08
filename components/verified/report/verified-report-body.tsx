@@ -140,7 +140,7 @@ export function VerifiedReportBody({
     report.verdict?.code === "runs" ||
     Boolean(report.gates?.runs && report.gates?.io);
   const failureExcerpt = !report.gates.runs || !report.gates.installs
-    ? extractFailureExcerpt(logs)
+    ? extractFailureExcerpt(logs, 14, report.gates)
     : null;
   const actionableIssues = actionableDiagnostics(report.diagnostics, passedRun);
   const hasCause = !!report.install_detail?.diagnostics?.length

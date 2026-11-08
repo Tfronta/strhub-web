@@ -16,24 +16,28 @@ const HINT_PATTERNS: Array<{
   key: string;
 }> = [
   {
-    pattern: /(?:no such file or directory|cannot open|failed to open|not a directory|does not exist|same directory of)/i,
+    pattern: /(?:no such file or directory|cannot open|failed to open|unable to open|not a directory|does not exist|doesn't exist|same directory of|file not found)/i,
     key: "verified.trial.hint.pathOrFile",
   },
   {
-    pattern: /(?:command not found|modulenotfounderror|importerror|no module named|cannot execute binary)/i,
+    pattern: /(?:command not found|(?:^|\/|\b)sh:\s*\d+:\s*\S+:\s*not found|executable file not found|modulenotfounderror|importerror|no module named|cannot execute binary|error while loading shared libraries|cannot open shared object file)/i,
     key: "verified.trial.hint.missingDependency",
   },
   {
-    pattern: /(?:unrecognized option|unknown option|invalid option|illegal option|no arguments provided)/i,
+    pattern: /(?:unrecognized option|unknown option|invalid option|illegal option|no arguments provided|error:\s*argument|unrecognized arguments)/i,
     key: "verified.trial.hint.invalidOption",
   },
   {
-    pattern: /(?:permission denied|operation not permitted)/i,
+    pattern: /(?:permission denied|operation not permitted|read-only file system)/i,
     key: "verified.trial.hint.permission",
   },
   {
-    pattern: /(?:out of memory|memory limit|oomkilled|killed process|cannot allocate memory)/i,
+    pattern: /(?:out of memory|memory limit|oomkilled|killed process|cannot allocate memory|segmentation fault|sigsegv|core dumped|no space left on device|disk quota exceeded|stopped at the time limit)/i,
     key: "verified.trial.hint.resourceLimit",
+  },
+  {
+    pattern: /(?:traceback \(most recent call last\)|\b(?:\w+error|\w+exception):|fatal error|panic:)/i,
+    key: "verified.trial.hint.runtimeError",
   },
 ];
 
@@ -47,6 +51,12 @@ export function extractFailureExcerpt(
     | undefined
     | null,
   maxLines = 14,
+  gates?: {
+    installs?: boolean;
+    starts?: boolean;
+    example?: boolean;
+    runs?: boolean;
+  },
 ): FailureExcerpt | null {
   if (!logs) return null;
 
@@ -87,6 +97,12 @@ export function extractFailureExcerpt(
         hintKey = h.key;
         break;
       }
+    }
+
+    if (gates) {
+      if (entry.leg === "build" && gates.installs === true && !hintKey) continue;
+      if (entry.leg === "starts" && gates.starts === true && !hintKey) continue;
+      if (entry.leg === "example" && gates.example === true && !hintKey) continue;
     }
 
     return {

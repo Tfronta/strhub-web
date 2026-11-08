@@ -2,7 +2,7 @@ export default {
   verified: {
     title: "STRhub Verified",
     description:
-      "Atestaciones independientes y automatizadas de ejecución documentada. Comprobamos si una herramienta de STR se instala y ejecuta de punta a punta siguiendo estrictamente las instrucciones de su repositorio público, en un entorno limpio y reproducible. Nuestro propósito es ayudar a autores y usuarios a detectar fricciones de documentación o entorno para colaborar en su resolución. No evalúa concordancia de genotipos (no es un benchmark biológico) ni constituye una evidencia de uso pericial.",
+      "Atestaciones independientes y automatizadas de ejecución documentada. Verificamos si una herramienta de STR se instala y ejecuta de principio a fin siguiendo estrictamente las instrucciones de su repositorio público, en un entorno limpio y reproducible. La ausencia o desactualización de pasos en la documentación hará que el test falle; esto refleja fricción de documentación o de entorno, lo que no significa directamente que el software no funcione. Cada informe detalla exactamente dónde y por qué se interrumpió la ejecución, sirviendo como diagnóstico accionable para correcciones. No evalúa concordancia de genotipos (no es un benchmark biológico) ni constituye evidencia de aptitud pericial forense.",
     summary: {
       heading: "Resumen",
       level: "Resultado",

@@ -2,7 +2,7 @@ export default {
   verified: {
     title: "STRhub Verified",
     description:
-      "Independent, automated attestations of documented execution. We verify whether an STR tool installs and runs end-to-end strictly following the instructions in its public repository, in a clean and reproducible environment. Our purpose is to help authors and users identify documentation or environment friction to collaborate on fixes. Does not evaluate genotype concordance (not a biological benchmark) nor constitute evidence for forensic casework fitness.",
+      "Independent, automated attestations of documented execution. We verify whether an STR tool installs and runs end-to-end strictly following the instructions in its public repository, in a clean and reproducible environment. An incomplete, omitted, or outdated instruction will cause the verification to fail; this reflects documentation or environment friction, not necessarily a defect in the underlying tool. Each report pinpoints exactly where execution stopped and why, helping authors and users identify and resolve reproducibility barriers. Does not evaluate genotype concordance (not a biological benchmark) nor constitute evidence for forensic casework fitness.",
     summary: {
       heading: "Summary",
       level: "Result",

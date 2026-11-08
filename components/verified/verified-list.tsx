@@ -127,25 +127,25 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
               const isOpen = expanded.has(group.repo);
 
               return (
-                <Card key={group.repo} className="h-fit">
+                <Card key={group.repo} className="flex flex-col justify-between h-full">
                   <CardHeader
-                    className="cursor-pointer select-none"
+                    className="flex-1 flex flex-col justify-between cursor-pointer select-none space-y-3"
                     onClick={() => toggle(group.repo)}
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <div className="space-y-1.5">
-                        <div className="flex flex-wrap items-center gap-1.5">
-                          <Badge className={cn("w-fit", TONE[badge.tone])}>
+                      <div className="space-y-1.5 min-w-0">
+                        <div className="flex flex-wrap items-center gap-1.5 min-h-[3.25rem] content-start">
+                          <Badge className={cn("w-fit shrink-0", TONE[badge.tone])}>
                             {badge.label}
                           </Badge>
-                          <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium text-muted-foreground tabular-nums">
+                          <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium text-muted-foreground tabular-nums shrink-0">
                             {t("verified.summary.gatesPassed", {
                               passed: String(LEVEL_RANK[group.head.level] ?? 0),
                               total: "5",
                             })}
                           </span>
                         </div>
-                        <CardTitle className="text-lg">
+                        <CardTitle className="text-lg truncate">
                           {group.name}
                         </CardTitle>
                       </div>
@@ -156,18 +156,18 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                         )}
                       />
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground pt-1">
                       <a
                         href={group.repo}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 hover:text-primary"
+                        className="inline-flex items-center gap-1 hover:text-primary truncate"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {group.repo.replace("https://github.com/", "")}
+                        <span className="truncate">{group.repo.replace("https://github.com/", "")}</span>
                         <ExternalLink className="h-3 w-3 shrink-0" />
                       </a>
-                      <span className="text-muted-foreground/60">
+                      <span className="text-muted-foreground/60 shrink-0">
                         {group.rows.length === 1
                           ? t("verified.group.commitSingular")
                           : t("verified.group.commits", { n: String(group.rows.length) })}

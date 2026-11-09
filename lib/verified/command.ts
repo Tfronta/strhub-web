@@ -10,6 +10,14 @@
  */
 
 /** The inner command of a wrapped `run.cmd`; the command itself when it is not wrapped. */
+export function commandPresentation(outcome?: string): { heading: string; note: string } {
+  const prefix = "verified.commandEvidence.";
+  if (outcome === "success" || outcome === "failure") {
+    return { heading: prefix + "submitted", note: prefix + outcome };
+  }
+  return { heading: prefix + "planned", note: prefix + (outcome === "skipped" ? "skipped" : "unknown") };
+}
+
 export function toolCommand(cmd: string): string {
   const inner = cmd.match(/&&\s*\(\s*(.+?)\s*\);\s*rc=\$\?/);
   return (inner ? inner[1] : cmd).trim();

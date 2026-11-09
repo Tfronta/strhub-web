@@ -1,5 +1,25 @@
 export default {
   verified: {
+    evidenceReview: {
+      title: "Evidencia insuficiente",
+      kind: "Corrección editorial; sin nueva ejecución",
+      explanation: "Se retiró la afirmación anterior de ejecución porque no pudo establecerse su evidencia. Los archivos originales se conservan. Esta revisión no concluye que la herramienta funcione o falle.",
+      reviewedOn: "Evidencia revisada el {date}",
+      recovered: "Evidencia recuperada",
+      archive: "Publicación y archivos originales",
+      record: "Registro de revisión y hashes de archivos",
+      pdf: "Aviso de revisión (PDF)",
+      json: "Aviso de revisión (JSON)",
+      open: "Leer la revisión de evidencia",
+    },
+    commandEvidence: {
+      submitted: "Comando enviado al ejecutor",
+      planned: "Comando previsto",
+      success: "El paso de ejecución informó éxito. Este es el comando configurado que se envió a ese paso.",
+      failure: "El paso de ejecución informó un fallo. Eso por sí solo no demuestra que el programa haya llegado a iniciarse.",
+      skipped: "Se omitió el paso de ejecución. Ese paso no ejecutó este comando.",
+      unknown: "El estado registrado del paso no establece su ejecución. La presencia de un comando en el manifiesto no demuestra que se haya ejecutado.",
+    },
     title: "STRhub Verified",
     description:
       "Atestaciones independientes y automatizadas de ejecución documentada. Verificamos si una herramienta de STR se instala y ejecuta de principio a fin siguiendo estrictamente las instrucciones de su repositorio público, en un entorno limpio y reproducible. La ausencia o desactualización de pasos en la documentación hará que el test falle; esto refleja fricción de documentación o de entorno, lo que no significa directamente que el software no funcione. Cada informe detalla exactamente dónde y por qué se interrumpió la ejecución, sirviendo como diagnóstico accionable para correcciones. No evalúa concordancia de genotipos (no es un benchmark biológico) ni constituye evidencia de aptitud pericial forense.",

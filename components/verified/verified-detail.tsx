@@ -8,10 +8,11 @@
  */
 import { extraGateRowsFor } from "@/lib/verified/extra-gates";
 import { useLanguage } from "@/contexts/language-context";
-import type { VerifiedReport } from "@/types/verified";
+import type { VerifiedPublication, VerifiedReport } from "@/types/verified";
 import type { HistoryRow } from "@/lib/verified/history";
 import { instrumentOfReport } from "@/lib/verified/instrument";
 import { VerifiedReportBody, type ReportLog } from "./report/verified-report-body";
+import { EditorialReview } from "./report/editorial-review";
 
 export function VerifiedDetail({
   report,
@@ -22,7 +23,7 @@ export function VerifiedDetail({
   history,
   note,
 }: {
-  report: VerifiedReport;
+  report: VerifiedPublication;
   slug: string;
   staticPageUrl: string;
   pdfUrl: string;
@@ -32,6 +33,9 @@ export function VerifiedDetail({
   note?: { row: HistoryRow; report: VerifiedReport };
 }) {
   const { t } = useLanguage();
+  if (report.record_type === "editorial_review") {
+    return <EditorialReview report={report} pdfUrl={pdfUrl} jsonUrl={jsonUrl} />;
+  }
   // Which instrument: what the report says, else what the index listed this
   // run as, else derived the way the engine derives it for older reports.
   const instrument = report.instrument ?? history?.current.instrument ?? instrumentOfReport(report);

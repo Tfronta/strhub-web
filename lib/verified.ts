@@ -4,7 +4,7 @@
  *
  * Override the source with NEXT_PUBLIC_VERIFIED_BASE if the engine repo moves.
  */
-import type { VerifiedIndex, VerifiedReport } from "@/types/verified";
+import type { VerifiedIndex, VerifiedPublication, VerifiedReport } from "@/types/verified";
 
 const BASE =
   process.env.NEXT_PUBLIC_VERIFIED_BASE ??
@@ -70,10 +70,10 @@ export async function getVerifiedIndex(
 
 export async function getVerifiedReport(
   slug: string
-): Promise<VerifiedReport | null> {
+): Promise<VerifiedPublication | null> {
   // Guard against path traversal — slugs are flat file stems.
   if (!/^[A-Za-z0-9._-]+$/.test(slug)) return null;
-  return fetchJson<VerifiedReport>(`${BASE}/${slug}.json`, true);
+  return fetchJson<VerifiedPublication>(`${BASE}/${slug}.json`, true);
 }
 
 /** Canonical URL of the per-tool static HTML page on gh-pages (fallback view). */
@@ -100,9 +100,9 @@ export function verifiedFileUrl(path: string): string {
  * The report of one commit, by the path index.json gives for it. The root
  * `<slug>.json` is the newest commit; older ones live in `<slug>/<sha>/`.
  */
-export async function getVerifiedReportAt(path: string): Promise<VerifiedReport | null> {
+export async function getVerifiedReportAt(path: string): Promise<VerifiedPublication | null> {
   if (!/^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*\.json$/.test(path)) return null;
-  return fetchJson<VerifiedReport>(verifiedFileUrl(path), true);
+  return fetchJson<VerifiedPublication>(verifiedFileUrl(path), true);
 }
 
 export function contentStats(report: VerifiedReport) {

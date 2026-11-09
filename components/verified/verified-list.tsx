@@ -90,7 +90,8 @@ function rankOf(g: ToolGroup): number {
 
 export function VerifiedList({ index }: { index: VerifiedIndex }) {
   const { t, language } = useLanguage();
-  const groups = groupTools(index.tools);
+  const reviews = index.tools.filter((entry) => entry.record_type === "editorial_review");
+  const groups = groupTools(index.tools.filter((entry) => entry.record_type !== "editorial_review"));
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   function toggle(repo: string) {
@@ -118,10 +119,22 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
           </Link>
         </div>
 
-        {groups.length === 0 ? (
+        {groups.length === 0 && reviews.length === 0 ? (
           <p className="mt-8 text-muted-foreground">{t("verified.empty")}</p>
         ) : (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {reviews.map((entry) => (
+              <Card key={entry.slug}>
+                <CardHeader>
+                  <Badge className={cn("w-fit", TONE.grey)}>{t("verified.evidenceReview.title")}</Badge>
+                  <CardTitle>{entry.name}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground">{t("verified.evidenceReview.kind")}</p>
+                  <Link className="text-primary underline" href={`/verified/${entry.slug}`}>{t("verified.evidenceReview.open")}</Link>
+                </CardContent>
+              </Card>
+            ))}
             {groups.map((group) => {
               const badge = badgeFor(group.head, t);
               const isOpen = expanded.has(group.repo);

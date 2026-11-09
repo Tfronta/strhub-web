@@ -11,7 +11,7 @@ import {
 } from "@/lib/verified";
 import { curatedNoteOf, findVersion, historyOf, repoEntries, type HistoryRow } from "@/lib/verified/history";
 import { VerifiedDetail } from "@/components/verified/verified-detail";
-import type { VerifiedInstrument, VerifiedReport } from "@/types/verified";
+import type { VerifiedInstrument, VerifiedPublication, VerifiedReport } from "@/types/verified";
 
 // Always render from the live report. `revalidate = 300` here made the page
 // serve a stale attestation to anyone arriving just after a run finished (see
@@ -20,7 +20,7 @@ import type { VerifiedInstrument, VerifiedReport } from "@/types/verified";
 export const dynamic = "force-dynamic";
 
 interface Loaded {
-  report: VerifiedReport;
+  report: VerifiedPublication;
   staticPageUrl: string;
   pdfUrl: string;
   jsonUrl: string;
@@ -39,7 +39,7 @@ async function noteFor(rows: HistoryRow[], slug: string, current: HistoryRow | u
   const row = curatedNoteOf(rows.filter((r) => r.slug === slug));
   if (!row) return undefined;
   const report = await getVerifiedReportAt(row.report);
-  return report ? { row, report } : undefined;
+  return report && report.record_type !== "editorial_review" ? { row, report } : undefined;
 }
 
 /**

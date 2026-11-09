@@ -1,5 +1,25 @@
 export default {
   verified: {
+    evidenceReview: {
+      title: "Evidence insufficient",
+      kind: "Editorial correction; no new execution",
+      explanation: "The previous execution claim has been withdrawn because its evidence could not be established. The original files are preserved. This review does not conclude that the tool works or fails.",
+      reviewedOn: "Evidence reviewed on {date}",
+      recovered: "Recovered evidence",
+      archive: "Original publication and files",
+      record: "Review record and file hashes",
+      pdf: "Review notice (PDF)",
+      json: "Review notice (JSON)",
+      open: "Read the evidence review",
+    },
+    commandEvidence: {
+      submitted: "Command submitted to runner",
+      planned: "Planned command",
+      success: "The run step reported success. This is the configured command submitted to that step.",
+      failure: "The run step reported failure. This alone does not prove that the program started.",
+      skipped: "The run step was skipped. This command was not executed by that step.",
+      unknown: "Execution is not established by the recorded step outcome. A command in a manifest is not evidence that it ran.",
+    },
     title: "STRhub Verified",
     description:
       "Independent, automated attestations of documented execution. We verify whether an STR tool installs and runs end-to-end strictly following the instructions in its public repository, in a clean and reproducible environment. An incomplete, omitted, or outdated instruction will cause the verification to fail; this reflects documentation or environment friction, not necessarily a defect in the underlying tool. Each report pinpoints exactly where execution stopped and why, helping authors and users identify and resolve reproducibility barriers. Does not evaluate genotype concordance (not a biological benchmark) nor constitute evidence for forensic casework fitness.",

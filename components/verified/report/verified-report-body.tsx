@@ -23,6 +23,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { type VerifiedInstrument, type VerifiedReport } from "@/types/verified";
 import { hasReportedErrors } from "@/lib/verified/diagnostics";
 import { badgeFor } from "@/lib/verified/badge";
+import { commandPresentation } from "@/lib/verified/command";
 import {
   certificateOf,
   localizeCaveatItem,
@@ -239,9 +240,9 @@ export function VerifiedReportBody({
           </Section>
         )}
 
-        {(command ?? report.run?.cmd) && (
-          <Section n={next()} title={t("verified.certificate.section.command")}>
-            <RunCommandCard cmd={command ?? report.run?.cmd} />
+        {(report.run?.effective_cmd ?? report.run?.cmd ?? command) && (
+          <Section n={next()} title={t(commandPresentation(report.run?.step_outcome).heading)}>
+            <RunCommandCard cmd={report.run?.effective_cmd ?? report.run?.cmd ?? command} outcome={report.run?.step_outcome} />
           </Section>
         )}
 

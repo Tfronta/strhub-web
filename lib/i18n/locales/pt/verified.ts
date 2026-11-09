@@ -1,5 +1,25 @@
 export default {
   verified: {
+    evidenceReview: {
+      title: "Evidência insuficiente",
+      kind: "Correção editorial; sem nova execução",
+      explanation: "A afirmação anterior de execução foi retirada porque sua evidência não pôde ser estabelecida. Os arquivos originais foram preservados. Esta revisão não conclui que a ferramenta funcione ou falhe.",
+      reviewedOn: "Evidência revisada em {date}",
+      recovered: "Evidência recuperada",
+      archive: "Publicação e arquivos originais",
+      record: "Registro da revisão e hashes dos arquivos",
+      pdf: "Aviso de revisão (PDF)",
+      json: "Aviso de revisão (JSON)",
+      open: "Ler a revisão da evidência",
+    },
+    commandEvidence: {
+      submitted: "Comando enviado ao executor",
+      planned: "Comando previsto",
+      success: "A etapa de execução informou sucesso. Este é o comando configurado enviado a essa etapa.",
+      failure: "A etapa de execução informou uma falha. Isso, por si só, não comprova que o programa tenha iniciado.",
+      skipped: "A etapa de execução foi omitida. Essa etapa não executou este comando.",
+      unknown: "O estado registrado da etapa não estabelece a execução. A presença de um comando no manifesto não comprova que ele tenha sido executado.",
+    },
     title: "STRhub Verified",
     description:
       "Atestações independentes e automatizadas de execução documentada. Verificamos se uma ferramenta de STR instala e roda de ponta a ponta seguindo estritamente as instruções de seu repositório público, em um ambiente limpo e reprodutível. A ausência ou desatualização de passos na documentação fará com que o teste pare; isso reflete atritos de documentação ou de ambiente, não significando diretamente que o software não funcione. Cada relatório detalha exatamente onde e por que a execução foi interrompida, servindo como diagnóstico acionável para correções. Não avalia concordância de genótipos (não é um benchmark biológico) nem constitui evidência de aptidão pericial.",

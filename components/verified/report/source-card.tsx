@@ -5,7 +5,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { useHeaded } from "./certificate";
 import { cn } from "@/lib/utils";
 import type { VerifiedReport } from "@/types/verified";
-import { formatCommand } from "@/lib/verified/command";
+import { commandPresentation, formatCommand } from "@/lib/verified/command";
 import { formatDate, formatDateTime } from "@/lib/verified/format-date";
 
 /**
@@ -204,16 +204,16 @@ export function SourceCard({
  * executed had to open the log. It is the reproducibility anchor: the pinned
  * commit, the environment and this line are what "anyone can repeat it" means.
  */
-export function RunCommandCard({ cmd }: { cmd: string | undefined }) {
+export function RunCommandCard({ cmd, outcome }: { cmd: string | undefined; outcome?: string }) {
   const { t } = useLanguage();
   if (!cmd) return null;
   return (
     <div className="mt-6 rounded-lg border bg-card p-5">
       <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-        {t("verified.run.heading")}
+        {t(commandPresentation(outcome).heading)}
       </h2>
       <pre className="overflow-x-auto whitespace-pre-wrap break-all rounded-md bg-muted p-3 text-xs"><code>{formatCommand(cmd)}</code></pre>
-      <p className="mt-2 text-xs text-muted-foreground">{t("verified.run.note")}</p>
+      <p className="mt-2 text-xs text-muted-foreground">{t(commandPresentation(outcome).note)}</p>
     </div>
   );
 }

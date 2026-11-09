@@ -1,5 +1,19 @@
 export default {
   verified: {
+    vcfEvidence: {
+      heading: "VCF structure and records",
+      scope: "Each matched file is checked. Counts are shown only when structural validation completed; they do not establish genotype accuracy.",
+      file: "File",
+      status: "Structural result",
+      records: "Data rows",
+      called: "Rows with calls",
+      uncalled: "Rows with all GT missing",
+      withoutGt: "Rows without GT",
+      valid: "Profile passed",
+      invalid: "Invalid structure",
+      unsupported: "Evaluator does not support this feature",
+      unknown: "Not established",
+    },
     evidenceReview: {
       title: "Evidence insufficient",
       kind: "Editorial correction; no new execution",
@@ -426,6 +440,7 @@ export default {
       notCalledHint: "Loci included in the regions panel that did not appear in the output of this reference slice.",
       ioChecksLabel: "Checks on the file",
       ioCheck: {
+        has_called_genotypes: "has called genotypes",
         exists: "exists",
         non_empty: "not empty",
         confined: "written inside the output directory",

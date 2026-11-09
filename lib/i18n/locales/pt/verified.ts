@@ -1,5 +1,19 @@
 export default {
   verified: {
+    vcfEvidence: {
+      heading: "Estrutura VCF e registros",
+      scope: "Cada arquivo correspondente é verificado. As contagens são mostradas apenas quando a validação estrutural foi concluída; elas não estabelecem a exatidão dos genótipos.",
+      file: "Arquivo",
+      status: "Resultado estrutural",
+      records: "Linhas de dados",
+      called: "Linhas com chamadas",
+      uncalled: "Linhas com todos os GT ausentes",
+      withoutGt: "Linhas sem GT",
+      valid: "Atende ao perfil",
+      invalid: "Estrutura inválida",
+      unsupported: "O avaliador não suporta este recurso",
+      unknown: "Não estabelecido",
+    },
     evidenceReview: {
       title: "Evidência insuficiente",
       kind: "Correção editorial; sem nova execução",
@@ -426,6 +440,7 @@ export default {
       notCalledHint: "Loci incluídos no painel de regiões que não apareceram no arquivo de saída deste recorte de referência.",
       ioChecksLabel: "Verificações no arquivo",
       ioCheck: {
+        has_called_genotypes: "contém genótipos chamados",
         exists: "existe",
         non_empty: "não está vazio",
         confined: "escrito dentro do diretório de saída",

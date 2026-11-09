@@ -1,5 +1,19 @@
 export default {
   verified: {
+    vcfEvidence: {
+      heading: "Estructura VCF y registros",
+      scope: "Se comprueba cada archivo coincidente. Los conteos se muestran solo cuando terminó la validación estructural; no establecen exactitud de los genotipos.",
+      file: "Archivo",
+      status: "Resultado estructural",
+      records: "Filas de datos",
+      called: "Filas con llamadas",
+      uncalled: "Filas con todos los GT ausentes",
+      withoutGt: "Filas sin GT",
+      valid: "Cumple el perfil",
+      invalid: "Estructura inválida",
+      unsupported: "El evaluador no soporta esta característica",
+      unknown: "No establecido",
+    },
     evidenceReview: {
       title: "Evidencia insuficiente",
       kind: "Corrección editorial; sin nueva ejecución",
@@ -426,6 +440,7 @@ export default {
       notCalledHint: "Loci incluidos en el panel de regiones que no aparecieron en el archivo de salida de este recorte de referencia.",
       ioChecksLabel: "Chequeos sobre el archivo",
       ioCheck: {
+        has_called_genotypes: "contiene genotipos llamados",
         exists: "existe",
         non_empty: "no está vacío",
         confined: "escrito dentro del directorio de salida",

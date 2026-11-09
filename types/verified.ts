@@ -206,6 +206,13 @@ export interface VerifiedContentStats {
  * output rather than take the row's word for it needs first.
  */
 export interface VerifiedIoOutput {
+  validation_profile?: string;
+  validation_status?: "valid" | "invalid" | "unsupported";
+  called_records?: number;
+  uncalled_rows?: number;
+  records_without_gt?: number;
+  parse_error?: string;
+  files?: VerifiedIoOutput[];
   path?: string;
   format?: string;
   resolved?: string;

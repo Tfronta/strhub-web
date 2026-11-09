@@ -62,6 +62,11 @@ export function ioChecks(io: VerifiedIoOutput | undefined): IoCheck[] {
   });
 }
 
+/** Old `records` counted calls. Only the versioned profile establishes rows. */
+export function vcfFileEvidence(io: VerifiedIoOutput | undefined): VerifiedIoOutput[] {
+  return io?.validation_profile === "strhub-vcf-structure/1" ? io.files ?? [] : [];
+}
+
 export interface DepthRow {
   locus: string;
   depth: number;

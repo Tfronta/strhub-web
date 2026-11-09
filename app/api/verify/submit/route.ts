@@ -21,6 +21,7 @@ import {
   deriveSlug,
   newDispatchId,
   isRemoteFixture,
+  remoteInputUrl,
   INPUT_TYPES,
 } from "@/lib/verified/submission";
 import {
@@ -78,8 +79,7 @@ async function remoteFixtureReachable(
   ref: string,
   path: string
 ): Promise<boolean> {
-  const slug = repo.replace(/\.git$/, "").replace(/^https:\/\/github\.com\//, "");
-  const url = `https://raw.githubusercontent.com/${slug}/${ref}/${path.replace(/^\//, "")}`;
+  const url = remoteInputUrl({ repo, ref, path });
   try {
     const res = await fetch(url, { method: "HEAD", cache: "no-store" });
     return res.ok;

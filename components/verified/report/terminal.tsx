@@ -101,7 +101,7 @@ export function RecordedTerminal({ logs, preferredLeg, preflight }: {
         <p className="px-4 pt-3 text-xs text-slate-300">{t("verified.log.commandUnavailable")}</p>
       )}
       {typeof result?.text === "string" ? (
-        <pre tabIndex={0} className="max-h-96 overflow-auto whitespace-pre-wrap break-words p-4 font-mono text-xs leading-relaxed">
+        <pre tabIndex={0} className="max-h-96 overflow-auto whitespace-pre p-4 font-mono text-xs leading-relaxed">
           <code>{result.text}</code>
         </pre>
       ) : (

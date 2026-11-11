@@ -146,6 +146,9 @@ tools: {
       2: "Realinhamento local de leituras em torno dos loci STR",
       3: "Genotipagem multi-amostra conjunta para análise populacional",
     },
+    buttons: {
+      ui: "HipSTR-UI (interface gráfica)",
+    },
   },
   longtr: {
     title: "LongTR",

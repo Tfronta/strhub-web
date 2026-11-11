@@ -1,7 +1,8 @@
 // app/sections/mix-profiles/MixProfilesDemo.tsx
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useTrackEvent } from "@/hooks/use-track-event";
 import {
   DEFAULT_AT,
   DEFAULT_IT,
@@ -443,6 +444,41 @@ export default function MixProfilesDemo({
     }));
   }, [contributors]);
 
+  // GA4: one `mixture_simulator_run` per settled configuration. The plots
+  // re-run on every change, so wait until the reader stops moving a slider;
+  // the configuration the page opens with is not a run.
+  const track = useTrackEvent();
+  const lastPresetRef = useRef<MixturePresetKey | null>(null);
+  const sentRunRef = useRef<string | null>(null);
+  const runSignature = JSON.stringify([
+    selectedMarker,
+    contributors.map((c) => [c.sampleId, c.proportion]),
+    AT,
+    IT,
+    kDeg,
+    noise,
+    stutterScale,
+  ]);
+  useEffect(() => {
+    if (sentRunRef.current === null) {
+      sentRunRef.current = runSignature;
+      return;
+    }
+    if (runSignature === sentRunRef.current) return;
+    const timer = setTimeout(() => {
+      sentRunRef.current = runSignature;
+      track("mixture_simulator_run", {
+        locus: selectedMarker,
+        contributors: activeContributors.length,
+        preset: lastPresetRef.current,
+      });
+      lastPresetRef.current = null;
+    }, 1500);
+    return () => clearTimeout(timer);
+    // The signature already covers every input the event reports.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runSignature]);
+
   // CE
   const ce = useMemo(() => {
     if (!activeContributors.length)
@@ -585,6 +621,7 @@ export default function MixProfilesDemo({
 
   /* ------------------------ render ------------------------ */
   const handlePresetSelect = (preset: MixturePresetKey) => {
+    lastPresetRef.current = preset;
     applyPreset(preset);
     onPresetSelect?.(preset);
   };

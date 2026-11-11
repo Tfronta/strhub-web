@@ -89,6 +89,10 @@ export function buildToolCards(t: (key: string) => string): ToolCard[] {
       uiPublication:
         "https://www.fsigenetics.com/article/S1872-4973(26)00037-2/fulltext",
       tutorial: HIPSTR_TUTORIAL_PATH,
+      // HipSTR-UI: the desktop app (installers) and the link to its browser
+      // version, HipSTR-Web, both from its repository page.
+      website: "https://github.com/HipSTR-UI/hipstr-ui",
+      websiteLabel: t("tools.hipstr.buttons.ui"),
     },
     {
       id: "longtr",

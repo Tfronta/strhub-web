@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/language-context";
+import { useTrackEvent } from "@/hooks/use-track-event";
 import { PageTitle } from "@/components/page-title";
 import type { TrialRole } from "@/lib/verified/trial";
 import { repoSlugOf } from "@/lib/verified/repo-url";
@@ -47,6 +48,7 @@ export function VerifiedStart({
   initialRepo?: string;
 }) {
   const { t } = useLanguage();
+  const track = useTrackEvent();
   const router = useRouter();
   const [role, setRole] = useState<TrialRole>(initialRole);
   const [repo, setRepo] = useState(initialRepo);
@@ -123,6 +125,8 @@ export function VerifiedStart({
         setBusy(false);
         return;
       }
+      // No repository in the event: GA4 forbids anything that may identify a person.
+      track("verified_submit", { form: "start", role });
       router.push(data.url as string);
     } catch {
       setError(t("verified.start.error.generic"));

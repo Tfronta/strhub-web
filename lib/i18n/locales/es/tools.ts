@@ -146,6 +146,9 @@ tools: {
       2: "Realineamiento local de lecturas en torno a loci STR",
       3: "Genotipado multi-muestra conjunto para análisis poblacional",
     },
+    buttons: {
+      ui: "HipSTR-UI (interfaz gráfica)",
+    },
   },
   longtr: {
     title: "LongTR",

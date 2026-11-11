@@ -372,6 +372,8 @@ export interface VerifiedReport {
    * this field, and then the page falls back to the verdict alone.
    */
   step1?: VerifiedStep1 | null;
+  procedure_validation?: { schema: string; valid: boolean; reason: string } | null;
+  procedure_review?: { install_ready?: boolean; may_say_runs?: boolean } | null;
   certificate?: VerifiedCertificate | null;
   /**
    * Where the pinned commit sits in its repository now.

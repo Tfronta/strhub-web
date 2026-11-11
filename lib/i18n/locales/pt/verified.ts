@@ -147,6 +147,7 @@ export default {
         content: "Saída plausível",
       },
       stoppedHere: "a execução parou aqui",
+      blockedHere: "O STRhub não conseguiu confirmar o procedimento de instalação documentado.",
       notReached: "Não foi tentado, porque a execução já havia parado.",
       available: "o código público fixado existe",
       installs: "o ambiente compila a partir do código",
@@ -161,6 +162,7 @@ export default {
       state: {
         pass: "Passou",
         fail: "Falhou",
+        blocked: "Bloqueada",
         skipped: "Ignorado",
       },
     },
@@ -228,6 +230,8 @@ export default {
         notRunsTitle: "{tool} não completou sua execução",
         notRunsBody: "{tool} instalou {where}, mas a execução parou antes do término. O log de execução e os diagnósticos acima registram o que aconteceu.",
         notInstallsTitle: "{tool} não instalou no ambiente de teste",
+        blockedTitle: "A instalação não foi tentada",
+        blockedBody: "O relatório registra o código-fonte e as evidências disponíveis no commit fixado.",
         notInstallsBody: "A imagem do contêiner falhou ao compilar, portanto os portões de execução e de saída não foram alcançados.",
         plausibleTitle: "A saída passa nas verificações de plausibilidade",
         plausibleBody: "A execução produziu uma saída {format}não vazia cobrindo {loci} loci STR reconhecíveis.",
@@ -712,7 +716,7 @@ export default {
           runs: "Um terceiro instalou a ferramenta com os passos que este commit enuncia e executou o comando que ele escreve, e o arquivo de saída que esse comando nomeia apareceu. Isso não diz nada sobre genótipos nem sobre o painel forense.",
           does_not_run: "Isso não significa que a ferramenta não funcione. Significa que um terceiro, seguindo o README neste commit, não chegou ao final. Corrija a documentação, ou o passo que quebrou, e tente o link novamente no commit novo.",
           cannot_tell: "Nada foi executado. Isso não significa que a ferramenta não funcione: falta no README deste commit o que o guia pede. Adicione e tente o link novamente no commit novo.",
-          ours: "Nada foi executado, e a limitação é nossa, não da documentação. Nada aqui é um achado sobre a ferramenta. Um arquivo de exemplo pequeno no repositório, ou um slice cobrindo as coordenadas que este comando lê, permitiria a execução.",
+          ours: "A avaliação parou devido a uma limitação do STRhub. O motivo está neste relatório.",
         },
         missingTitle: "O que falta, pelos blocos que o guia pede",
         blocks: {

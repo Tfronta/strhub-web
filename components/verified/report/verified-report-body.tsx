@@ -24,6 +24,7 @@ import { type VerifiedInstrument, type VerifiedReport } from "@/types/verified";
 import { hasReportedErrors } from "@/lib/verified/diagnostics";
 import { badgeFor } from "@/lib/verified/badge";
 import { commandPresentation } from "@/lib/verified/command";
+import { blockedBeforeInstall } from "@/lib/verified/gate-state";
 import {
   certificateOf,
   localizeCaveatItem,
@@ -134,6 +135,7 @@ export function VerifiedReportBody({
     t,
   );
   const certificate = certificateOf(report, level.label, t);
+  const installBlocked = blockedBeforeInstall(report);
   const data = summarizeDatasets(report, slug);
   const isStrhubRun = instrument === "curated";
   const permalink = history ? `${SITE}${rowHref(history.current)}` : undefined;
@@ -221,13 +223,17 @@ export function VerifiedReportBody({
         ) : (
           <Section n={next()} title={t("verified.asIs.heading")}>
             <AsItIsOpening report={report}>{afterHeader}</AsItIsOpening>
-            <GatesLadder gates={report.gates} extraRows={extraGateRows} />
+            <GatesLadder
+              gates={report.gates}
+              extraRows={installBlocked ? undefined : extraGateRows}
+              blockedAt={installBlocked ? "installs" : undefined}
+            />
             <LogLinks logs={logs} />
           </Section>
         )}
 
         {/* Why it stopped, or what errors it reported on the way. */}
-        {hasCause && (
+        {hasCause && !installBlocked && (
           <Section n={next()} title={t(passedRun ? "verified.certificate.section.reported" : "verified.certificate.section.why")}>
             <BuildFailedCard report={report} buildLogHref={buildLogHref} />
             <AutoDiagnostics
@@ -240,7 +246,7 @@ export function VerifiedReportBody({
           </Section>
         )}
 
-        {(report.run?.effective_cmd ?? report.run?.cmd ?? command) && (
+        {!installBlocked && (report.run?.effective_cmd ?? report.run?.cmd ?? command) && (
           <Section n={next()} title={t(commandPresentation(report.run?.step_outcome).heading)}>
             <RunCommandCard cmd={report.run?.effective_cmd ?? report.run?.cmd ?? command} outcome={report.run?.step_outcome} />
           </Section>
@@ -263,9 +269,11 @@ export function VerifiedReportBody({
           </Section>
         )}
 
-        <Section n={next()} title={t("verified.data.heading")}>
-          <VerificationData provenance={data.provenance} hasStrhubFixture={data.hasStrhubFixture} />
-        </Section>
+        {!installBlocked && (
+          <Section n={next()} title={t("verified.data.heading")}>
+            <VerificationData provenance={data.provenance} hasStrhubFixture={data.hasStrhubFixture} />
+          </Section>
+        )}
 
         {report.datasets && report.datasets.length > 0 && report.datasets.some((leg) => leg.fixture_source !== "strhub") && (
           <Section n={next()} title={t("verified.matrix.heading")}>
@@ -274,8 +282,8 @@ export function VerifiedReportBody({
         )}
 
         <Section n={next()} title={t("verified.certificate.section.metadata")}>
-          <SourceCard report={report} />
-          {afterSource}
+          <SourceCard report={report} installBlocked={installBlocked} />
+          {!installBlocked && afterSource}
         </Section>
 
         {history && (
@@ -296,7 +304,7 @@ export function VerifiedReportBody({
           </Section>
         )}
 
-        {!!localizedNeeded?.length && (
+        {!installBlocked && !!localizedNeeded?.length && (
           <Section n={next()} title={t("verified.needed.heading")}>
             <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={localizedNeeded} />
           </Section>
@@ -315,7 +323,7 @@ export function VerifiedReportBody({
         )}
 
         <Section n={next()} title={t("verified.certificate.section.scope")}>
-          <WhatWasVerified />
+          {!installBlocked && <WhatWasVerified />}
           <BoxedList lead={t("verified.certificate.text.scopeExec")} items={certificate.limitations} />
           <p className="mt-3 text-xs text-muted-foreground">{certificate.scope.disclaimer}</p>
         </Section>

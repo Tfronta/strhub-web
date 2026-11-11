@@ -147,6 +147,7 @@ export default {
         content: "Salida verosímil",
       },
       stoppedHere: "acá se detuvo la corrida",
+      blockedHere: "STRhub no pudo comprobar el procedimiento de instalación documentado.",
       notReached: "No se intentó, porque la corrida ya se había detenido.",
       available: "el código público fijado existe",
       installs: "el entorno compila desde el código",
@@ -161,6 +162,7 @@ export default {
       state: {
         pass: "Pasa",
         fail: "Falla",
+        blocked: "Bloqueada",
         skipped: "Omitido",
       },
     },
@@ -228,6 +230,8 @@ export default {
         notRunsTitle: "{tool} no completó su ejecución",
         notRunsBody: "{tool} se instaló {where}, pero la ejecución se detuvo antes de finalizar. El log de ejecución y los diagnósticos de arriba registran lo ocurrido.",
         notInstallsTitle: "{tool} no se instaló en el entorno de prueba",
+        blockedTitle: "La instalación no se intentó",
+        blockedBody: "El informe registra el código fuente y la evidencia disponible en el commit fijado.",
         notInstallsBody: "La imagen del contenedor no se pudo construir, por lo que no se alcanzaron las compuertas de ejecución ni de salida.",
         plausibleTitle: "La salida supera las comprobaciones de plausibilidad",
         plausibleBody: "La corrida produjo una salida {format}no vacía que cubre {loci} loci STR reconocibles.",
@@ -712,7 +716,7 @@ export default {
           runs: "Un tercero instaló la herramienta con los pasos que este commit enuncia y corrió el comando que escribe, y apareció el archivo de salida que ese comando nombra. No dice nada sobre genotipos ni sobre el panel forense.",
           does_not_run: "Eso no significa que la herramienta no funcione. Significa que un tercero, siguiendo el README en este commit, no llegó al final. Corregí la documentación, o el paso que se rompió, y volvé a probar con el link sobre el commit nuevo.",
           cannot_tell: "No se ejecutó nada. Eso no significa que la herramienta no funcione: falta en el README de este commit lo que la guía pide. Agregalo y volvé a probar con el link sobre el commit nuevo.",
-          ours: "No se ejecutó nada, y la limitación es nuestra y no de la documentación. Nada de esto es un hallazgo sobre la herramienta. Un archivo de ejemplo chico en el repositorio, o un slice que cubra las coordenadas que este comando lee, alcanzaría para que la corrida ocurra.",
+          ours: "La evaluación se detuvo por una limitación de STRhub. El motivo figura en este informe.",
         },
         missingTitle: "Lo que falta, por los bloques que pide la guía",
         blocks: {

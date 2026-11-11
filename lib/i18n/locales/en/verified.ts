@@ -147,6 +147,7 @@ export default {
         content: "Plausible Output",
       },
       stoppedHere: "The run stopped here.",
+      blockedHere: "STRhub could not establish the documented installation procedure.",
       notReached: "Not attempted, because the run had already stopped.",
       available: "the pinned public source exists",
       installs: "the environment builds from source",
@@ -161,6 +162,7 @@ export default {
       state: {
         pass: "Pass",
         fail: "Fail",
+        blocked: "Blocked",
         skipped: "Skipped",
       },
     },
@@ -228,6 +230,8 @@ export default {
         notRunsTitle: "{tool} did not complete its run",
         notRunsBody: "{tool} installed {where}, but the run stopped before completion. The execution log and diagnostics above record what happened.",
         notInstallsTitle: "{tool} did not install in the test environment",
+        blockedTitle: "Installation was not attempted",
+        blockedBody: "The report records the source and the evidence available at the pinned commit.",
         notInstallsBody: "The container image failed to build, so execution and output gates were not reached.",
         plausibleTitle: "Output passes plausibility checks",
         plausibleBody: "The run produced non-empty {format}output covering {loci} recognizable STR loci.",
@@ -712,7 +716,7 @@ export default {
           runs: "A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.",
           does_not_run: "That does not mean the tool does not work. It means a third party following the README at this commit did not reach the end. Fix the documentation, or the step that broke, and try the link again on the new commit.",
           cannot_tell: "Nothing was executed. That does not mean the tool does not work: what the guide asks for is missing from the README at this commit. Add it and try the link again on the new commit.",
-          ours: "Nothing was executed, and the limitation is ours rather than the documentation's. Nothing here is a finding about the tool. A small example file committed to the repository, or a slice covering the coordinates this command reads, would let the run happen.",
+          ours: "STRhub reached a limit in its evaluator. See the reason recorded in this report.",
         },
         missingTitle: "What is missing, by the blocks the guide asks for",
         blocks: {

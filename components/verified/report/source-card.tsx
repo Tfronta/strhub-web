@@ -22,11 +22,13 @@ import { formatDate, formatDateTime } from "@/lib/verified/format-date";
  */
 export function SourceCard({
   report,
+  installBlocked = false,
   staticPageUrl,
   pdfUrl,
   jsonUrl,
 }: {
   report: VerifiedReport;
+  installBlocked?: boolean;
   /** The engine's self-contained HTML page for this run, if there is one. */
   staticPageUrl?: string;
   pdfUrl?: string;
@@ -112,7 +114,7 @@ export function SourceCard({
             </span>
           )}
         </dd>
-        {report.environment?.os && (
+        {!installBlocked && report.environment?.os && (
           <>
             <dt className="text-muted-foreground">{t("verified.environment")}</dt>
             <dd>
@@ -191,7 +193,9 @@ export function SourceCard({
           </>
         )}
       </dl>
-      <p className="mt-3 border-t pt-3 text-xs text-muted-foreground">{t("verified.footnote")}</p>
+      {!installBlocked && (
+        <p className="mt-3 border-t pt-3 text-xs text-muted-foreground">{t("verified.footnote")}</p>
+      )}
     </div>
   );
 }

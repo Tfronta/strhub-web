@@ -132,7 +132,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
           </ul>
         </div>
       )}
-      {step1.code !== "runs" && report && (
+      {step1.code === "cannot_tell" && report && (
         <div className="mt-4 space-y-2">
           <Button asChild variant="outline" size="sm">
             <a href={step1.guideHref} target="_blank" rel="noreferrer">

@@ -7,6 +7,7 @@
  */
 import type { VerifiedCertificate, VerifiedReport } from "@/types/verified";
 import { VERIFIED_LEVELS } from "@/types/verified";
+import { blockedBeforeInstall } from "./gate-state";
 
 export const PURPOSE = "Verify that the tool installs, runs end-to-end, and produces structurally valid output.";
 export const EXEC_SCOPE = "Installation, execution, and output structure verification.";
@@ -337,6 +338,20 @@ function buildLocalizedConclusion(
   report: VerifiedReport,
   t: Translate,
 ): { title: string; body: string }[] {
+  if (blockedBeforeInstall(report)) {
+    return [{
+      title: t("verified.certificate.conclusion.blockedTitle"),
+      body: t("verified.certificate.conclusion.blockedBody"),
+    }];
+  }
+  if (report.procedure_validation && (
+    !report.procedure_validation.valid ||
+    report.procedure_review?.may_say_runs !== true ||
+    report.verdict?.basis === "strhub" ||
+    (report.verdict?.code !== "runs" && report.verdict?.code !== "fails")
+  )) {
+    return report.certificate?.conclusion ?? [];
+  }
   const toolDisplay = `${report.tool.name}${report.tool.version ? ` ${report.tool.version}` : ""}`.trim();
   const where = report.environment?.fallback_used
     ? t("verified.certificate.conclusion.whereFallback", {

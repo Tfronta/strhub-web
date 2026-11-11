@@ -7,11 +7,24 @@
  * rungs above it were not attempted, and saying otherwise blames a tool for
  * steps nobody gave it the chance to take.
  */
-export type GateState = "pass" | "stopped" | "not-reached";
+import type { VerifiedReport } from "@/types/verified";
+
+export type GateState = "pass" | "blocked" | "stopped" | "not-reached";
+
+export function blockedBeforeInstall(report: VerifiedReport): boolean {
+  return report.procedure_validation?.valid === true &&
+    report.procedure_review?.install_ready === false &&
+    report.verdict?.code === "undetermined" &&
+    report.verdict.basis === "strhub" &&
+    report.gates.available === true &&
+    !report.gates.installs && !report.gates.runs && !report.gates.io && !report.gates.content &&
+    report.run?.step_outcome !== "success" && report.run?.step_outcome !== "failure";
+}
 
 export function gateStates(
   gates: Partial<Record<string, boolean>> | undefined,
   keys: string[],
+  blockedAt?: string,
 ): Record<string, GateState> {
   const out: Record<string, GateState> = {};
   let stopped = false;
@@ -19,7 +32,7 @@ export function gateStates(
     if (gates?.[k]) {
       out[k] = "pass";
     } else if (!stopped) {
-      out[k] = "stopped";
+      out[k] = k === blockedAt ? "blocked" : "stopped";
       stopped = true;
     } else {
       out[k] = "not-reached";

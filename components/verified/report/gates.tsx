@@ -26,12 +26,14 @@ export interface ExtraGateRow {
 export function GatesLadder({
   gates,
   extraRows = [],
+  blockedAt,
 }: {
   gates: Record<VerifiedLevel, boolean> | undefined;
   extraRows?: ExtraGateRow[];
+  blockedAt?: VerifiedLevel;
 }) {
   const { t } = useLanguage();
-  const st = gateStates(gates, VERIFIED_GATES.map((g) => g.key));
+  const st = gateStates(gates, VERIFIED_GATES.map((g) => g.key), blockedAt);
   const failed = VERIFIED_GATES.filter((g) => !gates?.[g.key]);
   const onlyContent = failed.length === 1 && failed[0].key === "content";
   const startsRow = extraRows.find((r) => r.key === "starts");
@@ -91,7 +93,10 @@ export function GatesLadder({
                 {state === "stopped" && (
                   <span className="ml-2 font-medium text-red-700 dark:text-red-400">{t("verified.gate.stoppedHere")}</span>
                 )}
-                {state === "not-reached" && (
+                {state === "blocked" && (
+                  <span className="ml-2 font-medium">{t("verified.gate.blockedHere")}</span>
+                )}
+                {state === "not-reached" && !blockedAt && (
                   <span className="ml-2 italic">{t("verified.gate.notReached")}</span>
                 )}
               </span>
@@ -111,6 +116,11 @@ export function GatesLadder({
                     {t("verified.gate.state.skipped")}
                   </Badge>
                 )}
+                {state === "blocked" && (
+                  <Badge variant="secondary" className="text-xs">
+                    {t("verified.gate.state.blocked")}
+                  </Badge>
+                )}
               </div>
             </div>
           );
@@ -126,7 +136,7 @@ export function GatesLadder({
           unless it was the content gate specifically. A reviewer then read the
           ladder as a verdict on the software, which is the one thing it is not
           entitled to be. */}
-      {failed.length > 0 && (
+      {failed.length > 0 && !blockedAt && (
         <p className="mt-3 text-sm text-muted-foreground rounded-lg border border-border bg-muted/40 px-4 py-3">
           {t(onlyContent ? "verified.gate.contentFailNote" : "verified.gate.stoppedEarlyNote")}{" "}
           <Link

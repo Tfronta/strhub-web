@@ -6,10 +6,6 @@ consent: {
   accept: "Accept",
   decline: "Only necessary",
   close: "Close",
-  current: {
-    granted: "Analytics is on.",
-    denied: "Analytics is off.",
-  },
   preferences: "Cookie preferences",
 },
 privacy: {
@@ -22,7 +18,7 @@ privacy: {
   },
   measure: {
     heading: "What we measure",
-    body: "We use Google Analytics 4 to understand how the site is used: pages visited, which tools and tutorials people use (for example, which marker is opened in the Motif Explorer or which tutorial command is copied), the interface language, device and browser type, and approximate location (country and city). Analytics collects no names or email addresses, we show no ads, and we sell no data. Google processes this data, also in the United States, under the EU-US Data Privacy Framework.",
+    body: "We use Google Analytics 4 to understand how the site is used: pages visited, which tools and tutorials people use (for example, which marker is opened in the Motif Explorer or which tutorial command is copied), the interface language, device and browser type, and approximate location (country and city). Analytics collects no names or email addresses. Google processes this data, also in the United States, under the EU-US Data Privacy Framework.",
   },
   when: {
     heading: "When Analytics stores cookies",

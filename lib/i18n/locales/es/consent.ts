@@ -6,10 +6,6 @@ consent: {
   accept: "Aceptar",
   decline: "Solo las necesarias",
   close: "Cerrar",
-  current: {
-    granted: "La analítica está activada.",
-    denied: "La analítica está desactivada.",
-  },
   preferences: "Preferencias de cookies",
 },
 privacy: {
@@ -22,7 +18,7 @@ privacy: {
   },
   measure: {
     heading: "Qué medimos",
-    body: "Usamos Google Analytics 4 para entender cómo se usa el sitio: páginas visitadas, qué herramientas y tutoriales se usan (por ejemplo, qué marcador se abre en el Motif Explorer o qué comando del tutorial se copia), el idioma de la interfaz, el tipo de dispositivo y de navegador, y la ubicación aproximada (país y ciudad). Analytics no recoge nombres ni correos, no mostramos publicidad y no vendemos datos. Google trata estos datos, también en Estados Unidos, bajo el Marco de Privacidad de Datos UE-EE. UU.",
+    body: "Usamos Google Analytics 4 para entender cómo se usa el sitio: páginas visitadas, qué herramientas y tutoriales se usan (por ejemplo, qué marcador se abre en el Motif Explorer o qué comando del tutorial se copia), el idioma de la interfaz, el tipo de dispositivo y de navegador, y la ubicación aproximada (país y ciudad). Analytics no recoge nombres ni correos. Google trata estos datos, también en Estados Unidos, bajo el Marco de Privacidad de Datos UE-EE. UU.",
   },
   when: {
     heading: "Cuándo guarda cookies Analytics",

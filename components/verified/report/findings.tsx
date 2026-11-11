@@ -444,25 +444,28 @@ export function EvidenceList({ evidence }: { evidence: VerifiedReport["evidence"
 
 export function FailureExcerptCard({
   excerpt,
+  preflight = false,
 }: {
-  excerpt: FailureExcerpt | null | undefined;
+  excerpt: FailureExcerpt;
+  preflight?: boolean;
 }) {
   const { t } = useLanguage();
-  if (!excerpt) return null;
   return (
-    <div className="mt-4 rounded-lg border border-slate-300 bg-slate-950 p-4 text-slate-100 shadow-sm dark:border-slate-800">
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-        {t("verified.trial.errorExcerptTitle")}
-      </p>
-      <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs leading-relaxed text-slate-200">
+    <figure className="mt-4 rounded-lg border border-slate-300 bg-slate-950 p-4 text-slate-100 shadow-sm dark:border-slate-800">
+      <figcaption className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+        {preflight
+          ? t("verified.trial.preflightExcerptTitle")
+          : `${t("verified.trial.errorExcerptTitle")} · ${t(`verified.trial.log.${excerpt.leg}`)}`}
+      </figcaption>
+      <pre tabIndex={0} className="max-h-72 overflow-auto whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-slate-200">
         <code>{excerpt.text}</code>
       </pre>
-      {excerpt.hintKey && (
+      {!preflight && excerpt.hintKey && (
         <p className="mt-3 border-t border-slate-800 pt-2 text-xs text-amber-300">
-          <span className="font-semibold text-slate-200">{t("verified.trial.probableCauseLabel")}:</span>{" "}
+          <span className="block font-semibold text-slate-200">{t("verified.trial.probableCauseLabel")}</span>
           {t(excerpt.hintKey)}
         </p>
       )}
-    </div>
+    </figure>
   );
 }

@@ -11,16 +11,21 @@ export interface FailureExcerpt {
   hintKey?: string;
 }
 
+export const LOG_TAIL_LENGTH = 20_000;
+
+export function failureLogLegs(gates?: { installs?: boolean }): string[] {
+  if (gates?.installs === false) return ["build"];
+  const legs = ["external", "own", "example", "starts"];
+  if (gates?.installs !== true) legs.push("build");
+  return legs;
+}
+
 const HINT_PATTERNS: Array<{
   pattern: RegExp;
   key: string;
 }> = [
   {
-    pattern: /(?:no such file or directory|cannot open|failed to open|unable to open|not a directory|does not exist|doesn't exist|same directory of|file not found)/i,
-    key: "verified.trial.hint.pathOrFile",
-  },
-  {
-    pattern: /(?:command not found|(?:^|\/|\b)sh:\s*\d+:\s*\S+:\s*not found|executable file not found|modulenotfounderror|importerror|no module named|cannot execute binary|error while loading shared libraries|cannot open shared object file)/i,
+    pattern: /(?:command not found|(?:^|\/|\b)sh:\s*\d+:\s*\S+:\s*not found|executable file not found|modulenotfounderror|importerror|no module named|cannot execute binary|error while loading shared libraries|cannot open shared object file|unable to locate package|no matching distribution found)/i,
     key: "verified.trial.hint.missingDependency",
   },
   {
@@ -32,18 +37,20 @@ const HINT_PATTERNS: Array<{
     key: "verified.trial.hint.permission",
   },
   {
-    pattern: /(?:out of memory|memory limit|oomkilled|killed process|cannot allocate memory|segmentation fault|sigsegv|core dumped|no space left on device|disk quota exceeded|stopped at the time limit)/i,
+    pattern: /(?:out of memory|memory limit|oomkilled|killed process|cannot allocate memory|no space left on device|disk quota exceeded|stopped at the time limit)/i,
     key: "verified.trial.hint.resourceLimit",
   },
   {
-    pattern: /(?:traceback \(most recent call last\)|\b(?:\w+error|\w+exception):|fatal error|panic:)/i,
+    pattern: /(?:no such file or directory|cannot open|failed to open|unable to open|not a directory|does not exist|doesn't exist|same directory of|file not found)/i,
+    key: "verified.trial.hint.pathOrFile",
+  },
+  {
+    pattern: /(?:traceback \(most recent call last\)|\b(?:\w+error|\w+exception):|fatal error|panic:|segmentation fault|sigsegv|core dumped)/i,
     key: "verified.trial.hint.runtimeError",
   },
 ];
 
-/**
- * Extracts the tail lines of the failing log, preferring external or own data execution.
- */
+/** Show the recorded error with context, or the tail when no error is recognized. */
 export function extractFailureExcerpt(
   logs:
     | Record<string, string>
@@ -58,7 +65,7 @@ export function extractFailureExcerpt(
     runs?: boolean;
   },
 ): FailureExcerpt | null {
-  if (!logs) return null;
+  if (!logs || maxLines <= 0) return null;
 
   const entries: Array<{ leg: string; text: string }> = Array.isArray(logs)
     ? logs
@@ -70,44 +77,28 @@ export function extractFailureExcerpt(
         .filter(([, text]) => typeof text === "string" && text.trim().length > 0)
         .map(([leg, text]) => ({ leg, text }));
 
-  if (entries.length === 0) return null;
+  for (const leg of failureLogLegs(gates)) {
+    const entry = entries.find((item) => item.leg === leg);
+    if (!entry) continue;
 
-  // Prioritize execution runs where failures typically happen: external, own, example, then build.
-  const legOrder = ["external", "own", "example", "starts", "build"];
-  entries.sort((a, b) => {
-    const ai = legOrder.indexOf(a.leg);
-    const bi = legOrder.indexOf(b.leg);
-    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
-  });
-
-  for (const entry of entries) {
-    const lines = entry.text
-      .split(/\r?\n/)
-      .map((l) => l.trimEnd())
-      .filter((l) => l.trim().length > 0);
-
-    if (lines.length === 0) continue;
-
-    const tail = lines.slice(-maxLines);
-    const joinedTail = tail.join("\n");
-
+    const lines = entry.text.trimEnd().split(/\r?\n/);
+    const tailStart = Math.max(0, lines.length - maxLines);
+    let start = tailStart;
     let hintKey: string | undefined;
-    for (const h of HINT_PATTERNS) {
-      if (h.pattern.test(joinedTail)) {
-        hintKey = h.key;
-        break;
-      }
+    for (let index = lines.length - 1; index >= 0; index--) {
+      const hint = HINT_PATTERNS.find(({ pattern }) => pattern.test(lines[index]));
+      if (!hint) continue;
+      if (index < tailStart) start = Math.max(0, index - Math.min(3, maxLines - 1));
+      hintKey = hint.key;
+      break;
     }
 
-    if (gates) {
-      if (entry.leg === "build" && gates.installs === true && !hintKey) continue;
-      if (entry.leg === "starts" && gates.starts === true && !hintKey) continue;
-      if (entry.leg === "example" && gates.example === true && !hintKey) continue;
-    }
+    if (leg === "starts" && gates?.starts === true && !hintKey) continue;
+    if (leg === "example" && gates?.example === true && !hintKey) continue;
 
     return {
-      leg: entry.leg,
-      text: joinedTail,
+      leg,
+      text: lines.slice(start, start + maxLines).join("\n"),
       hintKey,
     };
   }

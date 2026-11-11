@@ -45,6 +45,27 @@ Running pipeline...
     expect(excerpt?.hintKey).toBe("verified.trial.hint.pathOrFile");
   });
 
+  it("selects the install log when the installation gate stopped the run", () => {
+    const excerpt = extractFailureExcerpt({
+      build: "E: Unable to locate package libexample",
+      external: "Execution was skipped",
+    }, 14, { installs: false, runs: false });
+    expect(excerpt).toEqual({
+      leg: "build",
+      text: "E: Unable to locate package libexample",
+      hintKey: "verified.trial.hint.missingDependency",
+    });
+  });
+
+  it("keeps the error and its surrounding lines when routine output follows", () => {
+    const error = "Cannot open /data/in/input.bam: Permission denied";
+    const cleanup = Array.from({ length: 16 }, (_, i) => "Cleaned temporary file " + i);
+    const excerpt = extractFailureExcerpt({ own: ["Read input", "", error, ...cleanup].join("\n") });
+    expect(excerpt?.text).toContain("Read input\n\n" + error);
+    expect(excerpt?.text).not.toContain("Cleaned temporary file 15");
+    expect(excerpt?.hintKey).toBe("verified.trial.hint.permission");
+  });
+
   it("matches /bin/sh command not found (e.g. STRsearch sh: 1: YOUR: not found)", () => {
     const logs = {
       build: "#12 naming to docker.io/library/toolimg:ci done\n#12 DONE 2.4s",

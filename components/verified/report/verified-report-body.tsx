@@ -48,7 +48,7 @@ import {
   AuthorKnownIssues,
   EvidenceList,
 } from "./findings";
-import { extractFailureExcerpt } from "@/lib/verified/failure-excerpt";
+import { extractFailureExcerpt, type FailureExcerpt } from "@/lib/verified/failure-excerpt";
 import { DisputeCard } from "./closing";
 import { VersionHistory, OlderVersionNotice, RetiredNotice, rowHref } from "./history";
 import { AsItIsOpening } from "./verdict";
@@ -75,6 +75,7 @@ export function VerifiedReportBody({
   jsonUrl,
   command,
   logs,
+  logExcerpt,
   buildLogHref,
   extraGateRows,
   backLink = true,
@@ -97,6 +98,7 @@ export function VerifiedReportBody({
    */
   command?: string;
   logs: ReportLog[];
+  logExcerpt?: FailureExcerpt | null;
   buildLogHref?: string;
   extraGateRows?: ExtraGateRow[];
   backLink?: boolean;
@@ -142,14 +144,18 @@ export function VerifiedReportBody({
   const passedRun =
     report.verdict?.code === "runs" ||
     Boolean(report.gates?.runs && report.gates?.io);
-  const failureExcerpt = !report.gates.runs || !report.gates.installs
+  const excerpt = logExcerpt ?? (!report.gates.runs || !report.gates.installs
     ? extractFailureExcerpt(logs, 14, report.gates)
-    : null;
+    : null);
   const actionableIssues = actionableDiagnostics(report.diagnostics, passedRun);
-  const hasCause = !!report.install_detail?.diagnostics?.length
+  const hasDiagnostics = !installBlocked && (
+    !!report.install_detail?.diagnostics?.length
     || actionableIssues.length > 0
     || !!report.author_known_issues?.length
-    || !!failureExcerpt;
+  );
+  const diagnosticsTitle = installBlocked
+    ? "verified.certificate.section.preflight"
+    : passedRun ? "verified.certificate.section.reported" : "verified.certificate.section.why";
   const next = sectionCounter();
 
   const datasetsLabel = data.provenance.length
@@ -233,16 +239,20 @@ export function VerifiedReportBody({
         )}
 
         {/* Why it stopped, or what errors it reported on the way. */}
-        {hasCause && !installBlocked && (
-          <Section n={next()} title={t(passedRun ? "verified.certificate.section.reported" : "verified.certificate.section.why")}>
-            <BuildFailedCard report={report} buildLogHref={buildLogHref} />
-            <AutoDiagnostics
-              diagnostics={report.diagnostics}
-              hasStrhubFixture={data.hasStrhubFixture}
-              passedRun={passedRun}
-            />
-            {failureExcerpt && <FailureExcerptCard excerpt={failureExcerpt} />}
-            <AuthorKnownIssues items={report.author_known_issues} />
+        {(excerpt || hasDiagnostics) && (
+          <Section n={next()} title={t(diagnosticsTitle)}>
+            {excerpt && <FailureExcerptCard excerpt={excerpt} preflight={installBlocked} />}
+            {hasDiagnostics && (
+              <>
+                <BuildFailedCard report={report} buildLogHref={buildLogHref} />
+                <AutoDiagnostics
+                  diagnostics={report.diagnostics}
+                  hasStrhubFixture={data.hasStrhubFixture}
+                  passedRun={passedRun}
+                />
+                <AuthorKnownIssues items={report.author_known_issues} />
+              </>
+            )}
           </Section>
         )}
 

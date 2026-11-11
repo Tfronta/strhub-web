@@ -7,6 +7,7 @@
  * body the tool's history.
  */
 import { extraGateRowsFor } from "@/lib/verified/extra-gates";
+import type { FailureExcerpt } from "@/lib/verified/failure-excerpt";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedPublication, VerifiedReport } from "@/types/verified";
 import type { HistoryRow } from "@/lib/verified/history";
@@ -20,6 +21,7 @@ export function VerifiedDetail({
   staticPageUrl,
   pdfUrl,
   jsonUrl,
+  logExcerpt,
   history,
   note,
 }: {
@@ -28,6 +30,7 @@ export function VerifiedDetail({
   staticPageUrl: string;
   pdfUrl: string;
   jsonUrl: string;
+  logExcerpt?: FailureExcerpt | null;
   history?: { rows: HistoryRow[]; current: HistoryRow };
   /** The run of STRhub's own recipe for this tool, when this page is not it. */
   note?: { row: HistoryRow; report: VerifiedReport };
@@ -72,6 +75,7 @@ export function VerifiedDetail({
       pdfUrl={pdfUrl}
       jsonUrl={jsonUrl}
       logs={logs}
+      logExcerpt={logExcerpt}
       buildLogHref={report.logs?.build ? `${logBaseUrl}/${report.logs.build}` : undefined}
       history={history}
       instrument={instrument}

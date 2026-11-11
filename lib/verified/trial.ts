@@ -12,6 +12,7 @@
  * every poll is one GitHub call.
  */
 import { unzipSync, strFromU8 } from "fflate";
+import { LOG_TAIL_LENGTH } from "./failure-excerpt";
 import {
   ENGINE_REPO,
   dispatchTrial,
@@ -333,8 +334,8 @@ async function readArtifact(runId: number, slug: string): Promise<(Partial<Trial
   const recipeText = text(`${stem}.recipe.json`);
   const logs: Record<string, string> = {};
   for (const f of Object.keys(files)) {
-    const m = f.match(/\.log-(own|external|example|build)\.txt$/);
-    if (m) logs[m[1]] = strFromU8(files[f]).slice(-20_000);
+    const m = f.match(/\.log-(own|external|example|starts|build)\.txt$/);
+    if (m) logs[m[1]] = strFromU8(files[f]).slice(-LOG_TAIL_LENGTH);
   }
   const bin: Record<string, Uint8Array> = {};
   if (files[`${stem}.pdf`]) bin.pdf = files[`${stem}.pdf`];
@@ -368,8 +369,8 @@ async function fixtureTrial(id: string): Promise<TrialStatus | null> {
     const summaryMd = await fs.readFile(path.join(base, "summary.md"), "utf-8").catch(() => null);
     const logs: Record<string, string> = {};
     for (const f of await fs.readdir(base)) {
-      const m = f.match(/^log-(own|external|example|build)\.txt$/);
-      if (m) logs[m[1]] = (await fs.readFile(path.join(base, f), "utf-8")).slice(-20_000);
+      const m = f.match(/^log-(own|external|example|starts|build)\.txt$/);
+      if (m) logs[m[1]] = (await fs.readFile(path.join(base, f), "utf-8")).slice(-LOG_TAIL_LENGTH);
     }
     const bin: Record<string, Uint8Array> = {};
     for (const [name, file] of [["pdf", "report.pdf"], ["html", "report.html"]] as const) {

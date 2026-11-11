@@ -1,6 +1,7 @@
 import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import { cookies, headers } from "next/headers";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LanguageProvider } from "@/contexts/language-context";
@@ -12,6 +13,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { JsonLd } from "@/components/json-ld";
 import { DATASET_CREATOR } from "@/lib/seo";
+import { ConsentProvider } from "@/contexts/consent-context";
+import { ConsentBanner } from "@/components/consent-banner";
+import {
+  CONSENT_COOKIE,
+  consentDefaultScript,
+  consentRequired,
+  initialAnalyticsStorage,
+  parseConsentChoice,
+} from "@/lib/consent";
 import "./globals.css";
 import { Viewport } from "next";
 
@@ -153,6 +163,14 @@ export default function RootLayout({
   const initialLanguage = pick(routeLanguage) ?? pick(cookieLanguage);
   const htmlLanguage = initialLanguage ?? "en";
 
+  // Consent Mode v2: ask in the EEA, UK and Switzerland (lib/consent.ts).
+  // Preview deployments ask everyone, so the banner can be reviewed anywhere.
+  const consentChoice = parseConsentChoice(cookieStore.get(CONSENT_COOKIE)?.value);
+  const consentIsRequired = consentRequired(headers().get("x-vercel-ip-country"), {
+    askEveryone: process.env.VERCEL_ENV === "preview",
+  });
+  const analyticsStorage = initialAnalyticsStorage(consentIsRequired, consentChoice);
+
   return (
     <html lang={htmlLanguage} suppressHydrationWarning>
       <body className={`font-sans ${inter.variable}`}>
@@ -165,16 +183,26 @@ export default function RootLayout({
         <JsonLd data={SITE_JSON_LD} />
         <ThemeProvider>
           <LanguageProvider initialLanguage={initialLanguage}>
-            <TooltipProvider delayDuration={0}>
-              <div className="min-h-screen bg-background flex flex-col">
-                <GlobalHeader />
-                <main className="flex-1">{children}</main>
-                <SiteFooter />
-                <Toaster />
-              </div>
-            </TooltipProvider>
+            <ConsentProvider required={consentIsRequired} initialChoice={consentChoice}>
+              <TooltipProvider delayDuration={0}>
+                <div className="min-h-screen bg-background flex flex-col">
+                  <GlobalHeader />
+                  <main className="flex-1">{children}</main>
+                  <SiteFooter />
+                  <Toaster />
+                  <ConsentBanner />
+                </div>
+              </TooltipProvider>
+            </ConsentProvider>
           </LanguageProvider>
         </ThemeProvider>
+        {/* Before the Google Analytics config, so the first page view already
+            follows the visitor's consent. Next hoists it into <head>. */}
+        <Script
+          id="ga-consent-default"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: consentDefaultScript(analyticsStorage) }}
+        />
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Github } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
+import { ConsentPreferencesButton } from "@/components/consent-banner";
 
 const FOOTER_LINKS = [
   { href: "/catalog", labelKey: "nav.catalog" },
@@ -61,6 +62,12 @@ export function SiteFooter() {
             {t("home.footer.joinDiscussion")}
           </a>
         </nav>
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground/80">
+          <Link href="/privacy" className="transition-colors hover:text-foreground">
+            {t("privacy.title")}
+          </Link>
+          <ConsentPreferencesButton className="transition-colors hover:text-foreground" />
+        </div>
       </div>
     </footer>
   );

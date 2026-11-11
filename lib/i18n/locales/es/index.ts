@@ -8,6 +8,7 @@ import about from "./about"
 import commonProjects from "./common-projects"
 import mix from "./mix"
 import verified from "./verified"
+import consent from "./consent"
 
 const messages = {
   ...navigation,
@@ -20,6 +21,7 @@ const messages = {
   ...commonProjects,
   ...mix,
   ...verified,
+  ...consent,
 } as const
 
 export default messages

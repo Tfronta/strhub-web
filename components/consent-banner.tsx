@@ -13,8 +13,8 @@ const ARRIVAL_DELAY_MS = 700;
 
 /**
  * A bar along the bottom of the screen, not a wall: it never covers the page
- * with an overlay, blocks scrolling or takes focus on arrival. Accepting and
- * declining are the same size, one tap each.
+ * with an overlay, blocks scrolling or takes focus on arrival. Text on top,
+ * and below it Accept with "Only necessary" as a link right beside it.
  */
 export function ConsentBanner() {
   const { bannerOpen, reopened, choose, closeBanner } = useConsent();
@@ -62,45 +62,46 @@ export function ConsentBanner() {
         "animate-in fade-in-0 slide-in-from-bottom-3 duration-500 ease-out motion-reduce:animate-none",
       )}
     >
-      <div className="container relative mx-auto flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:gap-6 sm:py-4">
-        <div className={cn("flex min-w-0 flex-1 items-start gap-3 sm:items-center", reopened && "pr-8 sm:pr-0")}>
+      <div className="container relative mx-auto px-4 py-3">
+        <div className={cn("flex items-start gap-3", reopened && "pr-8")}>
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <BarChart3 className="h-4 w-4" aria-hidden />
           </span>
-          <p id={textId} className="text-sm leading-relaxed text-foreground/85">
-            {t("consent.body")}{" "}
-            <Link
-              href="/privacy"
-              className="whitespace-nowrap font-medium text-primary underline-offset-2 hover:underline"
-            >
-              {t("consent.privacyLink")}
-            </Link>
-          </p>
-        </div>
-        {/* Same width and weight: declining is as easy as accepting. */}
-        <div className="grid shrink-0 grid-cols-2 gap-2 sm:flex">
-          <Button
-            variant="outline"
-            size="sm"
-            className="px-2 text-[13px] min-[360px]:text-sm sm:w-44"
-            onClick={() => choose("denied")}
-          >
-            {t("consent.decline")}
-          </Button>
-          <Button
-            size="sm"
-            className="px-2 text-[13px] min-[360px]:text-sm sm:w-44"
-            onClick={() => choose("granted")}
-          >
-            {t("consent.accept")}
-          </Button>
+          <div className="min-w-0 space-y-2">
+            <p id={textId} className="pt-1 text-sm leading-relaxed text-foreground/85">
+              {t("consent.body")}{" "}
+              <Link
+                href="/privacy"
+                className="whitespace-nowrap font-medium text-primary underline-offset-2 hover:underline"
+              >
+                {t("consent.privacyLink")}
+              </Link>
+            </p>
+            {/* Declining sits right next to accepting and reads as clearly. */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <Button
+                size="sm"
+                className="h-7 px-4 text-[13px]"
+                onClick={() => choose("granted")}
+              >
+                {t("consent.accept")}
+              </Button>
+              <button
+                type="button"
+                onClick={() => choose("denied")}
+                className="rounded-sm text-[13px] font-medium text-foreground/80 underline decoration-foreground/30 underline-offset-2 transition-colors hover:text-foreground hover:decoration-foreground/70 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              >
+                {t("consent.decline")}
+              </button>
+            </div>
+          </div>
         </div>
         {reopened && (
           <button
             type="button"
             onClick={closeBanner}
             aria-label={t("consent.close")}
-            className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:static"
+            className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             <X className="h-4 w-4" aria-hidden />
           </button>

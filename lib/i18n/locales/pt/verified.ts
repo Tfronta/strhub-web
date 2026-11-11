@@ -622,7 +622,7 @@ export default {
       referenceDatasetOntMedDesc:
         "slice 1000 Genomes ONT (HG00113, R10 SUP) hg38 (open access, os mesmos 51 loci STR associados a doenças; prova execução, não é uma validação clínica)",
       referenceDatasetsScope:
-        "Não há datasets de referência para painéis SNP, ONT FASTQ bruto ou capilar FSA/HID. Para esses tipos, a verificação usa apenas seu arquivo (não é falha). O STRhub não é custodiante de dados. Aplicam-se as licenças upstream.",
+        "Não há datasets de referência para painéis SNP ou capilar FSA/HID. Para esses tipos, a verificação usa apenas seu arquivo (não é falha). O STRhub não é custodiante de dados. Aplicam-se as licenças upstream.",
       inputTypeGroupWithReference: "Datasets STRhub de referência",
       inputTypeGroupOwnOnly: "Apenas seu arquivo de teste",
       inputTypeGroupAdvanced: "Avançado",

@@ -36,32 +36,10 @@ describe("plural forms", () => {
     );
   });
 
-  it("uses the singular form for count 1 in the Verified strings", () => {
-    const one = { format: "X", count: "1", sample: "D3S1358" };
-    const many = { format: "X", count: "3", sample: "D3S1358" };
-    expect(translate("en", "verified.submit.detectLoci", one)).toBe("Found 1 marker: D3S1358…");
-    expect(translate("en", "verified.submit.detectLoci", many)).toBe(
-      "Found 3 distinct markers: D3S1358…",
-    );
-    expect(translate("es", "verified.submit.detectLoci", one)).toBe(
-      "Encontramos 1 marcador: D3S1358…",
-    );
-    expect(translate("pt", "verified.submit.detectLoci", many)).toBe(
-      "Encontramos 3 marcadores distintos: D3S1358…",
-    );
-    for (const lang of LANGS) {
-      expect(translate(lang, "verified.submit.regionsDetected", one)).not.toMatch(
-        /\b1 (regions|regiones|regiões)\b/,
-      );
-    }
-  });
-
   it("never prints the number 1 before a plural noun in the count templates", () => {
     const keys = [
       "marker.summary.variantCount",
       "marker.summary.designationCount",
-      "verified.submit.detectLoci",
-      "verified.submit.regionsDetected",
     ];
     for (const lang of LANGS) {
       for (const key of keys) {

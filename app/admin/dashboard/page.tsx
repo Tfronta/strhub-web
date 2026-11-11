@@ -119,7 +119,6 @@ export default function AdminDashboard() {
   const [entriesError, setEntriesError] = useState<string | null>(null);
   const [verifiedSubmissions, setVerifiedSubmissions] = useState<VerifiedSubmission[]>([]);
   const [verifiedError, setVerifiedError] = useState<string | null>(null);
-  const [approvingSlug, setApprovingSlug] = useState<string | null>(null);
   const [rejectingSlug, setRejectingSlug] = useState<string | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -198,28 +197,6 @@ export default function AdminDashboard() {
       console.error("Failed to load verified submissions:", error);
       setVerifiedSubmissions([]);
       setVerifiedError(loadErrorMessage(error));
-    }
-  };
-
-  const handleApprove = async (sub: VerifiedSubmission) => {
-    setApprovingSlug(sub.slug);
-    try {
-      const token = localStorage.getItem("admin_token") || "";
-      const res = await fetch("/api/verify/approve", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ repo: sub.repo, slug: sub.slug }),
-      });
-      const data = await res.json();
-      if (!data.ok) throw new Error(data.error);
-      await loadVerifiedSubmissions();
-    } catch (err: any) {
-      alert("Error al aprobar: " + (err?.message || "Error desconocido"));
-    } finally {
-      setApprovingSlug(null);
     }
   };
 
@@ -443,7 +420,6 @@ export default function AdminDashboard() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Verified Approvals */}
         {(() => {
           const pending = verifiedSubmissions.filter((s) => s.status === "approved-pending");
           const recent = verifiedSubmissions.filter((s) => s.status !== "approved-pending").slice(0, 5);
@@ -453,7 +429,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Shield className="h-5 w-5 text-primary" />
-                    <CardTitle>Verified — Aprobaciones pendientes</CardTitle>
+                    <CardTitle>Verified — Solicitudes del formulario anterior</CardTitle>
                     {pending.length > 0 && (
                       <Badge variant="destructive" className="ml-1">
                         {pending.length}
@@ -465,7 +441,7 @@ export default function AdminDashboard() {
                   </Button>
                 </div>
                 <CardDescription>
-                  Tools nuevas que esperan tu aprobación. Al aprobar, se dispara el run automáticamente.
+                  El formulario avanzado se retiró. Estas solicitudes se pueden consultar o rechazar.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -511,14 +487,6 @@ export default function AdminDashboard() {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <Button
-                                size="sm"
-                                onClick={() => handleApprove(sub)}
-                                disabled={approvingSlug === sub.slug}
-                              >
-                                <CheckCircle className="h-4 w-4 mr-1" />
-                                {approvingSlug === sub.slug ? "Aprobando…" : "Aprobar & Run"}
-                              </Button>
                               <Button
                                 size="sm"
                                 variant="outline"

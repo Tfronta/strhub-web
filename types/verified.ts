@@ -127,6 +127,8 @@ export interface VerifiedVersionEntry {
 
 /** One row in index.json — enough to render a card without fetching the report. */
 export interface VerifiedIndexEntry {
+  record_type?: "editorial_review";
+  evidence_review?: VerifiedEvidenceReview;
   slug: string;
   name: string;
   level: VerifiedLevel;
@@ -204,6 +206,13 @@ export interface VerifiedContentStats {
  * output rather than take the row's word for it needs first.
  */
 export interface VerifiedIoOutput {
+  validation_profile?: string;
+  validation_status?: "valid" | "invalid" | "unsupported";
+  called_records?: number;
+  uncalled_rows?: number;
+  records_without_gt?: number;
+  parse_error?: string;
+  files?: VerifiedIoOutput[];
   path?: string;
   format?: string;
   resolved?: string;
@@ -284,7 +293,18 @@ export interface VerifiedCertificate {
   scope: { statement: string; not: string; disclaimer: string };
 }
 
+/** An editorial withdrawal has no new execution gates or CI run. */
+export interface VerifiedEvidenceReview {
+  id: string;
+  reviewed_at: string;
+  reason: string;
+  archive_url: string;
+  review_url: string;
+  recovered_evidence_note: string;
+}
+
 export interface VerifiedReport {
+  record_type?: "execution";
   schema: string;
   tool: {
     name: string;
@@ -352,6 +372,8 @@ export interface VerifiedReport {
    * this field, and then the page falls back to the verdict alone.
    */
   step1?: VerifiedStep1 | null;
+  procedure_validation?: { schema: string; valid: boolean; reason: string } | null;
+  procedure_review?: { install_ready?: boolean; may_say_runs?: boolean } | null;
   certificate?: VerifiedCertificate | null;
   /**
    * Where the pinned commit sits in its repository now.
@@ -380,7 +402,7 @@ export interface VerifiedReport {
    * attestation could not see what was executed without opening the log.
    * Absent on reports written before the engine recorded it.
    */
-  run?: { cmd?: string; cwd?: string } | null;
+  run?: { cmd?: string; cwd?: string; effective_cmd?: string; step_outcome?: string } | null;
   /**
    * Why the environment did not build, when it did not.
    *
@@ -433,6 +455,8 @@ export interface VerifiedReport {
   } | null;
   content_detail?: { outputs?: { stats?: VerifiedContentStats }[] };
   logs?: Record<string, string>;
+  /** Original transcripts with the invocation captured by the runner. */
+  terminals?: Record<string, string>;
   diagnostics?: Record<string, VerifiedDiagnostic[]>;
   // Fase 3 additions (optional for backward compatibility with older reports).
   datasets?: VerifiedMatrixLeg[];
@@ -469,6 +493,15 @@ export interface VerifiedReport {
   } | null;
   scope: string;
 }
+
+/** Editorial notices cannot be passed to execution-only renderers or offers. */
+export interface VerifiedEditorialNotice extends Pick<VerifiedReport, "schema" | "tool" | "source" | "generated" | "scope"> {
+  record_type: "editorial_review";
+  evidence_review: VerifiedEvidenceReview;
+  ci_run: null;
+}
+
+export type VerifiedPublication = VerifiedReport | VerifiedEditorialNotice;
 
 export interface VerifiedDiagnostic {
   id: string;

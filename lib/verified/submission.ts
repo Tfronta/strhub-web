@@ -345,16 +345,33 @@ export const outputSchema = z
 
 /** A file living in the author's PUBLIC repo (repo + ref + path). Used for both
  *  the BYOR fixture and the regions BED so STRhub stores no author data. */
+export const repoRelativePathSchema = z.string().min(1).max(300).refine((value) => {
+  if (value.startsWith("/") || value.startsWith("~") || /^[A-Za-z]:/.test(value)
+      || /[\\\x00-\x1f\x7f]/.test(value)) return false;
+  const parts = value.split("/").filter((p) => p && p !== ".");
+  return parts.length > 0 && !parts.some((p) => p === ".." || p === ".git");
+}, { message: "Use a path inside the repository; absolute paths, '..', '.git' and control characters are not allowed" });
+
 export const remotePointerSchema = z
   .object({
-    repo: githubRepoUrl,
-    ref: z.string().trim().regex(SHA_OR_TAG, "Invalid git ref").min(1).max(100),
-    path: z.string().trim().min(1).max(300),
+    repo: githubRepoUrl.refine((v) => /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(v)
+      && !v.split("/").slice(3).some((p) => p === "." || p === ".." || p === ".git"), "Use the repository root URL"),
+    ref: z.string().trim().regex(SHA_OR_TAG, "Invalid git ref").min(1).max(100)
+      .refine((v) => /^[A-Za-z0-9_]/.test(v) && repoRelativePathSchema.safeParse(v).success, "Invalid git ref"),
+    path: repoRelativePathSchema,
   })
   .strict();
 
 /** @deprecated alias — use remotePointerSchema. Kept for existing imports. */
 export const remoteFixtureSchema = remotePointerSchema;
+
+/** Quote literal file names so '?' and '#' cannot become URL components. */
+export function remoteInputUrl(pointer: z.input<typeof remotePointerSchema>): string {
+  const { repo, ref, path } = remotePointerSchema.parse(pointer);
+  const slug = repo.replace(/\/$/, "").replace(/\.git$/, "").replace(/^https:\/\/github\.com\//, "");
+  const parts = path.split("/").filter((p) => p && p !== ".");
+  return `https://raw.githubusercontent.com/${slug}/${encodeURIComponent(ref)}/${parts.map(encodeURIComponent).join("/")}`;
+}
 
 /**
  * Author-declared environment ceilings. Mirrors `compatibility` in the engine's
@@ -447,7 +464,7 @@ export const submissionSchema = z
         // Fase 3: assay type used to match a compatible external dataset.
         type: z.string().trim().max(80).optional(),
         // Own fixture: optional when the input type has a STRhub reference dataset.
-        fixture: z.union([z.string().trim().min(1).max(300), remoteFixtureSchema]).optional(),
+        fixture: z.union([repoRelativePathSchema, remoteFixtureSchema]).optional(),
         // The author's regions BED, uploaded through the form as raw text.
         //
         // An earlier design took a pointer into the author's repo, but that meant

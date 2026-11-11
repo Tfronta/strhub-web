@@ -5,7 +5,38 @@ import { useLanguage } from "@/contexts/language-context";
 import { useHeaded } from "./certificate";
 import { cn } from "@/lib/utils";
 import type { VerifiedContentStats, VerifiedIoOutput } from "@/types/verified";
-import { ioChecks, panelCoverage } from "@/lib/verified/output-evidence";
+import { ioChecks, panelCoverage, vcfFileEvidence } from "@/lib/verified/output-evidence";
+
+export function VcfEvidence({ io }: { io?: VerifiedIoOutput }) {
+  const { t, language } = useLanguage();
+  const files = vcfFileEvidence(io);
+  if (files.length === 0) return null;
+  return (
+    <section className="my-4 rounded-lg border p-4">
+      <h3 className="font-semibold">{t("verified.vcfEvidence.heading")}</h3>
+      <p className="mt-1 text-xs text-muted-foreground">{t("verified.vcfEvidence.scope")}</p>
+      <div className="mt-3 overflow-x-auto">
+        <table className="w-full text-left text-xs">
+          <thead><tr>{["file", "status", "records", "called", "uncalled", "withoutGt"].map((key) =>
+            <th key={key} className="p-2">{t(`verified.vcfEvidence.${key}`)}</th>)}</tr></thead>
+          <tbody>{files.map((file, index) => {
+            const count = (value?: number) => file.validation_status === "valid" && typeof value === "number"
+              ? new Intl.NumberFormat(language).format(value) : "—";
+            return <tr key={`${file.resolved}-${index}`} className="border-t align-top">
+              <td className="p-2"><code>{file.resolved}</code>
+                {file.parse_error && <p className="mt-2 break-words text-muted-foreground">{file.parse_error}</p>}</td>
+              <td className="p-2">{t(`verified.vcfEvidence.${file.validation_status ?? "unknown"}`)}</td>
+              <td className="p-2">{count(file.records)}</td>
+              <td className="p-2">{count(file.called_records)}</td>
+              <td className="p-2">{count(file.uncalled_rows)}</td>
+              <td className="p-2">{count(file.records_without_gt)}</td>
+            </tr>;
+          })}</tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
 
 function Stat({ label, value, detail }: { label: string; value: string; detail?: string }) {
   return (
@@ -30,6 +61,7 @@ export function OutputContent({
 }) {
   const { t, language } = useLanguage();
   if (!stats) {
+    if (vcfFileEvidence(io).length > 0) return <VcfEvidence io={io} />;
     return (
       <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground bg-muted/20">
         <p className="italic">{t("verified.content.noOutputGenerated")}</p>
@@ -40,13 +72,15 @@ export function OutputContent({
   const n = (v: number | undefined) => new Intl.NumberFormat(language).format(v ?? 0);
   const checks = ioChecks(io);
   const coverage = panelCoverage(stats, panelLoci);
-  const outputFile = io?.resolved ?? io?.path;
+  const outputFile = vcfFileEvidence(io).length > 1
+    ? vcfFileEvidence(io).map((file) => file.resolved).join(", ") : io?.resolved ?? io?.path;
   const format = io?.format?.toUpperCase();
 
   return (
     <>
       {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.content.heading")}</h2>)}
       <div className="mt-3 rounded-lg border bg-card p-5">
+        <VcfEvidence io={io} />
         {(outputFile || checks.length > 0) && (
           <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm border-b pb-4 mb-4">
             {outputFile && (

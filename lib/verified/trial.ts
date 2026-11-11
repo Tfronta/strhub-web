@@ -1,12 +1,8 @@
 /**
  * Trials: a rehearsal of a verification that publishes nothing.
  *
- * The three people STRhub Verified is for all start here. A tool's owner tries
- * a recipe before anything lands on the catalogue; a paper reviewer, who does
- * not write code, pastes the URL from the manuscript and reads a verdict; a
- * user who cannot get the tool running at home sees whether it runs in a clean
- * environment. None of them types a command: the engine reads the repository
- * and proposes the recipe itself (harness/detect_recipe.py).
+ * Maintainers, reviewers and users submit a public repository and an optional
+ * ref. The engine evaluates the procedure at the resolved commit.
  *
  * Mechanics. A trial is one `workflow_dispatch` with mode=trial and repo+ref,
  * correlated by a dispatch id in the run name exactly like a verification. The
@@ -16,26 +12,22 @@
  * every poll is one GitHub call.
  */
 import { unzipSync, strFromU8 } from "fflate";
+import { LOG_LEGS, TRIAL_FILE_NAMES, type TrialFileName } from "./log-files";
 import {
   ENGINE_REPO,
-  dispatchWorkflow,
+  dispatchTrial,
   findRunByDispatchId,
   ghBinary,
   ghPublic,
   listRunArtifacts,
   type WorkflowRun,
 } from "./github";
-import type { VerifiedReport, VerifiedBlocker, VerifiedSelfFix, VerifiedVerdict, VerifiedVerdictCode } from "@/types/verified";
+import type { VerifiedReport, VerifiedBlocker, VerifiedVerdict } from "@/types/verified";
 
 export const TRIAL_ROLES = ["owner", "reviewer", "user"] as const;
 export type TrialRole = (typeof TRIAL_ROLES)[number];
 
-// The verdict is the report's, not the trial's: a published page leads with
-// it too. The names stay for the trial's callers.
-export type TrialVerdictCode = VerifiedVerdictCode;
-export type SelfFix = VerifiedSelfFix;
 export type TrialBlocker = VerifiedBlocker;
-export type TrialVerdict = VerifiedVerdict;
 
 export interface TrialRecipe {
   schema: string;
@@ -50,7 +42,7 @@ export interface TrialRecipe {
 
 export type TrialReport = VerifiedReport & {
   mode?: "trial" | "publish";
-  verdict?: TrialVerdict;
+  verdict?: VerifiedVerdict;
   example_detail?: unknown;
 };
 
@@ -65,8 +57,7 @@ export interface TrialStatus {
   recipe: TrialRecipe | null;
   summaryMd: string | null;
   logs: Record<string, string>;
-  /** Files in the artifact a reader may want whole: the PDF and the static HTML. */
-  files?: { pdf?: string; html?: string };
+  files?: Partial<Record<TrialFileName, string>>;
 }
 
 /** Trial dispatch ids are distinguishable from verification ones (sv_…). */
@@ -175,11 +166,8 @@ export interface StartedTrial {
  * Development only: answer the form from the trials on disk instead of
  * dispatching, so the whole flow can be walked without GitHub.
  *
- * Needed because three things stop a real dispatch from a dev server, all of
- * them on purpose: it may have no route to api.github.com, `assertWritable`
- * refuses to dispatch on the live engine from a non-production process, and
- * the workflow it would run is the one on the engine's default branch rather
- * than whatever is being worked on locally.
+ * Lets a local UI inspect completed artifacts without GitHub credentials or a
+ * matching workflow on the configured engine branch.
  *
  * Matches on the repository only, and only against a fixture that already
  * exists. An unknown repository falls through to the real path and gets the
@@ -278,14 +266,12 @@ export async function startTrial(repoUrl: string, ref: string | undefined): Prom
       !/^(main|master|HEAD|develop|dev|trunk)$/i.test(resolved.label))
       ? resolved.label
       : "";
-  await dispatchWorkflow({
+  await dispatchTrial({
     tool: slug,
-    mode: "trial",
     repo: `https://github.com/${repoSlug}`,
     ref: resolved.sha,
-    ...(refLabel ? { ref_label: refLabel } : {}),
-    dispatch_id: id,
-    publish: "false",
+    refLabel,
+    dispatchId: id,
   });
   return { id, slug, repo: `https://github.com/${repoSlug}`, ref: resolved.sha, refLabel: resolved.label, refHow: resolved.how };
 }
@@ -297,11 +283,25 @@ const g = globalThis as unknown as {
   __strhubTrialBinaries?: Map<string, Record<string, Uint8Array>>;
 };
 const finished = (g.__strhubFinishedTrials ??= new Map<string, TrialStatus>());
-/** The PDF and HTML bytes of finished trials, served by /api/verify/trial/file. */
+/** Original artifact bytes served by /api/verify/trial/file. */
 const binaries = (g.__strhubTrialBinaries ??= new Map<string, Record<string, Uint8Array>>());
 
-export function getTrialFile(id: string, name: "pdf" | "html"): Uint8Array | null {
+export function getTrialFile(id: string, name: TrialFileName): Uint8Array | null {
   return binaries.get(id)?.[name] ?? null;
+}
+
+function artifactUrls(id: string, files: Record<string, Uint8Array>): TrialStatus["files"] {
+  return Object.fromEntries(Object.keys(files).map((name) =>
+    [name, `/api/verify/trial/file?id=${encodeURIComponent(id)}&name=${name}`],
+  ));
+}
+
+/** Keep the existing status payload for callers that use the log tails. */
+function logTails(files: Record<string, Uint8Array>): TrialStatus["logs"] {
+  return Object.fromEntries(LOG_LEGS.flatMap((leg) => {
+    const log = files[`log-${leg}`];
+    return log ? [[leg, strFromU8(log).slice(-20_000)]] : [];
+  }));
 }
 
 /** "Trial <slug> [tr_…]" is the run-name the engine gives a trial. */
@@ -325,9 +325,7 @@ function baseStatus(id: string, run: WorkflowRun | null): TrialStatus {
   };
 }
 
-const runIdHolder = { id: "" };
-
-async function readArtifact(runId: number, slug: string): Promise<(Partial<TrialStatus> & { _bin?: Record<string, Uint8Array> }) | "expired" | null> {
+async function readArtifact(runId: number, slug: string, id: string): Promise<(Partial<TrialStatus> & { _bin?: Record<string, Uint8Array> }) | "expired" | null> {
   const artifacts = await listRunArtifacts(runId);
   const art = artifacts.find((a) => a.name === `trial-${slug}`) ?? artifacts.find((a) => a.name.startsWith("trial-"));
   if (!art) return null;
@@ -345,21 +343,18 @@ async function readArtifact(runId: number, slug: string): Promise<(Partial<Trial
   const stem = reportName ? reportName.replace(/\.json$/, "") : slug;
   const reportText = reportName ? text(reportName) : null;
   const recipeText = text(`${stem}.recipe.json`);
-  const logs: Record<string, string> = {};
-  for (const f of Object.keys(files)) {
-    const m = f.match(/\.log-(own|external|example|build)\.txt$/);
-    if (m) logs[m[1]] = strFromU8(files[f]).slice(-20_000);
-  }
   const bin: Record<string, Uint8Array> = {};
-  if (files[`${stem}.pdf`]) bin.pdf = files[`${stem}.pdf`];
-  if (files[`${stem}.html`]) bin.html = files[`${stem}.html`];
+  for (const name of TRIAL_FILE_NAMES) {
+    const filename = name === "pdf" || name === "html" ? name : `${name}.txt`;
+    const file = files[`${stem}.${filename}`];
+    if (file) bin[name] = file;
+  }
   return {
     report: reportText ? (JSON.parse(reportText) as TrialReport) : null,
     recipe: recipeText ? (JSON.parse(recipeText) as TrialRecipe) : null,
     summaryMd: text(`${stem}.summary.md`),
-    logs,
-    files: { pdf: bin.pdf ? `/api/verify/trial/file?id=${encodeURIComponent(runIdHolder.id)}&name=pdf` : undefined,
-             html: bin.html ? `/api/verify/trial/file?id=${encodeURIComponent(runIdHolder.id)}&name=html` : undefined },
+    logs: logTails(bin),
+    files: artifactUrls(id, bin),
     _bin: bin,
   } as Partial<TrialStatus> & { _bin: Record<string, Uint8Array> };
 }
@@ -380,20 +375,15 @@ async function fixtureTrial(id: string): Promise<TrialStatus | null> {
     const report = JSON.parse(await fs.readFile(path.join(base, "report.json"), "utf-8")) as TrialReport;
     const recipe = await fs.readFile(path.join(base, "recipe.json"), "utf-8").then((x) => JSON.parse(x) as TrialRecipe).catch(() => null);
     const summaryMd = await fs.readFile(path.join(base, "summary.md"), "utf-8").catch(() => null);
-    const logs: Record<string, string> = {};
-    for (const f of await fs.readdir(base)) {
-      const m = f.match(/^log-(own|external|example|build)\.txt$/);
-      if (m) logs[m[1]] = (await fs.readFile(path.join(base, f), "utf-8")).slice(-20_000);
-    }
     const bin: Record<string, Uint8Array> = {};
-    for (const [name, file] of [["pdf", "report.pdf"], ["html", "report.html"]] as const) {
+    for (const name of TRIAL_FILE_NAMES) {
+      const file = name === "pdf" || name === "html" ? `report.${name}` : `${name}.txt`;
       try { bin[name] = new Uint8Array(await fs.readFile(path.join(base, file))); } catch { /* optional */ }
     }
     binaries.set(id, bin);
     return { id, state: "completed", conclusion: "success", runUrl: report.ci_run ?? null,
-             slug: recipe?.slug ?? null, startedAt: report.generated, report, recipe, summaryMd, logs,
-             files: { pdf: bin.pdf ? `/api/verify/trial/file?id=${id}&name=pdf` : undefined,
-                      html: bin.html ? `/api/verify/trial/file?id=${id}&name=html` : undefined } };
+             slug: recipe?.slug ?? null, startedAt: report.generated, report, recipe, summaryMd,
+             logs: logTails(bin), files: artifactUrls(id, bin) };
   } catch {
     return null;
   }
@@ -409,8 +399,7 @@ export async function getTrial(id: string): Promise<TrialStatus> {
   if (!run || status.state !== "completed") return status;
 
   const slug = status.slug ?? "";
-  runIdHolder.id = id;
-  const art = slug ? await readArtifact(run.id, slug) : null;
+  const art = slug ? await readArtifact(run.id, slug, id) : null;
   if (art === "expired") {
     status.state = "expired";
   } else if (art) {

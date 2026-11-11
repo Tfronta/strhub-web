@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Check, Minus, X, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Check, Minus, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { useHeaded } from "./certificate";
@@ -26,12 +24,14 @@ export interface ExtraGateRow {
 export function GatesLadder({
   gates,
   extraRows = [],
+  blockedAt,
 }: {
   gates: Record<VerifiedLevel, boolean> | undefined;
   extraRows?: ExtraGateRow[];
+  blockedAt?: VerifiedLevel;
 }) {
   const { t } = useLanguage();
-  const st = gateStates(gates, VERIFIED_GATES.map((g) => g.key));
+  const st = gateStates(gates, VERIFIED_GATES.map((g) => g.key), blockedAt);
   const failed = VERIFIED_GATES.filter((g) => !gates?.[g.key]);
   const onlyContent = failed.length === 1 && failed[0].key === "content";
   const startsRow = extraRows.find((r) => r.key === "starts");
@@ -91,7 +91,10 @@ export function GatesLadder({
                 {state === "stopped" && (
                   <span className="ml-2 font-medium text-red-700 dark:text-red-400">{t("verified.gate.stoppedHere")}</span>
                 )}
-                {state === "not-reached" && (
+                {state === "blocked" && (
+                  <span className="ml-2 font-medium">{t("verified.gate.blockedHere")}</span>
+                )}
+                {state === "not-reached" && !blockedAt && (
                   <span className="ml-2 italic">{t("verified.gate.notReached")}</span>
                 )}
               </span>
@@ -111,6 +114,11 @@ export function GatesLadder({
                     {t("verified.gate.state.skipped")}
                   </Badge>
                 )}
+                {state === "blocked" && (
+                  <Badge variant="secondary" className="text-xs">
+                    {t("verified.gate.state.blocked")}
+                  </Badge>
+                )}
               </div>
             </div>
           );
@@ -126,7 +134,7 @@ export function GatesLadder({
           unless it was the content gate specifically. A reviewer then read the
           ladder as a verdict on the software, which is the one thing it is not
           entitled to be. */}
-      {failed.length > 0 && (
+      {failed.length > 0 && !blockedAt && (
         <p className="mt-3 text-sm text-muted-foreground rounded-lg border border-border bg-muted/40 px-4 py-3">
           {t(onlyContent ? "verified.gate.contentFailNote" : "verified.gate.stoppedEarlyNote")}{" "}
           <Link
@@ -138,60 +146,5 @@ export function GatesLadder({
         </p>
       )}
     </>
-  );
-}
-
-/** A run's logs: either a link to the published file, or the text itself. */
-export interface ReportLog {
-  leg: string;
-  label: string;
-  href?: string;
-  text?: string;
-}
-
-/**
- * The execution logs. A published report links each file on gh-pages; a trial
- * carries the text inside its artifact, so the same list opens it inline.
- */
-export function LogLinks({ logs }: { logs: ReportLog[] }) {
-  const { t } = useLanguage();
-  const [open, setOpen] = useState<string | null>(null);
-  if (logs.length === 0) return null;
-  const inline = logs.filter((l) => l.text !== undefined);
-  return (
-    <div className="mt-4">
-      <div className="flex flex-wrap gap-3">
-        {logs.map((l) =>
-          l.href ? (
-            <a
-              key={l.leg}
-              href={l.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-              {t("verified.log.view")}
-              {logs.length > 1 ? ` (${l.label})` : ""}
-            </a>
-          ) : (
-            <Button
-              key={l.leg}
-              variant={open === l.leg ? "default" : "outline"}
-              size="sm"
-              onClick={() => setOpen(open === l.leg ? null : l.leg)}
-            >
-              {t("verified.log.view")}
-              {inline.length > 1 ? ` (${l.label})` : ""}
-            </Button>
-          ),
-        )}
-      </div>
-      {open && (
-        <pre className="mt-3 max-h-96 overflow-auto rounded-md bg-muted p-3 text-xs">
-          <code>{logs.find((l) => l.leg === open)?.text}</code>
-        </pre>
-      )}
-    </div>
   );
 }

@@ -1,5 +1,39 @@
 export default {
   verified: {
+    vcfEvidence: {
+      heading: "VCF structure and records",
+      scope: "Each matched file is checked. Counts are shown only when structural validation completed; they do not establish genotype accuracy.",
+      file: "File",
+      status: "Structural result",
+      records: "Data rows",
+      called: "Rows with calls",
+      uncalled: "Rows with all GT missing",
+      withoutGt: "Rows without GT",
+      valid: "Profile passed",
+      invalid: "Invalid structure",
+      unsupported: "Evaluator does not support this feature",
+      unknown: "Not established",
+    },
+    evidenceReview: {
+      title: "Evidence insufficient",
+      kind: "Editorial correction; no new execution",
+      explanation: "The previous execution claim has been withdrawn because its evidence could not be established. The original files are preserved. This review does not conclude that the tool works or fails.",
+      reviewedOn: "Evidence reviewed on {date}",
+      recovered: "Recovered evidence",
+      archive: "Original publication and files",
+      record: "Review record and file hashes",
+      pdf: "Review notice (PDF)",
+      json: "Review notice (JSON)",
+      open: "Read the evidence review",
+    },
+    commandEvidence: {
+      submitted: "Command submitted to runner",
+      planned: "Planned command",
+      success: "The run step reported success. This is the configured command submitted to that step.",
+      failure: "The run step reported failure. This alone does not prove that the program started.",
+      skipped: "The run step was skipped. This command was not executed by that step.",
+      unknown: "Execution is not established by the recorded step outcome. A command in a manifest is not evidence that it ran.",
+    },
     title: "STRhub Verified",
     description:
       "Independent, automated attestations of documented execution. We verify whether an STR tool installs and runs end-to-end strictly following the instructions in its public repository, in a clean and reproducible environment. An incomplete, omitted, or outdated instruction will cause the verification to fail; this reflects documentation or environment friction, not necessarily a defect in the underlying tool. Each report pinpoints exactly where execution stopped and why, helping authors and users identify and resolve reproducibility barriers. Does not evaluate genotype concordance (not a biological benchmark) nor constitute evidence for forensic casework fitness.",
@@ -113,6 +147,7 @@ export default {
         content: "Plausible Output",
       },
       stoppedHere: "The run stopped here.",
+      blockedHere: "STRhub could not establish the documented installation procedure.",
       notReached: "Not attempted, because the run had already stopped.",
       available: "the pinned public source exists",
       installs: "the environment builds from source",
@@ -127,6 +162,7 @@ export default {
       state: {
         pass: "Pass",
         fail: "Fail",
+        blocked: "Blocked",
         skipped: "Skipped",
       },
     },
@@ -171,8 +207,15 @@ export default {
       note: "Recorded automatically from the tool's public files when this run was configured. Not verified by execution, and not part of the gates above. Useful for what to check by hand.",
     },
     log: {
-      build: "Build",
-      view: "View execution log",
+      terminal: "Execution terminal",
+      savedOutput: "Recorded output",
+      stage: "Stage",
+      openOriginal: "Open original",
+      commandUnavailable: "The archived output does not include a recorded command.",
+      loading: "Loading the log…",
+      tooLarge: "Open the original to read the full log.",
+      unavailable: "The log could not be loaded here.",
+      preflight: "View preflight log",
     },
     certificate: {
       section: {
@@ -194,6 +237,8 @@ export default {
         notRunsTitle: "{tool} did not complete its run",
         notRunsBody: "{tool} installed {where}, but the run stopped before completion. The execution log and diagnostics above record what happened.",
         notInstallsTitle: "{tool} did not install in the test environment",
+        blockedTitle: "Installation was not attempted",
+        blockedBody: "The report records the source and the evidence available at the pinned commit.",
         notInstallsBody: "The container image failed to build, so execution and output gates were not reached.",
         plausibleTitle: "Output passes plausibility checks",
         plausibleBody: "The run produced non-empty {format}output covering {loci} recognizable STR loci.",
@@ -406,6 +451,7 @@ export default {
       notCalledHint: "Loci included in the regions panel that did not appear in the output of this reference slice.",
       ioChecksLabel: "Checks on the file",
       ioCheck: {
+        has_called_genotypes: "has called genotypes",
         exists: "exists",
         non_empty: "not empty",
         confined: "written inside the output directory",
@@ -553,476 +599,7 @@ export default {
       },
     },
     submit: {
-      preflightTitle: "Does your tool need something we cannot provide?",
-      preflightHint:
-        "Only tick a box if it is true of your tool. These are things the automated runner genuinely cannot do: it is headless, CPU-only, and has fixed memory and disk. Leave them all unticked if none apply. If you are simply unsure about a field on this form, leave these alone and write to us: form questions are answered free.",
-      preflight: {
-        requires_gui:
-          "It needs a graphical display or an interactive step (it cannot run unattended).",
-        requires_gpu: "It needs a GPU (CUDA).",
-        requires_runtime_network:
-          "It downloads data over the network while running (build-time downloads are fine).",
-        requires_licensed_reference:
-          "It needs licensed or restricted reference data that cannot be made public.",
-        requires_unsupported_os:
-          "It needs Windows, macOS, or another OS other than Linux.",
-        opaque_output_format:
-          "Its output is binary or proprietary, with no text or tabular export.",
-      },
-      preflightBlockedTitle: "The automated run cannot verify this tool",
-      preflightBlockedBody:
-        "Based on what you ticked, the automated environment cannot run your tool, so submitting would only spend a run on a failure you have already described. Manual verification exists for exactly this case.",
       cta: "Verify a tool",
-      title: "Verify a tool",
-      subtitle:
-        "Self-service certification that your tool installs and runs end-to-end on its public source at a pinned commit.",
-      disclaimerSnapshot:
-        "The result is a dated snapshot. You may make the repo private afterwards. The attestation records the conditions at run time.",
-      disclaimerNoSource:
-        "STRhub never stores your source code. The Dockerfile clones your public repo at the pinned commit only at build time.",
-      required: "required",
-      optional: "optional",
-      sectionTool: "Tool",
-      sectionSource: "Public source",
-      sectionSourceHint: "The public GitHub repository that contains your tool's source code.",
-      sectionEnv: "Environment",
-      sectionRun: "Execution",
-      sectionInputs: "Input data",
-      sectionInputsHint:
-        "Choose your assay type and the path to a test file in your public repository. STRhub runs your tool on that data. If we have a compatible open-source reference dataset, we add a second run for an extra validation layer.",
-      referenceDatasetsTitle: "STRhub reference datasets (open access, STR loci only)",
-      referenceDatasetsIntro:
-        "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently two:",
-      referenceDatasetsIntro3:
-        "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently three:",
-      referenceDatasetsIntro4:
-        "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently four:",
-      referenceDatasetsIntro5:
-        "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently five:",
-      referenceDatasetsIntro6:
-        "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently six:",
-      referenceDatasetsIntro8:
-        "For compatible assay types, STRhub also tests your tool against an open-source STR reference dataset. There are currently eight:",
-      referenceDatasetIllumina:
-        "NIST Forensic DNA Open Dataset (ForenSeq & PowerSeq 46GY, research/training use)",
-      referenceDatasetOnt:
-        "1000 Genomes ONT CODIS slice (open access on AWS)",
-      referenceDatasetOntFastq:
-        "the reads of the 1000 Genomes ONT slice over 20 CODIS loci, as FASTQ (open access on AWS)",
-      referenceDatasetPacbioHifi:
-        "GIAB HG002 PacBio HiFi (Revio) hg38 CODIS slice (open access, 20 autosomal forensic loci)",
-      referenceDatasetIlluminaBamDesc:
-        "GIAB NA12878 300x hg38 slice (open access, 24 autosomal forensic loci)",
-      referenceDatasetIlluminaBamYDesc:
-        "GIAB HG002 300x hg38 slice (open access, 14 Y-STR loci)",
-      referenceDatasetIlluminaBamMedDesc:
-        "GIAB NA12878 300x hg38 slice (open access, 51 disease-associated STR loci that most medical STR tools ship in their catalogs; execution only, not a clinical validation)",
-      referenceDatasetPacbioHifiMedDesc:
-        "GIAB HG002 PacBio HiFi (Revio) hg38 slice (open access, the same 51 disease-associated STR loci; execution only, not a clinical validation)",
-      referenceDatasetOntMedDesc:
-        "1000 Genomes ONT (HG00113, R10 SUP) hg38 slice (open access, the same 51 disease-associated STR loci; execution only, not a clinical validation)",
-      referenceDatasetsScope:
-        "No reference datasets for SNP panels, raw ONT FASTQ, or capillary FSA/HID. For those types, verification uses only your test file (not a failure). STRhub is not a data custodian. See upstream licenses.",
-      inputTypeGroupWithReference: "STRhub reference datasets",
-      inputTypeGroupOwnOnly: "Your test file only",
-      inputTypeGroupAdvanced: "Advanced",
-      inputTypeSuffixWithReference: ", includes STRhub test",
-      inputTypeSuffixOwnOnly: ", your fixture only",
-      sectionOutputs: "Expected output",
-      sectionOutputsHint:
-        "Tell us what file your run command writes and what type of data it contains. You do not need to know STRhub internals, just match your tool's own documentation.",
-      name: "Tool name",
-      variant: "Kit or configuration variant",
-      variantTooltip:
-        "Use this when the same tool at the same commit is verified more than once with different configurations, for example STRait Razor with ForenSeq and with PowerSeq. Each variant gets its own attestation and its own permanent link. Leave it blank if there is only one.",
-      slugPreview: "This will be published at",
-      submitterRole: "Your relationship to this tool",
-      submitterRoleTooltip:
-        "Everything below (the command, the environment, the target regions) is published as part of the attestation, and this is what says whose choices they were. A GitHub account tells us who owns a repository; it never tells us who filled in this form.",
-      submitterRoleOption: {
-        maintainer: "I maintain this tool",
-        third_party: "I am not its maintainer",
-      },
-      submitterRoleDesc: {
-        maintainer:
-          "You wrote it, or you answer for it. The attestation records that its maintainer submitted it.",
-        third_party:
-          "You are verifying somebody else's tool. The attestation says so, and records that its maintainer was not involved and did not supply the configuration.",
-      },
-      maintainer: "Maintainer",
-      maintainerThirdParty: "Maintainer of the tool (not you)",
-      maintainerThirdPartyNote:
-        "Published as the person who answers for the software, alongside a note that they took no part in this verification.",
-      contact: "Contact (issue tracker or email)",
-      repo: "Public GitHub repo URL",
-      ref: "Commit SHA or release tag (immutable)",
-      refHint: "A specific commit hash or tag. Ensures we always test the exact same code.",
-      fetchLastSha: "Fetch last commit SHA",
-      useLatestTag: "Use the latest release tag ({tag})",
-      versionDerived: "Recorded on the attestation as version {version}.",
-      repoLookupLoading: "Reading the repository…",
-      repoLookupError:
-        "We couldn't read that repository. Check the URL: it must be a public GitHub repo. You can still fill the form in by hand.",
-      lockedUntilSource:
-        "Fill in the public source above first. The rest of this form is built from your repository and the commit you pin.",
-      prefillConflictTitle: "Keep what you typed, or use your repository's details?",
-      prefillConflictBody:
-        "These fields already had a value, so nothing was changed. Here is what we found:",
-      prefillAccept: "Use these values",
-      prefillKeep: "Keep mine",
-      preflightSummaryNone: "Nothing ticked, so the automated run applies to this tool.",
-      preflightSummarySelected: "{n} ticked.",
-      reuseTitle: "Reuse a previous run",
-      reuseHint:
-        "This repository has been verified before. Bring those answers back and change only what moved.",
-      reuseGroup: {
-        env: "Environment",
-        inputs: "Input data",
-        run: "Execution",
-        outputs: "Expected output",
-      },
-      reuseApply: "Reuse",
-      reuseShowMore: "Show {n} more run(s)",
-      reuseApplied:
-        "Answers refilled from that run. Check them before submitting. The commit you pinned above is untouched.",
-      reuseUnavailable:
-        "We couldn't load that run's settings. It may predate saved submissions, so fill the form in by hand.",
-      reuseRegionsFile: "regions.bed (reused from a previous run)",
-      autoConfigTitle: "Automatic configuration",
-      autoConfigHint:
-        "Optional. We read your repository at the commit you pinned and propose the answers below. Nothing is filled in until you have reviewed it.",
-      autoConfigSummaryIdle: "Not used. Fill the form in by hand, or let us propose the answers.",
-      autoConfigSummaryApplied: "Applied. Check every field before submitting.",
-      autoConfigOwnDockerfile: "I will provide the Dockerfile",
-      autoConfigDockerfileHint:
-        "Paste the complete Dockerfile. STRhub builds it unchanged, so nothing about your environment is guessed.",
-      autoConfigSampleLabel: "Sample results file from a previous run",
-      autoConfigLocalOnly:
-        "Read in your browser to work out the output format and column layout. The file is never uploaded.",
-      autoConfigSampleApplied: "Read {file}. The expected-output section below is filled in.",
-      autoConfigGenerate: "Configure automatically",
-      autoConfigUseSaved: "Use a saved configuration ({n})",
-      autoConfigWorking: "Reading the repository and working out how your tool builds and runs. This can take a couple of minutes.",
-      autoConfigAppliedNote:
-        "Answers filled in from the automatic configuration. Check them before submitting. The commit you pinned above is untouched.",
-      autoConfigReview: "Review",
-      autoConfigReviewHint:
-        "Everything here was read out of your repository. Tick the groups you want, check the values, then fill the form in.",
-      autoConfigExactRef: "This exact commit",
-      autoConfigFromRef: "Generated from {ref}",
-      autoConfigMayBeStale: "may be out of date",
-      autoConfigOldVersion: "generated by an earlier version",
-      autoConfigWhatIsSent:
-        "Only the repository URL and the commit are sent to our server. Your sample results file and your Dockerfile are read in your browser and stay there.",
-      autoConfigStaleTitle: "The build files have changed since this was generated",
-      autoConfigStaleBody:
-        "A Dockerfile, manifest or Makefile differs at the commit you pinned. The build answers below may no longer be right, so check them or configure again.",
-      autoConfigNotFound: "Not found in the repository",
-      autoConfigApplies: "Applies to this tool",
-      autoConfigCaveats: "Worth checking by hand",
-      autoConfigApply: "Fill in the form",
-      autoConfigCancel: "Cancel",
-      autoConfigHigh: "Cited",
-      autoConfigLow: "Uncertain",
-      autoConfigGroup: {
-        tool: "Tool",
-        env: "Environment",
-        run: "Execution",
-        inputs: "Input data",
-        outputs: "Expected output",
-        compat: "Limitations",
-      },
-      autoConfigRepoNotFound: "We could not read that repository. Check it is public and the URL is right.",
-      autoConfigRefNotFound: "That commit or tag does not exist in the repository.",
-      autoConfigEmptyRepo: "That repository looks empty at the commit you pinned.",
-      autoConfigDeclined: "We could not configure this repository automatically. Fill the form in by hand.",
-      autoConfigDisabled: "Automatic configuration is not available right now.",
-      autoConfigFailed: "Automatic configuration failed. Try again, or fill the form in by hand.",
-      refTooltip:
-        "On GitHub, open your public repository. For a release: go to Releases and copy the tag name (e.g. v3.0). For a commit: open Code, click a commit in the history, and copy the full SHA (40 characters) or the short hash shown at the top. Paste it here. STRhub will clone exactly that version every time.",
-      refTooltipAria: "How to find a commit SHA or release tag on GitHub",
-      dockerMode: "How should the environment be built?",
-      dockerModeTooltip:
-        "STRhub runs your tool inside Docker. Generate it for me: you choose the language and install command; STRhub writes the Dockerfile, clones your repo at the pinned ref, and runs the build. I'll provide a Dockerfile: you paste a complete Dockerfile and STRhub builds it unchanged. Use that if you already ship one or need full control.",
-      dockerModeTooltipAria: "What the two environment build options mean",
-      dockerProvided: "I'll provide a Dockerfile",
-      dockerGenerated: "Generate it for me",
-      dockerProvidedHint: "Paste a complete Dockerfile (camino A, maximum control).",
-      dockerGeneratedHint:
-        "STRhub builds the Dockerfile from a template (camino B, pip/conda/make).",
-      dockerfile: "Dockerfile contents",
-      language: "Language / stack",
-      needsBuild: "My tool needs to be built from source code",
-      needsBuildHint:
-        "Tick this if your tool has to be compiled or installed before it can run, such as pip install, make or cargo build. Leave it unticked for a script or a committed binary that runs straight from the clone.",
-      buildCmd: "Build / install command",
-      buildCmdTooltip:
-        "Command run while building the Docker image, after cloning your repo. Usually your install steps, e.g. pip install, make, or conda env create. If it fails, verification stops at the Installs gate.",
-      buildCmdTooltipAria: "What the build or install command is for",
-      buildCmdNone: "no build step",
-      checkCmd: "Build-time sanity check command",
-      checkCmdTooltip:
-        "Optional. A short command run once during the image build to confirm the install worked, e.g. mytool --help or mytool --version. Leave blank if you are not sure.",
-      checkCmdTooltipAria: "What the build-time sanity check command is for",
-      cmd: "Run command (reads /data/in, writes /data/out)",
-      cmdTooltip:
-        "Command STRhub runs inside the container at verification time. Input files are read-only under /data/in/; write outputs under /data/out/. Use container paths, not paths on your computer or in the GitHub tree.",
-      cmdTooltipAria: "What the run command is and how paths work",
-      cmdReplaceMytool: "Replace \"mytool\" with the actual binary or command that runs your tool (e.g. hipstr, strait_razor, toastr). The rest of the paths are correct.",
-      cmdFetchingReadme: "Reading your repo's README…",
-      cmdSuggestFromReadme: "Suggested from your README. Click to use:",
-      cmdHint: "Your tool reads input from /data/in/ and writes output to /data/out/.",
-      cmdHintWithRef: "Your tool reads input from /data/in/, the reference genome from {mountPath}, and writes output to /data/out/.",
-      refGenomeTitle: "Reference genome: {assembly}",
-      refGenomeDescription: "STRhub automatically provides the reference genome indexed and ready at {mountPath}. Use this path for --fasta or equivalent parameters in your run command.",
-      refGenomeNote: "The reference genome ({assembly}) is automatically downloaded, indexed, and mounted by STRhub.",
-      canonicalPathsTitle: "Use these standard paths in your run command",
-      canonicalPathsDescription: "STRhub renames all input files to standard names so the same command works for both your data and our reference dataset. Use exactly these paths:",
-      sliceNoticeTitle: "Our reference sample is a slice, not a whole genome",
-      sliceNoticeBody:
-        "STRhub does not host full genomes. The reference data for this input type is a small extract around a panel of STR loci (forensic or disease-associated, depending on the type). A tool aimed outside those loci finds no reads there, so the run says nothing about the tool at those loci.",
-      sliceNoticeDownload: "Download the supported coordinates (BED, GRCh38)",
-      timeout: "Timeout (minutes)",
-      inputType: "What kind of data does your tool take?",
-      inputTypeSelect: "Select input type",
-      inputTypeDescIlluminaStrFastq:
-        "Illumina MiSeq/MiniSeq STR FASTQ: Verogen ForenSeq or Promega PowerSeq 46GY (the only two kits in our NIST reference dataset for now)",
-      inputTypeDescOntBamHg38: "Oxford Nanopore BAM aligned to hg38 (CODIS regions)",
-      inputTypeDescPacbioHifiBamHg38: "PacBio HiFi BAM aligned to hg38 (CODIS regions)",
-      inputTypeDescIlluminaBamHg38: "Illumina WGS BAM aligned to hg38 (autosomal forensic STR loci)",
-      inputTypeDescIlluminaBamHg38Y: "Illumina WGS BAM aligned to hg38 (Y-chromosome STR loci)",
-      inputTypeDescIlluminaBamHg38Med: "Illumina WGS BAM aligned to hg38 (disease-associated STR loci)",
-      inputTypeDescPacbioHifiBamHg38Med: "PacBio HiFi BAM aligned to hg38 (disease-associated STR loci)",
-      inputTypeDescOntBamHg38Med: "Oxford Nanopore BAM aligned to hg38 (disease-associated STR loci)",
-      inputTypeDescOntFastq: "Oxford Nanopore raw FASTQ reads",
-      inputTypeDescIlluminaSnpFastq: "Illumina FASTQ for identity/ancestry SNP panels",
-      inputTypeDescCapillaryFsa: "ABI .fsa or .hid capillary fragment analysis files",
-      inputTypeOther: "Other (I'll type it)",
-      inputTypeCustom: "Custom input type slug",
-      inputTypeCustomHint:
-        "A short identifier, e.g. 'illumina-bam-hg19'. No STRhub reference dataset exists for custom types.",
-      externalRunsBoth:
-        "STRhub will run two verifications: one on your test file, and one on our reference dataset.",
-      externalRunsOurs:
-        "STRhub will run one verification, on our reference dataset, since you said the repository has no test file.",
-      externalDetailIllumina:
-        "The reference is NIST mds2-2157 Illumina STR data, which covers ForenSeq and PowerSeq 46GY only; use kit-matched reads in your own fixture.",
-      externalDetailOnt:
-        "The reference is a 1000 Genomes ONT hg38 CODIS slice (~30 MB).",
-      externalDetailOntFastq:
-        "The reference is the reads of a 1000 Genomes ONT sample (HG00113) over 20 CODIS loci, as FASTQ (~50 MB uncompressed), with hg38 to align them to. Aligning them to all of hg38 needs more memory than the run container's 6 GB.",
-      externalDetailPacbioHifi:
-        "The reference is a GIAB HG002 PacBio HiFi (Revio) hg38 CODIS slice (~19 MB, male sample).",
-      externalDetailIlluminaBam:
-        "The reference is a GIAB NA12878 300x hg38 slice covering 24 autosomal forensic STR loci (female sample, no Y markers).",
-      externalDetailIlluminaBamMed:
-        "The reference is a GIAB NA12878 300x hg38 slice around the disease-associated STR loci that most medical STR tools ship in their catalogs (female sample).",
-      externalDetailPacbioHifiMed:
-        "The reference is a GIAB HG002 PacBio HiFi (Revio) hg38 slice around the disease-associated STR loci that most medical STR tools ship in their catalogs (male sample).",
-      externalDetailOntMed:
-        "The reference is a 1000 Genomes ONT (HG00113, R10 SUP) hg38 slice around the disease-associated STR loci that most medical STR tools ship in their catalogs (~40 MB, male sample).",
-      externalDetailIlluminaBamY:
-        "The reference is a GIAB HG002 300x hg38 slice covering 14 Y-STR forensic loci (male sample).",
-      externalNoteIllumina:
-        "STRhub will run two tests: on your file and on NIST mds2-2157 Illumina STR data. Our NIST reference covers ForenSeq and PowerSeq 46GY only. Use kit-matched reads in your own fixture.",
-      externalNoteOnt:
-        "STRhub will run two tests: on the test BAM from the tool's repository (if provided) and on a 1000 Genomes ONT hg38 CODIS slice (~30 MB).",
-      externalNoteIlluminaBam:
-        "STRhub will run two tests: on the test BAM from the tool's repository (if provided) and on a GIAB NA12878 300x hg38 slice. The reference dataset covers 24 autosomal forensic STR loci (female sample, no Y markers).",
-      externalNoteIlluminaBamY:
-        "STRhub will run two tests: on the test BAM from the tool's repository (if provided) and on a GIAB HG002 300x hg38 slice. The reference dataset covers 14 Y-STR forensic loci (male sample).",
-      externalNoteOwnOnly:
-        "STRhub will run one test with your file only. There is no STRhub reference dataset for this input type (not a failure).",
-      fixtureLabel: "Your test file (required)",
-      fixtureLabelRecommended: "Your test file (recommended)",
-      fixtureExplainer:
-        "Required. Point to a small, publicly accessible test file at the ref you specified.",
-      fixtureExplainerOptional:
-        "Recommended. For a stronger verification, point to a test file in your repo, and STRhub will run both your data and our reference dataset. If your repo doesn't include test data, leave blank and STRhub will run with our reference dataset only.",
-      fixtureRequiredError: "A test file is required for this input type (no STRhub reference dataset available).",
-      fixtureSameRepo: "It's in my tool's repo",
-      fixtureOtherRepo: "It's in a different repo",
-      fixtureNone: "I don't have a test file",
-      fixtureNoneNote:
-        "STRhub will verify your tool on our reference dataset only. That is a valid result, just a narrower one: it shows your tool runs on our data, not on yours.",
-      fixtureSameRepoNote: "Using repo {repo} at ref {ref}.",
-      fixturePathInRepo: "Path to the test file in the repo",
-      fixturePathInRepoTooltip:
-        "Path to your small test file inside the repo and ref you specified, relative to the repo root. Example: test/data/sample.fastq. The file must exist at that ref on GitHub so STRhub can fetch it for the run.",
-      fixturePathInRepoTooltipAria: "How to specify the test file path in the repository",
-      fixturePathHint: "Relative path from the repo root, e.g. test/data/sample.fastq",
-      fixtureRepo: "Test data repo URL",
-      fixtureRef: "Commit / tag",
-
-      // Regions BED — required for coordinate-based tools.
-      regionsLabel: "Your regions BED file",
-      regionsExplainer:
-        "Required for tools that read BAM files. Every tool expects its own BED layout (HipSTR, GangSTR and others use different columns), so the BED is yours to define. STRhub supplies the coordinates: download the panel below, convert it to your tool's format, and upload it.",
-      regionsLibraryLabel: "Regions file",
-      regionsLibraryHint: "STRhub has the reference sample's loci ready in each of these layouts, generated from hg38. Pick the one your tool reads; upload your own only if none fits.",
-      regionsLibraryOption: {
-        hipstr: "7 columns: chrom, start, end, period, reference copies, name, motif",
-        gangstr: "5 columns: chrom, start, end, period, motif",
-        strsearch: "11 columns: coordinates, period, allele, names, structure, strand, 5' and 3' flanking sequences",
-        bed4: "4 columns: chrom, start, end, name (plain BED)",
-        upload: "None of these: upload my own regions file",
-      },
-      regionsLibraryUsedBy: {
-        hipstr: "The layout HipSTR reads with --regions.",
-        gangstr: "The layout GangSTR reads with --regions.",
-        strsearch: "The layout STRsearch reads with --ref_bed.",
-        bed4: "Plain BED; most tools that take a BED read this.",
-      },
-      regionsPreview: "Preview the first lines",
-      regionsPreviewHide: "Hide preview",
-      regionsPreviewError: "Could not load the preview.",
-      regionsDetected: "This looks like the {format}, with {count} regions. STRhub has a ready-made file in that layout with only the loci the reference sample covers.",
-      regionsDetected_one: "This looks like the {format}, with {count} region. STRhub has a ready-made file in that layout with only the loci the reference sample covers.",
-      regionsUseLibrary: "Use STRhub's file instead",
-      regionsUploadLabel: "Upload your BED",
-      regionsUploadPlaceholder: "Choose a .bed file…",
-      regionsUploadHint:
-        "The file you built from the panel above, in your tool's format. Plain-text .bed, not gzipped. Checked against the panel here before you submit.",
-      regionsGzip:
-        "That file is gzipped. Decompress it first (gunzip) and upload the plain-text .bed.",
-      supportedLociTitle: "Loci our sample supports ({count})",
-      supportedLociExplainer:
-        "Our test sample is a slice around these loci, not a whole genome: it has reads only there. Your BED has to reach at least five of them; regions outside them are allowed, and the report lists them as not assessed.",
-      supportedLociDownload: "Download coordinates (BED, GRCh38)",
-      panelLoading: "Loading supported loci…",
-      panelError:
-        "We couldn't load the supported-loci panel. You can still submit: STRhub validates your BED before running.",
-      regionsMalformed: "The BED is malformed:",
-      regionsMalformedGeneric: "We couldn't parse that file as a BED.",
-      regionsUnconverted:
-        "This looks like our coordinate panel, uploaded as-is. The coordinates are right, but the columns are still ours, and most tools (HipSTR, GangSTR) expect their own layout and would reject it. Convert it to your tool's format before running.",
-      regionsRepoTip:
-        "Tip: commit this BED to your tool's repo (e.g. regions/strhub-verified.bed) so anyone using your tool has the exact regions this attestation covers. STRhub verifies the file you upload here, not the repo copy.",
-      regionsOk: "Your BED covers {covered} of {total} supported loci. Ready to verify.",
-      regionsOutsideNotAssessed:
-        "{n} of its regions are outside our slice; the report will list them as not assessed.",
-      regionsRejectedTitle: "This BED reaches too few of our sample's loci",
-      regionsRejectedExplainer:
-        "Our slice has reads only at the panel loci above, so your tool would find almost nothing to genotype. This is not a problem with your tool. Regions outside the panel are fine; add loci from the panel.",
-      regionsLinePrefix: "line {line}:",
-      regionsAndMore: "…and {n} more.",
-      regionsTooFewLoci:
-        "Your BED covers {covered} supported loci; we need at least {min} to verify.",
-      regionsRequiredError: "Provide your regions BED for this input type.",
-      outputPath: "Output filename (pattern)",
-      outputPathHint:
-        "The name (or pattern) of the file your tool writes under /data/out/, e.g. *.allsequences.txt or result.vcf.",
-      outputPathTooltip:
-        "Use the same filename or wildcard your run command creates inside the container. STRhub looks for that file after the run. It does not need to match the file extension in the next field.",
-      outputPathTooltipAria: "How to name the output file your tool produces",
-      outputFormat: "Output content type",
-      outputFormatHint:
-        "How the file is structured inside, not necessarily its extension. Tab-separated columns → TSV (even if the file ends in .txt).",
-      outputFormatTooltip:
-        "Pick the structure that matches your tool's output. TSV: columns separated by tabs (STRait Razor .allsequences.txt is TSV). CSV: comma-separated. VCF: variant calls. JSON: JSON data. Text: plain lines with no special parser.",
-      outputFormatTooltipAria: "How to choose the output content type",
-      outputFormatOptions: {
-        tsv: "TSV (tab-separated columns)",
-        csv: "CSV (comma-separated columns)",
-        vcf: "VCF (variant call format)",
-        json: "JSON",
-        text: "Plain text (lines, no table parser)",
-      },
-      minRecords: "Minimum records",
-      detectTitle: "Detect this from a sample output file",
-      detectHint:
-        "If your tool has already produced a result, pick that file and we'll work out the format and the column layout for you. It is read in your browser and never uploaded.",
-      detectChoose: "Choose a sample output file…",
-      detectReading: "Reading the file…",
-      detectError: "We couldn't read that file. Pick a plain-text result file.",
-      detectGzip:
-        "That file is gzipped. Decompress it first (gunzip) and pick the plain-text file.",
-      detectResult: "Detected {format}, with {rows} data rows.",
-      detectLoci: "Found {count} distinct markers: {sample}…",
-      detectLoci_one: "Found {count} marker: {sample}…",
-      detectNote: {
-        contentNeedsTabs:
-          "The content checks read tab-separated columns, so they can't inspect this format. The format itself is still verified.",
-        vcfColumnsVary:
-          "Columns per row was left blank: a VCF has one column per sample, and the verification run won't have the same number as your file.",
-        tooFewRows: "Too few rows to identify the sequence column with confidence.",
-        noLocusColumn:
-          "No column looked like marker names, so the marker checks were left blank.",
-        readsNotInferred:
-          "Minimum total reads was left blank on purpose: your file is a full run, while STRhub verifies against a small slice with far fewer reads.",
-        truncated: "Only the first part of the file was read.",
-      },
-      contentZeroBased:
-        "Column positions are counted from 0, so the first column is 0. Rows are split on tabs, and lines starting with # are ignored.",
-      contentField: {
-        columns: "Columns per row",
-        columnsTip:
-          "Every data row must have exactly this many tab-separated columns. A row with any other number counts as malformed and fails the check. Leave blank to skip it.",
-        dnaColumn: "Sequence column",
-        dnaColumnTip:
-          "Position of the column holding the DNA sequence. Every row's value must be only A, C, G, T or N. A single row that isn't fails the check. Positions start at 0.",
-        countColumns: "Read-count columns",
-        countColumnsTip:
-          "Positions of the integer read-count columns, comma-separated. They are added together to give each row's depth, which is what the total-reads check counts. Positions start at 0.",
-        locusColumn: "Marker name column",
-        locusColumnTip:
-          "Position of the column carrying the locus or marker name. Anything after the first colon is dropped, so \"TH01:9\" counts as TH01. Positions start at 0.",
-        minDistinctLoci: "Minimum distinct markers",
-        minDistinctLociTip:
-          "The run must report at least this many different markers. Keep it at or below what STRhub's reference slice covers. It is a floor, not a target.",
-        minTotalReads: "Minimum total reads",
-        minTotalReadsTip:
-          "The read-count columns, summed across every row, must reach at least this. Leave blank unless you know what STRhub's reference slice yields, which is far fewer reads than a full run.",
-        expectLoci: "Markers that must appear",
-        expectLociTip:
-          "Comma-separated marker names. Every single one listed must be present or the check fails, so list only markers you are sure your tool reports on our reference data.",
-      },
-      contentToggle: "Check output content plausibility (recommended)",
-      contentToggleTooltip:
-        "Recommended. Checks that the output looks like plausible genotype data (enough recognizable loci, and any named loci you expect) and not just a non-empty file. Passing this earns the stronger \"Plausible output\" badge. Uncheck to verify format only.",
-      contentToggleTooltipAria: "What the content plausibility check does",
-      contentDefaultsHint:
-        "Prefilled with sensible defaults for the selected output format and assay. Edit any field to match your tool, or clear one to skip that check.",
-      contentDefaultsReset: "Reset to recommended",
-      submit: "Submit for verification",
-      submitting: "Submitting…",
-      statePendingApproval:
-        "This repository is new and awaits admin approval before its first run. You can resubmit once approved.",
-      stateDispatched: "Submitted. Tracking the verification run…",
-      stateQueued: "Queued…",
-      stateInProgress: "Running gates…",
-      statePolling: "Checking status…",
-      stateCompletedSuccess: "Verification completed successfully.",
-      rejectStoppedTitle: "We stopped before running your tool",
-      rejectOursTitle: "This one is on us, not on your tool",
-      rejectNotJudged:
-        "No gate was judged, so this says nothing about your tool: it was not run.",
-      rejectCoverage:
-        "Your BED covers {covered} of {total} supported loci (at least {min} are needed).",
-      rejectOutOfPanel: "{n} interval(s) fall outside the panel:",
-      stateCompletedFailure: "The run finished but did not pass all gates.",
-      viewRun: "View CI run",
-      viewReport: "View attestation",
-      errorGeneric: "Something went wrong. Please try again.",
-      errorValidation: "Please fix the highlighted fields.",
-      pdfDownload: "Download PDF report",
-      pdfGenerating: "Generating PDF…",
-      pdfDone: "PDF downloaded",
-      pdfError: "PDF failed. Retry",
-      pdfErrorHint: "The report may not be published yet. Try again in a few seconds.",
-      resubmit: "Edit & re-submit",
-      resubmitHint: "Go back to the form with the same parameters pre-filled.",
-      paramsToggle: "Submission parameters",
-      paramsToolName: "Tool",
-      paramsRepo: "Repository",
-      paramsRef: "Ref",
-      paramsCmd: "Run command",
-      paramsInputType: "Input type",
-      paramsFixture: "Test file",
-      paramsOutput: "Output",
-      paramsBuild: "Build",
-      paramsDockerMode: "Docker mode",
-      paramsTimeout: "Timeout",
     },
     start: {
       eyebrow: "STRhub Verified",
@@ -1032,7 +609,7 @@ export default {
         user: "Is it my setup, or the tool?",
       },
       lead: {
-        owner: "Paste your repository. STRhub reads it, works out how to install and run it, and tries that out in a clean environment. Nothing is published until you say so.",
+        owner: "Enter your repository to check whether STRhub can run the procedure documented at the pinned commit.",
         reviewer: "Paste the repository the manuscript cites. In a few minutes you get a plain answer: does it install and run as documented? No code, no account, nothing published.",
         user: "Paste the tool's repository. STRhub shows what a clean environment does with it, so you can tell a failure of the tool from a problem on your machine.",
       },
@@ -1051,8 +628,8 @@ export default {
         head: "head of the default branch",
       },
       refUnresolved: "Could not find that repository or ref. Check the URL, or type a commit SHA.",
-      ownerNotice: "If you maintain this tool, we recommend reviewing the documentation tips before starting:",
-      ownerNoticeLink: "Tips for 1-click verification",
+      ownerNotice: "See what evidence STRhub looks for before starting.",
+      ownerNoticeLink: "Evidence in the repository",
       roleLabel: "I am",
       role: {
         owner: "the tool's maintainer",
@@ -1061,23 +638,21 @@ export default {
       },
       cta: "Start the test run",
       starting: "Starting…",
-      advanced: "Advanced: write the recipe yourself",
-      advancedHint: "For maintainers who want to control the Dockerfile, the command and the expected output.",
       howItWorks: "What happens",
       steps: {
         read: "STRhub reads the repository at the pinned commit: Dockerfile, environment files, README, example data.",
-        propose: "It proposes a recipe: how to install, what to run, on which of its open reference datasets.",
-        run: "It runs that in an isolated container, with no network, and checks what came out.",
-        verdict: "You get one of four answers: runs, fails, could not be determined (with what the README does not say), or out of scope.",
+        evidence: "STRhub checks whether it can verify the documented installation, command and inputs.",
+        run: "When the evidence supports the procedure, STRhub runs it in an isolated container with no network.",
+        verdict: "The report records the result or explains what blocked the check.",
       },
       noPublish: "A test run publishes nothing and is private to whoever has its link. It expires after 30 days.",
-      readmeTipsTitle: "Tips for 1-Click Verification (README Best Practices)",
-      readmeTipsSubtitle: "How to ensure STRhub Verified can detect, install, and run your tool automatically:",
+      readmeTipsTitle: "Evidence STRhub looks for",
+      readmeTipsSubtitle: "The evaluation uses files from the pinned commit.",
       readmeTips: {
-        command: "Documented command: provide a single complete run command in a ```bash code block with standard input/output options.",
-        inputs: "Explicit inputs: specify your input format (BAM, FASTQ) and avoid hardcoded personal paths (e.g. /home/user/...).",
-        environment: "Shipped environment: include an environment.yml, requirements.txt, or Dockerfile in the repository root.",
-        nonInteractive: "Non-interactive execution: ensure installation and execution scripts do not wait for user input (read, yes/no).",
+        command: "A documented command with its working directory and arguments.",
+        inputs: "The required input files, their formats and any documented reference data.",
+        environment: "The documented installation procedure and the environment files it uses.",
+        nonInteractive: "Any installation or execution steps that require interaction.",
         guideLink: "Read the complete Step 1 Guide",
       },
       error: {
@@ -1095,16 +670,6 @@ export default {
       waitingBannerTitle: "Estimated execution time: 2 to 5 minutes",
       waitingBannerDescription: "Verification runs in a clean, isolated container on GitHub Actions. This page will update automatically once completed; no need to refresh.",
       currentStatusLabel: "Current status",
-      errorExcerptTitle: "Last lines captured before failure:",
-      probableCauseLabel: "Preliminary diagnosis",
-      hint: {
-        pathOrFile: "Possible path error or missing file in the working directory.",
-        missingDependency: "Possible command, binary, or dependency missing in the execution environment.",
-        invalidOption: "Parameter, flag, or argument not recognized by this tool version.",
-        permission: "File access or write permission error.",
-        resourceLimit: "Memory or resource limit exceeded during execution.",
-        runtimeError: "Execution stopped with a runtime error or unhandled exception in the log above.",
-      },
       estimatedTime: "Usually takes 2 to 5 minutes. Verification runs in a clean, isolated container on GitHub Actions.",
       queueDelayNotice: "GitHub Actions cloud runners are taking longer than usual to allocate. The run will start automatically as soon as a runner is ready; you can keep this tab open.",
       state: {
@@ -1148,7 +713,7 @@ export default {
           runs: "A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.",
           does_not_run: "That does not mean the tool does not work. It means a third party following the README at this commit did not reach the end. Fix the documentation, or the step that broke, and try the link again on the new commit.",
           cannot_tell: "Nothing was executed. That does not mean the tool does not work: what the guide asks for is missing from the README at this commit. Add it and try the link again on the new commit.",
-          ours: "Nothing was executed, and the limitation is ours rather than the documentation's. Nothing here is a finding about the tool. A small example file committed to the repository, or a slice covering the coordinates this command reads, would let the run happen.",
+          ours: "STRhub reached a limit in its evaluator. See the reason recorded in this report.",
         },
         missingTitle: "What is missing, by the blocks the guide asks for",
         blocks: {
@@ -1195,46 +760,32 @@ export default {
       gapsHint: "Each line is something a stranger needs before they can run the tool. For a reviewer, these are review findings; for a maintainer, a short to-do.",
       noReport: "The run finished without producing a report. This usually means it stopped before its first gate; the run log has the details.",
       runLink: "Open the run on GitHub",
-      recipeTitle: "Environment it ran in",
-      recipeHint: "Proposed by STRhub from the repository. Every guess is listed under the caveats.",
+      recipeTitle: "Recorded environment",
+      recipeHint: "The report shows which installation and execution steps were reached.",
       recipeDockerfile: "Environment (Dockerfile)",
-      recipeRepoDockerfile: "The repository's own Dockerfile was built as-is.",
+      recipeRepoDockerfile: "The recorded configuration points to a Dockerfile in the repository.",
       recipeFallbackUsed: "The Dockerfile above did not build (see the build log). What ran is this second one: {reason}.",
       recipeFallbackAvailable: "Plan B, not needed this time: if the build above had failed, STRhub would have used {reason}.",
       recipeFallbackReason: "the fallback environment the recipe declares",
       caveatsTitle: "Caveats: what STRhub guessed",
       logsTitle: "Logs",
       log: {
-        build: "Build",
+        build: "Installation",
         external: "Run on STRhub reference data",
         own: "Run on the repository's data",
         example: "The README's own example",
         starts: "Asking the program for --help",
       },
-      publish: "Publish this result",
-      publishHint: "Files exactly this recipe for a STRhub admin to approve. Approval runs the real verification and lists the tool in the catalogue with a permanent link.",
-      publishOnlyRuns: "Only a test run that ended in \"Runs\" can be published with one click. Fix what the report says and run it again, or use the advanced form.",
-      published: "Filed for approval as {slug}. You do not need to come back; approval starts the run.",
-      publishError: {
-        slug_taken: "A tool with this name and version is already registered to another repository.",
-        verdict_not_runs: "This test run did not end in \"Runs\".",
-        trial_not_finished: "The test run has not finished.",
-        generic: "Could not file the result. Try again.",
-      },
-      share: "You can share this link with the journal editor or co-reviewers as proof of execution. No account required.",
+      share: "You can share this report with the journal editor or co-reviewers. No account required.",
       again: "Test another tool",
-      asOwnerCta: "Are you this tool's maintainer? Publish it from this page.",
       gates: "Gates",
       example: "Reproduces own example",
       exampleMeaning: "the README's own command produced its documented output on the repository's own data",
       starts: "Starts",
       startsMeaning: "the installed program answers --help in the built environment",
-      stoppedTitle: "What stopped it, and what you can do",
-      stoppedHint: "Each item is one missing piece. You can supply it yourself and try again without publishing anything, or ask the tool's owner for it on GitHub.",
-      selfFix: "I'll add it and try again",
+      stoppedTitle: "What blocked the check",
       askOwner: "Ask the owner on GitHub",
       askOwnerHint: "Opens a pre-written issue in the tool's repository for you to review and post. Nothing is sent by STRhub.",
-      selfFixHint: "Opens the recipe STRhub proposed, with everything filled in, at the section to complete. The next run is a test run again.",
       pdf: "Download the PDF report",
       html: "Open the full report",
       scopeTitle: "Scope of this report",
@@ -1331,43 +882,33 @@ export default {
       blockers: {
         loci_outside_panel: {
           what: "The regions file in the repository lists loci outside the coordinates STRhub's reference sample covers, and the repository does not include a sample BAM for those loci.",
-          selfFix: "Pick a regions file covering STRhub's panel loci, or point to a small test BAM in a repository",
         },
         documented_file_missing: {
           what: "The command in the README points to a file in the repository that is not there at this commit.",
-          selfFix: "Supply the missing file or adjust the command",
         },
         regions_format_unknown: {
           what: "The command needs a regions or locus configuration file in a format STRhub does not have pre-built, and the repository does not ship one.",
-          selfFix: "Upload a regions file in the tool's format",
         },
         no_reference_dataset: {
           what: "STRhub does not hold a reference dataset for the input type this tool takes, and the repository does not include a small test file.",
-          selfFix: "Point to a test file in a public repository",
         },
         no_command: {
           what: "The README does not give a complete command-line invocation to run.",
-          selfFix: "Write the run command",
         },
         install_method_unknown: {
           what: "The repository does not ship a Dockerfile or environment file, and the README does not give copyable install steps.",
-          selfFix: "Provide the install steps or a Dockerfile",
         },
         build_failed: {
           what: "The environment did not build from the instructions in the repository.",
-          selfFix: "Adjust the build steps or provide a Dockerfile",
         },
         run_failed: {
           what: "The command exited with an error before producing its documented output.",
-          selfFix: "Adjust the command or parameters and try again",
         },
         run_stopped: {
           what: "The command did not finish within the run's time limit.",
-          selfFix: "Adjust the command or raise the time limit",
         },
         no_output: {
           what: "The command ran to completion, but the expected output file was not produced or was empty.",
-          selfFix: "Check the output filename and format in the recipe",
         },
       },
     },

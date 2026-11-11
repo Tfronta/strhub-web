@@ -1,17 +1,7 @@
 "use client";
 
-/**
- * The one-field entry to STRhub Verified, for all three of its readers.
- *
- * A repository URL, an optional version, and who is asking. Everything the old
- * form asked for (Dockerfile, command, columns) is now worked out by the engine
- * from the repository and rehearsed in CI; the person watching sees a verdict,
- * not a form. The long form survives as "advanced" for maintainers who want to
- * write the recipe themselves.
- */
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { ExternalLink, Lightbulb, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -262,7 +252,7 @@ export function VerifiedStart({
           <h2 className="mb-3 text-base font-semibold">{t("verified.start.howItWorks")}</h2>
           <ol className="list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
             <li>{t("verified.start.steps.read")}</li>
-            <li>{t("verified.start.steps.propose")}</li>
+            <li>{t("verified.start.steps.evidence")}</li>
             <li>{t("verified.start.steps.run")}</li>
             <li>{t("verified.start.steps.verdict")}</li>
           </ol>
@@ -302,15 +292,6 @@ export function VerifiedStart({
             </div>
           </CardContent>
         </Card>
-      )}
-
-      {role === "owner" && !compact && (
-        <p className="mt-6 text-sm text-muted-foreground">
-          <Link href="/verified/submit/advanced" className="underline underline-offset-2">
-            {t("verified.start.advanced")}
-          </Link>{" "}
-          {t("verified.start.advancedHint")}
-        </p>
       )}
     </div>
   );

@@ -23,6 +23,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { type VerifiedInstrument, type VerifiedReport } from "@/types/verified";
 import { hasReportedErrors } from "@/lib/verified/diagnostics";
 import { badgeFor } from "@/lib/verified/badge";
+import { blockedBeforeInstall } from "@/lib/verified/gate-state";
 import {
   certificateOf,
   localizeCaveatItem,
@@ -31,22 +32,21 @@ import {
 import { summarizeDatasets } from "@/lib/verified/dataset-provenance";
 import { Cover } from "./cover";
 import { Section, BoxedList, ConclusionBox, sectionCounter } from "./certificate";
-import { SourceCard, RunCommandCard } from "./source-card";
-import { GatesLadder, LogLinks, type ExtraGateRow, type ReportLog } from "./gates";
+import { SourceCard } from "./source-card";
+import { GatesLadder, type ExtraGateRow } from "./gates";
+import { RecordedTerminal, type ReportLog } from "./terminal";
 import { WhatWasVerified, VerificationMatrix, VerificationData } from "./verification";
 import { OutputContent } from "./output";
 import {
   BuildFailedCard,
   AutoDiagnostics,
   actionableDiagnostics,
-  FailureExcerptCard,
   ManualOffer,
   ReadmeCheck,
   BulletCard,
   AuthorKnownIssues,
   EvidenceList,
 } from "./findings";
-import { extractFailureExcerpt } from "@/lib/verified/failure-excerpt";
 import { DisputeCard } from "./closing";
 import { VersionHistory, OlderVersionNotice, RetiredNotice, rowHref } from "./history";
 import { AsItIsOpening } from "./verdict";
@@ -71,7 +71,6 @@ export function VerifiedReportBody({
   staticPageUrl,
   pdfUrl,
   jsonUrl,
-  command,
   logs,
   buildLogHref,
   extraGateRows,
@@ -88,12 +87,6 @@ export function VerifiedReportBody({
   staticPageUrl?: string;
   pdfUrl?: string;
   jsonUrl?: string;
-  /**
-   * The command that ran, when the caller knows it. A published report carries
-   * it in `run.cmd` (newer engines); a trial can read it off its recipe even
-   * when the report predates that field.
-   */
-  command?: string;
   logs: ReportLog[];
   buildLogHref?: string;
   extraGateRows?: ExtraGateRow[];
@@ -133,20 +126,22 @@ export function VerifiedReportBody({
     t,
   );
   const certificate = certificateOf(report, level.label, t);
+  const installBlocked = blockedBeforeInstall(report);
   const data = summarizeDatasets(report, slug);
   const isStrhubRun = instrument === "curated";
   const permalink = history ? `${SITE}${rowHref(history.current)}` : undefined;
   const passedRun =
     report.verdict?.code === "runs" ||
     Boolean(report.gates?.runs && report.gates?.io);
-  const failureExcerpt = !report.gates.runs || !report.gates.installs
-    ? extractFailureExcerpt(logs, 14, report.gates)
-    : null;
   const actionableIssues = actionableDiagnostics(report.diagnostics, passedRun);
-  const hasCause = !!report.install_detail?.diagnostics?.length
+  const hasDiagnostics = !installBlocked && (
+    !!report.install_detail?.diagnostics?.length
     || actionableIssues.length > 0
     || !!report.author_known_issues?.length
-    || !!failureExcerpt;
+  );
+  const diagnosticsTitle = passedRun ? "verified.certificate.section.reported" : "verified.certificate.section.why";
+  const preferredLog = report.gates.installs === false ? "build" :
+    report.datasets?.some((dataset) => dataset.leg === "own" && dataset.available) ? "own" : "external";
   const next = sectionCounter();
 
   const datasetsLabel = data.provenance.length
@@ -214,34 +209,31 @@ export function VerifiedReportBody({
             </Section>
             <Section n={next()} title={t("verified.asIs.fullRun")}>
               <GatesLadder gates={report.gates} extraRows={extraGateRows} />
-              <LogLinks logs={logs} />
+              <RecordedTerminal logs={logs} preferredLeg={preferredLog} preflight={installBlocked} />
             </Section>
           </>
         ) : (
           <Section n={next()} title={t("verified.asIs.heading")}>
             <AsItIsOpening report={report}>{afterHeader}</AsItIsOpening>
-            <GatesLadder gates={report.gates} extraRows={extraGateRows} />
-            <LogLinks logs={logs} />
+            <GatesLadder
+              gates={report.gates}
+              extraRows={installBlocked ? undefined : extraGateRows}
+              blockedAt={installBlocked ? "installs" : undefined}
+            />
+            <RecordedTerminal logs={logs} preferredLeg={preferredLog} preflight={installBlocked} />
           </Section>
         )}
 
         {/* Why it stopped, or what errors it reported on the way. */}
-        {hasCause && (
-          <Section n={next()} title={t(passedRun ? "verified.certificate.section.reported" : "verified.certificate.section.why")}>
+        {hasDiagnostics && (
+          <Section n={next()} title={t(diagnosticsTitle)}>
             <BuildFailedCard report={report} buildLogHref={buildLogHref} />
             <AutoDiagnostics
               diagnostics={report.diagnostics}
               hasStrhubFixture={data.hasStrhubFixture}
               passedRun={passedRun}
             />
-            {failureExcerpt && <FailureExcerptCard excerpt={failureExcerpt} />}
             <AuthorKnownIssues items={report.author_known_issues} />
-          </Section>
-        )}
-
-        {(command ?? report.run?.cmd) && (
-          <Section n={next()} title={t("verified.certificate.section.command")}>
-            <RunCommandCard cmd={command ?? report.run?.cmd} />
           </Section>
         )}
 
@@ -262,9 +254,11 @@ export function VerifiedReportBody({
           </Section>
         )}
 
-        <Section n={next()} title={t("verified.data.heading")}>
-          <VerificationData provenance={data.provenance} hasStrhubFixture={data.hasStrhubFixture} />
-        </Section>
+        {!installBlocked && (
+          <Section n={next()} title={t("verified.data.heading")}>
+            <VerificationData provenance={data.provenance} hasStrhubFixture={data.hasStrhubFixture} />
+          </Section>
+        )}
 
         {report.datasets && report.datasets.length > 0 && report.datasets.some((leg) => leg.fixture_source !== "strhub") && (
           <Section n={next()} title={t("verified.matrix.heading")}>
@@ -273,8 +267,8 @@ export function VerifiedReportBody({
         )}
 
         <Section n={next()} title={t("verified.certificate.section.metadata")}>
-          <SourceCard report={report} />
-          {afterSource}
+          <SourceCard report={report} installBlocked={installBlocked} />
+          {!installBlocked && afterSource}
         </Section>
 
         {history && (
@@ -295,7 +289,7 @@ export function VerifiedReportBody({
           </Section>
         )}
 
-        {!!localizedNeeded?.length && (
+        {!installBlocked && !!localizedNeeded?.length && (
           <Section n={next()} title={t("verified.needed.heading")}>
             <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={localizedNeeded} />
           </Section>
@@ -314,7 +308,7 @@ export function VerifiedReportBody({
         )}
 
         <Section n={next()} title={t("verified.certificate.section.scope")}>
-          <WhatWasVerified />
+          {!installBlocked && <WhatWasVerified />}
           <BoxedList lead={t("verified.certificate.text.scopeExec")} items={certificate.limitations} />
           <p className="mt-3 text-xs text-muted-foreground">{certificate.scope.disclaimer}</p>
         </Section>

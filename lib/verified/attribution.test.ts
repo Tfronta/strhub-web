@@ -6,18 +6,6 @@ import {
   versionFromRef,
   type SubmissionInput,
 } from "./submission";
-import { buildManifestObject } from "./manifest";
-
-/**
- * Who submitted a tool, from the form to the manifest.
- *
- * The engine's report attributes the command, the environment and the regions
- * BED to whoever the manifest says submitted them. Before this field existed
- * there was nothing to say, and the report fell back to the repository's owner —
- * crediting AnJingwd with a regions file STRhub had written. So the rules worth
- * pinning are: a new submission cannot leave the question unanswered, an old one
- * cannot be answered on its author's behalf, and neither may guess.
- */
 const VALID: SubmissionInput = {
   tool: { name: "STRsearch", version: "c70179b", maintainer: "AnJingwd" },
   submitter: { role: "third_party" },
@@ -32,18 +20,8 @@ const VALID: SubmissionInput = {
   os: ["ubuntu-22.04"],
 };
 
-type ManifestShape = {
-  submission?: { by?: string };
-  tool: { maintainer?: string };
-};
-
-function manifest(sub: SubmissionInput): ManifestShape {
-  const parsed = submissionSchema.parse(sub);
-  return buildManifestObject(parsed, "strsearch-c70179b") as ManifestShape;
-}
-
-describe("submitter attribution", () => {
-  it("requires an answer from a new submission", () => {
+describe("historical submitter attribution", () => {
+  it("requires a role in the final submission schema", () => {
     const { submitter, ...withoutRole } = VALID;
     expect(submitter).toBeDefined();
     expect(submissionSchema.safeParse(withoutRole).success).toBe(false);
@@ -57,28 +35,9 @@ describe("submitter attribution", () => {
     expect(parsed.success).toBe(false);
   });
 
-  it("carries the answer into the manifest, apart from the maintainer", () => {
-    const third = manifest(VALID);
-    expect(third.submission).toEqual({ by: "third_party" });
-    // The maintainer is still named: a reader needs to know whose software this
-    // is. What changes is that the manifest no longer implies they asked for it.
-    expect(third.tool.maintainer).toBe("AnJingwd");
-
-    const own = manifest({ ...VALID, submitter: { role: "maintainer" } });
-    expect(own.submission).toEqual({ by: "maintainer" });
-  });
-
-  it("approves a queued payload from before the question existed", () => {
+  it("reads a queued payload from before the question existed without assigning a role", () => {
     const { submitter: _omitted, ...legacy } = VALID;
-    const parsed = queuedSubmissionSchema.safeParse(legacy);
-    expect(parsed.success).toBe(true);
-    // And says nothing rather than guessing: an omitted line leaves the report
-    // to name nobody, where a default would restate the original mistake.
-    const built = buildManifestObject(
-      queuedSubmissionSchema.parse(legacy),
-      "strsearch-c70179b",
-    ) as ManifestShape;
-    expect(built.submission).toBeUndefined();
+    expect(queuedSubmissionSchema.parse(legacy).submitter).toBeUndefined();
   });
 });
 
@@ -113,13 +72,5 @@ describe("kit variants", () => {
     // A stray hyphen would land in a permanent URL.
     expect(deriveSlug("STRsearch", "c70179b", "illumina-bam-hg38", "   "))
       .toBe(deriveSlug("STRsearch", "c70179b", "illumina-bam-hg38"));
-  });
-
-  it("carries the variant into the manifest, not only into the slug", () => {
-    const built = manifest({
-      ...VALID,
-      tool: { ...VALID.tool, variant: "ForenSeq v1.27" },
-    }) as { tool: { variant?: string } };
-    expect(built.tool.variant).toBe("ForenSeq v1.27");
   });
 });

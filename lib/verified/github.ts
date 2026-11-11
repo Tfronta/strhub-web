@@ -1,11 +1,8 @@
 /**
  * GitHub App client for the STRhub Verified engine.
  *
- * The web acts as a central App that owns the commits + dispatches with its own
- * credentials (the clean model from §10: no fork-token gymnastics). It can:
- *   - commit manifest.yml + Dockerfile to tools/<slug>/ in the engine repo
- *   - dispatch the verify workflow
- *   - list runs and correlate them back to a dispatch via a unique id
+ * The app dispatches private trials, reads their artifacts and manages records
+ * from the retired submission queue.
  *
  * Configuration (server-side env only — never exposed to the client):
  *   GITHUB_APP_ID                 numeric App id
@@ -288,18 +285,32 @@ export async function deleteFile(path: string, message: string): Promise<void> {
   );
 }
 
-/** Dispatch the verify workflow with the given inputs. */
-export async function dispatchWorkflow(
-  inputs: Record<string, string>
-): Promise<void> {
-  if (!(inputs.mode === "trial" && inputs.publish === "false")) {
-    assertWritable("dispatch a verification run");
-  }
+/** The web form can only dispatch private trials. */
+export async function dispatchTrial({
+  tool, repo, ref, refLabel, dispatchId,
+}: {
+  tool: string;
+  repo: string;
+  ref: string;
+  refLabel: string;
+  dispatchId: string;
+}): Promise<void> {
   await gh(
     `/repos/${ENGINE_REPO}/actions/workflows/${WORKFLOW_FILE}/dispatches`,
     {
       method: "POST",
-      body: JSON.stringify({ ref: ENGINE_BRANCH, inputs }),
+      body: JSON.stringify({
+        ref: ENGINE_BRANCH,
+        inputs: {
+          tool,
+          repo,
+          ref,
+          ...(refLabel ? { ref_label: refLabel } : {}),
+          dispatch_id: dispatchId,
+          mode: "trial",
+          publish: "false",
+        },
+      }),
     }
   );
 }

@@ -6,7 +6,6 @@ import { useLanguage } from "@/contexts/language-context";
 import { useHeaded } from "./certificate";
 import { cn } from "@/lib/utils";
 import type { VerifiedReport, VerifiedDiagnostic, VerifiedReadmeCheck } from "@/types/verified";
-import type { FailureExcerpt } from "@/lib/verified/failure-excerpt";
 import { summarizeErrors, externalLegNoteKeys, installFaultKey } from "@/lib/verified/diagnostics";
 import { isManualEligible, reasonI18nKey } from "@/lib/verified/manual";
 
@@ -439,30 +438,5 @@ export function EvidenceList({ evidence }: { evidence: VerifiedReport["evidence"
         })}
       </ul>
     </>
-  );
-}
-
-export function FailureExcerptCard({
-  excerpt,
-}: {
-  excerpt: FailureExcerpt | null | undefined;
-}) {
-  const { t } = useLanguage();
-  if (!excerpt) return null;
-  return (
-    <div className="mt-4 rounded-lg border border-slate-300 bg-slate-950 p-4 text-slate-100 shadow-sm dark:border-slate-800">
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-        {t("verified.trial.errorExcerptTitle")}
-      </p>
-      <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs leading-relaxed text-slate-200">
-        <code>{excerpt.text}</code>
-      </pre>
-      {excerpt.hintKey && (
-        <p className="mt-3 border-t border-slate-800 pt-2 text-xs text-amber-300">
-          <span className="font-semibold text-slate-200">{t("verified.trial.probableCauseLabel")}:</span>{" "}
-          {t(excerpt.hintKey)}
-        </p>
-      )}
-    </div>
   );
 }

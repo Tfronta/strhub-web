@@ -44,6 +44,7 @@ export const VERDICT_TONE: Record<VerifiedVerdictCode, string> = {
 };
 
 export interface BadgeInput {
+  record_type?: "editorial_review";
   level: VerifiedLevel;
   verdict?: string | null;
   errors_reported?: boolean;
@@ -54,6 +55,7 @@ export interface BadgeInput {
 type Translate = (key: string, params?: Record<string, string>) => string;
 
 export function badgeFor(run: BadgeInput, t: Translate): BadgeDisplay {
+  if (run.record_type === "editorial_review") return { label: t("verified.evidenceReview.title"), tone: "grey" };
   if (run.instrument === "curated") return { label: t("verified.headline.notDocumented"), tone: "grey" };
   if (run.verdict === "undetermined") return { label: t("verified.headline.undetermined"), tone: "grey" };
   if (run.verdict === "out_of_scope") return { label: t("verified.headline.outOfScope"), tone: "grey" };

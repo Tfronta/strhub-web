@@ -1,39 +1,8 @@
-/**
- * Lightweight persistence for the Verified submission flow: rate-limiting,
- * admin approval of new repos, and dispatch→run correlation records.
- *
- * Uses a JSON file with a /tmp fallback (same pattern as the admin content API),
- * so it works on read-only deploys. This is intentionally simple; a real
- * deployment would back it with a database.
- */
-import crypto from "crypto";
+/** Historical Verified submissions and dispatch-to-run correlation. */
 import fs from "fs/promises";
 import path from "path";
 import os from "os";
 import { putFile, getFileContent, listDirectory, deleteFile, GitHubConfigError, GitHubApiError } from "./github";
-import { clientHashSalt } from "@/lib/rate-limit";
-
-/**
- * Per-deployment salt for client identifiers. IPs are low-entropy (a bare SHA-256
- * of one is trivially reversed by enumeration), so the hash is only meaningful
- * with a secret salt. `clientHashSalt` prefers RATE_LIMIT_SALT, then a value
- * derived from JWT_SECRET (stable across instances), and only then a per-process
- * random value, so the digest never degrades into a reversible one.
- */
-const CLIENT_SALT = clientHashSalt();
-
-/**
- * Identify a client for rate limiting WITHOUT retaining their IP address.
- *
- * Records reach two public GitHub repositories: `data/verified-store.json` here,
- * and `pending/<slug>.json` in the engine repo. An IP is personal data, and rate
- * limiting only ever compares one client to another, so a salted digest does the
- * whole job while leaving nothing to leak. The raw address stays in memory for
- * the request and is passed only to the admin notification email.
- */
-export function hashClient(ip: string): string {
-  return crypto.createHash("sha256").update(`${CLIENT_SALT}:${ip}`).digest("hex").slice(0, 32);
-}
 
 export interface SubmissionRecord {
   slug: string;
@@ -41,7 +10,7 @@ export interface SubmissionRecord {
   ref: string;
   dispatchId: string;
   createdAt: string;
-  /** Salted digest of the submitter's IP (see hashClient). Never the address. */
+  /** Historical salted digest of the submitter's IP. */
   clientHash: string;
   status: "dispatched" | "approved-pending" | "rejected";
   toolName?: string;
@@ -63,29 +32,9 @@ function candidates(): string[] {
   ];
 }
 
-/**
- * Canonical location of the store: a file in the ENGINE repo.
- *
- * The filesystem alone cannot hold this. On a serverless deploy `process.cwd()`
- * is read-only, so every write fell through to `os.tmpdir()`, which is per
- * instance and wiped on cold start. That silently broke the two things the store
- * exists for: rate-limit counters reset to zero whenever a new instance served
- * the request, and an approved repository could revert to "pending", trapping a
- * legitimate author in a loop with no way to make progress.
- *
- * The engine repo is already the durable side of this system — pending
- * submissions live there for exactly this reason — and the submit path already
- * commits manifest.yml, Dockerfile and regions.bed per submission, so one more
- * small file adds no meaningful traffic.
- */
+/** Durable location of the historical submission records. */
 const STATE_PATH = "state/verified-store.json";
 
-/**
- * Very short-lived in-process cache. A single request calls load() three times
- * (rate limit, approval check, record); without this each would be a separate
- * API round-trip. Two seconds is far below any human retry interval, so it never
- * masks a write from another instance for a user-visible length of time.
- */
 let cache: { at: number; store: Store } | null = null;
 const CACHE_MS = 2000;
 
@@ -123,9 +72,6 @@ async function load(): Promise<Store> {
     // route degrades instead of failing.
   }
 
-  // No state file yet (first run after this change) — seed from the local copy,
-  // which still carries the approvals granted before the move. The next save()
-  // migrates them, so no manual step is needed.
   store ??= (await loadLocal()) ?? { ...EMPTY };
 
   cache = { at: Date.now(), store };
@@ -174,134 +120,10 @@ export function normalizeRepo(repo: string): string {
     .replace(/\/$/, "");
 }
 
-export async function isRepoApproved(repo: string): Promise<boolean> {
-  const store = await load();
-  return store.approvedRepos.includes(normalizeRepo(repo));
-}
-
-export async function approveRepo(repo: string): Promise<void> {
-  const store = await load();
-  const key = normalizeRepo(repo);
-  if (!store.approvedRepos.includes(key)) {
-    store.approvedRepos.push(key);
-    await save(store);
-  }
-}
-
-/** True when this repo has been verified at least once before. */
-export async function hasPriorSubmission(repo: string): Promise<boolean> {
-  const store = await load();
-  const key = normalizeRepo(repo);
-  return store.submissions.some(
-    (s) => normalizeRepo(s.repo) === key && s.status === "dispatched"
-  );
-}
-
-const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour
-const RATE_MAX_PER_IP = 5;
-const RATE_MAX_PER_REPO = 3;
-
-export interface RateResult {
-  ok: boolean;
-  reason?: string;
-  /** Seconds until the next slot frees. Present whenever `ok` is false. */
-  retryAfterSeconds?: number;
-}
-
-/**
- * Milliseconds until this key drops below its limit.
- *
- * The window is rolling, so the wait is not "an hour": it ends when enough of
- * the counted submissions age out. With `count` in the window and a ceiling of
- * `max`, one more than the excess has to leave, and the last of those to go is
- * the one at index `count - max` once they are sorted oldest first.
- */
-export function msUntilSlotFrees(
-  timestamps: number[],
-  max: number,
-  now: number,
-  windowMs: number = RATE_WINDOW_MS,
-): number {
-  const sorted = [...timestamps].sort((a, b) => a - b);
-  const blocking = sorted[sorted.length - max];
-  return Math.max(0, blocking + windowMs - now);
-}
-
-/** "in under a minute" / "in about 7 minutes" — enough to decide whether to wait. */
-export function humanWait(ms: number): string {
-  const minutes = Math.ceil(ms / 60_000);
-  if (minutes <= 1) return "in under a minute";
-  const hours = Math.round(minutes / 60);
-  if (minutes < 90) return `in about ${minutes} minutes`;
-  return `in about ${hours} hour${hours === 1 ? "" : "s"}`;
-}
-
-export async function checkRateLimit(
-  clientHash: string,
-  repo: string
-): Promise<RateResult> {
-  const store = await load();
-  const now = Date.now();
-  const since = now - RATE_WINDOW_MS;
-  const recent = store.submissions
-    .map((s) => ({ ...s, at: new Date(s.createdAt).getTime() }))
-    .filter((s) => s.at >= since);
-
-  // Both branches used to end in "Try later", which tells someone to retry
-  // without saying when — so they retry blind, get refused again, and the only
-  // way to find the answer is to read this file. The timestamps needed to
-  // compute it are already in hand.
-  const byIp = recent.filter((s) => s.clientHash === clientHash);
-  if (byIp.length >= RATE_MAX_PER_IP) {
-    const ms = msUntilSlotFrees(byIp.map((s) => s.at), RATE_MAX_PER_IP, now);
-    return {
-      ok: false,
-      reason: `Too many submissions from this client. Try again ${humanWait(ms)}.`,
-      retryAfterSeconds: Math.ceil(ms / 1000),
-    };
-  }
-
-  const repoKey = normalizeRepo(repo);
-  const byRepo = recent.filter((s) => normalizeRepo(s.repo) === repoKey);
-  if (byRepo.length >= RATE_MAX_PER_REPO) {
-    const ms = msUntilSlotFrees(byRepo.map((s) => s.at), RATE_MAX_PER_REPO, now);
-    return {
-      ok: false,
-      reason: `Too many submissions for this repository. Try again ${humanWait(ms)}.`,
-      retryAfterSeconds: Math.ceil(ms / 1000),
-    };
-  }
-
-  return { ok: true };
-}
-
 const PENDING_DIR = "pending";
 
 function pendingPath(slug: string): string {
   return `${PENDING_DIR}/${slug}.json`;
-}
-
-export async function recordSubmission(rec: SubmissionRecord): Promise<void> {
-  // Pending submissions are stored in the engine repo so they survive serverless restarts.
-  if (rec.status === "approved-pending") {
-    try {
-      await putFile(
-        pendingPath(rec.slug),
-        JSON.stringify(rec, null, 2),
-        `verified: pending submission ${rec.slug}`
-      );
-    } catch (e) {
-      if (e instanceof GitHubConfigError || e instanceof GitHubApiError) {
-        console.error("store: failed to write pending to GitHub:", e.message);
-      } else {
-        throw e;
-      }
-    }
-  }
-  const store = await load();
-  store.submissions.unshift(rec);
-  store.submissions = store.submissions.slice(0, 500);
-  await save(store);
 }
 
 export async function getByDispatchId(
@@ -341,50 +163,19 @@ export async function getRecentSubmissions(n = 20): Promise<SubmissionRecord[]> 
   return store.submissions.slice(0, n);
 }
 
-export async function getPendingBySlug(
-  slug: string
-): Promise<SubmissionRecord | undefined> {
+export async function rejectSubmission(slug: string): Promise<boolean> {
   try {
-    const content = await getFileContent(pendingPath(slug));
-    if (content) return JSON.parse(content) as SubmissionRecord;
+    await deleteFile(pendingPath(slug), `verified: rejected ${slug}`);
   } catch (e) {
     if (!(e instanceof GitHubConfigError) && !(e instanceof GitHubApiError)) throw e;
   }
   const store = await load();
-  return store.submissions.find(
+  const rec = store.submissions.find(
     (s) => s.slug === slug && s.status === "approved-pending"
   );
-}
-
-export async function updateSubmissionStatus(
-  slug: string,
-  fromStatus: SubmissionRecord["status"],
-  toStatus: SubmissionRecord["status"],
-  extra?: Partial<SubmissionRecord>
-): Promise<boolean> {
-  // Remove from GitHub pending dir when leaving approved-pending.
-  if (fromStatus === "approved-pending") {
-    try {
-      await deleteFile(
-        pendingPath(slug),
-        `verified: ${toStatus === "dispatched" ? "approved" : "rejected"} ${slug}`
-      );
-    } catch (e) {
-      if (!(e instanceof GitHubConfigError) && !(e instanceof GitHubApiError)) throw e;
-    }
-  }
-  const store = await load();
-  const rec = store.submissions.find(
-    (s) => s.slug === slug && s.status === fromStatus
-  );
   if (rec) {
-    rec.status = toStatus;
-    if (extra) Object.assign(rec, extra);
+    rec.status = "rejected";
     await save(store);
   }
   return true;
-}
-
-export async function rejectSubmission(slug: string): Promise<boolean> {
-  return updateSubmissionStatus(slug, "approved-pending", "rejected");
 }

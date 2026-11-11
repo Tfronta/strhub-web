@@ -1,12 +1,5 @@
-import type { Metadata } from "next";
-import { VerifiedSubmitForm } from "@/components/verified/verified-submit-form";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: { absolute: "Write the recipe yourself | STRhub Verified" },
-  description:
-    "Self-service certification that your forensic STR tool installs and runs end-to-end on its public source at a pinned commit. STRhub stores no source code.",
-};
-
-export default function VerifiedSubmitPage() {
-  return <VerifiedSubmitForm />;
+export default function RetiredAdvancedSubmitPage() {
+  redirect("/verified/submit");
 }

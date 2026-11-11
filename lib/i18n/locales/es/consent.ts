@@ -4,7 +4,7 @@ consent: {
   body: "Usamos cookies para saber qué partes de STRhub se usan más y así mejorarlo.",
   privacyLink: "Más información",
   accept: "Aceptar",
-  decline: "Rechazar",
+  decline: "Solo las necesarias",
   close: "Cerrar",
   current: {
     granted: "La analítica está activada.",
@@ -54,7 +54,7 @@ privacy: {
   },
   rights: {
     heading: "Tu elección",
-    body: "Retirar el consentimiento es tan fácil como darlo: abrí Preferencias de cookies y rechazá. En la Unión Europea también podés acudir a tu autoridad de protección de datos.",
+    body: "Retirar el consentimiento es tan fácil como darlo: abrí Preferencias de cookies y elegí Solo las necesarias. En la Unión Europea también podés acudir a tu autoridad de protección de datos.",
   },
 },
 } as const

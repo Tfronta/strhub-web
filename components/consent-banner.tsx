@@ -104,10 +104,11 @@ export function ConsentBanner() {
           </div>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-2">
-          <Button variant="outline" size="sm" onClick={() => choose("denied")}>
+          {/* Same width and weight: declining is as easy as accepting. */}
+          <Button variant="outline" size="sm" className="px-2 text-[13px] min-[360px]:text-sm" onClick={() => choose("denied")}>
             {t("consent.decline")}
           </Button>
-          <Button size="sm" onClick={() => choose("granted")}>
+          <Button size="sm" className="px-2 text-[13px] min-[360px]:text-sm" onClick={() => choose("granted")}>
             {t("consent.accept")}
           </Button>
         </div>

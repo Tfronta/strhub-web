@@ -4,7 +4,7 @@ consent: {
   body: "We use cookies to see which parts of STRhub are used most, so we can improve it.",
   privacyLink: "Learn more",
   accept: "Accept",
-  decline: "Decline",
+  decline: "Only necessary",
   close: "Close",
   current: {
     granted: "Analytics is on.",
@@ -54,7 +54,7 @@ privacy: {
   },
   rights: {
     heading: "Your choice",
-    body: "Withdrawing consent is as easy as giving it: open Cookie preferences and decline. In the European Union you can also contact your data protection authority.",
+    body: "Withdrawing consent is as easy as giving it: open Cookie preferences and choose Only necessary. In the European Union you can also contact your data protection authority.",
   },
 },
 } as const

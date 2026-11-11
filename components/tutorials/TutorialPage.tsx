@@ -17,10 +17,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
+import { useTrackEvent } from "@/hooks/use-track-event";
 import { youtubeEmbedUrl, type Tutorial, type TutorialError } from "@/lib/tutorials";
 import { cn } from "@/lib/utils";
 import { StuckHere } from "./StuckHere";
-import { TerminalBlock } from "./TerminalBlock";
+import { TerminalBlock, TutorialIdContext } from "./TerminalBlock";
 import { InlineCode, TutorialLine, TutorialMarkdown } from "./TutorialMarkdown";
 
 const NUMBER_LOCALE: Record<string, string> = { en: "en-GB", es: "es", pt: "pt-BR" };
@@ -99,8 +100,19 @@ function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
  * on the click: the reader sees our cover rather than YouTube's thumbnail,
  * and nothing is fetched from YouTube until they ask for the video.
  */
-function Video({ id, title, poster }: { id: string | null; title: string; poster?: string }) {
+function Video({
+  id,
+  title,
+  poster,
+  tutorialId,
+}: {
+  id: string | null;
+  title: string;
+  poster?: string;
+  tutorialId: string;
+}) {
   const { language, t } = useLanguage();
+  const track = useTrackEvent();
   const [playing, setPlaying] = useState(false);
   if (!id) {
     return (
@@ -114,7 +126,10 @@ function Video({ id, title, poster }: { id: string | null; title: string; poster
     return (
       <button
         type="button"
-        onClick={() => setPlaying(true)}
+        onClick={() => {
+          setPlaying(true);
+          track("tutorial_video_play", { tutorial_id: tutorialId, video_id: id });
+        }}
         aria-label={`${t("tools.tutorialPage.playVideo")}: ${title}`}
         className="group relative block aspect-video w-full overflow-hidden rounded-xl border bg-muted outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
       >
@@ -156,6 +171,7 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
   const errorTitle = tp("errorTitle");
 
   return (
+    <TutorialIdContext.Provider value={tutorial.id}>
     <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <nav aria-label="breadcrumb" className="mb-4 text-sm text-muted-foreground">
@@ -223,7 +239,12 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
         </header>
 
         <section className="mt-6 space-y-2">
-          <Video id={tutorial.youtube} title={tp("videoTitle", { tool: tutorial.tool })} poster={poster} />
+          <Video
+            id={tutorial.youtube}
+            title={tp("videoTitle", { tool: tutorial.tool })}
+            poster={poster}
+            tutorialId={tutorial.id}
+          />
           {tutorial.youtube && <p className="text-xs text-muted-foreground">{tp("subtitles")}</p>}
         </section>
 
@@ -231,11 +252,12 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
           <h2 className="text-2xl font-semibold tracking-tight">{tp("beforeStart")}</h2>
           <TutorialMarkdown text={text.get_started} />
 
-          {text.install.map((inst) => (
+          {text.install.map((inst, i) => (
             <div key={inst.os} className="space-y-2">
               <h3 className="text-lg font-semibold">{tp("installHeading", { os: inst.os })}</h3>
               <TutorialMarkdown text={inst.note} className="text-sm" />
-              <TerminalBlock code={inst.commands.trimEnd()} />
+              {/* By position: the system names are translated. */}
+              <TerminalBlock code={inst.commands.trimEnd()} block={`install-${i + 1}`} />
             </div>
           ))}
 
@@ -252,7 +274,7 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
                 </a>
               </Button>
             )}
-            <TerminalBlock code={text.setup.trimEnd()} />
+            <TerminalBlock code={text.setup.trimEnd()} block="setup" />
             <TutorialMarkdown text={text.setup_explain} className="text-sm" />
             {(text.install_errors ?? []).map((e) => (
               <ErrorBox key={e.error} error={e} title={errorTitle} />
@@ -276,7 +298,7 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
                 {practice.label}
               </h3>
               <TutorialMarkdown text={practice.intro} />
-              <TerminalBlock code={practice.command} />
+              <TerminalBlock code={practice.command} block="practice-data" />
               <Button asChild variant="outline" size="sm">
                 <a href={practice.url} target="_blank" rel="noopener noreferrer">
                   <Github className="h-4 w-4" aria-hidden />
@@ -315,7 +337,7 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
                 </span>
               </h3>
               <TutorialMarkdown text={step.explain} />
-              <TerminalBlock code={step.command} />
+              <TerminalBlock code={step.command} block={step.id} />
               {!!step.parameters?.length && (
                 <Table
                   head={[tp("option"), tp("inExample"), tp("withYourData")]}
@@ -346,7 +368,7 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
               {step.extra && (
                 <div className="space-y-3 border-t pt-3">
                   <TutorialMarkdown text={step.extra.intro} />
-                  <TerminalBlock code={step.extra.command} />
+                  <TerminalBlock code={step.extra.command} block={`${step.id}-extra`} />
                   {step.extra.output && (
                     <Disclosure summary={tp("output")}>
                       <TerminalBlock code={step.extra.output} variant="output" />
@@ -374,5 +396,6 @@ export function TutorialPage({ tutorial, poster }: { tutorial: Tutorial; poster?
         </section>
       </div>
     </div>
+    </TutorialIdContext.Provider>
   );
 }

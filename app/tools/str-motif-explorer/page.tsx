@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Grid3x3, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -24,6 +24,7 @@ import {
 import { MotifStructure } from "./components/MotifStructure";
 import { HARMONIZED_NOMENCLATURE } from "@/lib/nomenclatureHarmonization";
 import { InfoTip } from "@/components/InfoTip";
+import { useTrackEvent } from "@/hooks/use-track-event";
 
 // Read a nested string from the active locale, falling back to English.
 function useStrings() {
@@ -56,16 +57,31 @@ const GROUP_LABEL: Record<string, string> = {
 export default function MotifExplorerPage() {
   const t = useStrings();
   const [selectedMarkerId, setSelectedMarkerId] = useState<string>("CSF1PO");
+  const track = useTrackEvent();
+  const selectMarker = (id: string, source: "selector" | "link") => {
+    setSelectedMarkerId(id);
+    track("motif_explorer_marker_select", {
+      marker: id,
+      marker_class: markerClass(id),
+      source,
+    });
+  };
 
   // Marker pages link here with ?marker=<name>. Read it after mount rather
   // than with useSearchParams, which would turn this statically rendered page
   // into a client-only one.
+  const arrivalRead = useRef(false);
   useEffect(() => {
+    // Once, even when development mounts the page twice.
+    if (arrivalRead.current) return;
+    arrivalRead.current = true;
     const requested = new URLSearchParams(window.location.search).get("marker");
     if (!requested) return;
     const strip = (name: string) => name.toLowerCase().replace(/[\s_-]/g, "");
     const match = DISPLAY_MARKERS.find((m) => strip(m) === strip(requested));
-    if (match) setSelectedMarkerId(match);
+    if (match) selectMarker(match, "link");
+    // Only on arrival: later choices come from the selector.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const marker = FSSG_MARKERS[selectedMarkerId];
@@ -152,7 +168,7 @@ export default function MotifExplorerPage() {
                   </Label>
                   <Select
                     value={selectedMarkerId}
-                    onValueChange={setSelectedMarkerId}
+                    onValueChange={(id) => selectMarker(id, "selector")}
                   >
                     <SelectTrigger className="h-11 text-base">
                       <SelectValue />

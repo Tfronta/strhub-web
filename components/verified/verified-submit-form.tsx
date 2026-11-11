@@ -22,6 +22,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PageTitle } from "@/components/page-title";
 import { useLanguage } from "@/contexts/language-context";
+import { useTrackEvent } from "@/hooks/use-track-event";
 import { detectRegionsFormat, countRegions } from "@/lib/verified/regions-format";
 import {
   REGIONS_LIBRARY_FORMATS,
@@ -571,6 +572,7 @@ async function downloadPdfForSlug(reportSlug: string) {
 
 export function VerifiedSubmitForm() {
   const { t } = useLanguage();
+  const track = useTrackEvent();
 
   const [phase, setPhase] = useState<Phase>("form");
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -1484,6 +1486,7 @@ export function VerifiedSubmitForm() {
       const data = await res.json();
 
       if (res.status === 202 || data.status === "pending-approval") {
+        track("verified_submit", { form: "advanced", outcome: "pending_approval" });
         setSlug(data.slug ?? null);
         setPendingMessage(data.message ?? t("verified.submit.statePendingApproval"));
         setPhase("pending");
@@ -1495,6 +1498,7 @@ export function VerifiedSubmitForm() {
         return;
       }
 
+      track("verified_submit", { form: "advanced", outcome: "dispatched" });
       setSlug(data.slug ?? null);
       setDispatchId(data.dispatchId ?? null);
       setPhase("tracking");

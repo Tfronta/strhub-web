@@ -146,6 +146,9 @@ tools: {
       2: "Local realignment of reads around STR loci",
       3: "Joint multi-sample genotyping for population analysis",
     },
+    buttons: {
+      ui: "HipSTR-UI (graphical interface)",
+    },
   },
   longtr: {
     title: "LongTR",

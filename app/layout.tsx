@@ -156,7 +156,12 @@ export default function RootLayout({
   return (
     <html lang={htmlLanguage} suppressHydrationWarning>
       <body className={`font-sans ${inter.variable}`}>
-        <GoogleAnalytics gaId="G-07HDMGRYM4" />
+        {/* In development, events go to GA4 DebugView, where they can be checked
+            and later excluded with a "Developer traffic" data filter. */}
+        <GoogleAnalytics
+          gaId="G-07HDMGRYM4"
+          debugMode={process.env.NODE_ENV === "development"}
+        />
         <JsonLd data={SITE_JSON_LD} />
         <ThemeProvider>
           <LanguageProvider initialLanguage={initialLanguage}>

@@ -1,31 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
+import { useTrackEvent } from "@/hooks/use-track-event";
 import { cn } from "@/lib/utils";
+
+/** The tutorial a command belongs to, so a copy can be told apart in analytics. */
+export const TutorialIdContext = createContext<string | null>(null);
 
 /**
  * What the student types: dark like their terminal, with a copy button.
  * `variant="output"` is what the terminal answers: light, no copy button,
  * so the two never look alike.
+ * `block` names the command in analytics (a step id, "setup"...).
  */
 export function TerminalBlock({
   code,
   variant = "command",
   className,
+  block,
 }: {
   code: string;
   variant?: "command" | "output";
   className?: string;
+  block?: string;
 }) {
   const { t } = useLanguage();
+  const track = useTrackEvent();
+  const tutorialId = useContext(TutorialIdContext);
   const [copied, setCopied] = useState(false);
   const isCommand = variant === "command";
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(code);
+      track("tutorial_copy_command", { tutorial_id: tutorialId, tutorial_block: block });
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch (err) {

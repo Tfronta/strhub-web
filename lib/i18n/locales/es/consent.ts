@@ -1,9 +1,8 @@
 export default {
 consent: {
   label: "Consentimiento de analítica",
-  title: "Ayudanos a mejorar STRhub",
-  body: "Si aceptás, Google Analytics guarda cookies para que veamos qué herramientas y tutoriales sirven más. Sin publicidad y sin venta de datos.",
-  privacyLink: "Privacidad",
+  body: "Usamos cookies para saber qué partes de STRhub se usan más y así mejorarlo.",
+  privacyLink: "Más información",
   accept: "Aceptar",
   decline: "Rechazar",
   close: "Cerrar",

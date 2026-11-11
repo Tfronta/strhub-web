@@ -1,9 +1,8 @@
 export default {
 consent: {
   label: "Analytics consent",
-  title: "Help us improve STRhub",
-  body: "With your OK, Google Analytics sets cookies so we can see which tools and tutorials help most. No ads, and no data sold.",
-  privacyLink: "Privacy",
+  body: "We use cookies to see which parts of STRhub are used most, so we can improve it.",
+  privacyLink: "Learn more",
   accept: "Accept",
   decline: "Decline",
   close: "Close",

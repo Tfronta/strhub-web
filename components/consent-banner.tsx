@@ -21,7 +21,7 @@ export function ConsentBanner() {
   const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  const titleId = useId();
+  const textId = useId();
 
   useEffect(() => {
     if (!bannerOpen) {
@@ -60,7 +60,8 @@ export function ConsentBanner() {
       <div
         ref={cardRef}
         role="region"
-        aria-labelledby={titleId}
+        aria-label={t("consent.label")}
+        aria-describedby={textId}
         tabIndex={-1}
         className="relative rounded-2xl border border-border/80 bg-background p-4 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.25)] outline-none sm:p-5 dark:shadow-[0_10px_40px_-12px_rgba(0,0,0,0.8)]"
       >
@@ -78,15 +79,12 @@ export function ConsentBanner() {
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <BarChart3 className="h-4 w-4" aria-hidden />
           </span>
-          <div className={cn("min-w-0", reopened && "pr-6")}>
-            <p id={titleId} className="text-sm font-semibold leading-snug">
-              {t("consent.title")}
-            </p>
-            <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+          <div className={cn("min-w-0 pt-px", reopened && "pr-6")}>
+            <p id={textId} className="text-sm leading-relaxed text-foreground/85">
               {t("consent.body")}{" "}
               <Link
                 href="/privacy"
-                className="font-medium text-foreground/80 underline decoration-foreground/25 underline-offset-2 transition-colors hover:text-foreground hover:decoration-foreground/60"
+                className="whitespace-nowrap font-medium text-primary underline-offset-2 hover:underline"
               >
                 {t("consent.privacyLink")}
               </Link>

@@ -4,7 +4,7 @@ import { VerifiedStart } from "@/components/verified/verified-start";
 export const metadata: Metadata = {
   title: { absolute: "Verify a tool | STRhub Verified" },
   description:
-    "Paste a public repository. STRhub works out how to install and run the tool, rehearses it in a clean environment, and publishes nothing until you say so.",
+    "Enter a public GitHub repository to check whether STRhub can run the documented procedure at a pinned commit. Results stay outside the public catalogue.",
 };
 
 export default function VerifiedSubmitPage({

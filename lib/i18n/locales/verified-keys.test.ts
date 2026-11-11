@@ -28,9 +28,4 @@ describe("verified translations", () => {
     expect(keys.pt.filter((k) => !keys.en.includes(k))).toEqual([]);
     expect(keys.en.filter((k) => !keys.pt.includes(k))).toEqual([]);
   });
-
-  it("includes the automatic-configuration keys", () => {
-    expect(keys.en).toContain("verified.submit.autoConfigTitle");
-    expect(keys.en).toContain("verified.submit.autoConfigGroup.compat");
-  });
 });

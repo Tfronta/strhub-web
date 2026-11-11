@@ -325,17 +325,12 @@ export function localizeReadmeGap(
 }
 
 export function localizeBlocker(
-  blocker: { code: string; what: string; self_fix_text?: string },
+  blocker: { code: string; what: string },
   t: Translate,
-): { what: string; selfFixText: string } {
+): string {
   const whatKey = `verified.engineText.blockers.${blocker.code}.what`;
-  const fixKey = `verified.engineText.blockers.${blocker.code}.selfFix`;
   const what = t(whatKey);
-  const fix = t(fixKey);
-  return {
-    what: what !== whatKey ? what : blocker.what,
-    selfFixText: fix !== fixKey ? fix : (blocker.self_fix_text ?? ""),
-  };
+  return what !== whatKey ? what : blocker.what;
 }
 
 function buildLocalizedConclusion(

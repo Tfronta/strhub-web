@@ -7,8 +7,7 @@
  * report a published attestation gets — summary, pinned commit, the data it
  * ran on, the ladder, the evidence — with what only a trial has slotted in:
  * the verdict a reader who does not program needs, what stopped it and what
- * to do about it, and the recipe that ran. An owner gets "Publish"; a
- * reviewer gets a link to share.
+ * to do about it, and the recorded environment.
  */
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -28,9 +27,8 @@ import {
 } from "@/lib/verified/certificate";
 import { step1For, type Step1Tone } from "@/lib/verified/step1";
 import { ReadmeTemplateAction } from "@/components/verified/report/verdict";
-import { ownerIssueUrl, prepareSelfFix } from "@/lib/verified/trial-next-steps";
+import { ownerIssueUrl } from "@/lib/verified/trial-next-steps";
 import { commandFromManifest } from "@/lib/verified/command";
-import { useRouter } from "next/navigation";
 import { VerifiedReportBody, type ReportLog, type ExtraGateRow } from "./report/verified-report-body";
 
 const POLL_MS = 8000;
@@ -47,11 +45,8 @@ const STEP1_BORDER: Record<Step1Tone, string> = {
 
 export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const { t } = useLanguage();
-  const router = useRouter();
   const [status, setStatus] = useState<TrialStatus | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [publishState, setPublishState] = useState<"idle" | "busy" | "done" | "error">("idle");
-  const [publishMsg, setPublishMsg] = useState<string>("");
   const [showDockerfile, setShowDockerfile] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
   const startedAt = useRef(Date.now());
@@ -86,30 +81,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
       if (timer) clearTimeout(timer);
     };
   }, [id, t]);
-
-  async function publish() {
-    setPublishState("busy");
-    try {
-      const res = await fetch("/api/verify/trial/publish", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-      });
-      const data = await res.json();
-      if (res.ok && data.ok) {
-        setPublishState("done");
-        setPublishMsg(t("verified.trial.published", { slug: data.slug }));
-      } else {
-        const key = `verified.trial.publishError.${data.error}`;
-        const msg = t(key);
-        setPublishState("error");
-        setPublishMsg(msg === key ? t("verified.trial.publishError.generic") : msg);
-      }
-    } catch {
-      setPublishState("error");
-      setPublishMsg(t("verified.trial.publishError.generic"));
-    }
-  }
 
   const report = status?.report ?? null;
   const verdict = report?.verdict ?? null;
@@ -211,39 +182,27 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
         </section>
       )}
 
-      {verdict.blockers && verdict.blockers.length > 0 && status?.recipe && (
+      {verdict.blockers && verdict.blockers.length > 0 && (
         <Card className="mt-6 border-amber-500/40 dark:border-amber-800">
           <CardHeader>
             <CardTitle className="text-base">{t("verified.trial.stoppedTitle")}</CardTitle>
-            <p className="text-xs text-muted-foreground">{t("verified.trial.stoppedHint")}</p>
           </CardHeader>
           <CardContent>
             <ol className="space-y-5">
               {verdict.blockers.map((b) => {
                 const issue = ownerIssueUrl(report, b, typeof window !== "undefined" ? window.location.href.split("?")[0] : "");
-                const loc = localizeBlocker(b, t);
                 return (
                   <li key={b.code} className="text-sm">
-                    <p className="font-medium">{loc.what}</p>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {b.self_fix && (
-                        <Button
-                          size="sm"
-                          onClick={() => router.push(prepareSelfFix(report, status.recipe!, b.self_fix!))}
-                          title={t("verified.trial.selfFixHint")}
-                        >
-                          {t("verified.trial.selfFix")}
-                        </Button>
-                      )}
-                      {issue && (
+                    <p className="font-medium">{localizeBlocker(b, t)}</p>
+                    {issue && (
+                      <div className="mt-2">
                         <Button asChild size="sm" variant="outline" title={t("verified.trial.askOwnerHint")}>
                           <a href={issue} target="_blank" rel="noopener noreferrer">
                             {t("verified.trial.askOwner")} <ExternalLink className="ml-1 h-3.5 w-3.5" />
                           </a>
                         </Button>
-                      )}
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">{loc.selfFixText}</p>
+                      </div>
+                    )}
                   </li>
                 );
               })}
@@ -252,32 +211,8 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
         </Card>
       )}
 
-      {role === "owner" && (
-        <Card className="mt-6">
-          <CardContent className="pt-6">
-            {verdict.code === "runs" ? (
-              <>
-                <Button onClick={publish} disabled={publishState === "busy" || publishState === "done"}>
-                  {t("verified.trial.publish")}
-                </Button>
-                <p className="mt-2 text-sm text-muted-foreground">{t("verified.trial.publishHint")}</p>
-              </>
-            ) : (
-              <p className="text-sm text-muted-foreground">{t("verified.trial.publishOnlyRuns")}</p>
-            )}
-            {publishMsg && (
-              <p role="status" className={`mt-3 text-sm ${publishState === "error" ? "text-red-700" : "text-teal-700"}`}>{publishMsg}</p>
-            )}
-          </CardContent>
-        </Card>
-      )}
       {role === "reviewer" && (
         <p className="mt-4 text-sm text-muted-foreground">{t("verified.trial.share")}</p>
-      )}
-      {role === "user" && (
-        <p className="mt-4 text-sm text-muted-foreground">
-          <Link href={`/verified/trial/${id}?as=owner`} className="underline underline-offset-2">{t("verified.trial.asOwnerCta")}</Link>
-        </p>
       )}
     </>
   );

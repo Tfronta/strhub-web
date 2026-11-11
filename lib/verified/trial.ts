@@ -1,12 +1,8 @@
 /**
  * Trials: a rehearsal of a verification that publishes nothing.
  *
- * The three people STRhub Verified is for all start here. A tool's owner tries
- * a recipe before anything lands on the catalogue; a paper reviewer, who does
- * not write code, pastes the URL from the manuscript and reads a verdict; a
- * user who cannot get the tool running at home sees whether it runs in a clean
- * environment. None of them types a command: the engine reads the repository
- * and proposes the recipe itself (harness/detect_recipe.py).
+ * Maintainers, reviewers and users submit a public repository and an optional
+ * ref. The engine evaluates the procedure at the resolved commit.
  *
  * Mechanics. A trial is one `workflow_dispatch` with mode=trial and repo+ref,
  * correlated by a dispatch id in the run name exactly like a verification. The
@@ -18,24 +14,19 @@
 import { unzipSync, strFromU8 } from "fflate";
 import {
   ENGINE_REPO,
-  dispatchWorkflow,
+  dispatchTrial,
   findRunByDispatchId,
   ghBinary,
   ghPublic,
   listRunArtifacts,
   type WorkflowRun,
 } from "./github";
-import type { VerifiedReport, VerifiedBlocker, VerifiedSelfFix, VerifiedVerdict, VerifiedVerdictCode } from "@/types/verified";
+import type { VerifiedReport, VerifiedBlocker, VerifiedVerdict } from "@/types/verified";
 
 export const TRIAL_ROLES = ["owner", "reviewer", "user"] as const;
 export type TrialRole = (typeof TRIAL_ROLES)[number];
 
-// The verdict is the report's, not the trial's: a published page leads with
-// it too. The names stay for the trial's callers.
-export type TrialVerdictCode = VerifiedVerdictCode;
-export type SelfFix = VerifiedSelfFix;
 export type TrialBlocker = VerifiedBlocker;
-export type TrialVerdict = VerifiedVerdict;
 
 export interface TrialRecipe {
   schema: string;
@@ -50,7 +41,7 @@ export interface TrialRecipe {
 
 export type TrialReport = VerifiedReport & {
   mode?: "trial" | "publish";
-  verdict?: TrialVerdict;
+  verdict?: VerifiedVerdict;
   example_detail?: unknown;
 };
 
@@ -175,11 +166,8 @@ export interface StartedTrial {
  * Development only: answer the form from the trials on disk instead of
  * dispatching, so the whole flow can be walked without GitHub.
  *
- * Needed because three things stop a real dispatch from a dev server, all of
- * them on purpose: it may have no route to api.github.com, `assertWritable`
- * refuses to dispatch on the live engine from a non-production process, and
- * the workflow it would run is the one on the engine's default branch rather
- * than whatever is being worked on locally.
+ * Lets a local UI inspect completed artifacts without GitHub credentials or a
+ * matching workflow on the configured engine branch.
  *
  * Matches on the repository only, and only against a fixture that already
  * exists. An unknown repository falls through to the real path and gets the
@@ -278,14 +266,12 @@ export async function startTrial(repoUrl: string, ref: string | undefined): Prom
       !/^(main|master|HEAD|develop|dev|trunk)$/i.test(resolved.label))
       ? resolved.label
       : "";
-  await dispatchWorkflow({
+  await dispatchTrial({
     tool: slug,
-    mode: "trial",
     repo: `https://github.com/${repoSlug}`,
     ref: resolved.sha,
-    ...(refLabel ? { ref_label: refLabel } : {}),
-    dispatch_id: id,
-    publish: "false",
+    refLabel,
+    dispatchId: id,
   });
   return { id, slug, repo: `https://github.com/${repoSlug}`, ref: resolved.sha, refLabel: resolved.label, refHow: resolved.how };
 }

@@ -11,12 +11,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "autoconfig:context": "tsx scripts/dump-autoconfig-context.ts",
-    "autoconfig:eval": "tsx scripts/eval-autoconfig.ts",
     "indexnow": "tsx scripts/indexnow.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.116.0",
     "@contentful/rich-text-react-renderer": "^16.1.5",
     "@contentful/rich-text-types": "^17.2.4",
     "@next/third-parties": "^16.1.6",

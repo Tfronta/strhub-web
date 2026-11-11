@@ -7,7 +7,7 @@
  * body the tool's history.
  */
 import { extraGateRowsFor } from "@/lib/verified/extra-gates";
-import type { FailureExcerpt } from "@/lib/verified/failure-excerpt";
+import { LOG_LEGS } from "@/lib/verified/log-files";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedPublication, VerifiedReport } from "@/types/verified";
 import type { HistoryRow } from "@/lib/verified/history";
@@ -21,7 +21,6 @@ export function VerifiedDetail({
   staticPageUrl,
   pdfUrl,
   jsonUrl,
-  logExcerpt,
   history,
   note,
 }: {
@@ -30,7 +29,6 @@ export function VerifiedDetail({
   staticPageUrl: string;
   pdfUrl: string;
   jsonUrl: string;
-  logExcerpt?: FailureExcerpt | null;
   history?: { rows: HistoryRow[]; current: HistoryRow };
   /** The run of STRhub's own recipe for this tool, when this page is not it. */
   note?: { row: HistoryRow; report: VerifiedReport };
@@ -44,28 +42,18 @@ export function VerifiedDetail({
   const instrument = report.instrument ?? history?.current.instrument ?? instrumentOfReport(report);
   // Every log is a file next to the report, wherever the report lives.
   const logBaseUrl = staticPageUrl.replace(/\/[^/]+$/, "");
-  const hasStrhubFixture = report.datasets?.some((d) => d.fixture_source === "strhub") ?? false;
-
-  // Every log is a file next to the report. A leg that ran on STRhub's sample
-  // in place of the tool's own is not shown as the tool's own; and the build
-  // log is not a verification leg, so it is named as the build.
-  const logs: ReportLog[] = Object.entries(report.logs ?? {})
-    .filter(([leg]) => {
-      if (!hasStrhubFixture) return true;
-      return report.datasets?.find((d) => d.leg === leg)?.fixture_source !== "strhub";
-    })
-    .map(([leg, fname]) => ({
+  const logs: ReportLog[] = LOG_LEGS.flatMap((leg) => {
+    const terminal = report.terminals?.[leg];
+    const filename = terminal ?? report.logs?.[leg];
+    if (!filename || !/^[A-Za-z0-9_][A-Za-z0-9._-]*\.txt$/.test(filename)) return [];
+    const fixture = report.datasets?.find((dataset) => dataset.leg === leg)?.fixture_source;
+    return [{
       leg,
-      label:
-        leg === "build"
-          ? t("verified.log.build")
-          : leg === "own"
-            ? t("verified.matrix.own")
-            : leg === "example" || leg === "starts"
-              ? t(`verified.trial.log.${leg}`)
-              : t("verified.matrix.external"),
-      href: `${logBaseUrl}/${fname}`,
-    }));
+      label: t(`verified.trial.log.${fixture === "strhub" && leg === "own" ? "external" : leg}`),
+      href: `${logBaseUrl}/${filename}`,
+      hasInvocation: Boolean(terminal),
+    }];
+  });
 
   return (
     <VerifiedReportBody
@@ -75,7 +63,6 @@ export function VerifiedDetail({
       pdfUrl={pdfUrl}
       jsonUrl={jsonUrl}
       logs={logs}
-      logExcerpt={logExcerpt}
       buildLogHref={report.logs?.build ? `${logBaseUrl}/${report.logs.build}` : undefined}
       history={history}
       instrument={instrument}

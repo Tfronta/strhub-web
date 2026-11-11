@@ -28,7 +28,7 @@ import {
 import { step1For, type Step1Tone } from "@/lib/verified/step1";
 import { ReadmeTemplateAction } from "@/components/verified/report/verdict";
 import { ownerIssueUrl } from "@/lib/verified/trial-next-steps";
-import { commandFromManifest } from "@/lib/verified/command";
+import { LOG_LEGS } from "@/lib/verified/log-files";
 import { VerifiedReportBody, type ReportLog, type ExtraGateRow } from "./report/verified-report-body";
 
 const POLL_MS = 8000;
@@ -87,7 +87,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const elapsedMin = Math.floor((now - startedAt.current) / 60000);
   const running = !status || (status.state !== "completed" && status.state !== "expired");
   const stalled = running && status?.state === "pending" && now - startedAt.current > STALL_AFTER_MS;
-  const cmd = status?.recipe ? commandFromManifest(status.recipe.manifest_yml) : null;
   const repoDockerfile = status?.recipe?.manifest_yml.includes("source: repository") ?? false;
   // Plan B: a second Dockerfile the engine builds only if the first fails. The
   // report says whether it ran; a page that showed only the first Dockerfile
@@ -97,11 +96,11 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const fallbackReason = report?.environment?.fallback?.reason ?? t("verified.trial.recipeFallbackReason");
 
   // The artifact carries the log text itself, so the body opens it inline.
-  const logs: ReportLog[] = Object.entries(status?.logs ?? {}).map(([leg, text]) => ({
-    leg,
-    label: t(`verified.trial.log.${leg}`),
-    text,
-  }));
+  const logs: ReportLog[] = LOG_LEGS.flatMap((leg) => {
+    const terminal = status?.files?.[`terminal-${leg}`];
+    const href = terminal ?? status?.files?.[`log-${leg}`];
+    return href ? [{ leg, label: t(`verified.trial.log.${leg}`), href, hasInvocation: Boolean(terminal) }] : [];
+  });
   const gates = (report?.gates ?? {}) as Record<string, boolean>;
   const extraGateRows: ExtraGateRow[] = extraGateRowsFor(gates, t);
 
@@ -340,7 +339,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             slug={status?.slug ?? id}
             staticPageUrl={status?.files?.html}
             pdfUrl={status?.files?.pdf}
-            command={report.run?.cmd ?? cmd ?? undefined}
             logs={logs}
             extraGateRows={extraGateRows}
             backLink={false}

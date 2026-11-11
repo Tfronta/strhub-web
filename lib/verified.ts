@@ -5,7 +5,6 @@
  * Override the source with NEXT_PUBLIC_VERIFIED_BASE if the engine repo moves.
  */
 import type { VerifiedIndex, VerifiedPublication, VerifiedReport } from "@/types/verified";
-import { extractFailureExcerpt, failureLogLegs, LOG_TAIL_LENGTH } from "@/lib/verified/failure-excerpt";
 
 const BASE =
   process.env.NEXT_PUBLIC_VERIFIED_BASE ??
@@ -104,51 +103,6 @@ export function verifiedFileUrl(path: string): string {
 export async function getVerifiedReportAt(path: string): Promise<VerifiedPublication | null> {
   if (!/^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*\.json$/.test(path)) return null;
   return fetchJson<VerifiedPublication>(verifiedFileUrl(path), true);
-}
-
-async function fetchLogTail(reportPage: string, filename: string): Promise<string | undefined> {
-  if (!/^[A-Za-z0-9_][A-Za-z0-9._-]*\.txt$/.test(filename)) return undefined;
-  try {
-    const response = await fetch(new URL(filename, reportPage), {
-      cache: "no-store",
-      redirect: "error",
-      signal: AbortSignal.timeout(4000),
-    });
-    if (!response.ok || !response.body) return undefined;
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let tail = "";
-    let bytes = 0;
-    try {
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) return (tail + decoder.decode()).slice(-LOG_TAIL_LENGTH);
-        bytes += value.byteLength;
-        if (bytes > 2_000_000) {
-          await reader.cancel();
-          return undefined;
-        }
-        tail = (tail + decoder.decode(value, { stream: true })).slice(-LOG_TAIL_LENGTH);
-      }
-    } finally {
-      reader.releaseLock();
-    }
-  } catch {
-    // The full log link remains available if the excerpt cannot be loaded.
-    return undefined;
-  }
-}
-
-export async function getPublishedFailureExcerpt(report: VerifiedReport, reportPage: string) {
-  if (report.gates.installs && report.gates.runs) return null;
-  const logs = await Promise.all(
-    failureLogLegs(report.gates).map(async (leg) => {
-      const filename = report.logs?.[leg];
-      return { leg, text: filename ? await fetchLogTail(reportPage, filename) : undefined };
-    }),
-  );
-  return extractFailureExcerpt(logs, 14, report.gates);
 }
 
 export function contentStats(report: VerifiedReport) {

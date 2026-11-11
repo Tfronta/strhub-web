@@ -12,7 +12,7 @@
  * every poll is one GitHub call.
  */
 import { unzipSync, strFromU8 } from "fflate";
-import { LOG_TAIL_LENGTH } from "./failure-excerpt";
+import { LOG_LEGS, TRIAL_FILE_NAMES, type TrialFileName } from "./log-files";
 import {
   ENGINE_REPO,
   dispatchTrial,
@@ -57,8 +57,7 @@ export interface TrialStatus {
   recipe: TrialRecipe | null;
   summaryMd: string | null;
   logs: Record<string, string>;
-  /** Files in the artifact a reader may want whole: the PDF and the static HTML. */
-  files?: { pdf?: string; html?: string };
+  files?: Partial<Record<TrialFileName, string>>;
 }
 
 /** Trial dispatch ids are distinguishable from verification ones (sv_…). */
@@ -284,11 +283,25 @@ const g = globalThis as unknown as {
   __strhubTrialBinaries?: Map<string, Record<string, Uint8Array>>;
 };
 const finished = (g.__strhubFinishedTrials ??= new Map<string, TrialStatus>());
-/** The PDF and HTML bytes of finished trials, served by /api/verify/trial/file. */
+/** Original artifact bytes served by /api/verify/trial/file. */
 const binaries = (g.__strhubTrialBinaries ??= new Map<string, Record<string, Uint8Array>>());
 
-export function getTrialFile(id: string, name: "pdf" | "html"): Uint8Array | null {
+export function getTrialFile(id: string, name: TrialFileName): Uint8Array | null {
   return binaries.get(id)?.[name] ?? null;
+}
+
+function artifactUrls(id: string, files: Record<string, Uint8Array>): TrialStatus["files"] {
+  return Object.fromEntries(Object.keys(files).map((name) =>
+    [name, `/api/verify/trial/file?id=${encodeURIComponent(id)}&name=${name}`],
+  ));
+}
+
+/** Keep the existing status payload for callers that use the log tails. */
+function logTails(files: Record<string, Uint8Array>): TrialStatus["logs"] {
+  return Object.fromEntries(LOG_LEGS.flatMap((leg) => {
+    const log = files[`log-${leg}`];
+    return log ? [[leg, strFromU8(log).slice(-20_000)]] : [];
+  }));
 }
 
 /** "Trial <slug> [tr_…]" is the run-name the engine gives a trial. */
@@ -312,9 +325,7 @@ function baseStatus(id: string, run: WorkflowRun | null): TrialStatus {
   };
 }
 
-const runIdHolder = { id: "" };
-
-async function readArtifact(runId: number, slug: string): Promise<(Partial<TrialStatus> & { _bin?: Record<string, Uint8Array> }) | "expired" | null> {
+async function readArtifact(runId: number, slug: string, id: string): Promise<(Partial<TrialStatus> & { _bin?: Record<string, Uint8Array> }) | "expired" | null> {
   const artifacts = await listRunArtifacts(runId);
   const art = artifacts.find((a) => a.name === `trial-${slug}`) ?? artifacts.find((a) => a.name.startsWith("trial-"));
   if (!art) return null;
@@ -332,21 +343,18 @@ async function readArtifact(runId: number, slug: string): Promise<(Partial<Trial
   const stem = reportName ? reportName.replace(/\.json$/, "") : slug;
   const reportText = reportName ? text(reportName) : null;
   const recipeText = text(`${stem}.recipe.json`);
-  const logs: Record<string, string> = {};
-  for (const f of Object.keys(files)) {
-    const m = f.match(/\.log-(own|external|example|starts|build)\.txt$/);
-    if (m) logs[m[1]] = strFromU8(files[f]).slice(-LOG_TAIL_LENGTH);
-  }
   const bin: Record<string, Uint8Array> = {};
-  if (files[`${stem}.pdf`]) bin.pdf = files[`${stem}.pdf`];
-  if (files[`${stem}.html`]) bin.html = files[`${stem}.html`];
+  for (const name of TRIAL_FILE_NAMES) {
+    const filename = name === "pdf" || name === "html" ? name : `${name}.txt`;
+    const file = files[`${stem}.${filename}`];
+    if (file) bin[name] = file;
+  }
   return {
     report: reportText ? (JSON.parse(reportText) as TrialReport) : null,
     recipe: recipeText ? (JSON.parse(recipeText) as TrialRecipe) : null,
     summaryMd: text(`${stem}.summary.md`),
-    logs,
-    files: { pdf: bin.pdf ? `/api/verify/trial/file?id=${encodeURIComponent(runIdHolder.id)}&name=pdf` : undefined,
-             html: bin.html ? `/api/verify/trial/file?id=${encodeURIComponent(runIdHolder.id)}&name=html` : undefined },
+    logs: logTails(bin),
+    files: artifactUrls(id, bin),
     _bin: bin,
   } as Partial<TrialStatus> & { _bin: Record<string, Uint8Array> };
 }
@@ -367,20 +375,15 @@ async function fixtureTrial(id: string): Promise<TrialStatus | null> {
     const report = JSON.parse(await fs.readFile(path.join(base, "report.json"), "utf-8")) as TrialReport;
     const recipe = await fs.readFile(path.join(base, "recipe.json"), "utf-8").then((x) => JSON.parse(x) as TrialRecipe).catch(() => null);
     const summaryMd = await fs.readFile(path.join(base, "summary.md"), "utf-8").catch(() => null);
-    const logs: Record<string, string> = {};
-    for (const f of await fs.readdir(base)) {
-      const m = f.match(/^log-(own|external|example|starts|build)\.txt$/);
-      if (m) logs[m[1]] = (await fs.readFile(path.join(base, f), "utf-8")).slice(-LOG_TAIL_LENGTH);
-    }
     const bin: Record<string, Uint8Array> = {};
-    for (const [name, file] of [["pdf", "report.pdf"], ["html", "report.html"]] as const) {
+    for (const name of TRIAL_FILE_NAMES) {
+      const file = name === "pdf" || name === "html" ? `report.${name}` : `${name}.txt`;
       try { bin[name] = new Uint8Array(await fs.readFile(path.join(base, file))); } catch { /* optional */ }
     }
     binaries.set(id, bin);
     return { id, state: "completed", conclusion: "success", runUrl: report.ci_run ?? null,
-             slug: recipe?.slug ?? null, startedAt: report.generated, report, recipe, summaryMd, logs,
-             files: { pdf: bin.pdf ? `/api/verify/trial/file?id=${id}&name=pdf` : undefined,
-                      html: bin.html ? `/api/verify/trial/file?id=${id}&name=html` : undefined } };
+             slug: recipe?.slug ?? null, startedAt: report.generated, report, recipe, summaryMd,
+             logs: logTails(bin), files: artifactUrls(id, bin) };
   } catch {
     return null;
   }
@@ -396,8 +399,7 @@ export async function getTrial(id: string): Promise<TrialStatus> {
   if (!run || status.state !== "completed") return status;
 
   const slug = status.slug ?? "";
-  runIdHolder.id = id;
-  const art = slug ? await readArtifact(run.id, slug) : null;
+  const art = slug ? await readArtifact(run.id, slug, id) : null;
   if (art === "expired") {
     status.state = "expired";
   } else if (art) {

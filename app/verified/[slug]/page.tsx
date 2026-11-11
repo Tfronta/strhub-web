@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
-  getPublishedFailureExcerpt,
   getVerifiedIndex,
   getVerifiedReport,
   getVerifiedReportAt,
@@ -124,9 +123,6 @@ export default async function VerifiedToolPage({
 }) {
   const loaded = await load(params.slug, atParam(searchParams), recipeParam(searchParams));
   if (!loaded) notFound();
-  const logExcerpt = loaded.report.record_type === "editorial_review"
-    ? null
-    : await getPublishedFailureExcerpt(loaded.report, loaded.staticPageUrl);
   return (
     <VerifiedDetail
       report={loaded.report}
@@ -134,7 +130,6 @@ export default async function VerifiedToolPage({
       staticPageUrl={loaded.staticPageUrl}
       pdfUrl={loaded.pdfUrl}
       jsonUrl={loaded.jsonUrl}
-      logExcerpt={logExcerpt}
       history={loaded.history}
       note={loaded.note}
     />

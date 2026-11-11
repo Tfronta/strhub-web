@@ -3,10 +3,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import type { VerifiedEditorialNotice, VerifiedIndex } from "@/types/verified";
 import { badgeFor } from "./badge";
-import { commandPresentation } from "./command";
 import { VerifiedDetail } from "@/components/verified/verified-detail";
 import { VerifiedList } from "@/components/verified/verified-list";
-import { RunCommandCard } from "@/components/verified/report/source-card";
 
 vi.mock("@/contexts/language-context", () => ({
   useLanguage: () => ({ t: (key: string) => key, language: "en" }),
@@ -52,17 +50,5 @@ describe("editorial evidence notices", () => {
     expect(html).not.toContain("verified.summary.gatesPassed");
     expect(html).not.toContain("verified.history.verifiedOn");
     expect(badgeFor({ level: "content", verdict: "runs", record_type: "editorial_review" }, (k) => k).tone).toBe("grey");
-  });
-});
-
-describe("command execution evidence", () => {
-  it.each([undefined, "skipped", "cancelled", "unknown"])("does not call outcome %s an executed command", (outcome) => {
-    expect(commandPresentation(outcome).heading).toBe("verified.commandEvidence.planned");
-    const html = renderToStaticMarkup(createElement(RunCommandCard, { cmd: "tool --threshold 30", outcome }));
-    expect(html).toContain("verified.commandEvidence.planned");
-    expect(html).not.toContain("verified.run.note");
-  });
-  it.each(["success", "failure"])("records submission for outcome %s", (outcome) => {
-    expect(commandPresentation(outcome).heading).toBe("verified.commandEvidence.submitted");
   });
 });

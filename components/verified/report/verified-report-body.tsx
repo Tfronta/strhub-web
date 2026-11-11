@@ -23,7 +23,6 @@ import { useLanguage } from "@/contexts/language-context";
 import { type VerifiedInstrument, type VerifiedReport } from "@/types/verified";
 import { hasReportedErrors } from "@/lib/verified/diagnostics";
 import { badgeFor } from "@/lib/verified/badge";
-import { commandPresentation } from "@/lib/verified/command";
 import { blockedBeforeInstall } from "@/lib/verified/gate-state";
 import {
   certificateOf,
@@ -33,22 +32,21 @@ import {
 import { summarizeDatasets } from "@/lib/verified/dataset-provenance";
 import { Cover } from "./cover";
 import { Section, BoxedList, ConclusionBox, sectionCounter } from "./certificate";
-import { SourceCard, RunCommandCard } from "./source-card";
-import { GatesLadder, LogLinks, type ExtraGateRow, type ReportLog } from "./gates";
+import { SourceCard } from "./source-card";
+import { GatesLadder, type ExtraGateRow } from "./gates";
+import { RecordedTerminal, type ReportLog } from "./terminal";
 import { WhatWasVerified, VerificationMatrix, VerificationData } from "./verification";
 import { OutputContent } from "./output";
 import {
   BuildFailedCard,
   AutoDiagnostics,
   actionableDiagnostics,
-  FailureExcerptCard,
   ManualOffer,
   ReadmeCheck,
   BulletCard,
   AuthorKnownIssues,
   EvidenceList,
 } from "./findings";
-import { extractFailureExcerpt, type FailureExcerpt } from "@/lib/verified/failure-excerpt";
 import { DisputeCard } from "./closing";
 import { VersionHistory, OlderVersionNotice, RetiredNotice, rowHref } from "./history";
 import { AsItIsOpening } from "./verdict";
@@ -73,9 +71,7 @@ export function VerifiedReportBody({
   staticPageUrl,
   pdfUrl,
   jsonUrl,
-  command,
   logs,
-  logExcerpt,
   buildLogHref,
   extraGateRows,
   backLink = true,
@@ -91,14 +87,7 @@ export function VerifiedReportBody({
   staticPageUrl?: string;
   pdfUrl?: string;
   jsonUrl?: string;
-  /**
-   * The command that ran, when the caller knows it. A published report carries
-   * it in `run.cmd` (newer engines); a trial can read it off its recipe even
-   * when the report predates that field.
-   */
-  command?: string;
   logs: ReportLog[];
-  logExcerpt?: FailureExcerpt | null;
   buildLogHref?: string;
   extraGateRows?: ExtraGateRow[];
   backLink?: boolean;
@@ -144,18 +133,15 @@ export function VerifiedReportBody({
   const passedRun =
     report.verdict?.code === "runs" ||
     Boolean(report.gates?.runs && report.gates?.io);
-  const excerpt = logExcerpt ?? (!report.gates.runs || !report.gates.installs
-    ? extractFailureExcerpt(logs, 14, report.gates)
-    : null);
   const actionableIssues = actionableDiagnostics(report.diagnostics, passedRun);
   const hasDiagnostics = !installBlocked && (
     !!report.install_detail?.diagnostics?.length
     || actionableIssues.length > 0
     || !!report.author_known_issues?.length
   );
-  const diagnosticsTitle = installBlocked
-    ? "verified.certificate.section.preflight"
-    : passedRun ? "verified.certificate.section.reported" : "verified.certificate.section.why";
+  const diagnosticsTitle = passedRun ? "verified.certificate.section.reported" : "verified.certificate.section.why";
+  const preferredLog = report.gates.installs === false ? "build" :
+    report.datasets?.some((dataset) => dataset.leg === "own" && dataset.available) ? "own" : "external";
   const next = sectionCounter();
 
   const datasetsLabel = data.provenance.length
@@ -223,7 +209,7 @@ export function VerifiedReportBody({
             </Section>
             <Section n={next()} title={t("verified.asIs.fullRun")}>
               <GatesLadder gates={report.gates} extraRows={extraGateRows} />
-              <LogLinks logs={logs} />
+              <RecordedTerminal logs={logs} preferredLeg={preferredLog} preflight={installBlocked} />
             </Section>
           </>
         ) : (
@@ -234,31 +220,20 @@ export function VerifiedReportBody({
               extraRows={installBlocked ? undefined : extraGateRows}
               blockedAt={installBlocked ? "installs" : undefined}
             />
-            <LogLinks logs={logs} />
+            <RecordedTerminal logs={logs} preferredLeg={preferredLog} preflight={installBlocked} />
           </Section>
         )}
 
         {/* Why it stopped, or what errors it reported on the way. */}
-        {(excerpt || hasDiagnostics) && (
+        {hasDiagnostics && (
           <Section n={next()} title={t(diagnosticsTitle)}>
-            {excerpt && <FailureExcerptCard excerpt={excerpt} preflight={installBlocked} />}
-            {hasDiagnostics && (
-              <>
-                <BuildFailedCard report={report} buildLogHref={buildLogHref} />
-                <AutoDiagnostics
-                  diagnostics={report.diagnostics}
-                  hasStrhubFixture={data.hasStrhubFixture}
-                  passedRun={passedRun}
-                />
-                <AuthorKnownIssues items={report.author_known_issues} />
-              </>
-            )}
-          </Section>
-        )}
-
-        {!installBlocked && (report.run?.effective_cmd ?? report.run?.cmd ?? command) && (
-          <Section n={next()} title={t(commandPresentation(report.run?.step_outcome).heading)}>
-            <RunCommandCard cmd={report.run?.effective_cmd ?? report.run?.cmd ?? command} outcome={report.run?.step_outcome} />
+            <BuildFailedCard report={report} buildLogHref={buildLogHref} />
+            <AutoDiagnostics
+              diagnostics={report.diagnostics}
+              hasStrhubFixture={data.hasStrhubFixture}
+              passedRun={passedRun}
+            />
+            <AuthorKnownIssues items={report.author_known_issues} />
           </Section>
         )}
 

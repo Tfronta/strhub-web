@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Check, Minus, X, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Check, Minus, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { useHeaded } from "./certificate";
@@ -148,60 +146,5 @@ export function GatesLadder({
         </p>
       )}
     </>
-  );
-}
-
-/** A run's logs: either a link to the published file, or the text itself. */
-export interface ReportLog {
-  leg: string;
-  label: string;
-  href?: string;
-  text?: string;
-}
-
-/**
- * The execution logs. A published report links each file on gh-pages; a trial
- * carries the text inside its artifact, so the same list opens it inline.
- */
-export function LogLinks({ logs }: { logs: ReportLog[] }) {
-  const { t } = useLanguage();
-  const [open, setOpen] = useState<string | null>(null);
-  if (logs.length === 0) return null;
-  const inline = logs.filter((l) => l.text !== undefined);
-  return (
-    <div className="mt-4">
-      <div className="flex flex-wrap gap-3">
-        {logs.map((l) =>
-          l.href ? (
-            <a
-              key={l.leg}
-              href={l.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-              {t("verified.log.view")}
-              {logs.length > 1 ? ` (${l.label})` : ""}
-            </a>
-          ) : (
-            <Button
-              key={l.leg}
-              variant={open === l.leg ? "default" : "outline"}
-              size="sm"
-              onClick={() => setOpen(open === l.leg ? null : l.leg)}
-            >
-              {t("verified.log.view")}
-              {inline.length > 1 ? ` (${l.label})` : ""}
-            </Button>
-          ),
-        )}
-      </div>
-      {open && (
-        <pre className="mt-3 max-h-96 overflow-auto rounded-md bg-muted p-3 text-xs">
-          <code>{logs.find((l) => l.leg === open)?.text}</code>
-        </pre>
-      )}
-    </div>
   );
 }

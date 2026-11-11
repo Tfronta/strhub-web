@@ -5,7 +5,6 @@ import { useLanguage } from "@/contexts/language-context";
 import { useHeaded } from "./certificate";
 import { cn } from "@/lib/utils";
 import type { VerifiedReport } from "@/types/verified";
-import { commandPresentation, formatCommand } from "@/lib/verified/command";
 import { formatDate, formatDateTime } from "@/lib/verified/format-date";
 
 /**
@@ -196,28 +195,6 @@ export function SourceCard({
       {!installBlocked && (
         <p className="mt-3 border-t pt-3 text-xs text-muted-foreground">{t("verified.footnote")}</p>
       )}
-    </div>
-  );
-}
-
-/**
- * The command the gates ran, as the tool saw it.
- *
- * The PDF has printed it since the start ("Exact Run Command"); the page never
- * did, so a reader of a published attestation who wanted to know what was
- * executed had to open the log. It is the reproducibility anchor: the pinned
- * commit, the environment and this line are what "anyone can repeat it" means.
- */
-export function RunCommandCard({ cmd, outcome }: { cmd: string | undefined; outcome?: string }) {
-  const { t } = useLanguage();
-  if (!cmd) return null;
-  return (
-    <div className="mt-6 rounded-lg border bg-card p-5">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-        {t(commandPresentation(outcome).heading)}
-      </h2>
-      <pre className="overflow-x-auto whitespace-pre-wrap break-all rounded-md bg-muted p-3 text-xs"><code>{formatCommand(cmd)}</code></pre>
-      <p className="mt-2 text-xs text-muted-foreground">{t(commandPresentation(outcome).note)}</p>
     </div>
   );
 }

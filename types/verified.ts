@@ -455,6 +455,8 @@ export interface VerifiedReport {
   } | null;
   content_detail?: { outputs?: { stats?: VerifiedContentStats }[] };
   logs?: Record<string, string>;
+  /** Original transcripts with the invocation captured by the runner. */
+  terminals?: Record<string, string>;
   diagnostics?: Record<string, VerifiedDiagnostic[]>;
   // Fase 3 additions (optional for backward compatibility with older reports).
   datasets?: VerifiedMatrixLeg[];

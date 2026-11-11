@@ -6,7 +6,6 @@ import type { VerifiedReport } from "@/types/verified";
 import { certificateOf } from "./certificate";
 import { blockedBeforeInstall } from "./gate-state";
 import { translate } from "@/lib/translations";
-import { getPublishedFailureExcerpt } from "@/lib/verified";
 
 vi.mock("@/contexts/language-context", () => ({
   useLanguage: () => ({ t: (key: string) => key, language: "en" }),
@@ -36,7 +35,8 @@ describe("procedure blocked before installation", () => {
       logs: [{
         leg: "build",
         label: "Build",
-        text: "Procedure classifier blocker: install_profile_unsupported\nReason: documented file not found",
+        href: "/original-preflight.txt",
+        hasInvocation: false,
       }],
       afterSource: "candidate Dockerfile",
     }));
@@ -44,10 +44,9 @@ describe("procedure blocked before installation", () => {
     expect(html).toContain("verified.gate.state.blocked");
     expect(html).toContain("verified.gate.state.skipped");
     expect(html).toContain("verified.certificate.conclusion.blockedTitle");
-    expect(html).toContain("verified.trial.preflightExcerptTitle");
-    expect(html).toContain("Procedure classifier blocker: install_profile_unsupported");
-    expect(html).not.toContain("verified.trial.probableCauseLabel");
-    expect(html).not.toContain("verified.trial.errorExcerptTitle");
+    expect(html).toContain('href="/original-preflight.txt"');
+    expect(html).toContain("verified.log.preflight");
+    expect(html).not.toContain("verified.log.terminal");
     expect(html).not.toContain("verified.gate.state.fail");
     expect(html).not.toContain("verified.whatVerified.installation");
     expect(html).not.toContain("candidate-command");
@@ -63,54 +62,5 @@ describe("procedure blocked before installation", () => {
   it("requires explicit procedure evidence and leaves observed execution outside the pre-install case", () => {
     expect(blockedBeforeInstall({ ...report, procedure_review: undefined })).toBe(false);
     expect(blockedBeforeInstall({ ...report, run: { step_outcome: "failure" } })).toBe(false);
-  });
-});
-
-describe("archived failure log", () => {
-  const page = "https://archive.example/tool/sha/report.html";
-  const filename = "tool.log-external.txt";
-  const log = "FATAL: cannot open <input.bam>";
-  const failure: VerifiedReport = {
-    ...report,
-    procedure_validation: undefined,
-    procedure_review: undefined,
-    verdict: { code: "fails", title: "Failed", reason: "Execution stopped." },
-    gates: { ...report.gates, installs: true },
-    run: { step_outcome: "failure" },
-    logs: { external: filename, build: "tool.log-build.txt" },
-  };
-
-  it("reads the archived log next to the report and renders its escaped text and possible cause", async () => {
-    const fetchLog = vi.fn<typeof fetch>().mockResolvedValue(new Response(log));
-    vi.stubGlobal("fetch", fetchLog);
-    try {
-      const logExcerpt = await getPublishedFailureExcerpt(failure, page);
-      expect(fetchLog).toHaveBeenCalledTimes(1);
-      expect(String(fetchLog.mock.calls[0][0])).toBe(new URL(filename, page).href);
-      const html = renderToStaticMarkup(createElement(VerifiedReportBody, {
-        report: failure,
-        slug: "example",
-        logs: [{ leg: "external", label: "Execution", href: new URL(filename, page).href }],
-        logExcerpt,
-      }));
-      expect(html).toContain("FATAL: cannot open &lt;input.bam&gt;");
-      expect(html).toContain("verified.trial.probableCauseLabel");
-      expect(html).toContain("verified.trial.hint.pathOrFile");
-    } finally {
-      vi.unstubAllGlobals();
-    }
-  });
-
-  it("does not read a log outside the report's directory", async () => {
-    const fetchLog = vi.fn<typeof fetch>();
-    vi.stubGlobal("fetch", fetchLog);
-    try {
-      await expect(getPublishedFailureExcerpt({
-        ...failure, logs: { external: "../other.log.txt" },
-      }, page)).resolves.toBeNull();
-      expect(fetchLog).not.toHaveBeenCalled();
-    } finally {
-      vi.unstubAllGlobals();
-    }
   });
 });

@@ -11,9 +11,8 @@
  * A finished trial is immutable, so it is cached per process; while it runs,
  * every poll is one GitHub call.
  */
-import { unzipSync, strFromU8 } from "fflate";
-import { LOG_LEGS, TRIAL_FILE_NAMES, type TrialFileName } from "./log-files";
-import { locateReport } from "./trial-artifact";
+import { TRIAL_FILE_NAMES, type TrialFileName } from "./log-files";
+import { artifactUrls, logTails, parseArtifactZip } from "./trial-artifact";
 import {
   ENGINE_REPO,
   dispatchTrial,
@@ -289,20 +288,6 @@ export function getTrialFile(id: string, name: TrialFileName): Uint8Array | null
   return binaries.get(id)?.[name] ?? null;
 }
 
-function artifactUrls(id: string, files: Record<string, Uint8Array>): TrialStatus["files"] {
-  return Object.fromEntries(Object.keys(files).map((name) =>
-    [name, `/api/verify/trial/file?id=${encodeURIComponent(id)}&name=${name}`],
-  ));
-}
-
-/** Keep the existing status payload for callers that use the log tails. */
-function logTails(files: Record<string, Uint8Array>): TrialStatus["logs"] {
-  return Object.fromEntries(LOG_LEGS.flatMap((leg) => {
-    const log = files[`log-${leg}`];
-    return log ? [[leg, strFromU8(log).slice(-20_000)]] : [];
-  }));
-}
-
 /** "Trial <slug> [tr_…]" is the run-name the engine gives a trial. */
 function slugFromRunName(name: string | undefined): string | null {
   const m = (name ?? "").match(/^Trial\s+(\S+)\s+\[/);
@@ -330,28 +315,7 @@ async function readArtifact(runId: number, slug: string, id: string): Promise<(P
   if (!art) return null;
   if (art.expired) return "expired";
   const zip = await ghBinary(`/repos/${ENGINE_REPO}/actions/artifacts/${art.id}/zip`);
-  const files = unzipSync(new Uint8Array(zip));
-  const text = (name: string) => (files[name] ? strFromU8(files[name]) : null);
-  // The report first (root or reports/, see trial-artifact.ts), then
-  // everything else off the stem it was written under.
-  const located = locateReport(Object.keys(files), slug);
-  const stem = located?.stem ?? slug;
-  const reportText = located ? text(located.reportName) : null;
-  const recipeText = text(`${stem}.recipe.json`);
-  const bin: Record<string, Uint8Array> = {};
-  for (const name of TRIAL_FILE_NAMES) {
-    const filename = name === "pdf" || name === "html" ? name : `${name}.txt`;
-    const file = files[`${stem}.${filename}`];
-    if (file) bin[name] = file;
-  }
-  return {
-    report: reportText ? (JSON.parse(reportText) as TrialReport) : null,
-    recipe: recipeText ? (JSON.parse(recipeText) as TrialRecipe) : null,
-    summaryMd: text(`${stem}.summary.md`),
-    logs: logTails(bin),
-    files: artifactUrls(id, bin),
-    _bin: bin,
-  } as Partial<TrialStatus> & { _bin: Record<string, Uint8Array> };
+  return parseArtifactZip(new Uint8Array(zip), slug, id);
 }
 
 /**

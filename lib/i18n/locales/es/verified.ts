@@ -69,7 +69,6 @@ export default {
       "Verificado automáticamente, en un entorno limpio, sobre el código público de la herramienta en el commit fijo. Es un registro de lo que pasó, no un aval del autor de la herramienta.",
     commit: "Commit",
     environment: "Entorno",
-    environmentFallback: "Corrió sobre {reason}, porque el código fuente en este commit no se pudo compilar. Por qué, y qué significa, está explicado más abajo.",
     ciRun: "Run de CI",
     gates: "Compuertas",
     scope: "Alcance",
@@ -231,7 +230,6 @@ export default {
       },
       conclusion: {
         whereClean: "en un contenedor limpio",
-        whereFallback: "sobre {reason} (la compilación desde el código fuente en el commit fijado falló)",
         runsTitle: "{tool} se ejecuta de principio a fin",
         runsBody: "{tool} se instaló y corrió hasta completarse {where} sin fallos.",
         notRunsTitle: "{tool} no completó su ejecución",
@@ -308,8 +306,6 @@ export default {
     headline: {
       runs: "Corre según su documentación",
       runsErrors: "Corre según su documentación (errores reportados)",
-      runsFallback: "Corre desde su imagen publicada; el commit fijado no compila",
-      runsFallbackErrors: "Corre desde su imagen publicada; el commit fijado no compila (errores reportados)",
       notRun: "No corre según su documentación: {where}",
       stopsAt: {
         none: "fuente no disponible",
@@ -357,17 +353,12 @@ export default {
     install: {
       heading: "No se pudo compilar desde el código fuente",
       note: "STRhub intentó compilar {name} desde su código fuente en el commit {sha}, siguiendo los pasos de build que declara el repositorio, y el build falló. Nada por debajo de la compuerta Installs llegó a correr.",
-      headingFallback: "No se pudo compilar desde el código fuente; la corrida usó el entorno listo al que apunta el README",
-      noteFallback:
-        "STRhub intentó compilar {name} desde su código fuente en el commit {sha}, siguiendo los pasos de build que declara el repositorio, y el build falló. En su lugar se usó {reason}, y todas las compuertas de abajo corrieron sobre eso.",
       meaningHeading: "Qué significa",
       meaning: {
         runLabel: "Si querés correrla:",
         run: "compilarla desde el código fuente en este commit falla en un entorno limpio; la causa y una sugerencia de arreglo están abajo.",
-        runFallback: "compilarla desde el código fuente en este commit falla en un entorno limpio (la causa está abajo). El entorno listo al que apunta el README sí funciona: es el que usó esta corrida.",
         reviewLabel: "Si estás revisando un paper:",
         review: "no corrió nada, así que esto no dice nada sobre la salida del software. Registra que este intento de compilarla se detuvo, y de qué lado está la causa.",
-        reviewFallback: "este resultado describe el software que trae ese entorno, lo último que haya publicado quien lo mantiene, y no el commit {sha}, que es la versión que citaría un manuscrito.",
         maintainLabel: "Si la mantenés:",
       },
       faultStrhub:
@@ -689,7 +680,6 @@ export default {
       },
       verdictMeaning: {
         runs: "Se instaló desde su código público y produjo su salida documentada en un entorno limpio.",
-        runsFallback: "Corrió y produjo su salida documentada, pero sobre el entorno listo al que apunta el README, porque su código fuente no se pudo compilar en el commit fijado.",
         fails: "La ejecución falló. La evidencia apunta a la herramienta o a su forma documentada de correr.",
         undetermined: "STRhub no pudo deducir cómo correrla desde el repositorio. Es un hallazgo sobre la documentación, no sobre el software.",
         // Cuando el motivo es nuestro, no es un hallazgo sobre la documentación.
@@ -764,9 +754,6 @@ export default {
       recipeHint: "El informe indica hasta dónde llegaron la instalación y la ejecución.",
       recipeDockerfile: "Entorno (Dockerfile)",
       recipeRepoDockerfile: "La configuración registrada indica un Dockerfile del repositorio.",
-      recipeFallbackUsed: "El Dockerfile de arriba no se pudo construir (ver el log de build). Lo que corrió es este segundo: {reason}.",
-      recipeFallbackAvailable: "Plan B, no hizo falta esta vez: si el build de arriba hubiera fallado, STRhub habría usado {reason}.",
-      recipeFallbackReason: "el entorno de respaldo que declara la receta",
       caveatsTitle: "Salvedades: lo que STRhub supuso",
       logsTitle: "Logs",
       log: {
@@ -825,7 +812,6 @@ export default {
     engineText: {
       verdictReason: {
         runs: "La herramienta se instaló y su ejecución produjo la salida documentada.",
-        fallbackFailed: "La compilación desde el commit fijado falló. Una imagen publicada no se contabilizó como ejecución de ese commit.",
         readmeInsufficient: "STRhub no pudo deducir cómo instalar o ejecutar esta herramienta a partir de su repositorio. El README no brinda información suficiente para que un tercero la ejecute; abajo se detalla cada elemento faltante.",
         sourceNotFetched: "No se pudo obtener el código fuente en el commit fijado.",
         buildFailed: "El entorno no se pudo construir a partir de los pasos de instalación declarados.",
@@ -851,7 +837,6 @@ export default {
         envGenerated: "Un entorno de contenedor, construido a partir de los pasos de instalación declarados por la herramienta en lugar de una receta incluida en el repositorio.",
         envSubmitted: "Un entorno de contenedor, aportado con el envío.",
         curatedRecipe: "Un entorno de contenedor y un comando redactados por STRhub, no tomados de las instrucciones del repositorio; lo que hacen diferente se detalla en \"Qué tuvo que hacer STRhub para correr esta herramienta\".",
-        envFallback: "Un entorno de contenedor: la compilación desde el commit fijado falló, por lo que en su lugar se construyó {reason}. Lo que corrió es la versión contenida en ese entorno, no necesariamente el commit fijado.",
       },
       caveats: {
         envGenerated: "Entorno: generado por STRhub a partir de {source} ({method}) del repositorio, en el commit fijado.",

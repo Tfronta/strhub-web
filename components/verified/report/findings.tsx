@@ -61,8 +61,7 @@ function getDiagnosticText(
 
 /**
  * The build that failed, in plain words. Directly under the source block,
- * because nothing below it ran (or, on plan B, because what ran is not a
- * build of the pinned commit).
+ * because nothing below it ran.
  */
 export function BuildFailedCard({
   report,
@@ -74,24 +73,21 @@ export function BuildFailedCard({
   const { t } = useLanguage();
   const d = report.install_detail;
   if (!d?.diagnostics?.length) return null;
-  const fallback = !!d.fallback_used;
-  const reason = report.environment?.fallback?.reason ?? t("verified.trial.recipeFallbackReason");
   const params = {
     name: report.tool.name,
     sha: (report.source.ref_resolved ?? report.source.ref ?? "").slice(0, 7),
-    reason: reason.charAt(0).toUpperCase() + reason.slice(1),
   };
   const meaning: [string, string][] = [
-    ["verified.install.meaning.runLabel", fallback ? "verified.install.meaning.runFallback" : "verified.install.meaning.run"],
-    ["verified.install.meaning.reviewLabel", fallback ? "verified.install.meaning.reviewFallback" : "verified.install.meaning.review"],
+    ["verified.install.meaning.runLabel", "verified.install.meaning.run"],
+    ["verified.install.meaning.reviewLabel", "verified.install.meaning.review"],
     ["verified.install.meaning.maintainLabel", installFaultKey(d.faults)],
   ];
   return (
     <div className="mt-6 rounded-lg border border-amber-500/40 bg-amber-50/40 dark:border-amber-800/60 dark:bg-amber-950/20 p-5">
       <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-400">
-        {t(fallback ? "verified.install.headingFallback" : "verified.install.heading")}
+        {t("verified.install.heading")}
       </h2>
-      <p className="mt-2 text-sm">{t(fallback ? "verified.install.noteFallback" : "verified.install.note", params)}</p>
+      <p className="mt-2 text-sm">{t("verified.install.note", params)}</p>
       <div className="mt-3 rounded-md border border-border bg-background/70 p-3">
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("verified.install.meaningHeading")}</p>
         <ul className="mt-2 space-y-1.5 text-sm">

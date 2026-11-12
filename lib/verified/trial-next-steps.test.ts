@@ -19,8 +19,6 @@ describe("trial next steps", () => {
     const url = ownerIssueUrl(report, {
       code: "regions_format_unknown",
       what: "needs a regions file",
-      self_fix: "upload_regions",
-      self_fix_text: "",
       ask_owner: { title: "Publish a regions file (hg38) for forensic STR loci", body: "Please." },
     }, "https://strhub.app/verified/trial/tr_x");
     expect(url).toContain("https://github.com/gymreklab/gangstr/issues/new?title=");

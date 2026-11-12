@@ -69,7 +69,6 @@ export default {
       "Verificado automaticamente, em um ambiente limpo, sobre o código público da ferramenta no commit fixo. É um registro do que aconteceu, não um endosso do autor da ferramenta.",
     commit: "Commit",
     environment: "Ambiente",
-    environmentFallback: "Rodou em {reason}, porque o código-fonte neste commit não compilou. O porquê, e o que isso significa, está explicado abaixo.",
     ciRun: "Execução de CI",
     gates: "Portões",
     scope: "Escopo",
@@ -231,7 +230,6 @@ export default {
       },
       conclusion: {
         whereClean: "em um contêiner limpo",
-        whereFallback: "em {reason} (a compilação a partir do código-fonte no commit fixado falhou)",
         runsTitle: "{tool} executa de ponta a ponta",
         runsBody: "{tool} instalou e rodou até o fim {where} sem falhas.",
         notRunsTitle: "{tool} não completou sua execução",
@@ -308,8 +306,6 @@ export default {
     headline: {
       runs: "Roda conforme a documentação",
       runsErrors: "Roda conforme a documentação (erros reportados)",
-      runsFallback: "Roda a partir da sua imagem publicada; o commit fixado não compila",
-      runsFallbackErrors: "Roda a partir da sua imagem publicada; o commit fixado não compila (erros reportados)",
       notRun: "Não roda conforme a documentação: {where}",
       stopsAt: {
         none: "fonte não disponível",
@@ -357,17 +353,12 @@ export default {
     install: {
       heading: "Não compilou a partir do código-fonte",
       note: "O STRhub tentou compilar {name} a partir do código-fonte no commit {sha}, seguindo os passos de build que o repositório declara, e o build falhou. Nada abaixo do portão Installs chegou a rodar.",
-      headingFallback: "Não compilou a partir do código-fonte; a execução usou o ambiente pronto que o README indica",
-      noteFallback:
-        "O STRhub tentou compilar {name} a partir do código-fonte no commit {sha}, seguindo os passos de build que o repositório declara, e o build falhou. Em vez disso foi usado {reason}, e todos os portões abaixo rodaram nele.",
       meaningHeading: "O que isso significa",
       meaning: {
         runLabel: "Se você quer rodá-la:",
         run: "compilá-la a partir do código-fonte neste commit falha em um ambiente limpo; a causa e uma sugestão de correção estão abaixo.",
-        runFallback: "compilá-la a partir do código-fonte neste commit falha em um ambiente limpo (a causa está abaixo). O ambiente pronto que o README indica funciona: foi o que esta execução usou.",
         reviewLabel: "Se você está revisando um artigo:",
         review: "nada rodou, então isto não diz nada sobre a saída do software. Registra que esta tentativa de compilá-la parou, e de que lado está a causa.",
-        reviewFallback: "este resultado descreve o software que esse ambiente traz, o que quer que quem o publica tenha colocado por último, e não o commit {sha}, que é a versão que um manuscrito citaria.",
         maintainLabel: "Se você a mantém:",
       },
       faultStrhub:
@@ -689,7 +680,6 @@ export default {
       },
       verdictMeaning: {
         runs: "Instalou a partir do código público e produziu a saída documentada em um ambiente limpo.",
-        runsFallback: "Rodou e produziu sua saída documentada, mas no ambiente pronto que o README indica, porque seu código-fonte não compilou no commit fixado.",
         fails: "A execução falhou. A evidência aponta para a ferramenta ou para a sua forma documentada de execução.",
         undetermined: "O STRhub não conseguiu deduzir como executá-la a partir do repositório. É um achado sobre a documentação, não sobre o software.",
         // Quando o motivo é nosso, não é um achado sobre a documentação.
@@ -764,9 +754,6 @@ export default {
       recipeHint: "O relatório indica até onde chegaram a instalação e a execução.",
       recipeDockerfile: "Ambiente (Dockerfile)",
       recipeRepoDockerfile: "A configuração registrada aponta para um Dockerfile no repositório.",
-      recipeFallbackUsed: "O Dockerfile acima não compilou (veja o log de build). O que rodou é este segundo: {reason}.",
-      recipeFallbackAvailable: "Plano B, não foi preciso desta vez: se o build acima tivesse falhado, o STRhub teria usado {reason}.",
-      recipeFallbackReason: "o ambiente de reserva que a receita declara",
       caveatsTitle: "Ressalvas: o que o STRhub supôs",
       logsTitle: "Logs",
       log: {
@@ -825,7 +812,6 @@ export default {
     engineText: {
       verdictReason: {
         runs: "A ferramenta instalou e sua execução produziu a saída documentada.",
-        fallbackFailed: "A compilação a partir do commit fixado falhou. Uma imagem publicada não foi contabilizada como execução desse commit.",
         readmeInsufficient: "O STRhub não conseguiu deduzir como instalar ou executar esta ferramenta a partir do seu repositório. O README não traz informações suficientes para que um terceiro a execute; cada item ausente está listado abaixo.",
         sourceNotFetched: "Não foi possível obter o código-fonte no commit fixado.",
         buildFailed: "O ambiente não compilou a partir dos passos de instalação declarados.",
@@ -851,7 +837,6 @@ export default {
         envGenerated: "Um ambiente de contêiner, construído a partir dos passos de instalação declarados pela ferramenta em vez de uma receita incluída no repositório.",
         envSubmitted: "Um ambiente de contêiner, enviado na submissão.",
         curatedRecipe: "Um ambiente de contêiner e um comando escritos pelo STRhub, não extraídos das instruções do repositório; o que fazem de diferente está listado em \"O que o STRhub teve de fazer para rodar esta ferramenta\".",
-        envFallback: "Um ambiente de contêiner: a compilação a partir do commit fixado falhou, portanto {reason} foi construído em seu lugar. O que rodou é a versão contida nesse ambiente, não necessariamente o commit fixado.",
       },
       caveats: {
         envGenerated: "Ambiente: gerado pelo STRhub a partir de {source} ({method}) do repositório, no commit fixado.",

@@ -120,7 +120,6 @@ export function VerifiedReportBody({
       level: report.level,
       verdict: report.verdict?.code,
       errors_reported: hasReportedErrors(report.diagnostics),
-      fallback_used: !!report.environment?.fallback_used,
       instrument,
     },
     t,

@@ -69,7 +69,6 @@ export default {
       "Verified automatically, in a clean environment, on the tool's public source at the pinned commit. This is a record of what happened, not an endorsement by the tool's author.",
     commit: "Commit",
     environment: "Environment",
-    environmentFallback: "Ran on {reason}, because the source at this commit did not build. Why, and what it means, is explained below.",
     ciRun: "CI run",
     gates: "Gates",
     scope: "Scope",
@@ -231,7 +230,6 @@ export default {
       },
       conclusion: {
         whereClean: "in a clean container",
-        whereFallback: "on {reason} (the build from source at the pinned commit failed)",
         runsTitle: "{tool} executes end-to-end",
         runsBody: "{tool} installed and ran to completion {where} without crashing.",
         notRunsTitle: "{tool} did not complete its run",
@@ -308,8 +306,6 @@ export default {
     headline: {
       runs: "Runs as documented",
       runsErrors: "Runs as documented (errors reported)",
-      runsFallback: "Runs from its published image; the pinned commit does not build",
-      runsFallbackErrors: "Runs from its published image; the pinned commit does not build (errors reported)",
       notRun: "Does not run as documented: {where}",
       stopsAt: {
         none: "source not available",
@@ -357,17 +353,12 @@ export default {
     install: {
       heading: "It did not build from source",
       note: "STRhub tried to build {name} from its source at commit {sha}, following the build steps the repository declares, and the build failed. Nothing below the Installs gate ran.",
-      headingFallback: "It did not build from source; the run used the README's ready-made environment",
-      noteFallback:
-        "STRhub tried to build {name} from its source at commit {sha}, following the build steps the repository declares, and the build failed. {reason} was used instead, and every gate below ran on it.",
       meaningHeading: "What this means",
       meaning: {
         runLabel: "If you are trying to run it:",
         run: "a build from source at this commit fails in a clean environment; the cause and a suggested fix are below.",
-        runFallback: "a build from source at this commit fails in a clean environment (the cause is below). The ready-made environment the README points at does work: it is what this run used.",
         reviewLabel: "If you are reviewing a paper:",
         review: "nothing ran, so this says nothing about the software's output. It records that this attempt to build it stopped, and whose side the cause is on.",
-        reviewFallback: "this result describes the software inside that environment, whatever its publisher last put there, and not commit {sha}, which is the version a manuscript would cite.",
         maintainLabel: "If you maintain it:",
       },
       faultStrhub:
@@ -689,7 +680,6 @@ export default {
       },
       verdictMeaning: {
         runs: "It installed from its public source and produced its documented output in a clean environment.",
-        runsFallback: "It ran and produced its documented output, but on the ready-made environment the README points at, because its source did not build at the pinned commit.",
         fails: "Execution failed. The evidence points to the tool or its documented invocation.",
         undetermined: "STRhub could not work out how to run it from the repository. That is a finding about the documentation, not about the software.",
         // When the cause is ours, it is not a finding about the documentation.
@@ -764,9 +754,6 @@ export default {
       recipeHint: "The report shows which installation and execution steps were reached.",
       recipeDockerfile: "Environment (Dockerfile)",
       recipeRepoDockerfile: "The recorded configuration points to a Dockerfile in the repository.",
-      recipeFallbackUsed: "The Dockerfile above did not build (see the build log). What ran is this second one: {reason}.",
-      recipeFallbackAvailable: "Plan B, not needed this time: if the build above had failed, STRhub would have used {reason}.",
-      recipeFallbackReason: "the fallback environment the recipe declares",
       caveatsTitle: "Caveats: what STRhub guessed",
       logsTitle: "Logs",
       log: {
@@ -825,7 +812,6 @@ export default {
     engineText: {
       verdictReason: {
         runs: "The tool installed and its run produced its documented output.",
-        fallbackFailed: "The build from the pinned commit failed. A published image was not counted as that commit running.",
         readmeInsufficient: "STRhub could not work out how to install or run this tool from its repository. The README does not say enough for a third party to run it; each missing item is listed below.",
         sourceNotFetched: "The pinned source could not be fetched.",
         buildFailed: "The environment did not build from the declared install steps.",
@@ -851,7 +837,6 @@ export default {
         envGenerated: "A container environment, built from the tool's declared install steps rather than from a recipe the repository ships.",
         envSubmitted: "A container environment, supplied with the submission.",
         curatedRecipe: "A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under \"What STRhub had to do to run this tool\".",
-        envFallback: "A container environment: the build from the pinned commit failed, so {reason} was built instead. What ran is the version that environment holds, not necessarily the pinned commit.",
       },
       caveats: {
         envGenerated: "Environment: generated by STRhub from the repository's {source} ({method}), at the pinned commit.",

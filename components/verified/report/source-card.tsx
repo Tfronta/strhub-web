@@ -118,13 +118,6 @@ export function SourceCard({
             <dt className="text-muted-foreground">{t("verified.environment")}</dt>
             <dd>
               {report.environment.os.join(", ")}
-              {report.environment.fallback_used && (
-                <span className="mt-1 block text-xs text-amber-700 dark:text-amber-500">
-                  {t("verified.environmentFallback", {
-                    reason: report.environment.fallback?.reason ?? t("verified.trial.recipeFallbackReason"),
-                  })}
-                </span>
-              )}
             </dd>
           </>
         )}

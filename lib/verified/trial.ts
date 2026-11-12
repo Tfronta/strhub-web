@@ -13,6 +13,7 @@
  */
 import { unzipSync, strFromU8 } from "fflate";
 import { LOG_LEGS, TRIAL_FILE_NAMES, type TrialFileName } from "./log-files";
+import { locateReport } from "./trial-artifact";
 import {
   ENGINE_REPO,
   dispatchTrial,
@@ -331,15 +332,11 @@ async function readArtifact(runId: number, slug: string, id: string): Promise<(P
   const zip = await ghBinary(`/repos/${ENGINE_REPO}/actions/artifacts/${art.id}/zip`);
   const files = unzipSync(new Uint8Array(zip));
   const text = (name: string) => (files[name] ? strFromU8(files[name]) : null);
-  // The files are named after the report's slug, which need not be the
-  // run-name's: a trial from a URL is filed under the tool's catalogue slug
-  // (the engine works that out from the repository) while its artifact keeps
-  // the run's own name. So find the report first, and key everything else
-  // off the stem it was written under.
-  const isReport = (f: string) => f.endsWith(".json") && !f.endsWith(".recipe.json") && !f.endsWith(".badge.json") && !f.includes("/");
-  const reportName = files[`${slug}.json`] ? `${slug}.json` : Object.keys(files).find(isReport);
-  const stem = reportName ? reportName.replace(/\.json$/, "") : slug;
-  const reportText = reportName ? text(reportName) : null;
+  // The report first (root or reports/, see trial-artifact.ts), then
+  // everything else off the stem it was written under.
+  const located = locateReport(Object.keys(files), slug);
+  const stem = located?.stem ?? slug;
+  const reportText = located ? text(located.reportName) : null;
   const recipeText = text(`${stem}.recipe.json`);
   const bin: Record<string, Uint8Array> = {};
   for (const name of TRIAL_FILE_NAMES) {

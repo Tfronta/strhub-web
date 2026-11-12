@@ -42,8 +42,6 @@ type Translate = (key: string, params?: Record<string, string>) => string;
 const VERDICT_REASON_EXACT: Record<string, string> = {
   "The tool installed and its run produced its documented output.":
     "verified.engineText.verdictReason.runs",
-  "The build from the pinned commit failed. A published image was not counted as that commit running.":
-    "verified.engineText.verdictReason.fallbackFailed",
   "STRhub could not work out how to install or run this tool from its repository. The README does not say enough for a stranger to run it; each missing item is listed below.":
     "verified.engineText.verdictReason.readmeInsufficient",
   "The pinned source could not be fetched.":
@@ -168,12 +166,6 @@ export function localizeNeededItem(item: string, t: Translate): string {
   if (exact[item]) {
     const val = t(exact[item]);
     if (val !== exact[item]) return val;
-  }
-  const mFallback = item.match(
-    /^A container environment: the build from the pinned commit failed, so (.+) was built instead\. What ran is the version that environment holds, not necessarily the pinned commit\.$/,
-  );
-  if (mFallback) {
-    return t("verified.engineText.needed.envFallback", { reason: mFallback[1] });
   }
   return item;
 }
@@ -353,13 +345,7 @@ function buildLocalizedConclusion(
     return report.certificate?.conclusion ?? [];
   }
   const toolDisplay = `${report.tool.name}${report.tool.version ? ` ${report.tool.version}` : ""}`.trim();
-  const where = report.environment?.fallback_used
-    ? t("verified.certificate.conclusion.whereFallback", {
-        reason:
-          report.environment?.fallback?.reason ??
-          t("verified.trial.recipeFallbackReason"),
-      })
-    : t("verified.certificate.conclusion.whereClean");
+  const where = t("verified.certificate.conclusion.whereClean");
 
   const gates = report.gates ?? {
     available: false,

@@ -34,8 +34,6 @@ export interface TrialRecipe {
   slug: string;
   manifest_yml: string;
   dockerfile: string;
-  /** Plan B (manifest environment.fallback), built only if `dockerfile` fails. */
-  dockerfile_fallback?: string;
   regions_bed?: string;
   proposal?: unknown;
 }

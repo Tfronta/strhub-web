@@ -48,7 +48,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const [status, setStatus] = useState<TrialStatus | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [showDockerfile, setShowDockerfile] = useState(false);
-  const [showFallback, setShowFallback] = useState(false);
   const startedAt = useRef(Date.now());
   const [now, setNow] = useState(Date.now());
 
@@ -88,12 +87,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const running = !status || (status.state !== "completed" && status.state !== "expired");
   const stalled = running && status?.state === "pending" && now - startedAt.current > STALL_AFTER_MS;
   const repoDockerfile = status?.recipe?.manifest_yml.includes("source: repository") ?? false;
-  // Plan B: a second Dockerfile the engine builds only if the first fails. The
-  // report says whether it ran; a page that showed only the first Dockerfile
-  // would present a run on the published image as a build of the pinned commit.
-  const fallbackDockerfile = status?.recipe?.dockerfile_fallback ?? null;
-  const fallbackUsed = report?.environment?.fallback_used ?? false;
-  const fallbackReason = report?.environment?.fallback?.reason ?? t("verified.trial.recipeFallbackReason");
 
   // The artifact carries the log text itself, so the body opens it inline.
   const logs: ReportLog[] = LOG_LEGS.flatMap((leg) => {
@@ -149,16 +142,14 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   // the documentation: STRhub not holding a sample of that kind, or its own
   // reader rewriting the command, is not a gap in anybody's README.
   const verdictMeaningKey =
-    verdict?.code === "runs" && fallbackUsed
-      ? "runsFallback"
-      : verdict?.code === "undetermined" && step1?.code === "ours"
-        ? "undeterminedOurs"
-        : verdict?.code;
+    verdict?.code === "undetermined" && step1?.code === "ours"
+      ? "undeterminedOurs"
+      : verdict?.code;
 
   const verdictBlock = report && verdict && (
     <>
       {step1Block}
-      {(!step1 || verdict.code !== "runs" || fallbackUsed || (verdict.readme_gaps && verdict.readme_gaps.length > 0)) && (
+      {(!step1 || verdict.code !== "runs" || (verdict.readme_gaps && verdict.readme_gaps.length > 0)) && (
         <section className="mt-4 rounded-lg border bg-card p-5" aria-labelledby="trial-verdict">
           <div className="flex flex-wrap items-center gap-3">
             <Badge className={`${VERDICT_TONE[verdict.code]} border-transparent text-sm`}>{t(`verified.trial.verdict.${verdict.code}`)}</Badge>
@@ -236,19 +227,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
               </button>
               {showDockerfile && (
                 <pre className="mt-2 overflow-x-auto rounded-md bg-muted p-3 text-xs"><code>{status.recipe.dockerfile}</code></pre>
-              )}
-              {fallbackDockerfile && (
-                <div className={`mt-3 rounded-md border p-3 ${fallbackUsed ? "border-amber-300 bg-amber-50/60 dark:border-amber-800 dark:bg-amber-950/20" : ""}`}>
-                  <p className={fallbackUsed ? "text-sm" : "text-xs text-muted-foreground"}>
-                    {t(fallbackUsed ? "verified.trial.recipeFallbackUsed" : "verified.trial.recipeFallbackAvailable", { reason: fallbackReason })}
-                  </p>
-                  <button type="button" className="mt-2 text-xs underline underline-offset-2" onClick={() => setShowFallback((v) => !v)}>
-                    {showFallback ? "−" : "+"} Dockerfile.fallback
-                  </button>
-                  {showFallback && (
-                    <pre className="mt-2 overflow-x-auto rounded-md bg-muted p-3 text-xs"><code>{fallbackDockerfile}</code></pre>
-                  )}
-                </div>
               )}
             </>
           )}

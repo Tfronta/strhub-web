@@ -79,18 +79,15 @@ export function ReadmeTemplateAction({ report }: { report: VerifiedReport }) {
 export function AsItIsOpening({ report, children }: { report: VerifiedReport; children?: ReactNode }) {
   const { t } = useLanguage();
   const v = report.verdict;
-  const fallbackUsed = !!report.environment?.fallback_used;
   const step1 = step1For(report.step1, t);
   const meaning = v
-    ? v.code === "runs" && fallbackUsed
-      ? "runsFallback"
-      : v.code === "undetermined" && step1?.code === "ours"
-        ? "undeterminedOurs"
-        : v.code
+    ? v.code === "undetermined" && step1?.code === "ours"
+      ? "undeterminedOurs"
+      : v.code
     : null;
   const localizedReason = localizeVerdictReason(v?.reason, t);
   const showSeparateVerdictCard = Boolean(
-    v && (!step1 || v.code !== "runs" || fallbackUsed || (v.readme_gaps && v.readme_gaps.length > 0)),
+    v && (!step1 || v.code !== "runs" || (v.readme_gaps && v.readme_gaps.length > 0)),
   );
 
   return (

@@ -46,14 +46,10 @@ export interface VerifiedWorkaround {
 /** The one sentence for a reader who does not program (harness/verdict.py). */
 export type VerifiedVerdictCode = "runs" | "fails" | "undetermined" | "out_of_scope";
 
-export type VerifiedSelfFix = "upload_regions" | "edit_command" | "choose_install" | "edit_install" | "edit_output";
-
-/** What stopped a run, as two actions (see harness/verdict.py BLOCKERS). */
+/** What stopped a run, and the issue to ask its author to open (see harness/verdict.py BLOCKERS). */
 export interface VerifiedBlocker {
   code: string;
   what: string;
-  self_fix: VerifiedSelfFix | null;
-  self_fix_text: string;
   ask_owner: { title: string; body: string };
 }
 
@@ -109,8 +105,6 @@ export interface VerifiedVersionEntry {
   label?: string;
   verdict?: string | null;
   errors_reported?: boolean;
-  /** Plan B ran: the pinned commit did not build; the published image did. */
-  fallback_used?: boolean;
   ci_run?: string | null;
   /** Paths relative to the gh-pages root. */
   report: string;
@@ -135,8 +129,6 @@ export interface VerifiedIndexEntry {
   label: string;
   /** The run reported error-severity diagnostics (absent on older reports). */
   errors_reported?: boolean;
-  /** Plan B ran: the pinned commit did not build; the published image did. */
-  fallback_used?: boolean;
   generated: string | null;
   // index/2: what this entry was verified at.
   version?: string | null;
@@ -334,15 +326,6 @@ export interface VerifiedReport {
   environment: {
     dockerfile?: string;
     os?: string[];
-    /**
-     * Plan B: a second Dockerfile the engine builds only if the first fails —
-     * the published image or package the README points at, which holds
-     * whatever its publisher last pushed rather than the pinned commit.
-     * `fallback_used` says the gates ran on it; a view must then not present
-     * the result as "the pinned commit, built and run".
-     */
-    fallback?: { dockerfile: string; reason?: string };
-    fallback_used?: boolean;
   };
   generated: string;
   ci_run?: string;
@@ -448,8 +431,6 @@ export interface VerifiedReport {
   }[];
   install_detail?: {
     passed?: boolean;
-    /** The gate passed on plan B; `diagnostics` explain why the pinned commit did not build. */
-    fallback_used?: boolean;
     diagnostics?: VerifiedDiagnostic[];
     faults?: ("author" | "strhub" | "harness")[];
   } | null;

@@ -31,11 +31,14 @@ describe("a trial artifact of the reports/ layout (engine ≥ c485b42, run 43307
     expect(parsed._bin.pdf?.length).toBeGreaterThan(1000);
   });
 
-  it("documents what this layout does not carry: no per-leg log files", () => {
-    // The engine stopped uploading `<stem>.log-<leg>.txt`; until it embeds the
-    // transcripts in the report, a trial shows no logs.
+  it("carries no log and no terminal, because no leg ran", () => {
+    // The review refused to build (no proven upstream install procedure), so
+    // the only text is the verdict's reason. A leg that runs writes
+    // `reports/<slug>.log-<leg>.txt` and `.terminal-<leg>.txt`, read off the
+    // same stem.
     expect(parsed.logs).toEqual({});
     expect(parsed.report?.terminals ?? {}).toEqual({});
+    expect(parsed.report?.verdict?.reason).toContain("no proven installation profile");
   });
 });
 

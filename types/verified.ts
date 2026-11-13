@@ -466,6 +466,13 @@ export interface VerifiedReport {
    * measured, and answers the question an adopter actually has.
    */
   needed_beyond_repo?: string[] | null;
+  /**
+   * What the README or the repository could add, on every report whatever the
+   * verdict. Never what stopped the run: that is `verdict.readme_gaps` and
+   * `verdict.blockers`. Absent when there is none, and on reports from before
+   * the engine wrote it.
+   */
+  recommendations?: { code: string; text: string }[] | null;
   repo_test_data?: {
     known?: boolean;
     present?: boolean;

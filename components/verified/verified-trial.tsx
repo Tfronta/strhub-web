@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
+import { Recommendations } from "@/components/verified/report/recommendations";
 import { PageTitle } from "@/components/page-title";
 import type { TrialRole, TrialStatus } from "@/lib/verified/trial";
 import { VERDICT_TONE } from "@/lib/verified/badge";
@@ -200,6 +201,8 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
           </CardContent>
         </Card>
       )}
+
+      <Recommendations report={report} />
 
       {role === "reviewer" && (
         <p className="mt-4 text-sm text-muted-foreground">{t("verified.trial.share")}</p>

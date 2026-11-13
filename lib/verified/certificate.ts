@@ -317,6 +317,25 @@ export function localizeReadmeGap(
   return translated !== key ? translated : gap.text;
 }
 
+/**
+ * A recommendation in the reader's language, by its code: its own sentence
+ * when there is one, else the README gap of the same name, else the engine's
+ * English text.
+ */
+export function localizeRecommendation(
+  rec: { code: string; text: string },
+  t: Translate,
+): string {
+  for (const key of [
+    `verified.engineText.recommendations.${rec.code}`,
+    `verified.engineText.readmeGaps.${rec.code}`,
+  ]) {
+    const translated = t(key);
+    if (translated !== key) return translated;
+  }
+  return rec.text;
+}
+
 export function localizeBlocker(
   blocker: { code: string; what: string },
   t: Translate,

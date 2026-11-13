@@ -16,6 +16,18 @@ import { GUIDE_URL } from "@/lib/verified/step1";
 
 const ROLES: TrialRole[] = ["owner", "reviewer", "user"];
 
+/** What the README has to carry, in the order of the engine's guide (docs/GUIA-PASO-1.md). */
+const README_TIPS = [
+  "install",
+  "command",
+  "input",
+  "reference",
+  "otherFiles",
+  "output",
+  "environment",
+  "example",
+] as const;
+
 /** What the run will pin, as the form found it. */
 interface ResolvedRef {
   sha: string;
@@ -147,6 +159,45 @@ export function VerifiedStart({
         </>
       )}
 
+      {/* Before the form, not under it: what the README has to carry is the
+          one thing an author can still change before sending the link. */}
+      {!compact && (
+        <Card id="readme-tips" className="mt-6 scroll-mt-8 border-teal-300 bg-teal-50/60 dark:border-teal-800 dark:bg-teal-950/30">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <Lightbulb className="h-5 w-5 mt-0.5 shrink-0 text-teal-600 dark:text-teal-400" />
+              <div className="space-y-1">
+                <h2 className="text-lg font-semibold text-teal-950 dark:text-teal-200">
+                  {t("verified.start.readmeTipsTitle")}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {t("verified.start.readmeTipsSubtitle")}
+                </p>
+                <ul className="mt-3 list-disc space-y-1.5 pl-4 text-sm text-foreground/80">
+                  {README_TIPS.map((tip) => (
+                    <li key={tip}>{t(`verified.start.readmeTips.${tip}`)}</li>
+                  ))}
+                </ul>
+                <p className="pt-2 text-sm font-medium text-teal-950 dark:text-teal-200">
+                  {t("verified.start.readmeTips.after")}
+                </p>
+                <div className="pt-2">
+                  <a
+                    href={GUIDE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm font-medium text-teal-700 hover:underline dark:text-teal-400"
+                  >
+                    {t("verified.start.readmeTips.guideLink")}
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <form onSubmit={start} className="mt-8 space-y-6">
         <div className="space-y-2">
           <Label htmlFor="trial-repo">{t("verified.start.repoLabel")}</Label>
@@ -258,41 +309,6 @@ export function VerifiedStart({
           </ol>
         </CardContent>
       </Card>}
-
-      {!compact && (
-        <Card id="readme-tips" className="mt-6 scroll-mt-8 border-teal-200/60 bg-teal-50/40 dark:border-teal-900/50 dark:bg-teal-950/20">
-          <CardContent className="pt-6">
-            <div className="flex items-start gap-3">
-              <Lightbulb className="h-5 w-5 mt-0.5 shrink-0 text-teal-600 dark:text-teal-400" />
-              <div className="space-y-1">
-                <h2 className="text-base font-semibold text-teal-950 dark:text-teal-200">
-                  {t("verified.start.readmeTipsTitle")}
-                </h2>
-                <p className="text-xs text-muted-foreground">
-                  {t("verified.start.readmeTipsSubtitle")}
-                </p>
-                <ul className="mt-3 list-disc space-y-1.5 pl-4 text-xs text-muted-foreground">
-                  <li>{t("verified.start.readmeTips.command")}</li>
-                  <li>{t("verified.start.readmeTips.inputs")}</li>
-                  <li>{t("verified.start.readmeTips.environment")}</li>
-                  <li>{t("verified.start.readmeTips.nonInteractive")}</li>
-                </ul>
-                <div className="pt-3">
-                  <a
-                    href={GUIDE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-medium text-teal-700 hover:underline dark:text-teal-400"
-                  >
-                    {t("verified.start.readmeTips.guideLink")}
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

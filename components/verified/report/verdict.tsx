@@ -13,6 +13,7 @@ import { Check, Copy, ExternalLink, FileCode2, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
 import { localizeReadmeGap, localizeVerdictReason } from "@/lib/verified/certificate";
+import { Recommendations } from "@/components/verified/report/recommendations";
 import { buildReadmeTemplate, step1For, type Step1Tone } from "@/lib/verified/step1";
 import type { VerifiedReport } from "@/types/verified";
 import { useHeaded } from "./certificate";
@@ -162,6 +163,7 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
               )}
             </section>
           )}
+          <Recommendations report={report} />
         </>
       )}
     </>

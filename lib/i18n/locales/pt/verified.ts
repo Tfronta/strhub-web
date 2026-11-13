@@ -640,7 +640,7 @@ export default {
       readmeTipsTitle: "O que precisamos para a verificação automática?",
       readmeTipsSubtitle: "O STRhub segue o README do commit fixado ao pé da letra e não completa o que falta. Se isto estiver no repositório antes de enviar, o teste pode rodar.",
       readmeTips: {
-        install: "Instalação copiável: um Dockerfile no repositório, ou um bloco de comandos (conda env create -f environment.yml, pip install ., make). Um texto que precisa ser interpretado não basta.",
+        install: "Instalação copiável: um bloco de comandos no README (conda env create -f environment.yml, pip install ., make), com os arquivos que ele nomeia dentro do repositório. Um texto que precisa ser interpretado não basta.",
         command: "Um comando real para uma amostra, dentro de um bloco de código. Uma sinopse com colchetes ([--opção], <arquivo>) não é um comando.",
         input: "A entrada: que tipo de arquivo lê (BAM, CRAM ou FASTQ) e com qual opção é passada no comando.",
         reference: "Genoma de referência: nomeie-o no comando (--fasta hg38.fa, --ref, --reference ou --genome) e diga qual é a montagem. Não é preciso enviá-lo: o STRhub monta o hg38 da UCSC no lugar. Não pode substituir um comprimido (.fa.gz), em .2bit ou de outra montagem.",

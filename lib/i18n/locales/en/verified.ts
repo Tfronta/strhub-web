@@ -640,7 +640,7 @@ export default {
       readmeTipsTitle: "What do we need for automatic verification?",
       readmeTipsSubtitle: "STRhub follows the README at the pinned commit to the letter and fills in nothing. If this is in the repository before you submit, the trial can run.",
       readmeTips: {
-        install: "Copyable installation: a Dockerfile in the repository, or a block of commands (conda env create -f environment.yml, pip install ., make). Prose that has to be interpreted is not enough.",
+        install: "Copyable installation: a block of commands in the README (conda env create -f environment.yml, pip install ., make), with the files it names in the repository. Prose that has to be interpreted is not enough.",
         command: "One real command for a single sample, in a code block. A synopsis with brackets ([--option], <file>) is not a command.",
         input: "The input: what kind of file it reads (BAM, CRAM or FASTQ) and which option passes it in the command.",
         reference: "Reference genome: name it in the command (--fasta hg38.fa, --ref, --reference or --genome) and say which assembly it is. You do not need to ship it: STRhub mounts UCSC's hg38 in its place. It cannot stand in for a compressed (.fa.gz) or .2bit reference, or another assembly.",

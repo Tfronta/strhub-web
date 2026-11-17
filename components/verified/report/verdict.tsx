@@ -13,11 +13,44 @@ import { Check, Copy, ExternalLink, FileCode2, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
 import { localizeReadmeGap, localizeVerdictReason } from "@/lib/verified/certificate";
-import { buildReadmeTemplate, step1For, type Step1Tone } from "@/lib/verified/step1";
+import { buildReadmeTemplate, splitStep1Denial, step1For, type Step1Tone } from "@/lib/verified/step1";
 import type { VerifiedReport } from "@/types/verified";
 import { useHeaded } from "./certificate";
 
 export { buildReadmeTemplate };
+
+export function Step1BodyText({ body }: { body: string }) {
+  const split = splitStep1Denial(body);
+  if (!split) return <>{body}</>;
+  return (
+    <>
+      {split.before}
+      <strong className="font-semibold text-foreground">{split.bold}</strong>
+      {split.after}
+    </>
+  );
+}
+
+export function ReproTipsBox() {
+  const { t } = useLanguage();
+  return (
+    <div className="mt-4 rounded-lg border border-border bg-muted/40 p-4 sm:p-5">
+      <h3 className="flex items-center gap-2 text-base font-semibold">
+        <LifeBuoy className="h-4 w-4 shrink-0 text-muted-foreground" />
+        {t("verified.trial.reproTipsTitle")}
+      </h3>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {t("verified.trial.reproTipsSubtitle")}
+      </p>
+      <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm sm:text-base text-muted-foreground leading-relaxed">
+        <li>{t("verified.trial.reproTips.outputDir")}</li>
+        <li>{t("verified.trial.reproTips.deps")}</li>
+        <li>{t("verified.trial.reproTips.exampleData")}</li>
+        <li>{t("verified.trial.reproTips.nonInteractive")}</li>
+      </ul>
+    </div>
+  );
+}
 
 const STEP1_BORDER: Record<Step1Tone, string> = {
   green: "border-l-4 border-l-teal-600",
@@ -63,11 +96,11 @@ export function ReadmeTemplateAction({ report }: { report: VerifiedReport }) {
         </Button>
       </div>
       {open && (
-        <div className="mt-3 rounded-md border bg-muted/60 p-3">
-          <p className="mb-2 text-xs text-muted-foreground">
+        <div className="mt-3 rounded-md border bg-muted/60 p-3 sm:p-4">
+          <p className="mb-2 text-sm text-muted-foreground">
             {t("verified.trial.step1.templateHint")}
           </p>
-          <pre className="overflow-x-auto rounded bg-background p-3 text-xs leading-relaxed">
+          <pre className="overflow-x-auto rounded bg-background p-3 text-xs sm:text-sm leading-relaxed">
             <code>{snippet}</code>
           </pre>
         </div>
@@ -97,20 +130,22 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
         <>
           {step1 && (
             <section
-              className={`mt-3 rounded-lg border bg-card p-5 ${STEP1_BORDER[step1.tone]}`}
+              className={`mt-3 rounded-lg border bg-card p-5 sm:p-6 ${STEP1_BORDER[step1.tone]}`}
               aria-labelledby="verified-step1"
             >
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
                 {t("verified.trial.step1.heading")}
               </p>
-              <p id="verified-step1" className="mt-1 text-lg font-semibold">
+              <p id="verified-step1" className="mt-1 text-xl font-semibold">
                 {step1.headline}
               </p>
-              <p className="mt-2 text-sm text-muted-foreground">{step1.body}</p>
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                <Step1BodyText body={step1.body} />
+              </p>
               {step1.missing.length > 0 && (
                 <div className="mt-4">
-                  <h3 className="text-sm font-semibold">{step1.missingTitle}</h3>
-                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+                  <h3 className="text-base font-semibold">{step1.missingTitle}</h3>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-base">
                     {step1.missing.map((block) => (
                       <li key={block}>{block}</li>
                     ))}
@@ -131,35 +166,19 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
             </section>
           )}
           {v && showSeparateVerdictCard && (
-            <section className="mt-3 rounded-lg border bg-card p-5" aria-labelledby="verified-verdict">
-              <p id="verified-verdict" className="text-base font-semibold">{t(`verified.trial.verdictMeaning.${meaning}`)}</p>
-              {localizedReason && <p className="mt-1.5 text-sm text-muted-foreground">{localizedReason}</p>}
+            <section className="mt-4 rounded-lg border bg-card p-5 sm:p-6" aria-labelledby="verified-verdict">
+              <p id="verified-verdict" className="text-lg font-semibold">{t(`verified.trial.verdictMeaning.${meaning}`)}</p>
+              {localizedReason && <p className="mt-2 text-base leading-relaxed text-muted-foreground">{localizedReason}</p>}
               {v.readme_gaps && v.readme_gaps.length > 0 && (
                 <div className="mt-4">
-                  <h3 className="text-sm font-semibold">{t("verified.trial.gapsTitle")}</h3>
-                  <p className="mt-1 text-xs text-muted-foreground">{t("verified.trial.gapsHint")}</p>
-                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+                  <h3 className="text-base font-semibold">{t("verified.trial.gapsTitle")}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{t("verified.trial.gapsHint")}</p>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-base">
                     {v.readme_gaps.map((g) => <li key={g.item}>{localizeReadmeGap(g, t)}</li>)}
                   </ul>
                 </div>
               )}
-              {v.code !== "runs" && (
-                <div className="mt-4 rounded-lg border border-border bg-muted/40 p-4">
-                  <h3 className="flex items-center gap-1.5 text-sm font-semibold">
-                    <LifeBuoy className="h-4 w-4 text-muted-foreground" />
-                    {t("verified.trial.reproTipsTitle")}
-                  </h3>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {t("verified.trial.reproTipsSubtitle")}
-                  </p>
-                  <ul className="mt-2.5 list-disc space-y-1.5 pl-4 text-xs text-muted-foreground">
-                    <li>{t("verified.trial.reproTips.outputDir")}</li>
-                    <li>{t("verified.trial.reproTips.deps")}</li>
-                    <li>{t("verified.trial.reproTips.exampleData")}</li>
-                    <li>{t("verified.trial.reproTips.nonInteractive")}</li>
-                  </ul>
-                </div>
-              )}
+              {v.code !== "runs" && <ReproTipsBox />}
             </section>
           )}
         </>

@@ -158,6 +158,7 @@ export default {
       stoppedEarlyNote:
         "Detenerse en este paso no es un hallazgo de que el software esté defectuoso. Registra hasta dónde llegó este intento en particular. Un software puede detenerse antes porque una dependencia que declara ya no está disponible, porque espera la entrada dispuesta de otra forma que la muestra de referencia, o porque el entorno automático no puede proveerle algo que necesita.",
       howToReadLink: "Cómo leer este resultado",
+      howToReadOpenFull: "Abrir guía completa",
       state: {
         pass: "Pasa",
         fail: "Falla",
@@ -257,10 +258,15 @@ export default {
       cover: {
         date: "Fecha de verificación",
         commit: "Commit del repositorio",
+        viewCommit: "Ver commit en GitHub",
+        ciRun: "Corrida en GitHub Actions",
+        ciRunCta: "Abrir corrida en Actions",
         result: "Resultado",
         reached: "Alcanzó",
         permalink: "Enlace permanente",
         notPublished: "No publicado. Es una corrida de prueba.",
+        copyTrialLink: "Copiar enlace de prueba",
+        trialLinkCopied: "¡Enlace copiado!",
         scope: "Alcance de este informe",
       },
       summary: {

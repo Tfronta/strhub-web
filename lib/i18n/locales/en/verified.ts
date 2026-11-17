@@ -158,6 +158,7 @@ export default {
       stoppedEarlyNote:
         "Stopping at this step is not a finding that the software is faulty. It records how far this particular attempt got. Software can stop early because a dependency it names is no longer available, because it expects input arranged differently from the reference sample, or because the automated environment cannot supply something it needs.",
       howToReadLink: "How to read this result",
+      howToReadOpenFull: "Open full guide",
       state: {
         pass: "Pass",
         fail: "Fail",
@@ -257,10 +258,15 @@ export default {
       cover: {
         date: "Verification date",
         commit: "Repository commit",
+        viewCommit: "View commit on GitHub",
+        ciRun: "GitHub Actions run",
+        ciRunCta: "Open workflow run",
         result: "Result",
         reached: "Reached",
         permalink: "Permalink",
         notPublished: "Not published. This is a test run.",
+        copyTrialLink: "Copy trial link",
+        trialLinkCopied: "Link copied!",
         scope: "Scope of this report",
       },
       summary: {

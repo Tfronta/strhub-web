@@ -83,14 +83,14 @@ export function BuildFailedCard({
     ["verified.install.meaning.maintainLabel", installFaultKey(d.faults)],
   ];
   return (
-    <div className="mt-6 rounded-lg border border-amber-500/40 bg-amber-50/40 dark:border-amber-800/60 dark:bg-amber-950/20 p-5">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-400">
+    <div className="mt-6 rounded-lg border border-amber-500/40 bg-amber-50/40 dark:border-amber-800/60 dark:bg-amber-950/20 p-5 sm:p-6">
+      <h2 className="text-base font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-400">
         {t("verified.install.heading")}
       </h2>
-      <p className="mt-2 text-sm">{t("verified.install.note", params)}</p>
-      <div className="mt-3 rounded-md border border-border bg-background/70 p-3">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("verified.install.meaningHeading")}</p>
-        <ul className="mt-2 space-y-1.5 text-sm">
+      <p className="mt-2 text-base leading-relaxed">{t("verified.install.note", params)}</p>
+      <div className="mt-3 rounded-md border border-border bg-background/70 p-4">
+        <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground">{t("verified.install.meaningHeading")}</p>
+        <ul className="mt-2 space-y-2 text-base">
           {meaning.map(([labelKey, textKey]) => (
             <li key={labelKey}>
               <span className="font-medium">{t(labelKey)}</span>{" "}
@@ -99,15 +99,15 @@ export function BuildFailedCard({
           ))}
         </ul>
       </div>
-      <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("verified.install.whatFailed")}</p>
+      <p className="mt-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground">{t("verified.install.whatFailed")}</p>
       <ul className="mt-2 space-y-2 border-t border-border pt-3">
         {d.diagnostics.map((issue) => {
           const txt = getDiagnosticText(t, issue);
           return (
-            <li key={issue.id + issue.title} className="text-sm">
+            <li key={issue.id + issue.title} className="text-base">
               <span className="font-medium">{txt.title}</span>
               {txt.suggestion && (
-                <span className="mt-0.5 block text-xs text-muted-foreground">{txt.suggestion}</span>
+                <span className="mt-1 block text-sm text-muted-foreground leading-relaxed">{txt.suggestion}</span>
               )}
             </li>
           );
@@ -116,12 +116,12 @@ export function BuildFailedCard({
       {buildLogHref && (
         <a
           href={buildLogHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-3 inline-flex items-center gap-1 text-sm text-primary hover:underline"
+          target={buildLogHref.startsWith("#") ? undefined : "_blank"}
+          rel={buildLogHref.startsWith("#") ? undefined : "noopener noreferrer"}
+          className="mt-3 inline-flex items-center gap-1.5 text-base font-medium text-primary hover:underline"
         >
           {t("verified.install.viewBuildLog")}
-          <ExternalLink className="h-3 w-3" />
+          {!buildLogHref.startsWith("#") && <ExternalLink className="h-3.5 w-3.5" />}
         </a>
       )}
     </div>
@@ -171,16 +171,16 @@ export function AutoDiagnostics({
   return (
     <>
       {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.diagnostics.heading")}</h2>)}
-      <p className="mt-1 text-sm text-muted-foreground">{t("verified.diagnostics.note")}</p>
+      <p className="mt-1 text-base text-muted-foreground">{t("verified.diagnostics.note")}</p>
       {hasStrhubFixture && (
         <div className="mt-3 rounded-lg border border-border bg-muted/40 px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1">
             {t("verified.diagnostics.strhubNoteLabel")}
           </p>
-          <p className="text-sm text-muted-foreground">{t("verified.diagnostics.sampleNote")}</p>
+          <p className="text-base text-muted-foreground">{t("verified.diagnostics.sampleNote")}</p>
         </div>
       )}
-      <p className="mt-4 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      <p className="mt-4 mb-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground">
         {t("verified.diagnostics.logIssuesLabel")}
       </p>
       <div className="space-y-2">
@@ -193,33 +193,33 @@ export function AutoDiagnostics({
             <div
               key={issue.id}
               className={cn(
-                "rounded-lg border border-l-4 px-4 py-3 text-sm",
+                "rounded-lg border border-l-4 px-4 py-3 text-base",
                 issue.severity === "error"
                   ? "border-red-500/40 border-l-red-600 bg-red-50/40 dark:border-red-900/50 dark:border-l-red-500 dark:bg-red-950/20"
                   : "border-amber-500/40 border-l-amber-500 bg-amber-50/40 dark:border-amber-900/50 dark:border-l-amber-500 dark:bg-amber-950/20",
               )}
             >
-              <div className="flex items-start gap-2">
+              <div className="flex items-start gap-2.5">
                 {issue.severity === "error" ? (
-                  <XCircle className="h-4 w-4 mt-0.5 shrink-0 text-red-600 dark:text-red-400" />
+                  <XCircle className="h-4 w-4 mt-1 shrink-0 text-red-600 dark:text-red-400" />
                 ) : (
-                  <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+                  <AlertTriangle className="h-4 w-4 mt-1 shrink-0 text-amber-600 dark:text-amber-400" />
                 )}
                 <div className="min-w-0">
                   <p className="font-medium">
                     {txt.title}
                     {count && count > 1 && (
-                      <span className="ml-2 text-xs font-normal text-muted-foreground">
+                      <span className="ml-2 text-sm font-normal text-muted-foreground">
                         {t("verified.diagnostics.timesLabel").replace("{n}", String(count))}
                       </span>
                     )}
                   </p>
                   {items.length > 0 && (
-                    <p className="mt-1 font-mono text-xs text-muted-foreground break-words">
+                    <p className="mt-1 font-mono text-sm text-muted-foreground break-words">
                       {t("verified.diagnostics.affectedLabel")} {items.join(", ")}
                     </p>
                   )}
-                  {txt.suggestion && <p className="mt-1 text-muted-foreground">{txt.suggestion}</p>}
+                  {txt.suggestion && <p className="mt-1 text-sm sm:text-base text-muted-foreground leading-relaxed">{txt.suggestion}</p>}
                 </div>
               </div>
             </div>
@@ -227,7 +227,7 @@ export function AutoDiagnostics({
         })}
       </div>
       {noteKeys.length > 0 && (
-        <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+        <div className="mt-3 space-y-2 text-base text-muted-foreground">
           {noteKeys.map((key) => (
             <p key={key}>{t(`verified.diagnostics.${key}`)}</p>
           ))}
@@ -335,11 +335,11 @@ export function BulletCard({
   return (
     <>
       {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t(headingKey)}</h2>)}
-      <div className="mt-3 rounded-lg border bg-muted/40 p-4">
-        {noteKey && <p className="text-sm text-muted-foreground">{t(noteKey)}</p>}
-        <ul className={cn("space-y-2", noteKey && "mt-3")}>
+      <div className="mt-3 rounded-lg border bg-muted/40 p-4 sm:p-5">
+        {noteKey && <p className="text-base text-muted-foreground leading-relaxed">{t(noteKey)}</p>}
+        <ul className={cn("space-y-2.5", noteKey && "mt-3")}>
           {items.map((item) => (
-            <li key={item} className="flex gap-2 text-sm">
+            <li key={item} className="flex gap-2 text-base leading-relaxed">
               <span aria-hidden="true" className="text-muted-foreground">&ndash;</span>
               <span>{item}</span>
             </li>
@@ -413,20 +413,20 @@ export function EvidenceList({ evidence }: { evidence: VerifiedReport["evidence"
   return (
     <>
       {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.trial.evidenceTitle")}</h2>)}
-      <p className="mt-2 text-sm text-muted-foreground">{t("verified.trial.evidenceHint")}</p>
-      <ul className="mt-3 divide-y rounded-lg border text-sm">
+      <p className="mt-2 text-base text-muted-foreground leading-relaxed">{t("verified.trial.evidenceHint")}</p>
+      <ul className="mt-3 divide-y rounded-lg border text-base">
         {evidence.map((e, i) => {
           const quote = e.kind !== "tree" && e.text && e.claim !== "known_issue" ? e.text : null;
           return (
-            <li key={`${e.claim}-${e.path}-${i}`} className="grid gap-x-3 gap-y-1 px-4 py-2 sm:grid-cols-[10rem_1fr]">
-              <span className="text-muted-foreground">{claimLabel(e.claim)}</span>
+            <li key={`${e.claim}-${e.path}-${i}`} className="grid gap-x-4 gap-y-1 px-4 py-3 sm:grid-cols-[11rem_1fr]">
+              <span className="text-sm sm:text-base text-muted-foreground">{claimLabel(e.claim)}</span>
               <div className="min-w-0">
-                <a href={e.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs underline underline-offset-2 break-all">
-                  {e.path}{e.line ? `#L${e.line}` : ""} <ExternalLink className="h-3 w-3 shrink-0" />
+                <a href={e.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-sm underline underline-offset-2 break-all">
+                  {e.path}{e.line ? `#L${e.line}` : ""} <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                 </a>
                 {quote && (COMMAND_CLAIMS.has(e.claim)
-                  ? <code className="mt-1 block break-words rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">{quote}</code>
-                  : <blockquote className="mt-1 border-l-2 pl-3 text-sm italic text-muted-foreground">{quote}</blockquote>
+                  ? <code className="mt-1.5 block break-words rounded bg-muted px-2 py-1 text-sm text-muted-foreground">{quote}</code>
+                  : <blockquote className="mt-1.5 border-l-2 pl-3 text-base italic text-muted-foreground">{quote}</blockquote>
                 )}
               </div>
             </li>

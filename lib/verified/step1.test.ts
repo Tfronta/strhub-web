@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import en from "@/lib/i18n/locales/en/verified";
 import es from "@/lib/i18n/locales/es/verified";
 import pt from "@/lib/i18n/locales/pt/verified";
-import { buildReadmeTemplate, step1For } from "./step1";
+import { buildReadmeTemplate, splitStep1Denial, step1For } from "./step1";
 import type { VerifiedReport, VerifiedStep1 } from "@/types/verified";
 
 /** Reads the real locale files, so a missing key fails here and not in a page. */
@@ -108,5 +108,18 @@ describe("step 1, the documented run", () => {
     expect(snippet).toContain("conda install -c bioconda mytool=1.2.0");
     expect(snippet).toContain("# TODO: one concrete command for a single sample");
     expect(snippet).toContain("TODO: name the output file explicitly");
+  });
+
+  it("splits the tool-does-not-work denial sentence cleanly across all locales", () => {
+    for (const [name, locale] of Object.entries(LOCALES)) {
+      const t = translator(locale);
+      for (const code of ["does_not_run", "cannot_tell"] as const) {
+        const body = step1For(step1({ code }), t)!.body;
+        const parts = splitStep1Denial(body);
+        expect(parts, `${name}/${code}`).not.toBeNull();
+        expect(parts!.before + parts!.bold + parts!.after).toBe(body);
+        expect(parts!.bold.length).toBeGreaterThan(20);
+      }
+    }
   });
 });

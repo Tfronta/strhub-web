@@ -26,7 +26,7 @@ import {
   localizeVerdictReason,
 } from "@/lib/verified/certificate";
 import { step1For, type Step1Tone } from "@/lib/verified/step1";
-import { ReadmeTemplateAction } from "@/components/verified/report/verdict";
+import { ReadmeTemplateAction, ReproTipsBox, Step1BodyText } from "@/components/verified/report/verdict";
 import { ownerIssueUrl } from "@/lib/verified/trial-next-steps";
 import { LOG_LEGS } from "@/lib/verified/log-files";
 import { VerifiedReportBody, type ReportLog, type ExtraGateRow } from "./report/verified-report-body";
@@ -104,20 +104,22 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const step1 = step1For(report?.step1, t);
   const step1Block = step1 && (
     <section
-      className={`mt-6 rounded-lg border-2 p-5 ${STEP1_BORDER[step1.tone]}`}
+      className={`mt-6 rounded-lg border-2 p-5 sm:p-6 ${STEP1_BORDER[step1.tone]}`}
       aria-labelledby="trial-step1"
     >
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
         {t("verified.trial.step1.heading")}
       </p>
-      <h2 id="trial-step1" className="mt-1 text-lg font-semibold">
+      <h2 id="trial-step1" className="mt-1 text-xl font-semibold">
         {step1.headline}
       </h2>
-      <p className="mt-2 text-sm text-muted-foreground">{step1.body}</p>
+      <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+        <Step1BodyText body={step1.body} />
+      </p>
       {step1.missing.length > 0 && (
         <div className="mt-4">
-          <h3 className="text-sm font-semibold">{step1.missingTitle}</h3>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+          <h3 className="text-base font-semibold">{step1.missingTitle}</h3>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-base">
             {step1.missing.map((block) => (
               <li key={block}>{block}</li>
             ))}
@@ -150,39 +152,40 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
     <>
       {step1Block}
       {(!step1 || verdict.code !== "runs" || (verdict.readme_gaps && verdict.readme_gaps.length > 0)) && (
-        <section className="mt-4 rounded-lg border bg-card p-5" aria-labelledby="trial-verdict">
+        <section className="mt-4 rounded-lg border bg-card p-5 sm:p-6" aria-labelledby="trial-verdict">
           <div className="flex flex-wrap items-center gap-3">
             <Badge className={`${VERDICT_TONE[verdict.code]} border-transparent text-sm`}>{t(`verified.trial.verdict.${verdict.code}`)}</Badge>
-            <h2 id="trial-verdict" className="text-base font-semibold">
+            <h2 id="trial-verdict" className="text-lg font-semibold">
               {t(`verified.trial.verdictMeaning.${verdictMeaningKey}`)}
             </h2>
           </div>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-2 text-base leading-relaxed text-muted-foreground">
             {localizeVerdictReason(verdict.reason, t) ?? verdict.reason}
           </p>
           {verdict.readme_gaps && verdict.readme_gaps.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-sm font-semibold">{t("verified.trial.gapsTitle")}</h3>
-              <p className="mb-2 text-xs text-muted-foreground">{t("verified.trial.gapsHint")}</p>
-              <ul className="list-disc space-y-1 pl-5 text-sm">
+              <h3 className="text-base font-semibold">{t("verified.trial.gapsTitle")}</h3>
+              <p className="mb-2 text-sm text-muted-foreground">{t("verified.trial.gapsHint")}</p>
+              <ul className="list-disc space-y-1 pl-5 text-base">
                 {verdict.readme_gaps.map((g) => <li key={g.item}>{localizeReadmeGap(g, t)}</li>)}
               </ul>
             </div>
           )}
+          {verdict.code !== "runs" && <ReproTipsBox />}
         </section>
       )}
 
       {verdict.blockers && verdict.blockers.length > 0 && (
         <Card className="mt-6 border-amber-500/40 dark:border-amber-800">
           <CardHeader>
-            <CardTitle className="text-base">{t("verified.trial.stoppedTitle")}</CardTitle>
+            <CardTitle className="text-lg">{t("verified.trial.stoppedTitle")}</CardTitle>
           </CardHeader>
           <CardContent>
             <ol className="space-y-5">
               {verdict.blockers.map((b) => {
                 const issue = ownerIssueUrl(report, b, typeof window !== "undefined" ? window.location.href.split("?")[0] : "");
                 return (
-                  <li key={b.code} className="text-sm">
+                  <li key={b.code} className="text-base">
                     <p className="font-medium">{localizeBlocker(b, t)}</p>
                     {issue && (
                       <div className="mt-2">
@@ -202,7 +205,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
       )}
 
       {role === "reviewer" && (
-        <p className="mt-4 text-sm text-muted-foreground">{t("verified.trial.share")}</p>
+        <p className="mt-4 text-base text-muted-foreground">{t("verified.trial.share")}</p>
       )}
     </>
   );
@@ -212,21 +215,21 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const recipeBlock = status?.recipe && (
     <Card className="mt-6">
       <CardHeader>
-        <CardTitle className="text-base">{t("verified.trial.recipeTitle")}</CardTitle>
-        <p className="text-xs text-muted-foreground">{t("verified.trial.recipeHint")}</p>
+        <CardTitle className="text-lg">{t("verified.trial.recipeTitle")}</CardTitle>
+        <p className="text-sm text-muted-foreground">{t("verified.trial.recipeHint")}</p>
       </CardHeader>
-      <CardContent className="space-y-3 text-sm">
+      <CardContent className="space-y-3 text-base">
         <div>
           <p className="mb-1 font-medium">{t("verified.trial.recipeDockerfile")}</p>
           {repoDockerfile ? (
             <p className="text-muted-foreground">{t("verified.trial.recipeRepoDockerfile")}</p>
           ) : (
             <>
-              <button type="button" className="text-xs underline underline-offset-2" onClick={() => setShowDockerfile((v) => !v)}>
+              <button type="button" className="text-sm underline underline-offset-2" onClick={() => setShowDockerfile((v) => !v)}>
                 {showDockerfile ? "−" : "+"} Dockerfile
               </button>
               {showDockerfile && (
-                <pre className="mt-2 overflow-x-auto rounded-md bg-muted p-3 text-xs"><code>{status.recipe.dockerfile}</code></pre>
+                <pre className="mt-2 overflow-x-auto rounded-md bg-muted p-3 text-xs sm:text-sm"><code>{status.recipe.dockerfile}</code></pre>
               )}
             </>
           )}
@@ -236,10 +239,10 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   );
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 pt-8">
+    <div className="container mx-auto max-w-4xl px-4 pt-8">
       <Link
         href="/verified"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4"
+        className="inline-flex items-center gap-1.5 text-base text-muted-foreground hover:text-foreground mb-4"
       >
         <ArrowLeft className="h-4 w-4" /> {t("verified.backToList")}
       </Link>
@@ -317,16 +320,19 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             slug={status?.slug ?? id}
             staticPageUrl={status?.files?.html}
             pdfUrl={status?.files?.pdf}
+            ciRunUrl={status?.runUrl ?? report.ci_run ?? undefined}
+            trialUrl={`/verified/trial/${id}?as=${role}`}
             logs={logs}
+            buildLogHref={logs.find((l) => l.leg === "build")?.href}
             extraGateRows={extraGateRows}
             backLink={false}
             afterHeader={verdictBlock}
             afterSource={recipeBlock}
           />
-          <p className="mb-10 flex flex-wrap gap-4 px-4 text-sm">
+          <p className="mb-10 flex flex-wrap gap-4 px-4 text-base">
             {status?.runUrl && (
               <a href={status.runUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 underline underline-offset-2">
-                {t("verified.trial.runLink")} <ExternalLink className="h-3.5 w-3.5" />
+                {t("verified.trial.runLink")} <ExternalLink className="h-4 w-4" />
               </a>
             )}
             <Link href={role === "reviewer" ? "/verified/review" : role === "user" ? "/verified/check" : "/verified/submit"} className="underline underline-offset-2">

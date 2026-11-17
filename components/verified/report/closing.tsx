@@ -45,28 +45,28 @@ export function DisputeCard({
   const dispute = buildDisputeLink(report, slug, staticPageUrl);
   const mailto = attestationContactMailto(report, slug, staticPageUrl, t("verified.dispute.mailSubject"));
   return (
-    <div id="dispute" className="mt-6 scroll-mt-8 rounded-lg border bg-muted/40 p-4">
-      <h2 className="text-sm font-semibold">{t("verified.dispute.heading")}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">{t("verified.dispute.note")}</p>
+    <div id="dispute" className="mt-6 scroll-mt-8 rounded-lg border bg-muted/40 p-5 text-base leading-relaxed">
+      <h2 className="text-base font-semibold">{t("verified.dispute.heading")}</h2>
+      <p className="mt-1 text-base text-muted-foreground">{t("verified.dispute.note")}</p>
       {dispute.url && !dispute.tooLong && (
         <>
           <a
             href={dispute.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+            className="mt-3 inline-flex items-center gap-1.5 text-base font-medium text-primary hover:underline"
           >
-            <Flag className="h-3.5 w-3.5" />
+            <Flag className="h-4 w-4" />
             {t("verified.dispute.cta")}
-            <ExternalLink className="h-3 w-3" />
+            <ExternalLink className="h-3.5 w-3.5" />
           </a>
-          <p className="mt-1.5 text-xs text-muted-foreground">{t("verified.dispute.hint")}</p>
+          <p className="mt-1.5 text-sm text-muted-foreground">{t("verified.dispute.hint")}</p>
         </>
       )}
-      <p className="mt-3 border-t pt-3 text-sm text-muted-foreground">
+      <p className="mt-3 border-t pt-3 text-base text-muted-foreground">
         {t("verified.dispute.orEmail")}{" "}
         <a href={mailto} className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline">
-          <Mail className="h-3.5 w-3.5" />
+          <Mail className="h-4 w-4" />
           {CONTACT_EMAIL}
         </a>
       </p>

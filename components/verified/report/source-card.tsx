@@ -65,7 +65,7 @@ export function SourceCard({
           {t("verified.source")}
         </h2>
       )}
-      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2.5 text-base">
         {!headed && report.tool.version && (
           <>
             <dt className="text-muted-foreground">{t("verified.version")}</dt>
@@ -97,15 +97,15 @@ export function SourceCard({
         </dd>
         <dt className="text-muted-foreground">{t("verified.commitPinned")}</dt>
         <dd>
-          <code className="text-xs bg-muted px-1.5 py-0.5 rounded break-all">{ref}</code>
-          <span className="mt-1 block text-xs text-muted-foreground">
+          <code className="text-sm bg-muted px-1.5 py-0.5 rounded break-all">{ref}</code>
+          <span className="mt-1 block text-sm text-muted-foreground">
             {report.source.committed ? `${t("verified.commitMadeOn", { date: formatDate(report.source.committed, language) })} ` : ""}
             {t("verified.commitPinnedHint")}
           </span>
           {upstreamNote && (
             <span
               className={cn(
-                "mt-1 block text-xs",
+                "mt-1 block text-sm",
                 refIsFinding ? "text-amber-700 dark:text-amber-500" : "text-muted-foreground",
               )}
             >
@@ -180,13 +180,13 @@ export function SourceCard({
                   </a>
                 )}
               </div>
-              <span className="mt-1 block text-xs text-muted-foreground">{t("verified.files.note")}</span>
+              <span className="mt-1 block text-sm text-muted-foreground">{t("verified.files.note")}</span>
             </dd>
           </>
         )}
       </dl>
       {!installBlocked && (
-        <p className="mt-3 border-t pt-3 text-xs text-muted-foreground">{t("verified.footnote")}</p>
+        <p className="mt-3 border-t pt-3 text-sm text-muted-foreground">{t("verified.footnote")}</p>
       )}
     </div>
   );

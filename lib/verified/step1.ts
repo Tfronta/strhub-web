@@ -121,3 +121,14 @@ export function buildReadmeTemplate(
     outputLine,
   ].join("\n");
 }
+
+const STEP1_DENIAL_RE =
+  /^(.*?)(That does not mean the tool does not work\.?|Eso no significa que la herramienta no funcione\.?|Isso não significa que a ferramenta não funcione\.?)(.*)$/;
+
+/** Splits out the "does not mean the tool does not work" denial so UI components
+ *  can render it in bold without altering `step1For` text contracts. */
+export function splitStep1Denial(body: string): { before: string; bold: string; after: string } | null {
+  const m = body.match(STEP1_DENIAL_RE);
+  if (!m) return null;
+  return { before: m[1], bold: m[2], after: m[3] };
+}

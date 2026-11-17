@@ -71,6 +71,8 @@ export function VerifiedReportBody({
   staticPageUrl,
   pdfUrl,
   jsonUrl,
+  ciRunUrl,
+  trialUrl,
   logs,
   buildLogHref,
   extraGateRows,
@@ -87,6 +89,10 @@ export function VerifiedReportBody({
   staticPageUrl?: string;
   pdfUrl?: string;
   jsonUrl?: string;
+  /** Live or report CI workflow run URL. */
+  ciRunUrl?: string;
+  /** Shareable trial page URL when not published to the catalogue. */
+  trialUrl?: string;
   logs: ReportLog[];
   buildLogHref?: string;
   extraGateRows?: ExtraGateRow[];
@@ -161,9 +167,9 @@ export function VerifiedReportBody({
 
   return (
     <div className="flex flex-col min-h-[60vh]">
-      <div className="container mx-auto px-4 py-8 flex-1 max-w-3xl">
+      <div className="container mx-auto px-4 py-8 flex-1 max-w-4xl">
         {backLink && (
-          <Link href="/verified" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <Link href="/verified" className="inline-flex items-center gap-1.5 text-base text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" /> {t("verified.backToList")}
           </Link>
         )}
@@ -177,6 +183,8 @@ export function VerifiedReportBody({
           slug={slug}
           datasetsLabel={datasetsLabel}
           permalink={permalink}
+          ciRunUrl={ciRunUrl}
+          trialUrl={trialUrl}
           staticPageUrl={staticPageUrl}
           pdfUrl={pdfUrl}
           jsonUrl={jsonUrl}
@@ -309,7 +317,7 @@ export function VerifiedReportBody({
         <Section n={next()} title={t("verified.certificate.section.scope")}>
           {!installBlocked && <WhatWasVerified />}
           <BoxedList lead={t("verified.certificate.text.scopeExec")} items={certificate.limitations} />
-          <p className="mt-3 text-xs text-muted-foreground">{certificate.scope.disclaimer}</p>
+          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{certificate.scope.disclaimer}</p>
         </Section>
 
         {certificate.conclusion.length > 0 && (

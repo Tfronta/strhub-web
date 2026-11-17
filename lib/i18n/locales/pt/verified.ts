@@ -158,6 +158,7 @@ export default {
       stoppedEarlyNote:
         "Parar nesta etapa não é uma constatação de que o software esteja defeituoso. Registra até onde esta tentativa em particular chegou. Um software pode parar antes porque uma dependência que ele declara não está mais disponível, porque espera a entrada organizada de forma diferente da amostra de referência, ou porque o ambiente automático não consegue fornecer algo de que ele precisa.",
       howToReadLink: "Como ler este resultado",
+      howToReadOpenFull: "Abrir guia completo",
       state: {
         pass: "Passou",
         fail: "Falhou",
@@ -257,10 +258,15 @@ export default {
       cover: {
         date: "Data da verificação",
         commit: "Commit do repositório",
+        viewCommit: "Ver commit no GitHub",
+        ciRun: "Execução no GitHub Actions",
+        ciRunCta: "Abrir execução no Actions",
         result: "Resultado",
         reached: "Alcançou",
         permalink: "Link permanente",
         notPublished: "Não publicado. É uma execução de teste.",
+        copyTrialLink: "Copiar link de teste",
+        trialLinkCopied: "Link copiado!",
         scope: "Escopo deste relatório",
       },
       summary: {

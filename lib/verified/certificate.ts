@@ -357,7 +357,9 @@ function buildLocalizedConclusion(
 
   const ran = gates.runs
     ? {
-        title: t("verified.certificate.conclusion.runsTitle"),
+        title: t("verified.certificate.conclusion.runsTitle", {
+          tool: toolDisplay,
+        }),
         body: t("verified.certificate.conclusion.runsBody", {
           tool: toolDisplay,
           where,
@@ -365,14 +367,18 @@ function buildLocalizedConclusion(
       }
     : gates.installs
       ? {
-          title: t("verified.certificate.conclusion.notRunsTitle"),
+          title: t("verified.certificate.conclusion.notRunsTitle", {
+            tool: toolDisplay,
+          }),
           body: t("verified.certificate.conclusion.notRunsBody", {
             tool: toolDisplay,
             where,
           }),
         }
       : {
-          title: t("verified.certificate.conclusion.notInstallsTitle"),
+          title: t("verified.certificate.conclusion.notInstallsTitle", {
+            tool: toolDisplay,
+          }),
           body: t("verified.certificate.conclusion.notInstallsBody", {
             tool: toolDisplay,
           }),

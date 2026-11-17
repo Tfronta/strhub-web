@@ -13,9 +13,9 @@ export function WhatWasVerified() {
   const { t } = useLanguage();
   return (
     <div className="mt-6 rounded-lg border bg-card p-5">
-      <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-base">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-2">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-2">
             {t("verified.whatVerified.verifiedHeading")}
           </p>
           {[
@@ -24,14 +24,14 @@ export function WhatWasVerified() {
             "verified.whatVerified.execution",
             "verified.whatVerified.outputGenerated",
           ].map((key) => (
-            <div key={key} className="flex items-center gap-1.5 py-0.5">
-              <Check className="h-3.5 w-3.5 text-teal-600 shrink-0" />
+            <div key={key} className="flex items-center gap-2 py-0.5">
+              <Check className="h-4 w-4 text-teal-600 shrink-0" />
               <span className="text-muted-foreground">{t(key)}</span>
             </div>
           ))}
         </div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">
             {t("verified.whatVerified.notHeading")}
           </p>
           {[
@@ -40,8 +40,8 @@ export function WhatWasVerified() {
             "verified.whatVerified.forensicValidity",
             "verified.whatVerified.regulatory",
           ].map((key) => (
-            <div key={key} className="flex items-center gap-1.5 py-0.5">
-              <Minus className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
+            <div key={key} className="flex items-center gap-2 py-0.5">
+              <Minus className="h-4 w-4 text-muted-foreground/50 shrink-0" />
               <span className="text-muted-foreground/70">{t(key)}</span>
             </div>
           ))}
@@ -63,10 +63,10 @@ export function VerificationMatrix({ legs }: { legs: VerifiedMatrixLeg[] }) {
         {visible.map((leg) => {
           const state = !leg.available ? "na" : leg.passed ? "pass" : "fail";
           return (
-            <div key={leg.leg} className="flex items-center gap-3 px-4 py-3 text-sm">
+            <div key={leg.leg} className="flex items-center gap-3 px-4 py-3.5 text-base">
               <span
                 className={cn(
-                  "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
+                  "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
                   state === "pass"
                     ? "bg-teal-600 text-white"
                     : state === "fail"
@@ -74,7 +74,7 @@ export function VerificationMatrix({ legs }: { legs: VerifiedMatrixLeg[] }) {
                       : "bg-muted text-muted-foreground",
                 )}
               >
-                {state === "pass" ? <Check className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
+                {state === "pass" ? <Check className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
               </span>
               <span className="font-semibold text-foreground">
                 {leg.leg === "own"
@@ -84,21 +84,21 @@ export function VerificationMatrix({ legs }: { legs: VerifiedMatrixLeg[] }) {
                     : leg.label}
               </span>
               {leg.dataset && (
-                <span className="truncate text-xs text-muted-foreground">{leg.dataset}</span>
+                <span className="truncate text-sm text-muted-foreground">{leg.dataset}</span>
               )}
               <div className="ml-auto shrink-0 pl-2">
                 {state === "pass" && (
-                  <Badge variant="outline" className="border-teal-600/30 bg-teal-50 text-teal-700 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 font-semibold text-xs">
+                  <Badge variant="outline" className="border-teal-600/30 bg-teal-50 text-teal-700 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 font-semibold text-xs sm:text-sm">
                     {t("verified.gate.state.pass")}
                   </Badge>
                 )}
                 {state === "fail" && (
-                  <Badge variant="outline" className="border-amber-500/40 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300 font-semibold text-xs">
+                  <Badge variant="outline" className="border-amber-500/40 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300 font-semibold text-xs sm:text-sm">
                     {t("verified.gate.state.fail")}
                   </Badge>
                 )}
                 {state === "na" && (
-                  <Badge variant="secondary" className="bg-muted text-muted-foreground font-normal text-xs">
+                  <Badge variant="secondary" className="bg-muted text-muted-foreground font-normal text-xs sm:text-sm">
                     {t("verified.matrix.na")}
                   </Badge>
                 )}
@@ -124,10 +124,10 @@ export function VerificationData({
   return (
     <>
       {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.data.heading")}</h2>)}
-      <p className="mt-1 text-sm text-muted-foreground">{t("verified.data.note")}</p>
+      <p className="mt-1 text-base text-muted-foreground leading-relaxed">{t("verified.data.note")}</p>
 
       {hasStrhubFixture && (
-        <p className="mt-3 text-sm text-muted-foreground rounded-lg border border-border bg-muted/40 px-4 py-3">
+        <p className="mt-3 text-base text-muted-foreground rounded-lg border border-border bg-muted/40 px-4 py-3 leading-relaxed">
           {t("verified.data.noOwnData")}
         </p>
       )}
@@ -141,9 +141,9 @@ export function VerificationData({
               const localizedName = t(nameKey) !== nameKey ? t(nameKey) : ds.name;
               const localizedLicense = t(licKey) !== licKey ? t(licKey) : ds.license;
               return (
-              <div key={ds.type} className="rounded-lg border bg-card p-4">
-                <p className="text-sm font-semibold">{localizedName}</p>
-                <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
+              <div key={ds.type} className="rounded-lg border bg-card p-5">
+                <p className="text-base font-semibold">{localizedName}</p>
+                <dl className="mt-2.5 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
                   <dt className="text-muted-foreground">{t("verified.data.source")}</dt>
                   <dd>
                     <a
@@ -183,10 +183,10 @@ export function VerificationData({
                   )}
                   <dt className="text-muted-foreground pt-1">{t("verified.data.lociTested")}</dt>
                   <dd className="pt-1">
-                    <p className="text-xs text-muted-foreground mb-1">
+                    <p className="text-sm text-muted-foreground mb-1">
                       {ds.loci.length} {t("verified.data.lociCount")}
                     </p>
-                    <p className="text-[10px] font-mono text-muted-foreground/70 leading-relaxed">
+                    <p className="text-xs font-mono text-muted-foreground/80 leading-relaxed">
                       {ds.loci.join(", ")}
                     </p>
                   </dd>
@@ -195,7 +195,7 @@ export function VerificationData({
               );
             })}
           </div>
-          <p className="mt-3 text-xs text-muted-foreground">{t("verified.data.lociScope")}</p>
+          <p className="mt-3 text-sm text-muted-foreground">{t("verified.data.lociScope")}</p>
         </>
       )}
     </>

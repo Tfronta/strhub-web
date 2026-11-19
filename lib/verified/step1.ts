@@ -42,7 +42,7 @@ const TONE: Record<VerifiedStep1["code"], Step1Tone> = {
 
 /** The guide lives in the engine repository, which is public. */
 export const GUIDE_URL =
-  "https://github.com/Tfronta/strhub-verified/blob/main/docs/GUIA-PASO-1.md";
+  "https://github.com/Tfronta/strhub-verified-next/blob/main/docs/GUIA-PASO-1.md";
 
 type Translate = (key: string, params?: Record<string, string>) => string;
 

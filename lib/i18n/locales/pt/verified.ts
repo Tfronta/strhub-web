@@ -36,7 +36,19 @@ export default {
     },
     title: "STRhub Verified",
     description:
-      "Atestações independentes e automatizadas de execução documentada. Verificamos se uma ferramenta de STR instala e roda de ponta a ponta seguindo estritamente as instruções de seu repositório público, em um ambiente limpo e reprodutível. A ausência ou desatualização de passos na documentação fará com que o teste pare; isso reflete atritos de documentação ou de ambiente, não significando diretamente que o software não funcione. Cada relatório detalha exatamente onde e por que a execução foi interrompida, servindo como diagnóstico acionável para correções. Não avalia concordância de genótipos (não é um benchmark biológico) nem constitui evidência de aptidão pericial.",
+      "Atestações independentes e automatizadas de execução documentada. A verificação automática executa quando a documentação do repositório público atende aos requisitos mínimos de configuração, testando instalação e execução de ponta a ponta em um ambiente limpo e reprodutível. Se o teste parar ou resultar em \"não é possível determinar\", isso reflete lacunas de documentação ou limites do ambiente; não significa que a ferramenta não funcione. Caso a verificação automática não seja possível, você pode enviá-la para verificação manual pela equipe do STRhub (prazo de resposta de 3 a 5 dias úteis). Não avalia concordância de genótipos nem constitui evidência de aptidão pericial.",
+    descriptionBeforeLink:
+      "Atestações independentes e automatizadas de execução documentada. A verificação automática executa quando a documentação do repositório público atende aos ",
+    descriptionLinkLabel: "requisitos mínimos de configuração",
+    descriptionMiddle:
+      ", testando instalação e execução de ponta a ponta em um ambiente limpo e reprodutível. ",
+    descriptionBold:
+      "Se o teste parar ou resultar em \"não é possível determinar\", isso reflete lacunas de documentação ou limites do ambiente; não significa que a ferramenta não funcione.",
+    descriptionAfterBold:
+      " Caso a verificação automática não seja possível, você pode enviá-la para verificação manual pela equipe do STRhub (prazo de resposta de 3 a 5 dias úteis). Não avalia concordância de genótipos nem constitui evidência de aptidão pericial.",
+    requirementsHint:
+      "Antes de verificar uma ferramenta, confira se a documentação segue os parâmetros necessários.",
+    requirementsCta: "Requisitos de documentação",
     summary: {
       heading: "Resumo",
       level: "Resultado",

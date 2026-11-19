@@ -14,6 +14,7 @@ import { foldStrhubRuns, headOf, historyOf, shortSha, versionLabel, type History
 import { rowHref } from "./report/history";
 import { formatDate } from "@/lib/verified/format-date";
 import { panelKind } from "@/lib/verified/dataset-provenance";
+import { GUIDE_URL } from "@/lib/verified/step1";
 
 function getPanelLabel(
   translate: (k: string) => string,
@@ -106,17 +107,49 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
   return (
     <div className="flex flex-col min-h-[60vh]">
       <div className="container mx-auto px-4 py-8 flex-1">
-        <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex flex-col gap-4">
           <PageTitle
             title={t("verified.title")}
-            description={t("verified.description")}
+            description={
+              <>
+                {t("verified.descriptionBeforeLink")}
+                <a
+                  href={GUIDE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-medium text-primary underline underline-offset-4 hover:text-primary/80"
+                >
+                  {t("verified.descriptionLinkLabel")}
+                  <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                </a>
+                {t("verified.descriptionMiddle")}
+                <strong className="font-semibold text-foreground">
+                  {t("verified.descriptionBold")}
+                </strong>
+                {t("verified.descriptionAfterBold")}
+              </>
+            }
           />
-          <Link
-            href="/verified/submit"
-            className="shrink-0 inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-          >
-            {t("verified.submit.cta")}
-          </Link>
+          <p className="text-sm font-medium text-foreground/90">
+            {t("verified.requirementsHint")}
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/verified/submit"
+              className="shrink-0 inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              {t("verified.submit.cta")}
+            </Link>
+            <a
+              href={GUIDE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 inline-flex items-center gap-1.5 rounded-md border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+            >
+              {t("verified.requirementsCta")}
+              <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+            </a>
+          </div>
         </div>
 
         {groups.length === 0 && reviews.length === 0 ? (

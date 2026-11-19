@@ -36,7 +36,19 @@ export default {
     },
     title: "STRhub Verified",
     description:
-      "Independent, automated attestations of documented execution. We verify whether an STR tool installs and runs end-to-end strictly following the instructions in its public repository, in a clean and reproducible environment. An incomplete, omitted, or outdated instruction will cause the verification to fail; this reflects documentation or environment friction, not necessarily a defect in the underlying tool. Each report pinpoints exactly where execution stopped and why, helping authors and users identify and resolve reproducibility barriers. Does not evaluate genotype concordance (not a biological benchmark) nor constitute evidence for forensic casework fitness.",
+      "Independent, automated attestations of documented execution. Automated verification runs when the public repository's documentation meets the minimum configuration requirements, testing installation and end-to-end execution in a clean, reproducible environment. If the test stops or returns \"could not be determined\", it reflects documentation gaps or environment limits; it does not mean the tool does not work. If automated verification is not possible, you can submit the tool for manual verification by the STRhub team (response time: 3 to 5 business days). Does not evaluate genotype concordance nor constitute evidence of forensic casework fitness.",
+    descriptionBeforeLink:
+      "Independent, automated attestations of documented execution. Automated verification runs when the public repository's documentation meets the ",
+    descriptionLinkLabel: "minimum configuration requirements",
+    descriptionMiddle:
+      ", testing installation and end-to-end execution in a clean, reproducible environment. ",
+    descriptionBold:
+      "If the test stops or returns \"could not be determined\", it reflects documentation gaps or environment limits; it does not mean the tool does not work.",
+    descriptionAfterBold:
+      " If automated verification is not possible, you can submit the tool for manual verification by the STRhub team (response time: 3 to 5 business days). Does not evaluate genotype concordance nor constitute evidence of forensic casework fitness.",
+    requirementsHint:
+      "Before verifying a tool, make sure its documentation meets the required parameters.",
+    requirementsCta: "Documentation requirements",
     summary: {
       heading: "Summary",
       level: "Result",

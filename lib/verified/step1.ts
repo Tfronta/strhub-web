@@ -40,9 +40,8 @@ const TONE: Record<VerifiedStep1["code"], Step1Tone> = {
   none: "grey",
 };
 
-/** The guide lives in the engine repository, which is public. */
-export const GUIDE_URL =
-  "https://github.com/Tfronta/strhub-verified-next/blob/main/docs/GUIA-PASO-1.md";
+/** The native requirements guide rendered inside STRhub (PT/ES/EN). */
+export const GUIDE_URL = "/verified/requirements";
 
 type Translate = (key: string, params?: Record<string, string>) => string;
 

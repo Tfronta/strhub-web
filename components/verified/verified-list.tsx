@@ -113,15 +113,12 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
             description={
               <>
                 {t("verified.descriptionBeforeLink")}
-                <a
+                <Link
                   href={GUIDE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-medium text-primary underline underline-offset-4 hover:text-primary/80"
+                  className="font-medium text-primary underline underline-offset-4 hover:text-primary/80"
                 >
                   {t("verified.descriptionLinkLabel")}
-                  <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-                </a>
+                </Link>
                 {t("verified.descriptionMiddle")}
                 <strong className="font-semibold text-foreground">
                   {t("verified.descriptionBold")}
@@ -140,15 +137,12 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
             >
               {t("verified.submit.cta")}
             </Link>
-            <a
+            <Link
               href={GUIDE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
               className="shrink-0 inline-flex items-center gap-1.5 rounded-md border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
             >
               {t("verified.requirementsCta")}
-              <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
-            </a>
+            </Link>
           </div>
         </div>
 

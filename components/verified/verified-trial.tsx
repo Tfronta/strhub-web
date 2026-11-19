@@ -29,6 +29,7 @@ import { step1For, type Step1Tone } from "@/lib/verified/step1";
 import { ReadmeTemplateAction, ReproTipsBox, Step1BodyText } from "@/components/verified/report/verdict";
 import { ownerIssueUrl } from "@/lib/verified/trial-next-steps";
 import { LOG_LEGS } from "@/lib/verified/log-files";
+import { ManualReviewCard } from "./manual-review-card";
 import { VerifiedReportBody, type ReportLog, type ExtraGateRow } from "./report/verified-report-body";
 
 const POLL_MS = 8000;
@@ -116,26 +117,62 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
       <p className="mt-2 text-base leading-relaxed text-muted-foreground">
         <Step1BodyText body={step1.body} />
       </p>
-      {step1.missing.length > 0 && (
-        <div className="mt-4">
-          <h3 className="text-base font-semibold">{step1.missingTitle}</h3>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-base">
-            {step1.missing.map((block) => (
-              <li key={block}>{block}</li>
-            ))}
-          </ul>
+      {(step1.code === "cannot_tell" || step1.code === "ours") && report ? (
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className="flex flex-col justify-between rounded-lg border bg-background/70 p-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("verified.trial.manualReview.option1Tag")}
+              </p>
+              <h3 className="mt-2 text-base font-semibold">
+                {step1.code === "cannot_tell"
+                  ? t("verified.trial.manualReview.option1Title")
+                  : t("verified.trial.manualReview.option1OursTitle")}
+              </h3>
+              {step1.code === "cannot_tell" && step1.missing.length > 0 ? (
+                <div className="mt-2">
+                  <p className="text-sm font-medium text-muted-foreground">{step1.missingTitle}</p>
+                  <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm">
+                    {step1.missing.map((block) => (
+                      <li key={block}>{block}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {t("verified.trial.manualReview.option1OursBody")}
+                </p>
+              )}
+            </div>
+            <div className="mt-4 space-y-2">
+              <Button asChild variant="outline" size="sm">
+                <Link href={step1.guideHref}>{step1.guideLabel}</Link>
+              </Button>
+              {step1.code === "cannot_tell" && <ReadmeTemplateAction report={report} />}
+            </div>
+          </div>
+
+          <ManualReviewCard
+            trialId={id}
+            toolName={report.tool.name}
+            repo={report.source.repo}
+            refSha={report.source.ref_resolved ?? report.source.ref ?? "HEAD"}
+            role={role}
+            reason={verdict?.reason ?? step1.headline}
+            ciRun={status?.runUrl ?? report.ci_run ?? undefined}
+          />
         </div>
-      )}
-      {step1.code === "cannot_tell" && report && (
-        <div className="mt-4 space-y-2">
-          <Button asChild variant="outline" size="sm">
-            <a href={step1.guideHref} target="_blank" rel="noreferrer">
-              {step1.guideLabel}
-              <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
-            </a>
-          </Button>
-          <ReadmeTemplateAction report={report} />
-        </div>
+      ) : (
+        step1.missing.length > 0 && (
+          <div className="mt-4">
+            <h3 className="text-base font-semibold">{step1.missingTitle}</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-base">
+              {step1.missing.map((block) => (
+                <li key={block}>{block}</li>
+              ))}
+            </ul>
+          </div>
+        )
       )}
     </section>
   );

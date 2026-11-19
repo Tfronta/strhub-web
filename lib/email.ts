@@ -97,3 +97,87 @@ export async function notifyNewPendingSubmission(params: {
   });
   if (error) throw new Error(`Resend error: ${error.message}`);
 }
+
+export async function notifyManualVerificationRequest(params: {
+  trialId: string;
+  toolName: string;
+  repo: string;
+  ref: string;
+  role: string;
+  requesterEmail: string;
+  reason: string;
+  notes?: string;
+  ciRun?: string;
+  ip: string;
+}): Promise<{ delivered: boolean }> {
+  const client = getClient();
+  if (!client) return { delivered: false };
+
+  const trialUrl = `${SITE_URL}/verified/trial/${encodeURIComponent(params.trialId)}?as=${encodeURIComponent(params.role)}`;
+  const toolName = escapeHtml(params.toolName);
+  const repo = escapeHtml(params.repo);
+  const repoLabel = escapeHtml(params.repo.replace("https://github.com/", ""));
+  const ref = escapeHtml(params.ref);
+  const role = escapeHtml(params.role);
+  const requesterEmail = escapeHtml(params.requesterEmail);
+  const reason = escapeHtml(params.reason);
+  const notes = params.notes ? escapeHtml(params.notes) : "";
+  const ciRun = params.ciRun ? escapeHtml(params.ciRun) : "";
+  const ip = escapeHtml(params.ip);
+
+  const { error } = await client.emails.send({
+    from: FROM,
+    to: [ADMIN_EMAIL],
+    replyTo: params.requesterEmail,
+    subject: `[STRhub Verified] Solicitud de revisión manual: ${params.toolName}`.replace(/[\r\n]/g, " "),
+    html: `
+      <div style="font-family: system-ui, sans-serif; max-width: 640px; margin: 0 auto; padding: 24px;">
+        <h2 style="color: #1a1a2e; margin-bottom: 8px;">Solicitud de verificación manual</h2>
+        <p style="color: #555; margin-bottom: 20px;">
+          Un usuario (${role}) solicitó verificación manual tras un trial automático en STRhub Verified.
+        </p>
+
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+          <tr>
+            <td style="padding: 10px 12px; background: #f5f5f5; font-weight: 600; width: 140px;">Herramienta</td>
+            <td style="padding: 10px 12px; background: #fafafa;">${toolName}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 12px; background: #f5f5f5; font-weight: 600;">Repositorio</td>
+            <td style="padding: 10px 12px; background: #fafafa;"><a href="${repo}" style="color: #0d9488;">${repoLabel}</a></td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 12px; background: #f5f5f5; font-weight: 600;">Commit</td>
+            <td style="padding: 10px 12px; background: #fafafa; font-family: monospace; font-size: 13px;">${ref}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 12px; background: #f5f5f5; font-weight: 600;">Contacto</td>
+            <td style="padding: 10px 12px; background: #fafafa;"><a href="mailto:${requesterEmail}" style="color: #0d9488;">${requesterEmail}</a> (${role})</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 12px; background: #f5f5f5; font-weight: 600;">Motivo del freno</td>
+            <td style="padding: 10px 12px; background: #fafafa;">${reason}</td>
+          </tr>
+          ${notes ? `<tr><td style="padding: 10px 12px; background: #f5f5f5; font-weight: 600;">Comentarios</td><td style="padding: 10px 12px; background: #fafafa; white-space: pre-wrap;">${notes}</td></tr>` : ""}
+          ${ciRun ? `<tr><td style="padding: 10px 12px; background: #f5f5f5; font-weight: 600;">GitHub Actions</td><td style="padding: 10px 12px; background: #fafafa;"><a href="${ciRun}" style="color: #0d9488;">Ver corrida CI</a></td></tr>` : ""}
+          <tr>
+            <td style="padding: 10px 12px; background: #f5f5f5; font-weight: 600;">IP</td>
+            <td style="padding: 10px 12px; background: #fafafa; font-family: monospace; color: #888;">${ip}</td>
+          </tr>
+        </table>
+
+        <a href="${trialUrl}"
+           style="display: inline-block; background: #0d9488; color: white; text-decoration: none;
+                  padding: 12px 24px; border-radius: 6px; font-weight: 600; margin-bottom: 20px;">
+          Abrir reporte del trial →
+        </a>
+
+        <p style="color: #999; font-size: 12px; border-top: 1px solid #eee; padding-top: 14px; margin-top: 14px;">
+          STRhub Verified · Plazo comunicado al solicitante: 3 a 5 días hábiles.
+        </p>
+      </div>
+    `,
+  });
+  if (error) throw new Error(`Resend error: ${error.message}`);
+  return { delivered: true };
+}

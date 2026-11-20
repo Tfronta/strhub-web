@@ -56,6 +56,22 @@ const VERDICT_REASON_EXACT: Record<string, string> = {
     "verified.engineText.verdictReason.noOutput",
   "STRhub did not attempt a run it could attribute to the tool.":
     "verified.engineText.verdictReason.notAttributed",
+  "No repository document shows an installation this profile can transcribe literally; no missing step, dependency or choice was supplied by STRhub.":
+    "verified.engineText.verdictReason.noCopyableInstall",
+  "The repository ships a .dockerignore, which would change what the evaluator's carrier copies.":
+    "verified.engineText.verdictReason.dockerignoreUnsupported",
+  "The repository uses submodules, which this profile does not fetch.":
+    "verified.engineText.verdictReason.submodulesUnsupported",
+  "More than one installation is documented with the same steps; STRhub does not choose between them.":
+    "verified.engineText.verdictReason.multipleInstalls",
+  "This evaluator cannot establish that the cited command reads the declared reference input; no config or input list was rewritten to make it do so.":
+    "verified.engineText.verdictReason.inputNotSubstituted",
+  "The documented command reads a file that neither the repository nor STRhub holds, so the command was not run.":
+    "verified.engineText.verdictReason.documentedFileMissing",
+  "Counting platform mentions does not establish which shared dataset this procedure reads.":
+    "verified.engineText.verdictReason.platformUnproven",
+  "STRhub holds no reference sample of the kind this procedure reads, and the repository ships no example to run, so nothing was executed.":
+    "verified.engineText.verdictReason.noReferenceSample",
 };
 
 const VERDICT_SUFFIXES: [string, string][] = [
@@ -112,6 +128,18 @@ export function localizeVerdictReason(
     const mProposal = core.match(
       /^The proposed way of running this tool did not work \((.+)\)\. That may be the proposal rather than the tool: a maintainer-supplied command would settle it\.$/,
     );
+    const mStepOutside = core.match(
+      /^An installation step is outside this profile \((.+), line (\d+): `(.+)`\); STRhub does not interpret, complete or skip it\.$/,
+    );
+    const mStepLeaves = core.match(
+      /^An installation step leaves the repository \((.+), line (\d+): `(.+)`\)\.$/,
+    );
+    const mStepDir = core.match(
+      /^An installation step enters a directory the commit does not hold \((.+), line (\d+): `(.+)`\)\.$/,
+    );
+    const mStepFile = core.match(
+      /^An installation step reads a file the commit does not hold \((.+), line (\d+): `(.+)`\)\.$/,
+    );
 
     if (mRaisedTimeout) {
       translatedCore = t("verified.engineText.verdictReason.raisedTimeout", {
@@ -136,6 +164,30 @@ export function localizeVerdictReason(
     } else if (mProposal) {
       translatedCore = t("verified.engineText.verdictReason.proposalFailed", {
         ids: mProposal[1],
+      });
+    } else if (mStepOutside) {
+      translatedCore = t("verified.engineText.verdictReason.installStepOutside", {
+        file: mStepOutside[1],
+        line: mStepOutside[2],
+        cmd: mStepOutside[3],
+      });
+    } else if (mStepLeaves) {
+      translatedCore = t("verified.engineText.verdictReason.installStepLeavesRepo", {
+        file: mStepLeaves[1],
+        line: mStepLeaves[2],
+        cmd: mStepLeaves[3],
+      });
+    } else if (mStepDir) {
+      translatedCore = t("verified.engineText.verdictReason.installStepMissingDir", {
+        file: mStepDir[1],
+        line: mStepDir[2],
+        cmd: mStepDir[3],
+      });
+    } else if (mStepFile) {
+      translatedCore = t("verified.engineText.verdictReason.installStepMissingFile", {
+        file: mStepFile[1],
+        line: mStepFile[2],
+        cmd: mStepFile[3],
       });
     }
   }
@@ -469,6 +521,8 @@ export function localizeBlocker(
   blocker: { code: string; what: string },
   t: Translate,
 ): string {
+  const fromReason = localizeVerdictReason(blocker.what, t);
+  if (fromReason && fromReason !== blocker.what) return fromReason;
   const whatKey = `verified.engineText.blockers.${blocker.code}.what`;
   const what = t(whatKey);
   return what !== whatKey ? what : blocker.what;

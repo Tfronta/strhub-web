@@ -9,7 +9,8 @@
  * trial has).
  */
 import { useState, type ReactNode } from "react";
-import { Check, Copy, ExternalLink, FileCode2, LifeBuoy } from "lucide-react";
+import Link from "next/link";
+import { Check, Copy, FileCode2, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
 import { localizeReadmeGap, localizeVerdictReason } from "@/lib/verified/certificate";
@@ -19,14 +20,29 @@ import { useHeaded } from "./certificate";
 
 export { buildReadmeTemplate };
 
+const STEP1_RETRY_RE =
+  /^(.*?)(Add it and try the link again on the new commit\.?|Fix the documentation, or the step that broke, and try the link again on the new commit\.?|Agregalo y volvé a probar con el link sobre el commit nuevo\.?|Corregí la documentación, o el paso que se rompió, y volvé a probar con el link sobre el commit nuevo\.?|Adicione e tente o link novamente no commit novo\.?|Corrija a documentação, ou o passo que quebrou, e teste o link novamente no commit novo\.?)(.*)$/;
+
+function renderWithRetryBold(text: string): ReactNode {
+  const m = text.match(STEP1_RETRY_RE);
+  if (!m) return text;
+  return (
+    <>
+      {m[1]}
+      <strong className="font-semibold text-foreground">{m[2]}</strong>
+      {m[3]}
+    </>
+  );
+}
+
 export function Step1BodyText({ body }: { body: string }) {
   const split = splitStep1Denial(body);
-  if (!split) return <>{body}</>;
+  if (!split) return <>{renderWithRetryBold(body)}</>;
   return (
     <>
       {split.before}
       <strong className="font-semibold text-foreground">{split.bold}</strong>
-      {split.after}
+      {renderWithRetryBold(split.after)}
     </>
   );
 }
@@ -155,10 +171,7 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
               {step1.code !== "runs" && (
                 <div className="mt-4 space-y-2">
                   <Button asChild variant="outline" size="sm">
-                    <a href={step1.guideHref} target="_blank" rel="noreferrer">
-                      {step1.guideLabel}
-                      <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
-                    </a>
+                    <Link href={step1.guideHref}>{step1.guideLabel}</Link>
                   </Button>
                   <ReadmeTemplateAction report={report} />
                 </div>
@@ -178,7 +191,6 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
                   </ul>
                 </div>
               )}
-              {v.code !== "runs" && <ReproTipsBox />}
             </section>
           )}
         </>

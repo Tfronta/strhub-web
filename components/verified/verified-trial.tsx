@@ -26,7 +26,7 @@ import {
   localizeVerdictReason,
 } from "@/lib/verified/certificate";
 import { step1For, type Step1Tone } from "@/lib/verified/step1";
-import { ReadmeTemplateAction, ReproTipsBox, Step1BodyText } from "@/components/verified/report/verdict";
+import { ReadmeTemplateAction, Step1BodyText } from "@/components/verified/report/verdict";
 import { ownerIssueUrl } from "@/lib/verified/trial-next-steps";
 import { LOG_LEGS } from "@/lib/verified/log-files";
 import { ManualReviewCard } from "./manual-review-card";
@@ -108,61 +108,138 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
     ...(report?.install_detail?.diagnostics ?? []),
     ...actionableDiagnostics(report?.diagnostics, false),
   ];
+  const localizedReason = localizeVerdictReason(verdict?.reason, t) ?? verdict?.reason;
+  const issueBlockers = (verdict?.blockers ?? []).map((b) => ({
+    ...b,
+    localizedWhat: localizeBlocker(b, t),
+    issueUrl: report
+      ? ownerIssueUrl(report, b, typeof window !== "undefined" ? window.location.href.split("?")[0] : "")
+      : null,
+  }));
+
   const step1Block = step1 && (
     <section
       className={`mt-6 rounded-lg border-2 p-5 sm:p-6 ${STEP1_BORDER[step1.tone]}`}
       aria-labelledby="trial-step1"
     >
-      <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-        {t("verified.trial.step1.heading")}
-      </p>
-      <h2 id="trial-step1" className="mt-1 text-xl font-semibold">
+      <div className="flex flex-wrap items-center gap-2.5">
+        {verdict && (
+          <Badge className={`${VERDICT_TONE[verdict.code]} border-transparent text-xs sm:text-sm`}>
+            {t(`verified.trial.verdict.${verdict.code}`)}
+          </Badge>
+        )}
+        <p className="text-xs sm:text-sm font-medium uppercase tracking-wide text-muted-foreground">
+          {t("verified.trial.step1.heading")}
+        </p>
+      </div>
+      <h2 id="trial-step1" className="mt-2 text-xl font-semibold">
         {step1.headline}
       </h2>
       <p className="mt-2 text-base leading-relaxed text-muted-foreground">
         <Step1BodyText body={step1.body} />
       </p>
-      {step1.code === "does_not_run" && step1Diagnostics.length > 0 && (
+
+      {/* Full-width problem diagnosis BEFORE the action cards */}
+      {step1.code !== "runs" && report && (
         <div className="mt-4 rounded-lg border border-amber-500/40 bg-amber-50/40 p-4 sm:p-5 dark:border-amber-800/60 dark:bg-amber-950/20">
           <p className="text-xs font-semibold uppercase tracking-wider text-amber-900 dark:text-amber-300">
             {t("verified.trial.manualReview.diagnosisHeading")}
           </p>
-          <div className="mt-3 divide-y divide-border/60">
-            {step1Diagnostics.map((issue) => {
-              const txt = getDiagnosticText(t, issue);
-              return (
-                <div key={issue.id + issue.title} className="space-y-2 py-3 first:pt-0 last:pb-0">
-                  <div className="flex flex-wrap items-baseline gap-2 text-sm sm:text-base">
-                    <span className="font-semibold text-muted-foreground">
-                      {t("verified.trial.manualReview.topicWhatFailed")}
-                    </span>
-                    <span className="font-semibold text-foreground">{txt.cleanTitle}</span>
+
+          {step1.code === "does_not_run" && step1Diagnostics.length > 0 ? (
+            <div className="mt-3 divide-y divide-border/60">
+              {step1Diagnostics.map((issue) => {
+                const txt = getDiagnosticText(t, issue);
+                return (
+                  <div key={issue.id + issue.title} className="space-y-2 py-3 first:pt-0 last:pb-0">
+                    <div className="flex flex-wrap items-baseline gap-2 text-sm sm:text-base">
+                      <span className="font-semibold text-muted-foreground">
+                        {t("verified.trial.manualReview.topicWhatFailed")}
+                      </span>
+                      <span className="font-semibold text-foreground">{txt.cleanTitle}</span>
+                    </div>
+                    {txt.item && (
+                      <div className="flex flex-wrap items-center gap-2 text-sm">
+                        <span className="font-semibold text-muted-foreground">
+                          {t("verified.trial.manualReview.topicAffectedItem")}
+                        </span>
+                        <code className="break-all rounded border bg-background px-2 py-0.5 font-mono text-xs sm:text-sm text-foreground">
+                          {txt.item}
+                        </code>
+                      </div>
+                    )}
+                    {txt.suggestion && (
+                      <div className="text-sm sm:text-base leading-relaxed break-words [overflow-wrap:anywhere]">
+                        <span className="font-semibold text-muted-foreground">
+                          {t("verified.trial.manualReview.topicWhyItHappens")}{" "}
+                        </span>
+                        <span className="text-foreground/90">{txt.suggestion}</span>
+                      </div>
+                    )}
                   </div>
-                  {txt.item && (
-                    <div className="flex flex-wrap items-center gap-2 text-sm">
-                      <span className="font-semibold text-muted-foreground">
-                        {t("verified.trial.manualReview.topicAffectedItem")}
-                      </span>
-                      <code className="break-all rounded border bg-background px-2 py-0.5 font-mono text-xs sm:text-sm text-foreground">
-                        {txt.item}
-                      </code>
-                    </div>
-                  )}
-                  {txt.suggestion && (
-                    <div className="text-sm sm:text-base leading-relaxed break-words [overflow-wrap:anywhere]">
-                      <span className="font-semibold text-muted-foreground">
-                        {t("verified.trial.manualReview.topicWhyItHappens")}{" "}
-                      </span>
-                      <span className="text-foreground/90">{txt.suggestion}</span>
-                    </div>
-                  )}
+                );
+              })}
+            </div>
+          ) : (
+            <div className="mt-2.5 space-y-3 text-sm sm:text-base">
+              {localizedReason && (
+                <p className="leading-relaxed text-foreground/95 break-words [overflow-wrap:anywhere]">
+                  {localizedReason}
+                </p>
+              )}
+              {step1.missing.length > 0 && (
+                <div>
+                  <p className="text-sm font-semibold text-muted-foreground">{step1.missingTitle}</p>
+                  <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm sm:text-base">
+                    {step1.missing.map((block) => (
+                      <li key={block}>{block}</li>
+                    ))}
+                  </ul>
                 </div>
-              );
-            })}
-          </div>
+              )}
+              {verdict?.readme_gaps && verdict.readme_gaps.length > 0 && (
+                <div>
+                  <p className="text-sm font-semibold text-muted-foreground">{t("verified.trial.gapsTitle")}</p>
+                  <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm sm:text-base">
+                    {verdict.readme_gaps.map((g) => (
+                      <li key={g.item}>{localizeReadmeGap(g, t)}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {issueBlockers.some((b) => b.localizedWhat !== localizedReason) && (
+                <ul className="list-disc space-y-1.5 pl-5 text-sm text-muted-foreground">
+                  {issueBlockers
+                    .filter((b) => b.localizedWhat !== localizedReason)
+                    .map((b) => (
+                      <li key={b.code} className="break-words [overflow-wrap:anywhere]">
+                        {b.localizedWhat}
+                      </li>
+                    ))}
+                </ul>
+              )}
+            </div>
+          )}
+
+          {issueBlockers.some((b) => b.issueUrl) && (
+            <div className="mt-3 flex flex-wrap gap-2 border-t border-border/50 pt-3">
+              {issueBlockers
+                .filter((b) => b.issueUrl)
+                .slice(0, 1)
+                .map((b) => (
+                  <Button key={b.code} asChild size="sm" variant="outline" title={t("verified.trial.askOwnerHint")}>
+                    <a href={b.issueUrl!} target="_blank" rel="noopener noreferrer">
+                      {t("verified.trial.askOwner")} <ExternalLink className="ml-1 h-3.5 w-3.5" />
+                    </a>
+                  </Button>
+                ))}
+            </div>
+          )}
         </div>
       )}
-      {step1.code !== "runs" && report ? (
+
+      {/* Action options side by side AFTER the problem diagnosis */}
+      {step1.code !== "runs" && report && (
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <div className="flex flex-col justify-between rounded-lg border bg-background/70 p-4">
             <div>
@@ -176,24 +253,13 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
                     ? t("verified.trial.manualReview.option1FailsTitle")
                     : t("verified.trial.manualReview.option1OursTitle")}
               </h3>
-              {step1.code === "cannot_tell" && step1.missing.length > 0 ? (
-                <div className="mt-2">
-                  <p className="text-sm font-medium text-muted-foreground">{step1.missingTitle}</p>
-                  <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm">
-                    {step1.missing.map((block) => (
-                      <li key={block}>{block}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : step1.code === "does_not_run" ? (
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                  {t("verified.trial.manualReview.option1FailsBody")}
-                </p>
-              ) : (
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                  {t("verified.trial.manualReview.option1OursBody")}
-                </p>
-              )}
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                {step1.code === "cannot_tell"
+                  ? t("verified.trial.manualReview.option1DocsBody")
+                  : step1.code === "does_not_run"
+                    ? t("verified.trial.manualReview.option1FailsBody")
+                    : t("verified.trial.manualReview.option1OursBody")}
+              </p>
             </div>
             <div className="mt-4 space-y-2">
               <Button asChild variant="outline" size="sm">
@@ -213,17 +279,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             ciRun={status?.runUrl ?? report.ci_run ?? undefined}
           />
         </div>
-      ) : (
-        step1.missing.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-base font-semibold">{step1.missingTitle}</h3>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-base">
-              {step1.missing.map((block) => (
-                <li key={block}>{block}</li>
-              ))}
-            </ul>
-          </div>
-        )
       )}
     </section>
   );
@@ -239,7 +294,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const verdictBlock = report && verdict && (
     <>
       {step1Block}
-      {(!step1 || verdict.code !== "runs" || (verdict.readme_gaps && verdict.readme_gaps.length > 0)) && (
+      {(!step1 || (step1.code === "runs" && verdict.readme_gaps && verdict.readme_gaps.length > 0)) && (
         <section className="mt-4 rounded-lg border bg-card p-5 sm:p-6" aria-labelledby="trial-verdict">
           <div className="flex flex-wrap items-center gap-3">
             <Badge className={`${VERDICT_TONE[verdict.code]} border-transparent text-sm`}>{t(`verified.trial.verdict.${verdict.code}`)}</Badge>
@@ -248,7 +303,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             </h2>
           </div>
           <p className="mt-2 text-base leading-relaxed text-muted-foreground">
-            {localizeVerdictReason(verdict.reason, t) ?? verdict.reason}
+            {localizedReason}
           </p>
           {verdict.readme_gaps && verdict.readme_gaps.length > 0 && (
             <div className="mt-4">
@@ -259,34 +314,30 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
               </ul>
             </div>
           )}
-          {verdict.code !== "runs" && <ReproTipsBox />}
         </section>
       )}
 
-      {verdict.blockers && verdict.blockers.length > 0 && (
+      {!step1 && verdict.blockers && verdict.blockers.length > 0 && (
         <Card className="mt-6 border-amber-500/40 dark:border-amber-800">
           <CardHeader>
             <CardTitle className="text-lg">{t("verified.trial.stoppedTitle")}</CardTitle>
           </CardHeader>
           <CardContent>
             <ol className="space-y-5">
-              {verdict.blockers.map((b) => {
-                const issue = ownerIssueUrl(report, b, typeof window !== "undefined" ? window.location.href.split("?")[0] : "");
-                return (
-                  <li key={b.code} className="text-base">
-                    <p className="font-medium">{localizeBlocker(b, t)}</p>
-                    {issue && (
-                      <div className="mt-2">
-                        <Button asChild size="sm" variant="outline" title={t("verified.trial.askOwnerHint")}>
-                          <a href={issue} target="_blank" rel="noopener noreferrer">
-                            {t("verified.trial.askOwner")} <ExternalLink className="ml-1 h-3.5 w-3.5" />
-                          </a>
-                        </Button>
-                      </div>
-                    )}
-                  </li>
-                );
-              })}
+              {issueBlockers.map((b) => (
+                <li key={b.code} className="text-base">
+                  <p className="font-medium">{b.localizedWhat}</p>
+                  {b.issueUrl && (
+                    <div className="mt-2">
+                      <Button asChild size="sm" variant="outline" title={t("verified.trial.askOwnerHint")}>
+                        <a href={b.issueUrl} target="_blank" rel="noopener noreferrer">
+                          {t("verified.trial.askOwner")} <ExternalLink className="ml-1 h-3.5 w-3.5" />
+                        </a>
+                      </Button>
+                    </div>
+                  )}
+                </li>
+              ))}
             </ol>
           </CardContent>
         </Card>

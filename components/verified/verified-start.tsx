@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ExternalLink, Lightbulb, Loader2 } from "lucide-react";
+import { Lightbulb, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -135,13 +136,13 @@ export function VerifiedStart({
           {role === "owner" && (
             <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               <span>{t("verified.start.ownerNotice")}</span>
-              <a
-                href="#readme-tips"
+              <Link
+                href={GUIDE_URL}
                 className="inline-flex items-center gap-1.5 rounded-md border border-teal-600/30 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-800 transition-colors hover:bg-teal-100 hover:text-teal-900 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 dark:hover:bg-teal-900/60"
               >
                 <Lightbulb className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
                 {t("verified.start.ownerNoticeLink")}
-              </a>
+              </Link>
             </div>
           )}
         </>
@@ -220,15 +221,6 @@ export function VerifiedStart({
                 {t(`verified.start.role.${r}`)}
               </label>
             ))}
-            {role === "owner" && !compact && (
-              <a
-                href="#readme-tips"
-                className="ml-2 inline-flex items-center gap-1.5 rounded-md border border-teal-600/30 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-800 transition-colors hover:bg-teal-100 hover:text-teal-900 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 dark:hover:bg-teal-900/60"
-              >
-                <Lightbulb className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
-                {t("verified.start.ownerNoticeLink")}
-              </a>
-            )}
           </div>
         </fieldset>
 
@@ -278,15 +270,12 @@ export function VerifiedStart({
                   <li>{t("verified.start.readmeTips.nonInteractive")}</li>
                 </ul>
                 <div className="pt-3">
-                  <a
+                  <Link
                     href={GUIDE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-xs font-medium text-teal-700 hover:underline dark:text-teal-400"
                   >
                     {t("verified.start.readmeTips.guideLink")}
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

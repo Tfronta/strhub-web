@@ -22,7 +22,9 @@ export type LogKind =
   | "requires_gpu"
   | "conda_unsatisfiable"
   | "pip_unresolvable"
-  | "missing_header";
+  | "missing_header"
+  | "cmake_package_missing"
+  | "missing_library";
 
 /** Which side each kind usually sits on. Advice, not a verdict. */
 export const KIND_SIDE: Record<LogKind, "setup" | "tool" | "either"> = {
@@ -37,6 +39,8 @@ export const KIND_SIDE: Record<LogKind, "setup" | "tool" | "either"> = {
   conda_unsatisfiable: "tool",
   pip_unresolvable: "tool",
   missing_header: "setup",
+  cmake_package_missing: "setup",
+  missing_library: "setup",
 };
 
 const RULES: [LogKind, RegExp][] = [
@@ -51,6 +55,8 @@ const RULES: [LogKind, RegExp][] = [
   ["conda_unsatisfiable", /ResolvePackageNotFound|PackagesNotFoundError|UnsatisfiableError|libmamba Could not solve/i],
   ["pip_unresolvable", /No matching distribution found for|Could not find a version that satisfies the requirement/i],
   ["missing_header", /fatal error:\s+\S+\.h(?:pp)?:\s+No such file or directory/i],
+  ["cmake_package_missing", /Could NOT find \w+ \(missing:\s*[^)]+\)/i],
+  ["missing_library", /(?:ld|collect2)[^\n]*?:\s+cannot find -l[\w+-]+/i],
 ];
 
 const HELP_LINE = /^(?:usage:|options?:|arguments?:|-{1,2}[a-z])/i;

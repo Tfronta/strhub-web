@@ -30,6 +30,7 @@ import { ReadmeTemplateAction, ReproTipsBox, Step1BodyText } from "@/components/
 import { ownerIssueUrl } from "@/lib/verified/trial-next-steps";
 import { LOG_LEGS } from "@/lib/verified/log-files";
 import { ManualReviewCard } from "./manual-review-card";
+import { actionableDiagnostics, getDiagnosticText } from "./report/findings";
 import { VerifiedReportBody, type ReportLog, type ExtraGateRow } from "./report/verified-report-body";
 
 const POLL_MS = 8000;
@@ -103,6 +104,10 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   // a report written before the engine carried it, and then the verdict leads
   // as it always did.
   const step1 = step1For(report?.step1, t);
+  const step1Diagnostics = [
+    ...(report?.install_detail?.diagnostics ?? []),
+    ...actionableDiagnostics(report?.diagnostics, false),
+  ];
   const step1Block = step1 && (
     <section
       className={`mt-6 rounded-lg border-2 p-5 sm:p-6 ${STEP1_BORDER[step1.tone]}`}
@@ -117,7 +122,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
       <p className="mt-2 text-base leading-relaxed text-muted-foreground">
         <Step1BodyText body={step1.body} />
       </p>
-      {(step1.code === "cannot_tell" || step1.code === "ours") && report ? (
+      {step1.code !== "runs" && report ? (
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <div className="flex flex-col justify-between rounded-lg border bg-background/70 p-4">
             <div>
@@ -127,7 +132,9 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
               <h3 className="mt-2 text-base font-semibold">
                 {step1.code === "cannot_tell"
                   ? t("verified.trial.manualReview.option1Title")
-                  : t("verified.trial.manualReview.option1OursTitle")}
+                  : step1.code === "does_not_run"
+                    ? t("verified.trial.manualReview.option1FailsTitle")
+                    : t("verified.trial.manualReview.option1OursTitle")}
               </h3>
               {step1.code === "cannot_tell" && step1.missing.length > 0 ? (
                 <div className="mt-2">
@@ -137,6 +144,29 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
                       <li key={block}>{block}</li>
                     ))}
                   </ul>
+                </div>
+              ) : step1.code === "does_not_run" ? (
+                <div className="mt-2 space-y-2">
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {t("verified.trial.manualReview.option1FailsBody")}
+                  </p>
+                  {step1Diagnostics.length > 0 && (
+                    <ul className="space-y-2 rounded-md border bg-muted/40 p-3 text-sm">
+                      {step1Diagnostics.map((issue) => {
+                        const txt = getDiagnosticText(t, issue);
+                        return (
+                          <li key={issue.id + issue.title}>
+                            <span className="font-semibold text-foreground">{txt.title}</span>
+                            {txt.suggestion && (
+                              <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
+                                {txt.suggestion}
+                              </span>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
                 </div>
               ) : (
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">

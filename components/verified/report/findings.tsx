@@ -9,7 +9,7 @@ import type { VerifiedReport, VerifiedDiagnostic, VerifiedReadmeCheck } from "@/
 import { summarizeErrors, externalLegNoteKeys, installFaultKey } from "@/lib/verified/diagnostics";
 import { isManualEligible, reasonI18nKey } from "@/lib/verified/manual";
 
-function getDiagnosticText(
+export function getDiagnosticText(
   t: (key: string, params?: Record<string, string>) => string,
   issue: { id: string; title: string; suggestion?: string; examples?: string[] },
 ): { title: string; suggestion?: string } {

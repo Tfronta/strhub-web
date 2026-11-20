@@ -165,6 +165,8 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
             {groups.map((group) => {
               const badge = badgeFor(group.head, t);
               const isOpen = expanded.has(group.repo);
+              const isManualHead = group.head.instrument === "curated";
+              const hasManualRow = !isManualHead && group.rows.some((r) => r.instrument === "curated" && !r.retired);
 
               return (
                 <Card key={group.repo} className="flex flex-col justify-between h-full">
@@ -178,6 +180,21 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                           <Badge className={cn("w-fit shrink-0", TONE[badge.tone])}>
                             {badge.label}
                           </Badge>
+                          <span
+                            className={cn(
+                              "inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium shrink-0",
+                              isManualHead
+                                ? "border-amber-600/40 bg-amber-50/70 text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200"
+                                : "border-teal-600/40 bg-teal-50/60 text-teal-900 dark:border-teal-700/60 dark:bg-teal-950/40 dark:text-teal-200"
+                            )}
+                          >
+                            {isManualHead ? t("verified.mode.manualBadge") : t("verified.mode.autoBadge")}
+                          </span>
+                          {hasManualRow && (
+                            <span className="inline-flex items-center rounded-full border border-amber-600/40 bg-amber-50/70 px-2 py-0.5 text-[11px] font-medium text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200 shrink-0">
+                              + {t("verified.mode.manualShort")}
+                            </span>
+                          )}
                           <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium text-muted-foreground tabular-nums shrink-0">
                             {t("verified.summary.gatesPassed", {
                               passed: String(LEVEL_RANK[group.head.level] ?? 0),
@@ -225,6 +242,7 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                         {foldStrhubRuns(group.rows).map(({ row, strhub }) => {
                           const rowLevel = badgeFor(row, t);
                           const panelLabel = getPanelLabel(t, row.dataset_types);
+                          const rowIsManual = row.instrument === "curated";
                           return (
                             <div key={`${row.slug}-${row.sha}-${row.instrument ?? ""}`} className="rounded-md border transition-colors hover:border-primary">
                             <Link
@@ -241,6 +259,16 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                                 >
                                   {rowLevel.label}
                                 </Badge>
+                                <span
+                                  className={cn(
+                                    "text-[10px] rounded border px-1.5 py-0 font-medium shrink-0",
+                                    rowIsManual
+                                      ? "border-amber-600/40 bg-amber-50/70 text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200"
+                                      : "border-teal-600/40 bg-teal-50/60 text-teal-900 dark:border-teal-700/60 dark:bg-teal-950/40 dark:text-teal-200"
+                                  )}
+                                >
+                                  {rowIsManual ? t("verified.mode.manualShort") : t("verified.mode.autoShort")}
+                                </span>
                                 <span className="text-xs font-medium">{versionLabel(row)}</span>
                                 <code className="rounded bg-muted px-1 text-[10px] text-muted-foreground">{shortSha(row.sha)}</code>
                                 {panelLabel && (
@@ -258,9 +286,12 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
                             {strhub && (
                               <Link
                                 href={rowHref(strhub)}
-                                className="block border-t px-3 py-1.5 text-[10px] text-muted-foreground hover:bg-muted/50 hover:text-primary"
+                                className="flex items-center gap-1.5 border-t px-3 py-1.5 text-[10px] text-muted-foreground hover:bg-muted/50 hover:text-primary"
                               >
-                                {t("verified.strhubDid.rowNote", { label: reachedLabel(strhub.level, t) })}
+                                <span className="rounded border border-amber-600/40 bg-amber-50/70 px-1.5 py-0 font-medium text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200 shrink-0">
+                                  {t("verified.mode.manualShort")}
+                                </span>
+                                <span>{t("verified.strhubDid.rowNote", { label: reachedLabel(strhub.level, t) })}</span>
                               </Link>
                             )}
                             </div>

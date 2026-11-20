@@ -20,6 +20,7 @@ import type { VerifiedReport, VerifiedWorkaround } from "@/types/verified";
 import { badgeFor, reachedLabel, TONE } from "@/lib/verified/badge";
 import { localizeVerdictReason } from "@/lib/verified/certificate";
 import { shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
+import { GUIDE_URL } from "@/lib/verified/step1";
 import { cn } from "@/lib/utils";
 import { useHeaded } from "./certificate";
 import { rowHref } from "./history";
@@ -89,30 +90,135 @@ export function WorkaroundList({ items }: { items: VerifiedWorkaround[] | undefi
 export function StrhubDidSection({ run, row }: { run: VerifiedReport; row?: HistoryRow }) {
   const { t } = useLanguage();
   const items = run.recipe?.workarounds;
+  const prep = run.preparation;
   const reached = reachedLabel(run.level, t);
   const localizedReason = localizeVerdictReason(run.verdict?.reason, t);
+
+  const whyItems: string[] = [
+    ...(prep?.without_preparation ? [prep.without_preparation] : []),
+    ...(prep?.why ?? []),
+    ...(!prep?.why?.length && items?.length
+      ? items.map((w) => (w.why ? `${w.instead_of}: ${w.why}` : w.instead_of)).filter(Boolean)
+      : []),
+  ];
+
+  const suggestions: string[] = [
+    ...(run.recommendations ?? []),
+    ...(!run.recommendations?.length && items?.length
+      ? items.map((w) => w.what).filter(Boolean)
+      : []),
+    ...(!run.recommendations?.length && !items?.length && prep?.why?.length
+      ? prep.why
+      : []),
+  ];
+
   return (
     <>
       {!useHeaded() && <h2 className="mt-10 text-xl font-semibold">{t("verified.strhubDid.heading")}</h2>}
-      <div className="mt-3 rounded-lg border bg-card p-5">
-        <p className="text-sm">
-          {row ? t("verified.strhubDid.leadAt", { what: nameOf(row) }) : t("verified.strhubDid.lead")}
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">{t("verified.strhubDid.each")}</p>
-        <div className="mt-3">
-          <WorkaroundList items={items} />
+      <div className="mt-3 space-y-5 rounded-lg border bg-card p-5">
+        <div>
+          <p className="text-sm">
+            {row ? t("verified.strhubDid.leadAt", { what: nameOf(row) }) : t("verified.strhubDid.lead")}
+          </p>
+          <p className="mt-1.5 text-sm text-muted-foreground">{t("verified.strhubDid.noLabelChange")}</p>
         </div>
-        <div className="mt-3 text-sm">
-          {t("verified.strhubDid.reached")}{" "}
-          <Badge className={cn("align-middle text-[10px]", TONE[run.level === "io" || run.level === "content" ? "green" : "amber"])}>{reached}</Badge>
-          {localizedReason && <span className="ml-2 text-muted-foreground">{localizedReason}</span>}
+
+        {/* Block 1: Why it went to manual review */}
+        <div className="rounded-md border bg-muted/30 p-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {t("verified.strhubDid.blockWhyTitle")}
+          </h3>
+          {whyItems.length > 0 ? (
+            <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm leading-relaxed">
+              {whyItems.map((reason, idx) => (
+                <li key={`${idx}-${reason}`}>{reason}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t("verified.strhubDid.blockWhyFallback")}
+            </p>
+          )}
         </div>
-        {!!items?.length && (
-          <p className="mt-3 text-sm text-muted-foreground">{t("verified.strhubDid.recommendations")}</p>
-        )}
-        <p className="mt-3 text-sm text-muted-foreground">{t("verified.strhubDid.noLabelChange")}</p>
+
+        {/* Block 2: What STRhub had to do to run it */}
+        <div className="rounded-md border bg-background/70 p-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {t("verified.strhubDid.blockWhatTitle")}
+          </h3>
+          <p className="mt-1.5 text-sm text-muted-foreground">{t("verified.strhubDid.each")}</p>
+          {prep ? (
+            <div className="mt-3 space-y-3 text-sm">
+              {prep.base && (
+                <p>
+                  <span className="font-medium">{t("verified.strhubDid.prepBaseLabel")}</span>{" "}
+                  <span className="text-muted-foreground">{prep.base}</span>
+                </p>
+              )}
+              {prep.steps && prep.steps.length > 0 && (
+                <div>
+                  <p className="font-medium">{t("verified.strhubDid.prepStepsLabel")}</p>
+                  <pre className="mt-1.5 overflow-x-auto rounded-md border bg-muted p-3 font-mono text-xs">
+                    <code>{prep.steps.join("\n")}</code>
+                  </pre>
+                </div>
+              )}
+              {prep.files && prep.files.length > 0 && (
+                <div>
+                  <p className="font-medium">{t("verified.strhubDid.prepFilesLabel")}</p>
+                  <ul className="mt-1 list-disc space-y-1 pl-5 text-muted-foreground">
+                    {prep.files.map((f) => (
+                      <li key={f.path}>
+                        <code className="rounded bg-muted px-1 py-0.5 text-xs">{f.path}</code>
+                        {f.replaces ? ` (${f.replaces})` : ""}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {items && items.length > 0 && <WorkaroundList items={items} />}
+            </div>
+          ) : (
+            <div className="mt-3">
+              <WorkaroundList items={items} />
+            </div>
+          )}
+          <div className="mt-3 border-t pt-3 text-sm">
+            {t("verified.strhubDid.reached")}{" "}
+            <Badge className={cn("align-middle text-[10px]", TONE[run.level === "io" || run.level === "content" ? "green" : "amber"])}>
+              {reached}
+            </Badge>
+            {localizedReason && <span className="ml-2 text-muted-foreground">{localizedReason}</span>}
+          </div>
+        </div>
+
+        {/* Block 3: Suggestions to reach automated verification */}
+        <div className="rounded-md border border-teal-600/30 bg-teal-50/40 p-4 dark:border-teal-900/50 dark:bg-teal-950/20">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-teal-900 dark:text-teal-200">
+            {t("verified.strhubDid.blockSuggestionsTitle")}
+          </h3>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            {t("verified.strhubDid.recommendations")}
+          </p>
+          {suggestions.length > 0 && (
+            <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm leading-relaxed">
+              {suggestions.map((s, idx) => (
+                <li key={`${idx}-${s}`}>{s}</li>
+              ))}
+            </ul>
+          )}
+          <div className="mt-3">
+            <Link
+              href={GUIDE_URL}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-teal-800 hover:underline dark:text-teal-300"
+            >
+              {t("verified.strhubDid.viewRequirementsCta")} <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </div>
+
         {row && (
-          <Link href={rowHref(row)} className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+          <Link href={rowHref(row)} className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
             {t("verified.strhubDid.readRun")} <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         )}

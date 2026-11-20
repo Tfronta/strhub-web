@@ -167,6 +167,23 @@ export function localizeNeededItem(item: string, t: Translate): string {
     const val = t(exact[item]);
     if (val !== exact[item]) return val;
   }
+  const mBase = item.match(
+    /^A base environment for the documented installation: STRhub ran the repository's install commands unchanged on (.+)\. Base-image and package versions are not frozen by the commands\.$/,
+  );
+  if (mBase) {
+    const val = t("verified.engineText.needed.baseEnvDocumented", { base: mBase[1] });
+    if (val !== "verified.engineText.needed.baseEnvDocumented") return val;
+  }
+  const mRef = item.match(
+    /^A reference genome \((.+)\): the command names one, and STRhub mounted the public copy at (.+)\.$/,
+  );
+  if (mRef) {
+    const val = t("verified.engineText.needed.referenceGenomeMounted", {
+      assembly: mRef[1],
+      path: mRef[2],
+    });
+    if (val !== "verified.engineText.needed.referenceGenomeMounted") return val;
+  }
   return item;
 }
 
@@ -303,6 +320,137 @@ export function localizeCaveatItem(item: string, t: Translate): string {
     ))
   ) {
     return t("verified.engineText.caveats.str8rzrConfig", { config: m[1] });
+  }
+  if (
+    (m = item.match(
+      /^Environment: STRhub transcribed the documented installation commands unchanged into its own carrier \((.+)\)\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.envTranscribed", { base: m[1] });
+  }
+  if (
+    (m = item.match(
+      /^Environment: STRhub transcribed the documented installation commands unchanged into its own carrier; its preparation \((.+)\) supplies the inputs only\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.envTranscribedPrepInputs", { file: m[1] });
+  }
+  if (
+    (m = item.match(
+      /^Environment: prepared by STRhub by hand \((.+)\); every step is listed in the report\. The command is the repository's own\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.envPreparedByHand", { file: m[1] });
+  }
+  if (
+    item ===
+    "Environment: no proven installation profile; STRhub did not manufacture installation steps."
+  ) {
+    return t("verified.engineText.caveats.envNoProfile");
+  }
+  if (
+    item ===
+    "Environment: no proven installation profile; STRhub did not manufacture installation steps. STRhub does not build a Dockerfile shipped in a repository."
+  ) {
+    return t("verified.engineText.caveats.envNoProfileDockerfile");
+  }
+  if (
+    (m = item.match(
+      /^Input: the README documents (.+?) \(line (\d+)\); this plan selects STRhub's (\S+) reference data\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.inputUsed", {
+      docFormat: m[1],
+      line: m[2],
+      dataset: m[3],
+    });
+  }
+  if (
+    (m = item.match(
+      /^Input: the README documents (.+?) \(line (\d+)\); this plan selects STRhub's (\S+) reference data\. The author recommends (.+?) \(line (\d+): "(.+)"\)\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.inputWithAuthorRec", {
+      docFormat: m[1],
+      line: m[2],
+      dataset: m[3],
+      recFormat: m[4],
+      recLine: m[5],
+      quote: m[6],
+    });
+  }
+  if (
+    (m = item.match(
+      /^Input: the documented command takes (BAM|FASTQ) \((.+), line (\d+)\); no sentence says so, so the command is what was read\. This plan selects STRhub's (\S+) reference data\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.inputFromCommand", {
+      kind: m[1],
+      file: m[2],
+      line: m[3],
+      dataset: m[4],
+    });
+  }
+  if (
+    (m = item.match(
+      /^Input: STRhub's preparation selects its (\S+) reference data(?: and its loci in the (\S+) layout)?\.$/,
+    ))
+  ) {
+    return m[2]
+      ? t("verified.engineText.caveats.inputPreparedWithRegions", {
+          dataset: m[1],
+          layout: m[2],
+        })
+      : t("verified.engineText.caveats.inputPrepared", { dataset: m[1] });
+  }
+  if (
+    (m = item.match(
+      /^Input: no sentence in the README says what the tool takes; (\S+) is only a guess from mentions; it is not authorization to execute\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.inputGuessed", { dataset: m[1] });
+  }
+  if (
+    item ===
+    "Run command: the README's own command, rewritten to STRhub's mounts; the capture wrapper is planned only if the procedure review passes."
+  ) {
+    return t("verified.engineText.caveats.runCmdReadme");
+  }
+  if (
+    (m = item.match(
+      /^Run command: the one documented in (.+) \(line (\d+)\), rewritten to STRhub's mounts; the capture wrapper is planned only if the procedure review passes\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.runCmdDoc", {
+      file: m[1],
+      line: m[2],
+    });
+  }
+  if (
+    (m = item.match(
+      /^Run command: the one documented on the wiki \((.+), line (\d+)\), rewritten to STRhub's mounts; the capture wrapper is planned only if the procedure review passes\. A wiki is not versioned with the code: it was read as it is today\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.runCmdWiki", {
+      file: m[1],
+      line: m[2],
+    });
+  }
+  if (
+    item ===
+    "Evaluator limitation: a possible prerequisite was discovered but was not automatically chained."
+  ) {
+    return t("verified.engineText.caveats.prerequisiteNotChained");
+  }
+  if (
+    (m = item.match(
+      /^File: the documented command reads (\S+) \((?:after|in) (\S+)\), which is neither in the repository at this commit nor in STRhub's reference dataset\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.missingDocumentedFile", {
+      file: m[1],
+      flag: m[2],
+    });
   }
 
   return item;

@@ -326,7 +326,24 @@ export interface VerifiedReport {
   environment: {
     dockerfile?: string;
     os?: string[];
+    source?: "documented" | "prepared" | "generated" | "repo" | "submitted" | string;
   };
+  /**
+   * Manual preparation details when STRhub prepared the environment or inputs
+   * (`strhub-prepared-environment/1`).
+   */
+  preparation?: {
+    file: string;
+    dataset?: string;
+    regions?: string | null;
+    installation?: "repository" | "strhub" | string;
+    base?: string | null;
+    steps?: string[];
+    files?: { path: string; replaces?: string }[];
+    why?: string[];
+    without_preparation?: string | null;
+  } | null;
+  recommendations?: string[] | null;
   generated: string;
   ci_run?: string;
   gates: Record<VerifiedLevel, boolean>;

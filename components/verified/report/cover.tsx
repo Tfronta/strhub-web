@@ -33,6 +33,7 @@ export function Cover({
   staticPageUrl,
   pdfUrl,
   jsonUrl,
+  isManualRun,
 }: {
   report: VerifiedReport;
   certificate: VerifiedCertificate;
@@ -48,6 +49,7 @@ export function Cover({
   staticPageUrl?: string;
   pdfUrl?: string;
   jsonUrl?: string;
+  isManualRun?: boolean;
 }) {
   const { t, language } = useLanguage();
   const [copiedTrial, setCopiedTrial] = useState(false);
@@ -55,6 +57,11 @@ export function Cover({
   const repo = report.source.repo.replace(/\/+$/, "");
   const commitUrl = /^https:\/\/github\.com\//.test(repo) && /^[0-9a-f]{7,40}$/i.test(sha) ? `${repo}/commit/${sha}` : null;
   const effectiveCiRun = ciRunUrl ?? report.ci_run ?? undefined;
+  const isManual =
+    Boolean(isManualRun) ||
+    report.instrument === "curated" ||
+    report.environment?.source === "prepared" ||
+    Boolean(report.preparation);
 
   async function copyTrialLink() {
     if (!trialUrl) return;
@@ -100,6 +107,10 @@ export function Cover({
           ),
         }]
       : []),
+    {
+      label: t("verified.mode.tableLabel"),
+      value: isManual ? t("verified.mode.manualDetail") : t("verified.mode.autoDetail"),
+    },
     { label: t("verified.certificate.cover.reached"), value: certificate.summary.reached },
     ...(certificate.summary.why
       ? [{ label: t("verified.certificate.summary.why"), value: certificate.summary.why }]
@@ -149,6 +160,16 @@ export function Cover({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <Badge className={cn("w-fit px-2.5 py-0.5 text-sm font-bold", TONE[level.tone])}>{level.label}</Badge>
+          <span
+            className={cn(
+              "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs sm:text-sm font-medium",
+              isManual
+                ? "border-amber-600/40 bg-amber-50/70 text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200"
+                : "border-teal-600/40 bg-teal-50/60 text-teal-900 dark:border-teal-700/60 dark:bg-teal-950/40 dark:text-teal-200"
+            )}
+          >
+            {isManual ? t("verified.mode.manualBadge") : t("verified.mode.autoBadge")}
+          </span>
           {panel && (
             <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs sm:text-sm text-muted-foreground">
               {t(`verified.panel.${panel}`)}

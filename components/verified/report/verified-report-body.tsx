@@ -133,7 +133,11 @@ export function VerifiedReportBody({
   const certificate = certificateOf(report, level.label, t);
   const installBlocked = blockedBeforeInstall(report);
   const data = summarizeDatasets(report, slug);
-  const isStrhubRun = instrument === "curated";
+  const isStrhubRun =
+    instrument === "curated" ||
+    report.instrument === "curated" ||
+    report.environment?.source === "prepared" ||
+    Boolean(report.preparation);
   const permalink = history ? `${SITE}${rowHref(history.current)}` : undefined;
   const passedRun =
     report.verdict?.code === "runs" ||
@@ -188,6 +192,7 @@ export function VerifiedReportBody({
           staticPageUrl={staticPageUrl}
           pdfUrl={pdfUrl}
           jsonUrl={jsonUrl}
+          isManualRun={isStrhubRun}
         />
 
         {history?.current.retired && <RetiredNotice row={history.current} />}

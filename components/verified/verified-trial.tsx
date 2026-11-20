@@ -122,6 +122,46 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
       <p className="mt-2 text-base leading-relaxed text-muted-foreground">
         <Step1BodyText body={step1.body} />
       </p>
+      {step1.code === "does_not_run" && step1Diagnostics.length > 0 && (
+        <div className="mt-4 rounded-lg border border-amber-500/40 bg-amber-50/40 p-4 sm:p-5 dark:border-amber-800/60 dark:bg-amber-950/20">
+          <p className="text-xs font-semibold uppercase tracking-wider text-amber-900 dark:text-amber-300">
+            {t("verified.trial.manualReview.diagnosisHeading")}
+          </p>
+          <div className="mt-3 divide-y divide-border/60">
+            {step1Diagnostics.map((issue) => {
+              const txt = getDiagnosticText(t, issue);
+              return (
+                <div key={issue.id + issue.title} className="space-y-2 py-3 first:pt-0 last:pb-0">
+                  <div className="flex flex-wrap items-baseline gap-2 text-sm sm:text-base">
+                    <span className="font-semibold text-muted-foreground">
+                      {t("verified.trial.manualReview.topicWhatFailed")}
+                    </span>
+                    <span className="font-semibold text-foreground">{txt.cleanTitle}</span>
+                  </div>
+                  {txt.item && (
+                    <div className="flex flex-wrap items-center gap-2 text-sm">
+                      <span className="font-semibold text-muted-foreground">
+                        {t("verified.trial.manualReview.topicAffectedItem")}
+                      </span>
+                      <code className="break-all rounded border bg-background px-2 py-0.5 font-mono text-xs sm:text-sm text-foreground">
+                        {txt.item}
+                      </code>
+                    </div>
+                  )}
+                  {txt.suggestion && (
+                    <div className="text-sm sm:text-base leading-relaxed break-words [overflow-wrap:anywhere]">
+                      <span className="font-semibold text-muted-foreground">
+                        {t("verified.trial.manualReview.topicWhyItHappens")}{" "}
+                      </span>
+                      <span className="text-foreground/90">{txt.suggestion}</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
       {step1.code !== "runs" && report ? (
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <div className="flex flex-col justify-between rounded-lg border bg-background/70 p-4">
@@ -146,28 +186,9 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
                   </ul>
                 </div>
               ) : step1.code === "does_not_run" ? (
-                <div className="mt-2 space-y-2">
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {t("verified.trial.manualReview.option1FailsBody")}
-                  </p>
-                  {step1Diagnostics.length > 0 && (
-                    <ul className="space-y-2 rounded-md border bg-muted/40 p-3 text-sm">
-                      {step1Diagnostics.map((issue) => {
-                        const txt = getDiagnosticText(t, issue);
-                        return (
-                          <li key={issue.id + issue.title}>
-                            <span className="font-semibold text-foreground">{txt.title}</span>
-                            {txt.suggestion && (
-                              <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
-                                {txt.suggestion}
-                              </span>
-                            )}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  )}
-                </div>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {t("verified.trial.manualReview.option1FailsBody")}
+                </p>
               ) : (
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                   {t("verified.trial.manualReview.option1OursBody")}

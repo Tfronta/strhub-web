@@ -12,7 +12,7 @@ import { isManualEligible, reasonI18nKey } from "@/lib/verified/manual";
 export function getDiagnosticText(
   t: (key: string, params?: Record<string, string>) => string,
   issue: { id: string; title: string; suggestion?: string; examples?: string[] },
-): { title: string; suggestion?: string } {
+): { title: string; cleanTitle: string; item?: string; suggestion?: string } {
   const params: Record<string, string> = {};
   if (issue.examples?.[0]) params["0"] = issue.examples[0];
   if (issue.examples?.[1]) params["1"] = issue.examples[1];
@@ -50,8 +50,27 @@ export function getDiagnosticText(
     finalTitle = `${finalTitle}: ${suffix}`;
   }
 
+  const rawItem =
+    params["0"] && issue.id !== "str_too_long" && issue.id !== "run_timeout"
+      ? issue.id === "bad_option" && !params["0"].startsWith("-")
+        ? `--${params["0"]}`
+        : params["0"]
+      : undefined;
+
+  let cleanTitle = finalTitle;
+  if (rawItem) {
+    cleanTitle = cleanTitle
+      .replace(` (${params["0"]})`, "")
+      .replace(` (${rawItem})`, "")
+      .replace(`: ${params["0"]}`, "")
+      .replace(`: ${rawItem}`, "")
+      .trim();
+  }
+
   return {
     title: finalTitle,
+    cleanTitle: cleanTitle || finalTitle,
+    item: rawItem,
     suggestion:
       hasI18nTitle && i18nSuggestion !== suggKey
         ? i18nSuggestion
@@ -100,14 +119,23 @@ export function BuildFailedCard({
         </ul>
       </div>
       <p className="mt-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground">{t("verified.install.whatFailed")}</p>
-      <ul className="mt-2 space-y-2 border-t border-border pt-3">
+      <ul className="mt-2 space-y-3 border-t border-border pt-3">
         {d.diagnostics.map((issue) => {
           const txt = getDiagnosticText(t, issue);
           return (
-            <li key={issue.id + issue.title} className="text-base">
-              <span className="font-medium">{txt.title}</span>
+            <li key={issue.id + issue.title} className="text-base break-words [overflow-wrap:anywhere]">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-medium">{txt.cleanTitle}</span>
+                {txt.item && (
+                  <code className="break-all rounded border bg-background px-2 py-0.5 font-mono text-xs sm:text-sm text-foreground">
+                    {txt.item}
+                  </code>
+                )}
+              </div>
               {txt.suggestion && (
-                <span className="mt-1 block text-sm text-muted-foreground leading-relaxed">{txt.suggestion}</span>
+                <span className="mt-1.5 block text-sm text-muted-foreground leading-relaxed break-words [overflow-wrap:anywhere]">
+                  {txt.suggestion}
+                </span>
               )}
             </li>
           );

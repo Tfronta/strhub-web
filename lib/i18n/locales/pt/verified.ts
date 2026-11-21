@@ -252,7 +252,7 @@ export default {
         blockedBody: "O relatório registra o código-fonte e as evidências disponíveis no commit fixado.",
         notInstallsBody: "A imagem do contêiner falhou ao compilar, portanto os portões de execução e de saída não foram alcançados.",
         plausibleTitle: "A saída passa nas verificações de plausibilidade",
-        plausibleBody: "A execução produziu uma saída {format}não vazia cobrindo {loci} loci STR reconhecíveis.",
+        plausibleBody: "A execução produziu uma saída {format}não vazia com {loci} loci STR reconhecíveis; as verificações de plausibilidade conferem estrutura e presença de loci, não a validade nem a completude de cada genótipo.",
         ioTitle: "Arquivo de saída produzido; verificação de plausibilidade não superada",
         ioBody: "Um arquivo de saída {format}não vazio foi escrito, mas não passou no portão de plausibilidade.",
         noOutputTitle: "A saída esperada não foi produzida",
@@ -778,7 +778,7 @@ export default {
           ours: "O STRhub não pôde tentar a execução documentada.",
         },
         body: {
-          runs: "Um terceiro instalou a ferramenta com os passos que este commit enuncia e executou o comando que ele escreve, e o arquivo de saída que esse comando nomeia apareceu. Isso não diz nada sobre genótipos nem sobre o painel forense.",
+          runs: "Um terceiro instalou a ferramenta com os passos que este commit enuncia e executou o comando que ele escreve, e o arquivo de saída que esse comando nomeia apareceu. Isso não diz nada sobre a exatidão dos genótipos nem sobre concordância com o painel de referência.",
           does_not_run: "Isso não significa que a ferramenta não funcione. Significa que um terceiro, seguindo o README neste commit, não chegou ao final. Corrija a documentação, ou o passo que quebrou, e tente o link novamente no commit novo.",
           cannot_tell: "Nada foi executado. Isso não significa que a ferramenta não funcione: falta no README deste commit o que o guia pede. Adicione e tente o link novamente no commit novo.",
           ours: "A avaliação parou devido a uma limitação do STRhub. O motivo está neste relatório.",

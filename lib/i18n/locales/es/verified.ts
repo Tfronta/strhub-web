@@ -252,7 +252,7 @@ export default {
         blockedBody: "El informe registra el código fuente y la evidencia disponible en el commit fijado.",
         notInstallsBody: "La imagen del contenedor no se pudo construir, por lo que no se alcanzaron las compuertas de ejecución ni de salida.",
         plausibleTitle: "La salida supera las comprobaciones de plausibilidad",
-        plausibleBody: "La corrida produjo una salida {format}no vacía que cubre {loci} loci STR reconocibles.",
+        plausibleBody: "La corrida produjo una salida {format}no vacía con {loci} loci STR reconocibles; las comprobaciones de plausibilidad verifican estructura y presencia de loci, no la validez ni la completitud de cada genotipo.",
         ioTitle: "Se produjo el archivo de salida; no superó la comprobación de plausibilidad",
         ioBody: "Se escribió un archivo de salida {format}no vacío, pero no superó la compuerta de plausibilidad.",
         noOutputTitle: "No se produjo la salida esperada",
@@ -778,7 +778,7 @@ export default {
           ours: "STRhub no pudo intentar la corrida documentada.",
         },
         body: {
-          runs: "Un tercero instaló la herramienta con los pasos que este commit enuncia y corrió el comando que escribe, y apareció el archivo de salida que ese comando nombra. No dice nada sobre genotipos ni sobre el panel forense.",
+          runs: "Un tercero instaló la herramienta con los pasos que este commit enuncia y corrió el comando que escribe, y apareció el archivo de salida que ese comando nombra. No dice nada sobre la exactitud de los genotipos ni sobre concordancia con el panel de referencia.",
           does_not_run: "Eso no significa que la herramienta no funcione. Significa que un tercero, siguiendo el README en este commit, no llegó al final. Corregí la documentación, o el paso que se rompió, y volvé a probar con el link sobre el commit nuevo.",
           cannot_tell: "No se ejecutó nada. Eso no significa que la herramienta no funcione: falta en el README de este commit lo que la guía pide. Agregalo y volvé a probar con el link sobre el commit nuevo.",
           ours: "La evaluación se detuvo por una limitación de STRhub. El motivo figura en este informe.",

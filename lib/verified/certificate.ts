@@ -31,8 +31,7 @@ export const LIMITATIONS = [
   "Single containerized environment (Docker / ubuntu-22.04)",
   "No truth-set comparison or ground-truth genotypes",
   "No accuracy or concordance assessment",
-  "No forensic validation of results",
-  "Short-read limitations apply (very long STR alleles may not span reads)",
+  "No forensic or clinical validation of results",
 ];
 
 const GATES = ["available", "installs", "runs", "io", "content"] as const;

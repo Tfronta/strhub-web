@@ -252,7 +252,7 @@ export default {
         blockedBody: "The report records the source and the evidence available at the pinned commit.",
         notInstallsBody: "The container image failed to build, so execution and output gates were not reached.",
         plausibleTitle: "Output passes plausibility checks",
-        plausibleBody: "The run produced non-empty {format}output covering {loci} recognizable STR loci.",
+        plausibleBody: "The run produced a non-empty {format}output containing {loci} distinct recognizable STR loci; structural plausibility checks verify output format and locus presence, not genotype validity or completeness across every listed locus.",
         ioTitle: "Output file produced; plausibility check not passed",
         ioBody: "A non-empty {format}output file was written, but the plausibility gate did not pass.",
         noOutputTitle: "Expected output was not produced",
@@ -778,7 +778,7 @@ export default {
           ours: "STRhub could not attempt the documented run.",
         },
         body: {
-          runs: "A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.",
+          runs: "A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotype accuracy or concordance on any reference panel.",
           does_not_run: "That does not mean the tool does not work. It means a third party following the README at this commit did not reach the end. Fix the documentation, or the step that broke, and try the link again on the new commit.",
           cannot_tell: "Nothing was executed. That does not mean the tool does not work: what the guide asks for is missing from the README at this commit. Add it and try the link again on the new commit.",
           ours: "STRhub reached a limit in its evaluator. See the reason recorded in this report.",

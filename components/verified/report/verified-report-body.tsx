@@ -268,13 +268,17 @@ export function VerifiedReportBody({
 
         {!installBlocked && (
           <Section n={next()} title={t("verified.data.heading")}>
-            <VerificationData provenance={data.provenance} hasStrhubFixture={data.hasStrhubFixture} />
+            <VerificationData
+              provenance={data.provenance}
+              hasStrhubFixture={data.hasStrhubFixture}
+              installsPassed={Boolean(report.gates?.installs)}
+            />
           </Section>
         )}
 
         {report.datasets && report.datasets.length > 0 && report.datasets.some((leg) => leg.fixture_source !== "strhub") && (
           <Section n={next()} title={t("verified.matrix.heading")}>
-            <VerificationMatrix legs={report.datasets} />
+            <VerificationMatrix legs={report.datasets} installsPassed={Boolean(report.gates?.installs)} />
           </Section>
         )}
 
@@ -320,7 +324,7 @@ export function VerifiedReportBody({
         )}
 
         <Section n={next()} title={t("verified.certificate.section.scope")}>
-          {!installBlocked && <WhatWasVerified />}
+          {!installBlocked && <WhatWasVerified gates={report.gates} verdictCode={report.verdict?.code} />}
           <BoxedList lead={t("verified.certificate.text.scopeExec")} items={certificate.limitations} />
           <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{certificate.scope.disclaimer}</p>
         </Section>

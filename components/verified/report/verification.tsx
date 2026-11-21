@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Minus } from "lucide-react";
+import { Check, Minus, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import { useHeaded } from "./certificate";
@@ -8,9 +8,40 @@ import { cn } from "@/lib/utils";
 import type { VerifiedMatrixLeg } from "@/types/verified";
 import type { DatasetProvenance } from "@/lib/verified/dataset-provenance";
 
-/** What the badge does and does not claim, side by side. Static by design. */
-export function WhatWasVerified() {
+type StageOutcome = "pass" | "fail" | "not_attempted" | "not_established";
+
+function stageStatuses(gates?: Record<string, boolean>, verdictCode?: string): { key: string; state: StageOutcome }[] {
+  const g = gates ?? {};
+  const avail = Boolean(g.available);
+  const inst = Boolean(g.installs);
+  const runs = Boolean(g.runs);
+  const out = Boolean(g.io || g.content);
+  if (verdictCode === "undetermined") {
+    return [
+      { key: "verified.whatVerified.sourceAvailable", state: avail ? "pass" : "fail" },
+      { key: "verified.whatVerified.installation", state: inst ? "pass" : "not_attempted" },
+      { key: "verified.whatVerified.execution", state: runs ? "pass" : "not_attempted" },
+      { key: "verified.whatVerified.outputGenerated", state: out ? "pass" : runs ? "not_established" : "not_attempted" },
+    ];
+  }
+  return [
+    { key: "verified.whatVerified.sourceAvailable", state: avail ? "pass" : "fail" },
+    { key: "verified.whatVerified.installation", state: !avail ? "not_attempted" : inst ? "pass" : "fail" },
+    { key: "verified.whatVerified.execution", state: !inst ? "not_attempted" : runs ? "pass" : "fail" },
+    { key: "verified.whatVerified.outputGenerated", state: !runs ? "not_attempted" : out ? "pass" : "fail" },
+  ];
+}
+
+/** Real stage status derived from `gates` alongside what is outside scope. */
+export function WhatWasVerified({
+  gates,
+  verdictCode,
+}: {
+  gates?: Record<string, boolean>;
+  verdictCode?: string;
+}) {
   const { t } = useLanguage();
+  const stages = stageStatuses(gates, verdictCode);
   return (
     <div className="mt-6 rounded-lg border bg-card p-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-base">
@@ -18,15 +49,36 @@ export function WhatWasVerified() {
           <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-2">
             {t("verified.whatVerified.verifiedHeading")}
           </p>
-          {[
-            "verified.whatVerified.sourceAvailable",
-            "verified.whatVerified.installation",
-            "verified.whatVerified.execution",
-            "verified.whatVerified.outputGenerated",
-          ].map((key) => (
-            <div key={key} className="flex items-center gap-2 py-0.5">
-              <Check className="h-4 w-4 text-teal-600 shrink-0" />
-              <span className="text-muted-foreground">{t(key)}</span>
+          {stages.map(({ key, state }) => (
+            <div key={key} className="flex items-center justify-between gap-2 py-0.5">
+              <span className="flex items-center gap-2">
+                {state === "pass" ? (
+                  <Check className="h-4 w-4 text-teal-600 shrink-0" />
+                ) : state === "fail" ? (
+                  <X className="h-4 w-4 text-red-600 shrink-0" />
+                ) : (
+                  <Minus className="h-4 w-4 text-muted-foreground/60 shrink-0" />
+                )}
+                <span className="text-muted-foreground">{t(key)}</span>
+              </span>
+              <span
+                className={cn(
+                  "text-xs font-semibold uppercase tracking-wide shrink-0",
+                  state === "pass"
+                    ? "text-teal-700 dark:text-teal-400"
+                    : state === "fail"
+                      ? "text-red-700 dark:text-red-400"
+                      : "text-muted-foreground",
+                )}
+              >
+                {state === "pass"
+                  ? t("verified.gate.state.pass")
+                  : state === "fail"
+                    ? t("verified.gate.state.fail")
+                    : state === "not_established"
+                      ? t("verified.matrix.notEstablished")
+                      : t("verified.matrix.notAttempted")}
+              </span>
             </div>
           ))}
         </div>
@@ -52,7 +104,13 @@ export function WhatWasVerified() {
 }
 
 /** One row per leg: the tool's own data, and STRhub's reference sample. */
-export function VerificationMatrix({ legs }: { legs: VerifiedMatrixLeg[] }) {
+export function VerificationMatrix({
+  legs,
+  installsPassed = true,
+}: {
+  legs: VerifiedMatrixLeg[];
+  installsPassed?: boolean;
+}) {
   const { t } = useLanguage();
   const visible = legs.filter((leg) => leg.fixture_source !== "strhub");
   if (visible.length === 0) return null;
@@ -61,7 +119,13 @@ export function VerificationMatrix({ legs }: { legs: VerifiedMatrixLeg[] }) {
       {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.matrix.heading")}</h2>)}
       <div className="mt-3 divide-y rounded-lg border">
         {visible.map((leg) => {
-          const state = !leg.available ? "na" : leg.passed ? "pass" : "fail";
+          const state = !installsPassed
+            ? "not_attempted"
+            : !leg.available
+              ? "na"
+              : leg.passed
+                ? "pass"
+                : "fail";
           return (
             <div key={leg.leg} className="flex items-center gap-3 px-4 py-3.5 text-base">
               <span
@@ -97,6 +161,11 @@ export function VerificationMatrix({ legs }: { legs: VerifiedMatrixLeg[] }) {
                     {t("verified.gate.state.fail")}
                   </Badge>
                 )}
+                {state === "not_attempted" && (
+                  <Badge variant="secondary" className="bg-muted text-muted-foreground font-normal text-xs sm:text-sm">
+                    {t("verified.matrix.notAttempted")}
+                  </Badge>
+                )}
                 {state === "na" && (
                   <Badge variant="secondary" className="bg-muted text-muted-foreground font-normal text-xs sm:text-sm">
                     {t("verified.matrix.na")}
@@ -111,24 +180,28 @@ export function VerificationMatrix({ legs }: { legs: VerifiedMatrixLeg[] }) {
   );
 }
 
-/** Which public sample the tool was run on, and the loci that sample covers. */
+/** Which public sample the tool was run on (or selected for), and the loci that sample covers. */
 export function VerificationData({
   provenance,
   hasStrhubFixture,
+  installsPassed = true,
 }: {
   provenance: (DatasetProvenance & { type: string })[];
   hasStrhubFixture: boolean;
+  installsPassed?: boolean;
 }) {
   const { t } = useLanguage();
   if (provenance.length === 0 && !hasStrhubFixture) return null;
   return (
     <>
       {!useHeaded() && (<h2 className="mt-10 text-xl font-semibold">{t("verified.data.heading")}</h2>)}
-      <p className="mt-1 text-base text-muted-foreground leading-relaxed">{t("verified.data.note")}</p>
+      <p className="mt-1 text-base text-muted-foreground leading-relaxed">
+        {installsPassed ? t("verified.data.note") : t("verified.data.noteNotRun")}
+      </p>
 
       {hasStrhubFixture && (
         <p className="mt-3 text-base text-muted-foreground rounded-lg border border-border bg-muted/40 px-4 py-3 leading-relaxed">
-          {t("verified.data.noOwnData")}
+          {installsPassed ? t("verified.data.noOwnData") : t("verified.data.noOwnDataNotRun")}
         </p>
       )}
 

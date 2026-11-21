@@ -9,11 +9,11 @@ import type { VerifiedCertificate, VerifiedReport } from "@/types/verified";
 import { VERIFIED_LEVELS } from "@/types/verified";
 import { blockedBeforeInstall } from "./gate-state";
 
-export const PURPOSE = "Verify that the tool installs, runs end-to-end, and produces structurally valid output.";
-export const EXEC_SCOPE = "Installation, execution, and output structure verification.";
+export const PURPOSE = "Evaluate whether the tool installs, runs end-to-end, and produces structurally valid output.";
+export const EXEC_SCOPE = "Installation, execution, and output structure evaluation.";
 export const NOT_EVALUATED = ["Genotype accuracy", "Concordance", "Forensic validity", "Regulatory compliance"];
 export const SCOPE_STATEMENT =
-  "Independent automated verification of reproducible execution. It confirms the tool installs, runs end-to-end, and produces structurally valid output in a standardized environment.";
+  "Independent automated evaluation of reproducible execution. It checks whether the tool installs, runs end-to-end, and produces structurally valid output in a standardized environment.";
 export const SCOPE_NOT =
   "This is not an analytical validation. Genotype accuracy, concordance, forensic suitability, and regulatory compliance are out of scope.";
 export const DISCLAIMER =
@@ -208,6 +208,8 @@ export function localizeNeededItem(item: string, t: Translate): string {
       "verified.engineText.needed.regionsSubmitted",
     "Test data: no sample from the repository was used, so a public reference sample stood in.":
       "verified.engineText.needed.referenceDataUsed",
+    "Test data: a public reference sample was selected, but was not executed because installation did not complete.":
+      "verified.engineText.needed.referenceDataSelectedNotRun",
     "A container environment, built from the tool's declared install steps rather than from a recipe the repository ships.":
       "verified.engineText.needed.envGenerated",
     "A container environment, supplied with the submission.":
@@ -625,31 +627,57 @@ function buildLocalizedConclusion(
   }
 
   const td = report.repo_test_data;
-  if (!td?.known) {
+  if (!gates.installs) {
+    if (!td?.known) {
+      items.push({
+        title: t("verified.certificate.conclusion.refInputNotRunTitle"),
+        body: t("verified.certificate.conclusion.refInputNotRunBody"),
+      });
+    } else if (td.present) {
+      items.push({
+        title: t("verified.certificate.conclusion.repoDataNotUsedTitle"),
+        body: t("verified.certificate.conclusion.repoDataNotUsedNotRunBody", {
+          count: String(td.count ?? 0),
+        }),
+      });
+    } else {
+      items.push({
+        title: t("verified.certificate.conclusion.noDemoDataTitle"),
+        body: t("verified.certificate.conclusion.noDemoDataNotRunBody", {
+          tool: report.tool.name,
+        }),
+      });
+    }
     items.push({
-      title: t("verified.certificate.conclusion.refInputTitle"),
-      body: t("verified.certificate.conclusion.refInputBody"),
-    });
-  } else if (td.present) {
-    items.push({
-      title: t("verified.certificate.conclusion.repoDataNotUsedTitle"),
-      body: t("verified.certificate.conclusion.repoDataNotUsedBody", {
-        count: String(td.count ?? 0),
-      }),
+      title: t("verified.certificate.conclusion.reproBuildAttemptTitle"),
+      body: t("verified.certificate.conclusion.reproBuildAttemptBody"),
     });
   } else {
+    if (!td?.known) {
+      items.push({
+        title: t("verified.certificate.conclusion.refInputTitle"),
+        body: t("verified.certificate.conclusion.refInputBody"),
+      });
+    } else if (td.present) {
+      items.push({
+        title: t("verified.certificate.conclusion.repoDataNotUsedTitle"),
+        body: t("verified.certificate.conclusion.repoDataNotUsedBody", {
+          count: String(td.count ?? 0),
+        }),
+      });
+    } else {
+      items.push({
+        title: t("verified.certificate.conclusion.noDemoDataTitle"),
+        body: t("verified.certificate.conclusion.noDemoDataBody", {
+          tool: report.tool.name,
+        }),
+      });
+    }
     items.push({
-      title: t("verified.certificate.conclusion.noDemoDataTitle"),
-      body: t("verified.certificate.conclusion.noDemoDataBody", {
-        tool: report.tool.name,
-      }),
+      title: t("verified.certificate.conclusion.reproTitle"),
+      body: t("verified.certificate.conclusion.reproBody"),
     });
   }
-
-  items.push({
-    title: t("verified.certificate.conclusion.reproTitle"),
-    body: t("verified.certificate.conclusion.reproBody"),
-  });
 
   return items;
 }

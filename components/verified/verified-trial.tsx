@@ -86,7 +86,8 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const report = status?.report ?? null;
   const verdict = report?.verdict ?? null;
   const elapsedMin = Math.floor((now - startedAt.current) / 60000);
-  const running = !status || (status.state !== "completed" && status.state !== "expired");
+  const initialLoading = status === null;
+  const running = Boolean(status && status.state !== "completed" && status.state !== "expired");
   const stalled = running && status?.state === "pending" && now - startedAt.current > STALL_AFTER_MS;
   const repoDockerfile = status?.recipe?.manifest_yml.includes("source: repository") ?? false;
 
@@ -389,6 +390,15 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
 
       {fetchError && (
         <p role="alert" className="mt-6 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-800">{fetchError}</p>
+      )}
+
+      {initialLoading && !fetchError && (
+        <Card className="mt-6">
+          <CardContent className="flex items-center gap-3 py-6 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin text-teal-600 shrink-0" aria-hidden />
+            <span>{t("verified.trial.loadingStatus")}</span>
+          </CardContent>
+        </Card>
       )}
 
       {running && !fetchError && (

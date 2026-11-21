@@ -669,6 +669,11 @@ export default {
       refUnresolved: "No se encontró ese repositorio o ref. Revisá la URL, o escribí un SHA de commit.",
       ownerNotice: "Consultá qué evidencia busca STRhub antes de iniciar la prueba.",
       ownerNoticeLink: "Ver requisitos del README",
+      introBeforeLink: "La verificación automática se ejecuta cuando la documentación del repositorio cumple con los ",
+      introLinkLabel: "requisitos mínimos del README",
+      introMiddle: ". ",
+      introBold: "Si se detiene o devuelve \"no se puede determinar\", no significa que la herramienta no funcione;",
+      introAfterBold: " podrás ajustarlo o solicitar verificación manual (3 a 5 días hábiles).",
       roleLabel: "Soy",
       role: {
         owner: "quien mantiene la herramienta",

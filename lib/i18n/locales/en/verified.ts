@@ -669,6 +669,11 @@ export default {
       refUnresolved: "Could not find that repository or ref. Check the URL, or type a commit SHA.",
       ownerNotice: "See what evidence STRhub looks for before starting.",
       ownerNoticeLink: "View README requirements",
+      introBeforeLink: "Automated verification runs when the repository's documentation meets the ",
+      introLinkLabel: "minimum README requirements",
+      introMiddle: ". ",
+      introBold: "If it stops or returns \"could not be determined\", it does not mean the tool does not work;",
+      introAfterBold: " you can adjust it or request manual verification (3 to 5 business days).",
       roleLabel: "I am",
       role: {
         owner: "the tool's maintainer",

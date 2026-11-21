@@ -132,19 +132,26 @@ export function VerifiedStart({
           <p className="mb-2 text-xs font-medium uppercase tracking-wider text-teal-700 dark:text-teal-400">
             {t("verified.start.eyebrow")}
           </p>
-          <PageTitle title={t(`verified.start.title.${role}`)} description={t(`verified.start.lead.${role}`)} />
-          {role === "owner" && (
-            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span>{t("verified.start.ownerNotice")}</span>
-              <Link
-                href={GUIDE_URL}
-                className="inline-flex items-center gap-1.5 rounded-md border border-teal-600/30 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-800 transition-colors hover:bg-teal-100 hover:text-teal-900 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 dark:hover:bg-teal-900/60"
-              >
-                <Lightbulb className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
-                {t("verified.start.ownerNoticeLink")}
-              </Link>
-            </div>
-          )}
+          <PageTitle
+            title={t(`verified.start.title.${role}`)}
+            description={
+              <>
+                {t(`verified.start.lead.${role}`)}{" "}
+                {t("verified.start.introBeforeLink")}
+                <Link
+                  href={GUIDE_URL}
+                  className="font-medium text-primary underline underline-offset-4 hover:text-primary/80"
+                >
+                  {t("verified.start.introLinkLabel")}
+                </Link>
+                {t("verified.start.introMiddle")}
+                <strong className="font-semibold text-foreground">
+                  {t("verified.start.introBold")}
+                </strong>
+                {t("verified.start.introAfterBold")}
+              </>
+            }
+          />
         </>
       )}
 

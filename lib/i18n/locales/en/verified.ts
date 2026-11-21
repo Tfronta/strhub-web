@@ -807,7 +807,7 @@ export default {
         nonInteractive: "Non-interactive scripts: Make sure installation scripts and pipeline commands do not halt for interactive inputs (`read`, `[y/N]`).",
         guideLink: "Read the complete Step 1 Reproducibility Guide",
       },
-      knownIssuesTitle: "What the author documents as a known issue",
+      knownIssuesTitle: "Author-documented warnings and limitations",
       knownIssuesHint: "Quoted from the repository's README at the verified commit. STRhub did not establish any of this by running the tool; it is the author's own note about their own software.",
       knownIssuesLine: "official repository README, line {line}",
       authorAcknowledgedLabel: "Documented by the author in the official repository",

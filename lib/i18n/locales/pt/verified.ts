@@ -807,7 +807,7 @@ export default {
         nonInteractive: "Sem interação: Evite que os scripts de instalação ou execução pausem esperando confirmações no console (`read`, `[s/n]`).",
         guideLink: "Ler o Guia completo do Passo 1",
       },
-      knownIssuesTitle: "O que o autor documenta como problema conhecido",
+      knownIssuesTitle: "Avisos e limitações documentados pelo autor",
       knownIssuesHint: "Citado do README do repositório no commit verificado. O STRhub não estabeleceu nada disso executando a ferramenta; é a nota do próprio autor sobre o próprio software.",
       knownIssuesLine: "README oficial, linha {line}",
       authorAcknowledgedLabel: "Documentado pelo autor no repositório oficial",

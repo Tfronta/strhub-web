@@ -107,9 +107,11 @@ export function WhatWasVerified({
 export function VerificationMatrix({
   legs,
   installsPassed = true,
+  verdictCode,
 }: {
   legs: VerifiedMatrixLeg[];
   installsPassed?: boolean;
+  verdictCode?: string;
 }) {
   const { t } = useLanguage();
   const visible = legs.filter((leg) => leg.fixture_source !== "strhub");
@@ -125,7 +127,9 @@ export function VerificationMatrix({
               ? "na"
               : leg.passed
                 ? "pass"
-                : "fail";
+                : verdictCode === "undetermined"
+                  ? "not_established"
+                  : "fail";
           return (
             <div key={leg.leg} className="flex items-center gap-3 px-4 py-3.5 text-base">
               <span
@@ -164,6 +168,11 @@ export function VerificationMatrix({
                 {state === "not_attempted" && (
                   <Badge variant="secondary" className="bg-muted text-muted-foreground font-normal text-xs sm:text-sm">
                     {t("verified.matrix.notAttempted")}
+                  </Badge>
+                )}
+                {state === "not_established" && (
+                  <Badge variant="secondary" className="bg-muted text-muted-foreground font-normal text-xs sm:text-sm">
+                    {t("verified.matrix.notEstablished")}
                   </Badge>
                 )}
                 {state === "na" && (

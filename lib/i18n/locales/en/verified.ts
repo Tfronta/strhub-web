@@ -947,6 +947,7 @@ export default {
         inputPreparedWithRegions: "Input: STRhub's preparation selects its {dataset} reference data and its loci in the {layout} layout.",
         inputGuessed: "Input: no sentence in the README says what the tool takes; {dataset} is only a guess from mentions; it is not authorization to execute.",
         medicalPanelUsed: "Panel: the loci file the documented command reads, shipped in the repository, lists coordinates inside STRhub's medical STR slice and none inside the forensic one; this run used the medical slice of the same sample ({dataset}).",
+        medicalCatalogMatched: "Panel: the shipped loci catalog ({file}) overlaps {count} loci in STRhub's medical STR slice and 0 in the forensic slice; this plan selects STRhub's {dataset} reference data.",
         outputDirCreated: "The output directory the command writes into ({dir}) was created first.",
         inputPathsReplaced: "{n} input path(s) in the README command replaced with {path}.",
         inputPlaceholdersReplaced: "{n} input placeholder(s) in the README command replaced with {path}.",

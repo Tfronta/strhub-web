@@ -947,6 +947,7 @@ export default {
         inputPreparedWithRegions: "Entrada: a preparação do STRhub seleciona seus dados de referência {dataset} e seus loci no formato {layout}.",
         inputGuessed: "Entrada: nenhuma frase no README informa o que a ferramenta recebe; {dataset} é apenas uma estimativa por menções e não autoriza a execução automática.",
         medicalPanelUsed: "Painel: o arquivo de loci que o comando documentado lê, incluído no repositório, lista coordenadas dentro do recorte de STR médicos do STRhub e nenhuma no forense; esta execução utilizou o recorte médico da mesma amostra ({dataset}).",
+        medicalCatalogMatched: "Painel: o catálogo de loci incluído no repositório ({file}) sobrepõe {count} loci do recorte de STR médicos do STRhub e 0 do recorte forense; este plano seleciona os dados de referência {dataset} do STRhub.",
         outputDirCreated: "O diretório de saída no qual o comando escreve ({dir}) foi criado primeiro.",
         inputPathsReplaced: "{n} caminho(s) de entrada no comando do README substituído(s) por {path}.",
         inputPlaceholdersReplaced: "{n} marcador(es) de entrada no comando do README substituído(s) por {path}.",

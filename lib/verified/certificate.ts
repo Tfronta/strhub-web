@@ -288,6 +288,17 @@ export function localizeCaveatItem(item: string, t: Translate): string {
   }
   if (
     (m = item.match(
+      /^Panel: the shipped loci catalog \((.+)\) overlaps (\d+) loci in STRhub's medical STR slice and 0 in the forensic slice; this plan selects STRhub's (.+) reference data\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.medicalCatalogMatched", {
+      file: m[1],
+      count: m[2],
+      dataset: m[3],
+    });
+  }
+  if (
+    (m = item.match(
       /^The output directory the command writes into \((.+)\) was created first\.$/,
     ))
   ) {

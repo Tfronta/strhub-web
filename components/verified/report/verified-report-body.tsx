@@ -278,7 +278,11 @@ export function VerifiedReportBody({
 
         {report.datasets && report.datasets.length > 0 && report.datasets.some((leg) => leg.fixture_source !== "strhub") && (
           <Section n={next()} title={t("verified.matrix.heading")}>
-            <VerificationMatrix legs={report.datasets} installsPassed={Boolean(report.gates?.installs)} />
+            <VerificationMatrix
+              legs={report.datasets}
+              installsPassed={Boolean(report.gates?.installs)}
+              verdictCode={report.verdict?.code}
+            />
           </Section>
         )}
 

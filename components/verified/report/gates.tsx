@@ -26,10 +26,13 @@ export function GatesLadder({
   gates,
   extraRows = [],
   blockedAt,
+  hideHowToRead = false,
 }: {
   gates: Record<VerifiedLevel, boolean> | undefined;
   extraRows?: ExtraGateRow[];
   blockedAt?: VerifiedLevel;
+  /** Suppresses the automated-runner explainer box on manual verification reports. */
+  hideHowToRead?: boolean;
 }) {
   const { t } = useLanguage();
   const st = gateStates(gates, VERIFIED_GATES.map((g) => g.key), blockedAt);
@@ -137,6 +140,7 @@ export function GatesLadder({
       {/* Inline "How to read this result": open by default whenever a gate failed
           so a reviewer immediately sees what the ladder does and does not establish
           without having to navigate away from the report. */}
+      {!hideHowToRead && (
       <div className="mt-4 rounded-lg border border-teal-600/35 bg-muted/40 p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
@@ -198,6 +202,7 @@ export function GatesLadder({
           </div>
         )}
       </div>
+      )}
     </>
   );
 }

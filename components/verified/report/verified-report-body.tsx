@@ -228,7 +228,7 @@ export function VerifiedReportBody({
           <>
             <Section n={next()} title={t("verified.strhubDid.sectionExecutionTitle")}>
               <ManualExecutionContext run={report} />
-              <GatesLadder gates={report.gates} extraRows={extraGateRows} />
+              <GatesLadder gates={report.gates} extraRows={extraGateRows} hideHowToRead />
               <RecordedTerminal logs={logs} preferredLeg={preferredLog} preflight={false} />
             </Section>
 
@@ -249,9 +249,22 @@ export function VerifiedReportBody({
             )}
 
             <Section n={next()} title={t("verified.strhubDid.sectionConclusionTitle")}>
-              <div className="mt-3 space-y-2.5 rounded-lg border bg-card p-5 text-sm leading-relaxed">
-                <p className="text-foreground">{certificate.summary.result}</p>
-                <p className="text-muted-foreground">{certificate.scope.disclaimer}</p>
+              <div className="mt-3 space-y-3 rounded-lg border bg-card p-5 text-sm leading-relaxed">
+                <p className="font-medium text-foreground">
+                  {report.verdict?.reason || report.certificate?.summary?.result || certificate.summary.result}
+                </p>
+                {report.preparation?.fork_note && (
+                  <p className="text-foreground/90">{report.preparation.fork_note}</p>
+                )}
+                <div className="border-t pt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
+                  <p className="min-w-0 flex-1">{certificate.scope.disclaimer}</p>
+                  <Link
+                    href="/verified/how-to-read"
+                    className="font-medium text-primary hover:underline shrink-0"
+                  >
+                    {t("verified.gate.howToReadLink")}
+                  </Link>
+                </div>
               </div>
             </Section>
 

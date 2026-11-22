@@ -11,6 +11,9 @@
  */
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { getVerifiedIndex } from "@/lib/verified";
+import { findExistingCommitMatch } from "@/lib/verified/existing-match";
+import { repoSlugOf } from "@/lib/verified/repo-url";
 import { githubRepoUrl, SHA_OR_TAG } from "@/lib/verified/submission";
 import { getTrial, startTrial, TRIAL_ID_RE, TRIAL_ROLES } from "@/lib/verified/trial";
 import { GitHubApiError, GitHubConfigError } from "@/lib/verified/github";
@@ -103,7 +106,24 @@ export async function GET(request: NextRequest) {
   }
   try {
     const status = await getTrial(id);
-    return NextResponse.json({ ok: true, ...status });
+    let existing = null;
+    if (status.state === "completed" && status.report?.source?.repo) {
+      const slug = repoSlugOf(status.report.source.repo);
+      const sha = status.report.source.ref_resolved ?? status.report.source.ref ?? "";
+      if (slug && sha) {
+        try {
+          const index = await getVerifiedIndex({ fresh: false });
+          existing = findExistingCommitMatch(index, slug, sha);
+        } catch {
+          // Non-blocking lookup: never break trial polling if index fetch fails.
+        }
+      }
+    }
+    return NextResponse.json({
+      ok: true,
+      ...status,
+      ...(existing ? { existing } : {}),
+    });
   } catch (e) {
     if (e instanceof GitHubConfigError) {
       return NextResponse.json({ ok: false, error: "not_configured" }, { status: 503 });

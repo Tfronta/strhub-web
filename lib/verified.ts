@@ -8,7 +8,7 @@ import type { VerifiedIndex, VerifiedPublication, VerifiedReport } from "@/types
 
 const BASE =
   process.env.NEXT_PUBLIC_VERIFIED_BASE ??
-  "https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages";
+  "https://raw.githubusercontent.com/Tfronta/strhub-verified-next/gh-pages";
 
 // Kept for any future listing that is genuinely just a directory. The catalogue
 // is not one: its cards carry the badge level, the locus count and the read

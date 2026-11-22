@@ -11,7 +11,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +26,7 @@ import {
   localizeVerdictReason,
 } from "@/lib/verified/certificate";
 import { step1For, type Step1Tone } from "@/lib/verified/step1";
+import { classifyManual } from "@/lib/verified/status-summary";
 import { ReadmeTemplateAction, Step1BodyText } from "@/components/verified/report/verdict";
 import { ownerIssueUrl } from "@/lib/verified/trial-next-steps";
 import { LOG_LEGS } from "@/lib/verified/log-files";
@@ -270,15 +271,63 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             </div>
           </div>
 
-          <ManualReviewCard
-            trialId={id}
-            toolName={report.tool.name}
-            repo={report.source.repo}
-            refSha={report.source.ref_resolved ?? report.source.ref ?? "HEAD"}
-            role={role}
-            reason={verdict?.reason ?? step1.headline}
-            ciRun={status?.runUrl ?? report.ci_run ?? undefined}
-          />
+          {status?.existing?.manual ? (() => {
+            const manual = status.existing.manual;
+            const manualSummary = classifyManual({
+              level: manual.level,
+              verdict: manual.verdict,
+              errors_reported: manual.errors_reported,
+              instrument: "curated",
+            });
+            const manualPassed =
+              manualSummary?.kind === "pass" || manualSummary?.kind === "pass_errors";
+            return (
+              <div className="flex flex-col justify-between rounded-lg border border-indigo-500/45 bg-indigo-50/70 p-4 dark:border-indigo-500/40 dark:bg-indigo-950/30">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-indigo-800 dark:text-indigo-300">
+                    {t("verified.trial.existingManual.tag")}
+                  </p>
+                  <h3 className="mt-2 text-base font-semibold text-foreground">
+                    {manualPassed
+                      ? t("verified.trial.existingManual.passedTitle")
+                      : t("verified.trial.existingManual.reviewedTitle")}
+                  </h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                    {manualPassed
+                      ? t("verified.trial.existingManual.passedBody")
+                      : t("verified.trial.existingManual.reviewedBody")}
+                  </p>
+                </div>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <Button asChild size="sm" className="bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600">
+                    <Link href={manual.href}>
+                      <BookOpen className="mr-1.5 h-3.5 w-3.5" aria-hidden />
+                      {t("verified.trial.existingManual.cta")}
+                      <ArrowRight className="ml-1 h-3.5 w-3.5" aria-hidden />
+                    </Link>
+                  </Button>
+                  {status.existing.href !== manual.href && (
+                    <Link
+                      href={status.existing.href}
+                      className="text-xs font-medium text-primary hover:underline"
+                    >
+                      {t("verified.trial.existingManual.viewPublished")}
+                    </Link>
+                  )}
+                </div>
+              </div>
+            );
+          })() : (
+            <ManualReviewCard
+              trialId={id}
+              toolName={report.tool.name}
+              repo={report.source.repo}
+              refSha={report.source.ref_resolved ?? report.source.ref ?? "HEAD"}
+              role={role}
+              reason={verdict?.reason ?? step1.headline}
+              ciRun={status?.runUrl ?? report.ci_run ?? undefined}
+            />
+          )}
         </div>
       )}
     </section>

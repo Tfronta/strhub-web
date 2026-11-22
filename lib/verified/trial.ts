@@ -24,6 +24,7 @@ import {
   type WorkflowRun,
 } from "./github";
 import type { VerifiedReport, VerifiedBlocker, VerifiedVerdict } from "@/types/verified";
+import type { ExistingCatalogMatch } from "./existing-match";
 
 export const TRIAL_ROLES = ["owner", "reviewer", "user"] as const;
 export type TrialRole = (typeof TRIAL_ROLES)[number];
@@ -57,6 +58,8 @@ export interface TrialStatus {
   summaryMd: string | null;
   logs: Record<string, string>;
   files?: Partial<Record<TrialFileName, string>>;
+  /** Published catalogue entry for this exact (repo, commit), when already evaluated. */
+  existing?: ExistingCatalogMatch;
 }
 
 /** Trial dispatch ids are distinguishable from verification ones (sv_…). */

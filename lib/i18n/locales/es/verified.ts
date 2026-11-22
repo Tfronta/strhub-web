@@ -755,6 +755,15 @@ export default {
       },
     },
     trial: {
+      existingManual: {
+        tag: "Verificación manual disponible",
+        passedTitle: "Esta herramienta ya fue verificada manualmente y funciona",
+        passedBody: "STRhub ya probó este mismo commit de forma manual y publicó los comandos paso a paso para que puedas instalarla y correrla sin empezar de cero.",
+        reviewedTitle: "Este commit ya fue revisado manualmente por STRhub",
+        reviewedBody: "STRhub ya evaluó este mismo commit de forma manual y publicó el detalle de lo que encontró y los pasos probados.",
+        cta: "Te contamos cómo correrla aquí",
+        viewPublished: "Ver informe publicado",
+      },
       manualReview: {
         diagnosisHeading: "Qué pasó específicamente en esta corrida",
         topicWhatFailed: "Qué falló:",

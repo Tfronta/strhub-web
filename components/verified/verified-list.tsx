@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, ExternalLink, Search, X } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, ExternalLink, Minus, Search, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { PageTitle } from "@/components/page-title";
 import type { VerifiedIndex, VerifiedIndexEntry } from "@/types/verified";
 import { cn } from "@/lib/utils";
-import { badgeFor, reachedLabel, TONE } from "@/lib/verified/badge";
+import { TONE } from "@/lib/verified/badge";
 import {
   curatedNoteOf,
   foldStrhubRuns,
@@ -27,6 +27,8 @@ import { formatDate } from "@/lib/verified/format-date";
 import { panelKind } from "@/lib/verified/dataset-provenance";
 import { GUIDE_URL } from "@/lib/verified/step1";
 import {
+  classifyAuto,
+  classifyManual,
   matchesCatalogFilter,
   rankToolGroup,
   type CatalogFilter,
@@ -85,6 +87,162 @@ function groupTools(entries: VerifiedIndexEntry[]): ToolGroup[] {
       a.name.localeCompare(b.name),
   );
   return groups;
+}
+
+function VerificationRowCard({
+  row,
+  language,
+  t,
+}: {
+  row: HistoryRow;
+  language: "es" | "en" | "pt";
+  t: (k: string, params?: Record<string, string>) => string;
+}) {
+  const isManual = row.instrument === "curated";
+  const panelLabel = getPanelLabel(t, row.dataset_types);
+
+  const badge = (() => {
+    if (isManual) {
+      const m = classifyManual(row);
+      const kind = m?.kind ?? "fail";
+      const passed = String(m?.gatesPassed ?? 0);
+      if (kind === "pass") {
+        return {
+          icon: "pass" as const,
+          mode: t("verified.statusTag.manualLabel"),
+          outcome: t("verified.statusTag.manual.pass", { passed, total: "5" }),
+          cardBorder: "border-indigo-500/35 bg-indigo-50/30 hover:border-indigo-500/70 dark:border-indigo-500/35 dark:bg-indigo-950/20",
+          pillStyle: "border-indigo-600/35 bg-indigo-50 text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-950/60 dark:text-indigo-200",
+          ctaStyle: "border-indigo-500/40 text-indigo-800 hover:bg-indigo-100/70 dark:text-indigo-200 dark:hover:bg-indigo-950/60",
+        };
+      }
+      if (kind === "pass_errors") {
+        return {
+          icon: "pass" as const,
+          mode: t("verified.statusTag.manualLabel"),
+          outcome: t("verified.statusTag.manual.passErrors", { passed, total: "5" }),
+          cardBorder: "border-indigo-500/35 bg-indigo-50/25 hover:border-indigo-500/70 dark:border-indigo-500/35 dark:bg-indigo-950/20",
+          pillStyle: "border-indigo-500/35 bg-indigo-50/80 text-indigo-900 dark:border-indigo-400/40 dark:bg-indigo-950/50 dark:text-indigo-200",
+          ctaStyle: "border-indigo-500/40 text-indigo-800 hover:bg-indigo-100/70 dark:text-indigo-200 dark:hover:bg-indigo-950/60",
+        };
+      }
+      return {
+        icon: "fail" as const,
+        mode: t("verified.statusTag.manualLabel"),
+        outcome: t("verified.statusTag.manual.fail", { passed, total: "5" }),
+        cardBorder: "border-amber-500/40 bg-amber-50/35 hover:border-amber-600/70 dark:border-amber-500/35 dark:bg-amber-950/20",
+        pillStyle: "border-amber-600/40 bg-amber-50 text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/60 dark:text-amber-200",
+        ctaStyle: "border-amber-600/40 text-amber-900 hover:bg-amber-100/70 dark:text-amber-200 dark:hover:bg-amber-950/60",
+      };
+    }
+
+    const a = classifyAuto(row);
+    const passed = String(a.gatesPassed);
+    if (a.kind === "pass") {
+      return {
+        icon: "pass" as const,
+        mode: t("verified.statusTag.autoLabel"),
+        outcome: t("verified.statusTag.auto.pass", { passed, total: "5" }),
+        cardBorder: "border-teal-600/30 bg-teal-50/25 hover:border-teal-600/65 dark:border-teal-600/35 dark:bg-teal-950/20",
+        pillStyle: "border-teal-600/35 bg-teal-50 text-teal-900 dark:border-teal-500/40 dark:bg-teal-950/60 dark:text-teal-200",
+        ctaStyle: "border-teal-600/35 text-teal-800 hover:bg-teal-100/70 dark:text-teal-200 dark:hover:bg-teal-950/60",
+      };
+    }
+    if (a.kind === "pass_errors") {
+      return {
+        icon: "pass" as const,
+        mode: t("verified.statusTag.autoLabel"),
+        outcome: t("verified.statusTag.auto.passErrors", { passed, total: "5" }),
+        cardBorder: "border-amber-500/35 bg-amber-50/25 hover:border-amber-600/65 dark:border-amber-500/35 dark:bg-amber-950/20",
+        pillStyle: "border-amber-600/35 bg-amber-50 text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/60 dark:text-amber-200",
+        ctaStyle: "border-amber-600/35 text-amber-900 hover:bg-amber-100/70 dark:text-amber-200 dark:hover:bg-amber-950/60",
+      };
+    }
+    if (a.kind === "fail") {
+      return {
+        icon: "fail" as const,
+        mode: t("verified.statusTag.autoLabel"),
+        outcome: t("verified.statusTag.auto.fail", { passed, total: "5" }),
+        cardBorder: "border-red-500/30 bg-red-50/25 hover:border-red-500/65 dark:border-red-500/35 dark:bg-red-950/20",
+        pillStyle: "border-red-600/35 bg-red-50 text-red-900 dark:border-red-500/40 dark:bg-red-950/60 dark:text-red-200",
+        ctaStyle: "border-red-500/35 text-red-800 hover:bg-red-100/70 dark:text-red-200 dark:hover:bg-red-950/60",
+      };
+    }
+    const outcome =
+      a.kind === "out_of_scope"
+        ? t("verified.statusTag.auto.outOfScope")
+        : a.kind === "none"
+          ? t("verified.statusTag.auto.none")
+          : t("verified.statusTag.auto.undetermined");
+    return {
+      icon: "neutral" as const,
+      mode: t("verified.statusTag.autoLabel"),
+      outcome,
+      cardBorder: "border-border bg-muted/20 hover:border-foreground/40",
+      pillStyle: "border-slate-400/40 bg-slate-100/80 text-slate-700 dark:border-slate-600/50 dark:bg-slate-800/60 dark:text-slate-300",
+      ctaStyle: "border-border text-foreground hover:bg-muted",
+    };
+  })();
+
+  return (
+    <div className={cn("rounded-lg border p-3 transition-colors space-y-2", badge.cardBorder)}>
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <span
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-[11px] font-medium tabular-nums max-w-full",
+            badge.pillStyle,
+          )}
+        >
+          {badge.icon === "pass" ? (
+            <Check className="h-3 w-3 shrink-0 stroke-[2.5]" aria-hidden />
+          ) : badge.icon === "fail" ? (
+            <X className="h-3 w-3 shrink-0 stroke-[2.5]" aria-hidden />
+          ) : (
+            <Minus className="h-3 w-3 shrink-0 stroke-[2.5]" aria-hidden />
+          )}
+          <span className="truncate">
+            <span className="font-semibold">{badge.mode}</span>
+            <span className="mx-1 opacity-55">·</span>
+            <span>{badge.outcome}</span>
+          </span>
+        </span>
+      </div>
+
+      <div className="flex items-center gap-2 flex-wrap text-xs">
+        <span className="font-medium text-foreground">{versionLabel(row)}</span>
+        <code className="rounded bg-background/80 border px-1.5 py-0 text-[10px] text-muted-foreground">
+          {shortSha(row.sha)}
+        </code>
+        {panelLabel && (
+          <span className="text-[10px] border rounded bg-background/60 px-1.5 py-0 text-muted-foreground shrink-0">
+            {panelLabel}
+          </span>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between gap-2 pt-0.5 flex-wrap">
+        {row.generated ? (
+          <p className="text-[11px] text-muted-foreground">
+            {t("verified.history.verifiedOn", {
+              date: formatDate(row.generated, language),
+            })}
+          </p>
+        ) : (
+          <span />
+        )}
+        <Link
+          href={rowHref(row)}
+          className={cn(
+            "inline-flex items-center gap-1 rounded-md border bg-background px-2.5 py-1 text-xs font-semibold transition-colors shrink-0",
+            badge.ctaStyle,
+          )}
+        >
+          <span>{t("verified.catalog.viewReport")}</span>
+          <ArrowRight className="h-3 w-3" aria-hidden />
+        </Link>
+      </div>
+    </div>
+  );
 }
 
 export function VerifiedList({ index }: { index: VerifiedIndex }) {
@@ -379,85 +537,18 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
 
                       {isOpen && (
                         <CardContent className="pt-0">
-                          <div className="space-y-1.5 border-t pt-3 max-h-[280px] overflow-y-auto">
-                            {foldStrhubRuns(group.rows).map(({ row, strhub }) => {
-                              const rowLevel = badgeFor(row, t);
-                              const panelLabel = getPanelLabel(
-                                t,
-                                row.dataset_types,
-                              );
-                              const rowIsManual = row.instrument === "curated";
-                              return (
-                                <div
-                                  key={`${row.slug}-${row.sha}-${row.instrument ?? ""}`}
-                                  className="rounded-md border transition-colors hover:border-primary"
-                                >
-                                  <Link
-                                    href={rowHref(row)}
-                                    className="block px-3 py-2 hover:bg-muted/50"
-                                  >
-                                    <div className="flex items-center gap-2 flex-wrap">
-                                      <Badge
-                                        variant="outline"
-                                        className={cn(
-                                          "text-[10px] px-1.5 py-0 shrink-0",
-                                          TONE[rowLevel.tone],
-                                        )}
-                                      >
-                                        {rowLevel.label}
-                                      </Badge>
-                                      <span
-                                        className={cn(
-                                          "text-[10px] rounded border px-1.5 py-0 font-medium shrink-0",
-                                          rowIsManual
-                                            ? "border-indigo-600/40 bg-indigo-50/80 text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-950/50 dark:text-indigo-200"
-                                            : "border-teal-600/40 bg-teal-50/70 text-teal-900 dark:border-teal-600/50 dark:bg-teal-950/40 dark:text-teal-200",
-                                        )}
-                                      >
-                                        {rowIsManual
-                                          ? t("verified.mode.manualShort")
-                                          : t("verified.mode.autoShort")}
-                                      </span>
-                                      <span className="text-xs font-medium">
-                                        {versionLabel(row)}
-                                      </span>
-                                      <code className="rounded bg-muted px-1 text-[10px] text-muted-foreground">
-                                        {shortSha(row.sha)}
-                                      </code>
-                                      {panelLabel && (
-                                        <span className="text-[10px] border rounded px-1.5 py-0 text-muted-foreground shrink-0">
-                                          {panelLabel}
-                                        </span>
-                                      )}
-                                    </div>
-                                    {row.generated && (
-                                      <p className="mt-0.5 text-[10px] text-muted-foreground">
-                                        {t("verified.history.verifiedOn", {
-                                          date: formatDate(
-                                            row.generated,
-                                            language,
-                                          ),
-                                        })}
-                                      </p>
-                                    )}
-                                  </Link>
-                                  {strhub && (
-                                    <Link
-                                      href={rowHref(strhub)}
-                                      className="flex items-center gap-1.5 border-t px-3 py-1.5 text-[10px] text-muted-foreground hover:bg-muted/50 hover:text-primary"
-                                    >
-                                      <span className="rounded border border-indigo-600/40 bg-indigo-50/80 px-1.5 py-0 font-medium text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-950/50 dark:text-indigo-200 shrink-0">
-                                        {t("verified.mode.manualShort")}
-                                      </span>
-                                      <span>
-                                        {t("verified.strhubDid.rowNote", {
-                                          label: reachedLabel(strhub.level, t),
-                                        })}
-                                      </span>
-                                    </Link>
-                                  )}
-                                </div>
-                              );
+                          <div className="space-y-2.5 border-t pt-3 max-h-[340px] overflow-y-auto">
+                            {foldStrhubRuns(group.rows).flatMap(({ row, strhub }) => {
+                              const items: HistoryRow[] = [row];
+                              if (strhub) items.push(strhub);
+                              return items.map((item) => (
+                                <VerificationRowCard
+                                  key={`${item.slug}-${item.sha}-${item.instrument ?? ""}`}
+                                  row={item}
+                                  language={language}
+                                  t={t}
+                                />
+                              ));
                             })}
                           </div>
                         </CardContent>

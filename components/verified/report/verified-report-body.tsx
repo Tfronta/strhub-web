@@ -50,7 +50,7 @@ import {
 import { DisputeCard } from "./closing";
 import { VersionHistory, OlderVersionNotice, RetiredNotice, rowHref } from "./history";
 import { AsItIsOpening } from "./verdict";
-import { NotDocumentedNotice, StrhubDidSection } from "./instrument";
+import { CompanionManualBanner, NotDocumentedNotice, StrhubDidSection } from "./instrument";
 import { documentedOf, newestOfKind, type HistoryRow } from "@/lib/verified/history";
 
 export type { ReportLog, ExtraGateRow };
@@ -194,9 +194,14 @@ export function VerifiedReportBody({
           jsonUrl={jsonUrl}
           isManualRun={isStrhubRun}
           manualNoteRow={note?.row}
+          manualNoteHref={note ? rowHref(note.row) : undefined}
         />
 
         {history?.current.retired && <RetiredNotice row={history.current} />}
+
+        {/* On an automatic report that also has a standalone manual verification,
+            keep the two reports strictly separated and link cleanly to the manual one. */}
+        {note && !isStrhubRun && <CompanionManualBanner row={note.row} />}
 
         {/* A run of STRhub's own recipe is not the documented result, and
             the page says so before it says anything else. */}
@@ -248,15 +253,6 @@ export function VerifiedReportBody({
             />
             <AuthorKnownIssues items={report.author_known_issues} />
           </Section>
-        )}
-
-        {/* Chapter two, under the documented result and never in its place. */}
-        {note && !isStrhubRun && (
-          <div id="manual-guide">
-            <Section n={next()} title={t("verified.strhubDid.heading")}>
-              <StrhubDidSection run={note.report} row={note.row} />
-            </Section>
-          </div>
         )}
 
         {(report.content_detail?.outputs?.[0]?.stats || report.io_detail?.outputs?.[0]) && (

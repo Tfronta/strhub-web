@@ -93,9 +93,10 @@ export function classifyManual(
 /**
  * Smart catalogue ordering:
  *   1. Automatic pass (clean before errors, higher gates first)
- *   2. Manual verified pass (actionable guide available)
+ *   2. Manual verified pass (unmodified upstream code ran with prepared env)
  *   3. Automatic fail (reproducible build/run failure)
- *   4. Undetermined / out of scope / unverified without a manual pass
+ *   4. Manual fail (manual review confirmed failure in upstream code)
+ *   5. Undetermined / out of scope without a manual review yet
  */
 export function rankToolGroup(
   autoRow: StatusRowInput | null | undefined,
@@ -109,6 +110,7 @@ export function rankToolGroup(
   if (manual?.kind === "pass") return 300 + manual.gatesPassed;
   if (manual?.kind === "pass_errors") return 290 + manual.gatesPassed;
   if (auto.kind === "fail") return 200 + auto.gatesPassed;
+  if (manual?.kind === "fail") return 190 + manual.gatesPassed;
   return 100 + auto.gatesPassed;
 }
 
@@ -132,13 +134,13 @@ export function matchesCatalogFilter(
     case "manual":
       return manual !== null;
     case "fail":
-      return auto.kind === "fail";
+      return auto.kind === "fail" || manual?.kind === "fail";
     case "undetermined":
       return (
         (auto.kind === "undetermined" ||
           auto.kind === "out_of_scope" ||
           auto.kind === "none") &&
-        !manualPassed
+        manual === null
       );
   }
 }

@@ -282,9 +282,21 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             const manualPassed =
               manualSummary?.kind === "pass" || manualSummary?.kind === "pass_errors";
             return (
-              <div className="flex flex-col justify-between rounded-lg border border-indigo-500/45 bg-indigo-50/70 p-4 dark:border-indigo-500/40 dark:bg-indigo-950/30">
+              <div
+                className={`flex flex-col justify-between rounded-lg border p-4 ${
+                  manualPassed
+                    ? "border-indigo-500/45 bg-indigo-50/70 dark:border-indigo-500/40 dark:bg-indigo-950/30"
+                    : "border-amber-500/45 bg-amber-50/70 dark:border-amber-600/45 dark:bg-amber-950/30"
+                }`}
+              >
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-indigo-800 dark:text-indigo-300">
+                  <p
+                    className={`text-xs font-semibold uppercase tracking-wide ${
+                      manualPassed
+                        ? "text-indigo-800 dark:text-indigo-300"
+                        : "text-amber-900 dark:text-amber-300"
+                    }`}
+                  >
                     {t("verified.trial.existingManual.tag")}
                   </p>
                   <h3 className="mt-2 text-base font-semibold text-foreground">
@@ -299,10 +311,20 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
                   </p>
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <Button asChild size="sm" className="bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600">
+                  <Button
+                    asChild
+                    size="sm"
+                    className={
+                      manualPassed
+                        ? "bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+                        : "bg-amber-600 text-white hover:bg-amber-700 dark:bg-amber-600 dark:hover:bg-amber-500"
+                    }
+                  >
                     <Link href={manual.href}>
                       <BookOpen className="mr-1.5 h-3.5 w-3.5" aria-hidden />
-                      {t("verified.trial.existingManual.cta")}
+                      {manualPassed
+                        ? t("verified.trial.existingManual.cta")
+                        : t("verified.trial.existingManual.ctaFailed")}
                       <ArrowRight className="ml-1 h-3.5 w-3.5" aria-hidden />
                     </Link>
                   </Button>

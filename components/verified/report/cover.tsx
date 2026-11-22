@@ -9,6 +9,7 @@
  * place on both.
  */
 import { useState } from "react";
+import Link from "next/link";
 import { Check, Copy, ExternalLink, FileDown, FileJson, Flag, Play, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
@@ -36,6 +37,7 @@ export function Cover({
   jsonUrl,
   isManualRun,
   manualNoteRow,
+  manualNoteHref,
 }: {
   report: VerifiedReport;
   certificate: VerifiedCertificate;
@@ -54,6 +56,8 @@ export function Cover({
   isManualRun?: boolean;
   /** Companion manual verification row when viewing an automatic report page. */
   manualNoteRow?: StatusRowInput;
+  /** Direct link to the standalone manual report page. */
+  manualNoteHref?: string;
 }) {
   const { t, language } = useLanguage();
   const [copiedTrial, setCopiedTrial] = useState(false);
@@ -66,6 +70,13 @@ export function Cover({
     report.instrument === "curated" ||
     report.environment?.source === "prepared" ||
     Boolean(report.preparation);
+  const selfManual = isManual
+    ? classifyManual({
+        level: report.level,
+        verdict: report.verdict?.code,
+        instrument: "curated",
+      })
+    : null;
   const companionManual = !isManual ? classifyManual(manualNoteRow) : null;
 
   async function copyTrialLink() {
@@ -164,20 +175,48 @@ export function Cover({
     <div className="mt-6 rounded-lg border bg-card p-5 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge className={cn("w-fit px-2.5 py-0.5 text-sm font-bold", TONE[level.tone])}>{level.label}</Badge>
+          {isManual && selfManual ? (
+            <span
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 text-sm font-bold tabular-nums",
+                selfManual.kind === "fail"
+                  ? "border-amber-600/45 bg-amber-50 text-amber-900 dark:border-amber-500/45 dark:bg-amber-950/50 dark:text-amber-200"
+                  : "border-indigo-600/45 bg-indigo-50 text-indigo-900 dark:border-indigo-500/45 dark:bg-indigo-950/50 dark:text-indigo-200"
+              )}
+            >
+              {selfManual.kind === "fail" ? (
+                <X className="h-3.5 w-3.5 shrink-0 stroke-[2.5]" aria-hidden />
+              ) : (
+                <Check className="h-3.5 w-3.5 shrink-0 stroke-[2.5]" aria-hidden />
+              )}
+              <span>{t("verified.statusTag.manualLabel")}</span>
+              <span className="opacity-55">·</span>
+              <span>
+                {selfManual.kind === "fail"
+                  ? t("verified.statusTag.manual.fail", { passed: String(selfManual.gatesPassed), total: "5" })
+                  : selfManual.kind === "pass_errors"
+                    ? t("verified.statusTag.manual.passErrors", { passed: String(selfManual.gatesPassed), total: "5" })
+                    : t("verified.statusTag.manual.pass", { passed: String(selfManual.gatesPassed), total: "5" })}
+              </span>
+            </span>
+          ) : (
+            <Badge className={cn("w-fit px-2.5 py-0.5 text-sm font-bold", TONE[level.tone])}>{level.label}</Badge>
+          )}
           <span
             className={cn(
               "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs sm:text-sm font-medium",
               isManual
-                ? "border-indigo-600/40 bg-indigo-50/85 text-indigo-900 dark:border-indigo-500/45 dark:bg-indigo-950/50 dark:text-indigo-200"
+                ? selfManual?.kind === "fail"
+                  ? "border-amber-600/40 bg-amber-50/75 text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-200"
+                  : "border-indigo-600/40 bg-indigo-50/85 text-indigo-900 dark:border-indigo-500/45 dark:bg-indigo-950/50 dark:text-indigo-200"
                 : "border-teal-600/40 bg-teal-50/70 text-teal-900 dark:border-teal-600/50 dark:bg-teal-950/40 dark:text-teal-200"
             )}
           >
             {isManual ? t("verified.mode.manualBadge") : t("verified.mode.autoBadge")}
           </span>
-          {companionManual && (
-            <a
-              href="#manual-guide"
+          {companionManual && manualNoteHref && (
+            <Link
+              href={manualNoteHref}
               className={cn(
                 "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs sm:text-sm font-medium transition-colors hover:opacity-90",
                 companionManual.kind === "fail"
@@ -199,7 +238,7 @@ export function Cover({
                     ? t("verified.statusTag.manual.passErrors", { passed: String(companionManual.gatesPassed), total: "5" })
                     : t("verified.statusTag.manual.pass", { passed: String(companionManual.gatesPassed), total: "5" })}
               </span>
-            </a>
+            </Link>
           )}
           {panel && (
             <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs sm:text-sm text-muted-foreground">

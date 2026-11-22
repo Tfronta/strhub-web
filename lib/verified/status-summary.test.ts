@@ -64,13 +64,17 @@ describe("status-summary", () => {
     });
   });
 
-  it("ranks automatic pass > manual verified pass > automatic fail > undetermined", () => {
+  it("ranks automatic pass > manual verified pass > automatic fail > manual fail > undetermined", () => {
     const autoPass = rankToolGroup({ level: "content", verdict: "runs" }, null);
     const manualPass = rankToolGroup(
       { level: "available", verdict: "undetermined" },
       { level: "content", verdict: "runs", instrument: "curated" },
     );
     const autoFail = rankToolGroup({ level: "available", verdict: "fails" }, null);
+    const manualFail = rankToolGroup(
+      { level: "available", verdict: "undetermined" },
+      { level: "installs", verdict: "fails", instrument: "curated" },
+    );
     const undetermined = rankToolGroup(
       { level: "available", verdict: "undetermined" },
       null,
@@ -78,7 +82,8 @@ describe("status-summary", () => {
 
     expect(autoPass).toBeGreaterThan(manualPass);
     expect(manualPass).toBeGreaterThan(autoFail);
-    expect(autoFail).toBeGreaterThan(undetermined);
+    expect(autoFail).toBeGreaterThan(manualFail);
+    expect(manualFail).toBeGreaterThan(undetermined);
   });
 
   it("matches catalogue filter chips accurately", () => {
@@ -90,6 +95,11 @@ describe("status-summary", () => {
       verdict: "runs",
       instrument: "curated" as const,
     };
+    const manualFail = {
+      level: "installs" as const,
+      verdict: "fails",
+      instrument: "curated" as const,
+    };
 
     expect(matchesCatalogFilter("verified", autoPass, null)).toBe(true);
     expect(matchesCatalogFilter("auto", autoPass, null)).toBe(true);
@@ -98,6 +108,11 @@ describe("status-summary", () => {
     expect(matchesCatalogFilter("verified", autoUndet, manualPass)).toBe(true);
     expect(matchesCatalogFilter("manual", autoUndet, manualPass)).toBe(true);
     expect(matchesCatalogFilter("undetermined", autoUndet, manualPass)).toBe(false);
+
+    expect(matchesCatalogFilter("verified", autoUndet, manualFail)).toBe(false);
+    expect(matchesCatalogFilter("manual", autoUndet, manualFail)).toBe(true);
+    expect(matchesCatalogFilter("fail", autoUndet, manualFail)).toBe(true);
+    expect(matchesCatalogFilter("undetermined", autoUndet, manualFail)).toBe(false);
 
     expect(matchesCatalogFilter("undetermined", autoUndet, null)).toBe(true);
     expect(matchesCatalogFilter("verified", autoUndet, null)).toBe(false);

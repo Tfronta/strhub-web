@@ -9,13 +9,12 @@
  * place on both.
  */
 import { useState } from "react";
-import Link from "next/link";
 import { Check, Copy, ExternalLink, FileDown, FileJson, Flag, Play, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedCertificate, VerifiedReport } from "@/types/verified";
 import { TONE, type BadgeDisplay } from "@/lib/verified/badge";
-import { classifyManual, type StatusRowInput } from "@/lib/verified/status-summary";
+import { classifyManual } from "@/lib/verified/status-summary";
 import { formatDate } from "@/lib/verified/format-date";
 import { cn } from "@/lib/utils";
 import type { PanelKind } from "@/lib/verified/dataset-provenance";
@@ -36,8 +35,6 @@ export function Cover({
   pdfUrl,
   jsonUrl,
   isManualRun,
-  manualNoteRow,
-  manualNoteHref,
 }: {
   report: VerifiedReport;
   certificate: VerifiedCertificate;
@@ -54,10 +51,6 @@ export function Cover({
   pdfUrl?: string;
   jsonUrl?: string;
   isManualRun?: boolean;
-  /** Companion manual verification row when viewing an automatic report page. */
-  manualNoteRow?: StatusRowInput;
-  /** Direct link to the standalone manual report page. */
-  manualNoteHref?: string;
 }) {
   const { t, language } = useLanguage();
   const [copiedTrial, setCopiedTrial] = useState(false);
@@ -77,7 +70,6 @@ export function Cover({
         instrument: "curated",
       })
     : null;
-  const companionManual = !isManual ? classifyManual(manualNoteRow) : null;
 
   async function copyTrialLink() {
     if (!trialUrl) return;
@@ -214,32 +206,6 @@ export function Cover({
           >
             {isManual ? t("verified.mode.manualBadge") : t("verified.mode.autoBadge")}
           </span>
-          {companionManual && manualNoteHref && (
-            <Link
-              href={manualNoteHref}
-              className={cn(
-                "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs sm:text-sm font-medium transition-colors hover:opacity-90",
-                companionManual.kind === "fail"
-                  ? "border-amber-600/40 bg-amber-50/85 text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-200"
-                  : "border-indigo-600/40 bg-indigo-50/85 text-indigo-900 dark:border-indigo-500/45 dark:bg-indigo-950/50 dark:text-indigo-200"
-              )}
-            >
-              {companionManual.kind === "fail" ? (
-                <X className="h-3 w-3 shrink-0 stroke-[2.5]" aria-hidden />
-              ) : (
-                <Check className="h-3 w-3 shrink-0 stroke-[2.5]" aria-hidden />
-              )}
-              <span>{t("verified.statusTag.manualLabel")}</span>
-              <span className="opacity-55">·</span>
-              <span>
-                {companionManual.kind === "fail"
-                  ? t("verified.statusTag.manual.fail", { passed: String(companionManual.gatesPassed), total: "5" })
-                  : companionManual.kind === "pass_errors"
-                    ? t("verified.statusTag.manual.passErrors", { passed: String(companionManual.gatesPassed), total: "5" })
-                    : t("verified.statusTag.manual.pass", { passed: String(companionManual.gatesPassed), total: "5" })}
-              </span>
-            </Link>
-          )}
           {panel && (
             <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs sm:text-sm text-muted-foreground">
               {t(`verified.panel.${panel}`)}

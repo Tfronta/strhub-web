@@ -50,7 +50,13 @@ import {
 import { DisputeCard } from "./closing";
 import { VersionHistory, OlderVersionNotice, RetiredNotice, rowHref } from "./history";
 import { AsItIsOpening } from "./verdict";
-import { CompanionManualBanner, NotDocumentedNotice, StrhubDidSection } from "./instrument";
+import {
+  CompanionManualBanner,
+  ManualExecutionContext,
+  ManualReproSteps,
+  ManualSuggestions,
+  NotDocumentedNotice,
+} from "./instrument";
 import { documentedOf, newestOfKind, type HistoryRow } from "@/lib/verified/history";
 
 export type { ReportLog, ExtraGateRow };
@@ -193,8 +199,6 @@ export function VerifiedReportBody({
           pdfUrl={pdfUrl}
           jsonUrl={jsonUrl}
           isManualRun={isStrhubRun}
-          manualNoteRow={note?.row}
-          manualNoteHref={note ? rowHref(note.row) : undefined}
         />
 
         {history?.current.retired && <RetiredNotice row={history.current} />}
@@ -203,8 +207,7 @@ export function VerifiedReportBody({
             keep the two reports strictly separated and link cleanly to the manual one. */}
         {note && !isStrhubRun && <CompanionManualBanner row={note.row} />}
 
-        {/* A run of STRhub's own recipe is not the documented result, and
-            the page says so before it says anything else. */}
+        {/* On a standalone manual report, link cleanly to the automated run. */}
         {isStrhubRun && (
           <NotDocumentedNotice documented={history ? documentedOf(history.rows, slug) : undefined} />
         )}
@@ -218,127 +221,153 @@ export function VerifiedReportBody({
             : null;
         })()}
 
-        {/* Chapter one: the tool as it is. On the page of STRhub's own run,
-            chapter two comes first and the run follows in full. */}
+        {/* Standalone Manual Verification report: concise, zero-redundancy flow
+            (1. Upstream execution + gates + terminal -> 2. Repro steps/patch ->
+             3. Author suggestions -> 4. Brief conclusion & scope). */}
         {isStrhubRun ? (
           <>
-            <Section n={next()} title={t("verified.strhubDid.heading")}>
-              <StrhubDidSection run={report} />
-            </Section>
-            <Section n={next()} title={t("verified.asIs.fullRun")}>
+            <Section n={next()} title={t("verified.strhubDid.sectionExecutionTitle")}>
+              <ManualExecutionContext run={report} />
               <GatesLadder gates={report.gates} extraRows={extraGateRows} />
-              <RecordedTerminal logs={logs} preferredLeg={preferredLog} preflight={installBlocked} />
+              <RecordedTerminal logs={logs} preferredLeg={preferredLog} preflight={false} />
             </Section>
+
+            {(report.preparation?.steps?.length ||
+              report.preparation?.run_cmd ||
+              report.preparation?.fork_url ||
+              report.preparation?.guide_url ||
+              report.recipe?.workarounds?.length) && (
+              <Section n={next()} title={t("verified.strhubDid.sectionStepsTitle")}>
+                <ManualReproSteps run={report} />
+              </Section>
+            )}
+
+            {(report.recommendations?.length || report.preparation?.why?.length) && (
+              <Section n={next()} title={t("verified.strhubDid.sectionSuggestionsTitle")}>
+                <ManualSuggestions run={report} />
+              </Section>
+            )}
+
+            <Section n={next()} title={t("verified.strhubDid.sectionConclusionTitle")}>
+              <div className="mt-3 space-y-2.5 rounded-lg border bg-card p-5 text-sm leading-relaxed">
+                <p className="text-foreground">{certificate.summary.result}</p>
+                <p className="text-muted-foreground">{certificate.scope.disclaimer}</p>
+              </div>
+            </Section>
+
+            {staticPageUrl && <DisputeCard report={report} slug={slug} staticPageUrl={staticPageUrl} />}
           </>
         ) : (
-          <Section n={next()} title={t("verified.asIs.heading")}>
-            <AsItIsOpening report={report}>{afterHeader}</AsItIsOpening>
-            <GatesLadder
-              gates={report.gates}
-              extraRows={installBlocked ? undefined : extraGateRows}
-              blockedAt={installBlocked ? "installs" : undefined}
-            />
-            <RecordedTerminal logs={logs} preferredLeg={preferredLog} preflight={installBlocked} />
-          </Section>
+          <>
+            <Section n={next()} title={t("verified.asIs.heading")}>
+              <AsItIsOpening report={report}>{afterHeader}</AsItIsOpening>
+              <GatesLadder
+                gates={report.gates}
+                extraRows={installBlocked ? undefined : extraGateRows}
+                blockedAt={installBlocked ? "installs" : undefined}
+              />
+              <RecordedTerminal logs={logs} preferredLeg={preferredLog} preflight={installBlocked} />
+            </Section>
+
+            {/* Why it stopped, or what errors it reported on the way. */}
+            {hasDiagnostics && (
+              <Section n={next()} title={t(diagnosticsTitle)}>
+                <BuildFailedCard report={report} buildLogHref={buildLogHref} />
+                <AutoDiagnostics
+                  diagnostics={report.diagnostics}
+                  hasStrhubFixture={data.hasStrhubFixture}
+                  passedRun={passedRun}
+                />
+                <AuthorKnownIssues items={report.author_known_issues} />
+              </Section>
+            )}
+
+            {(report.content_detail?.outputs?.[0]?.stats || report.io_detail?.outputs?.[0]) && (
+              <Section n={next()} title={t("verified.content.heading")}>
+                <OutputContent
+                  stats={report.content_detail?.outputs?.[0]?.stats}
+                  io={report.io_detail?.outputs?.[0]}
+                  panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
+                />
+              </Section>
+            )}
+
+            {!installBlocked && (
+              <Section n={next()} title={t("verified.data.heading")}>
+                <VerificationData
+                  provenance={data.provenance}
+                  hasStrhubFixture={data.hasStrhubFixture}
+                  installsPassed={Boolean(report.gates?.installs)}
+                />
+              </Section>
+            )}
+
+            {report.datasets && report.datasets.length > 0 && report.datasets.some((leg) => leg.fixture_source !== "strhub") && (
+              <Section n={next()} title={t("verified.matrix.heading")}>
+                <VerificationMatrix
+                  legs={report.datasets}
+                  installsPassed={Boolean(report.gates?.installs)}
+                  verdictCode={report.verdict?.code}
+                />
+              </Section>
+            )}
+
+            <Section n={next()} title={t("verified.certificate.section.metadata")}>
+              <SourceCard report={report} installBlocked={installBlocked} />
+              {!installBlocked && afterSource}
+            </Section>
+
+            {history && (
+              <Section n={next()} title={t("verified.history.heading")}>
+                <VersionHistory
+                  rows={history.rows}
+                  current={{ slug: history.current.slug, sha: history.current.sha, instrument: history.current.instrument }}
+                  repo={report.source.repo}
+                />
+              </Section>
+            )}
+
+            <ManualOffer report={report} slug={slug} />
+
+            {report.readme_check && (
+              <Section n={next()} title={t("verified.readme.heading")}>
+                <ReadmeCheck check={report.readme_check} />
+              </Section>
+            )}
+
+            {!installBlocked && !!localizedNeeded?.length && (
+              <Section n={next()} title={t("verified.needed.heading")}>
+                <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={localizedNeeded} />
+              </Section>
+            )}
+
+            {!!report.evidence?.length && (
+              <Section n={next()} title={t("verified.trial.evidenceTitle")}>
+                <EvidenceList evidence={report.evidence} />
+              </Section>
+            )}
+
+            {!!localizedCaveats?.length && (
+              <Section n={next()} title={t("verified.caveats.heading")}>
+                <BulletCard headingKey="verified.caveats.heading" noteKey="verified.caveats.note" items={localizedCaveats} />
+              </Section>
+            )}
+
+            <Section n={next()} title={t("verified.certificate.section.scope")}>
+              {!installBlocked && <WhatWasVerified gates={report.gates} verdictCode={report.verdict?.code} />}
+              <BoxedList lead={t("verified.certificate.text.scopeExec")} items={certificate.limitations} />
+              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{certificate.scope.disclaimer}</p>
+            </Section>
+
+            {certificate.conclusion.length > 0 && (
+              <Section n={next()} title={t("verified.certificate.section.conclusion")}>
+                <ConclusionBox items={certificate.conclusion} />
+              </Section>
+            )}
+
+            {staticPageUrl && <DisputeCard report={report} slug={slug} staticPageUrl={staticPageUrl} />}
+          </>
         )}
-
-        {/* Why it stopped, or what errors it reported on the way. */}
-        {hasDiagnostics && (
-          <Section n={next()} title={t(diagnosticsTitle)}>
-            <BuildFailedCard report={report} buildLogHref={buildLogHref} />
-            <AutoDiagnostics
-              diagnostics={report.diagnostics}
-              hasStrhubFixture={data.hasStrhubFixture}
-              passedRun={passedRun}
-            />
-            <AuthorKnownIssues items={report.author_known_issues} />
-          </Section>
-        )}
-
-        {(report.content_detail?.outputs?.[0]?.stats || report.io_detail?.outputs?.[0]) && (
-          <Section n={next()} title={t("verified.content.heading")}>
-            <OutputContent
-              stats={report.content_detail?.outputs?.[0]?.stats}
-              io={report.io_detail?.outputs?.[0]}
-              panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
-            />
-          </Section>
-        )}
-
-        {!installBlocked && (
-          <Section n={next()} title={t("verified.data.heading")}>
-            <VerificationData
-              provenance={data.provenance}
-              hasStrhubFixture={data.hasStrhubFixture}
-              installsPassed={Boolean(report.gates?.installs)}
-            />
-          </Section>
-        )}
-
-        {report.datasets && report.datasets.length > 0 && report.datasets.some((leg) => leg.fixture_source !== "strhub") && (
-          <Section n={next()} title={t("verified.matrix.heading")}>
-            <VerificationMatrix
-              legs={report.datasets}
-              installsPassed={Boolean(report.gates?.installs)}
-              verdictCode={report.verdict?.code}
-            />
-          </Section>
-        )}
-
-        <Section n={next()} title={t("verified.certificate.section.metadata")}>
-          <SourceCard report={report} installBlocked={installBlocked} />
-          {!installBlocked && afterSource}
-        </Section>
-
-        {history && (
-          <Section n={next()} title={t("verified.history.heading")}>
-            <VersionHistory
-              rows={history.rows}
-              current={{ slug: history.current.slug, sha: history.current.sha, instrument: history.current.instrument }}
-              repo={report.source.repo}
-            />
-          </Section>
-        )}
-
-        <ManualOffer report={report} slug={slug} />
-
-        {report.readme_check && (
-          <Section n={next()} title={t("verified.readme.heading")}>
-            <ReadmeCheck check={report.readme_check} />
-          </Section>
-        )}
-
-        {!installBlocked && !!localizedNeeded?.length && (
-          <Section n={next()} title={t("verified.needed.heading")}>
-            <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={localizedNeeded} />
-          </Section>
-        )}
-
-        {!!report.evidence?.length && (
-          <Section n={next()} title={t("verified.trial.evidenceTitle")}>
-            <EvidenceList evidence={report.evidence} />
-          </Section>
-        )}
-
-        {!!localizedCaveats?.length && (
-          <Section n={next()} title={t("verified.caveats.heading")}>
-            <BulletCard headingKey="verified.caveats.heading" noteKey="verified.caveats.note" items={localizedCaveats} />
-          </Section>
-        )}
-
-        <Section n={next()} title={t("verified.certificate.section.scope")}>
-          {!installBlocked && <WhatWasVerified gates={report.gates} verdictCode={report.verdict?.code} />}
-          <BoxedList lead={t("verified.certificate.text.scopeExec")} items={certificate.limitations} />
-          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{certificate.scope.disclaimer}</p>
-        </Section>
-
-        {certificate.conclusion.length > 0 && (
-          <Section n={next()} title={t("verified.certificate.section.conclusion")}>
-            <ConclusionBox items={certificate.conclusion} />
-          </Section>
-        )}
-
-        {staticPageUrl && <DisputeCard report={report} slug={slug} staticPageUrl={staticPageUrl} />}
       </div>
     </div>
   );

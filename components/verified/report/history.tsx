@@ -17,22 +17,12 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedInstrument } from "@/types/verified";
 import { badgeFor, reachedLabel, TONE } from "@/lib/verified/badge";
-import { foldStrhubRuns, shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
+import { foldStrhubRuns, rowHref, shortSha, versionLabel, type HistoryRow } from "@/lib/verified/history";
 import { formatDate } from "@/lib/verified/format-date";
 import { panelKind } from "@/lib/verified/dataset-provenance";
 import { cn } from "@/lib/utils";
 
-
-/**
- * Where a row is read: its slug's page, with `?at=` unless it is the slug's
- * alias — and, for a run of STRhub's recipe, `&recipe=curated`, since the
- * same commit may also carry the documented run, which `?at=` alone names.
- */
-export function rowHref(row: HistoryRow): string {
-  if (row.isAlias) return `/verified/${row.slug}`;
-  const recipe = row.instrument === "curated" ? "&recipe=curated" : "";
-  return `/verified/${row.slug}?at=${shortSha(row.sha)}${recipe}`;
-}
+export { rowHref };
 
 /** The form, with this repository already pasted and the commit field next. */
 export function anotherVersionHref(repo: string): string {

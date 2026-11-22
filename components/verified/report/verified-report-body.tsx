@@ -193,6 +193,7 @@ export function VerifiedReportBody({
           pdfUrl={pdfUrl}
           jsonUrl={jsonUrl}
           isManualRun={isStrhubRun}
+          manualNoteRow={note?.row}
         />
 
         {history?.current.retired && <RetiredNotice row={history.current} />}
@@ -251,9 +252,11 @@ export function VerifiedReportBody({
 
         {/* Chapter two, under the documented result and never in its place. */}
         {note && !isStrhubRun && (
-          <Section n={next()} title={t("verified.strhubDid.heading")}>
-            <StrhubDidSection run={note.report} row={note.row} />
-          </Section>
+          <div id="manual-guide">
+            <Section n={next()} title={t("verified.strhubDid.heading")}>
+              <StrhubDidSection run={note.report} row={note.row} />
+            </Section>
+          </div>
         )}
 
         {(report.content_detail?.outputs?.[0]?.stats || report.io_detail?.outputs?.[0]) && (

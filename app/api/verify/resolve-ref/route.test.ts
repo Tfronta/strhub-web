@@ -8,11 +8,16 @@ import { NextRequest } from "next/server";
  * repository or ref cannot be found.
  */
 const resolveRef = vi.fn();
+const getVerifiedIndex = vi.fn();
 
 vi.mock("@/lib/verified/trial", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/verified/trial")>();
   return { ...actual, resolveRef: (...args: unknown[]) => resolveRef(...args) };
 });
+
+vi.mock("@/lib/verified", () => ({
+  getVerifiedIndex: (...args: unknown[]) => getVerifiedIndex(...args),
+}));
 
 vi.mock("@/lib/rate-limit", () => ({
   rateLimit: () => ({ ok: true }),
@@ -28,7 +33,16 @@ function get(query: Record<string, string>) {
 }
 
 describe("resolve-ref", () => {
-  beforeEach(() => resolveRef.mockReset());
+  beforeEach(() => {
+    resolveRef.mockReset();
+    getVerifiedIndex.mockReset();
+    getVerifiedIndex.mockResolvedValue({
+      schema: "strhub-verified/index/3",
+      generated: "2026-11-22T00:00:00Z",
+      count: 0,
+      tools: [],
+    });
+  });
 
   it("returns the SHA the trial would pin, and how it was chosen", async () => {
     resolveRef.mockResolvedValue({ sha: "b2033bfbb5cf55496b776463bdf2993fa763a4be", label: "v0.7", how: "release" });
@@ -71,5 +85,56 @@ describe("resolve-ref", () => {
     expect((await missingRepo.json()).error).toBe("repo_not_found");
     const missingRef = await get({ repo: "https://github.com/a/b", ref: "v9.9" });
     expect((await missingRef.json()).error).toBe("ref_not_found");
+  });
+
+  it("includes an existing catalogue match when the resolved commit was already evaluated", async () => {
+    resolveRef.mockResolvedValue({
+      sha: "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+      label: "v0.7",
+      how: "release",
+    });
+    getVerifiedIndex.mockResolvedValue({
+      schema: "strhub-verified/index/3",
+      generated: "2026-11-22T00:00:00Z",
+      count: 1,
+      tools: [
+        {
+          slug: "hipstr",
+          name: "HipSTR",
+          level: "content",
+          label: "Runs as documented",
+          generated: "2026-11-20T00:00:00Z",
+          version: "v0.7",
+          sha: "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+          verdict: "runs",
+          instrument: "documented",
+          source_repo: "https://github.com/tfwillems/HipSTR",
+          source_ref: "v0.7",
+          ci_run: null,
+          distinct_str_loci: 50,
+          distinct_snp_markers: null,
+          total_reads: 1000,
+          report: "hipstr.json",
+          page: "hipstr.html",
+        },
+      ],
+    });
+
+    const res = await get({ repo: "https://github.com/tfwillems/HipSTR" });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.existing).toEqual({
+      slug: "hipstr",
+      href: "/verified/hipstr",
+      generated: "2026-11-20T00:00:00Z",
+      version: "v0.7",
+      auto: {
+        level: "content",
+        verdict: "runs",
+        errors_reported: false,
+        href: "/verified/hipstr",
+      },
+      manual: null,
+    });
   });
 });

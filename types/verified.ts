@@ -339,9 +339,16 @@ export interface VerifiedReport {
     installation?: "repository" | "strhub" | string;
     base?: string | null;
     steps?: string[];
+    /** Verified command a third party can run after completing `steps`. */
+    run_cmd?: string | null;
     files?: { path: string; replaces?: string }[];
     why?: string[];
     without_preparation?: string | null;
+    /** Optional STRhub reproducibility fork/branch or setup guide URL. */
+    fork_url?: string | null;
+    guide_url?: string | null;
+    /** Short description of what the STRhub reproducibility fork or patch provides. */
+    fork_note?: string | null;
   } | null;
   recommendations?: string[] | null;
   generated: string;

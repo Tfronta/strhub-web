@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Lightbulb, Loader2 } from "lucide-react";
+import { ArrowRight, Info, Lightbulb, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,8 +12,11 @@ import { useLanguage } from "@/contexts/language-context";
 import { useTrackEvent } from "@/hooks/use-track-event";
 import { PageTitle } from "@/components/page-title";
 import type { TrialRole } from "@/lib/verified/trial";
+import type { ExistingCatalogMatch } from "@/lib/verified/existing-match";
+import { formatDate } from "@/lib/verified/format-date";
 import { repoSlugOf } from "@/lib/verified/repo-url";
 import { GUIDE_URL } from "@/lib/verified/step1";
+import { VerificationStatusTags } from "./status-tags";
 
 const ROLES: TrialRole[] = ["owner", "reviewer", "user"];
 
@@ -22,6 +25,7 @@ interface ResolvedRef {
   sha: string;
   label: string;
   how: "given" | "release" | "tag" | "head";
+  existing?: ExistingCatalogMatch;
 }
 
 export function VerifiedStart({
@@ -38,7 +42,7 @@ export function VerifiedStart({
    */
   initialRepo?: string;
 }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const track = useTrackEvent();
   const router = useRouter();
   const [role, setRole] = useState<TrialRole>(initialRole);
@@ -72,7 +76,12 @@ export function VerifiedStart({
         const data = await res.json();
         if (cancelled) return;
         if (res.ok && data.ok) {
-          setResolved({ sha: data.sha, label: data.label, how: data.how });
+          setResolved({
+            sha: data.sha,
+            label: data.label,
+            how: data.how,
+            existing: data.existing ?? undefined,
+          });
           if (!refTyped.current) setRef(data.sha);
         } else {
           setResolved(null);
@@ -200,6 +209,74 @@ export function VerifiedStart({
                 </span>
               </p>
               <p className="text-muted-foreground">{t("verified.start.refHint")}</p>
+              {resolved.existing && (
+                <div className="mt-2.5 rounded-lg border border-sky-500/40 bg-sky-50/70 p-3.5 text-xs dark:border-sky-500/35 dark:bg-sky-950/30">
+                  <div className="flex items-start gap-2">
+                    <Info className="mt-0.5 h-4 w-4 shrink-0 text-sky-700 dark:text-sky-400" aria-hidden />
+                    <div className="min-w-0 flex-1 space-y-2">
+                      <div>
+                        <p className="font-semibold text-foreground">
+                          {t("verified.start.existing.title")}
+                        </p>
+                        {resolved.existing.generated && (
+                          <p className="mt-0.5 text-muted-foreground">
+                            {t("verified.start.existing.evaluatedOn", {
+                              date: formatDate(resolved.existing.generated, language),
+                            })}
+                          </p>
+                        )}
+                      </div>
+                      <VerificationStatusTags
+                        autoRow={
+                          resolved.existing.auto
+                            ? {
+                                level: resolved.existing.auto.level,
+                                verdict: resolved.existing.auto.verdict,
+                                errors_reported: resolved.existing.auto.errors_reported,
+                                instrument: "documented",
+                              }
+                            : null
+                        }
+                        manualRow={
+                          resolved.existing.manual
+                            ? {
+                                level: resolved.existing.manual.level,
+                                verdict: resolved.existing.manual.verdict,
+                                errors_reported: resolved.existing.manual.errors_reported,
+                                instrument: "curated",
+                              }
+                            : null
+                        }
+                        size="sm"
+                      />
+                      <div className="flex flex-wrap items-center gap-3 pt-0.5">
+                        <Link
+                          href={resolved.existing.href}
+                          className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                        >
+                          {resolved.existing.manual
+                            ? t("verified.start.existing.viewReportAndGuide")
+                            : t("verified.start.existing.viewReport")}
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </Link>
+                        {resolved.existing.manual &&
+                          resolved.existing.manual.href !== resolved.existing.href && (
+                            <Link
+                              href={resolved.existing.manual.href}
+                              className="inline-flex items-center gap-1 font-medium text-indigo-700 hover:underline dark:text-indigo-300"
+                            >
+                              {t("verified.start.existing.viewManualGuide")}
+                              <ArrowRight className="h-3.5 w-3.5" />
+                            </Link>
+                          )}
+                      </div>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {t("verified.start.existing.canStillRun")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ) : unresolved ? (
             <p className="text-xs text-amber-700 dark:text-amber-500" aria-live="polite">{t("verified.start.refUnresolved")}</p>

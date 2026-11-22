@@ -17,6 +17,8 @@
  * allowance.
  */
 import { type NextRequest, NextResponse } from "next/server";
+import { getVerifiedIndex } from "@/lib/verified";
+import { findExistingCommitMatch } from "@/lib/verified/existing-match";
 import { resolveRef } from "@/lib/verified/trial";
 import { repoRefOf, repoSlugOf } from "@/lib/verified/repo-url";
 import { SHA_OR_TAG } from "@/lib/verified/submission";
@@ -49,5 +51,18 @@ export async function GET(request: NextRequest) {
   if (!resolved) {
     return NextResponse.json({ ok: false, error: ref ? "ref_not_found" : "repo_not_found" }, { status: 404 });
   }
-  return NextResponse.json({ ok: true, ...resolved });
+
+  let existing = null;
+  try {
+    const index = await getVerifiedIndex({ fresh: false });
+    existing = findExistingCommitMatch(index, repoSlug, resolved.sha);
+  } catch {
+    // Non-blocking lookup: never fail commit resolution if the catalogue index is unavailable.
+  }
+
+  return NextResponse.json({
+    ok: true,
+    ...resolved,
+    ...(existing ? { existing } : {}),
+  });
 }

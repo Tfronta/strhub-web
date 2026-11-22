@@ -244,6 +244,17 @@ export function shortSha(sha: string | null | undefined): string {
   return (sha ?? "").slice(0, 7);
 }
 
+/**
+ * Where a row is read: its slug's page, with `?at=` unless it is the slug's
+ * alias, and for a run of STRhub's recipe `&recipe=curated`, since the same
+ * commit may also carry the documented run, which `?at=` alone names.
+ */
+export function rowHref(row: Pick<HistoryRow, "slug" | "sha" | "instrument" | "isAlias">): string {
+  if (row.isAlias) return `/verified/${row.slug}`;
+  const recipe = row.instrument === "curated" ? "&recipe=curated" : "";
+  return `/verified/${row.slug}?at=${shortSha(row.sha)}${recipe}`;
+}
+
 /** What a row is called: the version the report recorded, else the short commit. */
 export function versionLabel(row: Pick<HistoryRow, "version" | "sha">): string {
   const v = row.version?.trim();

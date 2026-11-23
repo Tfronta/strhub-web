@@ -10,6 +10,7 @@
  * it when a numbered section already names it.
  */
 import { createContext, useContext, type ReactNode } from "react";
+import { InlineCodeText } from "./inline-code";
 
 const Headed = createContext(false);
 
@@ -101,7 +102,7 @@ export function ConclusionBox({ items }: { items: { title: string; body: string 
           <p className="font-semibold">
             <span className="mr-2 text-teal-700 dark:text-teal-400" aria-hidden="true">&#9670;</span>{c.title}
           </p>
-          <p className="mt-1 pl-5 text-muted-foreground">{c.body}</p>
+          <p className="mt-1 pl-5 text-muted-foreground"><InlineCodeText text={c.body} /></p>
         </div>
       ))}
     </div>

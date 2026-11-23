@@ -498,7 +498,19 @@ export interface VerifiedReport {
     count?: number;
     paths?: string[];
   } | null;
+  /** Optional localized editorial prose for manual reports (ES/PT; top-level fields remain canonical EN). */
+  i18n?: Partial<Record<"es" | "en" | "pt", VerifiedManualI18n>> | null;
   scope: string;
+}
+
+export interface VerifiedManualI18n {
+  plain_why?: string;
+  without_preparation?: string;
+  reason?: string;
+  base?: string;
+  proposed_fix_note?: string;
+  recommendations?: string[];
+  files?: { path: string; replaces?: string }[];
 }
 
 /** Editorial notices cannot be passed to execution-only renderers or offers. */

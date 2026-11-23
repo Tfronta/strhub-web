@@ -543,6 +543,7 @@ export function localizeBlocker(
 function buildLocalizedConclusion(
   report: VerifiedReport,
   t: Translate,
+  language?: "es" | "en" | "pt",
 ): { title: string; body: string }[] {
   if (blockedBeforeInstall(report)) {
     return [{
@@ -629,11 +630,14 @@ function buildLocalizedConclusion(
 
   const items: { title: string; body: string }[] = [ran, produced];
 
-  if (report.verdict?.code && report.verdict?.reason) {
+  const loc = language ? report.i18n?.[language] : undefined;
+  if (report.verdict?.code && (loc?.reason || report.verdict?.reason)) {
     const vTitleKey = `verified.trial.verdict.${report.verdict.code}`;
     const vTitle = t(vTitleKey) !== vTitleKey ? t(vTitleKey) : report.verdict.title;
     const vReason =
-      localizeVerdictReason(report.verdict.reason, t) ?? report.verdict.reason;
+      loc?.reason ||
+      localizeVerdictReason(report.verdict.reason, t) ||
+      report.verdict.reason;
     items.push({
       title: t("verified.certificate.conclusion.verdictTitle", {
         verdict: vTitle,
@@ -695,7 +699,7 @@ function buildLocalizedConclusion(
     });
   }
 
-  const fixNote = (report.preparation?.proposed_fix_note || report.preparation?.fork_note || "").trim();
+  const fixNote = (loc?.proposed_fix_note || report.preparation?.proposed_fix_note || report.preparation?.fork_note || "").trim();
   if (isManual && fixNote) {
     items.push({
       title: t("verified.certificate.conclusion.manualFixTitle"),
@@ -711,6 +715,7 @@ export function certificateOf(
   report: VerifiedReport,
   label: string,
   t?: Translate,
+  language?: "es" | "en" | "pt",
 ): VerifiedCertificate {
   if (!t) {
     if (report.certificate?.schema) return report.certificate;
@@ -767,7 +772,7 @@ export function certificateOf(
         t("verified.whatVerified.regulatory"),
       ],
     },
-    conclusion: buildLocalizedConclusion(report, t),
+    conclusion: buildLocalizedConclusion(report, t, language),
     out_of_scope: [
       t("verified.certificate.outOfScopeItems.item1"),
       t("verified.certificate.outOfScopeItems.item2"),

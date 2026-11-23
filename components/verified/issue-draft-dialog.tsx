@@ -29,7 +29,7 @@ import { buildIssueDraft, repoSlug, type IssueDraft } from "@/lib/verified/issue
 
 const BASE =
   process.env.NEXT_PUBLIC_VERIFIED_BASE ??
-  "https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages";
+  "https://raw.githubusercontent.com/Tfronta/strhub-verified-next/gh-pages";
 
 /**
  * Above this, GitHub's prefill silently truncates or the request is refused, and

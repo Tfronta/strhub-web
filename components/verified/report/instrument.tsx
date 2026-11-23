@@ -22,6 +22,7 @@ import { classifyManual } from "@/lib/verified/status-summary";
 import { GUIDE_URL } from "@/lib/verified/step1";
 import { cn } from "@/lib/utils";
 import { rowHref } from "./history";
+import { InlineCodeText, manualLocale } from "./inline-code";
 
 function isSafeHttpUrl(url: string | null | undefined): url is string {
   return Boolean(url && /^https?:\/\//i.test(url.trim()));
@@ -162,9 +163,12 @@ export function WorkaroundList({ items }: { items: VerifiedWorkaround[] | undefi
  * GatesLadder + RecordedTerminal evidence).
  */
 export function ManualExecutionContext({ run }: { run: VerifiedReport }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const prep = run.preparation;
-  const localizedReason = localizeVerdictReason(run.verdict?.reason, t);
+  const loc = manualLocale(run, language);
+  const withoutPrep = loc?.without_preparation || prep?.without_preparation;
+  const baseEnv = loc?.base || prep?.base;
+  const localizedReason = loc?.reason || localizeVerdictReason(run.verdict?.reason, t);
   const manualSummary = classifyManual({
     level: run.level,
     verdict: run.verdict?.code,
@@ -174,20 +178,20 @@ export function ManualExecutionContext({ run }: { run: VerifiedReport }) {
 
   return (
     <div className="mt-3 space-y-3 rounded-lg border bg-card p-5 text-sm">
-      {prep?.without_preparation && (
+      {withoutPrep && (
         <p className="text-muted-foreground leading-relaxed">
           <span className="font-semibold text-foreground">
             {t("verified.strhubDid.whyManualInline")}
           </span>{" "}
-          {prep.without_preparation}
+          <InlineCodeText text={withoutPrep} />
         </p>
       )}
-      {prep?.base && (
+      {baseEnv && (
         <p className="text-muted-foreground">
           <span className="font-semibold text-foreground">
             {t("verified.strhubDid.prepBaseLabel")}
           </span>{" "}
-          {prep.base}
+          <InlineCodeText text={baseEnv} />
         </p>
       )}
       <div
@@ -211,10 +215,14 @@ export function ManualExecutionContext({ run }: { run: VerifiedReport }) {
                 : t("verified.strhubDid.upstreamPassedTitle")}
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              {localizedReason ||
-                (manualFailed
-                  ? t("verified.strhubDid.upstreamFailedFallback")
-                  : t("verified.strhubDid.upstreamPassedFallback"))}
+              <InlineCodeText
+                text={
+                  localizedReason ||
+                  (manualFailed
+                    ? t("verified.strhubDid.upstreamFailedFallback")
+                    : t("verified.strhubDid.upstreamPassedFallback"))
+                }
+              />
             </p>
           </div>
         </div>
@@ -228,8 +236,9 @@ export function ManualExecutionContext({ run }: { run: VerifiedReport }) {
  * and optional STRhub reproducibility fork/guide (zero repetition).
  */
 export function ManualReproSteps({ run }: { run: VerifiedReport }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const prep = run.preparation;
+  const loc = manualLocale(run, language);
   const items = run.recipe?.workarounds;
   const manualSummary = classifyManual({
     level: run.level,
@@ -247,7 +256,8 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
   const prUrl = isSafeHttpUrl(prep?.pr_url) ? prep.pr_url.trim() : null;
   const forkUrl = isSafeHttpUrl(prep?.fork_url) ? prep.fork_url.trim() : null;
   const guideUrl = isSafeHttpUrl(prep?.guide_url) ? prep.guide_url.trim() : null;
-  const fixNote = (prep?.proposed_fix_note ?? prep?.fork_note ?? "").trim();
+  const fixNote = (loc?.proposed_fix_note ?? prep?.proposed_fix_note ?? prep?.fork_note ?? "").trim();
+  const prepFiles = loc?.files?.length ? loc.files : prep?.files;
   const hasStructuredSteps = Boolean(
     (prep?.steps && prep.steps.length > 0) || verifiedRunCmd || prUrl || forkUrl || guideUrl,
   );
@@ -288,14 +298,20 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
         />
       )}
 
-      {prep?.files && prep.files.length > 0 && (
+      {prepFiles && prepFiles.length > 0 && (
         <div>
           <p className="font-medium">{t("verified.strhubDid.prepFilesLabel")}</p>
           <ul className="mt-1.5 list-disc space-y-1 pl-5 text-muted-foreground">
-            {prep.files.map((f) => (
+            {prepFiles.map((f) => (
               <li key={f.path}>
                 <code className="rounded bg-muted px-1 py-0.5 text-xs text-foreground">{f.path}</code>
-                {f.replaces ? ` (${f.replaces})` : ""}
+                {f.replaces ? (
+                  <>
+                    {" ("}
+                    <InlineCodeText text={f.replaces} />
+                    {")"}
+                  </>
+                ) : ""}
               </li>
             ))}
           </ul>
@@ -305,7 +321,9 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
       {(prUrl || forkUrl || guideUrl) && (
         <div className="space-y-2 border-t pt-3">
           {fixNote && (
-            <p className="text-sm text-foreground/90 leading-relaxed">{fixNote}</p>
+            <p className="text-sm text-foreground/90 leading-relaxed">
+              <InlineCodeText text={fixNote} />
+            </p>
           )}
           <div className="flex flex-wrap items-center gap-3">
             {prUrl && (
@@ -362,10 +380,12 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
  * Section 3 on a Manual report: concise, actionable recommendations for the author.
  */
 export function ManualSuggestions({ run }: { run: VerifiedReport }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const loc = manualLocale(run, language);
+  const baseRecs = loc?.recommendations?.length ? loc.recommendations : (run.recommendations ?? []);
   const suggestions: string[] = [
-    ...(run.recommendations ?? []),
-    ...(!run.recommendations?.length && run.preparation?.why?.length
+    ...baseRecs,
+    ...(!baseRecs.length && run.preparation?.why?.length
       ? run.preparation.why
       : []),
   ];
@@ -375,7 +395,7 @@ export function ManualSuggestions({ run }: { run: VerifiedReport }) {
     <div className="mt-3 rounded-lg border border-teal-600/30 bg-teal-50/35 p-5 text-sm dark:border-teal-900/50 dark:bg-teal-950/20">
       <ul className="list-disc space-y-1.5 pl-5 leading-relaxed">
         {suggestions.map((s, idx) => (
-          <li key={`${idx}-${s}`}>{s}</li>
+          <li key={`${idx}-${s}`}><InlineCodeText text={s} /></li>
         ))}
       </ul>
       <div className="mt-3">

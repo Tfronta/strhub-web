@@ -123,7 +123,7 @@ export function VerifiedReportBody({
    */
   note?: { row: HistoryRow; report: VerifiedReport };
 }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   // The label is the first thing a reviewer sees, and one rule writes it
   // everywhere (lib/verified/badge.ts): the result as it is in the
   // repository, in words, exactly as the engine's badge and certificate do.
@@ -136,7 +136,7 @@ export function VerifiedReportBody({
     },
     t,
   );
-  const certificate = certificateOf(report, level.label, t);
+  const certificate = certificateOf(report, level.label, t, language);
   const installBlocked = blockedBeforeInstall(report);
   const data = summarizeDatasets(report, slug);
   const isStrhubRun =

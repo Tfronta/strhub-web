@@ -19,6 +19,7 @@ import { formatDate } from "@/lib/verified/format-date";
 import { cn } from "@/lib/utils";
 import type { PanelKind } from "@/lib/verified/dataset-provenance";
 import { KvTable, type KvRow } from "./certificate";
+import { InlineCodeText, manualLocale } from "./inline-code";
 
 export function Cover({
   report,
@@ -120,22 +121,22 @@ export function Cover({
       value: isManual ? t("verified.mode.manualDetail") : t("verified.mode.autoDetail"),
     },
     { label: t("verified.certificate.cover.reached"), value: certificate.summary.reached },
-    ...((isManual
-      ? (report.certificate?.summary?.why ||
-          (selfManual?.kind === "fail"
-            ? t("verified.strhubDid.plainWhyFail")
-            : t("verified.strhubDid.plainWhyPass")))
-      : certificate.summary.why)
-      ? [{
-          label: t("verified.certificate.summary.why"),
-          value: isManual
-            ? (report.certificate?.summary?.why ||
-                (selfManual?.kind === "fail"
-                  ? t("verified.strhubDid.plainWhyFail")
-                  : t("verified.strhubDid.plainWhyPass")))
-            : certificate.summary.why!,
-        }]
-      : []),
+    ...(() => {
+      const loc = manualLocale(report, language);
+      const whyText = isManual
+        ? (loc?.plain_why ||
+            report.certificate?.summary?.why ||
+            (selfManual?.kind === "fail"
+              ? t("verified.strhubDid.plainWhyFail")
+              : t("verified.strhubDid.plainWhyPass")))
+        : certificate.summary.why;
+      return whyText
+        ? [{
+            label: t("verified.certificate.summary.why"),
+            value: <InlineCodeText text={whyText} />,
+          }]
+        : [];
+    })(),
     ...(datasetsLabel
       ? [{ label: t("verified.certificate.summary.datasets"), value: datasetsLabel }]
       : []),

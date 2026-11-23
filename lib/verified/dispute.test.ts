@@ -32,7 +32,7 @@ describe("dispute link", () => {
     // The reader is questioning what STRhub published, so the issue lands on
     // STRhub's own repository — the tool's URL rides along in the body only as
     // context, never as the destination.
-    expect(url.split("?")[0]).toBe("https://github.com/Tfronta/strhub-verified/issues/new");
+    expect(url.split("?")[0]).toBe("https://github.com/Tfronta/strhub-verified-next/issues/new");
   });
 
   it("carries what it takes to find the exact attestation", () => {

@@ -1,6 +1,6 @@
 import type { TrialBlocker, TrialReport } from "./trial";
 
-const ENGINE_RUNS = "https://github.com/Tfronta/strhub-verified/actions/runs";
+const ENGINE_RUNS = "https://github.com/Tfronta/strhub-verified-next/actions/runs";
 
 /** GitHub's new-issue URL with the blocker's request filled in. */
 export function ownerIssueUrl(report: TrialReport, blocker: TrialBlocker, trialUrl: string): string | null {

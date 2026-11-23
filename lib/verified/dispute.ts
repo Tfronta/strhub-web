@@ -20,7 +20,7 @@
 import type { VerifiedReport } from "@/types/verified";
 
 /** Where a disputed attestation is answered for. */
-const ENGINE_REPO = "https://github.com/Tfronta/strhub-verified";
+const ENGINE_REPO = "https://github.com/Tfronta/strhub-verified-next";
 
 /**
  * GitHub truncates a prefilled form silently past roughly this, and a

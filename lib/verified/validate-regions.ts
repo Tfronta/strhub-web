@@ -21,7 +21,7 @@
 /** Public so the browser can reach it; mirrors the server-side ENGINE_* vars. */
 export const ENGINE_RAW_BASE =
   process.env.NEXT_PUBLIC_VERIFIED_ENGINE_RAW ??
-  "https://raw.githubusercontent.com/Tfronta/strhub-verified/main";
+  "https://raw.githubusercontent.com/Tfronta/strhub-verified-next/main";
 
 export interface BedInterval {
   chrom: string;

@@ -78,7 +78,7 @@ interface CatalogueEntry {
 
 const VERIFIED_BASE =
   process.env.NEXT_PUBLIC_VERIFIED_BASE ??
-  "https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages";
+  "https://raw.githubusercontent.com/Tfronta/strhub-verified-next/gh-pages";
 
 interface ContentEntry {
   id: string;

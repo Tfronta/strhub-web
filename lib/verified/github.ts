@@ -8,7 +8,7 @@
  *   GITHUB_APP_ID                 numeric App id
  *   GITHUB_APP_PRIVATE_KEY        PEM private key (raw, or base64-encoded)
  *   GITHUB_APP_INSTALLATION_ID    installation id on the engine repo
- *   VERIFIED_ENGINE_REPO          "owner/name" (default "Tfronta/strhub-verified")
+ *   VERIFIED_ENGINE_REPO          "owner/name" (default "Tfronta/strhub-verified-next")
  *   VERIFIED_ENGINE_BRANCH        default branch for commits (default "main")
  *   VERIFIED_WORKFLOW_FILE        workflow filename (default "verify.yml")
  */
@@ -17,7 +17,7 @@ import jwt from "jsonwebtoken";
 const API = "https://api.github.com";
 
 export const ENGINE_REPO =
-  process.env.VERIFIED_ENGINE_REPO || "Tfronta/strhub-verified";
+  process.env.VERIFIED_ENGINE_REPO || "Tfronta/strhub-verified-next";
 export const ENGINE_BRANCH = process.env.VERIFIED_ENGINE_BRANCH || "main";
 export const WORKFLOW_FILE =
   process.env.VERIFIED_WORKFLOW_FILE || "verify.yml";
@@ -25,7 +25,7 @@ export const WORKFLOW_FILE =
 export class GitHubConfigError extends Error {}
 
 /** The live engine. Writing here publishes to the real catalogue. */
-const PRODUCTION_ENGINE = "Tfronta/strhub-verified";
+const PRODUCTION_ENGINE = "Tfronta/strhub-verified-next";
 
 /**
  * Refuse to mutate the live engine from a non-production process.

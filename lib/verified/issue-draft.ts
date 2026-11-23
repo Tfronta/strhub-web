@@ -25,7 +25,7 @@ import { summarizeErrors, shortItems } from "./diagnostics";
 import { instrumentOfReport } from "./instrument";
 
 /** Where a reader can see the run for themselves. */
-const ENGINE_REPO_URL = "https://github.com/Tfronta/strhub-verified";
+const ENGINE_REPO_URL = "https://github.com/Tfronta/strhub-verified-next";
 const SITE = "https://strhub.app";
 
 export interface IssueDraft {

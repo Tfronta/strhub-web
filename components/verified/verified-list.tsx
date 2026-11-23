@@ -130,9 +130,9 @@ function VerificationRowCard({
         icon: "fail" as const,
         mode: t("verified.statusTag.manualLabel"),
         outcome: t("verified.statusTag.manual.fail", { passed, total: "5" }),
-        cardBorder: "border-amber-500/40 bg-amber-50/35 hover:border-amber-600/70 dark:border-amber-500/35 dark:bg-amber-950/20",
-        pillStyle: "border-amber-600/40 bg-amber-50 text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/60 dark:text-amber-200",
-        ctaStyle: "border-amber-600/40 text-amber-900 hover:bg-amber-100/70 dark:text-amber-200 dark:hover:bg-amber-950/60",
+        cardBorder: "border-red-500/30 bg-red-50/25 hover:border-red-500/65 dark:border-red-500/35 dark:bg-red-950/20",
+        pillStyle: "border-red-600/35 bg-red-50 text-red-900 dark:border-red-500/40 dark:bg-red-950/60 dark:text-red-200",
+        ctaStyle: "border-red-500/35 text-red-800 hover:bg-red-100/70 dark:text-red-200 dark:hover:bg-red-950/60",
       };
     }
 

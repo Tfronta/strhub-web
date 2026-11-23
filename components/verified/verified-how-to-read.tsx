@@ -78,7 +78,7 @@ export function VerifiedHowToRead() {
               </dd>
             </div>
             <div className="p-4">
-              <dt className="font-semibold text-amber-800 dark:text-amber-300">
+              <dt className="font-semibold text-red-800 dark:text-red-300">
                 {t("verified.howToRead.manualFailLabel")}
               </dt>
               <dd className="mt-1 text-muted-foreground leading-relaxed">

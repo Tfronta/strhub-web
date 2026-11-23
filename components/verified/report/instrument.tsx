@@ -198,13 +198,13 @@ export function ManualExecutionContext({ run }: { run: VerifiedReport }) {
         className={cn(
           "rounded-md border p-3.5",
           manualFailed
-            ? "border-amber-500/45 bg-amber-50/60 dark:border-amber-600/45 dark:bg-amber-950/30"
+            ? "border-red-500/45 bg-red-50/60 dark:border-red-600/45 dark:bg-red-950/30"
             : "border-teal-600/40 bg-teal-50/50 dark:border-teal-500/40 dark:bg-teal-950/25",
         )}
       >
         <div className="flex items-start gap-2">
           {manualFailed ? (
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700 dark:text-amber-400" aria-hidden />
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-400" aria-hidden />
           ) : (
             <Check className="mt-0.5 h-4 w-4 shrink-0 text-teal-700 dark:text-teal-400" aria-hidden />
           )}

@@ -349,6 +349,8 @@ export default {
       details: "Detalhes da execução",
     },
     mode: {
+      eyebrowAuto: "STRhub Verified · Verificação automática",
+      eyebrowManual: "STRhub Verified · Verificação manual",
       autoBadge: "Verificação automática",
       manualBadge: "Verificação manual",
       autoShort: "Automática",
@@ -402,6 +404,8 @@ export default {
       upstreamPassedTitle: "O código original executou corretamente na verificação manual",
       upstreamPassedFallback: "Após preparar manualmente o ambiente e as entradas, o código original do repositório completou a execução sem modificações.",
       whyManualInline: "Por que foi para verificação manual:",
+      plainWhyFail: "A verificação automática não pôde executar devido à forma como a instalação está documentada. Na verificação manual, o software original falhou ao executar por um erro no próprio código ou ambiente (veja detalhes na Seção 1).",
+      plainWhyPass: "A verificação automática não pôde executar devido à forma como a instalação está documentada. Na verificação manual, após preparar o ambiente, o software original rodou de ponta a ponta sem alterar o código (veja os passos na Seção 2).",
       sectionExecutionTitle: "Execução no código original",
       sectionStepsTitle: "Como rodar / o que corrigimos passo a passo",
       sectionSuggestionsTitle: "Sugestões para o autor",

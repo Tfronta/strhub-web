@@ -120,8 +120,21 @@ export function Cover({
       value: isManual ? t("verified.mode.manualDetail") : t("verified.mode.autoDetail"),
     },
     { label: t("verified.certificate.cover.reached"), value: certificate.summary.reached },
-    ...(certificate.summary.why
-      ? [{ label: t("verified.certificate.summary.why"), value: certificate.summary.why }]
+    ...((isManual
+      ? (report.certificate?.summary?.why ||
+          (selfManual?.kind === "fail"
+            ? t("verified.strhubDid.plainWhyFail")
+            : t("verified.strhubDid.plainWhyPass")))
+      : certificate.summary.why)
+      ? [{
+          label: t("verified.certificate.summary.why"),
+          value: isManual
+            ? (report.certificate?.summary?.why ||
+                (selfManual?.kind === "fail"
+                  ? t("verified.strhubDid.plainWhyFail")
+                  : t("verified.strhubDid.plainWhyPass")))
+            : certificate.summary.why!,
+        }]
       : []),
     ...(datasetsLabel
       ? [{ label: t("verified.certificate.summary.datasets"), value: datasetsLabel }]
@@ -164,7 +177,28 @@ export function Cover({
   }
 
   return (
-    <div className="mt-6 rounded-lg border bg-card p-5 sm:p-6">
+    <div
+      className={cn(
+        "mt-6 rounded-lg border border-t-4 bg-card p-5 sm:p-6",
+        isManual
+          ? selfManual?.kind === "fail"
+            ? "border-t-amber-500"
+            : "border-t-indigo-600"
+          : "border-t-teal-600",
+      )}
+    >
+      <p
+        className={cn(
+          "mb-2.5 text-xs font-semibold uppercase tracking-wider",
+          isManual
+            ? selfManual?.kind === "fail"
+              ? "text-amber-700 dark:text-amber-400"
+              : "text-indigo-700 dark:text-indigo-300"
+            : "text-teal-700 dark:text-teal-400",
+        )}
+      >
+        {isManual ? t("verified.mode.eyebrowManual") : t("verified.mode.eyebrowAuto")}
+      </p>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           {isManual && selfManual ? (
@@ -192,20 +226,13 @@ export function Cover({
               </span>
             </span>
           ) : (
-            <Badge className={cn("w-fit px-2.5 py-0.5 text-sm font-bold", TONE[level.tone])}>{level.label}</Badge>
+            <>
+              <Badge className={cn("w-fit px-2.5 py-0.5 text-sm font-bold", TONE[level.tone])}>{level.label}</Badge>
+              <span className="inline-flex items-center rounded-full border border-teal-600/40 bg-teal-50/70 px-2.5 py-0.5 text-xs sm:text-sm font-medium text-teal-900 dark:border-teal-600/50 dark:bg-teal-950/40 dark:text-teal-200">
+                {t("verified.mode.autoBadge")}
+              </span>
+            </>
           )}
-          <span
-            className={cn(
-              "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs sm:text-sm font-medium",
-              isManual
-                ? selfManual?.kind === "fail"
-                  ? "border-amber-600/40 bg-amber-50/75 text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-200"
-                  : "border-indigo-600/40 bg-indigo-50/85 text-indigo-900 dark:border-indigo-500/45 dark:bg-indigo-950/50 dark:text-indigo-200"
-                : "border-teal-600/40 bg-teal-50/70 text-teal-900 dark:border-teal-600/50 dark:bg-teal-950/40 dark:text-teal-200"
-            )}
-          >
-            {isManual ? t("verified.mode.manualBadge") : t("verified.mode.autoBadge")}
-          </span>
           {panel && (
             <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs sm:text-sm text-muted-foreground">
               {t(`verified.panel.${panel}`)}

@@ -349,6 +349,8 @@ export default {
       details: "Run details",
     },
     mode: {
+      eyebrowAuto: "STRhub Verified · Automated verification",
+      eyebrowManual: "STRhub Verified · Manual verification",
       autoBadge: "Automated verification",
       manualBadge: "Manual verification",
       autoShort: "Automated",
@@ -402,6 +404,8 @@ export default {
       upstreamPassedTitle: "Unmodified upstream code succeeded in manual verification",
       upstreamPassedFallback: "After manually preparing the environment and inputs, the repository's original code completed execution without code modifications.",
       whyManualInline: "Why manual verification was used:",
+      plainWhyFail: "Automated verification could not run because the repository's installation steps could not be executed automatically. In manual verification, the original software failed to run due to an error in its own code or environment definition (see Section 1 for details).",
+      plainWhyPass: "Automated verification could not run because the repository's installation steps could not be executed automatically. In manual verification, after preparing the environment, the original software ran end-to-end without code changes (see Section 2 for steps).",
       sectionExecutionTitle: "Execution on unmodified upstream code",
       sectionStepsTitle: "Step-by-step setup and reproducible workaround",
       sectionSuggestionsTitle: "Suggestions for the author",

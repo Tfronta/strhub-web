@@ -234,6 +234,7 @@ export function VerifiedReportBody({
 
             {(report.preparation?.steps?.length ||
               report.preparation?.run_cmd ||
+              report.preparation?.pr_url ||
               report.preparation?.fork_url ||
               report.preparation?.guide_url ||
               report.recipe?.workarounds?.length) && (
@@ -253,8 +254,10 @@ export function VerifiedReportBody({
                 <p className="font-medium text-foreground">
                   {report.verdict?.reason || report.certificate?.summary?.result || certificate.summary.result}
                 </p>
-                {report.preparation?.fork_note && (
-                  <p className="text-foreground/90">{report.preparation.fork_note}</p>
+                {(report.preparation?.proposed_fix_note || report.preparation?.fork_note) && (
+                  <p className="text-foreground/90">
+                    {report.preparation.proposed_fix_note || report.preparation.fork_note}
+                  </p>
                 )}
                 <div className="border-t pt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
                   <p className="min-w-0 flex-1">{certificate.scope.disclaimer}</p>

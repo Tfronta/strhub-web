@@ -344,10 +344,12 @@ export interface VerifiedReport {
     files?: { path: string; replaces?: string }[];
     why?: string[];
     without_preparation?: string | null;
-    /** Optional STRhub reproducibility fork/branch or setup guide URL. */
+    /** Optional upstream PR, reproducibility fork/branch, or setup guide URL. */
+    pr_url?: string | null;
     fork_url?: string | null;
     guide_url?: string | null;
-    /** Short description of what the STRhub reproducibility fork or patch provides. */
+    /** Short description of what the proposed fix or fork changes. */
+    proposed_fix_note?: string | null;
     fork_note?: string | null;
   } | null;
   recommendations?: string[] | null;

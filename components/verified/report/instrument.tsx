@@ -13,7 +13,7 @@
  */
 import { useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, BookOpen, Check, Copy, ExternalLink, GitFork } from "lucide-react";
+import { AlertTriangle, ArrowRight, BookOpen, Check, Copy, ExternalLink, GitFork, GitPullRequest } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedReport, VerifiedWorkaround } from "@/types/verified";
 import { localizeVerdictReason } from "@/lib/verified/certificate";
@@ -244,10 +244,12 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
     run.run?.cmd ??
     ""
   ).trim();
+  const prUrl = isSafeHttpUrl(prep?.pr_url) ? prep.pr_url.trim() : null;
   const forkUrl = isSafeHttpUrl(prep?.fork_url) ? prep.fork_url.trim() : null;
   const guideUrl = isSafeHttpUrl(prep?.guide_url) ? prep.guide_url.trim() : null;
+  const fixNote = (prep?.proposed_fix_note ?? prep?.fork_note ?? "").trim();
   const hasStructuredSteps = Boolean(
-    (prep?.steps && prep.steps.length > 0) || verifiedRunCmd || forkUrl || guideUrl,
+    (prep?.steps && prep.steps.length > 0) || verifiedRunCmd || prUrl || forkUrl || guideUrl,
   );
 
   if (!hasStructuredSteps && !items?.length) return null;
@@ -300,12 +302,24 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
         </div>
       )}
 
-      {(forkUrl || guideUrl) && (
+      {(prUrl || forkUrl || guideUrl) && (
         <div className="space-y-2 border-t pt-3">
-          {prep?.fork_note && (
-            <p className="text-sm text-foreground/90 leading-relaxed">{prep.fork_note}</p>
+          {fixNote && (
+            <p className="text-sm text-foreground/90 leading-relaxed">{fixNote}</p>
           )}
           <div className="flex flex-wrap items-center gap-3">
+            {prUrl && (
+              <a
+                href={prUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md border border-indigo-600/45 bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+              >
+                <GitPullRequest className="h-3.5 w-3.5" aria-hidden />
+                {t("verified.strhubDid.openPrCta")}
+                <ExternalLink className="h-3 w-3 opacity-80" aria-hidden />
+              </a>
+            )}
             {forkUrl && (
               <a
                 href={forkUrl}

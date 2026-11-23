@@ -206,6 +206,18 @@ export default {
         "Every report opens with the tool as it is in its repository: STRhub read the repository's own instructions (the README, a Dockerfile or environment file, the image the README points at) and ran exactly those. The label is that result, in words: \"Runs as documented\", or \"Does not run as documented\" with where it stopped. That is what a first-time user meets. A maintainer's recipe counts the same, because it is documentation in another format.",
       chaptersBody2:
         "When STRhub wrote a recipe of its own to see how far the tool could be made to run, that comes second, under the heading \"What STRhub had to do to run this tool\": each thing the recipe had to do differently, as a recommendation to the author, and how far it got. It never changes the label. A tool with no run of its own instructions yet is marked \"Not verified as documented\"; one whose README does not say enough to attempt a run is \"Could not be determined\", a finding about the documentation, not the software.",
+      manualHeading: "Manual verification",
+      manualLead:
+        "When automated verification cannot execute a repository's instructions literally (for example, an interactive installer, missing environment file, or GPU requirement), the STRhub team can evaluate the exact same pinned commit manually in a prepared environment and publish an independent manual report.",
+      manualVerifiedLabel: "Manual · Verified",
+      manualVerifiedBody:
+        "The STRhub team prepared the environment or input files manually, and the unmodified upstream code ran end-to-end and produced valid output.",
+      manualFailLabel: "Manual · Fails",
+      manualFailBody:
+        "Even after preparing the environment manually, the unmodified upstream code failed to install, run, or produce expected output due to an error in the software itself or its environment definition.",
+      manualFixLabel: "Proposed fix / temporary workaround",
+      manualFixBody:
+        "When a manual test uncovers a code bug, STRhub may share a suggested fix (as a pull request or fork) to assist the author and provide a temporary reference for users. A proposed fix never changes the verdict of the official upstream commit until the change is merged upstream and re-verified.",
       developerHeading: "For a developer",
       developerBody:
         "A result describes one environment, and software that works on the machine it was written on can still stop here. That gap is usually the useful part: it is what a new user meets on their first day. Every result links the full log and the exact commands used, so a result can be reproduced locally.",
@@ -351,6 +363,7 @@ export default {
     mode: {
       eyebrowAuto: "STRhub Verified · Automated verification",
       eyebrowManual: "STRhub Verified · Manual verification",
+      bannerManual: "Manual verification report",
       autoBadge: "Automated verification",
       manualBadge: "Manual verification",
       autoShort: "Automated",
@@ -410,6 +423,7 @@ export default {
       sectionStepsTitle: "Step-by-step setup and reproducible workaround",
       sectionSuggestionsTitle: "Suggestions for the author",
       sectionConclusionTitle: "Conclusion and scope",
+      howToReadManualLink: "How to read manual results",
       reproPatchTitle: "Proposed fix for the author / temporary workaround (requires code changes)",
       reproPatchDisclaimer: "This proposal addresses the bug found and is shared as a suggestion for the author and temporary reference for users. It does not mark the official commit as passing until the upstream repository incorporates the fix.",
       companionTitle: "Manual verification available.",

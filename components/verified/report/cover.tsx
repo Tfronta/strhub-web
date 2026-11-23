@@ -9,7 +9,7 @@
  * place on both.
  */
 import { useState } from "react";
-import { Check, Copy, ExternalLink, FileDown, FileJson, Flag, Play, X } from "lucide-react";
+import { Check, ClipboardCheck, Copy, ExternalLink, FileDown, FileJson, Flag, Play, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedCertificate, VerifiedReport } from "@/types/verified";
@@ -139,26 +139,26 @@ export function Cover({
     ...(datasetsLabel
       ? [{ label: t("verified.certificate.summary.datasets"), value: datasetsLabel }]
       : []),
-    {
-      label: t("verified.certificate.cover.permalink"),
-      value: permalink
-        ? <a href={permalink} className="break-all text-primary hover:underline">{permalink}</a>
-        : (
-          <span className="inline-flex flex-wrap items-center gap-3">
-            <span className="text-muted-foreground">{t("verified.certificate.cover.notPublished")}</span>
-            {trialUrl && (
-              <button
-                type="button"
-                onClick={copyTrialLink}
-                className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-              >
-                {copiedTrial ? <Check className="h-3.5 w-3.5 text-teal-600" /> : <Copy className="h-3.5 w-3.5" />}
-                {copiedTrial ? t("verified.certificate.cover.trialLinkCopied") : t("verified.certificate.cover.copyTrialLink")}
-              </button>
-            )}
-          </span>
-        ),
-    },
+    ...(!permalink
+      ? [{
+          label: t("verified.certificate.cover.permalink"),
+          value: (
+            <span className="inline-flex flex-wrap items-center gap-3">
+              <span className="text-muted-foreground">{t("verified.certificate.cover.notPublished")}</span>
+              {trialUrl && (
+                <button
+                  type="button"
+                  onClick={copyTrialLink}
+                  className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                >
+                  {copiedTrial ? <Check className="h-3.5 w-3.5 text-teal-600" /> : <Copy className="h-3.5 w-3.5" />}
+                  {copiedTrial ? t("verified.certificate.cover.trialLinkCopied") : t("verified.certificate.cover.copyTrialLink")}
+                </button>
+              )}
+            </span>
+          ),
+        }]
+      : []),
   ];
   if (pdfUrl || staticPageUrl || jsonUrl) {
     rows.push({
@@ -179,7 +179,7 @@ export function Cover({
   return (
     <div
       className={cn(
-        "mt-6 rounded-lg border border-t-4 bg-card p-5 sm:p-6",
+        "mt-6 overflow-hidden rounded-lg border border-t-4 bg-card",
         isManual
           ? selfManual?.kind === "fail"
             ? "border-t-amber-500"
@@ -187,18 +187,28 @@ export function Cover({
           : "border-t-teal-600",
       )}
     >
-      <p
-        className={cn(
-          "mb-2.5 text-xs font-semibold uppercase tracking-wider",
-          isManual
-            ? selfManual?.kind === "fail"
-              ? "text-amber-700 dark:text-amber-400"
-              : "text-indigo-700 dark:text-indigo-300"
-            : "text-teal-700 dark:text-teal-400",
-        )}
-      >
-        {isManual ? t("verified.mode.eyebrowManual") : t("verified.mode.eyebrowAuto")}
-      </p>
+      {isManual && (
+        <div
+          className={cn(
+            "flex flex-wrap items-center justify-between gap-2 border-b px-5 py-3 sm:px-6",
+            selfManual?.kind === "fail"
+              ? "border-amber-200/80 bg-amber-50/90 text-amber-950 dark:border-amber-800/50 dark:bg-amber-950/40 dark:text-amber-200"
+              : "border-indigo-200/80 bg-indigo-50/90 text-indigo-950 dark:border-indigo-800/50 dark:bg-indigo-950/40 dark:text-indigo-200",
+          )}
+        >
+          <span className="inline-flex items-center gap-2 text-sm sm:text-base font-bold uppercase tracking-wide">
+            <ClipboardCheck className="h-4 w-4 shrink-0" aria-hidden />
+            {t("verified.mode.bannerManual")}
+          </span>
+          <span className="text-xs font-medium opacity-75">STRhub Verified</span>
+        </div>
+      )}
+      <div className="p-5 sm:p-6">
+      {!isManual && (
+        <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-400">
+          {t("verified.mode.eyebrowAuto")}
+        </p>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           {isManual && selfManual ? (
@@ -272,6 +282,7 @@ export function Cover({
       </h1>
       <p className="font-mono text-sm sm:text-base text-muted-foreground">{slug}</p>
       <KvTable rows={rows} labelWidth="11.5rem" />
+      </div>
     </div>
   );
 }

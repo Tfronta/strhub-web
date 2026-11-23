@@ -262,10 +262,10 @@ export function VerifiedReportBody({
                 <div className="border-t pt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
                   <p className="min-w-0 flex-1">{certificate.scope.disclaimer}</p>
                   <Link
-                    href="/verified/how-to-read"
+                    href="/verified/how-to-read#manual"
                     className="font-medium text-primary hover:underline shrink-0"
                   >
-                    {t("verified.gate.howToReadLink")}
+                    {t("verified.strhubDid.howToReadManualLink")}
                   </Link>
                 </div>
               </div>

@@ -61,6 +61,41 @@ export function VerifiedHowToRead() {
           {t("verified.howToRead.chaptersBody2")}
         </p>
 
+        <section id="manual" className="mt-10 scroll-mt-20">
+          <h2 className="text-xl font-semibold">
+            {t("verified.howToRead.manualHeading")}
+          </h2>
+          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+            {t("verified.howToRead.manualLead")}
+          </p>
+          <dl className="mt-4 divide-y rounded-lg border bg-card text-sm">
+            <div className="p-4">
+              <dt className="font-semibold text-indigo-800 dark:text-indigo-300">
+                {t("verified.howToRead.manualVerifiedLabel")}
+              </dt>
+              <dd className="mt-1 text-muted-foreground leading-relaxed">
+                {t("verified.howToRead.manualVerifiedBody")}
+              </dd>
+            </div>
+            <div className="p-4">
+              <dt className="font-semibold text-amber-800 dark:text-amber-300">
+                {t("verified.howToRead.manualFailLabel")}
+              </dt>
+              <dd className="mt-1 text-muted-foreground leading-relaxed">
+                {t("verified.howToRead.manualFailBody")}
+              </dd>
+            </div>
+            <div className="p-4">
+              <dt className="font-semibold text-foreground">
+                {t("verified.howToRead.manualFixLabel")}
+              </dt>
+              <dd className="mt-1 text-muted-foreground leading-relaxed">
+                {t("verified.howToRead.manualFixBody")}
+              </dd>
+            </div>
+          </dl>
+        </section>
+
         <div className="mt-10 grid gap-8 sm:grid-cols-2">
           <div>
             <h2 className="text-base font-semibold">

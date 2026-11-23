@@ -206,6 +206,18 @@ export default {
         "Cada informe abre con la herramienta tal como está en su repositorio: STRhub leyó las instrucciones del propio repositorio (el README, un Dockerfile o archivo de entorno, la imagen que el README señala) y corrió exactamente eso. La etiqueta es ese resultado, en palabras: \"Corre según su documentación\", o \"No corre según su documentación\" con dónde se detuvo. Es lo que encuentra quien usa la herramienta por primera vez. Una receta del mantenedor cuenta igual, porque es documentación en otro formato.",
       chaptersBody2:
         "Cuando STRhub escribió una receta propia para ver hasta dónde se podía hacer correr la herramienta, eso va segundo, bajo el título \"Qué tuvo que hacer STRhub para correr esta herramienta\": cada cosa que la receta tuvo que hacer distinto, como recomendación al autor, y hasta dónde llegó. Nunca cambia la etiqueta. Una herramienta sin corrida de sus propias instrucciones todavía se marca \"No verificada según su documentación\"; una cuyo README no dice lo suficiente para intentar correrla queda como \"No se pudo determinar\", un hallazgo sobre la documentación, no sobre el software.",
+      manualHeading: "Verificación manual",
+      manualLead:
+        "Cuando la verificación automática no puede ejecutar literalmente las instrucciones del repositorio (por ejemplo, por un instalador interactivo, un archivo de entorno faltante o requerimiento de GPU), el equipo de STRhub puede evaluar manualmente ese mismo commit fijo en un entorno preparado y publicar un informe manual independiente.",
+      manualVerifiedLabel: "Manual · Verificado",
+      manualVerifiedBody:
+        "El equipo de STRhub preparó manualmente el entorno o los archivos de entrada y el código original del repositorio (sin modificaciones) corrió de principio a fin y produjo una salida válida.",
+      manualFailLabel: "Manual · Falla",
+      manualFailBody:
+        "Incluso después de preparar el entorno manualmente, el código original del repositorio no pudo instalarse, ejecutarse o generar la salida esperada debido a un error en el propio software o en su definición de entorno.",
+      manualFixLabel: "Propuesta de corrección / solución temporal",
+      manualFixBody:
+        "Cuando una prueba manual detecta un error de código, STRhub puede compartir una corrección sugerida (mediante pull request o fork) como aporte para el autor y guía temporal para usuarios. Una propuesta de corrección nunca cambia el resultado del commit oficial hasta que el repositorio original incorpore el cambio y se vuelva a verificar.",
       developerHeading: "Para un desarrollador",
       developerBody:
         "Un resultado describe un entorno, y un software que funciona en la máquina donde se escribió puede detenerse igual acá. Esa brecha suele ser la parte útil: es lo que se encuentra un usuario nuevo el primer día. Cada resultado enlaza el log completo y los comandos exactos, así que se puede reproducir en local.",
@@ -351,6 +363,7 @@ export default {
     mode: {
       eyebrowAuto: "STRhub Verified · Verificación automática",
       eyebrowManual: "STRhub Verified · Verificación manual",
+      bannerManual: "Informe de verificación manual",
       autoBadge: "Verificación automática",
       manualBadge: "Verificación manual",
       autoShort: "Automática",
@@ -410,6 +423,7 @@ export default {
       sectionStepsTitle: "Cómo correrla / qué arreglamos paso a paso",
       sectionSuggestionsTitle: "Sugerencias para el autor",
       sectionConclusionTitle: "Conclusión y alcance",
+      howToReadManualLink: "Cómo leer la verificación manual",
       reproPatchTitle: "Propuesta de corrección para el autor / solución temporal (requiere modificar código)",
       reproPatchDisclaimer: "Esta propuesta corrige el error encontrado y se comparte como sugerencia para el autor y referencia temporal para usuarios. No aprueba el commit oficial hasta que el repositorio original incorpore el cambio.",
       companionTitle: "Verificación manual disponible.",

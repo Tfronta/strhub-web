@@ -195,14 +195,14 @@ export function ManualExecutionContext({ run }: { run: VerifiedReport }) {
           "rounded-md border p-3.5",
           manualFailed
             ? "border-amber-500/45 bg-amber-50/60 dark:border-amber-600/45 dark:bg-amber-950/30"
-            : "border-indigo-500/40 bg-indigo-50/50 dark:border-indigo-500/40 dark:bg-indigo-950/25",
+            : "border-teal-600/40 bg-teal-50/50 dark:border-teal-500/40 dark:bg-teal-950/25",
         )}
       >
         <div className="flex items-start gap-2">
           {manualFailed ? (
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700 dark:text-amber-400" aria-hidden />
           ) : (
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-indigo-700 dark:text-indigo-400" aria-hidden />
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-teal-700 dark:text-teal-400" aria-hidden />
           )}
           <div className="space-y-1">
             <p className="font-semibold text-foreground">
@@ -259,13 +259,13 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
       className={cn(
         "mt-3 space-y-4 rounded-lg border p-5 text-sm",
         manualFailed
-          ? "border-indigo-500/35 bg-indigo-50/35 dark:border-indigo-500/35 dark:bg-indigo-950/20"
+          ? "border-amber-500/35 bg-amber-50/25 dark:border-amber-600/35 dark:bg-amber-950/20"
           : "bg-card",
       )}
     >
       {manualFailed && (
         <div className="space-y-1">
-          <p className="text-xs font-semibold uppercase tracking-wider text-indigo-900 dark:text-indigo-200">
+          <p className="text-xs font-semibold uppercase tracking-wider text-amber-900 dark:text-amber-200">
             {t("verified.strhubDid.reproPatchTitle")}
           </p>
           <p className="text-xs text-muted-foreground leading-relaxed">
@@ -313,7 +313,7 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
                 href={prUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border border-indigo-600/45 bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+                className="inline-flex items-center gap-1.5 rounded-md border border-teal-600/45 bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-500"
               >
                 <GitPullRequest className="h-3.5 w-3.5" aria-hidden />
                 {t("verified.strhubDid.openPrCta")}
@@ -325,7 +325,7 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
                 href={forkUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border border-indigo-600/40 bg-background px-3 py-1.5 text-xs font-semibold text-indigo-900 hover:bg-indigo-50 dark:border-indigo-500/40 dark:text-indigo-200 dark:hover:bg-indigo-950/60"
+                className="inline-flex items-center gap-1.5 rounded-md border border-teal-600/40 bg-background px-3 py-1.5 text-xs font-semibold text-teal-900 hover:bg-teal-50 dark:border-teal-500/40 dark:text-teal-200 dark:hover:bg-teal-950/60"
               >
                 <GitFork className="h-3.5 w-3.5" aria-hidden />
                 {t("verified.strhubDid.openForkCta")}
@@ -337,7 +337,7 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
                 href={guideUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border border-indigo-600/40 bg-background px-3 py-1.5 text-xs font-semibold text-indigo-900 hover:bg-indigo-50 dark:border-indigo-500/40 dark:text-indigo-200 dark:hover:bg-indigo-950/60"
+                className="inline-flex items-center gap-1.5 rounded-md border border-teal-600/40 bg-background px-3 py-1.5 text-xs font-semibold text-teal-900 hover:bg-teal-50 dark:border-teal-500/40 dark:text-teal-200 dark:hover:bg-teal-950/60"
               >
                 <BookOpen className="h-3.5 w-3.5" aria-hidden />
                 {t("verified.strhubDid.openGuideCta")}

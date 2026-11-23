@@ -285,7 +285,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
               <div
                 className={`flex flex-col justify-between rounded-lg border p-4 ${
                   manualPassed
-                    ? "border-indigo-500/45 bg-indigo-50/70 dark:border-indigo-500/40 dark:bg-indigo-950/30"
+                    ? "border-teal-600/40 bg-teal-50/70 dark:border-teal-500/40 dark:bg-teal-950/30"
                     : "border-amber-500/45 bg-amber-50/70 dark:border-amber-600/45 dark:bg-amber-950/30"
                 }`}
               >
@@ -293,7 +293,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
                   <p
                     className={`text-xs font-semibold uppercase tracking-wide ${
                       manualPassed
-                        ? "text-indigo-800 dark:text-indigo-300"
+                        ? "text-teal-800 dark:text-teal-300"
                         : "text-amber-900 dark:text-amber-300"
                     }`}
                   >
@@ -316,7 +316,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
                     size="sm"
                     className={
                       manualPassed
-                        ? "bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+                        ? "bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-500"
                         : "bg-amber-600 text-white hover:bg-amber-700 dark:bg-amber-600 dark:hover:bg-amber-500"
                     }
                   >

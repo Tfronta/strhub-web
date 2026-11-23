@@ -255,6 +255,8 @@ export default {
       },
       conclusion: {
         whereClean: "em um contêiner limpo",
+        whereManual: "em um ambiente preparado manualmente",
+        manualFixTitle: "Proposta de correção / solução temporária",
         runsTitle: "{tool} executa de ponta a ponta",
         runsBody: "{tool} instalou e rodou até o fim {where} sem falhas.",
         notRunsTitle: "{tool} não completou sua execução",
@@ -313,6 +315,7 @@ export default {
         purpose: "Verificação independente e automatizada de execução documentada para ferramentas de STR forenses.",
         execScope: "Apenas execução documentada: se a ferramenta instala e roda de ponta a ponta sobre seu código público no commit fixado.",
         scopeExec: "Verificação automatizada apenas de execução reprodutível (instalação + execução de ponta a ponta + plausibilidade da saída). Não é uma validação analítica. Não avalia a exatidão dos genótipos, a concordância nem a aptidão forense.",
+        scopeManual: "Verificação manual apenas de execução reprodutível sobre o código original no commit fixado (preparação do ambiente + execução de ponta a ponta + plausibilidade da saída). Não é uma validação analítica. Não avalia a exatidão dos genótipos, a concordância nem a aptidão forense.",
       },
       outOfScopeItems: {
         item1: "Exatidão dos genótipos ou correção na chamada de alelos.",
@@ -420,6 +423,7 @@ export default {
       plainWhyFail: "A verificação automática não pôde executar devido à forma como a instalação está documentada. Na verificação manual, o software original falhou ao executar por um erro no próprio código ou ambiente (veja detalhes na Seção 1).",
       plainWhyPass: "A verificação automática não pôde executar devido à forma como a instalação está documentada. Na verificação manual, após preparar o ambiente, o software original rodou de ponta a ponta sem alterar o código (veja os passos na Seção 2).",
       sectionExecutionTitle: "Execução no código original",
+      sectionStepsPassTitle: "Como preparar e executar passo a passo",
       sectionStepsTitle: "Como rodar / o que corrigimos passo a passo",
       sectionSuggestionsTitle: "Sugestões para o autor",
       sectionConclusionTitle: "Conclusão e escopo",

@@ -70,7 +70,7 @@ export function VerifiedHowToRead() {
           </p>
           <dl className="mt-4 divide-y rounded-lg border bg-card text-sm">
             <div className="p-4">
-              <dt className="font-semibold text-indigo-800 dark:text-indigo-300">
+              <dt className="font-semibold text-teal-800 dark:text-teal-300">
                 {t("verified.howToRead.manualVerifiedLabel")}
               </dt>
               <dd className="mt-1 text-muted-foreground leading-relaxed">

@@ -263,7 +263,7 @@ export function VerifiedStart({
                           resolved.existing.manual.href !== resolved.existing.href && (
                             <Link
                               href={resolved.existing.manual.href}
-                              className="inline-flex items-center gap-1 font-medium text-indigo-700 hover:underline dark:text-indigo-300"
+                              className="inline-flex items-center gap-1 font-medium text-teal-700 hover:underline dark:text-teal-300"
                             >
                               {t("verified.start.existing.viewManualGuide")}
                               <ArrowRight className="h-3.5 w-3.5" />

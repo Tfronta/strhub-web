@@ -183,7 +183,7 @@ export function Cover({
         isManual
           ? selfManual?.kind === "fail"
             ? "border-t-amber-500"
-            : "border-t-indigo-600"
+            : "border-t-teal-600"
           : "border-t-teal-600",
       )}
     >
@@ -193,7 +193,7 @@ export function Cover({
             "flex flex-wrap items-center justify-between gap-2 border-b px-5 py-3 sm:px-6",
             selfManual?.kind === "fail"
               ? "border-amber-200/80 bg-amber-50/90 text-amber-950 dark:border-amber-800/50 dark:bg-amber-950/40 dark:text-amber-200"
-              : "border-indigo-200/80 bg-indigo-50/90 text-indigo-950 dark:border-indigo-800/50 dark:bg-indigo-950/40 dark:text-indigo-200",
+              : "border-teal-200/80 bg-teal-50/90 text-teal-950 dark:border-teal-800/50 dark:bg-teal-950/40 dark:text-teal-200",
           )}
         >
           <span className="inline-flex items-center gap-2 text-sm sm:text-base font-bold uppercase tracking-wide">
@@ -217,7 +217,7 @@ export function Cover({
                 "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 text-sm font-bold tabular-nums",
                 selfManual.kind === "fail"
                   ? "border-amber-600/45 bg-amber-50 text-amber-900 dark:border-amber-500/45 dark:bg-amber-950/50 dark:text-amber-200"
-                  : "border-indigo-600/45 bg-indigo-50 text-indigo-900 dark:border-indigo-500/45 dark:bg-indigo-950/50 dark:text-indigo-200"
+                  : "border-teal-600/45 bg-teal-50 text-teal-900 dark:border-teal-500/45 dark:bg-teal-950/50 dark:text-teal-200"
               )}
             >
               {selfManual.kind === "fail" ? (

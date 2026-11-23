@@ -559,7 +559,13 @@ function buildLocalizedConclusion(
     return report.certificate?.conclusion ?? [];
   }
   const toolDisplay = `${report.tool.name}${report.tool.version ? ` ${report.tool.version}` : ""}`.trim();
-  const where = t("verified.certificate.conclusion.whereClean");
+  const isManual =
+    report.instrument === "curated" ||
+    report.environment?.source === "prepared" ||
+    Boolean(report.preparation);
+  const where = isManual
+    ? t("verified.certificate.conclusion.whereManual")
+    : t("verified.certificate.conclusion.whereClean");
 
   const gates = report.gates ?? {
     available: false,
@@ -686,6 +692,14 @@ function buildLocalizedConclusion(
     items.push({
       title: t("verified.certificate.conclusion.reproTitle"),
       body: t("verified.certificate.conclusion.reproBody"),
+    });
+  }
+
+  const fixNote = (report.preparation?.proposed_fix_note || report.preparation?.fork_note || "").trim();
+  if (isManual && fixNote) {
+    items.push({
+      title: t("verified.certificate.conclusion.manualFixTitle"),
+      body: fixNote,
     });
   }
 

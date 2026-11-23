@@ -255,6 +255,8 @@ export default {
       },
       conclusion: {
         whereClean: "in a clean container",
+        whereManual: "in a manually prepared environment",
+        manualFixTitle: "Proposed fix / temporary workaround",
         runsTitle: "{tool} executes end-to-end",
         runsBody: "{tool} installed and ran to completion {where} without crashing.",
         notRunsTitle: "{tool} did not complete its run",
@@ -313,6 +315,7 @@ export default {
         purpose: "Independent, automated verification of documented execution for forensic STR tools.",
         execScope: "Documented execution only: whether the tool installs and runs end-to-end on its public source at the pinned commit.",
         scopeExec: "Automated verification of reproducible execution only (installation + end-to-end run + output plausibility). Not an analytical validation. Does not evaluate genotype accuracy, concordance, or forensic suitability.",
+        scopeManual: "Manual verification of reproducible execution only on the unmodified upstream code at the pinned commit (environment preparation + end-to-end run + output plausibility). Not an analytical validation. Does not evaluate genotype accuracy, concordance, or forensic suitability.",
       },
       outOfScopeItems: {
         item1: "Genotype accuracy or allele call correctness.",
@@ -420,6 +423,7 @@ export default {
       plainWhyFail: "Automated verification could not run because the repository's installation steps could not be executed automatically. In manual verification, the original software failed to run due to an error in its own code or environment definition (see Section 1 for details).",
       plainWhyPass: "Automated verification could not run because the repository's installation steps could not be executed automatically. In manual verification, after preparing the environment, the original software ran end-to-end without code changes (see Section 2 for steps).",
       sectionExecutionTitle: "Execution on unmodified upstream code",
+      sectionStepsPassTitle: "Step-by-step setup and execution",
       sectionStepsTitle: "Step-by-step setup and reproducible workaround",
       sectionSuggestionsTitle: "Suggestions for the author",
       sectionConclusionTitle: "Conclusion and scope",

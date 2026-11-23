@@ -21,8 +21,8 @@ const AUTO_STYLE: Record<AutoStatusSummary["kind"], string> = {
 };
 
 const MANUAL_STYLE: Record<ManualStatusSummary["kind"], string> = {
-  pass: "border-indigo-600/35 bg-indigo-50/90 text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-950/50 dark:text-indigo-200",
-  pass_errors: "border-indigo-500/35 bg-indigo-50/75 text-indigo-900 dark:border-indigo-400/40 dark:bg-indigo-950/45 dark:text-indigo-200",
+  pass: "border-teal-600/35 bg-teal-50/90 text-teal-900 dark:border-teal-500/40 dark:bg-teal-950/50 dark:text-teal-200",
+  pass_errors: "border-teal-500/35 bg-teal-50/75 text-teal-900 dark:border-teal-400/40 dark:bg-teal-950/45 dark:text-teal-200",
   fail: "border-amber-600/40 bg-amber-50/85 text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-200",
 };
 

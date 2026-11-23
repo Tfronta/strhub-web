@@ -111,9 +111,9 @@ function VerificationRowCard({
           icon: "pass" as const,
           mode: t("verified.statusTag.manualLabel"),
           outcome: t("verified.statusTag.manual.pass", { passed, total: "5" }),
-          cardBorder: "border-indigo-500/35 bg-indigo-50/30 hover:border-indigo-500/70 dark:border-indigo-500/35 dark:bg-indigo-950/20",
-          pillStyle: "border-indigo-600/35 bg-indigo-50 text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-950/60 dark:text-indigo-200",
-          ctaStyle: "border-indigo-500/40 text-indigo-800 hover:bg-indigo-100/70 dark:text-indigo-200 dark:hover:bg-indigo-950/60",
+          cardBorder: "border-teal-600/30 bg-teal-50/25 hover:border-teal-600/65 dark:border-teal-600/35 dark:bg-teal-950/20",
+          pillStyle: "border-teal-600/35 bg-teal-50 text-teal-900 dark:border-teal-500/40 dark:bg-teal-950/60 dark:text-teal-200",
+          ctaStyle: "border-teal-600/35 text-teal-800 hover:bg-teal-100/70 dark:text-teal-200 dark:hover:bg-teal-950/60",
         };
       }
       if (kind === "pass_errors") {
@@ -121,9 +121,9 @@ function VerificationRowCard({
           icon: "pass" as const,
           mode: t("verified.statusTag.manualLabel"),
           outcome: t("verified.statusTag.manual.passErrors", { passed, total: "5" }),
-          cardBorder: "border-indigo-500/35 bg-indigo-50/25 hover:border-indigo-500/70 dark:border-indigo-500/35 dark:bg-indigo-950/20",
-          pillStyle: "border-indigo-500/35 bg-indigo-50/80 text-indigo-900 dark:border-indigo-400/40 dark:bg-indigo-950/50 dark:text-indigo-200",
-          ctaStyle: "border-indigo-500/40 text-indigo-800 hover:bg-indigo-100/70 dark:text-indigo-200 dark:hover:bg-indigo-950/60",
+          cardBorder: "border-teal-600/30 bg-teal-50/20 hover:border-teal-600/65 dark:border-teal-600/35 dark:bg-teal-950/20",
+          pillStyle: "border-teal-500/35 bg-teal-50/80 text-teal-900 dark:border-teal-400/40 dark:bg-teal-950/50 dark:text-teal-200",
+          ctaStyle: "border-teal-600/35 text-teal-800 hover:bg-teal-100/70 dark:text-teal-200 dark:hover:bg-teal-950/60",
         };
       }
       return {

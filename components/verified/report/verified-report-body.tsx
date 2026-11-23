@@ -221,9 +221,10 @@ export function VerifiedReportBody({
             : null;
         })()}
 
-        {/* Standalone Manual Verification report: concise, zero-redundancy flow
-            (1. Upstream execution + gates + terminal -> 2. Repro steps/patch ->
-             3. Author suggestions -> 4. Brief conclusion & scope). */}
+        {/* Standalone Manual Verification report: unified visual structure matching
+            Automatic reports (1. Upstream execution + gates + terminal ->
+            2. Output content -> 3. Verification data -> 4. Step-by-step setup ->
+            5. Author suggestions -> 6. Scope & limitations -> 7. Conclusion). */}
         {isStrhubRun ? (
           <>
             <Section n={next()} title={t("verified.strhubDid.sectionExecutionTitle")}>
@@ -232,13 +233,40 @@ export function VerifiedReportBody({
               <RecordedTerminal logs={logs} preferredLeg={preferredLog} preflight={false} />
             </Section>
 
+            {(report.content_detail?.outputs?.[0]?.stats || report.io_detail?.outputs?.[0]) && (
+              <Section n={next()} title={t("verified.content.heading")}>
+                <OutputContent
+                  stats={report.content_detail?.outputs?.[0]?.stats}
+                  io={report.io_detail?.outputs?.[0]}
+                  panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
+                />
+              </Section>
+            )}
+
+            {(data.provenance.length > 0 || data.hasStrhubFixture) && (
+              <Section n={next()} title={t("verified.data.heading")}>
+                <VerificationData
+                  provenance={data.provenance}
+                  hasStrhubFixture={data.hasStrhubFixture}
+                  installsPassed={Boolean(report.gates?.installs)}
+                />
+              </Section>
+            )}
+
             {(report.preparation?.steps?.length ||
               report.preparation?.run_cmd ||
               report.preparation?.pr_url ||
               report.preparation?.fork_url ||
               report.preparation?.guide_url ||
               report.recipe?.workarounds?.length) && (
-              <Section n={next()} title={t("verified.strhubDid.sectionStepsTitle")}>
+              <Section
+                n={next()}
+                title={
+                  passedRun && !report.preparation?.pr_url && !report.preparation?.fork_url
+                    ? t("verified.strhubDid.sectionStepsPassTitle")
+                    : t("verified.strhubDid.sectionStepsTitle")
+                }
+              >
                 <ManualReproSteps run={report} />
               </Section>
             )}
@@ -249,27 +277,25 @@ export function VerifiedReportBody({
               </Section>
             )}
 
-            <Section n={next()} title={t("verified.strhubDid.sectionConclusionTitle")}>
-              <div className="mt-3 space-y-3 rounded-lg border bg-card p-5 text-sm leading-relaxed">
-                <p className="font-medium text-foreground">
-                  {report.verdict?.reason || report.certificate?.summary?.result || certificate.summary.result}
-                </p>
-                {(report.preparation?.proposed_fix_note || report.preparation?.fork_note) && (
-                  <p className="text-foreground/90">
-                    {report.preparation.proposed_fix_note || report.preparation.fork_note}
-                  </p>
-                )}
-                <div className="border-t pt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-                  <p className="min-w-0 flex-1">{certificate.scope.disclaimer}</p>
-                  <Link
-                    href="/verified/how-to-read#manual"
-                    className="font-medium text-primary hover:underline shrink-0"
-                  >
-                    {t("verified.strhubDid.howToReadManualLink")}
-                  </Link>
-                </div>
+            <Section n={next()} title={t("verified.certificate.section.scope")}>
+              <WhatWasVerified gates={report.gates} verdictCode={report.verdict?.code} />
+              <BoxedList lead={t("verified.certificate.text.scopeManual")} items={certificate.limitations} />
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-muted-foreground">
+                <p className="min-w-0 flex-1 leading-relaxed">{certificate.scope.disclaimer}</p>
+                <Link
+                  href="/verified/how-to-read#manual"
+                  className="text-xs font-medium text-primary hover:underline shrink-0"
+                >
+                  {t("verified.strhubDid.howToReadManualLink")}
+                </Link>
               </div>
             </Section>
+
+            {certificate.conclusion.length > 0 && (
+              <Section n={next()} title={t("verified.certificate.section.conclusion")}>
+                <ConclusionBox items={certificate.conclusion} />
+              </Section>
+            )}
 
             {staticPageUrl && <DisputeCard report={report} slug={slug} staticPageUrl={staticPageUrl} />}
           </>

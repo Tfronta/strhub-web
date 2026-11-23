@@ -255,6 +255,8 @@ export default {
       },
       conclusion: {
         whereClean: "en un contenedor limpio",
+        whereManual: "en un entorno preparado manualmente",
+        manualFixTitle: "Propuesta de corrección / solución temporal",
         runsTitle: "{tool} se ejecuta de principio a fin",
         runsBody: "{tool} se instaló y corrió hasta completarse {where} sin fallos.",
         notRunsTitle: "{tool} no completó su ejecución",
@@ -313,6 +315,7 @@ export default {
         purpose: "Verificación independiente y automatizada de ejecución documentada para herramientas de STR forenses.",
         execScope: "Solo ejecución documentada: si la herramienta se instala y corre de principio a fin sobre su código público en el commit fijado.",
         scopeExec: "Verificación automatizada únicamente de ejecución reproducible (instalación + corrida de principio a fin + verosimilitud de la salida). No es una validación analítica. No evalúa la exactitud de los genotipos, la concordancia ni la aptitud forense.",
+        scopeManual: "Verificación manual únicamente de ejecución reproducible sobre el código original en el commit fijado (preparación del entorno + corrida de principio a fin + verosimilitud de la salida). No es una validación analítica. No evalúa la exactitud de los genotipos, la concordancia ni la aptitud forense.",
       },
       outOfScopeItems: {
         item1: "Exactitud de los genotipos o corrección en la asignación de alelos.",
@@ -420,6 +423,7 @@ export default {
       plainWhyFail: "La verificación automática no pudo ejecutarse por cómo está documentada la instalación. En verificación manual, el software original falló al ejecutarse por un error propio de su código o entorno (ver detalle en Sección 1).",
       plainWhyPass: "La verificación automática no pudo ejecutarse por cómo está documentada la instalación. En verificación manual, tras preparar el entorno, el software original corrió de principio a fin sin modificar código (ver pasos en Sección 2).",
       sectionExecutionTitle: "Ejecución sobre el código original",
+      sectionStepsPassTitle: "Cómo prepararla y correrla paso a paso",
       sectionStepsTitle: "Cómo correrla / qué arreglamos paso a paso",
       sectionSuggestionsTitle: "Sugerencias para el autor",
       sectionConclusionTitle: "Conclusión y alcance",

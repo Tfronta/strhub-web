@@ -43,14 +43,14 @@ export function WhatWasVerified({
   const { t } = useLanguage();
   const stages = stageStatuses(gates, verdictCode);
   return (
-    <div className="mt-6 rounded-lg border bg-card p-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-base">
-        <div>
-          <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-2">
+    <div className="mt-6 overflow-hidden rounded-lg border bg-card">
+      <div className="grid grid-cols-1 divide-y sm:grid-cols-2 sm:divide-x sm:divide-y-0 text-base">
+        <div className="bg-teal-50/35 p-5 dark:bg-teal-950/15">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-400 mb-2.5">
             {t("verified.whatVerified.verifiedHeading")}
           </p>
           {stages.map(({ key, state }) => (
-            <div key={key} className="flex items-center justify-between gap-2 py-0.5">
+            <div key={key} className="flex items-center justify-between gap-3 py-0.5">
               <span className="flex items-center gap-2">
                 {state === "pass" ? (
                   <Check className="h-4 w-4 text-teal-600 shrink-0" />
@@ -59,7 +59,7 @@ export function WhatWasVerified({
                 ) : (
                   <Minus className="h-4 w-4 text-muted-foreground/60 shrink-0" />
                 )}
-                <span className="text-muted-foreground">{t(key)}</span>
+                <span className="text-foreground/85">{t(key)}</span>
               </span>
               <span
                 className={cn(
@@ -82,8 +82,8 @@ export function WhatWasVerified({
             </div>
           ))}
         </div>
-        <div>
-          <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+        <div className="bg-muted/20 p-5">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2.5">
             {t("verified.whatVerified.notHeading")}
           </p>
           {[
@@ -94,7 +94,7 @@ export function WhatWasVerified({
           ].map((key) => (
             <div key={key} className="flex items-center gap-2 py-0.5">
               <Minus className="h-4 w-4 text-muted-foreground/50 shrink-0" />
-              <span className="text-muted-foreground/70">{t(key)}</span>
+              <span className="text-muted-foreground/80">{t(key)}</span>
             </div>
           ))}
         </div>

@@ -280,14 +280,16 @@ export function VerifiedReportBody({
             <Section n={next()} title={t("verified.certificate.section.scope")}>
               <WhatWasVerified gates={report.gates} verdictCode={report.verdict?.code} />
               <BoxedList lead={t("verified.certificate.text.scopeManual")} items={certificate.limitations} />
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-muted-foreground">
-                <p className="min-w-0 flex-1 leading-relaxed">{certificate.scope.disclaimer}</p>
-                <Link
-                  href="/verified/how-to-read#manual"
-                  className="text-xs font-medium text-primary hover:underline shrink-0"
-                >
-                  {t("verified.strhubDid.howToReadManualLink")}
-                </Link>
+              <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+                <p className="leading-relaxed">{certificate.scope.disclaimer}</p>
+                <p>
+                  <Link
+                    href="/verified/how-to-read#manual"
+                    className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
+                  >
+                    {t("verified.strhubDid.howToReadManualLink")} &rarr;
+                  </Link>
+                </p>
               </div>
             </Section>
 

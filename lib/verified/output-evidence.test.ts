@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { depthRows, ioChecks, normaliseLocus, panelCoverage } from "./output-evidence";
+import { depthRows, ioChecks, normaliseLocus, panelCoverage, terminalOutputSummary } from "./output-evidence";
 
 const PANEL = ["CSF1PO", "D1S1656", "D2S1338", "D21S11", "PentaD", "SE33", "vWA"];
 
@@ -66,5 +66,41 @@ describe("depth rows", () => {
   it("does not divide by zero on an output with no reads", () => {
     expect(depthRows({ top_loci_by_depth: [["A", 0]] })[0].share).toBe(0);
     expect(depthRows(undefined)).toEqual([]);
+  });
+});
+
+describe("terminal output summary", () => {
+  it("summarises silent tool output with file name, records, STR loci, and SNPs", () => {
+    expect(
+      terminalOutputSummary(
+        { path: "sample.tsv", resolved: "sample.tsv", passed: true, records: 343 },
+        { rows: 343, distinct_str_loci: 60, distinct_snp_markers: 94 },
+      ),
+    ).toEqual({
+      file: "sample.tsv",
+      passed: true,
+      records: 343,
+      strLoci: 60,
+      snps: 94,
+    });
+  });
+
+  it("falls back to io.records when content stats are absent and flags failed io", () => {
+    expect(
+      terminalOutputSummary(
+        { path: "out.vcf", resolved: "out.vcf", passed: false, records: 0 },
+        undefined,
+      ),
+    ).toEqual({
+      file: "out.vcf",
+      passed: false,
+      records: 0,
+      strLoci: undefined,
+      snps: undefined,
+    });
+  });
+
+  it("returns null when no output file was recorded", () => {
+    expect(terminalOutputSummary(undefined, { rows: 10 })).toBeNull();
   });
 });

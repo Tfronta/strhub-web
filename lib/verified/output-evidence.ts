@@ -80,3 +80,52 @@ export function depthRows(stats: VerifiedContentStats | undefined): DepthRow[] {
   const max = Math.max(1, ...top.map(([, d]) => d));
   return top.map(([locus, depth]) => ({ locus, depth, share: depth / max }));
 }
+
+export interface TerminalOutputSummary {
+  file: string;
+  passed: boolean;
+  records?: number;
+  strLoci?: number;
+  snps?: number;
+}
+
+/**
+ * Compact one-line summary of the inspected output file for the terminal
+ * footer, so silent CLI tools that exit 0 still show what they produced.
+ */
+export function terminalOutputSummary(
+  io: VerifiedIoOutput | undefined,
+  stats: VerifiedContentStats | undefined,
+): TerminalOutputSummary | null {
+  const vcfFiles = vcfFileEvidence(io);
+  const file =
+    vcfFiles.length > 1
+      ? vcfFiles.map((f) => f.resolved ?? f.path).filter(Boolean).join(", ")
+      : io?.resolved ?? io?.path;
+  if (!file) return null;
+
+  const records =
+    typeof stats?.rows === "number"
+      ? stats.rows
+      : typeof io?.records === "number"
+        ? io.records
+        : undefined;
+  const strLoci =
+    typeof stats?.distinct_str_loci === "number"
+      ? stats.distinct_str_loci
+      : typeof stats?.distinct_loci === "number"
+        ? stats.distinct_loci
+        : undefined;
+  const snps =
+    typeof stats?.distinct_snp_markers === "number" && stats.distinct_snp_markers > 0
+      ? stats.distinct_snp_markers
+      : undefined;
+
+  return {
+    file,
+    passed: io?.passed !== false,
+    records,
+    strLoci,
+    snps,
+  };
+}

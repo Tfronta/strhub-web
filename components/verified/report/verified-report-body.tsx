@@ -30,6 +30,7 @@ import {
   localizeNeededItem,
 } from "@/lib/verified/certificate";
 import { summarizeDatasets } from "@/lib/verified/dataset-provenance";
+import { terminalOutputSummary } from "@/lib/verified/output-evidence";
 import { Cover } from "./cover";
 import { Section, BoxedList, ConclusionBox, sectionCounter } from "./certificate";
 import { SourceCard } from "./source-card";
@@ -157,6 +158,14 @@ export function VerifiedReportBody({
   const diagnosticsTitle = passedRun ? "verified.certificate.section.reported" : "verified.certificate.section.why";
   const preferredLog = report.gates.installs === false ? "build" :
     report.datasets?.some((dataset) => dataset.leg === "own" && dataset.available) ? "own" : "external";
+  const hasOutputSection = Boolean(
+    report.content_detail?.outputs?.[0]?.stats || report.io_detail?.outputs?.[0],
+  );
+  const terminalOutput = terminalOutputSummary(
+    report.io_detail?.outputs?.[0],
+    report.content_detail?.outputs?.[0]?.stats,
+  );
+  const outputSectionHref = hasOutputSection ? "#verified-output-content" : undefined;
   const next = sectionCounter();
 
   const datasetsLabel = data.provenance.length
@@ -230,17 +239,25 @@ export function VerifiedReportBody({
             <Section n={next()} title={t("verified.strhubDid.sectionExecutionTitle")}>
               <ManualExecutionContext run={report} />
               <GatesLadder gates={report.gates} extraRows={extraGateRows} hideHowToRead />
-              <RecordedTerminal logs={logs} preferredLeg={preferredLog} preflight={false} />
+              <RecordedTerminal
+                logs={logs}
+                preferredLeg={preferredLog}
+                preflight={false}
+                outputSummary={terminalOutput}
+                outputSectionHref={outputSectionHref}
+              />
             </Section>
 
-            {(report.content_detail?.outputs?.[0]?.stats || report.io_detail?.outputs?.[0]) && (
-              <Section n={next()} title={t("verified.content.heading")}>
-                <OutputContent
-                  stats={report.content_detail?.outputs?.[0]?.stats}
-                  io={report.io_detail?.outputs?.[0]}
-                  panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
-                />
-              </Section>
+            {hasOutputSection && (
+              <div id="verified-output-content" className="scroll-mt-20">
+                <Section n={next()} title={t("verified.content.heading")}>
+                  <OutputContent
+                    stats={report.content_detail?.outputs?.[0]?.stats}
+                    io={report.io_detail?.outputs?.[0]}
+                    panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
+                  />
+                </Section>
+              </div>
             )}
 
             {(data.provenance.length > 0 || data.hasStrhubFixture) && (
@@ -310,7 +327,13 @@ export function VerifiedReportBody({
                 extraRows={installBlocked ? undefined : extraGateRows}
                 blockedAt={installBlocked ? "installs" : undefined}
               />
-              <RecordedTerminal logs={logs} preferredLeg={preferredLog} preflight={installBlocked} />
+              <RecordedTerminal
+                logs={logs}
+                preferredLeg={preferredLog}
+                preflight={installBlocked}
+                outputSummary={terminalOutput}
+                outputSectionHref={outputSectionHref}
+              />
             </Section>
 
             {/* Why it stopped, or what errors it reported on the way. */}
@@ -326,14 +349,16 @@ export function VerifiedReportBody({
               </Section>
             )}
 
-            {(report.content_detail?.outputs?.[0]?.stats || report.io_detail?.outputs?.[0]) && (
-              <Section n={next()} title={t("verified.content.heading")}>
-                <OutputContent
-                  stats={report.content_detail?.outputs?.[0]?.stats}
-                  io={report.io_detail?.outputs?.[0]}
-                  panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
-                />
-              </Section>
+            {hasOutputSection && (
+              <div id="verified-output-content" className="scroll-mt-20">
+                <Section n={next()} title={t("verified.content.heading")}>
+                  <OutputContent
+                    stats={report.content_detail?.outputs?.[0]?.stats}
+                    io={report.io_detail?.outputs?.[0]}
+                    panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
+                  />
+                </Section>
+              </div>
             )}
 
             {!installBlocked && (

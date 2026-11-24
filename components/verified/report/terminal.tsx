@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
+import { Check, X } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
+import type { TerminalOutputSummary } from "@/lib/verified/output-evidence";
 
 export interface ReportLog {
   leg: string;
@@ -34,12 +36,20 @@ async function readTerminal(href: string, signal: AbortSignal): Promise<string |
   }
 }
 
-export function RecordedTerminal({ logs, preferredLeg, preflight }: {
+export function RecordedTerminal({
+  logs,
+  preferredLeg,
+  preflight,
+  outputSummary,
+  outputSectionHref,
+}: {
   logs: ReportLog[];
   preferredLeg: string;
   preflight: boolean;
+  outputSummary?: TerminalOutputSummary | null;
+  outputSectionHref?: string;
 }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const picker = useId();
   const [leg, setLeg] = useState<string>();
   const [loaded, setLoaded] = useState<{ href: string; text?: string | null }>();
@@ -109,6 +119,47 @@ export function RecordedTerminal({ logs, preferredLeg, preflight }: {
           {t(!result ? "verified.log.loading" : result.text === null ? "verified.log.tooLarge" : "verified.log.unavailable")}
         </p>
       )}
+      {outputSummary && selected.leg !== "build" && (() => {
+        const fmt = (value: number) => new Intl.NumberFormat(language).format(value);
+        const parts: string[] = [];
+        if (typeof outputSummary.records === "number") {
+          parts.push(t("verified.log.recordsCount", { count: fmt(outputSummary.records) }));
+        }
+        if (typeof outputSummary.strLoci === "number") {
+          parts.push(t("verified.log.strLociCount", { count: fmt(outputSummary.strLoci) }));
+        }
+        if (typeof outputSummary.snps === "number") {
+          parts.push(t("verified.log.snpsCount", { count: fmt(outputSummary.snps) }));
+        }
+        return (
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-800 bg-slate-900/70 px-4 py-2.5 text-xs text-slate-300">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              {outputSummary.passed ? (
+                <Check className="h-3.5 w-3.5 shrink-0 text-teal-400" aria-hidden />
+              ) : (
+                <X className="h-3.5 w-3.5 shrink-0 text-red-400" aria-hidden />
+              )}
+              <span className="font-medium text-slate-200">
+                {t(outputSummary.passed ? "verified.log.outputVerified" : "verified.log.outputFailed")}:
+              </span>
+              <code className="rounded bg-slate-800 px-1.5 py-0.5 font-mono text-[11px] text-slate-100 break-all">
+                {outputSummary.file}
+              </code>
+              {parts.length > 0 && (
+                <span className="text-slate-400 tabular-nums">· {parts.join(" · ")}</span>
+              )}
+            </div>
+            {outputSectionHref && (
+              <a
+                href={outputSectionHref}
+                className="shrink-0 text-teal-400 underline-offset-2 hover:underline"
+              >
+                {t("verified.log.viewOutputDetails")}
+              </a>
+            )}
+          </div>
+        );
+      })()}
     </figure>
   );
 }

@@ -241,6 +241,12 @@ export default {
       tooLarge: "Abrí el original para leer el log completo.",
       unavailable: "No se pudo cargar el log acá.",
       preflight: "Ver log de la comprobación previa",
+      outputVerified: "Salida verificada",
+      outputFailed: "Falló la verificación de salida",
+      viewOutputDetails: "Ver detalle",
+      recordsCount: "{count} registros",
+      strLociCount: "{count} loci STR",
+      snpsCount: "{count} SNPs",
     },
     certificate: {
       section: {

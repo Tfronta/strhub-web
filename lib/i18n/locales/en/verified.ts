@@ -241,6 +241,12 @@ export default {
       tooLarge: "Open the original to read the full log.",
       unavailable: "The log could not be loaded here.",
       preflight: "View preflight log",
+      outputVerified: "Output verified",
+      outputFailed: "Output check failed",
+      viewOutputDetails: "View details",
+      recordsCount: "{count} records",
+      strLociCount: "{count} STR loci",
+      snpsCount: "{count} SNPs",
     },
     certificate: {
       section: {

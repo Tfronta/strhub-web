@@ -612,11 +612,11 @@ export default {
           license: "solo para investigación / formación / educación (según NIST); no apto para identificación de donantes ni búsqueda en bases de datos",
         },
         "ont-bam-hg38": {
-          name: "Consorcio 1000 Genomes ONT (HG00113, R9.4.1 guppy 3.4.5, recorte CODIS en hg38)",
+          name: "Consorcio 1000 Genomes ONT (HG00113, R10 LSK114, Dorado 0.9.0 SUP, recorte CODIS en hg38)",
           license: "Acceso abierto de 1000 Genomes Project (dominio público / CC0)",
         },
         "ont-fastq": {
-          name: "Consorcio 1000 Genomes ONT (HG00113, R9.4.1 guppy 3.4.5, lecturas del recorte CODIS en hg38)",
+          name: "Consorcio 1000 Genomes ONT (HG00113, R10 LSK114, Dorado 0.9.0 SUP, lecturas del recorte CODIS en hg38)",
           license: "Acceso abierto de 1000 Genomes Project (dominio público / CC0)",
         },
         "pacbio-hifi-bam-hg38": {

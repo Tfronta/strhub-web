@@ -139,6 +139,7 @@ export default {
       installation: "Instalação",
       execution: "Execução completa",
       outputGenerated: "Saída gerada",
+      plausibleOutput: "Saída plausível",
       accuracy: "Precisão do genotipagem",
       concordance: "Concordância com conjuntos de verdade",
       forensicValidity: "Validade forense",

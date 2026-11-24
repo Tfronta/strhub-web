@@ -139,6 +139,7 @@ export default {
       installation: "Installation",
       execution: "End-to-end execution",
       outputGenerated: "Output generated",
+      plausibleOutput: "Plausible output",
       accuracy: "Genotype accuracy",
       concordance: "Concordance with truth sets",
       forensicValidity: "Forensic validity",

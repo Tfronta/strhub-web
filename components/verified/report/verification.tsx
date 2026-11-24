@@ -15,20 +15,23 @@ function stageStatuses(gates?: Record<string, boolean>, verdictCode?: string): {
   const avail = Boolean(g.available);
   const inst = Boolean(g.installs);
   const runs = Boolean(g.runs);
-  const out = Boolean(g.io || g.content);
+  const io = Boolean(g.io);
+  const content = Boolean(g.content);
   if (verdictCode === "undetermined") {
     return [
       { key: "verified.whatVerified.sourceAvailable", state: avail ? "pass" : "fail" },
       { key: "verified.whatVerified.installation", state: inst ? "pass" : "not_attempted" },
       { key: "verified.whatVerified.execution", state: runs ? "pass" : "not_attempted" },
-      { key: "verified.whatVerified.outputGenerated", state: out ? "pass" : runs ? "not_established" : "not_attempted" },
+      { key: "verified.whatVerified.outputGenerated", state: io ? "pass" : runs ? "not_established" : "not_attempted" },
+      { key: "verified.whatVerified.plausibleOutput", state: content ? "pass" : io ? "not_established" : "not_attempted" },
     ];
   }
   return [
     { key: "verified.whatVerified.sourceAvailable", state: avail ? "pass" : "fail" },
     { key: "verified.whatVerified.installation", state: !avail ? "not_attempted" : inst ? "pass" : "fail" },
     { key: "verified.whatVerified.execution", state: !inst ? "not_attempted" : runs ? "pass" : "fail" },
-    { key: "verified.whatVerified.outputGenerated", state: !runs ? "not_attempted" : out ? "pass" : "fail" },
+    { key: "verified.whatVerified.outputGenerated", state: !runs ? "not_attempted" : io ? "pass" : "fail" },
+    { key: "verified.whatVerified.plausibleOutput", state: !io ? "not_attempted" : content ? "pass" : "fail" },
   ];
 }
 

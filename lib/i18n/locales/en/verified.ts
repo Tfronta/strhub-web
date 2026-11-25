@@ -227,6 +227,10 @@ export default {
       heading: "What this run needed beyond the repository",
       note: "The result above describes a run configured as follows. Anyone repeating it needs the same things.",
     },
+    recommendations: {
+      heading: "What the README or repository could add",
+      note: "Read off the repository at the verified commit. None of these changes the result above; each would make the tool easier for a new user, and for STRhub, to run as documented.",
+    },
     caveats: {
       heading: "Notes from reading the repository",
       note: "Recorded automatically from the tool's public files when this run was configured. Not verified by execution, and not part of the gates above. Useful for what to check by hand.",
@@ -446,6 +450,7 @@ export default {
       prepStepsLabel: "Preparation commands executed:",
       verifiedRunCmdLabel: "Verified run command:",
       prepFilesLabel: "Files provided or adapted:",
+      fileReplaced: "replaces upstream file",
       copyCommand: "Copy",
       copiedCommand: "Copied",
       reproResourceTitle: "Proposed fix for the author",
@@ -588,6 +593,17 @@ export default {
       showAll: "Show all {n}",
       showFewer: "Show fewer",
       noOutputGenerated: "No output files were generated because execution stopped before completion.",
+      verifiedBadge: "STR content verified automatically",
+      unverifiedBadge: "Output generated · STR content not verified",
+      unverifiedTitle: "Output generated; STR content not verified automatically",
+      unverifiedBody: "The command completed and wrote a non-empty file in the declared format (Runs + Expected IO), but automatic STR locus plausibility against the reference panel was not established.",
+      exampleUnverifiedBody: "Output was generated on the repository's own shipped example data; STR locus content on STRhub's standard reference sample was not verified automatically.",
+      previewHeading: "Generated output preview",
+      previewMeta: "File ({leg}): {file} · {size}",
+      previewTruncated: "First {lines} lines shown (truncated)",
+      previewBinary: "Binary output payload; text preview omitted.",
+      sliceScopeHeading: "Reference sample scope (genomic slice)",
+      sliceScopeDefault: "STRhub's standard reference dataset is a bounded genomic slice on GRCh38/hg38 covering a defined subset of STR panel loci rather than a whole-genome alignment. Programs targeting loci outside that slice, or requiring genome-wide background depth distributions, may emit zero calls or unverified content on this sample without implying a software defect.",
     },
     run: {
       heading: "Command that ran",
@@ -875,6 +891,13 @@ export default {
         undeterminedOurs: "STRhub could not attempt the run with what it holds. That is a finding about neither the documentation nor the software.",
         out_of_scope: "It needs something the automated runner cannot provide. A manual verification can cover it.",
       },
+      failurePhase: {
+        pre_execution: "Stopped pre-execution · Documentation or scope boundary (code was not run)",
+        build: "Stopped at installation · Declared build steps failed",
+        runtime: "Runtime execution failure · Installed as documented, failed when run",
+        output: "Stopped at output validation · Ran without producing valid declared output",
+      },
+      scopeLimitHeading: "Evaluator / reference-slice scope boundary",
       // Step 1: the documented run. It is the headline, and the forensic
       // pipeline comes after without changing it (engine docs/PLAN-Paso-1.md).
       // None of these sentences says the tool does not work.
@@ -1003,6 +1026,10 @@ export default {
     engineText: {
       verdictReason: {
         runs: "The tool installed and its run produced its documented output.",
+        runsContentVerified: "The tool installed and its run produced its documented output. STR locus content verified automatically.",
+        runsContentUnverified: "The tool installed and its run produced its documented output. Output generated; STR content not verified automatically.",
+        installedThenRunFailed: "The tool installed as documented, then exited with an error before producing its documented output.",
+        scopeBoundary: "Automatic verification reached an evaluator scope boundary ({limit}); this run does not fault the software.",
         readmeInsufficient: "STRhub could not work out how to install or run this tool from its repository. The README does not say enough for a third party to run it; each missing item is listed below.",
         sourceNotFetched: "The pinned source could not be fetched.",
         buildFailed: "The environment did not build from the declared install steps.",
@@ -1033,6 +1060,7 @@ export default {
         startsPass: "The installed program starts: it answers --help.",
         startsFail: "The installed program does not start: --help fails.",
         examplePass: "The repository's own documented example ran and produced its output.",
+        exampleRanShipped: "The repository's own documented example ran on its shipped data.",
       },
       needed: {
         regionsSubmitted: "A regions configuration file, supplied with the submission rather than taken from the repository.",
@@ -1043,6 +1071,7 @@ export default {
         curatedRecipe: "A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under \"What STRhub had to do to run this tool\".",
         baseEnvDocumented: "A base environment for the documented installation: STRhub ran the repository's install commands unchanged on {base}. Base-image and package versions are not frozen by the commands.",
         referenceGenomeMounted: "A reference genome ({assembly}): the command names one, and STRhub mounted the public copy at {path}.",
+        regionsCatalogMounted: "A target-regions catalog ({layout} layout): the documented command reads a locus definition file, and STRhub mounted its shared reference panel catalog matching the documented schema.",
       },
       caveats: {
         envGenerated: "Environment: generated by STRhub from the repository's {source} ({method}), at the pinned commit.",
@@ -1073,6 +1102,7 @@ export default {
         str8rzrConfig: "'str8rzr' config placeholder resolved to {config} (matches the dataset's ForenSeq kit).",
         prerequisiteNotChained: "Evaluator limitation: a possible prerequisite was discovered but was not automatically chained.",
         missingDocumentedFile: "File: the documented command reads {file} ({flag}), which is neither in the repository at this commit nor in STRhub's reference dataset.",
+        regionsCatalogSupplied: "Regions catalog: STRhub supplied its shared '{layout}' locus catalog (/data/in/regions.*) matching the schema documented by upstream.",
       },
       readmeGaps: {
         readme: "No README was found in the repository.",

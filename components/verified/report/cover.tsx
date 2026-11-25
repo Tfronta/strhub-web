@@ -9,7 +9,7 @@
  * place on both.
  */
 import { useState } from "react";
-import { Check, ClipboardCheck, Copy, ExternalLink, FileDown, FileJson, Flag, Play, X } from "lucide-react";
+import { AlertTriangle, Check, ClipboardCheck, Copy, ExternalLink, FileDown, FileJson, Flag, Play, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedCertificate, VerifiedReport } from "@/types/verified";
@@ -242,6 +242,15 @@ export function Cover({
               <span className="inline-flex items-center rounded-full border border-teal-600/40 bg-teal-50/70 px-2.5 py-0.5 text-xs sm:text-sm font-medium text-teal-900 dark:border-teal-600/50 dark:bg-teal-950/40 dark:text-teal-200">
                 {t("verified.mode.autoBadge")}
               </span>
+              {(report.verdict?.code === "runs" || Boolean(report.gates?.runs && report.gates?.io)) &&
+                (report.output_verification?.content_verified === false ||
+                  report.verdict?.content_verified === false ||
+                  report.gates?.content === false) && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/45 bg-amber-50/80 px-2.5 py-0.5 text-xs font-semibold text-amber-950 dark:border-amber-600/50 dark:bg-amber-950/40 dark:text-amber-200">
+                    <AlertTriangle className="h-3 w-3 shrink-0 text-amber-700 dark:text-amber-400" aria-hidden />
+                    {t("verified.content.unverifiedBadge")}
+                  </span>
+                )}
             </>
           )}
           {panel && (

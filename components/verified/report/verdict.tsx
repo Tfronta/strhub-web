@@ -10,15 +10,50 @@
  */
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { Check, Copy, FileCode2, LifeBuoy } from "lucide-react";
+import { AlertTriangle, Check, Copy, FileCode2, Info, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
 import { localizeReadmeGap, localizeVerdictReason } from "@/lib/verified/certificate";
 import { buildReadmeTemplate, splitStep1Denial, step1For, type Step1Tone } from "@/lib/verified/step1";
-import type { VerifiedReport } from "@/types/verified";
+import type { VerifiedFailurePhase, VerifiedReport } from "@/types/verified";
+import { cn } from "@/lib/utils";
 import { useHeaded } from "./certificate";
+import { InlineCodeText } from "./inline-code";
 
 export { buildReadmeTemplate };
+
+const FAILURE_PHASE_STYLE: Record<VerifiedFailurePhase, string> = {
+  pre_execution:
+    "border-slate-400/50 bg-slate-100/80 text-slate-800 dark:border-slate-600/60 dark:bg-slate-800/60 dark:text-slate-200",
+  build:
+    "border-amber-500/45 bg-amber-50/80 text-amber-950 dark:border-amber-600/50 dark:bg-amber-950/35 dark:text-amber-200",
+  runtime:
+    "border-red-600/45 bg-red-50/80 text-red-950 dark:border-red-500/50 dark:bg-red-950/35 dark:text-red-200",
+  output:
+    "border-amber-600/45 bg-amber-50/80 text-amber-950 dark:border-amber-600/50 dark:bg-amber-950/35 dark:text-amber-200",
+};
+
+export function FailurePhaseBadge({
+  phase,
+}: {
+  phase?: VerifiedFailurePhase | null;
+}) {
+  const { t } = useLanguage();
+  if (!phase) return null;
+  const key = `verified.trial.failurePhase.${phase}`;
+  const label = t(key);
+  if (label === key) return null;
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold",
+        FAILURE_PHASE_STYLE[phase] ?? FAILURE_PHASE_STYLE.pre_execution,
+      )}
+    >
+      {label}
+    </span>
+  );
+}
 
 const STEP1_RETRY_RE =
   /^(.*?)(Add it and try the link again on the new commit\.?|Fix the documentation, or the step that broke, and try the link again on the new commit\.?|Agregalo y volvé a probar con el link sobre el commit nuevo\.?|Corregí la documentación, o el paso que se rompió, y volvé a probar con el link sobre el commit nuevo\.?|Adicione e tente o link novamente no commit novo\.?|Corrija a documentação, ou o passo que quebrou, e teste o link novamente no commit novo\.?)(.*)$/;
@@ -135,6 +170,11 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
       : v.code
     : null;
   const localizedReason = localizeVerdictReason(v?.reason, t);
+  const contentUnverified =
+    (v?.code === "runs" || Boolean(report.gates?.runs && report.gates?.io)) &&
+    (report.output_verification?.content_verified === false ||
+      v?.content_verified === false ||
+      report.gates?.content === false);
   const showSeparateVerdictCard = Boolean(
     v && (!step1 || v.code !== "runs" || (v.readme_gaps && v.readme_gaps.length > 0)),
   );
@@ -149,15 +189,35 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
               className={`mt-3 rounded-lg border bg-card p-5 sm:p-6 ${STEP1_BORDER[step1.tone]}`}
               aria-labelledby="verified-step1"
             >
-              <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-                {t("verified.trial.step1.heading")}
-              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+                  {t("verified.trial.step1.heading")}
+                </p>
+                <FailurePhaseBadge phase={v?.failure_phase} />
+              </div>
               <p id="verified-step1" className="mt-1 text-xl font-semibold">
                 {step1.headline}
               </p>
               <p className="mt-2 text-base leading-relaxed text-muted-foreground">
                 <Step1BodyText body={step1.body} />
               </p>
+              {contentUnverified && (
+                <div className="mt-3 flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-50/60 px-3.5 py-2.5 text-sm text-amber-950 dark:border-amber-600/50 dark:bg-amber-950/30 dark:text-amber-200">
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700 dark:text-amber-400" aria-hidden />
+                  <span>{t("verified.content.unverifiedTitle")}</span>
+                </div>
+              )}
+              {report.scope_limit && (
+                <div className="mt-3 flex items-start gap-2 rounded-md border bg-muted/40 px-3.5 py-2.5 text-sm text-muted-foreground">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-foreground/85">
+                      {t("verified.trial.scopeLimitHeading")}
+                    </p>
+                    <p className="mt-0.5"><InlineCodeText text={report.scope_limit} /></p>
+                  </div>
+                </div>
+              )}
               {step1.missing.length > 0 && (
                 <div className="mt-4">
                   <h3 className="text-base font-semibold">{step1.missingTitle}</h3>
@@ -180,8 +240,22 @@ export function AsItIsOpening({ report, children }: { report: VerifiedReport; ch
           )}
           {v && showSeparateVerdictCard && (
             <section className="mt-4 rounded-lg border bg-card p-5 sm:p-6" aria-labelledby="verified-verdict">
-              <p id="verified-verdict" className="text-lg font-semibold">{t(`verified.trial.verdictMeaning.${meaning}`)}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <p id="verified-verdict" className="text-lg font-semibold">{t(`verified.trial.verdictMeaning.${meaning}`)}</p>
+                {!step1 && <FailurePhaseBadge phase={v.failure_phase} />}
+              </div>
               {localizedReason && <p className="mt-2 text-base leading-relaxed text-muted-foreground">{localizedReason}</p>}
+              {!step1 && contentUnverified && (
+                <p className="mt-2 text-sm font-medium text-amber-900 dark:text-amber-300">
+                  {t("verified.content.unverifiedTitle")}
+                </p>
+              )}
+              {!step1 && report.scope_limit && (
+                <p className="mt-2 text-sm text-muted-foreground">
+                  <span className="font-semibold text-foreground">{t("verified.trial.scopeLimitHeading")}:</span>{" "}
+                  <InlineCodeText text={report.scope_limit} />
+                </p>
+              )}
               {v.readme_gaps && v.readme_gaps.length > 0 && (
                 <div className="mt-4">
                   <h3 className="text-base font-semibold">{t("verified.trial.gapsTitle")}</h3>

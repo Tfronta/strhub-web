@@ -27,7 +27,8 @@ import {
 } from "@/lib/verified/certificate";
 import { step1For, type Step1Tone } from "@/lib/verified/step1";
 import { classifyManual } from "@/lib/verified/status-summary";
-import { ReadmeTemplateAction, Step1BodyText } from "@/components/verified/report/verdict";
+import { FailurePhaseBadge, ReadmeTemplateAction, Step1BodyText } from "@/components/verified/report/verdict";
+import { InlineCodeText } from "@/components/verified/report/inline-code";
 import { ownerIssueUrl } from "@/lib/verified/trial-next-steps";
 import { LOG_LEGS } from "@/lib/verified/log-files";
 import { ManualReviewCard } from "./manual-review-card";
@@ -133,6 +134,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
         <p className="text-xs sm:text-sm font-medium uppercase tracking-wide text-muted-foreground">
           {t("verified.trial.step1.heading")}
         </p>
+        <FailurePhaseBadge phase={verdict?.failure_phase} />
       </div>
       <h2 id="trial-step1" className="mt-2 text-xl font-semibold">
         {step1.headline}
@@ -140,6 +142,12 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
       <p className="mt-2 text-base leading-relaxed text-muted-foreground">
         <Step1BodyText body={step1.body} />
       </p>
+      {report?.scope_limit && (
+        <p className="mt-2.5 rounded-md border bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
+          <span className="font-semibold text-foreground">{t("verified.trial.scopeLimitHeading")}:</span>{" "}
+          <InlineCodeText text={report.scope_limit} />
+        </p>
+      )}
 
       {/* Full-width problem diagnosis BEFORE the action cards */}
       {step1.code !== "runs" && report && (

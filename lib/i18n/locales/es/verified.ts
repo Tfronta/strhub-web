@@ -227,6 +227,10 @@ export default {
       heading: "Lo que esta corrida necesitó además del repositorio",
       note: "El resultado de arriba describe una corrida configurada así. Quien quiera repetirla necesita lo mismo.",
     },
+    recommendations: {
+      heading: "Qué podría sumar el README o el repositorio",
+      note: "Leído del repositorio en el commit verificado. Ninguno cambia el resultado anterior; cada punto facilitaría que un usuario nuevo y STRhub la corran tal como se documenta.",
+    },
     caveats: {
       heading: "Notas de la lectura del repositorio",
       note: "Registradas automáticamente a partir de los archivos públicos de la herramienta al configurar esta corrida. No verificadas por ejecución, y no forman parte de los gates de arriba. Sirven para saber qué revisar a mano.",
@@ -446,6 +450,7 @@ export default {
       prepStepsLabel: "Comandos de preparación ejecutados:",
       verifiedRunCmdLabel: "Comando verificado de ejecución:",
       prepFilesLabel: "Archivos provistos o adaptados:",
+      fileReplaced: "reemplaza el archivo original",
       copyCommand: "Copiar",
       copiedCommand: "Copiado",
       reproResourceTitle: "Propuesta de corrección para el autor",
@@ -588,6 +593,17 @@ export default {
       showAll: "Ver los {n}",
       showFewer: "Ver menos",
       noOutputGenerated: "No se generaron archivos de salida porque la ejecución se detuvo antes de completar la corrida.",
+      verifiedBadge: "Contenido STR verificado automáticamente",
+      unverifiedBadge: "Salida generada · contenido STR no verificado",
+      unverifiedTitle: "Salida generada; contenido STR no verificado automáticamente",
+      unverifiedBody: "El comando completó su ejecución y escribió un archivo no vacío en el formato declarado (Ejecuta + Salida esperada), pero no se estableció automáticamente la plausibilidad de loci STR frente al panel de referencia.",
+      exampleUnverifiedBody: "La salida se generó sobre los datos de ejemplo incluidos en el propio repositorio; el contenido STR sobre la muestra estándar de referencia de STRhub no fue verificado automáticamente.",
+      previewHeading: "Vista previa de la salida generada",
+      previewMeta: "Archivo ({leg}): {file} · {size}",
+      previewTruncated: "Primeras {lines} líneas mostradas (truncado)",
+      previewBinary: "Archivo de salida binario; vista previa en texto omitida.",
+      sliceScopeHeading: "Alcance de la muestra de referencia (slice genómico)",
+      sliceScopeDefault: "El dataset estándar de referencia de STRhub es un recorte (slice) genómico acotado sobre GRCh38/hg38 que cubre un subconjunto definido de loci STR del panel, no un alineamiento de genoma completo. Las herramientas que apuntan a loci fuera de ese recorte o requieren distribuciones de cobertura de todo el genoma pueden emitir cero llamadas o contenido no verificado en esta muestra sin que ello implique un defecto del software.",
     },
     run: {
       heading: "Comando que se ejecutó",
@@ -875,6 +891,13 @@ export default {
         undeterminedOurs: "STRhub no pudo intentar la corrida con lo que tiene. No es un hallazgo sobre la documentación ni sobre el software.",
         out_of_scope: "Necesita algo que el runner automático no puede dar. Una verificación manual puede cubrirlo.",
       },
+      failurePhase: {
+        pre_execution: "Detenido antes de ejecutar · Brecha documental o de alcance (el código no se ejecutó)",
+        build: "Detenido en instalación · Falló la compilación/instalación declarada",
+        runtime: "Fallo en tiempo de ejecución · Instaló según lo documentado y falló al correr",
+        output: "Detenido en validación de salida · Ejecutó sin producir la salida declarada válida",
+      },
+      scopeLimitHeading: "Límite de alcance del evaluador / slice de referencia",
       // Paso 1: la ejecución documentada. Es el titular, y el pipeline forense
       // va después sin cambiarlo (docs/PLAN-Paso-1.md del engine). Ninguna de
       // estas frases dice que la herramienta no funciona.
@@ -1003,6 +1026,10 @@ export default {
     engineText: {
       verdictReason: {
         runs: "La herramienta se instaló y su ejecución produjo la salida documentada.",
+        runsContentVerified: "La herramienta se instaló y su ejecución produjo la salida documentada. El contenido de loci STR fue verificado automáticamente.",
+        runsContentUnverified: "La herramienta se instaló y su ejecución produjo la salida documentada. Salida generada; contenido STR no verificado automáticamente.",
+        installedThenRunFailed: "La herramienta se instaló según lo documentado y luego terminó con un error durante la ejecución antes de producir su salida documentada.",
+        scopeBoundary: "La verificación automática alcanzó un límite de alcance del evaluador ({limit}); esta corrida no atribuye falla al software.",
         readmeInsufficient: "STRhub no pudo deducir cómo instalar o ejecutar esta herramienta a partir de su repositorio. El README no brinda información suficiente para que un tercero la ejecute; abajo se detalla cada elemento faltante.",
         sourceNotFetched: "No se pudo obtener el código fuente en el commit fijado.",
         buildFailed: "El entorno no se pudo construir a partir de los pasos de instalación declarados.",
@@ -1033,6 +1060,7 @@ export default {
         startsPass: "El programa instalado arranca: responde a --help.",
         startsFail: "El programa instalado no arranca: --help falla.",
         examplePass: "El ejemplo documentado en el propio repositorio se ejecutó y produjo su salida.",
+        exampleRanShipped: "El ejemplo documentado del propio repositorio se ejecutó sobre sus datos incluidos.",
       },
       needed: {
         regionsSubmitted: "Un archivo de configuración de regiones, aportado con el envío en lugar de tomado del repositorio.",
@@ -1043,6 +1071,7 @@ export default {
         curatedRecipe: "Un entorno de contenedor y un comando redactados por STRhub, no tomados de las instrucciones del repositorio; lo que hacen diferente se detalla en \"Qué tuvo que hacer STRhub para correr esta herramienta\".",
         baseEnvDocumented: "Un entorno base para la instalación documentada: STRhub ejecutó los comandos de instalación del repositorio sin cambios sobre {base}. Las versiones de la imagen base y los paquetes no están congeladas por los comandos.",
         referenceGenomeMounted: "Un genoma de referencia ({assembly}): el comando nombra uno y STRhub montó la copia pública en {path}.",
+        regionsCatalogMounted: "Un catálogo de regiones objetivo (esquema {layout}): el comando documentado lee un archivo de definición de loci, y STRhub montó su catálogo compartido del panel de referencia acorde al esquema documentado.",
       },
       caveats: {
         envGenerated: "Entorno: generado por STRhub a partir de {source} ({method}) del repositorio, en el commit fijado.",
@@ -1073,6 +1102,7 @@ export default {
         str8rzrConfig: "El marcador de configuración de 'str8rzr' se resolvió a {config} (coincide con el kit ForenSeq del dataset).",
         prerequisiteNotChained: "Limitación del evaluador: se detectó un posible comando previo pero no se encadenó automáticamente.",
         missingDocumentedFile: "Archivo: el comando documentado lee {file} ({flag}), que no se encuentra en el repositorio en este commit ni en el dataset de referencia de STRhub.",
+        regionsCatalogSupplied: "Catálogo de regiones: STRhub provisto su catálogo compartido de loci '{layout}' (/data/in/regions.*) acorde al esquema documentado en el repositorio.",
       },
       readmeGaps: {
         readme: "No se encontró un archivo README en el repositorio.",

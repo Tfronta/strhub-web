@@ -46,6 +46,16 @@ export interface VerifiedWorkaround {
 /** The one sentence for a reader who does not program (harness/verdict.py). */
 export type VerifiedVerdictCode = "runs" | "fails" | "undetermined" | "out_of_scope";
 
+/** Execution stage where a non-passing run stopped (Phase 2a contract). */
+export type VerifiedFailurePhase = "pre_execution" | "build" | "runtime" | "output";
+
+/** Explicit output/content verification status (Phase 2a contract). */
+export type VerifiedOutputStatus =
+  | "content_verified"
+  | "output_only_content_unverified"
+  | "example_only_content_unverified"
+  | "no_output";
+
 /** What stopped a run, and the issue to ask its author to open (see harness/verdict.py BLOCKERS). */
 export interface VerifiedBlocker {
   code: string;
@@ -58,8 +68,40 @@ export interface VerifiedVerdict {
   title: string;
   reason: string;
   basis?: string;
+  status_code?: string;
+  failure_phase?: VerifiedFailurePhase | null;
+  content_verified?: boolean;
+  output_status?: VerifiedOutputStatus;
   readme_gaps?: { item: string; text: string }[];
   blockers?: VerifiedBlocker[];
+}
+
+export interface VerifiedOutputVerification {
+  io_passed: boolean;
+  content_verified: boolean;
+  status: VerifiedOutputStatus;
+  note?: string;
+  note_es?: string;
+}
+
+export interface VerifiedOutputPreview {
+  leg: "external" | "example" | string;
+  file: string;
+  size_bytes: number;
+  binary: boolean;
+  truncated: boolean;
+  lines: string[];
+}
+
+export type VerifiedRecommendation = string | { code: string; text: string };
+
+export type VerifiedWithoutPreparation =
+  | string
+  | { blocker?: string; basis?: string; reason?: string };
+
+export interface VerifiedPreparedFile {
+  path: string;
+  replaces?: boolean | string | null;
 }
 
 /** The blocks docs/GUIA-PASO-1.md asks a commit to state. */
@@ -104,6 +146,8 @@ export interface VerifiedVersionEntry {
   level: VerifiedLevel;
   label?: string;
   verdict?: string | null;
+  verdict_basis?: string | null;
+  content_verified?: boolean;
   errors_reported?: boolean;
   ci_run?: string | null;
   /** Paths relative to the gh-pages root. */
@@ -135,6 +179,8 @@ export interface VerifiedIndexEntry {
   variant?: string | null;
   sha?: string | null;
   verdict?: string | null;
+  verdict_basis?: string | null;
+  content_verified?: boolean;
   // index/3: the commit's own date, and every commit verified, newest first.
   committed?: string | null;
   versions?: VerifiedVersionEntry[];
@@ -341,9 +387,9 @@ export interface VerifiedReport {
     steps?: string[];
     /** Verified command a third party can run after completing `steps`. */
     run_cmd?: string | null;
-    files?: { path: string; replaces?: string }[];
+    files?: VerifiedPreparedFile[];
     why?: string[];
-    without_preparation?: string | null;
+    without_preparation?: VerifiedWithoutPreparation | null;
     /** Optional upstream PR, reproducibility fork/branch, or setup guide URL. */
     pr_url?: string | null;
     fork_url?: string | null;
@@ -352,7 +398,7 @@ export interface VerifiedReport {
     proposed_fix_note?: string | null;
     fork_note?: string | null;
   } | null;
-  recommendations?: string[] | null;
+  recommendations?: VerifiedRecommendation[] | null;
   generated: string;
   ci_run?: string;
   gates: Record<VerifiedLevel, boolean>;
@@ -461,6 +507,10 @@ export interface VerifiedReport {
     faults?: ("author" | "strhub" | "harness")[];
   } | null;
   content_detail?: { outputs?: { stats?: VerifiedContentStats }[] };
+  output_verification?: VerifiedOutputVerification | null;
+  output_preview?: VerifiedOutputPreview | null;
+  slice_scope_note?: string | null;
+  scope_limit?: string | null;
   logs?: Record<string, string>;
   /** Original transcripts with the invocation captured by the runner. */
   terminals?: Record<string, string>;
@@ -505,12 +555,12 @@ export interface VerifiedReport {
 
 export interface VerifiedManualI18n {
   plain_why?: string;
-  without_preparation?: string;
+  without_preparation?: VerifiedWithoutPreparation;
   reason?: string;
   base?: string;
   proposed_fix_note?: string;
-  recommendations?: string[];
-  files?: { path: string; replaces?: string }[];
+  recommendations?: VerifiedRecommendation[];
+  files?: VerifiedPreparedFile[];
 }
 
 /** Editorial notices cannot be passed to execution-only renderers or offers. */

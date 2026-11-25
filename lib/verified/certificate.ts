@@ -41,6 +41,12 @@ type Translate = (key: string, params?: Record<string, string>) => string;
 const VERDICT_REASON_EXACT: Record<string, string> = {
   "The tool installed and its run produced its documented output.":
     "verified.engineText.verdictReason.runs",
+  "The tool installed and its run produced its documented output. STR locus content verified automatically.":
+    "verified.engineText.verdictReason.runsContentVerified",
+  "The tool installed and its run produced its documented output. Output generated; STR content not verified automatically.":
+    "verified.engineText.verdictReason.runsContentUnverified",
+  "The tool installed as documented, then exited with an error before producing its documented output.":
+    "verified.engineText.verdictReason.installedThenRunFailed",
   "STRhub could not work out how to install or run this tool from its repository. The README does not say enough for a stranger to run it; each missing item is listed below.":
     "verified.engineText.verdictReason.readmeInsufficient",
   "The pinned source could not be fetched.":
@@ -85,6 +91,10 @@ const VERDICT_SUFFIXES: [string, string][] = [
   [
     " The repository's own documented example ran and produced its output.",
     "verified.engineText.verdictSuffix.examplePass",
+  ],
+  [
+    " The repository's own documented example ran on its shipped data.",
+    "verified.engineText.verdictSuffix.exampleRanShipped",
   ],
 ];
 
@@ -139,6 +149,9 @@ export function localizeVerdictReason(
     const mStepFile = core.match(
       /^An installation step reads a file the commit does not hold \((.+), line (\d+): `(.+)`\)\.$/,
     );
+    const mScopeBoundary = core.match(
+      /^Automatic verification reached an evaluator scope boundary \((.+)\); this run does not fault the software\.$/,
+    );
 
     if (mRaisedTimeout) {
       translatedCore = t("verified.engineText.verdictReason.raisedTimeout", {
@@ -188,6 +201,10 @@ export function localizeVerdictReason(
         line: mStepFile[2],
         cmd: mStepFile[3],
       });
+    } else if (mScopeBoundary) {
+      translatedCore = t("verified.engineText.verdictReason.scopeBoundary", {
+        limit: mScopeBoundary[1],
+      });
     }
   }
 
@@ -236,6 +253,15 @@ export function localizeNeededItem(item: string, t: Translate): string {
       path: mRef[2],
     });
     if (val !== "verified.engineText.needed.referenceGenomeMounted") return val;
+  }
+  const mRegionsCat = item.match(
+    /^A target-regions catalog \((.+) layout\): the documented command reads a locus definition file, and STRhub mounted its shared reference panel catalog matching the documented schema\.$/,
+  );
+  if (mRegionsCat) {
+    const val = t("verified.engineText.needed.regionsCatalogMounted", {
+      layout: mRegionsCat[1],
+    });
+    if (val !== "verified.engineText.needed.regionsCatalogMounted") return val;
   }
   return item;
 }
@@ -516,6 +542,15 @@ export function localizeCaveatItem(item: string, t: Translate): string {
       flag: m[2],
     });
   }
+  if (
+    (m = item.match(
+      /^Regions catalog: STRhub supplied its shared '(.+)' locus catalog \(\/data\/in\/regions\.\*\) matching the schema documented by upstream\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.regionsCatalogSupplied", {
+      layout: m[1],
+    });
+  }
 
   return item;
 }
@@ -554,7 +589,7 @@ function buildLocalizedConclusion(
   if (report.procedure_validation && (
     !report.procedure_validation.valid ||
     report.procedure_review?.may_say_runs !== true ||
-    report.verdict?.basis === "strhub" ||
+    ["strhub", "strhub_infra", "scope"].includes(report.verdict?.basis ?? "") ||
     (report.verdict?.code !== "runs" && report.verdict?.code !== "fails")
   )) {
     return report.certificate?.conclusion ?? [];

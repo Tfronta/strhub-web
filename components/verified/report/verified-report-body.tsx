@@ -51,6 +51,7 @@ import {
 import { DisputeCard } from "./closing";
 import { VersionHistory, OlderVersionNotice, RetiredNotice, rowHref } from "./history";
 import { AsItIsOpening } from "./verdict";
+import { InlineCodeText, normalizeRecommendationText } from "./inline-code";
 import {
   CompanionManualBanner,
   ManualExecutionContext,
@@ -158,9 +159,20 @@ export function VerifiedReportBody({
   const diagnosticsTitle = passedRun ? "verified.certificate.section.reported" : "verified.certificate.section.why";
   const preferredLog = report.gates.installs === false ? "build" :
     report.datasets?.some((dataset) => dataset.leg === "own" && dataset.available) ? "own" : "external";
+  const contentUnverifiedRun =
+    passedRun &&
+    (report.output_verification?.content_verified === false ||
+      report.verdict?.content_verified === false ||
+      report.gates?.content === false);
   const hasOutputSection = Boolean(
-    report.content_detail?.outputs?.[0]?.stats || report.io_detail?.outputs?.[0],
+    report.content_detail?.outputs?.[0]?.stats ||
+      report.io_detail?.outputs?.[0] ||
+      report.output_preview ||
+      contentUnverifiedRun,
   );
+  const normalizedRecommendations = (report.recommendations ?? [])
+    .map(normalizeRecommendationText)
+    .filter(Boolean);
   const terminalOutput = terminalOutputSummary(
     report.io_detail?.outputs?.[0],
     report.content_detail?.outputs?.[0]?.stats,
@@ -255,6 +267,11 @@ export function VerifiedReportBody({
                     stats={report.content_detail?.outputs?.[0]?.stats}
                     io={report.io_detail?.outputs?.[0]}
                     panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
+                    outputVerification={report.output_verification}
+                    verdict={report.verdict}
+                    gates={report.gates}
+                    outputPreview={report.output_preview}
+                    sliceScopeNote={report.slice_scope_note}
                   />
                 </Section>
               </div>
@@ -288,7 +305,7 @@ export function VerifiedReportBody({
               </Section>
             )}
 
-            {(report.recommendations?.length || report.preparation?.why?.length) && (
+            {(normalizedRecommendations.length > 0 || report.preparation?.why?.length) && (
               <Section n={next()} title={t("verified.strhubDid.sectionSuggestionsTitle")}>
                 <ManualSuggestions run={report} />
               </Section>
@@ -356,6 +373,11 @@ export function VerifiedReportBody({
                     stats={report.content_detail?.outputs?.[0]?.stats}
                     io={report.io_detail?.outputs?.[0]}
                     panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
+                    outputVerification={report.output_verification}
+                    verdict={report.verdict}
+                    gates={report.gates}
+                    outputPreview={report.output_preview}
+                    sliceScopeNote={report.slice_scope_note}
                   />
                 </Section>
               </div>
@@ -407,6 +429,24 @@ export function VerifiedReportBody({
             {!installBlocked && !!localizedNeeded?.length && (
               <Section n={next()} title={t("verified.needed.heading")}>
                 <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={localizedNeeded} />
+              </Section>
+            )}
+
+            {normalizedRecommendations.length > 0 && (
+              <Section n={next()} title={t("verified.recommendations.heading")}>
+                <div className="mt-3 rounded-lg border bg-muted/40 p-4 sm:p-5">
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    {t("verified.recommendations.note")}
+                  </p>
+                  <ul className="mt-3 space-y-2.5">
+                    {normalizedRecommendations.map((rec, idx) => (
+                      <li key={`${idx}-${rec.slice(0, 48)}`} className="flex gap-2 text-base leading-relaxed">
+                        <span aria-hidden="true" className="text-muted-foreground">&ndash;</span>
+                        <span><InlineCodeText text={rec} /></span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </Section>
             )}
 

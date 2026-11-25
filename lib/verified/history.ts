@@ -35,6 +35,8 @@ export interface HistoryRow {
   generated: string | null;
   level: VerifiedLevel;
   verdict: string | null;
+  verdict_basis?: string | null;
+  content_verified?: boolean;
   errors_reported: boolean;
   dataset_types: string[];
   /** Paths relative to the gh-pages root. */
@@ -66,6 +68,8 @@ function rowOf(entry: VerifiedIndexEntry, v: VerifiedVersionEntry, isAlias: bool
     generated: v.generated ?? null,
     level: v.level,
     verdict: v.verdict ?? null,
+    verdict_basis: v.verdict_basis ?? entry.verdict_basis ?? null,
+    content_verified: v.content_verified ?? entry.content_verified,
     errors_reported: v.errors_reported ?? false,
     dataset_types: entry.dataset_types ?? [],
     report: v.report,
@@ -96,6 +100,8 @@ export function rowsOf(entry: VerifiedIndexEntry): HistoryRow[] {
         level: entry.level,
         label: entry.label,
         verdict: entry.verdict,
+        verdict_basis: entry.verdict_basis,
+        content_verified: entry.content_verified,
         errors_reported: entry.errors_reported,
         ci_run: entry.ci_run,
         report: entry.report,
@@ -159,7 +165,9 @@ export function historyOf(entries: VerifiedIndexEntry[]): HistoryRow[] {
   // A run that reached no gate is nothing to list — unless it is one nobody
   // knew how to attempt: "could not be determined" is that finding, about
   // the documentation, and it publishes now (tanda 5b).
-  const rows = entries.flatMap(rowsOf).filter((r) => r.level !== "none" || r.verdict === "undetermined");
+  const rows = entries
+    .flatMap(rowsOf)
+    .filter((r) => r.level !== "none" || r.verdict === "undetermined" || r.instrument === "curated");
   const kept: HistoryRow[] = [];
   for (const row of rows) {
     const i = kept.findIndex((k) => sameRun(k, row));

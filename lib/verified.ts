@@ -4,7 +4,19 @@
  *
  * Override the source with NEXT_PUBLIC_VERIFIED_BASE if the engine repo moves.
  */
-import type { VerifiedIndex, VerifiedPublication, VerifiedReport } from "@/types/verified";
+import type {
+  VerifiedIndex,
+  VerifiedInstrument,
+  VerifiedPublication,
+  VerifiedReport,
+} from "@/types/verified";
+import {
+  curatedNoteOf,
+  findVersion,
+  historyOf,
+  repoEntries,
+  type HistoryRow,
+} from "@/lib/verified/history";
 
 const BASE =
   process.env.NEXT_PUBLIC_VERIFIED_BASE ??
@@ -108,4 +120,139 @@ export async function getVerifiedReportAt(path: string): Promise<VerifiedPublica
 export function contentStats(report: VerifiedReport) {
   const outs = report.content_detail?.outputs;
   return outs && outs.length > 0 ? outs[0].stats : undefined;
+}
+
+export interface LoadedVerifiedPage {
+  report: VerifiedPublication;
+  staticPageUrl: string;
+  pdfUrl: string;
+  jsonUrl: string;
+  history?: { rows: HistoryRow[]; current: HistoryRow };
+  note?: { row: HistoryRow; report: VerifiedReport };
+}
+
+export interface VerifiedFetcherDeps {
+  getIndex: () => Promise<VerifiedIndex>;
+  getReport: (slug: string) => Promise<VerifiedPublication | null>;
+  getReportAt: (path: string) => Promise<VerifiedPublication | null>;
+}
+
+const defaultDeps: VerifiedFetcherDeps = {
+  getIndex: () => getVerifiedIndex(),
+  getReport: (slug) => getVerifiedReport(slug),
+  getReportAt: (path) => getVerifiedReportAt(path),
+};
+
+async function noteForSlug(
+  rows: HistoryRow[],
+  slug: string,
+  current: HistoryRow | undefined,
+  deps: VerifiedFetcherDeps,
+): Promise<{ row: HistoryRow; report: VerifiedReport } | undefined> {
+  if (!current || current.instrument === "curated") return undefined;
+  const row = curatedNoteOf(rows.filter((r) => r.slug === slug));
+  if (!row) return undefined;
+  const report = await deps.getReportAt(row.report);
+  return report && report.record_type !== "editorial_review" ? { row, report } : undefined;
+}
+
+/**
+ * Resolve `/verified/<slug>` (including `?at=<sha>`, `?recipe=curated`, and
+ * curated-only entries whose `entry.report` points to `<slug>/<sha>-curated/<slug>.json`
+ * without a root `<slug>.json` file).
+ */
+export async function resolveVerifiedToolPage(
+  slug: string,
+  at?: string,
+  recipe?: VerifiedInstrument,
+  deps: VerifiedFetcherDeps = defaultDeps,
+): Promise<LoadedVerifiedPage | null> {
+  if (!/^[A-Za-z0-9._-]+$/.test(slug)) return null;
+  const index = await deps.getIndex();
+  const entry = index.tools.find((t) => t.slug === slug);
+  const peers = entry ? repoEntries(index, entry.source_repo) : [];
+  const rows = entry ? historyOf(peers.length > 0 ? peers : [entry]) : [];
+
+  if (at) {
+    const row = findVersion(rows, at, slug, recipe);
+    if (!row) return null;
+    const report = await deps.getReportAt(row.report);
+    if (!report) return null;
+    return {
+      report,
+      staticPageUrl: verifiedFileUrl(row.page),
+      pdfUrl: verifiedFileUrl(row.pdf),
+      jsonUrl: verifiedFileUrl(row.report),
+      history: { rows, current: row },
+      note: await noteForSlug(rows, slug, row, deps),
+    };
+  }
+
+  // Direct `?recipe=curated` without `?at=` resolves the newest curated run of `slug`.
+  if (recipe === "curated") {
+    const curatedRow =
+      curatedNoteOf(rows.filter((r) => r.slug === slug)) ??
+      rows.find((r) => r.slug === slug && r.instrument === "curated");
+    if (!curatedRow) return null;
+    const report = await deps.getReportAt(curatedRow.report);
+    if (!report) return null;
+    return {
+      report,
+      staticPageUrl: verifiedFileUrl(curatedRow.page),
+      pdfUrl: verifiedFileUrl(curatedRow.pdf),
+      jsonUrl: verifiedFileUrl(curatedRow.report),
+      history: { rows, current: curatedRow },
+      note: undefined,
+    };
+  }
+
+  const current = rows.find((r) => r.slug === slug && r.isAlias) ?? rows.find((r) => r.slug === slug);
+  const indexedReportPath = current?.report ?? entry?.report;
+  const indexedIsSubdir = Boolean(indexedReportPath && indexedReportPath !== `${slug}.json`);
+
+  let report: VerifiedPublication | null = null;
+  let usedIndexedPath = false;
+
+  if (indexedIsSubdir && indexedReportPath) {
+    report = await deps.getReportAt(indexedReportPath);
+    if (report) usedIndexedPath = true;
+  }
+  if (!report) {
+    report = await deps.getReport(slug);
+  }
+  if (!report && indexedReportPath && !usedIndexedPath) {
+    report = await deps.getReportAt(indexedReportPath);
+    if (report) usedIndexedPath = true;
+  }
+  if (!report) return null;
+
+  const reportPath = usedIndexedPath && indexedReportPath ? indexedReportPath : `${slug}.json`;
+  const pagePath = usedIndexedPath
+    ? current?.page ?? entry?.page ?? reportPath.replace(/\.json$/, ".html")
+    : `${slug}.html`;
+  const pdfPath = usedIndexedPath
+    ? current?.pdf ?? reportPath.replace(/\.json$/, ".pdf")
+    : `${slug}.pdf`;
+
+  return {
+    report,
+    staticPageUrl: usedIndexedPath ? verifiedFileUrl(pagePath) : verifiedStaticPageUrl(slug),
+    pdfUrl: usedIndexedPath ? verifiedFileUrl(pdfPath) : verifiedPdfUrl(slug),
+    jsonUrl: usedIndexedPath ? verifiedFileUrl(reportPath) : verifiedReportJsonUrl(slug),
+    history: current ? { rows, current } : undefined,
+    note: await noteForSlug(rows, slug, current, deps),
+  };
+}
+
+/** Fetch root `<slug>.json`, falling back to `entry.report` from `index.json` when stored in a subdir. */
+export async function getVerifiedReportOrIndexed(
+  slug: string,
+  deps: VerifiedFetcherDeps = defaultDeps,
+): Promise<VerifiedPublication | null> {
+  const direct = await deps.getReport(slug);
+  if (direct) return direct;
+  const index = await deps.getIndex();
+  const entry = index.tools.find((t) => t.slug === slug);
+  if (!entry?.report) return null;
+  return deps.getReportAt(entry.report);
 }

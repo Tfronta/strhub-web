@@ -9,7 +9,7 @@
  * simply stuck on the form, whom we help for free.
  */
 import type { Metadata } from "next";
-import { getVerifiedReport } from "@/lib/verified";
+import { getVerifiedReportOrIndexed } from "@/lib/verified";
 import {
   declaredManualRecord,
   isCompatibilityFlag,
@@ -29,7 +29,7 @@ export default async function VerifiedManualPage({
   searchParams: { slug?: string; declared?: string };
 }) {
   const slug = searchParams.slug?.trim() || "";
-  const publication = slug ? await getVerifiedReport(slug) : null;
+  const publication = slug ? await getVerifiedReportOrIndexed(slug) : null;
   const report = publication?.record_type === "editorial_review" ? null : publication;
 
   // Two ways to be here, and neither is us picking a favourite:

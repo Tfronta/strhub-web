@@ -15,7 +15,7 @@ export function blockedBeforeInstall(report: VerifiedReport): boolean {
   return report.procedure_validation?.valid === true &&
     report.procedure_review?.install_ready === false &&
     report.verdict?.code === "undetermined" &&
-    report.verdict.basis === "strhub" &&
+    ["strhub", "strhub_infra", "scope", "recipe", "readme"].includes(report.verdict.basis ?? "") &&
     report.gates.available === true &&
     !report.gates.installs && !report.gates.runs && !report.gates.io && !report.gates.content &&
     report.run?.step_outcome !== "success" && report.run?.step_outcome !== "failure";

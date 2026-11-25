@@ -22,7 +22,13 @@ import { classifyManual } from "@/lib/verified/status-summary";
 import { GUIDE_URL } from "@/lib/verified/step1";
 import { cn } from "@/lib/utils";
 import { rowHref } from "./history";
-import { InlineCodeText, manualLocale } from "./inline-code";
+import {
+  formatFileReplaces,
+  InlineCodeText,
+  manualLocale,
+  normalizeRecommendationText,
+  normalizeWithoutPreparation,
+} from "./inline-code";
 
 function isSafeHttpUrl(url: string | null | undefined): url is string {
   return Boolean(url && /^https?:\/\//i.test(url.trim()));
@@ -166,15 +172,23 @@ export function ManualExecutionContext({ run }: { run: VerifiedReport }) {
   const { t, language } = useLanguage();
   const prep = run.preparation;
   const loc = manualLocale(run, language);
-  const withoutPrep = loc?.without_preparation || prep?.without_preparation;
+  const withoutPrep =
+    normalizeWithoutPreparation(loc?.without_preparation) ||
+    normalizeWithoutPreparation(prep?.without_preparation);
   const baseEnv = loc?.base || prep?.base;
   const localizedReason = loc?.reason || localizeVerdictReason(run.verdict?.reason, t);
+  const failurePhase = run.verdict?.failure_phase ?? null;
   const manualSummary = classifyManual({
     level: run.level,
     verdict: run.verdict?.code,
     instrument: "curated",
   });
   const manualFailed = manualSummary?.kind === "fail";
+  const contentUnverified =
+    !manualFailed &&
+    (run.output_verification?.content_verified === false ||
+      run.verdict?.content_verified === false ||
+      (Boolean(run.gates?.io) && run.gates?.content === false));
 
   return (
     <div className="mt-3 space-y-3 rounded-lg border bg-card p-5 text-sm">
@@ -199,12 +213,16 @@ export function ManualExecutionContext({ run }: { run: VerifiedReport }) {
           "rounded-md border p-3.5",
           manualFailed
             ? "border-red-500/45 bg-red-50/60 dark:border-red-600/45 dark:bg-red-950/30"
-            : "border-teal-600/40 bg-teal-50/50 dark:border-teal-500/40 dark:bg-teal-950/25",
+            : contentUnverified
+              ? "border-amber-500/45 bg-amber-50/60 dark:border-amber-600/45 dark:bg-amber-950/25"
+              : "border-teal-600/40 bg-teal-50/50 dark:border-teal-500/40 dark:bg-teal-950/25",
         )}
       >
         <div className="flex items-start gap-2">
           {manualFailed ? (
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-400" aria-hidden />
+          ) : contentUnverified ? (
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700 dark:text-amber-400" aria-hidden />
           ) : (
             <Check className="mt-0.5 h-4 w-4 shrink-0 text-teal-700 dark:text-teal-400" aria-hidden />
           )}
@@ -214,6 +232,11 @@ export function ManualExecutionContext({ run }: { run: VerifiedReport }) {
                 ? t("verified.strhubDid.upstreamFailedTitle")
                 : t("verified.strhubDid.upstreamPassedTitle")}
             </p>
+            {failurePhase && (
+              <p className="text-xs font-medium text-muted-foreground">
+                {t(`verified.trial.failurePhase.${failurePhase}`)}
+              </p>
+            )}
             <p className="text-muted-foreground leading-relaxed">
               <InlineCodeText
                 text={
@@ -224,6 +247,11 @@ export function ManualExecutionContext({ run }: { run: VerifiedReport }) {
                 }
               />
             </p>
+            {contentUnverified && (
+              <p className="text-xs font-medium text-amber-900 dark:text-amber-300">
+                {t("verified.content.unverifiedTitle")}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -259,7 +287,12 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
   const fixNote = (loc?.proposed_fix_note ?? prep?.proposed_fix_note ?? prep?.fork_note ?? "").trim();
   const prepFiles = loc?.files?.length ? loc.files : prep?.files;
   const hasStructuredSteps = Boolean(
-    (prep?.steps && prep.steps.length > 0) || verifiedRunCmd || prUrl || forkUrl || guideUrl,
+    (prep?.steps && prep.steps.length > 0) ||
+      (prepFiles && prepFiles.length > 0) ||
+      verifiedRunCmd ||
+      prUrl ||
+      forkUrl ||
+      guideUrl,
   );
 
   if (!hasStructuredSteps && !items?.length) return null;
@@ -302,18 +335,24 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
         <div>
           <p className="font-medium">{t("verified.strhubDid.prepFilesLabel")}</p>
           <ul className="mt-1.5 list-disc space-y-1 pl-5 text-muted-foreground">
-            {prepFiles.map((f) => (
-              <li key={f.path}>
-                <code className="rounded bg-muted px-1 py-0.5 text-xs text-foreground">{f.path}</code>
-                {f.replaces ? (
-                  <>
-                    {" ("}
-                    <InlineCodeText text={f.replaces} />
-                    {")"}
-                  </>
-                ) : ""}
-              </li>
-            ))}
+            {prepFiles.map((f) => {
+              const replacesNote = formatFileReplaces(
+                f.replaces,
+                t("verified.strhubDid.fileReplaced"),
+              );
+              return (
+                <li key={f.path}>
+                  <code className="rounded bg-muted px-1 py-0.5 text-xs text-foreground">{f.path}</code>
+                  {replacesNote ? (
+                    <>
+                      {" ("}
+                      <InlineCodeText text={replacesNote} />
+                      {")"}
+                    </>
+                  ) : null}
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
@@ -382,11 +421,12 @@ export function ManualReproSteps({ run }: { run: VerifiedReport }) {
 export function ManualSuggestions({ run }: { run: VerifiedReport }) {
   const { t, language } = useLanguage();
   const loc = manualLocale(run, language);
-  const baseRecs = loc?.recommendations?.length ? loc.recommendations : (run.recommendations ?? []);
+  const rawBaseRecs = loc?.recommendations?.length ? loc.recommendations : (run.recommendations ?? []);
+  const baseRecs = rawBaseRecs.map(normalizeRecommendationText).filter(Boolean);
   const suggestions: string[] = [
     ...baseRecs,
     ...(!baseRecs.length && run.preparation?.why?.length
-      ? run.preparation.why
+      ? run.preparation.why.map(normalizeRecommendationText).filter(Boolean)
       : []),
   ];
   if (suggestions.length === 0) return null;
@@ -395,7 +435,7 @@ export function ManualSuggestions({ run }: { run: VerifiedReport }) {
     <div className="mt-3 rounded-lg border border-teal-600/30 bg-teal-50/35 p-5 text-sm dark:border-teal-900/50 dark:bg-teal-950/20">
       <ul className="list-disc space-y-1.5 pl-5 leading-relaxed">
         {suggestions.map((s, idx) => (
-          <li key={`${idx}-${s}`}><InlineCodeText text={s} /></li>
+          <li key={`${idx}-${s.slice(0, 48)}`}><InlineCodeText text={s} /></li>
         ))}
       </ul>
       <div className="mt-3">

@@ -38,6 +38,7 @@ import { summarizeDatasets } from "@/lib/verified/dataset-provenance";
 import { terminalOutputSummary } from "@/lib/verified/output-evidence";
 import { Cover } from "./cover";
 import { Section, BoxedList, ConclusionBox, sectionCounter } from "./certificate";
+import { HumanConclusionCard } from "./human-conclusion";
 import { GatesLadder, type ExtraGateRow } from "./gates";
 import { RecordedTerminal, type ReportLog } from "./terminal";
 import { WhatWasVerified, VerificationMatrix, VerificationData } from "./verification";
@@ -346,11 +347,17 @@ export function VerifiedReportBody({
               </div>
             </Section>
 
-            {certificate.conclusion.length > 0 && (
-              <Section n={next()} title={t("verified.certificate.section.conclusion")}>
-                <ConclusionBox items={certificate.conclusion} />
-              </Section>
-            )}
+            <Section n={next()} title={t("verified.certificate.section.conclusion")}>
+              <HumanConclusionCard report={report} isManualRun />
+              {certificate.conclusion.length > 0 && (
+                <details className="mt-4 rounded-md border bg-muted/25 p-3.5 text-sm">
+                  <summary className="cursor-pointer font-medium text-muted-foreground hover:text-foreground">
+                    {t("verified.annex.gateFindingsHeading")}
+                  </summary>
+                  <ConclusionBox items={certificate.conclusion} />
+                </details>
+              )}
+            </Section>
 
             {staticPageUrl && <DisputeCard report={report} slug={slug} staticPageUrl={staticPageUrl} />}
           </>
@@ -513,11 +520,6 @@ export function VerifiedReportBody({
                 />
               )}
               <BoxedList lead={t("verified.certificate.text.scopeExec")} items={certificate.limitations} />
-              {certificate.conclusion.length > 0 && (
-                <div className="mt-5">
-                  <ConclusionBox items={certificate.conclusion} />
-                </div>
-              )}
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-muted-foreground">
                 <p className="leading-relaxed">{certificate.scope.disclaimer}</p>
                 <Link
@@ -527,6 +529,11 @@ export function VerifiedReportBody({
                   {t("verified.gate.howToReadOpenFull")}
                 </Link>
               </div>
+            </Section>
+
+            {/* Section 5: Plain-Language Human Conclusion (right before Technical Annex) */}
+            <Section n={next()} title={t("verified.certificate.section.conclusion")}>
+              <HumanConclusionCard report={report} />
             </Section>
 
             {!installBlocked && afterSource}
@@ -544,6 +551,7 @@ export function VerifiedReportBody({
               strictDockerfile={strictDockerfile}
               repoDockerfile={repoDockerfile}
               localizedCaveats={localizedCaveats}
+              conclusionItems={certificate.conclusion}
               defaultOpen={!passedRun && !report.assisted_run?.passed}
             />
 

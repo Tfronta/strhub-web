@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import en from "@/lib/i18n/locales/en/verified";
 import es from "@/lib/i18n/locales/es/verified";
 import pt from "@/lib/i18n/locales/pt/verified";
+import { buildHumanConclusion } from "@/components/verified/report/human-conclusion";
 import type { VerifiedReport } from "@/types/verified";
 import { badgeFor } from "./badge";
 import { certificateOf, localizeNeededItem } from "./certificate";
@@ -221,5 +222,75 @@ describe("Phase 3 — Assisted track ('Corre con ajustes') & canonical report", 
     expect(localizeNeededItem(assistedEnvItem, tPt)).toContain(
       "Ambiente base e ajustes da Execução 2",
     );
+  });
+
+  it("builds a short, everyday-language 4-topic conclusion free of git/Docker/CLI jargon in ES, EN, and PT", () => {
+    const bannedWords = [
+      "git",
+      "commit",
+      "sha",
+      "docker",
+      "container",
+      "contenedor",
+      "contêiner",
+      "cli",
+      "readme",
+      "vcf",
+      "bam",
+    ];
+    const bannedTokens = ["/app:ro", "—", "->", "→"];
+    for (const loc of [es, en, pt]) {
+      const hc = (loc as unknown as { verified: { humanConclusion: Record<string, string> } }).verified
+        .humanConclusion;
+      for (const [k, val] of Object.entries(hc)) {
+        const lower = val.toLowerCase();
+        for (const word of bannedWords) {
+          expect(new RegExp(`(^|[^a-záéíóúâêôãõç])${word}($|[^a-záéíóúâêôãõç])`, "i").test(lower), `${k} (${word}): ${val}`).toBe(false);
+        }
+        for (const tok of bannedTokens) {
+          expect(lower, `${k}: ${val}`).not.toContain(tok);
+        }
+      }
+    }
+
+    const adjustedReport: VerifiedReport = {
+      schema: "strhub-verified/1",
+      tool: { name: "LongTR", version: "v1.2" },
+      source: { repo: "https://github.com/gymrek-lab/LongTR", ref_resolved: "2be6cf5" },
+      environment: { source: "documented", os: ["ubuntu-22.04"] },
+      generated: "2026-11-26T12:00:00Z",
+      gates: {
+        none: false,
+        available: true,
+        installs: false,
+        runs: false,
+        io: false,
+        content: false,
+      },
+      level: "available",
+      verdict: { code: "fails", title: "Fails", reason: "Build failed." },
+      assisted_run: {
+        attempted: true,
+        passed: true,
+        level: "content",
+        adjustments: [],
+        gates: {
+          available: true,
+          installs: true,
+          runs: true,
+          io: true,
+          content: true,
+        },
+      },
+      scope: "Execution scope",
+    };
+
+    const resEs = buildHumanConclusion(adjustedReport, false, tEs);
+    expect(resEs.items).toHaveLength(4);
+    expect(resEs.items[0].title).toBe("¿El programa funciona?");
+    expect(resEs.items[0].body).toContain("funciona de inicio a fin");
+    expect(resEs.items[1].body).toContain("Sección 2");
+    expect(resEs.items[2].body).toContain("muestra pública independiente");
+    expect(resEs.items[3].title).toBe("¿Qué NO evalúa este informe?");
   });
 });

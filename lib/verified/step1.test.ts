@@ -122,4 +122,25 @@ describe("step 1, the documented run", () => {
       }
     }
   });
+
+  it("uses polite suggestion phrasing instead of imperative orders across ES, EN, and PT", () => {
+    const esDoesNotRun = step1For(step1({ code: "does_not_run" }), translator(es))!.body;
+    expect(esDoesNotRun).toContain(
+      "Significa que un tercero, siguiendo el README en este commit, no puede ejecutar de inicio a fin.",
+    );
+    expect(esDoesNotRun).toContain(
+      "Sugerimos corregir la documentación, o el paso en el que se rompió, y volver a probar con el link sobre el commit nuevo.",
+    );
+    expect(esDoesNotRun).not.toContain("Corregí");
+
+    const esCannotTell = step1For(step1({ code: "cannot_tell" }), translator(es))!.body;
+    expect(esCannotTell).toContain("Sugerimos agregarlo y volver a probar");
+    expect(esCannotTell).not.toContain("Agregalo");
+
+    const enDoesNotRun = step1For(step1({ code: "does_not_run" }), translator(en))!.body;
+    expect(enDoesNotRun).toContain("We suggest updating the documentation");
+
+    const ptDoesNotRun = step1For(step1({ code: "does_not_run" }), translator(pt))!.body;
+    expect(ptDoesNotRun).toContain("Sugerimos corrigir a documentação");
+  });
 });

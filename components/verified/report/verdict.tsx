@@ -56,7 +56,7 @@ export function FailurePhaseBadge({
 }
 
 const STEP1_RETRY_RE =
-  /^(.*?)(Add it and try the link again on the new commit\.?|Fix the documentation, or the step that broke, and try the link again on the new commit\.?|Agregalo y volvé a probar con el link sobre el commit nuevo\.?|Corregí la documentación, o el paso que se rompió, y volvé a probar con el link sobre el commit nuevo\.?|Adicione e tente o link novamente no commit novo\.?|Corrija a documentação, ou o passo que quebrou, e teste o link novamente no commit novo\.?)(.*)$/;
+  /^(.*?)(We suggest adding it so you can try the link again on the new commit\.?|We suggest updating the documentation, or the step where it broke, so you can try the link again on the new commit\.?|Sugerimos agregarlo y volver a probar con el link sobre el commit nuevo\.?|Sugerimos corregir la documentación, o el paso en el que se rompió, y volver a probar con el link sobre el commit nuevo\.?|Sugerimos adicioná-lo e testar o link novamente no commit novo\.?|Sugerimos corrigir a documentação, ou o passo em que falhou, e testar o link novamente no commit novo\.?|Add it and try the link again on the new commit\.?|Fix the documentation, or the step that broke, and try the link again on the new commit\.?|Agregalo y volvé a probar con el link sobre el commit nuevo\.?|Corregí la documentación, o el paso que se rompió, y volvé a probar con el link sobre el commit nuevo\.?|Adicione e tente o link novamente no commit novo\.?|Corrija a documentação, ou o passo que quebrou, e tente o link novamente no commit novo\.?)(.*)$/;
 
 function renderWithRetryBold(text: string): ReactNode {
   const m = text.match(STEP1_RETRY_RE);

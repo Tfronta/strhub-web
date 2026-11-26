@@ -6,6 +6,7 @@ import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedReport } from "@/types/verified";
 import type { TerminalOutputSummary } from "@/lib/verified/output-evidence";
 import { cn } from "@/lib/utils";
+import { ConclusionBox } from "./certificate";
 import { EvidenceList } from "./findings";
 import { RecordedTerminal, type ReportLog } from "./terminal";
 
@@ -72,6 +73,7 @@ export function TechnicalAnnex({
   strictDockerfile,
   repoDockerfile,
   localizedCaveats,
+  conclusionItems,
   defaultOpen = false,
 }: {
   report: VerifiedReport;
@@ -85,6 +87,7 @@ export function TechnicalAnnex({
   strictDockerfile?: string;
   repoDockerfile?: boolean;
   localizedCaveats?: string[];
+  conclusionItems?: { title: string; body: string }[];
   defaultOpen?: boolean;
 }) {
   const { t } = useLanguage();
@@ -130,11 +133,16 @@ export function TechnicalAnnex({
   const preferredAssistedLeg =
     assisted?.gates?.installs === false ? "assisted-build" : "assisted-external";
 
+  const hasRun1Block = Boolean(
+    (!installBlocked && (strictCmd || strictDockerfile || repoDockerfile)) ||
+      strictLogs.length > 0,
+  );
   const hasAnyContent = Boolean(
-    (!installBlocked && (strictCmd || strictDockerfile || repoDockerfile || localizedCaveats?.length)) ||
-      strictLogs.length > 0 ||
+    hasRun1Block ||
+      (!installBlocked && localizedCaveats?.length) ||
       assisted?.attempted ||
-      report.evidence?.length,
+      report.evidence?.length ||
+      conclusionItems?.length,
   );
   if (!hasAnyContent) return null;
 
@@ -171,43 +179,45 @@ export function TechnicalAnnex({
 
       <div className={cn("space-y-8 border-t bg-muted/15 p-5 sm:p-6", !open && "hidden")}>
         {/* Block 1: Literal Run 1 */}
-        <div id="verified-annex-run1" className="scroll-mt-20 space-y-4">
-          <h3 className="text-base font-semibold text-foreground">
-            {t("verified.annex.run1Heading")}
-          </h3>
-          {!installBlocked && strictCmd && (
-            <AnnexCodeCard
-              label={
-                stepOutcome === "success" || stepOutcome === "failure"
-                  ? t("verified.commandEvidence.submitted")
-                  : t("verified.commandEvidence.planned")
-              }
-              code={strictCmd}
-              note={strictCmdNote}
-            />
-          )}
-          {!installBlocked && (
-            repoDockerfile ? (
-              <p className="text-sm text-muted-foreground">
-                {t("verified.trial.recipeRepoDockerfile")}
-              </p>
-            ) : strictDockerfile ? (
+        {hasRun1Block && (
+          <div id="verified-annex-run1" className="scroll-mt-20 space-y-4">
+            <h3 className="text-base font-semibold text-foreground">
+              {t("verified.annex.run1Heading")}
+            </h3>
+            {!installBlocked && strictCmd && (
               <AnnexCodeCard
-                label={t("verified.annex.run1Dockerfile")}
-                code={strictDockerfile}
+                label={
+                  stepOutcome === "success" || stepOutcome === "failure"
+                    ? t("verified.commandEvidence.submitted")
+                    : t("verified.commandEvidence.planned")
+                }
+                code={strictCmd}
+                note={strictCmdNote}
               />
-            ) : null
-          )}
-          {strictLogs.length > 0 && (open || installBlocked) && (
-            <RecordedTerminal
-              logs={strictLogs}
-              preferredLeg={preferredStrictLeg}
-              preflight={installBlocked}
-              outputSummary={strictOutputSummary}
-              outputSectionHref={outputSectionHref}
-            />
-          )}
-        </div>
+            )}
+            {!installBlocked && (
+              repoDockerfile ? (
+                <p className="text-sm text-muted-foreground">
+                  {t("verified.trial.recipeRepoDockerfile")}
+                </p>
+              ) : strictDockerfile ? (
+                <AnnexCodeCard
+                  label={t("verified.annex.run1Dockerfile")}
+                  code={strictDockerfile}
+                />
+              ) : null
+            )}
+            {strictLogs.length > 0 && (open || installBlocked) && (
+              <RecordedTerminal
+                logs={strictLogs}
+                preferredLeg={preferredStrictLeg}
+                preflight={installBlocked}
+                outputSummary={strictOutputSummary}
+                outputSectionHref={outputSectionHref}
+              />
+            )}
+          </div>
+        )}
 
         {/* Block 2: Assisted Run 2 */}
         {assisted?.attempted && (
@@ -269,6 +279,16 @@ export function TechnicalAnnex({
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {/* Block 5: Formal gate findings record */}
+        {!!conclusionItems?.length && (
+          <div className={cn(hasRun1Block || assisted?.attempted || !!report.evidence?.length || (!installBlocked && !!localizedCaveats?.length) ? "border-t pt-6" : "")}>
+            <h3 className="text-base font-semibold text-foreground">
+              {t("verified.annex.gateFindingsHeading")}
+            </h3>
+            <ConclusionBox items={conclusionItems} />
           </div>
         )}
       </div>

@@ -99,7 +99,9 @@ export function GatesLadder({
                   <span className="ml-2 font-medium text-red-700 dark:text-red-400">{t("verified.gate.stoppedHere")}</span>
                 )}
                 {state === "blocked" && (
-                  <span className="ml-2 font-medium">{t("verified.gate.blockedHere")}</span>
+                  <span className="ml-2 font-medium">
+                    {t(g.key === "runs" ? "verified.gate.blockedRunHere" : "verified.gate.blockedHere")}
+                  </span>
                 )}
                 {state === "not-reached" && !blockedAt && (
                   <span className="ml-2 italic">{t("verified.gate.notReached")}</span>

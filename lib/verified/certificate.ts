@@ -71,6 +71,8 @@ const VERDICT_REASON_EXACT: Record<string, string> = {
     "verified.engineText.verdictReason.multipleInstalls",
   "This evaluator cannot establish that the cited command reads the declared reference input; no config or input list was rewritten to make it do so.":
     "verified.engineText.verdictReason.inputNotSubstituted",
+  "This evaluator cannot establish that the cited command reads the declared reference input; no config or input list was rewritten to make it do so. A read-file argument is outside the closed input substitution table. Automatic verification stopped at this scope boundary without executing or faulting the software.":
+    "verified.engineText.verdictReason.inputNotSubstitutedReadFile",
   "The documented command reads a file that neither the repository nor STRhub holds, so the command was not run.":
     "verified.engineText.verdictReason.documentedFileMissing",
   "Counting platform mentions does not establish which shared dataset this procedure reads.":
@@ -152,6 +154,9 @@ export function localizeVerdictReason(
     const mScopeBoundary = core.match(
       /^Automatic verification reached an evaluator scope boundary \((.+)\); this run does not fault the software\.$/,
     );
+    const mInputScope = core.match(
+      /^This evaluator cannot establish that the cited command reads the declared reference input; no config or input list was rewritten to make it do so\.\s*(.+?)\s*Automatic verification stopped at this scope boundary without executing or faulting the software\.$/,
+    );
 
     if (mRaisedTimeout) {
       translatedCore = t("verified.engineText.verdictReason.raisedTimeout", {
@@ -205,6 +210,10 @@ export function localizeVerdictReason(
       translatedCore = t("verified.engineText.verdictReason.scopeBoundary", {
         limit: mScopeBoundary[1],
       });
+    } else if (mInputScope) {
+      translatedCore = t("verified.engineText.verdictReason.inputNotSubstitutedScope", {
+        detail: mInputScope[1],
+      });
     }
   }
 
@@ -216,6 +225,44 @@ export function localizeVerdictReason(
     .join("");
 
   return `${translatedCore}${translatedSuffixes}`;
+}
+
+function localizeBaseEnvDescription(base: string, t: Translate): string {
+  const mConstMf = base.match(
+    /^constant baseline (\S+), noninteractive apt-get update, (.+?); Miniforge (.+)$/,
+  );
+  if (mConstMf) {
+    const val = t("verified.engineText.caveats.baseConstantMiniforge", {
+      img: mConstMf[1],
+      pkgs: mConstMf[2],
+      miniforge: mConstMf[3],
+    });
+    if (val !== "verified.engineText.caveats.baseConstantMiniforge") return val;
+  }
+  const mConst = base.match(
+    /^constant baseline (\S+), noninteractive apt-get update, (.+)$/,
+  );
+  if (mConst) {
+    const val = t("verified.engineText.caveats.baseConstant", {
+      img: mConst[1],
+      pkgs: mConst[2],
+    });
+    if (val !== "verified.engineText.caveats.baseConstant") return val;
+  }
+  return base;
+}
+
+export function localizeRecommendationItem(item: string, t: Translate): string {
+  const mExtCat = item.match(
+    /^The documented command reads an external target-regions or variant-catalog file \((.+) schema\)\. Shipping a small default or example catalog alongside the code would make the documented command self-contained\.$/,
+  );
+  if (mExtCat) {
+    const val = t("verified.engineText.recommendations.externalCatalog", {
+      schema: mExtCat[1],
+    });
+    if (val !== "verified.engineText.recommendations.externalCatalog") return val;
+  }
+  return item;
 }
 
 export function localizeNeededItem(item: string, t: Translate): string {
@@ -241,7 +288,9 @@ export function localizeNeededItem(item: string, t: Translate): string {
     /^A base environment for the documented installation: STRhub ran the repository's install commands unchanged on (.+)\. Base-image and package versions are not frozen by the commands\.$/,
   );
   if (mBase) {
-    const val = t("verified.engineText.needed.baseEnvDocumented", { base: mBase[1] });
+    const val = t("verified.engineText.needed.baseEnvDocumented", {
+      base: localizeBaseEnvDescription(mBase[1], t),
+    });
     if (val !== "verified.engineText.needed.baseEnvDocumented") return val;
   }
   const mRef = item.match(
@@ -413,10 +462,12 @@ export function localizeCaveatItem(item: string, t: Translate): string {
   }
   if (
     (m = item.match(
-      /^Environment: STRhub transcribed the documented installation commands unchanged into its own carrier \((.+)\)\.$/,
+      /^Environment: (?:STRhub transcribed the documented installation commands unchanged into its own|documented install transcribed unchanged into STRhub's) carrier \((.+)\)\.$/,
     ))
   ) {
-    return t("verified.engineText.caveats.envTranscribed", { base: m[1] });
+    return t("verified.engineText.caveats.envTranscribed", {
+      base: localizeBaseEnvDescription(m[1], t),
+    });
   }
   if (
     (m = item.match(
@@ -533,6 +584,23 @@ export function localizeCaveatItem(item: string, t: Translate): string {
     return t("verified.engineText.caveats.prerequisiteNotChained");
   }
   if (
+    item ===
+    "Evaluator limitation: a read-file argument is outside the closed input substitution table."
+  ) {
+    return t("verified.engineText.caveats.readFileOutsideTable");
+  }
+  if (
+    (m = item.match(
+      /^(read_path|reference_path|regions_path|sample_list|library_list): (.+) -> (.+)\.$/,
+    ))
+  ) {
+    return t("verified.engineText.caveats.substMapping", {
+      role: m[1],
+      orig: m[2],
+      repl: m[3],
+    });
+  }
+  if (
     (m = item.match(
       /^File: the documented command reads (\S+) \((?:after|in) (\S+)\), which is neither in the repository at this commit nor in STRhub's reference dataset\.$/,
     ))
@@ -586,13 +654,47 @@ function buildLocalizedConclusion(
       body: t("verified.certificate.conclusion.blockedBody"),
     }];
   }
+  const buildFailedReviewed =
+    report.procedure_review?.install_ready === true &&
+    report.gates?.available === true &&
+    report.gates?.installs === false &&
+    report.verdict?.code === "fails";
   if (report.procedure_validation && (
     !report.procedure_validation.valid ||
-    report.procedure_review?.may_say_runs !== true ||
+    (report.procedure_review?.may_say_runs !== true && !buildFailedReviewed) ||
     ["strhub", "strhub_infra", "scope"].includes(report.verdict?.basis ?? "") ||
     (report.verdict?.code !== "runs" && report.verdict?.code !== "fails")
   )) {
-    return report.certificate?.conclusion ?? [];
+    const rawItems = report.certificate?.conclusion ?? [];
+    return rawItems.map((it) => {
+      if (it.title === "Procedure not established") {
+        return {
+          title: t("verified.certificate.conclusion.procNotEstablishedTitle"),
+          body: t("verified.certificate.conclusion.procNotEstablishedBody"),
+        };
+      }
+      if (it.title === "Observations retained") {
+        return {
+          title: t("verified.certificate.conclusion.obsRetainedTitle"),
+          body: t("verified.certificate.conclusion.obsRetainedBody"),
+        };
+      }
+      if (it.title === "Reproducibility not established") {
+        return {
+          title: t("verified.certificate.conclusion.reproNotEstablishedTitle"),
+          body: t("verified.certificate.conclusion.reproNotEstablishedBody"),
+        };
+      }
+      if (it.title.startsWith("Verdict:") && report.verdict?.code) {
+        const vTitleKey = `verified.trial.verdict.${report.verdict.code}`;
+        const vTitle = t(vTitleKey) !== vTitleKey ? t(vTitleKey) : report.verdict.title;
+        return {
+          title: t("verified.certificate.conclusion.verdictTitle", { verdict: vTitle }),
+          body: localizeVerdictReason(it.body, t) ?? it.body,
+        };
+      }
+      return it;
+    });
   }
   const toolDisplay = `${report.tool.name}${report.tool.version ? ` ${report.tool.version}` : ""}`.trim();
   const isManual =

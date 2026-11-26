@@ -148,15 +148,19 @@ export function VerificationMatrix({
                 {state === "pass" ? <Check className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
               </span>
               <span className="font-semibold text-foreground">
-                {leg.leg === "own"
+                {leg.leg === "own" || leg.leg === "example"
                   ? t("verified.matrix.own")
                   : leg.leg === "external"
                     ? t("verified.matrix.external")
                     : leg.label}
               </span>
-              {leg.dataset && (
-                <span className="truncate text-sm text-muted-foreground">{leg.dataset}</span>
-              )}
+              {leg.dataset && (() => {
+                const dsKey = leg.type ? `verified.data.provenance.${leg.type}.name` : "";
+                const dsLabel = dsKey && t(dsKey) !== dsKey ? t(dsKey) : leg.dataset;
+                return (
+                  <span className="truncate text-sm text-muted-foreground">{dsLabel}</span>
+                );
+              })()}
               <div className="ml-auto shrink-0 pl-2">
                 {state === "pass" && (
                   <Badge variant="outline" className="border-teal-600/30 bg-teal-50 text-teal-700 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 font-semibold text-xs sm:text-sm">
@@ -269,7 +273,14 @@ export function VerificationData({
                   <dt className="text-muted-foreground pt-1">{t("verified.data.lociTested")}</dt>
                   <dd className="pt-1">
                     <p className="text-sm text-muted-foreground mb-1">
-                      {ds.loci.length} {t("verified.data.lociCount")}
+                      {ds.loci.length}{" "}
+                      {t(
+                        ds.type.endsWith("-med")
+                          ? "verified.data.lociCountMedical"
+                          : ds.type.endsWith("-y")
+                            ? "verified.data.lociCountY"
+                            : "verified.data.lociCount",
+                      )}
                     </p>
                     <p className="text-xs font-mono text-muted-foreground/80 leading-relaxed">
                       {ds.loci.join(", ")}

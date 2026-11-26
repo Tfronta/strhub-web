@@ -386,3 +386,122 @@ describe("Phase 2b — C. Curated-only route resolution without root <slug>.json
     expect(loaded?.pdfUrl).toContain(curatedPdfPath);
   });
 });
+
+describe("Phase 2c — Live trial polish: blockedBeforeRun, medical STR panel label, and ES localization", () => {
+  it("renders Gate 3 (Runs) as Blocked rather than Fail when Installs passed and run was skipped due to scope (straglr)", () => {
+    const straglrReport = makeBaseReport({
+      level: "installs",
+      gates: {
+        none: false,
+        available: true,
+        installs: true,
+        runs: false,
+        io: false,
+        content: false,
+      },
+      procedure_validation: {
+        schema: "strhub-procedure-evidence/1",
+        valid: true,
+        reason: "Matched",
+      },
+      procedure_review: {
+        install_ready: true,
+        may_say_runs: false,
+      },
+      verdict: {
+        code: "undetermined",
+        title: "Could not be determined",
+        basis: "scope",
+        reason:
+          "This evaluator cannot establish that the cited command reads the declared reference input; no config or input list was rewritten to make it do so. A read-file argument is outside the closed input substitution table. Automatic verification stopped at this scope boundary without executing or faulting the software.",
+        failure_phase: "pre_execution",
+        content_verified: false,
+        output_status: "no_output",
+      },
+      run: {
+        cmd: "straglr.py sample.mm2.bam /data/ref/hg38.fa batch0001",
+        step_outcome: "skipped",
+      },
+      certificate: {
+        schema: "strhub-verified/certificate/1",
+        label: "Could not be determined",
+        reached: "Installs",
+        summary: {
+          purpose: "Evaluate",
+          result: "Could not be determined",
+          reached: "Installs, 2/5 gates passed",
+          scope: "Execution",
+          not_evaluated: [],
+        },
+        conclusion: [
+          { title: "Procedure not established", body: "Not established." },
+          { title: "Reproducibility not established", body: "Insufficient." },
+        ],
+        out_of_scope: [],
+        limitations: [],
+        scope: { statement: "s", not: "n", disclaimer: "d" },
+      },
+    });
+
+    const html = renderToStaticMarkup(
+      createElement(VerifiedReportBody, {
+        report: straglrReport,
+        slug: "straglr-ont",
+        logs: [],
+      }),
+    );
+
+    expect(html).toContain(tEs("verified.gate.state.blocked"));
+    expect(html).not.toContain(tEs("verified.gate.state.fail"));
+    expect(html).toContain("tabla cerrada de sustitución de entradas");
+    expect(html).toContain(tEs("verified.certificate.conclusion.procNotEstablishedTitle"));
+  });
+
+  it("labels medical STR datasets as disease-associated STR loci rather than forensic STR loci (mahi-mahi)", () => {
+    const mahiReport = makeBaseReport({
+      level: "content",
+      gates: {
+        none: false,
+        available: true,
+        installs: true,
+        runs: true,
+        io: true,
+        content: true,
+      },
+      datasets: [
+        {
+          leg: "external",
+          label: "Reference dataset",
+          available: true,
+          passed: true,
+          type: "ont-bam-hg38-med",
+          dataset: "1000 Genomes ONT, hg38 medical STR slice (R10 SUP)",
+        },
+        {
+          leg: "example",
+          label: "Tool's own example",
+          available: false,
+        },
+      ],
+      caveats: {
+        source: "detect_recipe",
+        items: [
+          "Environment: documented install transcribed unchanged into STRhub's carrier (constant baseline ubuntu:22.04@b000e69a50ff, noninteractive apt-get update, ca-certificates, curl, git, build-essential, python3, python3-pip, python3-venv).",
+        ],
+      },
+    });
+
+    const html = renderToStaticMarkup(
+      createElement(VerifiedReportBody, {
+        report: mahiReport,
+        slug: "mahi-mahi-ont-med",
+        logs: [],
+      }),
+    );
+
+    expect(html).toContain(tEs("verified.data.lociCountMedical"));
+    expect(html).not.toContain(`51 ${tEs("verified.data.lociCount")}`);
+    expect(html).not.toContain("Tool&#x27;s own example");
+    expect(html).toContain("baseline constante ubuntu:22.04@b000e69a50ff");
+  });
+});

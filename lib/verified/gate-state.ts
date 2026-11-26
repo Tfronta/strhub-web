@@ -21,6 +21,23 @@ export function blockedBeforeInstall(report: VerifiedReport): boolean {
     report.run?.step_outcome !== "success" && report.run?.step_outcome !== "failure";
 }
 
+export function blockedBeforeRun(report: VerifiedReport): boolean {
+  return report.procedure_validation?.valid === true &&
+    report.procedure_review?.may_say_runs === false &&
+    report.verdict?.code === "undetermined" &&
+    ["strhub", "strhub_infra", "scope", "recipe", "readme", "procedure"].includes(report.verdict.basis ?? "") &&
+    report.gates.available === true &&
+    report.gates.installs === true &&
+    !report.gates.runs && !report.gates.io && !report.gates.content &&
+    report.run?.step_outcome !== "success" && report.run?.step_outcome !== "failure";
+}
+
+export function blockedGateOf(report: VerifiedReport): "installs" | "runs" | undefined {
+  if (blockedBeforeInstall(report)) return "installs";
+  if (blockedBeforeRun(report)) return "runs";
+  return undefined;
+}
+
 export function gateStates(
   gates: Partial<Record<string, boolean>> | undefined,
   keys: string[],

@@ -23,11 +23,12 @@ import { useLanguage } from "@/contexts/language-context";
 import { type VerifiedInstrument, type VerifiedReport } from "@/types/verified";
 import { hasReportedErrors } from "@/lib/verified/diagnostics";
 import { badgeFor } from "@/lib/verified/badge";
-import { blockedBeforeInstall } from "@/lib/verified/gate-state";
+import { blockedBeforeInstall, blockedGateOf } from "@/lib/verified/gate-state";
 import {
   certificateOf,
   localizeCaveatItem,
   localizeNeededItem,
+  localizeRecommendationItem,
 } from "@/lib/verified/certificate";
 import { summarizeDatasets } from "@/lib/verified/dataset-provenance";
 import { terminalOutputSummary } from "@/lib/verified/output-evidence";
@@ -140,6 +141,7 @@ export function VerifiedReportBody({
   );
   const certificate = certificateOf(report, level.label, t, language);
   const installBlocked = blockedBeforeInstall(report);
+  const blockedGate = blockedGateOf(report);
   const data = summarizeDatasets(report, slug);
   const isStrhubRun =
     instrument === "curated" ||
@@ -172,7 +174,8 @@ export function VerifiedReportBody({
   );
   const normalizedRecommendations = (report.recommendations ?? [])
     .map(normalizeRecommendationText)
-    .filter(Boolean);
+    .filter(Boolean)
+    .map((item) => localizeRecommendationItem(item, t));
   const terminalOutput = terminalOutputSummary(
     report.io_detail?.outputs?.[0],
     report.content_detail?.outputs?.[0]?.stats,
@@ -342,7 +345,7 @@ export function VerifiedReportBody({
               <GatesLadder
                 gates={report.gates}
                 extraRows={installBlocked ? undefined : extraGateRows}
-                blockedAt={installBlocked ? "installs" : undefined}
+                blockedAt={blockedGate}
               />
               <RecordedTerminal
                 logs={logs}

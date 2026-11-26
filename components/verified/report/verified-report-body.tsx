@@ -18,7 +18,7 @@
  */
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Terminal } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import {
   type VerifiedInstrument,
@@ -26,19 +26,18 @@ import {
   type VerifiedReport,
 } from "@/types/verified";
 import { hasReportedErrors } from "@/lib/verified/diagnostics";
-import { badgeFor, reachedLabel } from "@/lib/verified/badge";
+import { badgeFor } from "@/lib/verified/badge";
 import { blockedBeforeInstall, blockedGateOf } from "@/lib/verified/gate-state";
 import {
   certificateOf,
+  effectiveNeededBeyondRepo,
   localizeCaveatItem,
-  localizeNeededItem,
   localizeRecommendationItem,
 } from "@/lib/verified/certificate";
 import { summarizeDatasets } from "@/lib/verified/dataset-provenance";
 import { terminalOutputSummary } from "@/lib/verified/output-evidence";
 import { Cover } from "./cover";
 import { Section, BoxedList, ConclusionBox, sectionCounter } from "./certificate";
-import { SourceCard } from "./source-card";
 import { GatesLadder, type ExtraGateRow } from "./gates";
 import { RecordedTerminal, type ReportLog } from "./terminal";
 import { WhatWasVerified, VerificationMatrix, VerificationData } from "./verification";
@@ -48,10 +47,8 @@ import {
   AutoDiagnostics,
   actionableDiagnostics,
   ManualOffer,
-  ReadmeCheck,
   BulletCard,
   AuthorKnownIssues,
-  EvidenceList,
 } from "./findings";
 import { DisputeCard } from "./closing";
 import { VersionHistory, OlderVersionNotice, RetiredNotice, rowHref } from "./history";
@@ -65,6 +62,7 @@ import {
   NotDocumentedNotice,
 } from "./instrument";
 import { AssistedVerificationSection } from "./assisted-section";
+import { TechnicalAnnex } from "./technical-annex";
 import { documentedOf, newestOfKind, type HistoryRow } from "@/lib/verified/history";
 
 export type { ReportLog, ExtraGateRow };
@@ -94,6 +92,8 @@ export function VerifiedReportBody({
   afterHeader,
   afterAssisted,
   afterSource,
+  strictDockerfile,
+  repoDockerfile,
   history,
   instrument,
   note,
@@ -116,8 +116,11 @@ export function VerifiedReportBody({
   afterHeader?: ReactNode;
   /** Follow-up options rendered after both automatic tracks complete. */
   afterAssisted?: ReactNode;
-  /** A trial's environment, next to where the source is named. */
+  /** Legacy optional slot after metadata (omitted when installBlocked). */
   afterSource?: ReactNode;
+  /** Evaluator Dockerfile for Run 1, shown in the Technical Annex. */
+  strictDockerfile?: string;
+  repoDockerfile?: boolean;
   /**
    * A published tool's history: every commit verified, and which one this
    * page is. A trial has none — it is published nowhere.
@@ -164,7 +167,6 @@ export function VerifiedReportBody({
     report.verdict?.code === "runs" ||
     Boolean(report.gates?.runs && report.gates?.io);
   const actionableIssues = actionableDiagnostics(report.diagnostics, passedRun);
-  const diagnosticsTitle = passedRun ? "verified.certificate.section.reported" : "verified.certificate.section.why";
   const preferredLog = report.gates.installs === false ? "build" :
     report.datasets?.some((dataset) => dataset.leg === "own" && dataset.available) ? "own" : "external";
   const contentUnverifiedRun =
@@ -186,6 +188,10 @@ export function VerifiedReportBody({
     report.io_detail?.outputs?.[0],
     report.content_detail?.outputs?.[0]?.stats,
   );
+  const assistedTerminalOutput = terminalOutputSummary(
+    report.assisted_run?.io_detail?.outputs?.[0],
+    report.assisted_run?.content_detail?.outputs?.[0]?.stats,
+  );
   const outputSectionHref = hasOutputSection ? "#verified-output-content" : undefined;
   const next = sectionCounter();
 
@@ -198,12 +204,16 @@ export function VerifiedReportBody({
         .join("; ")
     : undefined;
 
-  const localizedNeeded = report.needed_beyond_repo?.map((item) =>
-    localizeNeededItem(item, t),
-  );
+  const localizedNeeded = effectiveNeededBeyondRepo(report, t);
   const localizedCaveats = report.caveats?.items?.map((item) =>
     localizeCaveatItem(item, t),
   );
+
+  function openAnnex() {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("strhub:open-annex"));
+    }
+  }
 
   return (
     <div className="flex flex-col min-h-[60vh]">
@@ -230,71 +240,6 @@ export function VerifiedReportBody({
           jsonUrl={jsonUrl}
           isManualRun={isStrhubRun}
         />
-
-        {!isStrhubRun && report.assisted_run?.attempted && (
-          <div className="mt-5 rounded-lg border bg-card p-4 sm:p-5 space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {t("verified.assisted.dualBannerTitle")}
-            </p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="flex flex-col justify-between rounded-md border bg-muted/30 p-3.5 text-sm">
-                <div className="space-y-1">
-                  <p className="font-semibold text-foreground">
-                    {t("verified.assisted.dualStep1Tag")}
-                  </p>
-                  <p className="text-muted-foreground">
-                    {certificate.summary.reached}
-                  </p>
-                </div>
-                <a
-                  href="#verified-literal-run"
-                  className="mt-2 inline-block text-xs font-semibold text-primary hover:underline"
-                >
-                  {t("verified.assisted.dualStep1Jump")}
-                </a>
-              </div>
-
-              <div
-                className={
-                  report.assisted_run.passed
-                    ? "flex flex-col justify-between rounded-md border border-amber-500/45 bg-amber-50/60 p-3.5 text-sm dark:border-amber-600/50 dark:bg-amber-950/25"
-                    : "flex flex-col justify-between rounded-md border bg-muted/30 p-3.5 text-sm"
-                }
-              >
-                <div className="space-y-1">
-                  <p className="font-semibold text-foreground">
-                    {t("verified.assisted.dualStep2Tag")}
-                  </p>
-                  <p
-                    className={
-                      report.assisted_run.passed
-                        ? "font-medium text-amber-900 dark:text-amber-300"
-                        : "text-muted-foreground"
-                    }
-                  >
-                    {report.assisted_run.passed
-                      ? t("verified.assisted.dualStep2Passed", {
-                          level: reachedLabel(report.assisted_run.level, t),
-                          count: String(report.assisted_run.adjustments?.length ?? 1),
-                        })
-                      : t("verified.assisted.dualStep2Stopped", {
-                          level: reachedLabel(report.assisted_run.level, t),
-                          count: String(report.assisted_run.adjustments?.length ?? 1),
-                        })}
-                  </p>
-                </div>
-                <a
-                  href="#verified-assisted-run"
-                  className="mt-2 inline-block text-xs font-semibold text-primary hover:underline"
-                >
-                  {report.assisted_run.passed
-                    ? t("verified.assisted.dualStep2JumpPassed")
-                    : t("verified.assisted.dualStep2JumpStopped")}
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
 
         {history?.current.retired && <RetiredNotice row={history.current} />}
 
@@ -395,7 +340,7 @@ export function VerifiedReportBody({
                     href="/verified/how-to-read#manual"
                     className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
                   >
-                    {t("verified.strhubDid.howToReadManualLink")} &rarr;
+                    {t("verified.strhubDid.howToReadManualLink")}
                   </Link>
                 </p>
               </div>
@@ -411,107 +356,100 @@ export function VerifiedReportBody({
           </>
         ) : (
           <>
+            {/* Section 1: Automated Run Strictly as Documented in the Repository */}
             <div id="verified-literal-run" className="scroll-mt-20">
               <Section
                 n={next()}
                 title={t("verified.assisted.asIsAfterAssistedHeading")}
               >
                 <AsItIsOpening report={report}>{afterHeader}</AsItIsOpening>
+
+                {!installBlocked && !afterHeader && !!report.install_detail?.diagnostics?.length && (
+                  <BuildFailedCard report={report} buildLogHref={buildLogHref} />
+                )}
+                {!installBlocked && actionableIssues.length > 0 && (
+                  <AutoDiagnostics
+                    diagnostics={report.diagnostics}
+                    hasStrhubFixture={data.hasStrhubFixture}
+                    passedRun={passedRun}
+                  />
+                )}
+                {!!report.author_known_issues?.length && (
+                  <AuthorKnownIssues items={report.author_known_issues} />
+                )}
+
                 <GatesLadder
                   gates={report.gates}
                   extraRows={installBlocked ? undefined : extraGateRows}
                   blockedAt={blockedGate}
+                  hideHowToRead
                 />
-                <RecordedTerminal
-                  logs={strictLogs}
-                  preferredLeg={preferredLog}
-                  preflight={installBlocked}
-                  outputSummary={terminalOutput}
-                  outputSectionHref={outputSectionHref}
-                />
+
+                <p className="mt-2.5 text-xs sm:text-sm text-muted-foreground">
+                  <a
+                    href="#verified-annex-run1"
+                    onClick={openAnnex}
+                    className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
+                  >
+                    <Terminal className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                    <span>{t("verified.annex.jumpRun1")}</span>
+                  </a>
+                </p>
+
+                {!report.assisted_run?.attempted && hasOutputSection && (
+                  <div id="verified-output-content" className="mt-6 scroll-mt-20">
+                    <h3 className="mb-2 text-base font-semibold">
+                      {t("verified.content.heading")}
+                    </h3>
+                    <OutputContent
+                      stats={report.content_detail?.outputs?.[0]?.stats}
+                      io={report.io_detail?.outputs?.[0]}
+                      panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
+                      outputVerification={report.output_verification}
+                      verdict={report.verdict}
+                      gates={report.gates}
+                      outputPreview={report.output_preview}
+                      sliceScopeNote={report.slice_scope_note}
+                    />
+                  </div>
+                )}
+
+                {!report.assisted_run?.attempted && normalizedRecommendations.length > 0 && (
+                  <div className="mt-5 rounded-lg border bg-muted/35 p-4 space-y-2">
+                    <p className="text-sm font-semibold text-foreground">
+                      {t("verified.recommendations.heading")}
+                    </p>
+                    <ul className="space-y-1.5 text-sm text-muted-foreground">
+                      {normalizedRecommendations.map((rec, idx) => (
+                        <li key={`${idx}-${rec.slice(0, 48)}`} className="flex gap-2 leading-relaxed">
+                          <span aria-hidden="true">&bull;</span>
+                          <span><InlineCodeText text={rec} /></span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </Section>
             </div>
 
-            {/* Why it stopped, or what errors it reported on the way (avoid repeating BuildFailedCard when trial `afterHeader` already showed `install_detail.diagnostics`). */}
-            {!installBlocked &&
-              ((!afterHeader && !!report.install_detail?.diagnostics?.length) ||
-                actionableIssues.length > 0 ||
-                !!report.author_known_issues?.length) && (
-              <Section n={next()} title={t(diagnosticsTitle)}>
-                {!afterHeader && <BuildFailedCard report={report} buildLogHref={buildLogHref} />}
-                <AutoDiagnostics
-                  diagnostics={report.diagnostics}
-                  hasStrhubFixture={data.hasStrhubFixture}
-                  passedRun={passedRun}
-                />
-                <AuthorKnownIssues items={report.author_known_issues} />
-              </Section>
-            )}
-
+            {/* Section 2: Automated Run with Suggested Documentation Adjustments */}
             {report.assisted_run?.attempted && (
               <div id="verified-assisted-run" className="scroll-mt-20">
                 <Section n={next()} title={t("verified.assisted.heading")}>
                   <AssistedVerificationSection
                     assisted={report.assisted_run}
-                    logs={assistedLogs}
                     repo={report.source.repo}
                     sha={report.source.ref_resolved ?? report.source.ref}
                     panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
                     sliceScopeNote={report.slice_scope_note}
+                    recommendations={normalizedRecommendations}
                   />
                 </Section>
               </div>
             )}
 
             {afterAssisted}
-
-            {hasOutputSection && (
-              <div id="verified-output-content" className="scroll-mt-20">
-                <Section n={next()} title={t("verified.content.heading")}>
-                  <OutputContent
-                    stats={report.content_detail?.outputs?.[0]?.stats}
-                    io={report.io_detail?.outputs?.[0]}
-                    panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
-                    outputVerification={report.output_verification}
-                    verdict={report.verdict}
-                    gates={report.gates}
-                    outputPreview={report.output_preview}
-                    sliceScopeNote={report.slice_scope_note}
-                  />
-                </Section>
-              </div>
-            )}
-
-            {(!installBlocked || Boolean(report.assisted_run?.passed)) && (
-              <Section n={next()} title={t("verified.data.heading")}>
-                <VerificationData
-                  provenance={data.provenance}
-                  hasStrhubFixture={data.hasStrhubFixture}
-                  installsPassed={Boolean(
-                    report.gates?.installs || report.assisted_run?.gates?.installs,
-                  )}
-                />
-              </Section>
-            )}
-
-            {report.datasets &&
-              report.datasets.length > 0 &&
-              report.datasets.some((leg) => leg.leg !== "external" && leg.available) && (
-              <Section n={next()} title={t("verified.matrix.heading")}>
-                <VerificationMatrix
-                  legs={report.datasets}
-                  installsPassed={Boolean(
-                    report.gates?.installs || report.assisted_run?.gates?.installs,
-                  )}
-                  verdictCode={report.assisted_run?.passed ? "runs" : report.verdict?.code}
-                />
-              </Section>
-            )}
-
-            <Section n={next()} title={t("verified.certificate.section.metadata")}>
-              <SourceCard report={report} installBlocked={installBlocked} />
-              {!installBlocked && afterSource}
-            </Section>
+            {!report.assisted_run?.passed && <ManualOffer report={report} slug={slug} />}
 
             {history && (
               <Section n={next()} title={t("verified.history.heading")}>
@@ -523,70 +461,91 @@ export function VerifiedReportBody({
               </Section>
             )}
 
-            {!report.assisted_run?.passed && <ManualOffer report={report} slug={slug} />}
+            {/* Section 3: Verification Data and Inputs Supplied Beyond the Repository */}
+            {((!installBlocked || Boolean(report.assisted_run?.passed)) &&
+              (data.provenance.length > 0 || data.hasStrhubFixture || !!localizedNeeded?.length)) && (
+              <Section n={next()} title={t("verified.data.consolidatedHeading")}>
+                {(data.provenance.length > 0 || data.hasStrhubFixture) && (
+                  <VerificationData
+                    provenance={data.provenance}
+                    hasStrhubFixture={data.hasStrhubFixture}
+                    installsPassed={Boolean(
+                      report.gates?.installs || report.assisted_run?.gates?.installs,
+                    )}
+                  />
+                )}
 
-            {report.readme_check && (
-              <Section n={next()} title={t("verified.readme.heading")}>
-                <ReadmeCheck check={report.readme_check} />
+                {report.datasets &&
+                  report.datasets.length > 0 &&
+                  report.datasets.some((leg) => leg.leg !== "external" && leg.available) && (
+                  <div className="mt-5">
+                    <h3 className="text-base font-semibold">{t("verified.matrix.heading")}</h3>
+                    <VerificationMatrix
+                      legs={report.datasets}
+                      installsPassed={Boolean(
+                        report.gates?.installs || report.assisted_run?.gates?.installs,
+                      )}
+                      verdictCode={report.assisted_run?.passed ? "runs" : report.verdict?.code}
+                    />
+                  </div>
+                )}
+
+                {!!localizedNeeded?.length && (
+                  <div className="mt-5">
+                    <h3 className="text-base font-semibold">{t("verified.needed.heading")}</h3>
+                    <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={localizedNeeded} />
+                  </div>
+                )}
               </Section>
             )}
 
-            {!installBlocked && !!localizedNeeded?.length && (
-              <Section n={next()} title={t("verified.needed.heading")}>
-                <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={localizedNeeded} />
-              </Section>
-            )}
-
-            {normalizedRecommendations.length > 0 && (
-              <Section n={next()} title={t("verified.recommendations.heading")}>
-                <div className="mt-3 rounded-lg border bg-muted/40 p-4 sm:p-5">
-                  <p className="text-base text-muted-foreground leading-relaxed">
-                    {t("verified.recommendations.note")}
-                  </p>
-                  <ul className="mt-3 space-y-2.5">
-                    {normalizedRecommendations.map((rec, idx) => (
-                      <li key={`${idx}-${rec.slice(0, 48)}`} className="flex gap-2 text-base leading-relaxed">
-                        <span aria-hidden="true" className="text-muted-foreground">&ndash;</span>
-                        <span><InlineCodeText text={rec} /></span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Section>
-            )}
-
-            {!!report.evidence?.length && (
-              <Section n={next()} title={t("verified.trial.evidenceTitle")}>
-                <EvidenceList evidence={report.evidence} />
-              </Section>
-            )}
-
-            {!!localizedCaveats?.length && (
-              <Section n={next()} title={t("verified.caveats.heading")}>
-                <BulletCard headingKey="verified.caveats.heading" noteKey="verified.caveats.note" items={localizedCaveats} />
-              </Section>
-            )}
-
-            <Section n={next()} title={t("verified.certificate.section.scope")}>
+            {/* Section 4: How to Interpret This Result and Scope */}
+            <Section n={next()} title={t("verified.certificate.section.interpretAndScope")}>
               {(!installBlocked || Boolean(report.assisted_run?.passed)) && (
                 <WhatWasVerified
-                  gates={
-                    report.assisted_run?.passed
-                      ? (report.assisted_run.gates as Record<VerifiedLevel, boolean>)
-                      : report.gates
+                  gates={report.gates}
+                  verdictCode={report.verdict?.code}
+                  assistedGates={
+                    report.assisted_run?.attempted
+                      ? (report.assisted_run.gates as Record<string, boolean>)
+                      : undefined
                   }
-                  verdictCode={report.assisted_run?.passed ? "runs" : report.verdict?.code}
                 />
               )}
               <BoxedList lead={t("verified.certificate.text.scopeExec")} items={certificate.limitations} />
-              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{certificate.scope.disclaimer}</p>
+              {certificate.conclusion.length > 0 && (
+                <div className="mt-5">
+                  <ConclusionBox items={certificate.conclusion} />
+                </div>
+              )}
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-muted-foreground">
+                <p className="leading-relaxed">{certificate.scope.disclaimer}</p>
+                <Link
+                  href="/verified/how-to-read"
+                  className="font-medium text-primary hover:underline"
+                >
+                  {t("verified.gate.howToReadOpenFull")}
+                </Link>
+              </div>
             </Section>
 
-            {certificate.conclusion.length > 0 && (
-              <Section n={next()} title={t("verified.certificate.section.conclusion")}>
-                <ConclusionBox items={certificate.conclusion} />
-              </Section>
-            )}
+            {!installBlocked && afterSource}
+
+            {/* Collapsible Technical Annex (open by default when neither run passed) */}
+            <TechnicalAnnex
+              report={report}
+              strictLogs={strictLogs}
+              assistedLogs={assistedLogs}
+              preferredStrictLeg={preferredLog}
+              installBlocked={installBlocked}
+              strictOutputSummary={terminalOutput}
+              assistedOutputSummary={assistedTerminalOutput}
+              outputSectionHref={!report.assisted_run?.attempted ? outputSectionHref : undefined}
+              strictDockerfile={strictDockerfile}
+              repoDockerfile={repoDockerfile}
+              localizedCaveats={localizedCaveats}
+              defaultOpen={!passedRun && !report.assisted_run?.passed}
+            />
 
             {staticPageUrl && <DisputeCard report={report} slug={slug} staticPageUrl={staticPageUrl} />}
           </>

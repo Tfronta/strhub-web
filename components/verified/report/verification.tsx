@@ -39,51 +39,90 @@ function stageStatuses(gates?: Record<string, boolean>, verdictCode?: string): {
 export function WhatWasVerified({
   gates,
   verdictCode,
+  assistedGates,
 }: {
   gates?: Record<string, boolean>;
   verdictCode?: string;
+  assistedGates?: Record<string, boolean>;
 }) {
   const { t } = useLanguage();
   const stages = stageStatuses(gates, verdictCode);
+  const assistedStages = assistedGates ? stageStatuses(assistedGates, "runs") : null;
+  const labelFor = (state: StageOutcome) =>
+    state === "pass"
+      ? t("verified.gate.state.pass")
+      : state === "fail"
+        ? t("verified.gate.state.fail")
+        : state === "not_established"
+          ? t("verified.matrix.notEstablished")
+          : t("verified.matrix.notAttempted");
   return (
-    <div className="mt-6 overflow-hidden rounded-lg border bg-card">
+    <div className="mt-4 overflow-hidden rounded-lg border bg-card">
       <div className="grid grid-cols-1 divide-y sm:grid-cols-2 sm:divide-x sm:divide-y-0 text-base">
         <div className="bg-teal-50/35 p-5 dark:bg-teal-950/15">
           <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-400 mb-2.5">
             {t("verified.whatVerified.verifiedHeading")}
           </p>
-          {stages.map(({ key, state }) => (
-            <div key={key} className="flex items-center justify-between gap-3 py-0.5">
-              <span className="flex items-center gap-2">
-                {state === "pass" ? (
-                  <Check className="h-4 w-4 text-teal-600 shrink-0" />
-                ) : state === "fail" ? (
-                  <X className="h-4 w-4 text-red-600 shrink-0" />
+          {stages.map(({ key, state }, idx) => {
+            const aState = assistedStages?.[idx]?.state;
+            const effectiveIcon =
+              state === "pass" || aState === "pass"
+                ? "pass"
+                : state === "fail" || aState === "fail"
+                  ? "fail"
+                  : "other";
+            return (
+              <div key={key} className="flex items-center justify-between gap-3 py-0.5">
+                <span className="flex items-center gap-2">
+                  {effectiveIcon === "pass" ? (
+                    <Check
+                      className={cn(
+                        "h-4 w-4 shrink-0",
+                        state === "pass" ? "text-teal-600" : "text-amber-600 dark:text-amber-400",
+                      )}
+                    />
+                  ) : effectiveIcon === "fail" ? (
+                    <X className="h-4 w-4 text-red-600 shrink-0" />
+                  ) : (
+                    <Minus className="h-4 w-4 text-muted-foreground/60 shrink-0" />
+                  )}
+                  <span className="text-foreground/85">{t(key)}</span>
+                </span>
+                {aState && aState !== state ? (
+                  <span className="text-xs font-semibold tracking-wide shrink-0 text-right">
+                    <span className="text-muted-foreground">
+                      {labelFor(state)} ({t("verified.whatVerified.docShort")})
+                    </span>
+                    <span className="mx-1 text-muted-foreground">/</span>
+                    <span
+                      className={cn(
+                        aState === "pass"
+                          ? "text-amber-700 dark:text-amber-400"
+                          : aState === "fail"
+                            ? "text-red-700 dark:text-red-400"
+                            : "text-muted-foreground",
+                      )}
+                    >
+                      {labelFor(aState)} ({t("verified.whatVerified.adjShort")})
+                    </span>
+                  </span>
                 ) : (
-                  <Minus className="h-4 w-4 text-muted-foreground/60 shrink-0" />
+                  <span
+                    className={cn(
+                      "text-xs font-semibold uppercase tracking-wide shrink-0",
+                      state === "pass"
+                        ? "text-teal-700 dark:text-teal-400"
+                        : state === "fail"
+                          ? "text-red-700 dark:text-red-400"
+                          : "text-muted-foreground",
+                    )}
+                  >
+                    {labelFor(state)}
+                  </span>
                 )}
-                <span className="text-foreground/85">{t(key)}</span>
-              </span>
-              <span
-                className={cn(
-                  "text-xs font-semibold uppercase tracking-wide shrink-0",
-                  state === "pass"
-                    ? "text-teal-700 dark:text-teal-400"
-                    : state === "fail"
-                      ? "text-red-700 dark:text-red-400"
-                      : "text-muted-foreground",
-                )}
-              >
-                {state === "pass"
-                  ? t("verified.gate.state.pass")
-                  : state === "fail"
-                    ? t("verified.gate.state.fail")
-                    : state === "not_established"
-                      ? t("verified.matrix.notEstablished")
-                      : t("verified.matrix.notAttempted")}
-              </span>
-            </div>
-          ))}
+              </div>
+            );
+          })}
         </div>
         <div className="bg-muted/20 p-5">
           <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2.5">

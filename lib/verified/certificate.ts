@@ -265,12 +265,58 @@ export function localizeRecommendationItem(item: string, t: Translate): string {
   return item;
 }
 
+export function effectiveNeededBeyondRepo(
+  report: VerifiedReport,
+  t: Translate,
+): string[] {
+  let raw = [...(report.needed_beyond_repo ?? [])];
+  if (report.assisted_run?.passed) {
+    const vc = report.assisted_run.verified_commands;
+    let hasTestData = false;
+    raw = raw.map((item) => {
+      if (item.startsWith("Test data:")) {
+        hasTestData = true;
+        return "Test data: no sample from the repository was used, so a public reference sample stood in.";
+      }
+      if (item.startsWith("A base environment for the documented installation:")) {
+        const bits: string[] = [];
+        if (vc?.install?.some((c) => /^(?:conda|mamba)\b/.test(c))) {
+          bits.push("Miniforge (conda/mamba)");
+        }
+        if (vc?.extra_apt?.length) bits.push(`Ubuntu build packages (${vc.extra_apt.join(", ")})`);
+        if (vc?.git_https_rewrite) bits.push("HTTPS Git URL rewrite for public GitHub dependencies");
+        if (vc?.init_submodules) bits.push("initialized Git submodules");
+        if (vc?.install?.some((c) => c.includes("pip install"))) {
+          bits.push("Python package installation in the active environment");
+        }
+        const detail = bits.length > 0 ? bits.join(", ") : "Ubuntu 22.04 baseline tools";
+        return `Base environment and assisted adjustments: STRhub ran the assisted verification on Ubuntu 22.04 with ${detail}. Unpinned system and package versions can vary over time.`;
+      }
+      return item;
+    });
+    if (!hasTestData) {
+      raw.unshift("Test data: no sample from the repository was used, so a public reference sample stood in.");
+    }
+    if (
+      vc?.run?.includes("/data/ref/") &&
+      !raw.some((x) => x.toLowerCase().includes("reference genome"))
+    ) {
+      raw.push(
+        "A reference genome (GRCh38 / hg38): the command names one, and STRhub mounted the public copy at /data/ref/hg38.fa.",
+      );
+    }
+  }
+  return raw.map((item) => localizeNeededItem(item, t));
+}
+
 export function localizeNeededItem(item: string, t: Translate): string {
   const exact: Record<string, string> = {
     "A regions configuration file, supplied with the submission rather than taken from the repository.":
       "verified.engineText.needed.regionsSubmitted",
     "Test data: no sample from the repository was used, so a public reference sample stood in.":
       "verified.engineText.needed.referenceDataUsed",
+    "Test data: no sample from the repository was used; STRhub executed the assisted verification run using its public reference sample.":
+      "verified.engineText.needed.referenceDataUsedAssisted",
     "Test data: a public reference sample was selected, but was not executed because installation did not complete.":
       "verified.engineText.needed.referenceDataSelectedNotRun",
     "A container environment, built from the tool's declared install steps rather than from a recipe the repository ships.":
@@ -292,6 +338,15 @@ export function localizeNeededItem(item: string, t: Translate): string {
       base: localizeBaseEnvDescription(mBase[1], t),
     });
     if (val !== "verified.engineText.needed.baseEnvDocumented") return val;
+  }
+  const mBaseAssisted = item.match(
+    /^Base environment and assisted adjustments: STRhub ran the assisted verification on Ubuntu 22\.04 with (.+)\. Unpinned system and package versions can vary over time\.$/,
+  );
+  if (mBaseAssisted) {
+    const val = t("verified.engineText.needed.baseEnvAssisted", {
+      detail: mBaseAssisted[1],
+    });
+    if (val !== "verified.engineText.needed.baseEnvAssisted") return val;
   }
   const mRef = item.match(
     /^A reference genome \((.+)\): the command names one, and STRhub mounted the public copy at (.+)\.$/,
@@ -720,6 +775,7 @@ function buildLocalizedConclusion(
     content: false,
   };
 
+  const aPassed = Boolean(report.assisted_run?.passed);
   const ran = gates.runs
     ? {
         title: t("verified.certificate.conclusion.runsTitle", {
@@ -731,25 +787,43 @@ function buildLocalizedConclusion(
         }),
       }
     : gates.installs
-      ? {
-          title: t("verified.certificate.conclusion.notRunsTitle", {
-            tool: toolDisplay,
-          }),
-          body: t("verified.certificate.conclusion.notRunsBody", {
-            tool: toolDisplay,
-            where,
-          }),
-        }
-      : {
-          title: t("verified.certificate.conclusion.notInstallsTitle", {
-            tool: toolDisplay,
-          }),
-          body: t("verified.certificate.conclusion.notInstallsBody", {
-            tool: toolDisplay,
-          }),
-        };
+      ? aPassed
+        ? {
+            title: t("verified.certificate.conclusion.notRunsAssistedTitle", {
+              tool: toolDisplay,
+            }),
+            body: t("verified.certificate.conclusion.notRunsAssistedBody", {
+              tool: toolDisplay,
+              where,
+            }),
+          }
+        : {
+            title: t("verified.certificate.conclusion.notRunsTitle", {
+              tool: toolDisplay,
+            }),
+            body: t("verified.certificate.conclusion.notRunsBody", {
+              tool: toolDisplay,
+              where,
+            }),
+          }
+      : aPassed
+        ? {
+            title: t("verified.certificate.conclusion.notInstallsAssistedTitle", {
+              tool: toolDisplay,
+            }),
+            body: t("verified.certificate.conclusion.notInstallsAssistedBody", {
+              tool: toolDisplay,
+            }),
+          }
+        : {
+            title: t("verified.certificate.conclusion.notInstallsTitle", {
+              tool: toolDisplay,
+            }),
+            body: t("verified.certificate.conclusion.notInstallsBody", {
+              tool: toolDisplay,
+            }),
+          };
 
-  const aPassed = Boolean(report.assisted_run?.passed);
   const aGates = aPassed ? report.assisted_run?.gates : undefined;
   const stats =
     report.content_detail?.outputs?.[0]?.stats ??

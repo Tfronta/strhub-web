@@ -4,7 +4,7 @@ import es from "@/lib/i18n/locales/es/verified";
 import pt from "@/lib/i18n/locales/pt/verified";
 import type { VerifiedReport } from "@/types/verified";
 import { badgeFor } from "./badge";
-import { certificateOf } from "./certificate";
+import { certificateOf, localizeNeededItem } from "./certificate";
 import { isTrialFileName, LOG_LEGS } from "./log-files";
 import {
   classifyAuto,
@@ -190,5 +190,36 @@ describe("Phase 3 — Assisted track ('Corre con ajustes') & canonical report", 
         (c) => c.title === "Verificación automática con ajustes",
       ),
     ).toBe(true);
+  });
+
+  it("contains zero leaked /app:ro, em-dashes, or arrow glyphs in assisted & annex locales and localizes Run 2 needed_beyond_repo", () => {
+    for (const loc of [es, en, pt]) {
+      const v = (loc as unknown as { verified: { assisted: Record<string, string>; annex: Record<string, string> } }).verified;
+      for (const str of [...Object.values(v.assisted), ...Object.values(v.annex)]) {
+        expect(str.toLowerCase()).not.toContain("/app:ro");
+        expect(str).not.toContain("—");
+        expect(str).not.toContain("↓");
+        expect(str).not.toContain("→");
+        expect(str).not.toContain("->");
+      }
+    }
+
+    const assistedDataItem =
+      "Test data: no sample from the repository was used; STRhub executed the assisted verification run using its public reference sample.";
+    const assistedEnvItem =
+      "Base environment and assisted adjustments: STRhub ran the assisted verification on Ubuntu 22.04 with Ubuntu build packages (cmake, autoconf, zlib1g-dev). Unpinned system and package versions can vary over time.";
+
+    expect(localizeNeededItem(assistedDataItem, tEs)).toContain(
+      "STRhub ejecutó la verificación con su muestra pública de referencia",
+    );
+    expect(localizeNeededItem(assistedEnvItem, tEs)).toContain(
+      "Entorno base y paquetes adicionales aplicados en la corrida 2",
+    );
+    expect(localizeNeededItem(assistedEnvItem, tEn)).toContain(
+      "Base environment and Run 2 adjustments",
+    );
+    expect(localizeNeededItem(assistedEnvItem, tPt)).toContain(
+      "Ambiente base e ajustes da Execução 2",
+    );
   });
 });

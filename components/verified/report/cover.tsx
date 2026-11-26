@@ -86,78 +86,66 @@ export function Cover({
     }
   }
 
+  const up = report.upstream;
+  const upstreamNote = !up
+    ? ""
+    : up.repo_exists === false
+      ? t("verified.upstream.repoGone")
+      : up.ref_exists === false
+        ? t("verified.upstream.refGone")
+        : (up.behind_by ?? 0) > 0
+          ? t("verified.upstream.behind", {
+              n: String(up.behind_by),
+              branch: up.default_branch ?? "",
+            })
+          : "";
+  const refIsFinding = up?.ref_exists === false || up?.repo_exists === false;
+
   const rows: KvRow[] = [
     { label: t("verified.certificate.cover.date"), value: formatDate(report.generated, language) },
     {
-      label: t("verified.certificate.cover.commit"),
+      label: t("verified.repository"),
       value: (
-        <span className="inline-flex flex-wrap items-center gap-2">
-          <code className="break-all rounded bg-muted px-1.5 py-0.5 text-sm">{sha}</code>
-          {commitUrl && (
-            <a href={commitUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-              {t("verified.certificate.cover.viewCommit")} <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          )}
-          {report.source.committed && (
-            <span className="text-sm text-muted-foreground">{t("verified.commitMadeOn", { date: formatDate(report.source.committed, language) })}</span>
-          )}
-        </span>
+        <a href={repo} target="_blank" rel="noopener noreferrer" className="break-all font-medium text-primary hover:underline">
+          {repo}
+        </a>
       ),
     },
-    ...(effectiveCiRun
-      ? [{
-          label: t("verified.certificate.cover.ciRun"),
-          value: (
-            <a href={effectiveCiRun} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline">
-              <Play className="h-3.5 w-3.5" />
-              {t("verified.certificate.cover.ciRunCta")}
-              <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          ),
-        }]
+    {
+      label: t("verified.certificate.cover.commit"),
+      value: (
+        <div className="space-y-1">
+          <span className="inline-flex flex-wrap items-center gap-2">
+            <code className="break-all rounded bg-muted px-1.5 py-0.5 text-sm">{sha}</code>
+            {commitUrl && (
+              <a href={commitUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+                {t("verified.certificate.cover.viewCommit")} <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            )}
+            {report.source.committed && (
+              <span className="text-sm text-muted-foreground">{t("verified.commitMadeOn", { date: formatDate(report.source.committed, language) })}</span>
+            )}
+          </span>
+          {upstreamNote && (
+            <p className={cn("text-xs", refIsFinding ? "text-amber-700 dark:text-amber-400" : "text-muted-foreground")}>
+              {upstreamNote}
+            </p>
+          )}
+        </div>
+      ),
+    },
+    ...(report.environment?.os?.length
+      ? [{ label: t("verified.environment"), value: report.environment.os.join(", ") }]
       : []),
     {
       label: t("verified.mode.tableLabel"),
       value: isManual ? t("verified.mode.manualDetail") : t("verified.mode.autoDetail"),
     },
-    { label: t("verified.certificate.cover.reached"), value: certificate.summary.reached },
-    ...(report.assisted_run?.attempted
-      ? [{
-          label: t("verified.assisted.coverLabel"),
-          value: report.assisted_run.passed ? (
-            <span className="inline-flex flex-wrap items-center gap-2">
-              <span className="font-semibold text-amber-900 dark:text-amber-300">
-                {t("verified.assisted.coverValue", {
-                  level: reachedLabel(report.assisted_run.level, t),
-                  count: String(report.assisted_run.adjustments?.length ?? 1),
-                })}
-              </span>
-              <a
-                href="#verified-assisted-run"
-                className="text-sm font-semibold text-primary hover:underline"
-              >
-                {t("verified.assisted.coverJumpPassed")}
-              </a>
-            </span>
-          ) : (
-            <span className="inline-flex flex-wrap items-center gap-2">
-              <span className="text-foreground/90">
-                {t("verified.assisted.coverStoppedValue", {
-                  level: reachedLabel(report.assisted_run.level, t),
-                  count: String(report.assisted_run.adjustments?.length ?? 1),
-                })}
-              </span>
-              <a
-                href="#verified-assisted-run"
-                className="text-sm font-medium text-primary hover:underline"
-              >
-                {t("verified.assisted.coverJumpStopped")}
-              </a>
-            </span>
-          ),
-        }]
+    ...(!report.assisted_run?.attempted
+      ? [{ label: t("verified.certificate.cover.reached"), value: certificate.summary.reached }]
       : []),
     ...(() => {
+      if (report.assisted_run?.attempted) return [];
       const loc = manualLocale(report, language);
       const whyText = isManual
         ? (loc?.plain_why ||
@@ -330,6 +318,71 @@ export function Cover({
       </h1>
       <p className="font-mono text-sm sm:text-base text-muted-foreground">{slug}</p>
       <KvTable rows={rows} labelWidth="11.5rem" />
+
+      {!isManual && report.assisted_run?.attempted && (
+        <div className="mt-5 border-t pt-4 space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {t("verified.assisted.dualBannerTitle")}
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="flex flex-col justify-between rounded-md border bg-muted/30 p-3.5 text-sm">
+              <div className="space-y-1">
+                <p className="font-semibold text-foreground">
+                  {t("verified.assisted.dualStep1Tag")}
+                </p>
+                <p className="text-muted-foreground">
+                  {certificate.summary.reached}
+                </p>
+              </div>
+              <a
+                href="#verified-literal-run"
+                className="mt-2 inline-block text-xs font-semibold text-primary hover:underline"
+              >
+                {t("verified.assisted.dualStep1Jump")}
+              </a>
+            </div>
+
+            <div
+              className={
+                report.assisted_run.passed
+                  ? "flex flex-col justify-between rounded-md border border-amber-500/45 bg-amber-50/60 p-3.5 text-sm dark:border-amber-600/50 dark:bg-amber-950/25"
+                  : "flex flex-col justify-between rounded-md border bg-muted/30 p-3.5 text-sm"
+              }
+            >
+              <div className="space-y-1">
+                <p className="font-semibold text-foreground">
+                  {t("verified.assisted.dualStep2Tag")}
+                </p>
+                <p
+                  className={
+                    report.assisted_run.passed
+                      ? "font-medium text-amber-900 dark:text-amber-300"
+                      : "text-muted-foreground"
+                  }
+                >
+                  {report.assisted_run.passed
+                    ? t("verified.assisted.dualStep2Passed", {
+                        level: reachedLabel(report.assisted_run.level, t),
+                        count: String(report.assisted_run.adjustments?.length ?? 1),
+                      })
+                    : t("verified.assisted.dualStep2Stopped", {
+                        level: reachedLabel(report.assisted_run.level, t),
+                        count: String(report.assisted_run.adjustments?.length ?? 1),
+                      })}
+                </p>
+              </div>
+              <a
+                href="#verified-assisted-run"
+                className="mt-2 inline-block text-xs font-semibold text-primary hover:underline"
+              >
+                {report.assisted_run.passed
+                  ? t("verified.assisted.dualStep2JumpPassed")
+                  : t("verified.assisted.dualStep2JumpStopped")}
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );

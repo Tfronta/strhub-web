@@ -51,7 +51,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   const { t } = useLanguage();
   const [status, setStatus] = useState<TrialStatus | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [showDockerfile, setShowDockerfile] = useState(false);
   const startedAt = useRef(Date.now());
   const [now, setNow] = useState(Date.now());
 
@@ -433,34 +432,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
     </>
   );
 
-  // The command itself is shown by the shared body, where a published
-  // attestation shows it too; this card is the environment it ran in.
-  const recipeBlock = status?.recipe && (
-    <Card className="mt-6">
-      <CardHeader>
-        <CardTitle className="text-lg">{t("verified.trial.recipeTitle")}</CardTitle>
-        <p className="text-sm text-muted-foreground">{t("verified.trial.recipeHint")}</p>
-      </CardHeader>
-      <CardContent className="space-y-3 text-base">
-        <div>
-          <p className="mb-1 font-medium">{t("verified.trial.recipeDockerfile")}</p>
-          {repoDockerfile ? (
-            <p className="text-muted-foreground">{t("verified.trial.recipeRepoDockerfile")}</p>
-          ) : (
-            <>
-              <button type="button" className="text-sm underline underline-offset-2" onClick={() => setShowDockerfile((v) => !v)}>
-                {showDockerfile ? "−" : "+"} Dockerfile
-              </button>
-              {showDockerfile && (
-                <pre className="mt-2 overflow-x-auto rounded-md bg-muted p-3 text-xs sm:text-sm"><code>{status.recipe.dockerfile}</code></pre>
-              )}
-            </>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
-
   return (
     <div className="container mx-auto max-w-4xl px-4 pt-8">
       <Link
@@ -560,7 +531,8 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             backLink={false}
             afterHeader={verdictBlock}
             afterAssisted={actionOptionsBlock}
-            afterSource={recipeBlock}
+            strictDockerfile={status?.recipe?.dockerfile}
+            repoDockerfile={repoDockerfile}
           />
           <p className="mb-10 flex flex-wrap gap-4 px-4 text-base">
             {status?.runUrl && (

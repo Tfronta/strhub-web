@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle, Check, CheckCircle2, Copy } from "lucide-react";
+import { AlertTriangle, Check, CheckCircle2, Copy, Terminal } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import type {
   VerifiedAssistedRun,
@@ -9,12 +9,10 @@ import type {
   VerifiedOutputVerification,
 } from "@/types/verified";
 import { reachedLabel } from "@/lib/verified/badge";
-import { terminalOutputSummary } from "@/lib/verified/output-evidence";
 import { cn } from "@/lib/utils";
 import { GatesLadder } from "./gates";
 import { InlineCodeText } from "./inline-code";
 import { OutputContent } from "./output";
-import { RecordedTerminal, type ReportLog } from "./terminal";
 
 function CopyBlock({
   label,
@@ -87,22 +85,21 @@ function toLocalUserCommand(rawCmd: string): string {
 
 export function AssistedVerificationSection({
   assisted,
-  logs,
   repo,
   sha,
   panelLoci,
   sliceScopeNote,
+  recommendations,
 }: {
   assisted: VerifiedAssistedRun;
-  logs: ReportLog[];
   repo?: string;
   sha?: string;
   panelLoci?: string[];
   sliceScopeNote?: string | null;
+  recommendations?: string[];
 }) {
   const { t } = useLanguage();
   const [showReadmeBlock, setShowReadmeBlock] = useState(false);
-  const [showDockerfile, setShowDockerfile] = useState(false);
 
   const vc = assisted.verified_commands;
 
@@ -172,9 +169,12 @@ export function AssistedVerificationSection({
           : "output_only_content_unverified",
       }
     : undefined;
-  const termSummary = terminalOutputSummary(assistedIo, assistedStats);
-  const preferredAssistedLeg =
-    assisted.gates?.installs === false ? "assisted-build" : "assisted-external";
+
+  function openAnnex() {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("strhub:open-annex"));
+    }
+  }
 
   return (
     <div className="space-y-5">
@@ -250,6 +250,22 @@ export function AssistedVerificationSection({
         </div>
       )}
 
+      {recommendations && recommendations.length > 0 && (
+        <div className="rounded-lg border bg-muted/35 p-4 space-y-2">
+          <p className="text-sm font-semibold text-foreground">
+            {t("verified.recommendations.heading")}
+          </p>
+          <ul className="space-y-1.5 text-sm text-muted-foreground">
+            {recommendations.map((rec, idx) => (
+              <li key={`${idx}-${rec.slice(0, 40)}`} className="flex gap-2 leading-relaxed">
+                <span aria-hidden="true">&bull;</span>
+                <span><InlineCodeText text={rec} /></span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {assisted.passed && localSteps.length > 0 && (
         <div className="space-y-3">
           <h3 className="text-base font-semibold">
@@ -268,59 +284,53 @@ export function AssistedVerificationSection({
         </div>
       )}
 
-      {((assisted.passed && Boolean(assisted.readme_suggestion)) || Boolean(vc?.dockerfile)) && (
+      {assisted.passed && Boolean(assisted.readme_suggestion) && (
         <div className="space-y-3 rounded-lg border bg-muted/25 p-3.5 sm:p-4">
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            {assisted.passed && assisted.readme_suggestion && (
-              <button
-                type="button"
-                onClick={() => setShowReadmeBlock((v) => !v)}
-                className="text-xs sm:text-sm font-medium text-primary underline underline-offset-2"
-              >
-                {showReadmeBlock
-                  ? t("verified.assisted.hideReadmeBlock")
-                  : t("verified.assisted.showReadmeBlock")}
-              </button>
-            )}
-            {vc?.dockerfile && (
-              <button
-                type="button"
-                onClick={() => setShowDockerfile((v) => !v)}
-                className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground underline underline-offset-2"
-              >
-                {showDockerfile
-                  ? t("verified.assisted.hideDockerfile")
-                  : t("verified.assisted.showDockerfile")}
-              </button>
-            )}
-          </div>
+          <button
+            type="button"
+            onClick={() => setShowReadmeBlock((v) => !v)}
+            className="text-xs sm:text-sm font-medium text-primary underline underline-offset-2"
+          >
+            {showReadmeBlock
+              ? t("verified.assisted.hideReadmeBlock")
+              : t("verified.assisted.showReadmeBlock")}
+          </button>
 
-          {showReadmeBlock && assisted.passed && assisted.readme_suggestion && (
+          {showReadmeBlock && assisted.readme_suggestion && (
             <CopyBlock
               label={t("verified.assisted.readmeSuggestionLabel")}
-              code={assisted.readme_suggestion}
+              code={assisted.readme_suggestion
+                .split("\n")
+                .map((ln) =>
+                  ln.startsWith("#") ||
+                  ln.startsWith("```") ||
+                  ln.startsWith("sudo ") ||
+                  ln.startsWith("git ") ||
+                  ln.startsWith("cd ") ||
+                  ln.startsWith("mkdir ")
+                    ? ln
+                    : toLocalUserCommand(ln),
+                )
+                .join("\n")}
               hint={t("verified.assisted.readmeSuggestionHint")}
             />
-          )}
-
-          {showDockerfile && vc?.dockerfile && (
-            <pre className="overflow-x-auto rounded-md border bg-muted p-3 font-mono text-xs leading-relaxed">
-              <code>{vc.dockerfile}</code>
-            </pre>
           )}
         </div>
       )}
 
-      <GatesLadder gates={assisted.gates as Record<VerifiedLevel, boolean>} hideHowToRead />
-
-      {logs.length > 0 && (
-        <RecordedTerminal
-          logs={logs}
-          preferredLeg={preferredAssistedLeg}
-          preflight={false}
-          outputSummary={termSummary}
-        />
-      )}
+      <div className="space-y-2">
+        <GatesLadder gates={assisted.gates as Record<VerifiedLevel, boolean>} hideHowToRead />
+        <p className="text-xs sm:text-sm text-muted-foreground">
+          <a
+            href="#verified-annex-run2"
+            onClick={openAnnex}
+            className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
+          >
+            <Terminal className="h-3.5 w-3.5 shrink-0" aria-hidden />
+            <span>{t("verified.annex.jumpRun2")}</span>
+          </a>
+        </p>
+      </div>
 
       {hasAssistedOutput && (
         <div className="pt-1">

@@ -19,11 +19,14 @@ export interface StatusRowInput {
   verdict?: string | null;
   errors_reported?: boolean;
   instrument?: VerifiedInstrument | null;
+  assisted_runs?: boolean;
+  assisted_level?: VerifiedLevel | null;
 }
 
 export type AutoStatusKind =
   | "pass"
   | "pass_errors"
+  | "pass_adjusted"
   | "fail"
   | "undetermined"
   | "out_of_scope"
@@ -45,6 +48,7 @@ export type CatalogFilter =
   | "all"
   | "verified"
   | "auto"
+  | "assisted"
   | "manual"
   | "fail"
   | "undetermined";
@@ -61,17 +65,24 @@ export function classifyAuto(
     return { kind: "none", gatesPassed: 0 };
   }
   const gatesPassed = LEVEL_RANK[row.level] ?? 0;
-  if (row.verdict === "undetermined") {
-    return { kind: "undetermined", gatesPassed };
-  }
-  if (row.verdict === "out_of_scope") {
-    return { kind: "out_of_scope", gatesPassed };
-  }
   if (isPassingRun(row)) {
     return {
       kind: row.errors_reported ? "pass_errors" : "pass",
       gatesPassed,
     };
+  }
+  if (row.assisted_runs) {
+    const assistedGates = LEVEL_RANK[row.assisted_level ?? "io"] ?? 4;
+    return {
+      kind: "pass_adjusted",
+      gatesPassed: assistedGates,
+    };
+  }
+  if (row.verdict === "undetermined") {
+    return { kind: "undetermined", gatesPassed };
+  }
+  if (row.verdict === "out_of_scope") {
+    return { kind: "out_of_scope", gatesPassed };
   }
   return { kind: "fail", gatesPassed };
 }
@@ -107,6 +118,7 @@ export function rankToolGroup(
 
   if (auto.kind === "pass") return 400 + auto.gatesPassed;
   if (auto.kind === "pass_errors") return 390 + auto.gatesPassed;
+  if (auto.kind === "pass_adjusted") return 350 + auto.gatesPassed;
   if (manual?.kind === "pass") return 300 + manual.gatesPassed;
   if (manual?.kind === "pass_errors") return 290 + manual.gatesPassed;
   if (auto.kind === "fail") return 200 + auto.gatesPassed;
@@ -123,14 +135,17 @@ export function matchesCatalogFilter(
   const auto = classifyAuto(autoRow);
   const manual = classifyManual(manualRow);
   const autoPassed = auto.kind === "pass" || auto.kind === "pass_errors";
+  const assistedPassed = auto.kind === "pass_adjusted";
   const manualPassed =
     manual?.kind === "pass" || manual?.kind === "pass_errors";
 
   switch (filter) {
     case "verified":
-      return autoPassed || manualPassed;
+      return autoPassed || assistedPassed || manualPassed;
     case "auto":
       return autoPassed;
+    case "assisted":
+      return assistedPassed;
     case "manual":
       return manual !== null;
     case "fail":

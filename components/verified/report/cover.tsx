@@ -13,7 +13,7 @@ import { AlertTriangle, Check, ClipboardCheck, Copy, ExternalLink, FileDown, Fil
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedCertificate, VerifiedReport } from "@/types/verified";
-import { TONE, type BadgeDisplay } from "@/lib/verified/badge";
+import { TONE, reachedLabel, type BadgeDisplay } from "@/lib/verified/badge";
 import { classifyManual } from "@/lib/verified/status-summary";
 import { formatDate } from "@/lib/verified/format-date";
 import { cn } from "@/lib/utils";
@@ -121,6 +121,19 @@ export function Cover({
       value: isManual ? t("verified.mode.manualDetail") : t("verified.mode.autoDetail"),
     },
     { label: t("verified.certificate.cover.reached"), value: certificate.summary.reached },
+    ...(report.assisted_run?.passed
+      ? [{
+          label: t("verified.assisted.coverLabel"),
+          value: (
+            <span className="font-medium text-amber-900 dark:text-amber-300">
+              {t("verified.assisted.coverValue", {
+                level: reachedLabel(report.assisted_run.level, t),
+                count: String(report.assisted_run.adjustments?.length ?? 1),
+              })}
+            </span>
+          ),
+        }]
+      : []),
     ...(() => {
       const loc = manualLocale(report, language);
       const whyText = isManual
@@ -185,7 +198,9 @@ export function Cover({
           ? selfManual?.kind === "fail"
             ? "border-t-red-500"
             : "border-t-teal-600"
-          : "border-t-teal-600",
+          : report.assisted_run?.passed
+            ? "border-t-amber-500"
+            : "border-t-teal-600",
       )}
     >
       {isManual && (

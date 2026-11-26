@@ -47,6 +47,7 @@ export interface BadgeInput {
   verdict?: string | null;
   errors_reported?: boolean;
   instrument?: VerifiedInstrument | null;
+  assisted_runs?: boolean;
 }
 
 type Translate = (key: string, params?: Record<string, string>) => string;
@@ -54,8 +55,6 @@ type Translate = (key: string, params?: Record<string, string>) => string;
 export function badgeFor(run: BadgeInput, t: Translate): BadgeDisplay {
   if (run.record_type === "editorial_review") return { label: t("verified.evidenceReview.title"), tone: "grey" };
   if (run.instrument === "curated") return { label: t("verified.headline.notDocumented"), tone: "grey" };
-  if (run.verdict === "undetermined") return { label: t("verified.headline.undetermined"), tone: "grey" };
-  if (run.verdict === "out_of_scope") return { label: t("verified.headline.outOfScope"), tone: "grey" };
   // A report from before the verdict is read off the rung.
   const runs = run.verdict ? run.verdict === "runs" : run.level === "io" || run.level === "content";
   if (runs) {
@@ -63,6 +62,11 @@ export function badgeFor(run: BadgeInput, t: Translate): BadgeDisplay {
       ? { label: t("verified.headline.runsErrors"), tone: "amber" }
       : { label: t("verified.headline.runs"), tone: "green" };
   }
+  if (run.assisted_runs) {
+    return { label: t("verified.headline.runsAdjusted"), tone: "amber" };
+  }
+  if (run.verdict === "undetermined") return { label: t("verified.headline.undetermined"), tone: "grey" };
+  if (run.verdict === "out_of_scope") return { label: t("verified.headline.outOfScope"), tone: "grey" };
   return { label: t("verified.headline.notRun", { where: t(`verified.headline.stopsAt.${run.level}`) }), tone: "red" };
 }
 

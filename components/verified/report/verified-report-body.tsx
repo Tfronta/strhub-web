@@ -60,6 +60,7 @@ import {
   ManualSuggestions,
   NotDocumentedNotice,
 } from "./instrument";
+import { AssistedVerificationSection } from "./assisted-section";
 import { documentedOf, newestOfKind, type HistoryRow } from "@/lib/verified/history";
 
 export type { ReportLog, ExtraGateRow };
@@ -136,9 +137,12 @@ export function VerifiedReportBody({
       verdict: report.verdict?.code,
       errors_reported: hasReportedErrors(report.diagnostics),
       instrument,
+      assisted_runs: Boolean(report.assisted_run?.passed),
     },
     t,
   );
+  const strictLogs = logs.filter((l) => !l.leg.startsWith("assisted-"));
+  const assistedLogs = logs.filter((l) => l.leg.startsWith("assisted-"));
   const certificate = certificateOf(report, level.label, t, language);
   const installBlocked = blockedBeforeInstall(report);
   const blockedGate = blockedGateOf(report);
@@ -348,7 +352,7 @@ export function VerifiedReportBody({
                 blockedAt={blockedGate}
               />
               <RecordedTerminal
-                logs={logs}
+                logs={strictLogs}
                 preferredLeg={preferredLog}
                 preflight={installBlocked}
                 outputSummary={terminalOutput}
@@ -367,6 +371,19 @@ export function VerifiedReportBody({
                 />
                 <AuthorKnownIssues items={report.author_known_issues} />
               </Section>
+            )}
+
+            {report.assisted_run?.attempted && (
+              <div id="verified-assisted-run" className="scroll-mt-20">
+                <Section n={next()} title={t("verified.assisted.heading")}>
+                  <AssistedVerificationSection
+                    assisted={report.assisted_run}
+                    logs={assistedLogs}
+                    panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
+                    sliceScopeNote={report.slice_scope_note}
+                  />
+                </Section>
+              </div>
             )}
 
             {hasOutputSection && (

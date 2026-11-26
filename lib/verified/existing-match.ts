@@ -11,6 +11,8 @@ export interface ExistingRunSnapshot {
   level: VerifiedLevel;
   verdict: string | null;
   errors_reported: boolean;
+  assisted_runs?: boolean;
+  assisted_level?: VerifiedLevel | null;
   href: string;
 }
 
@@ -57,6 +59,12 @@ export function findExistingCommitMatch(
           level: autoRow.level,
           verdict: autoRow.verdict,
           errors_reported: autoRow.errors_reported,
+          ...(autoRow.assisted_runs
+            ? {
+                assisted_runs: true,
+                ...(autoRow.assisted_level ? { assisted_level: autoRow.assisted_level } : {}),
+              }
+            : {}),
           href: rowHref(autoRow),
         }
       : null,

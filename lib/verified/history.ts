@@ -36,6 +36,8 @@ export interface HistoryRow {
   level: VerifiedLevel;
   verdict: string | null;
   verdict_basis?: string | null;
+  assisted_runs?: boolean;
+  assisted_level?: VerifiedLevel | null;
   content_verified?: boolean;
   errors_reported: boolean;
   dataset_types: string[];
@@ -69,6 +71,8 @@ function rowOf(entry: VerifiedIndexEntry, v: VerifiedVersionEntry, isAlias: bool
     level: v.level,
     verdict: v.verdict ?? null,
     verdict_basis: v.verdict_basis ?? entry.verdict_basis ?? null,
+    assisted_runs: v.assisted_runs ?? entry.assisted_runs ?? false,
+    assisted_level: v.assisted_level ?? entry.assisted_level ?? null,
     content_verified: v.content_verified ?? entry.content_verified,
     errors_reported: v.errors_reported ?? false,
     dataset_types: entry.dataset_types ?? [],
@@ -101,6 +105,8 @@ export function rowsOf(entry: VerifiedIndexEntry): HistoryRow[] {
         label: entry.label,
         verdict: entry.verdict,
         verdict_basis: entry.verdict_basis,
+        assisted_runs: entry.assisted_runs,
+        assisted_level: entry.assisted_level,
         content_verified: entry.content_verified,
         errors_reported: entry.errors_reported,
         ci_run: entry.ci_run,

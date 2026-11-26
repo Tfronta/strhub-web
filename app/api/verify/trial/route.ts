@@ -27,7 +27,7 @@ const startSchema = z
   .object({
     repo: githubRepoUrl,
     ref: z.string().trim().regex(SHA_OR_TAG, "Invalid git ref").max(100).optional().or(z.literal("")),
-    role: z.enum(TRIAL_ROLES),
+    role: z.enum(TRIAL_ROLES).optional(),
   })
   .strict();
 
@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
     );
   }
   const { repo, ref, role } = parsed.data;
+  const effectiveRole = role ?? "user";
   const ip = clientIp(request);
   if (process.env.NODE_ENV === "production") {
     for (const [key, max] of [
@@ -76,7 +77,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: false, error: started.error }, { status: 404 });
     }
     return NextResponse.json(
-      { ok: true, role, ...started, url: `/verified/trial/${started.id}?as=${role}` },
+      {
+        ok: true,
+        role: effectiveRole,
+        ...started,
+        url: role ? `/verified/trial/${started.id}?as=${role}` : `/verified/trial/${started.id}`,
+      },
       { status: 202 }
     );
   } catch (e) {

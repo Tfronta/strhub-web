@@ -85,12 +85,45 @@ export interface VerifiedOutputVerification {
 }
 
 export interface VerifiedOutputPreview {
-  leg: "external" | "example" | string;
+  leg: "external" | "example" | "assisted" | string;
   file: string;
   size_bytes: number;
   binary: boolean;
   truncated: boolean;
   lines: string[];
+}
+
+export interface VerifiedAssistedAdjustment {
+  rule_id: string;
+  category: "environment" | "cli_invocation" | string;
+  what_failed_strict: string;
+  adjustment_applied: string;
+  author_fix: string;
+}
+
+export interface VerifiedAssistedRun {
+  schema?: string;
+  attempted: boolean;
+  passed: boolean;
+  level: VerifiedLevel;
+  content_verified?: boolean;
+  gates: Partial<Record<VerifiedLevel, boolean>>;
+  adjustments: VerifiedAssistedAdjustment[];
+  verified_commands?: {
+    extra_apt?: string[];
+    init_submodules?: boolean;
+    install?: string[];
+    mkdir_dirs?: string[];
+    run?: string;
+    dockerfile?: string;
+  };
+  readme_suggestion?: string;
+  io_detail?: { passed?: boolean; outputs?: VerifiedIoOutput[] } | null;
+  content_detail?: { outputs?: { stats?: VerifiedContentStats }[] };
+  output_preview?: VerifiedOutputPreview | null;
+  diagnostics?: Record<string, VerifiedDiagnostic[]>;
+  logs?: Record<string, string>;
+  terminals?: Record<string, string>;
 }
 
 export type VerifiedRecommendation = string | { code: string; text: string };
@@ -147,6 +180,8 @@ export interface VerifiedVersionEntry {
   label?: string;
   verdict?: string | null;
   verdict_basis?: string | null;
+  assisted_runs?: boolean;
+  assisted_level?: VerifiedLevel | null;
   content_verified?: boolean;
   errors_reported?: boolean;
   ci_run?: string | null;
@@ -180,6 +215,8 @@ export interface VerifiedIndexEntry {
   sha?: string | null;
   verdict?: string | null;
   verdict_basis?: string | null;
+  assisted_runs?: boolean;
+  assisted_level?: VerifiedLevel | null;
   content_verified?: boolean;
   // index/3: the commit's own date, and every commit verified, newest first.
   committed?: string | null;
@@ -509,6 +546,7 @@ export interface VerifiedReport {
   content_detail?: { outputs?: { stats?: VerifiedContentStats }[] };
   output_verification?: VerifiedOutputVerification | null;
   output_preview?: VerifiedOutputPreview | null;
+  assisted_run?: VerifiedAssistedRun | null;
   slice_scope_note?: string | null;
   scope_limit?: string | null;
   logs?: Record<string, string>;

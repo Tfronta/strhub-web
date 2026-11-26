@@ -18,8 +18,6 @@ import { repoSlugOf } from "@/lib/verified/repo-url";
 import { GUIDE_URL } from "@/lib/verified/step1";
 import { VerificationStatusTags } from "./status-tags";
 
-const ROLES: TrialRole[] = ["owner", "reviewer", "user"];
-
 /** What the run will pin, as the form found it. */
 interface ResolvedRef {
   sha: string;
@@ -29,11 +27,11 @@ interface ResolvedRef {
 }
 
 export function VerifiedStart({
-  role: initialRole,
+  role: _initialRole = "user",
   compact = false,
   initialRepo = "",
 }: {
-  role: TrialRole;
+  role?: TrialRole;
   compact?: boolean;
   /**
    * A repository already chosen — "Test another version" on a report. The
@@ -45,7 +43,6 @@ export function VerifiedStart({
   const { t, language } = useLanguage();
   const track = useTrackEvent();
   const router = useRouter();
-  const [role, setRole] = useState<TrialRole>(initialRole);
   const [repo, setRepo] = useState(initialRepo);
   const [ref, setRef] = useState("");
   const [busy, setBusy] = useState(false);
@@ -114,7 +111,7 @@ export function VerifiedStart({
       const res = await fetch("/api/verify/trial", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ repo: repo.trim(), ref: effectiveRef, role }),
+        body: JSON.stringify({ repo: repo.trim(), ref: effectiveRef }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
@@ -126,7 +123,7 @@ export function VerifiedStart({
         return;
       }
       // No repository in the event: GA4 forbids anything that may identify a person.
-      track("verified_submit", { form: "start", role });
+      track("verified_submit", { form: "start", role: _initialRole });
       router.push(data.url as string);
     } catch {
       setError(t("verified.start.error.generic"));
@@ -142,10 +139,10 @@ export function VerifiedStart({
             {t("verified.start.eyebrow")}
           </p>
           <PageTitle
-            title={t(`verified.start.title.${role}`)}
+            title={t("verified.start.unifiedTitle")}
             description={
               <>
-                {t(`verified.start.lead.${role}`)}{" "}
+                {t("verified.start.unifiedLead")}{" "}
                 {t("verified.start.introBeforeLink")}
                 <Link
                   href={GUIDE_URL}
@@ -233,6 +230,8 @@ export function VerifiedStart({
                                 level: resolved.existing.auto.level,
                                 verdict: resolved.existing.auto.verdict,
                                 errors_reported: resolved.existing.auto.errors_reported,
+                                assisted_runs: resolved.existing.auto.assisted_runs,
+                                assisted_level: resolved.existing.auto.assisted_level,
                                 instrument: "documented",
                               }
                             : null
@@ -284,29 +283,6 @@ export function VerifiedStart({
             <p className="text-xs text-muted-foreground">{t("verified.start.refHint")}</p>
           )}
         </div>
-        <fieldset className="space-y-2">
-          <legend className="text-sm font-medium">{t("verified.start.roleLabel")}</legend>
-          <div className="flex flex-wrap items-center gap-2">
-            {ROLES.map((r) => (
-              <label
-                key={r}
-                className={`cursor-pointer rounded-md border px-3 py-2 text-sm ${
-                  role === r ? "border-teal-600 bg-teal-50 dark:bg-teal-950" : "border-border"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="trial-role"
-                  id={`trial-role-${r}`}
-                  className="sr-only"
-                  checked={role === r}
-                  onChange={() => setRole(r)}
-                />
-                {t(`verified.start.role.${r}`)}
-              </label>
-            ))}
-          </div>
-        </fieldset>
 
         {error && (
           <p role="alert" className="rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200">

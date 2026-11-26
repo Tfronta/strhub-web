@@ -14,6 +14,7 @@ import {
 const AUTO_STYLE: Record<AutoStatusSummary["kind"], string> = {
   pass: "border-teal-600/35 bg-teal-50/90 text-teal-900 dark:border-teal-500/40 dark:bg-teal-950/50 dark:text-teal-200",
   pass_errors: "border-amber-600/35 bg-amber-50/90 text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/50 dark:text-amber-200",
+  pass_adjusted: "border-amber-600/40 bg-amber-50/90 text-amber-950 dark:border-amber-500/45 dark:bg-amber-950/50 dark:text-amber-200",
   fail: "border-red-600/35 bg-red-50/90 text-red-900 dark:border-red-500/40 dark:bg-red-950/50 dark:text-red-200",
   undetermined: "border-slate-400/40 bg-slate-100/80 text-slate-700 dark:border-slate-600/50 dark:bg-slate-800/60 dark:text-slate-300",
   out_of_scope: "border-slate-400/40 bg-slate-100/80 text-slate-700 dark:border-slate-600/50 dark:bg-slate-800/60 dark:text-slate-300",
@@ -64,7 +65,7 @@ export function VerificationStatusTags({
       : "px-2 py-0.5 text-[11px] gap-1.5";
 
   const autoIconState =
-    auto.kind === "pass" || auto.kind === "pass_errors"
+    auto.kind === "pass" || auto.kind === "pass_errors" || auto.kind === "pass_adjusted"
       ? "pass"
       : auto.kind === "fail"
         ? "fail"
@@ -76,6 +77,8 @@ export function VerificationStatusTags({
         return t("verified.statusTag.auto.pass", { passed: String(auto.gatesPassed), total: "5" });
       case "pass_errors":
         return t("verified.statusTag.auto.passErrors", { passed: String(auto.gatesPassed), total: "5" });
+      case "pass_adjusted":
+        return t("verified.statusTag.auto.passAdjusted", { passed: String(auto.gatesPassed), total: "5" });
       case "fail":
         return t("verified.statusTag.auto.fail", { passed: String(auto.gatesPassed), total: "5" });
       case "undetermined":

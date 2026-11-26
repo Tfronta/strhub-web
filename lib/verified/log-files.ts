@@ -1,4 +1,12 @@
-export const LOG_LEGS = ["external", "own", "example", "starts", "build"] as const;
+export const LOG_LEGS = [
+  "external",
+  "own",
+  "example",
+  "starts",
+  "build",
+  "assisted-build",
+  "assisted-external",
+] as const;
 type LogLeg = (typeof LOG_LEGS)[number];
 export type TrialFileName = "pdf" | "html" | `log-${LogLeg}` | `terminal-${LogLeg}`;
 

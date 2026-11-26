@@ -158,6 +158,16 @@ function VerificationRowCard({
         ctaStyle: "border-amber-600/35 text-amber-900 hover:bg-amber-100/70 dark:text-amber-200 dark:hover:bg-amber-950/60",
       };
     }
+    if (a.kind === "pass_adjusted") {
+      return {
+        icon: "pass" as const,
+        mode: t("verified.statusTag.autoLabel"),
+        outcome: t("verified.statusTag.auto.passAdjusted", { passed, total: "5" }),
+        cardBorder: "border-amber-500/40 bg-amber-50/30 hover:border-amber-600/65 dark:border-amber-500/40 dark:bg-amber-950/20",
+        pillStyle: "border-amber-600/40 bg-amber-50 text-amber-950 dark:border-amber-500/45 dark:bg-amber-950/60 dark:text-amber-200",
+        ctaStyle: "border-amber-600/40 text-amber-900 hover:bg-amber-100/70 dark:text-amber-200 dark:hover:bg-amber-950/60",
+      };
+    }
     if (a.kind === "fail") {
       return {
         icon: "fail" as const,
@@ -267,6 +277,7 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
       all: groups.length,
       verified: 0,
       auto: 0,
+      assisted: 0,
       manual: 0,
       fail: 0,
       undetermined: 0,
@@ -274,6 +285,7 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
     for (const g of groups) {
       if (matchesCatalogFilter("verified", g.autoRow, g.manualRow)) counts.verified++;
       if (matchesCatalogFilter("auto", g.autoRow, g.manualRow)) counts.auto++;
+      if (matchesCatalogFilter("assisted", g.autoRow, g.manualRow)) counts.assisted++;
       if (matchesCatalogFilter("manual", g.autoRow, g.manualRow)) counts.manual++;
       if (matchesCatalogFilter("fail", g.autoRow, g.manualRow)) counts.fail++;
       if (matchesCatalogFilter("undetermined", g.autoRow, g.manualRow)) counts.undetermined++;
@@ -282,11 +294,13 @@ export function VerifiedList({ index }: { index: VerifiedIndex }) {
   }, [groups]);
 
   const filterChips: CatalogFilter[] = useMemo(() => {
-    const base: CatalogFilter[] = ["all", "verified", "auto", "manual"];
+    const base: CatalogFilter[] = ["all", "verified", "auto"];
+    if (filterCounts.assisted > 0) base.push("assisted");
+    base.push("manual");
     if (filterCounts.fail > 0) base.push("fail");
     base.push("undetermined");
     return base;
-  }, [filterCounts.fail]);
+  }, [filterCounts.assisted, filterCounts.fail]);
 
   const filteredGroups = useMemo(() => {
     const needle = query.trim().toLowerCase();

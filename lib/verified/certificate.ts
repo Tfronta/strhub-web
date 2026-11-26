@@ -685,6 +685,13 @@ function buildLocalizedConclusion(
           body: t("verified.certificate.conclusion.reproNotEstablishedBody"),
         };
       }
+      if (it.title === "Automated verification with adjustments") {
+        const nAdj = String(report.assisted_run?.adjustments?.length ?? 1);
+        return {
+          title: t("verified.certificate.conclusion.assistedTitle"),
+          body: t("verified.certificate.conclusion.assistedBody", { count: nAdj }),
+        };
+      }
       if (it.title.startsWith("Verdict:") && report.verdict?.code) {
         const vTitleKey = `verified.trial.verdict.${report.verdict.code}`;
         const vTitle = t(vTitleKey) !== vTitleKey ? t(vTitleKey) : report.verdict.title;
@@ -780,6 +787,15 @@ function buildLocalizedConclusion(
         verdict: vTitle,
       }),
       body: vReason,
+    });
+  }
+
+  if (report.assisted_run?.passed) {
+    items.push({
+      title: t("verified.certificate.conclusion.assistedTitle"),
+      body: t("verified.certificate.conclusion.assistedBody", {
+        count: String(report.assisted_run.adjustments?.length ?? 1),
+      }),
     });
   }
 

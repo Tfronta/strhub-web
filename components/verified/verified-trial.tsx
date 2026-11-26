@@ -248,6 +248,27 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
         </div>
       )}
 
+      {/* Assisted Track callout when Track 2 automatically ran and passed */}
+      {report?.assisted_run?.passed && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-500/50 bg-amber-50/70 p-4 dark:border-amber-600/50 dark:bg-amber-950/30">
+          <div className="min-w-0 flex-1 space-y-1">
+            <p className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300">
+              {t("verified.assisted.trialCalloutTag")}
+            </p>
+            <p className="text-sm sm:text-base font-medium text-foreground">
+              {t("verified.assisted.trialCalloutBody")}
+            </p>
+          </div>
+          <a
+            href="#verified-assisted-run"
+            className="inline-flex items-center gap-1.5 rounded-md bg-amber-600 px-3.5 py-2 text-xs sm:text-sm font-semibold text-white transition-colors hover:bg-amber-700 shrink-0"
+          >
+            <span>{t("verified.assisted.trialCalloutCta")}</span>
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+          </a>
+        </div>
+      )}
+
       {/* Action options side by side AFTER the problem diagnosis */}
       {step1.code !== "runs" && report && (
         <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -423,9 +444,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
         </Card>
       )}
 
-      {role === "reviewer" && (
-        <p className="mt-4 text-base text-muted-foreground">{t("verified.trial.share")}</p>
-      )}
+      <p className="mt-4 text-sm sm:text-base text-muted-foreground">{t("verified.trial.share")}</p>
     </>
   );
 
@@ -549,7 +568,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             staticPageUrl={status?.files?.html}
             pdfUrl={status?.files?.pdf}
             ciRunUrl={status?.runUrl ?? report.ci_run ?? undefined}
-            trialUrl={`/verified/trial/${id}?as=${role}`}
+            trialUrl={`/verified/trial/${id}`}
             logs={logs}
             buildLogHref={logs.find((l) => l.leg === "build")?.href}
             extraGateRows={extraGateRows}
@@ -563,7 +582,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
                 {t("verified.trial.runLink")} <ExternalLink className="h-4 w-4" />
               </a>
             )}
-            <Link href={role === "reviewer" ? "/verified/review" : role === "user" ? "/verified/check" : "/verified/submit"} className="underline underline-offset-2">
+            <Link href="/verified/submit" className="underline underline-offset-2">
               {t("verified.trial.again")}
             </Link>
           </p>

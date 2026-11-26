@@ -111,6 +111,7 @@ export interface VerifiedAssistedRun {
   adjustments: VerifiedAssistedAdjustment[];
   verified_commands?: {
     extra_apt?: string[];
+    git_https_rewrite?: boolean;
     init_submodules?: boolean;
     install?: string[];
     mkdir_dirs?: string[];
@@ -526,7 +527,7 @@ export interface VerifiedReport {
    */
   evidence?: {
     claim: "install_method" | "published_image" | "bioconda_package" | "fallback_environment"
-      | "run_command" | "example_data" | "known_issue" | string;
+    | "run_command" | "example_data" | "known_issue" | string;
     /**
      * Where the claim was read: the file tree, the README, a document the
      * README links (`doc`, at the pinned commit) or a wiki page (`wiki`, not
@@ -651,9 +652,9 @@ export const VERIFIED_GATES: {
   labelKey: string;
   meaningKey: string;
 }[] = [
-  { key: "available", label: "Available", labelKey: "verified.gate.name.available", meaningKey: "verified.gate.available" },
-  { key: "installs", label: "Installs", labelKey: "verified.gate.name.installs", meaningKey: "verified.gate.installs" },
-  { key: "runs", label: "Runs", labelKey: "verified.gate.name.runs", meaningKey: "verified.gate.runs" },
-  { key: "io", label: "Expected IO", labelKey: "verified.gate.name.io", meaningKey: "verified.gate.io" },
-  { key: "content", label: "Plausible Output", labelKey: "verified.gate.name.content", meaningKey: "verified.gate.content" },
-];
+    { key: "available", label: "Available", labelKey: "verified.gate.name.available", meaningKey: "verified.gate.available" },
+    { key: "installs", label: "Installs", labelKey: "verified.gate.name.installs", meaningKey: "verified.gate.installs" },
+    { key: "runs", label: "Runs", labelKey: "verified.gate.name.runs", meaningKey: "verified.gate.runs" },
+    { key: "io", label: "Expected IO", labelKey: "verified.gate.name.io", meaningKey: "verified.gate.io" },
+    { key: "content", label: "Plausible Output", labelKey: "verified.gate.name.content", meaningKey: "verified.gate.content" },
+  ];

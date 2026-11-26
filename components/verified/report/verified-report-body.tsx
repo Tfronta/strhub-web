@@ -344,7 +344,27 @@ export function VerifiedReportBody({
           </>
         ) : (
           <>
-            <Section n={next()} title={t("verified.asIs.heading")}>
+            {report.assisted_run?.passed && (
+              <div id="verified-assisted-run" className="scroll-mt-20">
+                <Section n={next()} title={t("verified.assisted.heading")}>
+                  <AssistedVerificationSection
+                    assisted={report.assisted_run}
+                    logs={assistedLogs}
+                    panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
+                    sliceScopeNote={report.slice_scope_note}
+                  />
+                </Section>
+              </div>
+            )}
+
+            <Section
+              n={next()}
+              title={
+                report.assisted_run?.passed
+                  ? t("verified.assisted.asIsAfterAssistedHeading")
+                  : t("verified.asIs.heading")
+              }
+            >
               <AsItIsOpening report={report}>{afterHeader}</AsItIsOpening>
               <GatesLadder
                 gates={report.gates}
@@ -373,9 +393,9 @@ export function VerifiedReportBody({
               </Section>
             )}
 
-            {report.assisted_run?.attempted && (
+            {report.assisted_run?.attempted && !report.assisted_run.passed && (
               <div id="verified-assisted-run" className="scroll-mt-20">
-                <Section n={next()} title={t("verified.assisted.heading")}>
+                <Section n={next()} title={t("verified.assisted.headingAttempted")}>
                   <AssistedVerificationSection
                     assisted={report.assisted_run}
                     logs={assistedLogs}
@@ -438,7 +458,7 @@ export function VerifiedReportBody({
               </Section>
             )}
 
-            <ManualOffer report={report} slug={slug} />
+            {!report.assisted_run?.passed && <ManualOffer report={report} slug={slug} />}
 
             {report.readme_check && (
               <Section n={next()} title={t("verified.readme.heading")}>

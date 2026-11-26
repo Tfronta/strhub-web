@@ -121,15 +121,38 @@ export function Cover({
       value: isManual ? t("verified.mode.manualDetail") : t("verified.mode.autoDetail"),
     },
     { label: t("verified.certificate.cover.reached"), value: certificate.summary.reached },
-    ...(report.assisted_run?.passed
+    ...(report.assisted_run?.attempted
       ? [{
           label: t("verified.assisted.coverLabel"),
-          value: (
-            <span className="font-medium text-amber-900 dark:text-amber-300">
-              {t("verified.assisted.coverValue", {
-                level: reachedLabel(report.assisted_run.level, t),
-                count: String(report.assisted_run.adjustments?.length ?? 1),
-              })}
+          value: report.assisted_run.passed ? (
+            <span className="inline-flex flex-wrap items-center gap-2">
+              <span className="font-semibold text-amber-900 dark:text-amber-300">
+                {t("verified.assisted.coverValue", {
+                  level: reachedLabel(report.assisted_run.level, t),
+                  count: String(report.assisted_run.adjustments?.length ?? 1),
+                })}
+              </span>
+              <a
+                href="#verified-assisted-run"
+                className="text-sm font-semibold text-primary hover:underline"
+              >
+                {t("verified.assisted.coverJumpPassed")}
+              </a>
+            </span>
+          ) : (
+            <span className="inline-flex flex-wrap items-center gap-2">
+              <span className="text-foreground/90">
+                {t("verified.assisted.coverStoppedValue", {
+                  level: reachedLabel(report.assisted_run.level, t),
+                  count: String(report.assisted_run.adjustments?.length ?? 1),
+                })}
+              </span>
+              <a
+                href="#verified-assisted-run"
+                className="text-sm font-medium text-primary hover:underline"
+              >
+                {t("verified.assisted.coverJumpStopped")}
+              </a>
             </span>
           ),
         }]

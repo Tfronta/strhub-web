@@ -79,6 +79,9 @@ export function AssistedVerificationSection({
   if (vc?.extra_apt && vc.extra_apt.length > 0) {
     cmdLines.push(`sudo apt-get update && sudo apt-get install -y ${vc.extra_apt.join(" ")}`);
   }
+  if (vc?.git_https_rewrite) {
+    cmdLines.push('git config --global url."https://github.com/".insteadOf "git@github.com:"');
+  }
   if (vc?.init_submodules) {
     cmdLines.push("git submodule update --init --recursive");
   }
@@ -151,7 +154,11 @@ export function AssistedVerificationSection({
       {assisted.adjustments && assisted.adjustments.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-base font-semibold">
-            {t("verified.assisted.adjustmentsHeading")}
+            {t(
+              assisted.passed
+                ? "verified.assisted.adjustmentsHeading"
+                : "verified.assisted.adjustmentsAttemptedHeading",
+            )}
           </h3>
           <div className="overflow-x-auto rounded-lg border bg-card">
             <table className="w-full text-left text-sm">
@@ -182,12 +189,14 @@ export function AssistedVerificationSection({
         </div>
       )}
 
-      {cmdLines.length > 0 && (
+      {(assisted.passed ? cmdLines.length > 0 : Boolean(vc?.dockerfile)) && (
         <div className="rounded-lg border bg-card p-4 sm:p-5 space-y-4">
-          <CopyBlock
-            label={t("verified.assisted.verifiedCommandsLabel")}
-            code={cmdLines.join("\n")}
-          />
+          {assisted.passed && cmdLines.length > 0 && (
+            <CopyBlock
+              label={t("verified.assisted.verifiedCommandsLabel")}
+              code={cmdLines.join("\n")}
+            />
+          )}
           {vc?.dockerfile && (
             <div>
               <button
@@ -209,7 +218,7 @@ export function AssistedVerificationSection({
         </div>
       )}
 
-      {assisted.readme_suggestion && (
+      {assisted.passed && assisted.readme_suggestion && (
         <div className="rounded-lg border border-teal-600/30 bg-teal-50/30 p-4 sm:p-5 dark:border-teal-800/50 dark:bg-teal-950/20">
           <CopyBlock
             label={t("verified.assisted.readmeSuggestionLabel")}

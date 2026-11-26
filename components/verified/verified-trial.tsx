@@ -120,9 +120,16 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
       : null,
   }));
 
+  const assistedPassed = Boolean(report?.assisted_run?.passed);
+  const assistedStopped = Boolean(
+    report?.assisted_run?.attempted && !report?.assisted_run?.passed,
+  );
+
   const step1Block = step1 && (
     <section
-      className={`mt-6 rounded-lg border-2 p-5 sm:p-6 ${STEP1_BORDER[step1.tone]}`}
+      className={`mt-6 rounded-lg border-2 p-5 sm:p-6 ${
+        assistedPassed ? "border-amber-500/50" : STEP1_BORDER[step1.tone]
+      }`}
       aria-labelledby="trial-step1"
     >
       <div className="flex flex-wrap items-center gap-2.5">
@@ -248,8 +255,8 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
         </div>
       )}
 
-      {/* Assisted Track callout when Track 2 automatically ran and passed */}
-      {report?.assisted_run?.passed && (
+      {/* Assisted Track callout: either succeeded (shown in Section 1 above) or attempted & stopped */}
+      {assistedPassed && (
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-500/50 bg-amber-50/70 p-4 dark:border-amber-600/50 dark:bg-amber-950/30">
           <div className="min-w-0 flex-1 space-y-1">
             <p className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300">
@@ -269,8 +276,31 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
         </div>
       )}
 
-      {/* Action options side by side AFTER the problem diagnosis */}
-      {step1.code !== "runs" && report && (
+      {assistedStopped && report?.assisted_run && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-400/50 bg-muted/50 p-4 dark:border-slate-600/60">
+          <div className="min-w-0 flex-1 space-y-1">
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              {t("verified.assisted.trialStoppedTag")}
+            </p>
+            <p className="text-sm sm:text-base text-foreground/95">
+              {t("verified.assisted.trialStoppedBody", {
+                count: String(report.assisted_run.adjustments?.length ?? 1),
+                level: t(`verified.gate.name.${report.assisted_run.level}`),
+              })}
+            </p>
+          </div>
+          <a
+            href="#verified-assisted-run"
+            className="inline-flex items-center gap-1.5 rounded-md border bg-background px-3.5 py-2 text-xs sm:text-sm font-semibold text-foreground transition-colors hover:bg-muted shrink-0"
+          >
+            <span>{t("verified.assisted.trialStoppedCta")}</span>
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+          </a>
+        </div>
+      )}
+
+      {/* Action options side by side AFTER the problem diagnosis (Manual Review only when Track 2 did not pass) */}
+      {step1.code !== "runs" && report && !assistedPassed && (
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <div className="flex flex-col justify-between rounded-lg border bg-background/70 p-4">
             <div>

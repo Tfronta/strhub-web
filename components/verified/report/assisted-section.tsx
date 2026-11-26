@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { AlertTriangle, Check, CheckCircle2, Copy } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
-import type { VerifiedAssistedRun, VerifiedLevel, VerifiedOutputVerification } from "@/types/verified";
+import type {
+  VerifiedAssistedRun,
+  VerifiedLevel,
+  VerifiedOutputVerification,
+} from "@/types/verified";
 import { reachedLabel } from "@/lib/verified/badge";
 import { terminalOutputSummary } from "@/lib/verified/output-evidence";
 import { cn } from "@/lib/utils";
@@ -15,9 +19,11 @@ import { RecordedTerminal, type ReportLog } from "./terminal";
 function CopyBlock({
   label,
   code,
+  hint,
 }: {
   label: string;
   code: string;
+  hint?: string;
 }) {
   const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
@@ -33,18 +39,18 @@ function CopyBlock({
   }
 
   return (
-    <div className="space-y-1.5">
+    <div className="rounded-lg border bg-card p-4 shadow-2xs space-y-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-semibold text-foreground">{label}</p>
         <button
           type="button"
           onClick={copy}
-          className="inline-flex items-center gap-1 rounded border bg-background px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="inline-flex items-center gap-1.5 rounded-md border bg-background px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
         >
           {copied ? (
             <Check className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" aria-hidden />
           ) : (
-            <Copy className="h-3.5 w-3.5" aria-hidden />
+            <Copy className="h-3.5 w-3.5 text-muted-foreground" aria-hidden />
           )}
           <span>
             {copied
@@ -53,46 +59,103 @@ function CopyBlock({
           </span>
         </button>
       </div>
-      <pre className="overflow-x-auto rounded-md border bg-muted p-3.5 font-mono text-xs sm:text-sm leading-relaxed">
+      <pre className="overflow-x-auto rounded-md border bg-muted p-3 font-mono text-xs sm:text-sm leading-relaxed">
         <code>{code}</code>
       </pre>
+      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
     </div>
   );
+}
+
+/**
+ * Normalize container mount paths (`/data/in/input.bam`, `/data/ref/hg38.fa`, etc.)
+ * and excess alignment spaces so a user can copy-paste into their own terminal.
+ */
+function toLocalUserCommand(rawCmd: string): string {
+  return rawCmd
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\/data\/in\/input\.bam\b/g, "sample.bam")
+    .replace(/\/data\/in\/input\.cram\b/g, "sample.cram")
+    .replace(/\/data\/in\/input\.fastq\.gz\b/g, "sample.fastq.gz")
+    .replace(/\/data\/in\/input\.fastq\b/g, "sample.fastq")
+    .replace(/\/data\/ref\/hg38\.fa\b/g, "hg38.fa")
+    .replace(/\/data\/in\/regions\.bed\b/g, "regions.bed")
+    .replace(/\/data\/in\/regions\.json\b/g, "variant_catalog.json")
+    .replace(/\/data\/in\/regions\.tsv\b/g, "regions.tsv");
 }
 
 export function AssistedVerificationSection({
   assisted,
   logs,
+  repo,
+  sha,
   panelLoci,
   sliceScopeNote,
 }: {
   assisted: VerifiedAssistedRun;
   logs: ReportLog[];
+  repo?: string;
+  sha?: string;
   panelLoci?: string[];
   sliceScopeNote?: string | null;
 }) {
   const { t } = useLanguage();
+  const [showReadmeBlock, setShowReadmeBlock] = useState(false);
   const [showDockerfile, setShowDockerfile] = useState(false);
 
   const vc = assisted.verified_commands;
-  const cmdLines: string[] = [];
-  if (vc?.extra_apt && vc.extra_apt.length > 0) {
-    cmdLines.push(`sudo apt-get update && sudo apt-get install -y ${vc.extra_apt.join(" ")}`);
-  }
-  if (vc?.git_https_rewrite) {
-    cmdLines.push('git config --global url."https://github.com/".insteadOf "git@github.com:"');
-  }
-  if (vc?.init_submodules) {
-    cmdLines.push("git submodule update --init --recursive");
-  }
-  if (vc?.install && vc.install.length > 0) {
-    cmdLines.push(...vc.install);
-  }
-  if (vc?.mkdir_dirs && vc.mkdir_dirs.length > 0) {
-    for (const d of vc.mkdir_dirs) cmdLines.push(`mkdir -p ${d}`);
-  }
-  if (vc?.run) {
-    cmdLines.push(vc.run);
+
+  // Build clean, numbered step-by-step boxes for running on a local machine from git clone
+  const localSteps: { key: string; label: string; code: string; hint?: string }[] = [];
+  if (assisted.passed && vc) {
+    const prereqLines: string[] = [];
+    if (vc.extra_apt && vc.extra_apt.length > 0) {
+      prereqLines.push(`sudo apt-get update && sudo apt-get install -y ${vc.extra_apt.join(" ")}`);
+    }
+    if (vc.git_https_rewrite) {
+      prereqLines.push('git config --global url."https://github.com/".insteadOf "git@github.com:"');
+    }
+    if (prereqLines.length > 0) {
+      localSteps.push({
+        key: "prereq",
+        label: t("verified.assisted.stepPrereq", { n: String(localSteps.length + 1) }),
+        code: prereqLines.join("\n"),
+      });
+    }
+
+    const repoClean = (repo || "https://github.com/owner/tool").replace(/\/+$/, "");
+    const repoDir = repoClean.split("/").pop()?.replace(/\.git$/, "") || "tool";
+    const cloneFlag = vc.init_submodules ? "--recursive " : "";
+    const buildLines: string[] = [
+      `git clone ${cloneFlag}${repoClean}`,
+      `cd ${repoDir}`,
+    ];
+    if (sha) {
+      buildLines.push(`git checkout ${sha}`);
+    }
+    if (vc.install && vc.install.length > 0) {
+      buildLines.push(...vc.install);
+    }
+    localSteps.push({
+      key: "clone-build",
+      label: t("verified.assisted.stepCloneBuild", { n: String(localSteps.length + 1) }),
+      code: buildLines.join("\n"),
+    });
+
+    if (vc.run) {
+      const runLines: string[] = [];
+      if (vc.mkdir_dirs && vc.mkdir_dirs.length > 0) {
+        for (const d of vc.mkdir_dirs) runLines.push(`mkdir -p ${d}`);
+      }
+      runLines.push(toLocalUserCommand(vc.run));
+      localSteps.push({
+        key: "run",
+        label: t("verified.assisted.stepRunLocal", { n: String(localSteps.length + 1) }),
+        code: runLines.join("\n"),
+        hint: t("verified.assisted.stepRunHint"),
+      });
+    }
   }
 
   const assistedStats = assisted.content_detail?.outputs?.[0]?.stats;
@@ -149,8 +212,6 @@ export function AssistedVerificationSection({
         </div>
       </div>
 
-      <GatesLadder gates={assisted.gates as Record<VerifiedLevel, boolean>} hideHowToRead />
-
       {assisted.adjustments && assisted.adjustments.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-base font-semibold">
@@ -189,46 +250,68 @@ export function AssistedVerificationSection({
         </div>
       )}
 
-      {(assisted.passed ? cmdLines.length > 0 : Boolean(vc?.dockerfile)) && (
-        <div className="rounded-lg border bg-card p-4 sm:p-5 space-y-4">
-          {assisted.passed && cmdLines.length > 0 && (
-            <CopyBlock
-              label={t("verified.assisted.verifiedCommandsLabel")}
-              code={cmdLines.join("\n")}
-            />
-          )}
-          {vc?.dockerfile && (
-            <div>
+      {assisted.passed && localSteps.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-base font-semibold">
+            {t("verified.assisted.stepsHeading")}
+          </h3>
+          <div className="space-y-3">
+            {localSteps.map((step) => (
+              <CopyBlock
+                key={step.key}
+                label={step.label}
+                code={step.code}
+                hint={step.hint}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {((assisted.passed && Boolean(assisted.readme_suggestion)) || Boolean(vc?.dockerfile)) && (
+        <div className="space-y-3 rounded-lg border bg-muted/25 p-3.5 sm:p-4">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            {assisted.passed && assisted.readme_suggestion && (
+              <button
+                type="button"
+                onClick={() => setShowReadmeBlock((v) => !v)}
+                className="text-xs sm:text-sm font-medium text-primary underline underline-offset-2"
+              >
+                {showReadmeBlock
+                  ? t("verified.assisted.hideReadmeBlock")
+                  : t("verified.assisted.showReadmeBlock")}
+              </button>
+            )}
+            {vc?.dockerfile && (
               <button
                 type="button"
                 onClick={() => setShowDockerfile((v) => !v)}
-                className="text-xs font-medium text-primary underline underline-offset-2"
+                className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground underline underline-offset-2"
               >
                 {showDockerfile
                   ? t("verified.assisted.hideDockerfile")
                   : t("verified.assisted.showDockerfile")}
               </button>
-              {showDockerfile && (
-                <pre className="mt-2 overflow-x-auto rounded-md border bg-muted p-3 font-mono text-xs leading-relaxed">
-                  <code>{vc.dockerfile}</code>
-                </pre>
-              )}
-            </div>
+            )}
+          </div>
+
+          {showReadmeBlock && assisted.passed && assisted.readme_suggestion && (
+            <CopyBlock
+              label={t("verified.assisted.readmeSuggestionLabel")}
+              code={assisted.readme_suggestion}
+              hint={t("verified.assisted.readmeSuggestionHint")}
+            />
+          )}
+
+          {showDockerfile && vc?.dockerfile && (
+            <pre className="overflow-x-auto rounded-md border bg-muted p-3 font-mono text-xs leading-relaxed">
+              <code>{vc.dockerfile}</code>
+            </pre>
           )}
         </div>
       )}
 
-      {assisted.passed && assisted.readme_suggestion && (
-        <div className="rounded-lg border border-teal-600/30 bg-teal-50/30 p-4 sm:p-5 dark:border-teal-800/50 dark:bg-teal-950/20">
-          <CopyBlock
-            label={t("verified.assisted.readmeSuggestionLabel")}
-            code={assisted.readme_suggestion}
-          />
-          <p className="mt-2 text-xs text-muted-foreground">
-            {t("verified.assisted.readmeSuggestionHint")}
-          </p>
-        </div>
-      )}
+      <GatesLadder gates={assisted.gates as Record<VerifiedLevel, boolean>} hideHowToRead />
 
       {logs.length > 0 && (
         <RecordedTerminal

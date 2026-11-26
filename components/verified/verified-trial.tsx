@@ -121,9 +121,6 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
   }));
 
   const assistedPassed = Boolean(report?.assisted_run?.passed);
-  const assistedStopped = Boolean(
-    report?.assisted_run?.attempted && !report?.assisted_run?.passed,
-  );
 
   const step1Block = step1 && (
     <section
@@ -255,164 +252,122 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
         </div>
       )}
 
-      {/* Assisted Track callout: either succeeded (shown in Section 1 above) or attempted & stopped */}
-      {assistedPassed && (
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-500/50 bg-amber-50/70 p-4 dark:border-amber-600/50 dark:bg-amber-950/30">
-          <div className="min-w-0 flex-1 space-y-1">
-            <p className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300">
-              {t("verified.assisted.trialCalloutTag")}
-            </p>
-            <p className="text-sm sm:text-base font-medium text-foreground">
-              {t("verified.assisted.trialCalloutBody")}
-            </p>
-          </div>
-          <a
-            href="#verified-assisted-run"
-            className="inline-flex items-center gap-1.5 rounded-md bg-amber-600 px-3.5 py-2 text-xs sm:text-sm font-semibold text-white transition-colors hover:bg-amber-700 shrink-0"
-          >
-            <span>{t("verified.assisted.trialCalloutCta")}</span>
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-          </a>
-        </div>
-      )}
-
-      {assistedStopped && report?.assisted_run && (
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-400/50 bg-muted/50 p-4 dark:border-slate-600/60">
-          <div className="min-w-0 flex-1 space-y-1">
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              {t("verified.assisted.trialStoppedTag")}
-            </p>
-            <p className="text-sm sm:text-base text-foreground/95">
-              {t("verified.assisted.trialStoppedBody", {
-                count: String(report.assisted_run.adjustments?.length ?? 1),
-                level: t(`verified.gate.name.${report.assisted_run.level}`),
-              })}
-            </p>
-          </div>
-          <a
-            href="#verified-assisted-run"
-            className="inline-flex items-center gap-1.5 rounded-md border bg-background px-3.5 py-2 text-xs sm:text-sm font-semibold text-foreground transition-colors hover:bg-muted shrink-0"
-          >
-            <span>{t("verified.assisted.trialStoppedCta")}</span>
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-          </a>
-        </div>
-      )}
-
-      {/* Action options side by side AFTER the problem diagnosis (Manual Review only when Track 2 did not pass) */}
-      {step1.code !== "runs" && report && !assistedPassed && (
-        <div className="mt-5 grid gap-4 md:grid-cols-2">
-          <div className="flex flex-col justify-between rounded-lg border bg-background/70 p-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                {t("verified.trial.manualReview.option1Tag")}
-              </p>
-              <h3 className="mt-2 text-base font-semibold">
-                {step1.code === "cannot_tell"
-                  ? t("verified.trial.manualReview.option1Title")
-                  : step1.code === "does_not_run"
-                    ? t("verified.trial.manualReview.option1FailsTitle")
-                    : t("verified.trial.manualReview.option1OursTitle")}
-              </h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                {step1.code === "cannot_tell"
-                  ? t("verified.trial.manualReview.option1DocsBody")
-                  : step1.code === "does_not_run"
-                    ? t("verified.trial.manualReview.option1FailsBody")
-                    : t("verified.trial.manualReview.option1OursBody")}
-              </p>
-            </div>
-            <div className="mt-4 space-y-2">
-              <Button asChild variant="outline" size="sm">
-                <Link href={step1.guideHref}>{step1.guideLabel}</Link>
-              </Button>
-              {step1.code === "cannot_tell" && <ReadmeTemplateAction report={report} />}
-            </div>
-          </div>
-
-          {status?.existing?.manual ? (() => {
-            const manual = status.existing.manual;
-            const manualSummary = classifyManual({
-              level: manual.level,
-              verdict: manual.verdict,
-              errors_reported: manual.errors_reported,
-              instrument: "curated",
-            });
-            const manualPassed =
-              manualSummary?.kind === "pass" || manualSummary?.kind === "pass_errors";
-            return (
-              <div
-                className={`flex flex-col justify-between rounded-lg border p-4 ${
-                  manualPassed
-                    ? "border-teal-600/40 bg-teal-50/70 dark:border-teal-500/40 dark:bg-teal-950/30"
-                    : "border-amber-500/45 bg-amber-50/70 dark:border-amber-600/45 dark:bg-amber-950/30"
-                }`}
-              >
-                <div>
-                  <p
-                    className={`text-xs font-semibold uppercase tracking-wide ${
-                      manualPassed
-                        ? "text-teal-800 dark:text-teal-300"
-                        : "text-amber-900 dark:text-amber-300"
-                    }`}
-                  >
-                    {t("verified.trial.existingManual.tag")}
-                  </p>
-                  <h3 className="mt-2 text-base font-semibold text-foreground">
-                    {manualPassed
-                      ? t("verified.trial.existingManual.passedTitle")
-                      : t("verified.trial.existingManual.reviewedTitle")}
-                  </h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                    {manualPassed
-                      ? t("verified.trial.existingManual.passedBody")
-                      : t("verified.trial.existingManual.reviewedBody")}
-                  </p>
-                </div>
-                <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <Button
-                    asChild
-                    size="sm"
-                    className={
-                      manualPassed
-                        ? "bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-500"
-                        : "bg-amber-600 text-white hover:bg-amber-700 dark:bg-amber-600 dark:hover:bg-amber-500"
-                    }
-                  >
-                    <Link href={manual.href}>
-                      <BookOpen className="mr-1.5 h-3.5 w-3.5" aria-hidden />
-                      {manualPassed
-                        ? t("verified.trial.existingManual.cta")
-                        : t("verified.trial.existingManual.ctaFailed")}
-                      <ArrowRight className="ml-1 h-3.5 w-3.5" aria-hidden />
-                    </Link>
-                  </Button>
-                  {status.existing.href !== manual.href && (
-                    <Link
-                      href={status.existing.href}
-                      className="text-xs font-medium text-primary hover:underline"
-                    >
-                      {t("verified.trial.existingManual.viewPublished")}
-                    </Link>
-                  )}
-                </div>
-              </div>
-            );
-          })() : (
-            <ManualReviewCard
-              trialId={id}
-              toolName={report.tool.name}
-              repo={report.source.repo}
-              refSha={report.source.ref_resolved ?? report.source.ref ?? "HEAD"}
-              role={role}
-              reason={verdict?.reason ?? step1.headline}
-              ciRun={status?.runUrl ?? report.ci_run ?? undefined}
-            />
-          )}
-        </div>
-      )}
+      {/* Action options rendered after both automatic tracks via `afterAssisted` */}
     </section>
   );
+
+  const actionOptionsBlock =
+    step1 && step1.code !== "runs" && report && !assistedPassed ? (
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <div className="flex flex-col justify-between rounded-lg border bg-background/70 p-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("verified.trial.manualReview.option1Tag")}
+            </p>
+            <h3 className="mt-2 text-base font-semibold">
+              {step1.code === "cannot_tell"
+                ? t("verified.trial.manualReview.option1Title")
+                : step1.code === "does_not_run"
+                  ? t("verified.trial.manualReview.option1FailsTitle")
+                  : t("verified.trial.manualReview.option1OursTitle")}
+            </h3>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+              {step1.code === "cannot_tell"
+                ? t("verified.trial.manualReview.option1DocsBody")
+                : step1.code === "does_not_run"
+                  ? t("verified.trial.manualReview.option1FailsBody")
+                  : t("verified.trial.manualReview.option1OursBody")}
+            </p>
+          </div>
+          <div className="mt-4 space-y-2">
+            <Button asChild variant="outline" size="sm">
+              <Link href={step1.guideHref}>{step1.guideLabel}</Link>
+            </Button>
+            {step1.code === "cannot_tell" && <ReadmeTemplateAction report={report} />}
+          </div>
+        </div>
+
+        {status?.existing?.manual ? (() => {
+          const manual = status.existing.manual;
+          const manualSummary = classifyManual({
+            level: manual.level,
+            verdict: manual.verdict,
+            errors_reported: manual.errors_reported,
+            instrument: "curated",
+          });
+          const manualPassed =
+            manualSummary?.kind === "pass" || manualSummary?.kind === "pass_errors";
+          return (
+            <div
+              className={`flex flex-col justify-between rounded-lg border p-4 ${
+                manualPassed
+                  ? "border-teal-600/40 bg-teal-50/70 dark:border-teal-500/40 dark:bg-teal-950/30"
+                  : "border-amber-500/45 bg-amber-50/70 dark:border-amber-600/45 dark:bg-amber-950/30"
+              }`}
+            >
+              <div>
+                <p
+                  className={`text-xs font-semibold uppercase tracking-wide ${
+                    manualPassed
+                      ? "text-teal-800 dark:text-teal-300"
+                      : "text-amber-900 dark:text-amber-300"
+                  }`}
+                >
+                  {t("verified.trial.existingManual.tag")}
+                </p>
+                <h3 className="mt-2 text-base font-semibold text-foreground">
+                  {manualPassed
+                    ? t("verified.trial.existingManual.passedTitle")
+                    : t("verified.trial.existingManual.reviewedTitle")}
+                </h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {manualPassed
+                    ? t("verified.trial.existingManual.passedBody")
+                    : t("verified.trial.existingManual.reviewedBody")}
+                </p>
+              </div>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <Button
+                  asChild
+                  size="sm"
+                  className={
+                    manualPassed
+                      ? "bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-500"
+                      : "bg-amber-600 text-white hover:bg-amber-700 dark:bg-amber-600 dark:hover:bg-amber-500"
+                  }
+                >
+                  <Link href={manual.href}>
+                    <BookOpen className="mr-1.5 h-3.5 w-3.5" aria-hidden />
+                    {manualPassed
+                      ? t("verified.trial.existingManual.cta")
+                      : t("verified.trial.existingManual.ctaFailed")}
+                    <ArrowRight className="ml-1 h-3.5 w-3.5" aria-hidden />
+                  </Link>
+                </Button>
+                {status.existing.href !== manual.href && (
+                  <Link
+                    href={status.existing.href}
+                    className="text-xs font-medium text-primary hover:underline"
+                  >
+                    {t("verified.trial.existingManual.viewPublished")}
+                  </Link>
+                )}
+              </div>
+            </div>
+          );
+        })() : (
+          <ManualReviewCard
+            trialId={id}
+            toolName={report.tool.name}
+            repo={report.source.repo}
+            refSha={report.source.ref_resolved ?? report.source.ref ?? "HEAD"}
+            role={role}
+            reason={verdict?.reason ?? step1.headline}
+            ciRun={status?.runUrl ?? report.ci_run ?? undefined}
+          />
+        )}
+      </div>
+    ) : null;
 
   // An `undetermined` whose cause is ours must not be read as a finding about
   // the documentation: STRhub not holding a sample of that kind, or its own
@@ -604,6 +559,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             extraGateRows={extraGateRows}
             backLink={false}
             afterHeader={verdictBlock}
+            afterAssisted={actionOptionsBlock}
             afterSource={recipeBlock}
           />
           <p className="mb-10 flex flex-wrap gap-4 px-4 text-base">

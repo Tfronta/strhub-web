@@ -749,12 +749,20 @@ function buildLocalizedConclusion(
           }),
         };
 
-  const stats = report.content_detail?.outputs?.[0]?.stats;
+  const aPassed = Boolean(report.assisted_run?.passed);
+  const aGates = aPassed ? report.assisted_run?.gates : undefined;
+  const stats =
+    report.content_detail?.outputs?.[0]?.stats ??
+    (aPassed ? report.assisted_run?.content_detail?.outputs?.[0]?.stats : undefined);
   const nLoci = String(stats?.distinct_str_loci ?? stats?.distinct_loci ?? 0);
-  const rawFmt = (report.io_detail?.outputs?.[0]?.format ?? "").trim().toUpperCase();
+  const rawFmt = (
+    report.io_detail?.outputs?.[0]?.format ??
+    (aPassed ? report.assisted_run?.io_detail?.outputs?.[0]?.format : undefined) ??
+    ""
+  ).trim().toUpperCase();
   const fmt = rawFmt && rawFmt !== "—" ? `${rawFmt} ` : "";
 
-  const produced = gates.content
+  const produced = (gates.content || aGates?.content)
     ? {
         title: t("verified.certificate.conclusion.plausibleTitle"),
         body: t("verified.certificate.conclusion.plausibleBody", {
@@ -762,7 +770,7 @@ function buildLocalizedConclusion(
           loci: nLoci,
         }),
       }
-    : gates.io
+    : (gates.io || aGates?.io)
       ? {
           title: t("verified.certificate.conclusion.ioTitle"),
           body: t("verified.certificate.conclusion.ioBody", { format: fmt }),
@@ -772,7 +780,7 @@ function buildLocalizedConclusion(
           body: t("verified.certificate.conclusion.noOutputBody"),
         };
 
-  const items: { title: string; body: string }[] = [ran, produced];
+  const items: { title: string; body: string }[] = [ran];
 
   const loc = language ? report.i18n?.[language] : undefined;
   if (report.verdict?.code && (loc?.reason || report.verdict?.reason)) {
@@ -790,7 +798,7 @@ function buildLocalizedConclusion(
     });
   }
 
-  if (report.assisted_run?.passed) {
+  if (aPassed && report.assisted_run) {
     items.push({
       title: t("verified.certificate.conclusion.assistedTitle"),
       body: t("verified.certificate.conclusion.assistedBody", {
@@ -799,8 +807,10 @@ function buildLocalizedConclusion(
     });
   }
 
+  items.push(produced);
+
   const td = report.repo_test_data;
-  if (!gates.installs) {
+  if (!gates.installs && !aPassed) {
     if (!td?.known) {
       items.push({
         title: t("verified.certificate.conclusion.refInputNotRunTitle"),
@@ -940,7 +950,9 @@ export function certificateOf(
       t("verified.certificate.limitationItems.item3"),
       t("verified.certificate.limitationItems.item4"),
       t("verified.certificate.limitationItems.item5"),
-      t("verified.certificate.limitationItems.item6"),
+      ...(report.gates?.installs || report.assisted_run?.passed
+        ? []
+        : [t("verified.certificate.limitationItems.item6")]),
     ],
     scope: {
       statement: t("verified.trial.scope1"),

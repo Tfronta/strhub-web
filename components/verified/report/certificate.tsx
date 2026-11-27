@@ -14,6 +14,10 @@ import { InlineCodeText } from "./inline-code";
 
 const Headed = createContext(false);
 
+export function HeadedProvider({ children }: { children: ReactNode }) {
+  return <Headed.Provider value={true}>{children}</Headed.Provider>;
+}
+
 /** True inside a numbered section: the heading is already drawn. */
 export function useHeaded(): boolean {
   return useContext(Headed);

@@ -3,6 +3,7 @@ import en from "@/lib/i18n/locales/en/verified";
 import es from "@/lib/i18n/locales/es/verified";
 import pt from "@/lib/i18n/locales/pt/verified";
 import { buildHumanConclusion } from "@/components/verified/report/human-conclusion";
+import { buildResultInterpretation } from "@/components/verified/report/result-interpretation";
 import type { VerifiedReport } from "@/types/verified";
 import { badgeFor } from "./badge";
 import { certificateOf, localizeNeededItem } from "./certificate";
@@ -309,6 +310,43 @@ describe("Phase 3 — Assisted track ('Corre con ajustes') & canonical report", 
       expect(tFn("verified.assisted.dualStep2NotExecutable")).not.toContain("verified.assisted.");
       expect(tFn("verified.assisted.skip_unresolved_placeholders")).toContain("path/to/");
       expect(tFn("verified.assisted.skip_custom_input_layout")).not.toContain("verified.assisted.");
+      expect(tFn("verified.trial.manualReview.nextStepsHeading")).not.toContain("verified.trial.");
+      expect(tFn("verified.certificate.section.howToInterpret")).not.toContain("verified.certificate.");
+      expect(tFn("verified.certificate.section.scopeDisclaimer")).not.toContain("verified.certificate.");
     }
+
+    // Plain-language ResultInterpretation explains [exit 1] and missing file + config without jargon
+    const stoppedRun2Report: VerifiedReport = {
+      schema: "strhub-verified/1",
+      tool: { name: "STRetch", version: "v0.4.0" },
+      source: { repo: "https://github.com/Oshlack/STRetch", ref_resolved: "ce74895" },
+      environment: { source: "generated", os: ["ubuntu-22.04"] },
+      generated: "2026-11-27T16:43:23Z",
+      gates: { none: false, available: true, installs: false, runs: false, io: false, content: false },
+      level: "available",
+      verdict: { code: "undetermined", title: "Could not be determined", reason: "No copyable install." },
+      assisted_run: {
+        attempted: true,
+        evaluated: true,
+        passed: false,
+        level: "installs",
+        adjustments: [],
+        gates: { available: true, installs: true, runs: false, io: false, content: false },
+      },
+      scope: "Execution scope",
+    };
+    const sampleTerminal = [
+      "The configured decoy reference file: /opt/tool/reference-data/hg19.STRdecoys.sorted.fasta could not be found.",
+      "Please check pipelines/pipeline_config.groovy to make sure this is set correctly",
+      "[exit 1]",
+    ].join("\n");
+
+    const interpEs = buildResultInterpretation(stoppedRun2Report, sampleTerminal, tEs);
+    expect(interpEs).toHaveLength(3);
+    expect(interpEs[0].title).toContain("[exit 1]");
+    expect(interpEs[0].body).toContain("exit 0");
+    expect(interpEs[1].body).toContain("reference-data/hg19.STRdecoys.sorted.fasta");
+    expect(interpEs[1].body).toContain("pipelines/pipeline_config.groovy");
+    expect(interpEs[2].body).toContain("NO demuestra que el método científico");
   });
 });

@@ -39,6 +39,7 @@ import { terminalOutputSummary } from "@/lib/verified/output-evidence";
 import { Cover } from "./cover";
 import { Section, BoxedList, ConclusionBox, sectionCounter } from "./certificate";
 import { HumanConclusionCard } from "./human-conclusion";
+import { ResultInterpretationCard } from "./result-interpretation";
 import { GatesLadder, type ExtraGateRow } from "./gates";
 import { RecordedTerminal, type ReportLog } from "./terminal";
 import { WhatWasVerified, VerificationMatrix, VerificationData } from "./verification";
@@ -185,14 +186,36 @@ export function VerifiedReportBody({
     .map(normalizeRecommendationText)
     .filter(Boolean)
     .map((item) => localizeRecommendationItem(item, t));
-  const terminalOutput = terminalOutputSummary(
-    report.io_detail?.outputs?.[0],
-    report.content_detail?.outputs?.[0]?.stats,
+  const terminalOutput =
+    passedRun || isStrhubRun
+      ? terminalOutputSummary(
+          report.io_detail?.outputs?.[0],
+          report.content_detail?.outputs?.[0]?.stats,
+        )
+      : null;
+  const assistedTerminalOutput = report.assisted_run?.passed
+    ? terminalOutputSummary(
+        report.assisted_run?.io_detail?.outputs?.[0],
+        report.assisted_run?.content_detail?.outputs?.[0]?.stats,
+      )
+    : null;
+  const hasRun1Annex = Boolean(
+    (!installBlocked &&
+      (report.run?.cmd ||
+        report.run?.effective_cmd ||
+        strictDockerfile ||
+        repoDockerfile)) ||
+      strictLogs.length > 0,
   );
-  const assistedTerminalOutput = terminalOutputSummary(
-    report.assisted_run?.io_detail?.outputs?.[0],
-    report.assisted_run?.content_detail?.outputs?.[0]?.stats,
-  );
+  const preferredAssistedLeg =
+    report.assisted_run?.gates?.installs === false
+      ? "assisted-build"
+      : "assisted-external";
+  const activeInterpretationLogHref = report.assisted_run?.attempted
+    ? (assistedLogs.find((l) => l.leg === preferredAssistedLeg) ?? assistedLogs[0])?.href
+    : !installBlocked
+      ? (strictLogs.find((l) => l.leg === preferredLog) ?? strictLogs[0])?.href
+      : undefined;
   const outputSectionHref = hasOutputSection ? "#verified-output-content" : undefined;
   const next = sectionCounter();
 
@@ -392,16 +415,18 @@ export function VerifiedReportBody({
                   hideHowToRead
                 />
 
-                <p className="mt-2.5 text-xs sm:text-sm text-muted-foreground">
-                  <a
-                    href="#verified-annex-run1"
-                    onClick={openAnnex}
-                    className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
-                  >
-                    <Terminal className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                    <span>{t("verified.annex.jumpRun1")}</span>
-                  </a>
-                </p>
+                {hasRun1Annex && (
+                  <p className="mt-2.5 text-xs sm:text-sm text-muted-foreground">
+                    <a
+                      href="#verified-annex-run1"
+                      onClick={openAnnex}
+                      className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
+                    >
+                      <Terminal className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                      <span>{t("verified.annex.jumpRun1")}</span>
+                    </a>
+                  </p>
+                )}
 
                 {!report.assisted_run?.attempted && hasOutputSection && (
                   <div id="verified-output-content" className="mt-6 scroll-mt-20">
@@ -456,21 +481,10 @@ export function VerifiedReportBody({
               </div>
             )}
 
-            {afterAssisted}
-            {!report.assisted_run?.passed && <ManualOffer report={report} slug={slug} />}
-
-            {history && (
-              <Section n={next()} title={t("verified.history.heading")}>
-                <VersionHistory
-                  rows={history.rows}
-                  current={{ slug: history.current.slug, sha: history.current.sha, instrument: history.current.instrument }}
-                  repo={report.source.repo}
-                />
-              </Section>
-            )}
-
             {/* Section 3: Verification Data and Inputs Supplied Beyond the Repository */}
-            {((!installBlocked || Boolean(report.assisted_run?.passed)) &&
+            {((!installBlocked ||
+              Boolean(report.assisted_run?.gates?.installs) ||
+              Boolean(report.assisted_run?.passed)) &&
               (data.provenance.length > 0 || data.hasStrhubFixture || !!localizedNeeded?.length)) && (
               <Section n={next()} title={t("verified.data.consolidatedHeading")}>
                 {(data.provenance.length > 0 || data.hasStrhubFixture) && (
@@ -498,7 +512,7 @@ export function VerifiedReportBody({
                   </div>
                 )}
 
-                {!!localizedNeeded?.length && (
+                {(!installBlocked || Boolean(report.assisted_run?.passed)) && !!localizedNeeded?.length && (
                   <div className="mt-5">
                     <h3 className="text-base font-semibold">{t("verified.needed.heading")}</h3>
                     <BulletCard headingKey="verified.needed.heading" noteKey="verified.needed.note" items={localizedNeeded} />
@@ -507,19 +521,40 @@ export function VerifiedReportBody({
               </Section>
             )}
 
-            {/* Section 4: How to Interpret This Result and Scope */}
-            <Section n={next()} title={t("verified.certificate.section.interpretAndScope")}>
-              {(!installBlocked || Boolean(report.assisted_run?.passed)) && (
-                <WhatWasVerified
-                  gates={report.gates}
-                  verdictCode={report.verdict?.code}
-                  assistedGates={
-                    report.assisted_run?.attempted
-                      ? (report.assisted_run.gates as Record<string, boolean>)
-                      : undefined
-                  }
-                />
+            {/* Section 4: Plain-language explanation of what the console / run result means */}
+            <Section n={next()} title={t("verified.certificate.section.howToInterpret")}>
+              <ResultInterpretationCard
+                report={report}
+                activeLogHref={activeInterpretationLogHref}
+              />
+            </Section>
+
+            {/* Section 5: Clear titled Next Steps ("What can you do now?") BEFORE Conclusion */}
+            {!passedRun &&
+              !report.assisted_run?.passed &&
+              Boolean(afterAssisted || report.manual_verification?.eligible) && (
+                <Section n={next()} title={t("verified.trial.manualReview.nextStepsHeading")}>
+                  {afterAssisted ?? <ManualOffer report={report} slug={slug} />}
+                </Section>
               )}
+
+            {history && (
+              <Section n={next()} title={t("verified.history.heading")}>
+                <VersionHistory
+                  rows={history.rows}
+                  current={{ slug: history.current.slug, sha: history.current.sha, instrument: history.current.instrument }}
+                  repo={report.source.repo}
+                />
+              </Section>
+            )}
+
+            {/* Section 6: Plain-Language Executive Conclusion */}
+            <Section n={next()} title={t("verified.certificate.section.conclusion")}>
+              <HumanConclusionCard report={report} />
+            </Section>
+
+            {/* Section 7: STRhub Scope and Methodological Disclaimer (below Conclusion) */}
+            <Section n={next()} title={t("verified.certificate.section.scopeDisclaimer")}>
               <BoxedList lead={t("verified.certificate.text.scopeExec")} items={certificate.limitations} />
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-muted-foreground">
                 <p className="leading-relaxed">{certificate.scope.disclaimer}</p>
@@ -530,11 +565,6 @@ export function VerifiedReportBody({
                   {t("verified.gate.howToReadOpenFull")}
                 </Link>
               </div>
-            </Section>
-
-            {/* Section 5: Plain-Language Human Conclusion (right before Technical Annex) */}
-            <Section n={next()} title={t("verified.certificate.section.conclusion")}>
-              <HumanConclusionCard report={report} />
             </Section>
 
             {!installBlocked && afterSource}

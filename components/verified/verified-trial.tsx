@@ -293,7 +293,11 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
 
   const actionOptionsBlock =
     step1 && step1.code !== "runs" && report && !assistedPassed ? (
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
+      <div className="space-y-4">
+        <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
+          {t("verified.trial.manualReview.nextStepsLead")}
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
         <div className="flex flex-col justify-between rounded-lg border bg-background/70 p-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -401,6 +405,7 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
             ciRun={status?.runUrl ?? report.ci_run ?? undefined}
           />
         )}
+        </div>
       </div>
     ) : null;
 

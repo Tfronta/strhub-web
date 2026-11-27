@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/language-context";
 import type { VerifiedReport } from "@/types/verified";
 import type { TerminalOutputSummary } from "@/lib/verified/output-evidence";
 import { cn } from "@/lib/utils";
-import { ConclusionBox } from "./certificate";
+import { ConclusionBox, HeadedProvider } from "./certificate";
 import { EvidenceList } from "./findings";
 import { RecordedTerminal, type ReportLog } from "./terminal";
 
@@ -263,7 +263,9 @@ export function TechnicalAnnex({
             <h3 className="text-base font-semibold text-foreground">
               {t("verified.trial.evidenceTitle")}
             </h3>
-            <EvidenceList evidence={report.evidence} />
+            <HeadedProvider>
+              <EvidenceList evidence={report.evidence} />
+            </HeadedProvider>
           </div>
         )}
 

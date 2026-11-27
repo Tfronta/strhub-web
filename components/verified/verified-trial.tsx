@@ -152,6 +152,42 @@ export function VerifiedTrial({ id, role }: { id: string; role: TrialRole }) {
         </p>
       )}
 
+      {report?.assisted_run?.attempted && (
+        <div
+          className={`mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3.5 sm:p-4 ${
+            assistedPassed
+              ? "border-amber-500/55 bg-amber-50/80 dark:border-amber-500/60 dark:bg-amber-950/35"
+              : "border-slate-400/60 bg-muted/55 dark:border-slate-600/60"
+          }`}
+        >
+          <div className="space-y-1">
+            <p className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300">
+              {assistedPassed
+                ? t("verified.assisted.trialCalloutTag")
+                : t("verified.assisted.trialStoppedTag")}
+            </p>
+            <p className="text-sm sm:text-base text-foreground/95">
+              {assistedPassed
+                ? t("verified.assisted.trialCalloutBody")
+                : report.assisted_run.gates?.installs
+                  ? t("verified.assisted.trialStoppedRunBody", {
+                      count: String(report.assisted_run.adjustments?.length ?? 1),
+                    })
+                  : t("verified.assisted.trialStoppedInstallBody", {
+                      count: String(report.assisted_run.adjustments?.length ?? 1),
+                    })}
+            </p>
+          </div>
+          <Button asChild size="sm" variant={assistedPassed ? "default" : "secondary"}>
+            <a href="#verified-assisted-run">
+              {assistedPassed
+                ? t("verified.assisted.trialCalloutCta")
+                : t("verified.assisted.trialStoppedCta")}
+            </a>
+          </Button>
+        </div>
+      )}
+
       {/* Full-width problem diagnosis BEFORE the action cards */}
       {step1.code !== "runs" && report && (
         <div className="mt-4 rounded-lg border border-amber-500/40 bg-amber-50/40 p-4 sm:p-5 dark:border-amber-800/60 dark:bg-amber-950/20">

@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { GatesLadder } from "./gates";
 import { InlineCodeText } from "./inline-code";
 import { OutputContent } from "./output";
+import { RecordedTerminal, type ReportLog } from "./terminal";
 
 function CopyBlock({
   label,
@@ -90,6 +91,7 @@ export function AssistedVerificationSection({
   panelLoci,
   sliceScopeNote,
   recommendations,
+  assistedLogs,
 }: {
   assisted: VerifiedAssistedRun;
   repo?: string;
@@ -97,6 +99,7 @@ export function AssistedVerificationSection({
   panelLoci?: string[];
   sliceScopeNote?: string | null;
   recommendations?: string[];
+  assistedLogs?: ReportLog[];
 }) {
   const { t } = useLanguage();
   const [showReadmeBlock, setShowReadmeBlock] = useState(false);
@@ -157,8 +160,10 @@ export function AssistedVerificationSection({
 
   const assistedStats = assisted.content_detail?.outputs?.[0]?.stats;
   const assistedIo = assisted.io_detail?.outputs?.[0];
+  // Never display partial/internal log files (such as bpipe's commandlog.txt) as
+  // "Generated and verified output" when Run 2 failed before passing `runs + io`.
   const hasAssistedOutput = Boolean(
-    assistedStats || assistedIo || assisted.output_preview,
+    assisted.passed && (assistedStats || assistedIo || assisted.output_preview),
   );
   const outputVerif: VerifiedOutputVerification | undefined = assisted.passed
     ? {
@@ -206,9 +211,11 @@ export function AssistedVerificationSection({
                 ? t("verified.assisted.notExecutableTitle")
                 : assisted.passed
                   ? t("verified.assisted.passedTitle")
-                  : t("verified.assisted.stoppedTitle", {
-                      level: reachedLabel(assisted.level, t),
-                    })}
+                  : assisted.gates?.runs
+                    ? t("verified.assisted.stoppedOutputTitle")
+                    : assisted.gates?.installs
+                      ? t("verified.assisted.stoppedRunTitle")
+                      : t("verified.assisted.stoppedInstallTitle")}
             </p>
             <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
               {!assisted.attempted ? (
@@ -329,6 +336,23 @@ export function AssistedVerificationSection({
               hint={t("verified.assisted.readmeSuggestionHint")}
             />
           )}
+        </div>
+      )}
+
+      {assisted.attempted && !assisted.passed && assistedLogs && assistedLogs.length > 0 && (
+        <div className="space-y-2 pt-1">
+          <h3 className="text-base font-semibold text-foreground">
+            {t("verified.assisted.errorTerminalHeading")}
+          </h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            {t("verified.assisted.errorTerminalHint")}
+          </p>
+          <RecordedTerminal
+            logs={assistedLogs}
+            preferredLeg={assisted.gates?.installs === false ? "assisted-build" : "assisted-external"}
+            preflight={false}
+            scrollToEnd
+          />
         </div>
       )}
 

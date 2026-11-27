@@ -265,6 +265,19 @@ export function Cover({
           ) : (
             <>
               <Badge className={cn("w-fit px-2.5 py-0.5 text-sm font-bold", TONE[level.tone])}>{level.label}</Badge>
+              {report.assisted_run?.attempted && !report.assisted_run.passed && (
+                <a
+                  href="#verified-assisted-run"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/55 bg-amber-50/90 px-2.5 py-0.5 text-xs sm:text-sm font-semibold text-amber-950 transition-colors hover:bg-amber-100 dark:border-amber-500/60 dark:bg-amber-950/50 dark:text-amber-200"
+                >
+                  <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-700 dark:text-amber-400" aria-hidden />
+                  <span>
+                    {report.assisted_run.gates?.installs
+                      ? t("verified.assisted.coverPillStoppedRun")
+                      : t("verified.assisted.coverPillStoppedInstall")}
+                  </span>
+                </a>
+              )}
               <span className="inline-flex items-center rounded-full border border-teal-600/40 bg-teal-50/70 px-2.5 py-0.5 text-xs sm:text-sm font-medium text-teal-900 dark:border-teal-600/50 dark:bg-teal-950/40 dark:text-teal-200">
                 {t("verified.mode.autoBadge")}
               </span>
@@ -369,10 +382,17 @@ export function Cover({
                           level: reachedLabel(report.assisted_run.level, t),
                           count: String(report.assisted_run.adjustments?.length ?? 1),
                         })
-                      : t("verified.assisted.dualStep2Stopped", {
-                          level: reachedLabel(report.assisted_run.level, t),
-                          count: String(report.assisted_run.adjustments?.length ?? 1),
-                        })}
+                      : report.assisted_run.gates?.runs
+                        ? t("verified.assisted.dualStep2StoppedOutput", {
+                            count: String(report.assisted_run.adjustments?.length ?? 1),
+                          })
+                        : report.assisted_run.gates?.installs
+                          ? t("verified.assisted.dualStep2StoppedRun", {
+                              count: String(report.assisted_run.adjustments?.length ?? 1),
+                            })
+                          : t("verified.assisted.dualStep2StoppedInstall", {
+                              count: String(report.assisted_run.adjustments?.length ?? 1),
+                            })}
                 </p>
               </div>
               <a

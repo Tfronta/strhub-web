@@ -20,6 +20,8 @@ export function buildHumanConclusion(
   const code = v?.code;
   const strictRuns = code === "runs" || Boolean(gates.runs && gates.io);
   const assistedPassed = Boolean(report.assisted_run?.passed);
+  const assistedAttempted = Boolean(report.assisted_run?.attempted);
+  const assistedInstalls = Boolean(report.assisted_run?.gates?.installs);
   const hasErrors = hasReportedErrors(report.diagnostics);
   const installBlocked = blockedBeforeInstall(report);
   const procUnestablished = blockedGateOf(report) !== null;
@@ -56,6 +58,12 @@ export function buildHumanConclusion(
   } else if (assistedPassed) {
     workBody = t("verified.humanConclusion.workAdjusted");
     docsBody = t("verified.humanConclusion.docsAdjusted");
+  } else if (assistedAttempted && assistedInstalls) {
+    workBody = t("verified.humanConclusion.workAssistedStoppedRun");
+    docsBody = t("verified.humanConclusion.docsAssistedStoppedRun");
+  } else if (assistedAttempted) {
+    workBody = t("verified.humanConclusion.workAssistedStoppedInstall");
+    docsBody = t("verified.humanConclusion.docsAssistedStoppedInstall");
   } else if (isOurs) {
     workBody = t("verified.humanConclusion.workOurs");
     docsBody = t("verified.humanConclusion.docsOurs");
@@ -75,7 +83,7 @@ export function buildHumanConclusion(
     dataBody = t("verified.humanConclusion.dataExample");
   } else if (strictRuns || assistedPassed || (isManualRun && gates.installs)) {
     dataBody = t("verified.humanConclusion.dataPublic");
-  } else if (gates.installs && code === "fails") {
+  } else if ((gates.installs && code === "fails") || (assistedAttempted && assistedInstalls)) {
     dataBody = t("verified.humanConclusion.dataAttempted");
   } else {
     dataBody = t("verified.humanConclusion.dataNone");

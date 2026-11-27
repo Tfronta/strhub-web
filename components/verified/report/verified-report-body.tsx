@@ -450,6 +450,7 @@ export function VerifiedReportBody({
                     panelLoci={data.provenance.length === 1 ? data.provenance[0].loci : undefined}
                     sliceScopeNote={report.slice_scope_note}
                     recommendations={normalizedRecommendations}
+                    assistedLogs={assistedLogs}
                   />
                 </Section>
               </div>

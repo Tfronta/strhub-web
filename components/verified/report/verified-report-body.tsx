@@ -421,7 +421,7 @@ export function VerifiedReportBody({
                   </div>
                 )}
 
-                {!report.assisted_run?.attempted && normalizedRecommendations.length > 0 && (
+                {!(report.assisted_run?.attempted || report.assisted_run?.evaluated) && normalizedRecommendations.length > 0 && (
                   <div className="mt-5 rounded-lg border bg-muted/35 p-4 space-y-2">
                     <p className="text-sm font-semibold text-foreground">
                       {t("verified.recommendations.heading")}
@@ -440,7 +440,7 @@ export function VerifiedReportBody({
             </div>
 
             {/* Section 2: Automated Run with Suggested Documentation Adjustments */}
-            {report.assisted_run?.attempted && (
+            {(report.assisted_run?.attempted || report.assisted_run?.evaluated) && report.assisted_run && (
               <div id="verified-assisted-run" className="scroll-mt-20">
                 <Section n={next()} title={t("verified.assisted.heading")}>
                   <AssistedVerificationSection

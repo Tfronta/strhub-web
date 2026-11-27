@@ -176,6 +176,14 @@ export function AssistedVerificationSection({
     }
   }
 
+  const skipKey = assisted.skip_reason_code
+    ? `verified.assisted.skip_${assisted.skip_reason_code}`
+    : "";
+  const localizedSkipReason =
+    skipKey && t(skipKey) !== skipKey
+      ? t(skipKey)
+      : assisted.skip_reason || t("verified.assisted.skip_default");
+
   return (
     <div className="space-y-5">
       <div
@@ -194,16 +202,22 @@ export function AssistedVerificationSection({
           )}
           <div className="space-y-1.5">
             <p className="text-base font-semibold text-foreground">
-              {assisted.passed
-                ? t("verified.assisted.passedTitle")
-                : t("verified.assisted.stoppedTitle", {
-                    level: reachedLabel(assisted.level, t),
-                  })}
+              {!assisted.attempted
+                ? t("verified.assisted.notExecutableTitle")
+                : assisted.passed
+                  ? t("verified.assisted.passedTitle")
+                  : t("verified.assisted.stoppedTitle", {
+                      level: reachedLabel(assisted.level, t),
+                    })}
             </p>
             <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
-              {assisted.passed
-                ? t("verified.assisted.passedBody")
-                : t("verified.assisted.stoppedBody")}
+              {!assisted.attempted ? (
+                <InlineCodeText text={localizedSkipReason} />
+              ) : assisted.passed ? (
+                t("verified.assisted.passedBody")
+              ) : (
+                t("verified.assisted.stoppedBody")
+              )}
             </p>
             <p className="text-xs font-medium text-muted-foreground">
               {t("verified.assisted.readOnlyGuarantee")}
@@ -318,19 +332,21 @@ export function AssistedVerificationSection({
         </div>
       )}
 
-      <div className="space-y-2">
-        <GatesLadder gates={assisted.gates as Record<VerifiedLevel, boolean>} hideHowToRead />
-        <p className="text-xs sm:text-sm text-muted-foreground">
-          <a
-            href="#verified-annex-run2"
-            onClick={openAnnex}
-            className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
-          >
-            <Terminal className="h-3.5 w-3.5 shrink-0" aria-hidden />
-            <span>{t("verified.annex.jumpRun2")}</span>
-          </a>
-        </p>
-      </div>
+      {assisted.attempted && (
+        <div className="space-y-2">
+          <GatesLadder gates={assisted.gates as Record<VerifiedLevel, boolean>} hideHowToRead />
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            <a
+              href="#verified-annex-run2"
+              onClick={openAnnex}
+              className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
+            >
+              <Terminal className="h-3.5 w-3.5 shrink-0" aria-hidden />
+              <span>{t("verified.annex.jumpRun2")}</span>
+            </a>
+          </p>
+        </div>
+      )}
 
       {hasAssistedOutput && (
         <div className="pt-1">

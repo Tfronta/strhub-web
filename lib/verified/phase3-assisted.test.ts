@@ -302,5 +302,13 @@ describe("Phase 3 — Assisted track ('Corre con ajustes') & canonical report", 
     expect(localizeNeededItem(refGenomeLegacy, tEs)).not.toContain("/data/ref");
     expect(localizeNeededItem(refGenomeNew, tEs)).toContain("GRCh38 / hg38");
     expect(localizeNeededItem(refGenomeNew, tEs)).not.toContain("/data/ref");
+
+    // Step 2 diagnostic skip reasons localize cleanly across ES, EN, and PT when evaluated && !attempted
+    for (const tFn of [tEs, tEn, tPt]) {
+      expect(tFn("verified.assisted.notExecutableTitle")).not.toContain("verified.assisted.");
+      expect(tFn("verified.assisted.dualStep2NotExecutable")).not.toContain("verified.assisted.");
+      expect(tFn("verified.assisted.skip_unresolved_placeholders")).toContain("path/to/");
+      expect(tFn("verified.assisted.skip_custom_input_layout")).not.toContain("verified.assisted.");
+    }
   });
 });

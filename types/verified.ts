@@ -104,8 +104,11 @@ export interface VerifiedAssistedAdjustment {
 export interface VerifiedAssistedRun {
   schema?: string;
   attempted: boolean;
+  evaluated?: boolean;
   passed: boolean;
   level: VerifiedLevel;
+  skip_reason_code?: string;
+  skip_reason?: string;
   content_verified?: boolean;
   gates: Partial<Record<VerifiedLevel, boolean>>;
   adjustments: VerifiedAssistedAdjustment[];

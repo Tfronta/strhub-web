@@ -141,11 +141,11 @@ export function Cover({
       label: t("verified.mode.tableLabel"),
       value: isManual ? t("verified.mode.manualDetail") : t("verified.mode.autoDetail"),
     },
-    ...(!report.assisted_run?.attempted
+    ...(!report.assisted_run?.attempted && !report.assisted_run?.evaluated
       ? [{ label: t("verified.certificate.cover.reached"), value: certificate.summary.reached }]
       : []),
     ...(() => {
-      if (report.assisted_run?.attempted) return [];
+      if (report.assisted_run?.attempted || report.assisted_run?.evaluated) return [];
       const loc = manualLocale(report, language);
       const whyText = isManual
         ? (loc?.plain_why ||
@@ -319,10 +319,12 @@ export function Cover({
       <p className="font-mono text-sm sm:text-base text-muted-foreground">{slug}</p>
       <KvTable rows={rows} labelWidth="11.5rem" />
 
-      {!isManual && report.assisted_run?.attempted && (
+      {!isManual && (report.assisted_run?.attempted || report.assisted_run?.evaluated) && report.assisted_run && (
         <div className="mt-5 border-t pt-4 space-y-3">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            {t("verified.assisted.dualBannerTitle")}
+            {report.assisted_run.attempted
+              ? t("verified.assisted.dualBannerTitle")
+              : t("verified.assisted.dualBannerEvaluatedTitle")}
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="flex flex-col justify-between rounded-md border bg-muted/30 p-3.5 text-sm">
@@ -360,24 +362,28 @@ export function Cover({
                       : "text-muted-foreground"
                   }
                 >
-                  {report.assisted_run.passed
-                    ? t("verified.assisted.dualStep2Passed", {
-                        level: reachedLabel(report.assisted_run.level, t),
-                        count: String(report.assisted_run.adjustments?.length ?? 1),
-                      })
-                    : t("verified.assisted.dualStep2Stopped", {
-                        level: reachedLabel(report.assisted_run.level, t),
-                        count: String(report.assisted_run.adjustments?.length ?? 1),
-                      })}
+                  {!report.assisted_run.attempted
+                    ? t("verified.assisted.dualStep2NotExecutable")
+                    : report.assisted_run.passed
+                      ? t("verified.assisted.dualStep2Passed", {
+                          level: reachedLabel(report.assisted_run.level, t),
+                          count: String(report.assisted_run.adjustments?.length ?? 1),
+                        })
+                      : t("verified.assisted.dualStep2Stopped", {
+                          level: reachedLabel(report.assisted_run.level, t),
+                          count: String(report.assisted_run.adjustments?.length ?? 1),
+                        })}
                 </p>
               </div>
               <a
                 href="#verified-assisted-run"
                 className="mt-2 inline-block text-xs font-semibold text-primary hover:underline"
               >
-                {report.assisted_run.passed
-                  ? t("verified.assisted.dualStep2JumpPassed")
-                  : t("verified.assisted.dualStep2JumpStopped")}
+                {!report.assisted_run.attempted
+                  ? t("verified.assisted.dualStep2JumpEvaluated")
+                  : report.assisted_run.passed
+                    ? t("verified.assisted.dualStep2JumpPassed")
+                    : t("verified.assisted.dualStep2JumpStopped")}
               </a>
             </div>
           </div>

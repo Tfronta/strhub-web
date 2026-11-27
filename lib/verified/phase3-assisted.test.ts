@@ -287,10 +287,20 @@ describe("Phase 3 — Assisted track ('Corre con ajustes') & canonical report", 
 
     const resEs = buildHumanConclusion(adjustedReport, false, tEs);
     expect(resEs.items).toHaveLength(4);
+    expect("lead" in resEs).toBe(false);
     expect(resEs.items[0].title).toBe("¿El programa funciona?");
     expect(resEs.items[0].body).toContain("funciona de inicio a fin");
     expect(resEs.items[1].body).toContain("Sección 2");
     expect(resEs.items[2].body).toContain("muestra pública independiente");
     expect(resEs.items[3].title).toBe("¿Qué NO evalúa este informe?");
+
+    // Reference genome localization omits internal container mount path /data/ref/hg38.fa
+    const refGenomeLegacy =
+      "A reference genome (GRCh38 / hg38): the command names one, and STRhub mounted the public copy at /data/ref/hg38.fa.";
+    const refGenomeNew =
+      "A reference genome (GRCh38 / hg38): the command names one, and STRhub supplied the public reference copy.";
+    expect(localizeNeededItem(refGenomeLegacy, tEs)).not.toContain("/data/ref");
+    expect(localizeNeededItem(refGenomeNew, tEs)).toContain("GRCh38 / hg38");
+    expect(localizeNeededItem(refGenomeNew, tEs)).not.toContain("/data/ref");
   });
 });

@@ -305,7 +305,6 @@ export function VerificationData({
                       <dt className="text-muted-foreground">{t("verified.data.refGenome")}</dt>
                       <dd>
                         <span className="font-medium">{ds.referenceGenome.assembly}</span>
-                        <span className="text-muted-foreground ml-2">({ds.referenceGenome.mountPath})</span>
                       </dd>
                     </>
                   )}

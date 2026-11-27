@@ -500,7 +500,6 @@ export default {
       gateFindingsHeading: "Technical gate findings record",
     },
     humanConclusion: {
-      lead: "Plain-language summary for quick review (no programming background required):",
       qWork: "Does the software work?",
       qDocs: "Are the current instructions enough to use it from start to finish?",
       qData: "What data was it tested on?",
@@ -1191,7 +1190,7 @@ export default {
         curatedRecipe: "A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under \"What STRhub had to do to run this tool\".",
         baseEnvDocumented: "A base environment for the documented installation: STRhub ran the repository's install commands unchanged on {base}. Base-image and package versions are not frozen by the commands.",
         baseEnvAssisted: "Base environment and Run 2 adjustments: Ubuntu 22.04 container with {detail}. Unpinned system and package versions can vary over time.",
-        referenceGenomeMounted: "A reference genome ({assembly}): the command names one, and STRhub mounted the public copy at {path}.",
+        referenceGenomeMounted: "A reference genome ({assembly}): the command names one, and STRhub supplied the public reference copy.",
         regionsCatalogMounted: "A target-regions catalog ({layout} layout): the documented command reads a locus definition file, and STRhub mounted its shared reference panel catalog matching the documented schema.",
       },
       caveats: {

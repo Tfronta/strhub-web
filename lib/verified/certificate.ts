@@ -302,7 +302,7 @@ export function effectiveNeededBeyondRepo(
       !raw.some((x) => x.toLowerCase().includes("reference genome"))
     ) {
       raw.push(
-        "A reference genome (GRCh38 / hg38): the command names one, and STRhub mounted the public copy at /data/ref/hg38.fa.",
+        "A reference genome (GRCh38 / hg38): the command names one, and STRhub supplied the public reference copy.",
       );
     }
   }
@@ -349,12 +349,11 @@ export function localizeNeededItem(item: string, t: Translate): string {
     if (val !== "verified.engineText.needed.baseEnvAssisted") return val;
   }
   const mRef = item.match(
-    /^A reference genome \((.+)\): the command names one, and STRhub mounted the public copy at (.+)\.$/,
+    /^A reference genome \((.+)\): the command names one, and STRhub (?:supplied the public reference copy|mounted the public copy at .+)\.$/,
   );
   if (mRef) {
     const val = t("verified.engineText.needed.referenceGenomeMounted", {
       assembly: mRef[1],
-      path: mRef[2],
     });
     if (val !== "verified.engineText.needed.referenceGenomeMounted") return val;
   }

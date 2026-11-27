@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Check, X } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import type { TerminalOutputSummary } from "@/lib/verified/output-evidence";
@@ -42,15 +42,18 @@ export function RecordedTerminal({
   preflight,
   outputSummary,
   outputSectionHref,
+  scrollToEnd = false,
 }: {
   logs: ReportLog[];
   preferredLeg: string;
   preflight: boolean;
   outputSummary?: TerminalOutputSummary | null;
   outputSectionHref?: string;
+  scrollToEnd?: boolean;
 }) {
   const { t, language } = useLanguage();
   const picker = useId();
+  const preRef = useRef<HTMLPreElement>(null);
   const [leg, setLeg] = useState<string>();
   const [loaded, setLoaded] = useState<{ href: string; text?: string | null }>();
   const selected = logs.find((log) => log.leg === leg)
@@ -86,6 +89,13 @@ export function RecordedTerminal({
   }
 
   const result = loaded?.href === href ? loaded : undefined;
+
+  useEffect(() => {
+    if (scrollToEnd && typeof result?.text === "string" && preRef.current) {
+      preRef.current.scrollTop = preRef.current.scrollHeight;
+    }
+  }, [scrollToEnd, result?.text, selected?.leg]);
+
   return (
     <figure className="mt-4 overflow-hidden rounded-lg border border-slate-800 bg-slate-950 text-slate-100">
       <figcaption className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 px-4 py-3 text-sm">
@@ -111,7 +121,7 @@ export function RecordedTerminal({
         <p className="px-4 pt-3 text-xs text-slate-300">{t("verified.log.commandUnavailable")}</p>
       )}
       {typeof result?.text === "string" ? (
-        <pre tabIndex={0} className="max-h-96 overflow-auto whitespace-pre p-4 font-mono text-xs leading-relaxed">
+        <pre ref={preRef} tabIndex={0} className="max-h-96 overflow-auto whitespace-pre p-4 font-mono text-xs leading-relaxed">
           <code>{result.text}</code>
         </pre>
       ) : (

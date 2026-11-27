@@ -132,6 +132,9 @@ export function TechnicalAnnex({
   const assistedVc = assisted?.verified_commands;
   const preferredAssistedLeg =
     assisted?.gates?.installs === false ? "assisted-build" : "assisted-external";
+  const strictPassed =
+    report.verdict?.code === "runs" ||
+    Boolean(report.gates?.runs && report.gates?.io);
 
   const hasRun1Block = Boolean(
     (!installBlocked && (strictCmd || strictDockerfile || repoDockerfile)) ||
@@ -214,6 +217,7 @@ export function TechnicalAnnex({
                 preflight={installBlocked}
                 outputSummary={strictOutputSummary}
                 outputSectionHref={outputSectionHref}
+                scrollToEnd={!strictPassed}
               />
             )}
           </div>
@@ -247,6 +251,7 @@ export function TechnicalAnnex({
                 preferredLeg={preferredAssistedLeg}
                 preflight={false}
                 outputSummary={assistedOutputSummary}
+                scrollToEnd={!assisted?.passed}
               />
             )}
           </div>

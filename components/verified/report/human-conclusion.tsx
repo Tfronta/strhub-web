@@ -14,7 +14,7 @@ export function buildHumanConclusion(
   report: VerifiedReport,
   isManualRun: boolean,
   t: (key: string, vars?: Record<string, string>) => string,
-): { lead: string; items: HumanConclusionItem[] } {
+): { items: HumanConclusionItem[] } {
   const gates = report.gates ?? {};
   const v = report.verdict;
   const code = v?.code;
@@ -82,7 +82,6 @@ export function buildHumanConclusion(
   }
 
   return {
-    lead: t("verified.humanConclusion.lead"),
     items: [
       { title: t("verified.humanConclusion.qWork"), body: workBody },
       { title: t("verified.humanConclusion.qDocs"), body: docsBody },
@@ -103,12 +102,11 @@ export function HumanConclusionCard({
   isManualRun?: boolean;
 }) {
   const { t } = useLanguage();
-  const { lead, items } = buildHumanConclusion(report, isManualRun, t);
+  const { items } = buildHumanConclusion(report, isManualRun, t);
 
   return (
     <div className="mt-4 rounded-lg border border-teal-600/50 bg-teal-50/60 p-5 text-base leading-relaxed dark:bg-teal-950/20">
-      <p className="text-sm text-muted-foreground">{lead}</p>
-      <ul className="mt-3.5 space-y-3">
+      <ul className="space-y-3">
         {items.map((item) => (
           <li key={item.title} className="flex items-start gap-2.5">
             <span

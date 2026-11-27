@@ -500,7 +500,6 @@ export default {
       gateFindingsHeading: "Registro técnico dos portões",
     },
     humanConclusion: {
-      lead: "Em palavras simples, para leitura rápida (sem necessidade de conhecimentos de programação):",
       qWork: "O programa funciona?",
       qDocs: "As instruções atuais são suficientes para usá-lo do início ao fim?",
       qData: "Com quais dados foi testado?",
@@ -1191,7 +1190,7 @@ export default {
         curatedRecipe: "Um ambiente de contêiner e um comando escritos pelo STRhub, não extraídos das instruções do repositório; o que fazem de diferente está listado em \"O que o STRhub teve de fazer para rodar esta ferramenta\".",
         baseEnvDocumented: "Um ambiente base para a instalação documentada: o STRhub executou os comandos de instalação do repositório sem alterações sobre {base}. As versões da imagem base e dos pacotes não estão congeladas pelos comandos.",
         baseEnvAssisted: "Ambiente base e ajustes da Execução 2: contêiner Ubuntu 22.04 com {detail}. Versões de pacotes não fixadas pelo repositório podem variar ao longo do tempo.",
-        referenceGenomeMounted: "Um genoma de referência ({assembly}): o comando indica um e o STRhub montou a cópia pública em {path}.",
+        referenceGenomeMounted: "Um genoma de referência ({assembly}): o comando requer um e o STRhub forneceu a cópia pública de referência.",
         regionsCatalogMounted: "Um catálogo de regiões-alvo (esquema {layout}): o comando documentado lê um arquivo de definição de loci, e o STRhub montou seu catálogo compartilhado do painel de referência correspondente ao esquema documentado.",
       },
       caveats: {
